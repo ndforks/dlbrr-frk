@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Holiday;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ListHoliday extends Controller
+class ListHoliday extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/holiday/list.php');
+        return $this->executeDolibarrFile('Holiday/list.php');
     }
 }

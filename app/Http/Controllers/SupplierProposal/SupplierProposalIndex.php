@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\SupplierProposal;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class SupplierProposalIndex extends Controller
+class SupplierProposalIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/supplier_proposal/index.php');
+        return $this->executeDolibarrFile('SupplierProposal/index.php');
     }
 }

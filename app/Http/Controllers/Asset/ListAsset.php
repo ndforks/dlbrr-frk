@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Asset;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ListAsset extends Controller
+class ListAsset extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/asset/list.php');
+        return $this->executeDolibarrFile('Asset/list.php');
     }
 }

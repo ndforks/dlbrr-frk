@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Don;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ShowDon extends Controller
+class ShowDon extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/don/card.php');
+        return $this->executeDolibarrFile('Don/card.php');
     }
 }

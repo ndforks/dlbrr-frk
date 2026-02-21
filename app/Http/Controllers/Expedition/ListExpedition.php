@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Expedition;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ListExpedition extends Controller
+class ListExpedition extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/expedition/list.php');
+        return $this->executeDolibarrFile('Expedition/list.php');
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Fichinter;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class FichinterIndex extends Controller
+class FichinterIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/fichinter/index.php');
+        return $this->executeDolibarrFile('Fichinter/index.php');
     }
 }
