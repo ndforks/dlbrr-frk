@@ -2,16 +2,39 @@
 
 namespace App\Http\Controllers\Bookcal;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
-class BookcalIndex extends DolibarrController
+class BookcalIndex extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): Response
+    public function __invoke(): View
     {
-        return $this->executeDolibarrFile('Bookcal/index.php');
+        global $db, $langs, $user, $conf;
+        
+        $langs->loadLangs(array("agenda"));
+        
+        $socid = GETPOSTINT('socid');
+        if (!empty($user->socid) && $user->socid > 0) {
+            $socid = $user->socid;
+        }
+        
+        $now = dol_now();
+        $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
+        
+        $form = new \Form($db);
+        $formfile = new \FormFile($db);
+        
+        return view('bookcal.index', [
+            'langs' => $langs,
+            'user' => $user,
+            'conf' => $conf,
+            'form' => $form,
+            'formfile' => $formfile,
+            'socid' => $socid,
+            'max' => $max,
+        ]);
     }
 }
