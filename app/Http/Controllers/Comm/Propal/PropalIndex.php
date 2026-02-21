@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Comm\Propal;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class PropalIndex extends DolibarrController
+class PropalIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Comm/Propal/index.php');
+        return redirect('/comm/propal/list.php');
     }
 }

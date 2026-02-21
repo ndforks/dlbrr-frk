@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Ticket;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class TicketIndex extends DolibarrController
+class TicketIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Ticket/index.php');
+        return redirect('/ticket/list.php');
     }
 }

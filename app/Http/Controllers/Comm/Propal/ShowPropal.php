@@ -2,16 +2,56 @@
 
 namespace App\Http\Controllers\Comm\Propal;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Models\Propal;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class ShowPropal extends DolibarrController
+class ShowPropal extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(Request $request): View|RedirectResponse
     {
-        return $this->executeDolibarrFile('Comm/Propal/card.php');
+        $action = GETPOST('action', 'alpha') ?: 'view';
+        $id = GETPOSTINT('id');
+        
+        return match($action) {
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
+            'update' => $this->update($request, $id),
+            'delete' => $this->delete($request, $id),
+            default => $this->show($request, $id),
+        };
+    }
+    
+    private function show(Request $request, int $id): View
+    {
+        $propal = Propal::with('societe')->findOrFail($id);
+        return view('propal.show', ['propal' => $propal, 'action' => 'view']);
+    }
+    
+    private function edit(Request $request, int $id): View
+    {
+        $propal = Propal::with('societe')->findOrFail($id);
+        return view('propal.edit', ['propal' => $propal, 'action' => 'edit']);
+    }
+    
+    private function create(Request $request): View
+    {
+        return view('propal.create', ['action' => 'create']);
+    }
+    
+    private function update(Request $request, int $id): RedirectResponse
+    {
+        $propal = Propal::findOrFail($id);
+        $data = ['ref' => GETPOST('ref', 'alpha'), 'fk_soc' => GETPOSTINT('socid')];
+        $propal->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
+        return redirect("/comm/propal/card.php?id={$id}")->with('success', 'Proposal updated');
+    }
+    
+    private function delete(Request $request, int $id): RedirectResponse
+    {
+        Propal::findOrFail($id)->delete();
+        return redirect('/comm/propal/list.php')->with('success', 'Proposal deleted');
     }
 }
