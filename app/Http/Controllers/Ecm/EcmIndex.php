@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Ecm;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class EcmIndex extends Controller
+class EcmIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/ecm/index.php');
+        return $this->executeDolibarrFile('Ecm/index.php');
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Fourn;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class FournIndex extends Controller
+class FournIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/fourn/index.php');
+        return $this->executeDolibarrFile('Fourn/index.php');
     }
 }

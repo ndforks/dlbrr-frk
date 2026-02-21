@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Bookmarks;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ShowBookmarks extends Controller
+class ShowBookmarks extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/bookmarks/card.php');
+        return $this->executeDolibarrFile('Bookmarks/card.php');
     }
 }

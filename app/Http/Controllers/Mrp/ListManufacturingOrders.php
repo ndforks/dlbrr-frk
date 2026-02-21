@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Mrp;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ListManufacturingOrders extends Controller
+class ListManufacturingOrders extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/mrp/mo_list.php');
+        return $this->executeDolibarrFile('Mrp/mo_list.php');
     }
 }

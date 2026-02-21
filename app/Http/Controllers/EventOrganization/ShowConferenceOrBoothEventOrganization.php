@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\EventOrganization;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ShowConferenceOrBoothEventOrganization extends Controller
+class ShowConferenceOrBoothEventOrganization extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/eventorganization/conferenceorbooth_card.php');
+        return $this->executeDolibarrFile('EventOrganization/conferenceorbooth_card.php');
     }
 }

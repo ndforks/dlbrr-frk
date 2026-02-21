@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Accountancy;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class JournalAccountancy extends Controller
+class JournalAccountancy extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/accountancy/journal/index.php');
+        return $this->executeDolibarrFile('Accountancy/Journal/index.php');
     }
 }

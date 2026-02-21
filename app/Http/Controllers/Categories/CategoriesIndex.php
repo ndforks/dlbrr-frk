@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Categories;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class CategoriesIndex extends Controller
+class CategoriesIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/categories/index.php');
+        return $this->executeDolibarrFile('Categories/index.php');
     }
 }

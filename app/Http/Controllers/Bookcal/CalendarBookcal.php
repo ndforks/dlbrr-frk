@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Bookcal;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class CalendarBookcal extends Controller
+class CalendarBookcal extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/bookcal/calendar.php');
+        return $this->executeDolibarrFile('Bookcal/calendar.php');
     }
 }

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Fourn\Commande;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class CommandeIndex extends Controller
+class CommandeIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/fourn/commande/index.php');
+        return $this->executeDolibarrFile('Fourn/Commande/card.php');
     }
 }

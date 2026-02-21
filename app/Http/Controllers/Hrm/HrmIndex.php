@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Hrm;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class HrmIndex extends Controller
+class HrmIndex extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/hrm/index.php');
+        return $this->executeDolibarrFile('Hrm/index.php');
     }
 }

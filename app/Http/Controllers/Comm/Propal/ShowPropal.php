@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Comm\Propal;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ShowPropal extends Controller
+class ShowPropal extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/comm/propal/card.php');
+        return $this->executeDolibarrFile('Comm/Propal/card.php');
     }
 }
