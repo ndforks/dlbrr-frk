@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminIndex;
-use App\Http\Controllers\Admin\ModulesAdmin;
-use App\Http\Controllers\Admin\SystemAdmin;
 use App\Http\Controllers\Accountancy\AccountancyIndex;
 use App\Http\Controllers\Accountancy\JournalAccountancy;
 use App\Http\Controllers\Adherents\AdherentsIndex;
 use App\Http\Controllers\Adherents\ListAdherents;
 use App\Http\Controllers\Adherents\ShowAdherents;
+use App\Http\Controllers\Admin\AdminIndex;
+use App\Http\Controllers\Admin\ModulesAdmin;
+use App\Http\Controllers\Admin\SystemAdmin;
 use App\Http\Controllers\Asset\AssetIndex;
 use App\Http\Controllers\Asset\ListAsset;
 use App\Http\Controllers\Asset\ShowAsset;
@@ -345,17 +345,17 @@ Route::prefix('admin')->group(function () {
 
 // API Routes
 Route::prefix('api')->group(function () {
-    Route::any('/{path?}', fn($path = '') => redirect('/htdocs/api/index.php/' . $path))
+    Route::any('/{path?}', fn ($path = '') => redirect('/htdocs/api/index.php/'.$path))
         ->where('path', '.*');
 });
 
 // Fallback route to handle all other Dolibarr requests
 Route::fallback(function (Request $request) {
     $path = $request->path();
-    
+
     // Map the request to the htdocs directory in public
-    $htdocsPath = public_path('htdocs/' . $path);
-    
+    $htdocsPath = public_path('htdocs/'.$path);
+
     // Check if it's a PHP file
     if (str_ends_with($path, '.php')) {
         if (file_exists($htdocsPath)) {
@@ -363,24 +363,26 @@ Route::fallback(function (Request $request) {
             ob_start();
             include $htdocsPath;
             $content = ob_get_clean();
+
             return response($content);
         }
     }
-    
+
     // Check if it's a directory with an index.php
-    if (is_dir($htdocsPath) && file_exists($htdocsPath . '/index.php')) {
+    if (is_dir($htdocsPath) && file_exists($htdocsPath.'/index.php')) {
         chdir($htdocsPath);
         ob_start();
-        include $htdocsPath . '/index.php';
+        include $htdocsPath.'/index.php';
         $content = ob_get_clean();
+
         return response($content);
     }
-    
+
     // Check if it's a static file
     if (file_exists($htdocsPath) && is_file($htdocsPath)) {
         return response()->file($htdocsPath);
     }
-    
+
     // Default to 404
     abort(404);
 });
