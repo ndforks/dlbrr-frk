@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('llx_commande', function (Blueprint $table) {
-            $table->integer('rowid')->autoIncrement()->primary();
+            $table->id('rowid');
             $table->string('ref', 30);
             $table->integer('entity')->default(1);
             $table->string('ref_ext', 255)->nullable();
