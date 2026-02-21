@@ -94,3 +94,28 @@ phpstan_custom.neon
 
 # ignore .htaccess files
 .htaccess
+
+# Laravel specific ignores
+.env
+.env.backup
+.env.production
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/*.key
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+public/hot
+public/storage
+public/build
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
