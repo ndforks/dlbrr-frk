@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Contrat;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class ContratIndex extends DolibarrController
+class ContratIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Contrat/index.php');
+        return redirect('/contrat/list.php');
     }
 }

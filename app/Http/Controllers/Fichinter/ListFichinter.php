@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Fichinter;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Models\Fichinter;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class ListFichinter extends DolibarrController
+class ListFichinter extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(Request $request): View
     {
-        return $this->executeDolibarrFile('Fichinter/list.php');
+        $searchAll = GETPOST('search_all', 'alphanohtml');
+        $page = GETPOSTINT('page');
+        $limit = GETPOSTINT('limit') ?: 25;
+        
+        $query = Fichinter::with('societe');
+        if ($searchAll) { $query->where('ref', 'like', "%{$searchAll}%"); }
+        
+        $total = $query->count();
+        $fichinters = $query->orderBy('ref', 'DESC')->skip($page * $limit)->take($limit)->get();
+        
+        return view('fichinter.list', ['fichinters' => $fichinters, 'total' => $total, 'page' => $page, 'limit' => $limit]);
     }
 }

@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Loan;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class LoanIndex extends DolibarrController
+class LoanIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Loan/index.php');
+        return redirect('/loan/list.php');
     }
 }

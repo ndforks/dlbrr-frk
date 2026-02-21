@@ -2,16 +2,37 @@
 
 namespace App\Http\Controllers\ExpenseReport;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Models\ExpenseReport;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class ShowExpenseReport extends DolibarrController
+class ShowExpenseReport extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(Request $request): View|RedirectResponse
     {
-        return $this->executeDolibarrFile('ExpenseReport/card.php');
+        $action = GETPOST('action', 'alpha') ?: 'view';
+        $id = GETPOSTINT('id');
+        
+        return match($action) {
+            'create', 'add' => view('expensereport.create', ['action' => 'create']),
+            'edit' => view('expensereport.edit', ['report' => ExpenseReport::findOrFail($id), 'action' => 'edit']),
+            'update' => $this->update($request, $id),
+            'delete' => $this->delete($request, $id),
+            default => view('expensereport.show', ['report' => ExpenseReport::findOrFail($id), 'action' => 'view']),
+        };
+    }
+    
+    private function update(Request $request, int $id): RedirectResponse
+    {
+        ExpenseReport::findOrFail($id)->update(array_filter(['ref' => GETPOST('ref', 'alpha')], fn($v) => $v));
+        return redirect("/expensereport/card.php?id={$id}")->with('success', 'Expense report updated');
+    }
+    
+    private function delete(Request $request, int $id): RedirectResponse
+    {
+        ExpenseReport::findOrFail($id)->delete();
+        return redirect('/expensereport/list.php')->with('success', 'Expense report deleted');
     }
 }

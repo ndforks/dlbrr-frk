@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Adherents;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class AdherentsIndex extends DolibarrController
+class AdherentsIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Adherents/index.php');
+        return redirect('/adherents/list.php');
     }
 }

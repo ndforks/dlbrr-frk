@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class ProductIndex extends DolibarrController
+class ProductIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Product/index.php');
+        return redirect('/product/list.php');
     }
 }

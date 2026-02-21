@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Projet;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class ProjetIndex extends DolibarrController
+class ProjetIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Projet/index.php');
+        return redirect('/projet/list.php');
     }
 }

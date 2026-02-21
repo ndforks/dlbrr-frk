@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Don;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Models\Don;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class ListDon extends DolibarrController
+class ListDon extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(Request $request): View
     {
-        return $this->executeDolibarrFile('Don/list.php');
+        $searchAll = GETPOST('search_all', 'alphanohtml');
+        $page = GETPOSTINT('page');
+        $limit = GETPOSTINT('limit') ?: 25;
+        
+        $query = Don::with('societe');
+        if ($searchAll) { $query->where('ref', 'like', "%{$searchAll}%"); }
+        
+        $total = $query->count();
+        $dons = $query->orderBy('datedon', 'DESC')->skip($page * $limit)->take($limit)->get();
+        
+        return view('don.list', ['dons' => $dons, 'total' => $total, 'page' => $page, 'limit' => $limit]);
     }
 }

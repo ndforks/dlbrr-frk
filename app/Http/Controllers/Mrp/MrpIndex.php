@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Mrp;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class MrpIndex extends DolibarrController
+class MrpIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Mrp/index.php');
+        return redirect('/mrp/list.php');
     }
 }

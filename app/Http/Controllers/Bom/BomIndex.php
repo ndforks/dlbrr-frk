@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Bom;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class BomIndex extends DolibarrController
+class BomIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Bom/index.php');
+        return redirect('/bom/list.php');
     }
 }

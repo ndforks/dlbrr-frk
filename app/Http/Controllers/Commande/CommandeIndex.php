@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Commande;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class CommandeIndex extends DolibarrController
+class CommandeIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Commande/index.php');
+        return redirect('/commande/list.php');
     }
 }
