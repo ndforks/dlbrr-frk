@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Product\Stock;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ShowStock extends Controller
+class ShowStock extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/product/stock/card.php');
+        return $this->executeDolibarrFile('Product/Stock/card.php');
     }
 }
