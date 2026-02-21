@@ -2,16 +2,35 @@
 
 namespace App\Http\Controllers\Fourn;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 
-class FournIndex extends DolibarrController
+class FournIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): View
     {
-        return $this->executeDolibarrFile('Fourn/index.php');
+        global $db, $user, $conf, $langs;
+
+        $langs->loadLangs(array("suppliers", "orders", "companies"));
+
+        $socid = GETPOSTINT("socid");
+        if ($user->socid) {
+            $socid = $user->socid;
+        }
+        restrictedArea($user, 'societe', $socid, '');
+
+        $commandestatic = new \CommandeFournisseur($db);
+        $facturestatic = new \FactureFournisseur($db);
+        $companystatic = new \Societe($db);
+
+        $data = [
+            'title' => $langs->trans("SuppliersArea"),
+            'commandestatic' => $commandestatic,
+            'facturestatic' => $facturestatic,
+            'companystatic' => $companystatic,
+            'socid' => $socid,
+        ];
+
+        return view('fourn.index', $data);
     }
 }

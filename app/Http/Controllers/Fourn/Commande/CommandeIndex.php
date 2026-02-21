@@ -2,16 +2,40 @@
 
 namespace App\Http\Controllers\Fourn\Commande;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 
-class CommandeIndex extends DolibarrController
+class CommandeIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): View
     {
-        return $this->executeDolibarrFile('Fourn/Commande/card.php');
+        global $db, $user, $conf, $langs, $hookmanager;
+
+        $langs->loadLangs(array("suppliers", "orders"));
+        $hookmanager->initHooks(array('orderssuppliersindex'));
+
+        $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
+        $socid = GETPOSTINT('socid');
+
+        if ($user->socid) {
+            $socid = $user->socid;
+        }
+
+        restrictedArea($user, 'fournisseur', 0, '', 'commande');
+
+        $commandestatic = new \CommandeFournisseur($db);
+        $userstatic = new \User($db);
+        $formfile = new \FormFile($db);
+
+        $data = [
+            'title' => $langs->trans("SuppliersOrdersArea"),
+            'commandestatic' => $commandestatic,
+            'userstatic' => $userstatic,
+            'formfile' => $formfile,
+            'socid' => $socid,
+            'max' => $max,
+        ];
+
+        return view('fourn.commande.index', $data);
     }
 }

@@ -2,16 +2,38 @@
 
 namespace App\Http\Controllers\Fourn\Facture;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 
-class FactureIndex extends DolibarrController
+class FactureIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): View
     {
-        return $this->executeDolibarrFile('Fourn/Facture/card.php');
+        global $db, $user, $conf, $langs;
+
+        $langs->loadLangs(['bills', 'boxes']);
+
+        $socid = GETPOSTINT('socid');
+        if (!empty($user->socid) && $user->socid > 0) {
+            $socid = $user->socid;
+        }
+
+        $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
+        $maxDraftCount = getDolGlobalInt('MAIN_MAXLIST_OVERLOAD', 500);
+        $maxLatestEditCount = 5;
+        $maxOpenCount = getDolGlobalInt('MAIN_MAXLIST_OVERLOAD', 500);
+
+        restrictedArea($user, 'fournisseur', 0, '', 'facture');
+
+        $data = [
+            'title' => $langs->trans("SupplierInvoicesArea"),
+            'socid' => $socid,
+            'max' => $max,
+            'maxDraftCount' => $maxDraftCount,
+            'maxLatestEditCount' => $maxLatestEditCount,
+            'maxOpenCount' => $maxOpenCount,
+        ];
+
+        return view('fourn.facture.index', $data);
     }
 }
