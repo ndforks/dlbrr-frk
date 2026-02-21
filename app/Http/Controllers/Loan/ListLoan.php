@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Loan;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use App\Models\Loan;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
-class ListLoan extends DolibarrController
+class ListLoan extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(Request $request): View
     {
-        return $this->executeDolibarrFile('Loan/list.php');
+        $searchAll = GETPOST('search_all', 'alphanohtml');
+        $page = GETPOSTINT('page');
+        $limit = GETPOSTINT('limit') ?: 25;
+        
+        $query = Loan::query();
+        if ($searchAll) { $query->where('label', 'like', "%{$searchAll}%"); }
+        
+        $total = $query->count();
+        $loans = $query->orderBy('datestart', 'DESC')->skip($page * $limit)->take($limit)->get();
+        
+        return view('loan.list', ['loans' => $loans, 'total' => $total, 'page' => $page, 'limit' => $limit]);
     }
 }
