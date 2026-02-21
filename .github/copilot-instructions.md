@@ -211,6 +211,58 @@ When creating or modifying modules:
 - Avoid N+1 query problems
 - Optimize for both small and large datasets
 
+## Testing Standards (Laravel/PHPUnit)
+
+When writing Laravel tests (located in `/tests`), follow these conventions:
+
+1. **Test Method Naming**:
+   - All test methods must start with `it_` prefix
+   - Method names should read as grammatically correct sentences
+   - Example: `it_loads_the_contacts_list_page()`, `it_filters_contacts_by_lastname()`
+
+2. **Test Attributes**:
+   - All test methods must be annotated with `#[Test]` attribute
+   - Import: `use PHPUnit\Framework\Attributes\Test;`
+
+3. **Test Structure (Arrange, Act, Assert)**:
+   - **Arrange**: Set up test data and preconditions
+   - **Act**: Execute the code being tested
+   - **Assert**: Verify the expected outcome
+   - Use comments to clearly separate these sections
+
+4. **Example Test**:
+   ```php
+   use PHPUnit\Framework\Attributes\Test;
+   
+   #[Test]
+   public function it_filters_contacts_by_lastname(): void
+   {
+       // Arrange
+       Contact::create(['lastname' => 'Smith', 'entity' => 1]);
+       Contact::create(['lastname' => 'Johnson', 'entity' => 1]);
+       
+       // Act
+       $response = $this->get('/contact/list.php?search_lastname=Smith');
+       
+       // Assert
+       $response->assertStatus(200);
+       $response->assertSee('Smith');
+       $response->assertDontSee('Johnson');
+   }
+   ```
+
+## Laravel Controller Refactoring
+
+When refactoring Dolibarr controllers to Laravel patterns:
+
+1. **Delete Old Files**: After successful refactoring, delete the original Dolibarr PHP files that have been incorporated into Laravel controllers
+2. **Move Code Into Controllers**: Logic should be in the controller method body, not executed from external files
+3. **Use Eloquent Models**: Replace raw SQL queries with Eloquent ORM queries
+4. **Use Helper Functions**: Wrap Dolibarr functions in `app/helpers.php` for compatibility
+5. **Create Blade Views**: Separate presentation layer into Blade templates
+6. **Write Tests**: Follow the test standards (see Testing Standards section above)
+7. **Document Changes**: Update `REFACTORING_PATTERN.md` with any new patterns discovered
+
 ## Resources
 
 - **Developer Documentation**: https://wiki.dolibarr.org/index.php?title=Developer_documentation

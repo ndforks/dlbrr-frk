@@ -5,25 +5,33 @@ namespace Tests\Feature;
 use App\Models\Contact;
 use App\Models\Societe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ListContactsControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_contacts_list_page_loads(): void
+    #[Test]
+    public function it_loads_the_contacts_list_page(): void
     {
+        // Arrange
+        // (no setup needed)
+        
+        // Act
         $response = $this->get('/contact/list.php');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertViewIs('contact.list');
         $response->assertViewHas('contacts');
         $response->assertViewHas('total');
     }
     
-    public function test_contacts_are_displayed(): void
+    #[Test]
+    public function it_displays_contacts_with_company_information(): void
     {
-        // Create test data
+        // Arrange
         $societe = Societe::create([
             'nom' => 'Test Company',
             'entity' => 1,
@@ -38,8 +46,10 @@ class ListContactsControllerTest extends TestCase
             'entity' => 1,
         ]);
         
+        // Act
         $response = $this->get('/contact/list.php');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('Doe');
         $response->assertSee('John');
@@ -47,9 +57,10 @@ class ListContactsControllerTest extends TestCase
         $response->assertSee('Test Company');
     }
     
-    public function test_search_by_lastname_works(): void
+    #[Test]
+    public function it_filters_contacts_by_lastname(): void
     {
-        // Create test contacts
+        // Arrange
         Contact::create([
             'lastname' => 'Smith',
             'firstname' => 'Jane',
@@ -62,15 +73,19 @@ class ListContactsControllerTest extends TestCase
             'entity' => 1,
         ]);
         
+        // Act
         $response = $this->get('/contact/list.php?search_lastname=Smith');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('Smith');
         $response->assertDontSee('Johnson');
     }
     
-    public function test_search_all_fields_works(): void
+    #[Test]
+    public function it_searches_across_all_contact_fields(): void
     {
+        // Arrange
         Contact::create([
             'lastname' => 'Taylor',
             'firstname' => 'Alice',
@@ -85,17 +100,19 @@ class ListContactsControllerTest extends TestCase
             'entity' => 1,
         ]);
         
-        // Search by email should find only Alice
+        // Act
         $response = $this->get('/contact/list.php?search_all=alice@');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('Taylor');
         $response->assertDontSee('Brown');
     }
     
-    public function test_pagination_works(): void
+    #[Test]
+    public function it_paginates_contacts_correctly(): void
     {
-        // Create multiple contacts
+        // Arrange
         for ($i = 0; $i < 30; $i++) {
             Contact::create([
                 'lastname' => 'Contact' . $i,
@@ -104,31 +121,40 @@ class ListContactsControllerTest extends TestCase
             ]);
         }
         
-        // First page
-        $response = $this->get('/contact/list.php?limit=10');
-        $response->assertStatus(200);
-        $response->assertViewHas('contacts', function($contacts) {
+        // Act
+        $firstPageResponse = $this->get('/contact/list.php?limit=10');
+        $secondPageResponse = $this->get('/contact/list.php?page=1&limit=10');
+        
+        // Assert
+        $firstPageResponse->assertStatus(200);
+        $firstPageResponse->assertViewHas('contacts', function($contacts) {
             return $contacts->count() === 10;
         });
         
-        // Second page
-        $response = $this->get('/contact/list.php?page=1&limit=10');
-        $response->assertStatus(200);
-        $response->assertViewHas('contacts', function($contacts) {
+        $secondPageResponse->assertStatus(200);
+        $secondPageResponse->assertViewHas('contacts', function($contacts) {
             return $contacts->count() === 10;
         });
     }
     
-    public function test_no_results_message_displayed(): void
+    #[Test]
+    public function it_shows_message_when_no_results_are_found(): void
     {
+        // Arrange
+        // (no contacts created)
+        
+        // Act
         $response = $this->get('/contact/list.php?search_lastname=NonexistentName');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('No contacts found');
     }
     
-    public function test_search_by_company_works(): void
+    #[Test]
+    public function it_filters_contacts_by_company_name(): void
     {
+        // Arrange
         $societe1 = Societe::create([
             'nom' => 'Acme Corp',
             'entity' => 1,
@@ -153,8 +179,10 @@ class ListContactsControllerTest extends TestCase
             'entity' => 1,
         ]);
         
+        // Act
         $response = $this->get('/contact/list.php?search_societe=Acme');
         
+        // Assert
         $response->assertStatus(200);
         $response->assertSee('Acme Employee');
         $response->assertDontSee('Tech Employee');
