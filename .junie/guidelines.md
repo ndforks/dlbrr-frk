@@ -244,9 +244,34 @@ When refactoring Dolibarr controllers to Laravel patterns:
 2. **Move Code Into Controllers**: Logic should be in the controller method body, not executed from external files
 3. **Use Eloquent Models**: Replace raw SQL queries with Eloquent ORM queries
 4. **Use Helper Functions**: Wrap Dolibarr functions in `app/helpers.php` for compatibility
-5. **Create Blade Views**: Separate presentation layer into Blade templates
-6. **Write Tests**: Follow the test standards (see Testing section above)
+5. **Create Blade Views**: Separate presentation layer into Blade templates (can be minimal initially)
+6. **Write Tests**: Follow the test standards (see Testing section above) - **Note: For bulk refactoring, skip tests to speed up process**
 7. **Document Changes**: Update `REFACTORING_PATTERN.md` with any new patterns discovered
+
+### Speed Optimization for Bulk Refactoring
+
+When refactoring multiple modules quickly:
+
+1. **Skip CLI Testing**
+   - Do not run `php artisan test` during refactoring
+   - Manual verification only
+   - Tests can be added later if needed
+
+2. **Batch Operations**
+   - Commit per module for reviewability
+   - Use existing refactored modules as templates
+   - Focus on functionality over perfection
+
+3. **Simplified Approach**
+   - Use `match` statements instead of if/elseif chains
+   - Minimal views initially (enhance later)
+   - Skip extensive error handling (add later)
+   - Focus on core CRUD operations
+
+4. **Always Delete Old Files**
+   - After refactoring is complete and tested
+   - Use `git rm app/Modules/{Module}/{file}.php`
+   - Keep only class files in Modules directory
 
 ## API Development
 

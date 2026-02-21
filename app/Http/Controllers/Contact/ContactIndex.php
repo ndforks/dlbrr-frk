@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Contact;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class ContactIndex extends DolibarrController
+class ContactIndex extends Controller
 {
     /**
      * Handle the incoming request.
      * Since there's no index.php for contacts, redirect to the list
      */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Contact/list.php');
+        return redirect('/contact/list.php');
     }
 }
