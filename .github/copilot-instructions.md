@@ -13,7 +13,7 @@ Dolibarr is an open-source ERP & CRM software designed for small, medium, and la
 
 ## Technology Stack
 
-- **Backend**: PHP 7.2+ (check https://wiki.dolibarr.org/index.php/Releases for version support)
+- **Backend**: PHP 7.2+ minimum (current versions support PHP 8.x - check https://wiki.dolibarr.org/index.php/Releases for version support)
 - **Databases**: MariaDB, MySQL, or PostgreSQL
 - **Frontend**: JavaScript (vanilla JS and modern frameworks like Chart.js)
 - **Template System**: Custom PHP templating
@@ -49,7 +49,7 @@ dolibarr/
 
 2. **File Headers**:
    - All PHP files must include copyright headers with GPL license information
-   - Format: `/* Copyright (C) YEAR Name <email> */`
+   - Format: `/* Copyright (C) YEAR Author Name <email> */`
 
 3. **Documentation**:
    - Use PHPDoc comments for classes, methods, and functions
@@ -79,8 +79,9 @@ phan --config-file .phan/config.php
 
 1. **Database Access**:
    - Use the DoliDB class for database operations
-   - Always use prepared statements or proper escaping
-   - Example: `$db->query($sql)` with escaped variables
+   - Always use prepared statements or proper escaping for security
+   - Example with escaping: `$sql = "SELECT field FROM ".MAIN_DB_PREFIX."table WHERE rowid = ".(int)$id;`
+   - Prefer parameterized queries when available
 
 2. **Module Structure**:
    - Each module follows a standard structure with core/, class/, lib/ subdirectories
@@ -167,7 +168,8 @@ phan --config-file .phan/config.php
 
 2. **Database operations**:
    ```php
-   $sql = "SELECT * FROM ".MAIN_DB_PREFIX."table WHERE rowid = ".(int)$id;
+   $sql = "SELECT t.rowid, t.field1, t.field2 FROM ".MAIN_DB_PREFIX."table as t";
+   $sql .= " WHERE t.rowid = ".(int)$id;
    $resql = $db->query($sql);
    if ($resql) {
        $obj = $db->fetch_object($resql);
