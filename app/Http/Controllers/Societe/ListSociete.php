@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Societe;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\DolibarrController;
+use Illuminate\Http\Response;
 
-class ListSociete extends Controller
+class ListSociete extends DolibarrController
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(): RedirectResponse
+    public function __invoke(): Response
     {
-        return redirect('/htdocs/societe/list.php');
+        return $this->executeDolibarrFile('Societe/list.php');
     }
 }
