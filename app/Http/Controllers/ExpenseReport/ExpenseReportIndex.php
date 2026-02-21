@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\ExpenseReport;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class ExpenseReportIndex extends DolibarrController
+class ExpenseReportIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('ExpenseReport/index.php');
+        return redirect('/expensereport/list.php');
     }
 }
