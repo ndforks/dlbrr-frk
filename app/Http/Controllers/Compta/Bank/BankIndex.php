@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Compta\Bank;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class BankIndex extends DolibarrController
+class BankIndex extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Compta/Bank/index.php');
+        return redirect('/compta/bank/list.php');
     }
 }

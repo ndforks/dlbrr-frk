@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Product\Stock;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\View\View;
 
-class MovementStock extends DolibarrController
+class MovementStock extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(): Response
+    public function __invoke(): View
     {
-        return $this->executeDolibarrFile('Product/Stock/mouvement.php');
+        global $db, $langs, $user, $conf, $hookmanager;
+        
+        $langs->loadLangs(['stocks', 'orders', 'suppliers', 'bills', 'propal', 'reception', 'productbatch', 'products', 'suppliers']);
+        $hookmanager->initHooks(['stockmovementlist']);
+        restrictedArea($user, 'stock');
+        
+        return view('stock.movements');
     }
 }
