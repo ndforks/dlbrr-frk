@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<?php
-
+@php
 /* Copyright (C)    2013      Cédric Salvador     <csalvador@gpcsolutions.fr>
  * Copyright (C)    2013-2014 Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C)	2015	  Marcos García		  <marcosgdf@gmail.com>
@@ -239,3 +238,4 @@ if (getDolGlobalString('MAIN_DOCUMENTS_LIST_IN_TWOCOLUMNS')) {
 }
 
 print "<br>";
+@endphp

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2018	Laurent Destailleur	    <eldy@users.sourceforge.net>
  * Copyright (C) 2012-2021	Regis Houssin		    <regis.houssin@inodbox.com>
  * Copyright (C) 2018-2025  Frédéric France         <frederic.france@free.fr>
@@ -51,12 +51,10 @@ if ($action == 'delete') {
 	$attributekey = GETPOST('attrname', 'aZ09');
 	print $form->formconfirm($_SERVER['PHP_SELF']."?attrname=$attributekey", $langs->trans("DeleteExtrafield"), $langs->trans("ConfirmDeleteExtrafield", $attributekey), "confirm_delete", '', 0, 1);
 }
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE admin_extrafields_view.tpl.php -->
-<?php
-
+@php
 $title = '<span class="opacitymedium">'.$langs->trans("DefineHereComplementaryAttributes", empty($textobject) ? '' : $textobject).'</span><br>'."\n";
 //if ($action != 'create' && $action != 'edit') {
 $newcardbutton = '';
@@ -228,5 +226,5 @@ if (isset($extrafields->attributes[$elementtype]['type']) && is_array($extrafiel
 
 print "</table>";
 print '</div>';
-?>
+@endphp
 <!-- END PHP TEMPLATE admin_extrafields_view.tpl.php -->

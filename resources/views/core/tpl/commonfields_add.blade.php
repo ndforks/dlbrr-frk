@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2017  		Laurent Destailleur  	<eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024		Frédéric France			<frederic.france@free.fr>
@@ -41,11 +41,9 @@ if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
 	exit(1);
 }
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE commonfields_add.tpl.php -->
-<?php
-
+@php
 $object->fields = dol_sort_array($object->fields, 'position');
 
 foreach ($object->fields as $key => $val) {
@@ -129,6 +127,5 @@ foreach ($object->fields as $key => $val) {
 	print '</td>';
 	print '</tr>';
 }
-
-?>
+@endphp
 <!-- END PHP TEMPLATE commonfields_add.tpl.php -->

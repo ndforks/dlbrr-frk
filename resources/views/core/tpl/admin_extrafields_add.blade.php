@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2017	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2016		Charlie Benke		<charlie@patas-monkey.com>
@@ -49,8 +49,7 @@ if (empty($conf) || !is_object($conf)) {
 $langs->load("modulebuilder");
 
 $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:contact/class/contact.class.php<br>Product:product/class/product.class.php<br>Project:projet/class/project.class.php';
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE admin_extrafields_add.tpl.php -->
 <script>
@@ -69,8 +68,8 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			var emptyonclone = jQuery("#emptyonclone");
 			var list = jQuery("#list");
 			var totalizable = jQuery("#totalizable");
-			<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
+			@php
+if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
 				print 'jQuery("#value_choice").hide();';
 			}
 
@@ -78,7 +77,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 				print "jQuery('#size, #default_value, #langfile').val('').prop('disabled', true);";
 				print 'jQuery("#value_choice").hide();';
 			}
-			?>
+@endphp
 
 			// Case of computed field
 			if (type == '' || type == 'varchar' || type == 'int' || type == 'double' || type == 'price') {
@@ -162,12 +161,16 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 		});
 
 		/* Autofill the code with label */
-		<?php if (!getDolGlobalInt('MAIN_EXTRAFIELDS_CODE_AUTOFILL_DISABLED')) : ?>
+		@php
+if (!getDolGlobalInt('MAIN_EXTRAFIELDS_CODE_AUTOFILL_DISABLED')) :
+@endphp
 		jQuery("#label").keyup(function() {
 			console.log("Update new field");
 			$("#attrname").val( $(this).val().normalize('NFD').replace(/\s/g, "_").replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() );
 		});
-		<?php endif; ?>
+		@php
+endif;
+@endphp
 	});
 </script>
 
@@ -184,14 +187,14 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <tr><td class="fieldrequired">{{ $form->textwithpicto($langs->trans("AttributeCode"), $langs->trans("AttributeCodeHelp")) }}</td><td class="valeur"><input type="text" name="attrname" id="attrname"  size="10" value="{{ GETPOST('attrname', 'alpha') }}" pattern="\w+"> <span class="opacitymedium">({{ $langs->trans("AlphaNumOnlyLowerCharsAndNoSpace") }})</span></td></tr>
 <!-- Type -->
 <tr><td class="fieldrequired">{{ $langs->trans("Type") }}</td><td class="valeur">
-<?php
+@php
 // Combo with list of fields
 if (empty($formadmin)) {
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 	$formadmin = new FormAdmin($db);
 }
 print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
-?>
+@endphp
 </td></tr>
 <!-- Size -->
 <tr class="extra_size"><td>{{ $langs->trans("Size") }}</td><td class="valeur"><input id="size" type="text" name="size" class="width50" value="{{ GETPOST('size', 'alpha') ? GETPOST('size', 'alpha') : '' }}"></td></tr>
@@ -203,7 +206,7 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 <td>
 	<table class="nobordernopadding">
 	<tr><td>
-		<textarea name="param" id="param" cols="80" rows="{{ ROWS_4 ?>" spellcheck="false"">{{ GETPOST('param', 'alpha') }}</textarea>
+		<textarea name="param" id="param" cols="80" rows="{{ ROWS_4 }}" spellcheck="false"">{{ GETPOST('param', 'alpha') }}</textarea>
 	</td><td>
 	<span id="helpselect" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpselect"), 1, 'info', '', 0, 2, 'helpvalue1') }}</span>
 	<span id="helpsellist" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue2') !!}</span>
@@ -221,17 +224,23 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 <tr><td class="titlefield">{{ $langs->trans("LanguageFile") }}</td><td class="valeur"><input type="text" id="langfile" name="langfile" class="minwidth200" value="{{ dol_escape_htmltag(GETPOST('langfile', 'alpha')) }}"></td></tr>
 <!-- Computed Value -->
 <tr class="extra_computed_value">
-<?php if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) { ?>
+@php
+if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) {
+@endphp
 	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3"), 1, 'help', '', 0, 2, 'tooltipcompute') }}</td>
-<?php } else { ?>
+@php
+} else {
+@endphp
 	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3")).$form->textwithpicto($langs->trans("Computedpersistent"), $langs->trans("ComputedpersistentDesc"), 1, 'warning') }}</td>
-<?php } ?>
-<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="{{ ROWS_4 ?>">{{ GETPOSTISSET('computed_value') ? GETPOST('computed_value', 'restricthtml') : '') }}</textarea></td>
+@php
+}
+@endphp
+<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="{{ ROWS_4 }}">{{ GETPOSTISSET('computed_value') ? GETPOST('computed_value', 'restricthtml') : '') }}</textarea></td>
 </tr>
 <!-- AI Prompt -->
 <tr class="extra_ai_prompt">
-	<td><?php
-	if ($elementtype == "projet") {
+	<td>@php
+if ($elementtype == "projet") {
 		$elementtype = "project";
 	}
 	$elementprop = getElementProperties($elementtype);
@@ -257,7 +266,8 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 	}
 	$texthelp .= '</small>';
 	echo $form->textwithpicto($langs->trans("AIPromptExtrafield"), $texthelp, 1, 'help', 'valignmiddle', 0, 3, 'abc' }}</td>
-<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="{{ ROWS_4 ?>">{{ GETPOSTISSET('ai_prompt') ? GETPOST('ai_prompt', 'restricthtml') : '') }}</textarea></td></tr>
+<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="{{ ROWS_4
+@endphp">{{ GETPOSTISSET('ai_prompt') ? GETPOST('ai_prompt', 'restricthtml') : '') }}</textarea></td></tr>
 <!-- Default Value (at sql setup level) -->
 <tr class="extra_default_value"><td>{{ $langs->trans("DefaultValue").' ('.$langs->trans("Database").')' }}</td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="{{ GETPOST('default_value', 'alpha') ? GETPOST('default_value', 'alpha') : '' }}"></td></tr>
 <!-- Unique -->
@@ -286,10 +296,14 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 <!-- Css list -->
 <tr class="help"><td>{{ $form->textwithpicto($langs->trans("CssOnList"), $langs->trans("HelpCssOnListDesc")) }}</td><td class="valeur"><input id="csslist" class="minwidth200" type="text" name="csslist" value="{{ dol_escape_htmltag((empty($csslist) ? '' : $csslist)) }}"></td></tr>
 
-<?php if (isModEnabled('multicompany')) { ?>
+@php
+if (isModEnabled('multicompany')) {
+@endphp
 	<!-- Multicompany entity -->
 	<tr><td>{{ $langs->trans("AllEntities") }}</td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"{{ GETPOST('entitycurrentorall', 'alpha') ? ' checked' : '' }}></td></tr>
-<?php } ?>
+@php
+}
+@endphp
 </table>
 
 {!! dol_get_fiche_end() !!}

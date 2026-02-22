@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2012       Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2013-2015  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2015-2016  Charlie BENKE 	        <charlie@patas-monkey.com>
@@ -99,16 +99,16 @@ $formcompany = new FormCompany($db);
 $companystatic = new Societe($db);
 $contactstatic = new Contact($db);
 $userstatic = new User($db);
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE CORE/TPL/CONTACTS.TPL.PHP -->
-<?php
+@php
 if ($permission) {
 	print '<div class="underbanner clearboth"></div>'."\n";
 
 	print '<div class="div-table-responsive-no-min">'."\n";
-	print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n"; ?>
+	print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n";
+@endphp
 	<form class="tagtr liste_titre">
 		<div class="tagtd liste_titre">{{ img_object('', 'company', 'class="optiongrey paddingright"').$langs->trans("ThirdParty") }}</div>
 		<div class="tagtd liste_titre">{{ img_picto($langs->trans("Users"), 'user', 'class="optiongrey paddingright"').$langs->trans("Users").' | '.img_picto($langs->trans("Contacts"), 'contact', 'class="optiongrey paddingright"').$langs->trans("Contacts") }}</div>
@@ -117,18 +117,19 @@ if ($permission) {
 		<div class="tagtd liste_titre">&nbsp;</div>
 	</form>
 
-	<?php
-
-	if (empty($hideaddcontactforuser)) {
-		?>
+	@php
+if (empty($hideaddcontactforuser)) {
+@endphp
 	<form class="tagtr impair nohover" action="{{ $_SERVER["PHP_SELF"].'?id='.$object->id }}" method="POST">
 		<input type="hidden" name="token" value="{{ newToken() }}" />
 		<input type="hidden" name="id" value="{{ $object->id }}" />
 		<input type="hidden" name="action" value="addcontact" />
 		<input type="hidden" name="source" value="internal" />
-		<?php if (!empty($withproject)) {
+		@php
+if (!empty($withproject)) {
 			print '<input type="hidden" name="withproject" value="'.$withproject.'">';
-		} ?>
+		}
+@endphp
 
 		<div class="tagtd"><span class="paddingleft">{{ getDolGlobalString('MAIN_INFO_SOCIETE_NOM') }}</span></div>
 		<!--  <div class="nowrap tagtd">{{ img_object('', 'user').' '.$langs->trans("Users") }}</div> -->
@@ -154,20 +155,21 @@ if ($permission) {
 		</script>
 		</div>
 		<div class="tagtd maxwidthonsmartphone">
-		<?php
-		$tmpobject = $object;
+		@php
+$tmpobject = $object;
 		if (((!getDolGlobalInt('SHIPPING_USE_ITS_OWN_CONTACTS') && $object->element == 'shipping') || $object->element == 'reception') && is_object($objectsrc)) {
 			$tmpobject = $objectsrc;
 		}
-		$formcompany->selectTypeContact($tmpobject, '', 'type', 'internal', 'position', 0, 'minwidth150imp widthcentpercentminusx maxwidth200'); ?></div>
+		$formcompany->selectTypeContact($tmpobject, '', 'type', 'internal', 'position', 0, 'minwidth150imp widthcentpercentminusx maxwidth200');
+@endphp</div>
 		<div class="tagtd">&nbsp;</div>
 		<div class="tagtd center"><input type="submit" class="button small" value="{{ $langs->trans("Add") }}"></div>
 	</form>
-		<?php
-	}
+		@php
+}
 
 	if (empty($hideaddcontactforthirdparty)) {
-		?>
+@endphp
 
 	<form class="tagtr pair nohover" action="{{ $_SERVER["PHP_SELF"].'?id='.$object->id }}" method="POST">
 		<input type="hidden" name="token" value="{{ newToken() }}" />
@@ -175,14 +177,17 @@ if ($permission) {
 		<input type="hidden" name="action" value="addcontact" />
 		<input type="hidden" name="source" value="external" />
 		<input type="hidden" name="page_y" value="" />
-		<?php if (!empty($withproject)) {
+		@php
+if (!empty($withproject)) {
 			print '<input type="hidden" name="withproject" value="'.$withproject.'">';
-		} ?>
+		}
+@endphp
 
 		<div class="tagtd nowrap noborderbottom">
-			<?php
-			$selectedCompany = GETPOSTISSET("newcompany") ? GETPOSTINT("newcompany") : (empty($object->socid) ? 0 : $object->socid);
-			$selectedCompany = $formcompany->selectCompaniesForNewContact($object, 'id', $selectedCompany, 'newcompany', array(), 0, '', 'minwidth300imp maxwidth400 widthcentpercentminusx');	// This also print the select component?>
+			@php
+$selectedCompany = GETPOSTISSET("newcompany") ? GETPOSTINT("newcompany") : (empty($object->socid) ? 0 : $object->socid);
+			$selectedCompany = $formcompany->selectCompaniesForNewContact($object, 'id', $selectedCompany, 'newcompany', array(), 0, '', 'minwidth300imp maxwidth400 widthcentpercentminusx');	// This also print the select component
+@endphp
 		</div>
 		<div class="tagtd noborderbottom minwidth500imp">
 			{!! img_object('', 'contact', 'class="pictofixedwidth"');
@@ -198,23 +203,25 @@ if ($permission) {
 			print $newcardbutton !!}
 		</div>
 		<div class="tagtd noborderbottom">
-			<?php
-			$tmpobject = $object;
+			@php
+$tmpobject = $object;
 			if (((!getDolGlobalInt('SHIPPING_USE_ITS_OWN_CONTACTS') && $object->element == 'shipping') || $object->element == 'reception') && is_object($objectsrc)) {
 				'@phan-var-force Commande|Facture $objectsrc';
 				$tmpobject = $objectsrc;
 			}
-			$formcompany->selectTypeContact($tmpobject, $preselectedtypeofcontact, 'typecontact', 'external', 'position', 0, 'minwidth150imp widthcentpercentminusx maxwidth200'); ?>
+			$formcompany->selectTypeContact($tmpobject, $preselectedtypeofcontact, 'typecontact', 'external', 'position', 0, 'minwidth150imp widthcentpercentminusx maxwidth200');
+@endphp
 		</div>
 		<div class="tagtd noborderbottom">&nbsp;</div>
 		<div class="tagtd center noborderbottom">
-			<input type="submit" id="add-customer-contact" class="button small" value="{{ $langs->trans("Add") }}"<?php if (!$nbofcontacts) {
+			<input type="submit" id="add-customer-contact" class="button small" value="{{ $langs->trans("Add") }}"@php
+if (!$nbofcontacts) {
 				echo ' disabled';
-																					   } ?>>
+																					   }
+@endphp
 		</div>
 	</form>
-
-		<?php
+@php
 	}
 
 	print "</div>";
@@ -399,3 +406,4 @@ if (is_object($hookmanager)) {
 	$reshook = $hookmanager->executeHooks('formContactTpl', $parameters, $object, $action);
 }
 print "<!-- END PHP TEMPLATE CONTACTS -->\n";
+@endphp

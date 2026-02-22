@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2018-2025  Frédéric France     <frederic.france@free.fr>
@@ -51,8 +51,7 @@ if (empty($conf) || !is_object($conf)) {
 $langs->load("modulebuilder");
 
 $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:contact/class/contact.class.php<br>Product:product/class/product.class.php<br>Project:projet/class/project.class.php<br>...';
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE admin_extrafields_edit.tpl.php -->
 <script>
@@ -70,8 +69,8 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			var emptyonclone = jQuery("#emptyonclone");
 			var list = jQuery("#list");
 			var totalizable = jQuery("#totalizable");
-			<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
+			@php
+if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
 				print 'jQuery("#value_choice").hide();';
 			}
 
@@ -79,7 +78,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 				print "jQuery('#size, #default_value, #langfile').val('').prop('disabled', true);";
 				print 'jQuery("#value_choice").hide();';
 			}
-			?>
+@endphp
 
 			// Case of computed field
 			if (type == 'varchar' || type == 'int' || type == 'double' || type == 'price') {
@@ -173,7 +172,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 
 <table summary="listofattributes" class="border centpercent">
 
-<?php
+@php
 $label = $extrafields->attributes[$elementtype]['label'][$attrname];
 $type = $extrafields->attributes[$elementtype]['type'][$attrname];
 $size = $extrafields->attributes[$elementtype]['size'][$attrname];
@@ -211,7 +210,7 @@ if (is_array($param)) {
 		$param_chain = $paramlist[0];
 	}
 }
-?>
+@endphp
 <!-- Label -->
 <tr><td class="titlefieldcreate fieldrequired">{{ $langs->trans("LabelOrTranslationKey") }}</td><td class="valeur"><input type="text" name="label" size="40" value="{{ $label }}"></td></tr>
 
@@ -220,7 +219,7 @@ if (is_array($param)) {
 
 <!-- Type -->
 <tr><td class="fieldrequired">{{ $langs->trans("Type") }}</td><td class="valeur">
-<?php
+@php
 // Define list of possible type transition
 $typewecanchangeinto = array(
 	'varchar' => array('varchar', 'phone', 'mail', 'url', 'ip', 'select', 'password', 'text', 'html'),
@@ -253,7 +252,7 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 	print $type2label[$type];
 	print '<input type="hidden" name="type" id="type" value="'.$type.'">';
 }
-?>
+@endphp
 </td></tr>
 
 <!-- Size -->
@@ -267,7 +266,7 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 <td>
 	<table class="nobordernopadding">
 	<tr><td>
-		<textarea name="param" id="param" cols="80" rows="{{ ROWS_4 ?>" spellcheck="false">{{ dol_htmlcleanlastbr($param_chain) }}</textarea>
+		<textarea name="param" id="param" cols="80" rows="{{ ROWS_4 }}" spellcheck="false">{{ dol_htmlcleanlastbr($param_chain) }}</textarea>
 	</td><td>
 	<span id="helpselect" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpselect"), 1, 'info', '', 0, 2, 'helpvalue1') }}</span>
 	<span id="helpsellist" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue2') !!}</span>
@@ -288,18 +287,24 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 
 <!-- Computed value -->
 <tr class="extra_computed_value">
-<?php if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) { ?>
+@php
+if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) {
+@endphp
 	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3"), 1, 'help', '', 0, 2, 'tooltipcompute') }}</td>
-<?php } else { ?>
+@php
+} else {
+@endphp
 	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3")).$form->textwithpicto($langs->trans("Computedpersistent"), $langs->trans("ComputedpersistentDesc"), 1, 'warning') }}</td>
-<?php } ?>
-<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="{{ ROWS_4 ?>">{{ dol_htmlcleanlastbr($computed) }}</textarea></td>
+@php
+}
+@endphp
+<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="{{ ROWS_4 }}">{{ dol_htmlcleanlastbr($computed) }}</textarea></td>
 </tr>
 
 <!-- AI Prompt -->
 <tr class="extra_ai_prompt">
-	<td><?php
-	if ($elementtype == "projet") {
+	<td>@php
+if ($elementtype == "projet") {
 		$elementtype = "project";
 	}
 	$elementprop = getElementProperties($elementtype);
@@ -325,7 +330,8 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 	}
 	$texthelp .= '</small>';
 	echo $form->textwithpicto($langs->trans("AIPromptExtrafield"), $texthelp, 1, 'help', 'valignmiddle', 0, 3, 'abc') }}</td>
-<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="{{ ROWS_4 ?>">{{ $aiprompt) }}</textarea></td></tr>
+<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="{{ ROWS_4
+@endphp">{{ $aiprompt) }}</textarea></td></tr>
 
 <!-- Default Value (at sql setup level) -->
 <tr class="extra_default_value"><td>{{ $langs->trans("DefaultValue").' ('.$langs->trans("Database").')' }}</td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="{{ dol_escape_htmltag($default) }}"></td></tr>
@@ -357,7 +363,7 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 <tr class="extra_totalizable"><td>{{ $form->textwithpicto($langs->trans("Totalizable"), $langs->trans("TotalizableDesc")) }}</td><td class="valeur"><input id="totalizable" type="checkbox" name="totalizable"{{ $totalizable ? ' checked' : '' }}></td></tr>
 
 <!-- Css edit -->
-<tr class="extra_css"><td>{{ $form->textwithpicto($langs->trans("CssOnEdit"), $langs->trans("HelpCssOnEditDesc")) }}</td><td class="valeur"><input id="css" type="text" class="minwidth200" name="css" value="{{ $css ?>"></td></tr>
+<tr class="extra_css"><td>{{ $form->textwithpicto($langs->trans("CssOnEdit"), $langs->trans("HelpCssOnEditDesc")) }}</td><td class="valeur"><input id="css" type="text" class="minwidth200" name="css" value="{{ $css }}"></td></tr>
 
 <!-- Css view -->
 <tr class="extra_cssview"><td>{{ $form->textwithpicto($langs->trans("CssOnView"), $langs->trans("HelpCssOnViewDesc")) }}</td><td class="valeur"><input id="cssview" class="minwidth200" type="text" name="cssview" value="{{ $cssview }}"></td></tr>
@@ -368,16 +374,24 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 <!-- Help tooltip -->
 <tr class="help"><td>{{ $form->textwithpicto($langs->trans("HelpOnTooltip"), $langs->trans("HelpOnTooltipDesc")) }}</td><td class="valeur"><input id="help" class="quatrevingtpercent" type="text" name="help" value="{{ dol_escape_htmltag($help) }}"></td></tr>
 
-<?php if (isModEnabled('multicompany')) { ?>
+@php
+if (isModEnabled('multicompany')) {
+@endphp
 	<!-- Multicompany entity -->
 	<tr><td>{{ $langs->trans("AllEntities") }}</td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"{{ empty($entitycurrentorall) ? ' checked' : '' }}></td></tr>
-<?php } ?>
+@php
+}
+@endphp
 
 <!-- Show Enabled property when value is not a common value -->
-<?php if ($enabled != '1') { ?>
+@php
+if ($enabled != '1') {
+@endphp
 	<tr class="help"><td>{{ $form->textwithpicto($langs->trans("EnabledCondition"), $langs->trans("EnabledConditionHelp")) }}</td><td class="valeur">
 	{{ dol_escape_htmltag((string) $enabled) }}
-<?php } ?>
+@php
+}
+@endphp
 </td></tr>
 
 </table>

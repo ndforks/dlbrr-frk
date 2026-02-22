@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012 	Regis Houssin       <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2025 	Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C) 2024      	Frédéric France    	<frederic.france@free.fr>
@@ -50,11 +50,10 @@ if (empty($object) || !is_object($object)) {
 @phan-var-force ?string $fk_element
 @phan-var-force ?Task[] $tasksarray
 ';
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE AJAXROW.TPL.PHP - Script to enable drag and drop on lines of a table -->
-<?php
+@php
 $id = $object->id;
 $fk_element = empty($object->fk_element) ? $fk_element : $object->fk_element;
 $table_element_line = (empty($table_element_line) ? $object->table_element_line : $table_element_line);
@@ -63,7 +62,8 @@ $forcereloadpage = getDolGlobalInt('MAIN_FORCE_RELOAD_PAGE');
 $tagidfortablednd = (empty($tagidfortablednd) ? 'tablelines' : $tagidfortablednd);
 $filepath = (empty($filepath) ? '' : $filepath);
 
-if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
+if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') {
+@endphp
 <script>
 $(document).ready(function(){
 	$(".imgupforline").hide();
@@ -100,12 +100,12 @@ $(document).ready(function(){
 					function() {
 						console.log("tableDND end of ajax call, reloadpage = " + reloadpage);
 						if (reloadpage == 1) {
-							<?php
-							$redirectURL = empty($urltorefreshaftermove) ? ($_SERVER['PHP_SELF'].'?'.dol_escape_js($_SERVER['QUERY_STRING'])) : $urltorefreshaftermove;
+							@php
+$redirectURL = empty($urltorefreshaftermove) ? ($_SERVER['PHP_SELF'].'?'.dol_escape_js($_SERVER['QUERY_STRING'])) : $urltorefreshaftermove;
 							// remove some parameters from URL
 							$redirectURL = preg_replace('/(&|\?)action=[^&#]*/', '', $redirectURL);
 							$redirectURL = preg_replace('/(&|\?)page_y=[^&#]*/', '', $redirectURL);
-							?>
+@endphp
 							location.href = '{{ dol_escape_js($redirectURL) }}&page_y='+page_y;
 						} else {
 							$("#{{ $tagidfortablednd }} .drag").each(
@@ -125,7 +125,9 @@ $(document).ready(function(){
 	);
 });
 </script>
-<?php } else { ?>
+@php
+} else {
+@endphp
 <script>
 $(document).ready(function(){
 	$(".imgupforline").hide();
@@ -133,5 +135,7 @@ $(document).ready(function(){
 	$(".lineupdown").removeAttr('href');
 });
 </script>
-<?php } ?>
+@php
+}
+@endphp
 <!-- END PHP TEMPLATE AJAXROW.TPL.PHP -->
