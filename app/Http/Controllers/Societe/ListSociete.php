@@ -3,62 +3,30 @@
 namespace App\Http\Controllers\Societe;
 
 use App\Http\Controllers\Controller;
-use App\Models\Societe;
+use App\Services\SocieteService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListSociete extends Controller
 {
+    public function __construct(private readonly SocieteService $service)
+    {
+    }
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
-        $searchName = $request->input('search_nom');
-        $searchTown = $request->input('search_town');
-        $searchZip = $request->input('search_zip');
         $page = $request->integer('page', 0);
         $limit = $request->integer('limit', 25);
-        
-        $query = Societe::query();
-        
-        if ($searchAll) {
-            $query->where(function($q) use ($searchAll) {
-                $q->where('nom', 'like', "%{$searchAll}%")
-                  ->orWhere('name_alias', 'like', "%{$searchAll}%")
-                  ->orWhere('email', 'like', "%{$searchAll}%")
-                  ->orWhere('code_client', 'like', "%{$searchAll}%");
-            });
-        }
-        
-        if ($searchName) {
-            $query->where('nom', 'like', "%{$searchName}%");
-        }
-        
-        if ($searchTown) {
-            $query->where('town', 'like', "%{$searchTown}%");
-        }
-        
-        if ($searchZip) {
-            $query->where('zip', 'like', "%{$searchZip}%");
-        }
-        
-        $total = $query->count();
-        $offset = $page * $limit;
-        $societes = $query->orderBy('nom', 'ASC')
-                          ->skip($offset)
-                          ->take($limit)
-                          ->get();
-        
-        return view('societe.list', [
-            'societes' => $societes,
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit,
-            'search' => [
-                'all' => $searchAll,
-                'nom' => $searchName,
-                'town' => $searchTown,
-                'zip' => $searchZip,
-            ],
-        ]);
+
+        $filters = [
+            'all' => $request->input('search_all'),
+            'nom' => $request->input('search_nom'),
+            'town' => $request->input('search_town'),
+            'zip' => $request->input('search_zip'),
+        ];
+
+        $data = $this->service->list($filters, $page, $limit);
+
+        return view('societe.list', $data);
     }
 }

@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Contact\ListContacts;
 use App\Models\Contact;
 use App\Models\Societe;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
+#[CoversClass(ListContacts::class)]
 class ListContactsControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -19,7 +22,7 @@ class ListContactsControllerTest extends TestCase
         // (no setup needed)
         
         // Act
-        $response = $this->get('/contact/list.php');
+        $response = $this->get('/contact');
         
         // Assert
         $response->assertStatus(200);
@@ -47,7 +50,7 @@ class ListContactsControllerTest extends TestCase
         ]);
         
         // Act
-        $response = $this->get('/contact/list.php');
+        $response = $this->get('/contact');
         
         // Assert
         $response->assertStatus(200);
@@ -74,7 +77,7 @@ class ListContactsControllerTest extends TestCase
         ]);
         
         // Act
-        $response = $this->get('/contact/list.php?search_lastname=Smith');
+        $response = $this->get('/contact?search_lastname=Smith');
         
         // Assert
         $response->assertStatus(200);
