@@ -63,12 +63,12 @@ class ShowSociete extends Controller
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $societe->update($data);
         
-        return redirect("/societe/card.php?id={$id}")->with('success', 'Company updated');
+        return redirect()->route('societe.show', ['id' => $id])->with('success', 'Company updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Societe::findOrFail($id)->delete();
-        return redirect('/societe/list.php')->with('success', 'Company deleted');
+        return redirect()->route('societe.list')->with('success', 'Company deleted');
     }
 }

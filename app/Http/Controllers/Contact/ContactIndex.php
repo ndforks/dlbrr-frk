@@ -13,6 +13,6 @@ class ContactIndex extends Controller
      */
     public function __invoke(): RedirectResponse
     {
-        return redirect('/contact/list.php');
+        return redirect()->route('contact.list');
     }
 }

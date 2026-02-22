@@ -55,12 +55,12 @@ class ShowCommande extends Controller
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $commande->update($data);
         
-        return redirect("/commande/card.php?id={$id}")->with('success', 'Order updated');
+        return redirect()->route('commande.show', ['id' => $id])->with('success', 'Order updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Commande::findOrFail($id)->delete();
-        return redirect('/commande/list.php')->with('success', 'Order deleted');
+        return redirect()->route('commande.list')->with('success', 'Order deleted');
     }
 }

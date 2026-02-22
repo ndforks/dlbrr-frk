@@ -106,7 +106,7 @@ class ShowContact extends Controller
         
         $contact->update($data);
         
-        return redirect("/contact/card.php?id={$id}")
+        return redirect()->route('contact.show', ['id' => $id])
             ->with('success', 'Contact updated successfully');
     }
     
@@ -118,7 +118,7 @@ class ShowContact extends Controller
         $contact = Contact::findOrFail($id);
         $contact->delete();
         
-        return redirect('/contact/list.php')
+        return redirect()->route('contact.list')
             ->with('success', 'Contact deleted successfully');
     }
 }

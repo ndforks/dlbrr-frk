@@ -56,12 +56,12 @@ class ShowProduct extends Controller
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $product->update($data);
         
-        return redirect("/product/card.php?id={$id}")->with('success', 'Product updated');
+        return redirect()->route('product.show', ['id' => $id])->with('success', 'Product updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Product::findOrFail($id)->delete();
-        return redirect('/product/list.php')->with('success', 'Product deleted');
+        return redirect()->route('product.list')->with('success', 'Product deleted');
     }
 }
