@@ -45,8 +45,13 @@ use App\Http\Controllers\Contrat\ShowContrat;
 use App\Http\Controllers\Cron\CronCardController;
 use App\Http\Controllers\Cron\CronInfoController;
 use App\Http\Controllers\Cron\CronListController;
+use App\Http\Controllers\Delivery\DeliveryCardController;
 use App\Http\Controllers\Don\ListDon;
 use App\Http\Controllers\Don\ShowDon;
+use App\Http\Controllers\Exports\ExportWizardController;
+use App\Http\Controllers\Imports\EmptyExampleController;
+use App\Http\Controllers\Imports\ImportWizardController;
+use App\Http\Controllers\Imports\IndexController as ImportsIndex;
 use App\Http\Controllers\Ecm\AutoIndexEcm;
 use App\Http\Controllers\Ecm\EcmIndex;
 use App\Http\Controllers\EventOrganization\EventOrganizationIndex;
@@ -357,6 +362,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('api')->group(function () {
     Route::any('/{path?}', fn ($path = '') => redirect('/htdocs/api/index.php/'.$path))
         ->where('path', '.*');
+});
+
+// Delivery Routes
+Route::prefix('delivery')->name('delivery.')->group(function () {
+    Route::match(['GET', 'POST'], '/card', DeliveryCardController::class)->name('card');
+});
+
+// Import Routes
+Route::prefix('imports')->name('imports.')->group(function () {
+    Route::get('/', ImportsIndex::class)->name('index');
+    Route::match(['GET', 'POST'], '/import', ImportWizardController::class)->name('wizard');
+    Route::get('/emptyexample', EmptyExampleController::class)->name('example');
+});
+
+// Export Routes
+Route::prefix('exports')->name('exports.')->group(function () {
+    Route::match(['GET', 'POST'], '/export', ExportWizardController::class)->name('wizard');
 });
 
 // Fallback route to handle all other Dolibarr requests
