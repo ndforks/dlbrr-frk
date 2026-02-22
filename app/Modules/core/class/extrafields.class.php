@@ -2897,7 +2897,7 @@ class ExtraFields
 					$value_minutes = GETPOSTINT("options_" . $key . "min");
 					$value_key = $value_hours * 3600 + $value_minutes * 60;
 				} elseif (in_array($key_type, array('checkbox', 'chkbxlst'))) {
-					$value_arr = GETPOST("options_".$key, 'array'); // check if an array
+					$value_arr = request()->input("options_".$key, []);
 					if (!empty($value_arr)) {
 						$value_key = implode(',', $value_arr);
 					} else {
@@ -3053,7 +3053,7 @@ class ExtraFields
 					}
 				} elseif ($key_type == 'select') {
 					// to detect if we are in search context
-					if (GETPOSTISARRAY($keyprefix."options_".$key.$keysuffix)) {
+					if (is_array(request()->input($keyprefix."options_".$key.$keysuffix))) {
 						$value_arr = GETPOST($keyprefix."options_".$key.$keysuffix, 'array:aZ09');
 						// Make sure we get an array even if there's only one selected
 						$value_arr = (array) $value_arr;

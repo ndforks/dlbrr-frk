@@ -1331,7 +1331,7 @@ if (!$error && ($action == 'affecttag' && $confirm == 'yes') && $permissiontoadd
 		// For each valid categ type set common categ
 		if (!empty($to_affecttag_type_array)) {
 			foreach ($to_affecttag_type_array as $categ_type) {
-				$contcats = GETPOST('contcats_' . $categ_type, 'array');
+				$contcats = request()->input('contcats_' . $categ_type, []);
 				foreach ($toselect as $toselectid) {
 					$result = $object->fetch($toselectid);
 					if ($result > 0) {
@@ -1841,7 +1841,7 @@ if (!$error && ($massaction == 'increaseholiday' || ($action == 'increaseholiday
 	$objecttmp = new $objectclass($db);
 	$nbok = 0;
 	$typeholiday = request()->integer('typeholiday', 0);
-	$nbdaysholidays = GETPOSTFLOAT('nbdaysholidays');	// May be 1.5
+	$nbdaysholidays = (float)request()->input('nbdaysholidays', 0.0);
 
 	if ($nbdaysholidays <= 0) {
 		setEventMessages($langs->trans("WrongAmount"), null, 'errors');

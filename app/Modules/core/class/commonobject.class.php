@@ -6554,7 +6554,7 @@ abstract class CommonObject
 				// TODO GMT date in memory must be GMT so we should add gm=true in parameters
 				$value_key = dol_mktime(GETPOSTINT($postfieldkey."hour"), GETPOSTINT($postfieldkey."min"), 0, GETPOSTINT($postfieldkey."month"), GETPOSTINT($postfieldkey."day"), GETPOSTINT($postfieldkey."year"));
 			} elseif (in_array($key_type, array('checkbox', 'chkbxlst'))) {
-				$value_arr = GETPOST($postfieldkey, 'array'); // check if an array
+				$value_arr = request()->input($postfieldkey, []);
 				if (!empty($value_arr)) {
 					$value_key = implode(',', $value_arr);
 				} else {

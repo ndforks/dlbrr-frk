@@ -56,7 +56,7 @@ $mode = request()->input('mode');
 // Get supervariables
 $search_ref = request()->input('search_ref');
 $search_amount = request()->input('search_amount');
-$search_status = GETPOSTISARRAY('search_status') ? request()->input('search_status') : array(request()->input('search_status') ? request()->input('search_status') : request()->integer('status', 0));
+$search_status = is_array(request()->input('search_status')) ? request()->input('search_status') : array(request()->input('search_status') ? request()->input('search_status') : request()->integer('status', 0));
 
 $type = request()->input('type');
 

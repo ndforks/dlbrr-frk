@@ -155,7 +155,7 @@ $result = restrictedArea($user, 'projet', $id, 'projet&project');
 $diroutputmassaction = $conf->project->dir_output.'/tasks/temp/massgeneration/'.$user->id;
 
 $progress = request()->integer('progress', 0);
-$budget_amount = GETPOSTFLOAT('budget_amount');
+$budget_amount = (float)request()->input('budget_amount', 0.0);
 $billable = (request()->input('billable') == 'yes' ? 1 : 0);
 $label = request()->input('label');
 $description = request()->input('description');

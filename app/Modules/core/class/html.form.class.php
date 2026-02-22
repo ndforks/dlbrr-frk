@@ -5895,7 +5895,7 @@ class Form
 		$cate_arbo = $this->select_all_categories($categtype, '', '', 64, 0, 3);
 
 		$arrayselected = array();
-		if (GETPOSTISARRAY($htmlname)) {
+		if (is_array(request()->input($htmlname))) {
 			$arrayselected = GETPOST($htmlname, 'array:int');
 		} elseif (is_object($object)) {
 			$c = new Categorie($this->db);

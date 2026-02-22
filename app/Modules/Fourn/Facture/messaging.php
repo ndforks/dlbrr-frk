@@ -52,8 +52,8 @@ $cancel = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 $backtopage = request()->input('backtopage');
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	} else {

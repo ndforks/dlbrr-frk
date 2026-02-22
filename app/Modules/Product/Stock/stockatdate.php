@@ -71,7 +71,7 @@ $search_nom = request()->input('search_nom');
 $now = dol_now();
 
 $productid = request()->integer('productid', 0);
-if (GETPOSTISARRAY('search_fk_warehouse')) {
+if (is_array(request()->input('search_fk_warehouse'))) {
 	$search_fk_warehouse = request()->input('search_fk_warehouse');
 } else {
 	$search_fk_warehouse = array(request()->integer('search_fk_warehouse', 0));

@@ -64,7 +64,7 @@ $search_status = request()->input('search_status');
 
 $search_category_list = array();
 if (isModEnabled('category')) {
-	$search_category_list = GETPOST("search_category_".Categorie::TYPE_WAREHOUSE."_list", "array");
+	$search_category_list = request()->input("search_category_".Categorie::TYPE_WAREHOUSE."_list", []);
 }
 
 // Load variable for pagination

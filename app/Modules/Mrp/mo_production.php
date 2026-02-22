@@ -198,7 +198,7 @@ if (empty($reshook)) {
 
 		// Line to produce
 		$moline->fk_mo = $object->id;
-		$moline->qty = GETPOSTFLOAT('qtytoadd');
+		$moline->qty = (float)request()->input('qtytoadd', 0.0);
 		$moline->fk_product = request()->integer('productidtoadd', 0);
 		if (request()->input('addconsumelinebutton')) {
 			$moline->role = 'toconsume';
@@ -511,7 +511,7 @@ if (empty($reshook)) {
 					$moline->array_options["options_".$key] = $value;
 				}
 			}
-			$moline->qty = GETPOSTFLOAT('qty_lineProduce');
+			$moline->qty = (float)request()->input('qty_lineProduce', 0.0);
 			if (request()->has('warehouse_lineProduce')) {
 				$moline->fk_warehouse = (request()->integer('warehouse_lineProduce', 0) > 0 ? request()->integer('warehouse_lineProduce', 0) : 0);
 			}

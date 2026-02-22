@@ -2050,7 +2050,7 @@ class Adherent extends CommonObject
 
 				// Possibility to add external linked objects with hooks
 				$invoice->linked_objects['subscription'] = $subscriptionid;
-				if (GETPOSTISARRAY('other_linked_objects')) {
+				if (is_array(request()->input('other_linked_objects'))) {
 					$invoice->linked_objects = array_merge($invoice->linked_objects, request()->input('other_linked_objects'));
 				}
 

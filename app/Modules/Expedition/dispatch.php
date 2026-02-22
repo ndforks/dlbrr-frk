@@ -175,7 +175,7 @@ if (empty($reshook)) {
 					$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc'.$dispatch_line_suffix.'month'), GETPOSTINT('dlc'.$dispatch_line_suffix.'day'), GETPOSTINT('dlc'.$dispatch_line_suffix.'year'));
 				}
 
-				$newqty = GETPOSTFLOAT($qty, 'MS');
+				$newqty = (float)request()->input($qty, 0.0);
 				//var_dump("modebatch=".$modebatch." newqty=".$newqty." ent=".$ent." idline=".$idline);
 
 				// We ask to move a qty
@@ -1069,7 +1069,7 @@ if ($object->id > 0 || !empty($object->ref)) {
 										}
 										// Qty to dispatch
 										print '<td class="right nowraponall">';
-										$suggestedvalue = (GETPOSTISSET('qty'.$suffix) ? GETPOSTFLOAT('qty'.$suffix) : $objd->qty);
+										$suggestedvalue = (GETPOSTISSET('qty'.$suffix) ? (float)request()->input('qty'.$suffix, 0.0) : $objd->qty);
 										//var_dump($suggestedvalue);exit;
 										if ($can_update_stock) {
 											print '<a href="" id="reset'.$suffix.'" class="resetline">'.img_picto($langs->trans("Reset"), 'eraser', 'class="pictofixedwidth opacitymedium"').'</a>';

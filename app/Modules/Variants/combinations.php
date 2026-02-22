@@ -46,9 +46,9 @@ $combination_id = request()->integer('combination_id', 0);     // ID of the comb
 
 $reference = request()->input('reference');         // Reference of the variant Product
 
-$weight_impact = GETPOSTFLOAT('weight_impact', 2);
+$weight_impact = (float)request()->input('weight_impact', 0.0);
 $price_impact_percent = (bool) request()->input('price_impact_percent');
-$price_impact = $price_impact_percent ? GETPOSTFLOAT('price_impact', 2) : GETPOSTFLOAT('price_impact', 'MU');
+$price_impact = $price_impact_percent ? (float)request()->input('price_impact', 0.0) : (float)request()->input('price_impact', 0.0);
 
 // for PRODUIT_MULTIPRICES
 $level_price_impact = request()->input('level_price_impact');

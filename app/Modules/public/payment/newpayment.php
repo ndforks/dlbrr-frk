@@ -1815,12 +1815,12 @@ if ($source == 'member' || $source == 'membersubscription') {
 		$amount = getDolGlobalString('MEMBER_NEWFORM_AMOUNT');
 	}
 	// - If an amount was posted from the form (for example from page with types of membership)
-	if ($caneditamount && request()->has('amount') && GETPOSTFLOAT('amount', 'MT') > 0) {
-		$amount = GETPOSTFLOAT('amount', 'MT');
+	if ($caneditamount && request()->has('amount') && (float)request()->input('amount', 0.0) > 0) {
+		$amount = (float)request()->input('amount', 0.0);
 	}
 	// - If a new amount was posted from the form
-	if ($caneditamount && request()->has('newamount') && GETPOSTFLOAT('newamount', 'MT') > 0) {
-		$amount = GETPOSTFLOAT('newamount', 'MT');
+	if ($caneditamount && request()->has('newamount') && (float)request()->input('newamount', 0.0) > 0) {
+		$amount = (float)request()->input('newamount', 0.0);
 	}
 	// - If a min is set or an amount from the posted form, we take them into account
 	$amount = max(0, (float) $amount, (float) getDolGlobalInt("MEMBER_MIN_AMOUNT"));

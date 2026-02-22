@@ -457,7 +457,7 @@ if (empty($reshook)) {
 		$object->fetch($object->id);	// Reload all.
 	} elseif ($action == 'setmulticurrencyrate' && $usercancreate) {
 		// Multicurrency rate
-		$result = $object->setMulticurrencyRate(GETPOSTFLOAT('multicurrency_tx'), request()->integer('calculation_mode', 0));
+		$result = $object->setMulticurrencyRate((float)request()->input('multicurrency_tx', 0.0), request()->integer('calculation_mode', 0));
 		$object->fetch($object->id);	// Reload all.
 	} elseif ($action == 'setruleforlinesdates' && $usercancreate) {
 		$object->context['actionmsg'] = $langs->trans("FieldXModified", $langs->transnoentitiesnoconv("RuleForLinesDates"));

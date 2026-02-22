@@ -253,7 +253,7 @@ class SellistField extends CommonSellistField
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
 		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'array');
+			$value = request()->input($htmlName, []);
 		} else {
 			$value = $defaultValue;
 		}

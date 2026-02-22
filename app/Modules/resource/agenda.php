@@ -56,7 +56,7 @@ $cancel     = request()->input('cancel');
 $backtopage = request()->input('backtopage');
 
 if (request()->input('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array', 3);
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

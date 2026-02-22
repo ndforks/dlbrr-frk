@@ -56,9 +56,9 @@ $disabledefaultvalues = request()->integer('disabledefaultvalues', 0);
 $action = request()->input('action');
 
 $check_holiday = request()->integer('check_holiday', 0);
-$filter = GETPOST("search_filter", 'alpha', 3) ? GETPOST("search_filter", 'alpha', 3) : GETPOST("filter", 'alpha', 3);
-$filtert = GETPOST("search_filtert", "intcomma", 3) ? GETPOST("search_filtert", "intcomma", 3) : GETPOST("filtert", "intcomma", 3);
-$usergroup = GETPOSTINT("search_usergroup", 3) ? GETPOSTINT("search_usergroup", 3) : GETPOSTINT("usergroup", 3);
+$filter = request()->input("search_filter") ?: request()->input("filter");
+$filtert = request()->input("search_filtert") ?: request()->input("filtert");
+$usergroup = request()->integer("search_usergroup") ?: request()->integer("usergroup");
 $showbirthday = getDolGlobalInt('AGENDA_ENABLE_SHOW_BIRTHDAY_PER_USER'); // disabled by default
 
 $sortfield = request()->input('sortfield');
@@ -107,7 +107,7 @@ $status = request()->has('search_status') ? request()->input('search_status') : 
 $type = request()->has('search_type') ? request()->input('search_type') : request()->input('type');
 $maxprint = request()->has('maxprint') ? request()->integer('maxprint', 0) : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
-$search_categ_cus = GETPOSTINT("search_categ_cus", 3) ? GETPOSTINT("search_categ_cus", 3) : 0;
+$search_categ_cus = request()->integer("search_categ_cus") ?: 0;
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
 if (request()->input('search_actioncode')) {
 	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
@@ -115,7 +115,7 @@ if (request()->input('search_actioncode')) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
+	$actioncode = request()->input("search_actioncode") ?: (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
 }
 
 $dateselect = dol_mktime(0, 0, 0, request()->integer('dateselectmonth', 0), request()->integer('dateselectday', 0), request()->integer('dateselectyear', 0));

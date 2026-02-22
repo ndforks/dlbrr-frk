@@ -92,7 +92,7 @@ $search_datedelivery_end = dol_mktime(23, 59, 59, request()->integer('search_dat
 
 $search_product_category_array = array();
 if (isModEnabled('category')) {
-	$search_product_category_array = GETPOST("search_category_".Categorie::TYPE_PRODUCT."_list", "array");
+	$search_product_category_array = request()->input("search_category_".Categorie::TYPE_PRODUCT."_list", []);
 	$searchCategoryProductOperator = 0;
 	if (request()->has('formfilteraction')) {
 		$searchCategoryProductOperator = request()->integer('search_category_product_operator', 0);

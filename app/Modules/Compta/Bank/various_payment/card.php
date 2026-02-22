@@ -131,7 +131,7 @@ if (empty($reshook)) {
 		$object->accountid = $object->fk_account;
 		$object->datev = $datev;
 		$object->datep = $datep;
-		$object->amount = GETPOSTFLOAT("amount");
+		$object->amount = (float)request()->input("amount", 0.0);
 		$object->label = request()->input('label');
 		$object->note_private = request()->input('note');
 		$object->note = $object->note_private;
@@ -325,7 +325,7 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontoadd) {
 		} // else { $object->sens = $object->sens; }
 
 		if (request()->has('clone_amount')) {
-			$object->amount = GETPOSTFLOAT("clone_amount");
+			$object->amount = (float)request()->input("clone_amount", 0.0);
 		} else {
 			$object->amount = (float) price2num($object->amount);
 		}

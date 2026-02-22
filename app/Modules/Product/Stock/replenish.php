@@ -67,7 +67,7 @@ $search_ref = request()->input('search_ref');
 $search_label = request()->input('search_label');
 $sall = trim(request()->input('search_all'));
 $type = request()->integer('type', 0);
-$tobuy = GETPOSTFLOAT('tobuy');
+$tobuy = (float)request()->input('tobuy', 0.0);
 $salert = request()->input('salert');
 $includeproductswithoutdesiredqty = request()->input('includeproductswithoutdesiredqty');
 $mode = request()->input('mode');
@@ -185,7 +185,7 @@ if ($action == 'order' && request()->input('valid') && $user->hasRight('fourniss
 				$box = $i;
 				$supplierpriceid = GETPOSTINT('fourn'.$i);
 				//get all the parameters needed to create a line
-				$qty = GETPOSTFLOAT('tobuy'.$i);
+				$qty = (float)request()->input('tobuy'.$i, 0.0);
 				$idprod = $productsupplier->get_buyprice($supplierpriceid, $qty);
 				$res = $productsupplier->fetch($idprod);
 				if ($res && $idprod > 0) {

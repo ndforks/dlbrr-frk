@@ -40,7 +40,7 @@ if (!isset($conf->global->THEME_SATURATE_RATIO)) {
 	$conf->global->THEME_SATURATE_RATIO = 0.8;
 }
 if (request()->has('THEME_SATURATE_RATIO')) {
-	$conf->global->THEME_SATURATE_RATIO = GETPOSTFLOAT('THEME_SATURATE_RATIO');
+	$conf->global->THEME_SATURATE_RATIO = (float)request()->input('THEME_SATURATE_RATIO', 0.0);
 }
 
 ?>
@@ -476,7 +476,7 @@ if (!isset($conf->global->THEME_SATURATE_RATIO)) {
 	$conf->global->THEME_SATURATE_RATIO = 0.8;
 }
 if (request()->has('THEME_SATURATE_RATIO')) {
-	$conf->global->THEME_SATURATE_RATIO = GETPOSTFLOAT('THEME_SATURATE_RATIO');
+	$conf->global->THEME_SATURATE_RATIO = (float)request()->input('THEME_SATURATE_RATIO', 0.0);
 }
 ?>
 .bg-infobox-project i.fa{

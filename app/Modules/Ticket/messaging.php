@@ -75,8 +75,8 @@ $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	} else {

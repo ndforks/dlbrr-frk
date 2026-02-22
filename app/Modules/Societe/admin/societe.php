@@ -119,7 +119,7 @@ if ($action == 'updateoptions') {
 		}
 	}
 
-	if (GETPOSTISARRAY('CONTACTS_DEFAULT_ROLES')) {
+	if (is_array(request()->input('CONTACTS_DEFAULT_ROLES'))) {
 		$rolessearch = request()->input('activate_CONTACTS_DEFAULT_ROLES');
 		$res = dolibarr_set_const($db, "CONTACTS_DEFAULT_ROLES", implode(',', $rolessearch), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {

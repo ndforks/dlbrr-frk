@@ -128,7 +128,7 @@ if ($action == 'update' && !request()->input('cancel') && $user->hasRight('proje
 		$object->date_start = dol_mktime(request()->integer('date_starthour', 0), request()->integer('date_startmin', 0), 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
 		$object->date_end = dol_mktime(request()->integer('date_endhour', 0), request()->integer('date_endmin', 0), 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 		$object->progress = price2num(request()->input('progress'));
-		$object->budget_amount = (request()->input('budget_amount') != '' ? GETPOSTFLOAT('budget_amount'): null);
+		$object->budget_amount = (request()->input('budget_amount') != '' ? (float)request()->input('budget_amount', 0.0): null);
 		$object->billable = (request()->input('billable') == 'yes' ? 1 : 0);
 		if (request()->input('progress') == '100') {
 			$object->status = $object::STATUS_CLOSED;

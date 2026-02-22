@@ -148,7 +148,7 @@ $search_project_ref = request()->input('search_project_ref');
 $search_btn = request()->input('button_search');
 $search_remove_btn = request()->input('button_removefilter');
 
-if (GETPOSTISARRAY('search_status')) {
+if (is_array(request()->input('search_status'))) {
 	$search_status = implode(',', request()->input('search_status'));
 } else {
 	$search_status = (request()->input('search_status') != '' ? request()->input('search_status') : request()->input('statut'));

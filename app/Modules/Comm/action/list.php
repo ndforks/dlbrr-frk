@@ -65,7 +65,7 @@ if (empty($mode) && preg_match('/show_/', $action)) {
 $disabledefaultvalues = request()->integer('disabledefaultvalues', 0);
 
 $resourceid = request()->integer('search_resourceid', 0) ? request()->integer('search_resourceid', 0) : request()->integer('resourceid', 0);
-$pid = GETPOSTINT("search_projectid", 3) ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
+$pid = request()->integer("search_projectid") ?: request()->integer("projectid");
 $search_status = (request()->input('search_status') != '') ? request()->input('search_status') : request()->input('status');
 $type = request()->input('search_type') ? request()->input('search_type') : request()->input('type');
 $year = request()->integer('year', 0);
@@ -78,7 +78,7 @@ if (request()->input('search_actioncode')) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
+	$actioncode = request()->input("search_actioncode") ?: (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
 }
 if (is_array($actioncode)) {
 	// Remove all -1 values
@@ -112,11 +112,11 @@ if (empty($mode) && !request()->has('mode')) {
 	$mode = getDolGlobalString('AGENDA_DEFAULT_VIEW', 'show_list');
 }
 
-$filter = GETPOST("search_filter", 'alpha', 3) ? GETPOST("search_filter", 'alpha', 3) : GETPOST("filter", 'alpha', 3);
-$filtert = GETPOST("search_filtert", "intcomma", 3) ? GETPOST("search_filtert", "intcomma", 3) : GETPOST("filtert", "intcomma", 3);
-$usergroup = GETPOSTINT("search_usergroup", 3) ? GETPOSTINT("search_usergroup", 3) : GETPOSTINT("usergroup", 3);
+$filter = request()->input("search_filter") ?: request()->input("filter");
+$filtert = request()->input("search_filtert") ?: request()->input("filtert");
+$usergroup = request()->integer("search_usergroup") ?: request()->integer("usergroup");
 $showbirthday = empty($conf->use_javascript_ajax) ? (request()->integer('search_showbirthday', 0) ? request()->integer('search_showbirthday', 0) : request()->integer('showbirthday', 0)) : 1;
-$search_categ_cus = GETPOST("search_categ_cus", "intcomma", 3) ? GETPOST("search_categ_cus", "intcomma", 3) : 0;
+$search_categ_cus = request()->input("search_categ_cus") ?: 0;
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $object = new ActionComm($db);

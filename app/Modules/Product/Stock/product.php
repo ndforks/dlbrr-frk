@@ -76,8 +76,8 @@ $cancel = request()->input('cancel');
 
 $id = request()->integer('id', 0);
 $ref = request()->input('ref');
-$stocklimit = GETPOSTFLOAT('seuil_stock_alerte');
-$desiredstock = GETPOSTFLOAT('desiredstock');
+$stocklimit = (float)request()->input('seuil_stock_alerte', 0.0);
+$desiredstock = (float)request()->input('desiredstock', 0.0);
 $cancel = request()->input('cancel');
 $fieldid = request()->has('ref') ? 'ref' : 'rowid';
 $d_eatby = dol_mktime(0, 0, 0, request()->integer('eatbymonth', 0), request()->integer('eatbyday', 0), request()->integer('eatbyyear', 0));
@@ -223,7 +223,7 @@ if ($action == 'addlimitstockwarehouse' && $usercancreate) {
 			$pse->fk_entrepot = request()->integer('fk_entrepot', 0);
 			$pse->fk_product  	 	 = $id;
 			$pse->seuil_stock_alerte = request()->input('seuil_stock_alerte');
-			$pse->desiredstock  	 = GETPOSTFLOAT('desiredstock');
+			$pse->desiredstock  	 = (float)request()->input('desiredstock', 0.0);
 			if ($pse->create($user) > 0) {
 				setEventMessages($langs->trans('ProductStockWarehouseCreated'), null, 'mesgs');
 			}

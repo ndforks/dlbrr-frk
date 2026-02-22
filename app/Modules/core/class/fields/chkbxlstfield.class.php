@@ -218,7 +218,7 @@ class ChkbxlstField extends CommonSellistField
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
 		if (GETPOSTISSET($htmlName)) {
-			$values = GETPOST($htmlName, 'array');
+			$values = request()->input($htmlName, []);
 			if (is_array($values)) $values = implode(',', $values);
 		} else {
 			$values = $defaultValue;
@@ -243,7 +243,7 @@ class ChkbxlstField extends CommonSellistField
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
 		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'array');
+			$value = request()->input($htmlName, []);
 		} else {
 			$value = $defaultValue;
 		}

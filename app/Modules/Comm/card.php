@@ -208,7 +208,7 @@ if (empty($reshook)) {
 	// Payment terms of the settlement
 	if ($action == 'setconditions' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setPaymentTerms(request()->integer('cond_reglement_id', 0), GETPOSTFLOAT('cond_reglement_id_deposit_percent'));
+		$result = $object->setPaymentTerms(request()->integer('cond_reglement_id', 0), (float)request()->input('cond_reglement_id_deposit_percent', 0.0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}

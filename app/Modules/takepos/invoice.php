@@ -132,7 +132,7 @@ $idline = request()->integer('idline', 0);
 $selectedline = request()->integer('selectedline', 0);
 $desc = request()->input('desc');
 $pay = request()->input('pay');
-$amountofpayment = GETPOSTFLOAT('amount');
+$amountofpayment = (float)request()->input('amount', 0.0);
 
 $invoiceid = request()->integer('invoiceid', 0);
 
@@ -355,7 +355,7 @@ if (empty($reshook)) {
 				$payment->datepaye = $now;
 				$payment->fk_account = $bankaccount;
 				if ($pay == 'LIQ') {
-					$payment->pos_change = GETPOSTFLOAT('excess');
+					$payment->pos_change = (float)request()->input('excess', 0.0);
 				}
 
 				$payment->amounts[$invoice->id] = $amountofpayment;
@@ -756,7 +756,7 @@ if (empty($reshook)) {
 
 		$datapriceofproduct = $prod->getSellPrice($mysoc, $customer, 0);
 
-		$qty = request()->has('qty') ? GETPOSTFLOAT('qty') : 1;
+		$qty = request()->has('qty') ? (float)request()->input('qty', 0.0) : 1;
 		$price = $datapriceofproduct['pu_ht'];
 		$price_ttc = $datapriceofproduct['pu_ttc'];
 		//$price_min = $datapriceofproduct['price_min'];

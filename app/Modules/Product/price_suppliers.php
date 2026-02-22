@@ -66,8 +66,8 @@ $cancel = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'pricesuppliercard';
 
 $socid = request()->integer('socid', 0);
-$cost_price = GETPOSTFLOAT('cost_price');
-$pmp = GETPOSTFLOAT('pmp');
+$cost_price = (float)request()->input('cost_price', 0.0);
+$pmp = (float)request()->input('pmp', 0.0);
 
 $backtopage = request()->input('backtopage');
 $error = 0;
@@ -310,7 +310,7 @@ if (empty($reshook)) {
 				$extralabels = $extrafields->fetch_name_optionals_label("product_fournisseur_price");
 				$extrafield_values = $extrafields->getOptionalsFromPost("product_fournisseur_price");
 
-				$newprice = GETPOSTFLOAT("price");
+				$newprice = (float)request()->input("price", 0.0);
 
 				if (empty($packaging)) {
 					$packaging = 1;
@@ -322,8 +322,8 @@ if (empty($reshook)) {
 				$object->product_fourn_packaging = $packaging;
 
 				if (isModEnabled("multicurrency")) {
-					$multicurrency_tx = GETPOSTFLOAT("multicurrency_tx");
-					$multicurrency_price = GETPOSTFLOAT("multicurrency_price");
+					$multicurrency_tx = (float)request()->input("multicurrency_tx", 0.0);
+					$multicurrency_price = (float)request()->input("multicurrency_price", 0.0);
 					$multicurrency_code = request()->input('multicurrency_code');
 
 					$ret = $object->update_buyprice((float) $quantity, $newprice, $user, request()->input('price_base_type'), $supplier, request()->integer('oselDispo', 0), $ref_fourn, (float) $tva_tx, request()->input('charges'), (float) $remise_percent, 0, $npr, $delivery_time_days, $supplier_reputation, array(), '', $multicurrency_price, request()->input('multicurrency_price_base_type'), $multicurrency_tx, $multicurrency_code, $supplier_description, $barcode, $fk_barcode_type, $extrafield_values);

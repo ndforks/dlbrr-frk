@@ -547,7 +547,7 @@ if (empty($reshook)) {
 					}
 					if (!empty($lineid->rowid)) {
 						foreach ($price_extralabels as $code => $label) {
-							$code_array = GETPOST($code, 'array');
+							$code_array = request()->input($code, []);
 							$object->array_options['options_'.$code] = $code_array[$key];
 						}
 						// We need to force table to update product_price and not product extrafields

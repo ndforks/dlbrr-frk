@@ -464,7 +464,7 @@ if (empty($reshook)) {
 					//var_dump(GETPOST("productl".$i, 'int').' '.GETPOST('entl'.$i, 'int').' '.GETPOST($idl, 'int').' '.GETPOST($qty, 'int').' '.GETPOST($batch, 'alpha'));
 
 					//if (GETPOST($qty, 'int') > 0 || (GETPOST($qty, 'int') == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS')) || (GETPOST($qty, 'int') < 0 && getDolGlobalString('RECEPTION_ALLOW_NEGATIVE_QTY'))) {
-					if (GETPOSTFLOAT($qty) > 0 || (GETPOSTFLOAT($qty) == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS'))) {
+					if ((float)request()->input($qty, 0.0) > 0 || ((float)request()->input($qty, 0.0) == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS'))) {
 						$ent = "entl".$i;
 						$idl = "idl".$i;
 
@@ -491,7 +491,7 @@ if (empty($reshook)) {
 						$sellbydate = str_replace('/', '-', $sellby);
 
 						if (getDolGlobalString('STOCK_CALCULATE_ON_RECEPTION') || getDolGlobalString('STOCK_CALCULATE_ON_RECEPTION_CLOSE')) {
-							$ret = $object->addline($entrepot_id, GETPOSTINT($idl), (float) price2num(GETPOST($qty), 'MS'), $array_options[$i], GETPOST($comment), strtotime($eatbydate), strtotime($sellbydate), GETPOST($batch), GETPOSTFLOAT($cost_price, 'MU'));
+							$ret = $object->addline($entrepot_id, GETPOSTINT($idl), (float) price2num(GETPOST($qty), 'MS'), $array_options[$i], GETPOST($comment), strtotime($eatbydate), strtotime($sellbydate), GETPOST($batch), (float)request()->input($cost_price, 0.0));
 						} else {
 							$ret = $object->addline($entrepot_id, GETPOSTINT($idl), (float) price2num(GETPOST($qty), 'MS'), $array_options[$i], GETPOST($comment), strtotime($eatbydate), strtotime($sellbydate), GETPOST($batch));
 						}
@@ -847,7 +847,7 @@ if (empty($reshook)) {
 
 						$line->id = $line_id;
 						$line->fk_entrepot = GETPOSTINT($stockLocation);
-						$line->qty = GETPOSTFLOAT($qty, 'MS');
+						$line->qty = (float)request()->input($qty, 0.0);
 						$line->comment = GETPOST($comment, 'alpha');
 
 						if (isModEnabled('productbatch')) {
@@ -872,7 +872,7 @@ if (empty($reshook)) {
 					} else { // Product no predefined
 						$qty = "qtyl".$line_id;
 						$line->id = $line_id;
-						$line->qty = GETPOSTFLOAT($qty, 'MS');
+						$line->qty = (float)request()->input($qty, 0.0);
 						$line->fk_entrepot = 0;
 						if ($line->update($user) < 0) {
 							setEventMessages($line->error, $line->errors, 'errors');

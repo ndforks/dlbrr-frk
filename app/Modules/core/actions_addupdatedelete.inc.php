@@ -156,7 +156,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 			$value = $tmparraykey[(int) GETPOST($key)].','.GETPOST($key.'2');
 		} elseif (preg_match('/^chkbxlst:(.*)/', $object->fields[$key]['type']) || $object->fields[$key]['type'] == 'checkbox') {
 			$value = '';
-			$values_arr = GETPOST($key, 'array');
+			$values_arr = request()->input($key, []);
 			if (!empty($values_arr)) {
 				$value = implode(',', $values_arr);
 			}
@@ -318,7 +318,7 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 			$value = array_keys($object->param_list)[(int) GETPOST($key)].','.GETPOST($key.'2');
 		} elseif (preg_match('/^chkbxlst:/', $object->fields[$key]['type']) || $object->fields[$key]['type'] == 'checkbox') {
 			$value = '';
-			$values_arr = GETPOST($key, 'array');
+			$values_arr = request()->input($key, []);
 			if (!empty($values_arr)) {
 				$value = implode(',', $values_arr);
 			}

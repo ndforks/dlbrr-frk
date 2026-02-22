@@ -71,7 +71,7 @@ if (request()->input('confirmation')) {
 					$horairesi = GETPOST("horaires".$i);
 					$_SESSION["horaires$i"][$j] = $horairesi[$j];
 
-					$tmphorairesi = GETPOST('horaires'.$i, 'array');
+					$tmphorairesi = request()->input('horaires'.$i, []);
 
 					if (!is_array($tmphorairesi)) {
 						$errheure[$i][$j] = true;
@@ -455,7 +455,7 @@ if (issetAndNoEmpty('choixjourajout')) {
 			$k = $i + 1;
 			if (issetAndNoEmpty('horaires'.$i) === true && issetAndNoEmpty((string) $i, $_POST['horaires'.$i]) === true) {
 				for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-					$horairesi = GETPOST("horaires".$i, 'array');
+					$horairesi = request()->input("horaires".$i, []);
 					$_SESSION["horaires$i"][$j] = $horairesi[$j];
 				}
 			}

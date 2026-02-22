@@ -190,7 +190,7 @@ if ($action == "add" && $permissiontoadd) {
 
 		$paymentservice = request()->input('paymentservice');	// value can be 'stripesepa'. not used yet.
 
-		$result = $object->demande_prelevement($user, GETPOSTFLOAT('request_transfer'), $newtype, $sourcetype);
+		$result = $object->demande_prelevement($user, (float)request()->input('request_transfer', 0.0), $newtype, $sourcetype);
 
 		if ($result > 0) {
 			$db->commit();

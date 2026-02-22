@@ -182,7 +182,7 @@ if ($action == 'updatelines' && $permissiontoreceive) {
 				if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
 					$dto = GETPOSTINT("dto_".$reg[1].'_'.$reg[2]);
 					if (!empty($dto)) {
-						$unit_price = (float) price2num(GETPOSTFLOAT("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
+						$unit_price = (float) price2num((float)request()->input("pu_".$reg[1], 0.0) * (100 - $dto) / 100, 'MU');
 					}
 					$saveprice = "saveprice_".$reg[1].'_'.$reg[2];
 				}
@@ -258,7 +258,7 @@ if ($action == 'updatelines' && $permissiontoreceive) {
 							*/
 						}
 					} else {
-						$result = $objectsrc->dispatchProduct($user, GETPOSTINT($prod), GETPOSTFLOAT($qty), GETPOSTINT($ent), GETPOSTFLOAT($pu), request()->input('comment'), $dDLUO, $dDLC, $lot, GETPOSTINT($fk_commandefourndet), 0, $object->id);
+						$result = $objectsrc->dispatchProduct($user, GETPOSTINT($prod), (float)request()->input($qty, 0.0), GETPOSTINT($ent), (float)request()->input($pu, 0.0), request()->input('comment'), $dDLUO, $dDLC, $lot, GETPOSTINT($fk_commandefourndet), 0, $object->id);
 						if ($result < 0) {
 							setEventMessages($objectsrc->error, $objectsrc->errors, 'errors');
 							$error++;

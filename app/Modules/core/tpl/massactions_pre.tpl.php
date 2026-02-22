@@ -121,7 +121,7 @@ if ($massaction == 'preaffecttag' && isModEnabled('category')) {
 				'type' => 'other',
 				'name' => 'affecttag_'.$categ_type['code'],
 				'label' => '',
-				'value' => $form->multiselectarray('contcats_'.$categ_type['code'], $categ_arbo_tmp, GETPOST('contcats_'.$categ_type['code'], 'array'), 0, 0, '', 0, '60%', '', '', $langs->transnoentitiesnoconv("SelectTheTagsToAssign"))
+				'value' => $form->multiselectarray('contcats_'.$categ_type['code'], $categ_arbo_tmp, request()->input('contcats_'.$categ_type['code'], []), 0, 0, '', 0, '60%', '', '', $langs->transnoentitiesnoconv("SelectTheTagsToAssign"))
 			);
 		}
 		$formquestion[] = array(

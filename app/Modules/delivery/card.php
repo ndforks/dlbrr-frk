@@ -143,7 +143,7 @@ if ($action == 'add' && $permissiontoadd) {
 	for ($i = 0; $i < $num; $i++) {
 		$qty = "qtyl".$i;
 		$idl = "idl".$i;
-		$qtytouse = price2num(GETPOSTFLOAT($qty));
+		$qtytouse = price2num((float)request()->input($qty, 0.0));
 		if ($qtytouse > 0) {
 			$object->addline(GETPOSTINT($idl), (float) price2num($qtytouse), $array_options);
 		}

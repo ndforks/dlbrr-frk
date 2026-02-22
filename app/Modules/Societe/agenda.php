@@ -50,8 +50,8 @@ $action = request()->input('action');
 $backtopage = request()->input('backtopage');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'thirdpartyagenda';
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
@@ -85,7 +85,7 @@ if (!$sortorder) {
 }
 
 if (request()->input('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array', 3);
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

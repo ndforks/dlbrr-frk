@@ -375,7 +375,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	// TODO Add this in a hook
 	if (getDolGlobalString('MEMBER_NEWFORM_DOLIBARRTURNOVER')) {
-		if (request()->input('morphy') == 'mor' && GETPOSTFLOAT('budget') <= 0) {
+		if (request()->input('morphy') == 'mor' && (float)request()->input('budget', 0.0) <= 0) {
 			$error++;
 			$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("TurnoverOrBudget"))."<br>\n";
 		}

@@ -172,7 +172,7 @@ class TextField extends CommonField
 			} else {
 				$value = GETPOST($htmlName, 'nohtml');
 				if (!empty($fieldInfos->options) && !empty($fieldInfos->multiInput)) {
-					$tmpArrayMultiSelect = GETPOST($htmlName . '_multiselect', 'array');
+					$tmpArrayMultiSelect = request()->input($htmlName . '_multiselect', []);
 					foreach ($tmpArrayMultiSelect as $tmpValue) {
 						$value .= (!empty($value) ? "," : "") . $tmpValue;
 					}

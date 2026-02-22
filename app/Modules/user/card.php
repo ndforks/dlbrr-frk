@@ -328,11 +328,11 @@ if (empty($reshook)) {
 			$object->fk_user_holiday_validator = request()->integer('fk_user_holiday_validator', 0) > 0 ? request()->integer('fk_user_holiday_validator', 0) : 0;
 			$object->employee = request()->integer('employee', 0);
 
-			$object->thm = request()->input('thm') != '' ? GETPOSTFLOAT("thm") : '';
+			$object->thm = request()->input('thm') != '' ? (float)request()->input("thm", 0.0) : '';
 			$object->thm = price2num($object->thm);
-			$object->tjm = request()->input('tjm') != '' ? GETPOSTFLOAT("tjm") : '';
+			$object->tjm = request()->input('tjm') != '' ? (float)request()->input("tjm", 0.0) : '';
 			$object->tjm = price2num($object->tjm);
-			$object->salary = request()->input('salary') != '' ? GETPOSTFLOAT("salary") : '';
+			$object->salary = request()->input('salary') != '' ? (float)request()->input("salary", 0.0) : '';
 			$object->salary = price2num($object->salary);
 			$object->salaryextra = request()->input('salaryextra');
 			//$object->salaryextra = price2num($object->salaryextra);
@@ -512,15 +512,15 @@ if (empty($reshook)) {
 				$object->fk_user_holiday_validator = request()->integer('fk_user_holiday_validator', 0) > 0 ? request()->integer('fk_user_holiday_validator', 0) : 0;
 				$object->employee = request()->integer('employee', 0);
 
-				$object->thm = request()->input('thm') != '' ? GETPOSTFLOAT("thm") : '';
+				$object->thm = request()->input('thm') != '' ? (float)request()->input("thm", 0.0) : '';
 				$object->thm = price2num($object->thm);
-				$object->tjm = request()->input('tjm') != '' ? GETPOSTFLOAT("tjm") : '';
+				$object->tjm = request()->input('tjm') != '' ? (float)request()->input("tjm", 0.0) : '';
 				$object->tjm = price2num($object->tjm);
-				$object->salary = request()->input('salary') != '' ? GETPOSTFLOAT("salary") : '';
+				$object->salary = request()->input('salary') != '' ? (float)request()->input("salary", 0.0) : '';
 				$object->salary = price2num($object->salary);
-				$object->salaryextra = request()->input('salaryextra') != '' ? GETPOSTFLOAT("salaryextra") : '';
+				$object->salaryextra = request()->input('salaryextra') != '' ? (float)request()->input("salaryextra", 0.0) : '';
 				//$object->salaryextra = price2num($object->salaryextra);
-				$object->weeklyhours = request()->input('weeklyhours') != '' ? GETPOSTFLOAT("weeklyhours") : '';
+				$object->weeklyhours = request()->input('weeklyhours') != '' ? (float)request()->input("weeklyhours", 0.0) : '';
 				$object->weeklyhours = price2num($object->weeklyhours);
 
 				$object->color = request()->input('color') != '' ? str_replace('#', '', (string) request()->input('color')) : '';

@@ -151,7 +151,7 @@ if ($action == 'setref' && $user->hasRight('banque', 'cheque')) {
 }
 
 if ($action == 'create' && request()->integer('accountid', 0) > 0 && $user->hasRight('banque', 'cheque')) {
-	if (GETPOSTISARRAY('toRemise')) {
+	if (is_array(request()->input('toRemise'))) {
 		$object->type = $type;
 		$object->date_bordereau = dol_now();
 		$arrayofid = request()->integer('toRemise', 0);

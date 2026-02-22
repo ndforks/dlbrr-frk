@@ -49,8 +49,8 @@ $langs->loadLangs(array('companies', 'members'));
 $action = request()->input('action');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : getDolDefaultContextPage(__FILE__);
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

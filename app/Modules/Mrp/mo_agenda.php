@@ -62,7 +62,7 @@ if ($user->socid > 0) {
 }
 
 if (request()->input('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array', 3);
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

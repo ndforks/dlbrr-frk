@@ -79,7 +79,7 @@ if (!$sortfield) {
 }
 $search_month = request()->integer('search_month', 0);
 $search_year = request()->integer('search_year', 0);
-if (GETPOSTISARRAY('search_status')) {
+if (is_array(request()->input('search_status'))) {
 	$search_status = implode(',', request()->input('search_status'));
 } else {
 	$search_status = (request()->input('search_status') != '' ? request()->input('search_status') : request()->input('statut'));

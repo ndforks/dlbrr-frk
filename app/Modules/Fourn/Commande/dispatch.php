@@ -267,8 +267,8 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			}
 
 			// We ask to move a qty
-			$qtytomove = GETPOSTFLOAT($qty);
-			$puformove = GETPOSTFLOAT($pu);
+			$qtytomove = (float)request()->input($qty, 0.0);
+			$puformove = (float)request()->input($pu, 0.0);
 			if ($qtytomove != 0) {
 				if (!(GETPOSTINT($ent) > 0)) {
 					dol_syslog('No dispatch for line '.$key.' as no warehouse was chosen.');
@@ -337,8 +337,8 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			}
 
 			// We ask to move a qty
-			$qtytomove = GETPOSTFLOAT($qty);
-			$puformove = GETPOSTFLOAT($pu);
+			$qtytomove = (float)request()->input($qty, 0.0);
+			$puformove = (float)request()->input($pu, 0.0);
 			if ($qtytomove > 0) {
 				$productId = GETPOSTINT($prod);
 
@@ -374,7 +374,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 
 					if (!$error && getDolGlobalString('SUPPLIER_ORDER_CAN_UPDATE_BUYINGPRICE_DURING_RECEIPT')) {
 						if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
-							$dto = GETPOSTFLOAT("dto_".$reg[1].'_'.$reg[2]);
+							$dto = (float)request()->input("dto_".$reg[1].'_'.$reg[2], 0.0);
 							//update supplier price
 							if (GETPOSTISSET($saveprice)) {
 								// TODO Use class
@@ -475,13 +475,13 @@ if ($action == 'updateline' && $permissiontoreceive && empty($cancel)) {
 		$qty = $supplierorderdispatch->qty;
 		$entrepot = $supplierorderdispatch->fk_entrepot;
 		$product = $supplierorderdispatch->fk_product;
-		$price = GETPOSTFLOAT('price');
+		$price = (float)request()->input('price', 0.0);
 		$comment = $supplierorderdispatch->comment;
 		$eatby = $supplierorderdispatch->eatby;
 		$sellby = $supplierorderdispatch->sellby;
 		$batch = $supplierorderdispatch->batch;
 
-		$supplierorderdispatch->qty = GETPOSTFLOAT('qty', 'MS');
+		$supplierorderdispatch->qty = (float)request()->input('qty', 0.0);
 		$supplierorderdispatch->fk_entrepot = request()->integer('fk_entrepot', 0);
 		$result = $supplierorderdispatch->update($user);
 	}

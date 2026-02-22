@@ -202,7 +202,7 @@ class CheckboxField extends CommonSelectField
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
 		if (GETPOSTISSET($htmlName)) {
-			$values = GETPOST($htmlName, 'array');
+			$values = request()->input($htmlName, []);
 			if (is_array($values)) $values = implode(',', $values);
 		} else {
 			$values = $defaultValue;
@@ -227,7 +227,7 @@ class CheckboxField extends CommonSelectField
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
 		if (GETPOSTISSET($htmlName)) {
-			$values = GETPOST($htmlName, 'array');
+			$values = request()->input($htmlName, []);
 		} else {
 			$values = $defaultValue;
 		}

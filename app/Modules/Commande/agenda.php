@@ -70,12 +70,12 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 if (request()->input('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array', 3);
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input("actioncode") ?: (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 $search_rowid = request()->integer('search_rowid', 0);
 $search_agenda_label = request()->input('search_agenda_label');
