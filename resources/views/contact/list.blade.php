@@ -7,38 +7,39 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Contacts / Addresses</h1>
         
         <!-- Search Form -->
-        <form method="GET" action="{{ url('/contact/list.php') }}" class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <input type="text" name="search_all" placeholder="Search all..." 
-                       value="{{ $search['all'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                <input type="text" name="search_lastname" placeholder="Last name" 
-                       value="{{ $search['lastname'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                <input type="text" name="search_firstname" placeholder="First name" 
-                       value="{{ $search['firstname'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                <input type="text" name="search_societe" placeholder="Company" 
-                       value="{{ $search['societe'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                <input type="text" name="search_email" placeholder="Email" 
-                       value="{{ $search['email'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                <input type="text" name="search_phone" placeholder="Phone" 
-                       value="{{ $search['phone'] ?? '' }}"
-                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-            </div>
-            <div class="mt-4 flex gap-2">
-                <button type="submit" 
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-150 ease-in-out">
-                    Search
-                </button>
-                <a href="{{ url('/contact/list.php') }}" 
-                   class="px-6 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium rounded-md transition duration-150 ease-in-out">
-                    Reset
-                </a>
-            </div>
-        </form>
+        <x-card title="Search Contacts">
+            <form method="GET" action="{{ url('/contact/list.php') }}">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <input type="text" name="search_all" placeholder="Search all..." 
+                           value="{{ $search['all'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="search_lastname" placeholder="Last name" 
+                           value="{{ $search['lastname'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="search_firstname" placeholder="First name" 
+                           value="{{ $search['firstname'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="search_societe" placeholder="Company" 
+                           value="{{ $search['societe'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="search_email" placeholder="Email" 
+                           value="{{ $search['email'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    <input type="text" name="search_phone" placeholder="Phone" 
+                           value="{{ $search['phone'] ?? '' }}"
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                </div>
+                <div class="mt-4 flex gap-2">
+                    <button type="submit" 
+                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-150 ease-in-out">
+                        Search
+                    </button>
+                    <x-button href="{{ url('/contact/list.php') }}" variant="secondary">
+                        Reset
+                    </x-button>
+                </div>
+            </form>
+        </x-card>
         
         <!-- Results Summary -->
         <div class="mb-4 text-gray-700 dark:text-gray-300">
