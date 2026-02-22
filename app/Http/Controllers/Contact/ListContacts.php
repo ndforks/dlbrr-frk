@@ -9,8 +9,11 @@ use Illuminate\View\View;
 
 class ListContacts extends Controller
 {
-    public function __construct(private readonly ContactService $service)
+    private ContactService $service;
+
+    public function __construct(ContactService $service)
     {
+        $this->service = $service;
     }
 
     public function __invoke(Request $request): View

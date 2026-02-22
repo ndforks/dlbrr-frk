@@ -9,8 +9,11 @@ use Illuminate\View\View;
 
 class ListCommande extends Controller
 {
-    public function __construct(private readonly CommandeService $service)
+    private CommandeService $service;
+
+    public function __construct(CommandeService $service)
     {
+        $this->service = $service;
     }
 
     public function __invoke(Request $request): View

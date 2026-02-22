@@ -9,23 +9,7 @@ class Societe extends Model
     protected $table = 'llx_societe';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    
-    protected $fillable = [
-        'nom',
-        'name_alias',
-        'address',
-        'zip',
-        'town',
-        'phone',
-        'email',
-        'url',
-        'fk_pays',
-        'client',
-        'fournisseur',
-        'code_client',
-        'code_fournisseur',
-        'entity',
-    ];
+    protected $guarded = [];
 
     // Relationships (alphabetically sorted)
     

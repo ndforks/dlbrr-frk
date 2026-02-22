@@ -9,8 +9,11 @@ use Illuminate\View\View;
 
 class ListSociete extends Controller
 {
-    public function __construct(private readonly SocieteService $service)
+    private SocieteService $service;
+
+    public function __construct(SocieteService $service)
     {
+        $this->service = $service;
     }
 
     public function __invoke(Request $request): View

@@ -9,8 +9,11 @@ use Illuminate\View\View;
 
 class ListFacture extends Controller
 {
-    public function __construct(private readonly FactureService $service)
+    private FactureService $service;
+
+    public function __construct(FactureService $service)
     {
+        $this->service = $service;
     }
 
     public function __invoke(Request $request): View

@@ -9,20 +9,8 @@ class Projet extends Model
     protected $table = 'llx_projet';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    
-    protected $fillable = [
-        'fk_soc',
-        'ref',
-        'title',
-        'description',
-        'fk_statut',
-        'dateo',
-        'datee',
-        'entity',
-    ];
+    protected $guarded = [];
 
-    // Relationships (alphabetically sorted)
-    
     public function societe()
     {
         return $this->belongsTo(Societe::class, 'fk_soc', 'rowid');

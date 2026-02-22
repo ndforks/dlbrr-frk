@@ -9,24 +9,7 @@ class Commande extends Model
     protected $table = 'llx_commande';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    
-    protected $fillable = [
-        'fk_soc',
-        'fk_projet',
-        'fk_user_author',
-        'fk_user_valid',
-        'ref',
-        'ref_client',
-        'date_commande',
-        'date_livraison',
-        'fk_statut',
-        'total_ht',
-        'total_tva',
-        'total_ttc',
-        'note_private',
-        'note_public',
-        'entity',
-    ];
+    protected $guarded = [];
 
     // Relationships (alphabetically sorted)
     

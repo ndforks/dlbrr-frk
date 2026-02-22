@@ -9,22 +9,7 @@ class Product extends Model
     protected $table = 'llx_product';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    
-    protected $fillable = [
-        'ref',
-        'label',
-        'description',
-        'price',
-        'price_ttc',
-        'tva_tx',
-        'fk_product_type',
-        'tosell',
-        'tobuy',
-        'stock',
-        'pmp',
-        'seuil_stock_alerte',
-        'entity',
-    ];
+    protected $guarded = [];
 
     // Relationships (alphabetically sorted)
     
