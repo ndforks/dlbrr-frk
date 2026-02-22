@@ -117,13 +117,13 @@ $testligneamodifier = false;
 $ligneamodifier = -1;
 $modifier = '';
 for ($i = 0; $i < $nblines; $i++) {
-	if (GETPOSTISSET('modifierligne'.$i)) {
+	if (request()->has('modifierligne' . $i)) {
 		$ligneamodifier = $i;
 		$testligneamodifier = true;
 	}
 
 	// test to check if a line needs to be updated
-	if (GETPOSTISSET('validermodifier'.$i)) {
+	if (request()->has('validermodifier' . $i)) {
 		$modifier = $i;
 		$testmodifier = true;
 	}
@@ -1017,7 +1017,7 @@ while ($compteur < $num) {
 
 	// Ask confirmation to modify the line
 	for ($i = 0; $i < $nblines; $i++) {
-		if (GETPOSTISSET("modifierligne".$i)) {
+		if (request()->has("modifierligne" . $i)) {
 			if ($compteur == $i) {
 				print '<td class="casevide">';
 				print '<input type="hidden" name="idtomodify'.$compteur.'" value="'.$obj->id_users.'">';
@@ -1043,7 +1043,7 @@ if (empty($testligneamodifier)) {
 		print '<td class="vide">';
 		if (empty($listofanswers[$i]['format']) || !in_array($listofanswers[$i]['format'], array('yesno', 'foragainst'))) {
 			print '<input type="checkbox" name="choix'.$i.'" value="1"';
-			if (GETPOSTISSET('choix'.$i) && request()->input('choix' . $i) == '1') {
+			if (request()->has('choix' . $i) && request()->input('choix' . $i) == '1') {
 				print ' checked';
 			}
 			print '>';

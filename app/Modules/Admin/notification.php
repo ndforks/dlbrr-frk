@@ -142,13 +142,13 @@ if ($action == 'setfixednotif') { // Test on permission already done
 			if (preg_match('/^NOTIF_(.*)_old_(.*)_key/', $key, $reg)) {
 				dolibarr_del_const($db, 'NOTIFICATION_FIXEDEMAIL_'.$reg[1].'_THRESHOLD_HIGHER_'.$reg[2], $conf->entity);
 
-				$newkey = 'NOTIFICATION_FIXEDEMAIL_'.$reg[1].'_THRESHOLD_HIGHER_'.((int) GETPOST($shortkey.'_amount'));
-				$newval = GETPOST($shortkey.'_key');
+				$newkey = 'NOTIFICATION_FIXEDEMAIL_'.$reg[1].'_THRESHOLD_HIGHER_'.((int) request()->input($shortkey . '_amount'));
+				$newval = request()->input($shortkey . '_key');
 				//print $newkey.' - '.$newval.'<br>';
 			} elseif (preg_match('/^NOTIF_(.*)_new_key/', $key, $reg)) {
 				// Add a new entry
-				$newkey = 'NOTIFICATION_FIXEDEMAIL_'.$reg[1].'_THRESHOLD_HIGHER_'.((int) GETPOST($shortkey.'_amount'));
-				$newval = GETPOST($shortkey.'_key');
+				$newkey = 'NOTIFICATION_FIXEDEMAIL_'.$reg[1].'_THRESHOLD_HIGHER_'.((int) request()->input($shortkey . '_amount'));
+				$newval = request()->input($shortkey . '_key');
 			}
 
 			if ($newkey && $newval) {

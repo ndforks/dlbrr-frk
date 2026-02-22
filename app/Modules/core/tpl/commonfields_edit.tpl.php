@@ -102,7 +102,7 @@ foreach ($object->fields as $key => $val) {
 		}
 		$value = request()->has($key) ? GETPOST($key, $check) : $object->$key;
 	} elseif (in_array($val['type'], array('date', 'datetime'))) {
-		$value = request()->has($key) ? dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), GETPOSTINT($key.'sec'), GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year')) : $object->$key;
+		$value = request()->has($key) ? dol_mktime(request()->integer($key . 'hour', 0), request()->integer($key . 'min', 0), request()->integer($key . 'sec', 0), request()->integer($key . 'month', 0), request()->integer($key . 'day', 0), request()->integer($key . 'year', 0)) : $object->$key;
 	} elseif ($val['type'] == 'price') {
 		$value = request()->has($key) ? price2num(request()->input($key)) : price2num($object->$key);
 	} elseif ($key == 'lang') {

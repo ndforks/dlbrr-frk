@@ -68,8 +68,8 @@ if (($action == 'update' && !request()->input('cancel'))) {
 		if (!empty($value['active'])) {
 			$networkconstname = 'MAIN_INFO_SOCIETE_'.strtoupper($key).'_URL';
 			$networkconstid = 'MAIN_INFO_SOCIETE_'.strtoupper($key);
-			if (GETPOSTISSET($key.'url') && GETPOST($key.'url', 'alpha') != '') {
-				dolibarr_set_const($db, $networkconstname, GETPOST($key.'url', 'alpha'), 'chaine', 0, '', $conf->entity);
+			if (request()->has($key . 'url') && request()->input($key . 'url') != '') {
+				dolibarr_set_const($db, $networkconstname, request()->input($key . 'url'), 'chaine', 0, '', $conf->entity);
 				dolibarr_set_const($db, $networkconstid, request()->input($key), 'chaine', 0, '', $conf->entity);
 			} elseif (request()->has($key) && request()->input($key) != '') {
 				if (!empty($listofnetworks[$key]['url'])) {

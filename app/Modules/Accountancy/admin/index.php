@@ -200,7 +200,7 @@ if ($action == 'update_binding') {
 		$constvalue = request()->input($constname);
 
 		if ($constname == 'ACCOUNTING_DATE_START_BINDING') {
-			$constvalue = dol_mktime(0, 0, 0, GETPOSTINT($constname.'month'), GETPOSTINT($constname.'day'), GETPOSTINT($constname.'year'));
+			$constvalue = dol_mktime(0, 0, 0, request()->integer($constname . 'month', 0), request()->integer($constname . 'day', 0), request()->integer($constname . 'year', 0));
 		}
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {

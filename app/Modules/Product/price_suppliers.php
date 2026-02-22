@@ -865,7 +865,7 @@ if ($id > 0 || $ref) {
 							} else {
 								print $langs->trans($value);
 							}
-							print '</td><td>'.$extrafields->showInputField($key, GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_fournisseur_price').'</td></tr>';
+							print '</td><td>'.$extrafields->showInputField($key, request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_fournisseur_price').'</td></tr>';
 						}
 					}
 				} else {
@@ -891,7 +891,7 @@ if ($id > 0 || $ref) {
 								} else {
 									print $langs->trans($value);
 								}
-								print '</td><td>'.$extrafields->showInputField($key, GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : $obj->{$key}, '', '', '', '', 0, 'product_fournisseur_price');
+								print '</td><td>'.$extrafields->showInputField($key, request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : $obj->{$key}, '', '', '', '', 0, 'product_fournisseur_price');
 
 								print '</td></tr>';
 							}

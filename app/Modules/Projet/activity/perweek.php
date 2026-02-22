@@ -289,8 +289,8 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->inpu
 					if ($newduration > 0) {
 						$object->fetch($tmptaskid);
 
-						if (GETPOSTISSET($tmptaskid.'progress')) {
-							$object->progress = GETPOSTINT($tmptaskid.'progress');
+						if (request()->has($tmptaskid . 'progress')) {
+							$object->progress = request()->integer($tmptaskid . 'progress', 0);
 						} else {
 							unset($object->progress);
 						}
@@ -313,12 +313,12 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->inpu
 				}
 			}
 
-			if (!$updateoftaskdone && GETPOSTISSET($tmptaskid.'progress')) {  // Check to update progress if no update were done on task.
+			if (!$updateoftaskdone && request()->has($tmptaskid . 'progress')) {  // Check to update progress if no update were done on task.
 				$object->fetch($tmptaskid);
 				//var_dump($object->progress);
 				//var_dump(GETPOST($tmptaskid . 'progress', 'int')); exit;
-				if ($object->progress != GETPOSTINT($tmptaskid.'progress')) {
-					$object->progress = GETPOSTINT($tmptaskid.'progress');
+				if ($object->progress != request()->integer($tmptaskid . 'progress', 0)) {
+					$object->progress = request()->integer($tmptaskid . 'progress', 0);
 					$result = $object->update($user);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');

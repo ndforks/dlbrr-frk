@@ -1077,7 +1077,7 @@ class FormTicket
 			$selectedgroups = array();
 			$groupvalue = "";
 			$groupticket = request()->input($htmlname);
-			$child_id = GETPOST($htmlname.'_child_id', 'aZ09') ? GETPOST($htmlname.'_child_id', 'aZ09') : 0;
+			$child_id = request()->input($htmlname . '_child_id') ? request()->input($htmlname . '_child_id') : 0;
 			if (!empty($groupticket)) {
 				$tmpgroupticket = $groupticket;
 				$sql = "SELECT ctc.rowid, ctc.fk_parent, ctc.code";
@@ -1157,7 +1157,7 @@ class FormTicket
 				return '<input type="hidden" name="'.$htmlname.'" id="'.$htmlname.'" value="'.dol_escape_htmltag($groupvalue).'">';
 			} else {
 				$stringtoprint .= '<input type="hidden" name="'.$htmlname.'" id="'.$htmlname.'_select" class="maxwidth500 minwidth400" value="'.request()->input($htmlname).'">';
-				$stringtoprint .= '<input type="hidden" name="'.$htmlname.'_child_id" id="'.$htmlname.'_select_child_id" class="maxwidth500 minwidth400" '.request()->input($htmlname).' value="'.GETPOST($htmlname."_child_id").'">';
+				$stringtoprint .= '<input type="hidden" name="'.$htmlname.'_child_id" id="'.$htmlname.'_select_child_id" class="maxwidth500 minwidth400" '.request()->input($htmlname).' value="'.request()->input($htmlname . "_child_id").'">';
 			}
 			$stringtoprint .= '</select>&nbsp;';
 

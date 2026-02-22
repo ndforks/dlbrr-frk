@@ -292,17 +292,17 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->inpu
 			$object->fetch($key);
 			$taskid = $object->id;
 
-			if (GETPOSTISSET($taskid.'progress')) {
-				$object->progress = GETPOSTINT($taskid.'progress');
+			if (request()->has($taskid . 'progress')) {
+				$object->progress = request()->integer($taskid . 'progress', 0);
 			} else {
 				unset($object->progress);
 			}
 
 			$object->timespent_duration = $val;
 			$object->timespent_fk_user = $usertoprocess->id;
-			$object->timespent_note = GETPOST($key.'note');
-			if (GETPOSTINT($key."hour") != '' && GETPOSTINT($key."hour") >= 0) {	// If hour was entered
-				$object->timespent_datehour = dol_mktime(GETPOSTINT($key."hour"), GETPOSTINT($key."min"), 0, $monthofday, $dayofday, $yearofday);
+			$object->timespent_note = request()->input($key . 'note');
+			if (request()->integer($key . "hour", 0) != '' && request()->integer($key . "hour", 0) >= 0) {	// If hour was entered
+				$object->timespent_datehour = dol_mktime(request()->integer($key . "hour", 0), request()->integer($key . "min", 0), 0, $monthofday, $dayofday, $yearofday);
 				$object->timespent_withhour = 1;
 			} else {
 				$object->timespent_datehour = dol_mktime(12, 0, 0, $monthofday, $dayofday, $yearofday);

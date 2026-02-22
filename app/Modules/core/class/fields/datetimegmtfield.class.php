@@ -180,8 +180,8 @@ class DatetimegmtField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName . 'hour') || GETPOSTISSET($htmlName . 'min') || GETPOSTISSET($htmlName . 'sec') || GETPOSTISSET($htmlName . 'month') || GETPOSTISSET($htmlName . 'day') || GETPOSTISSET($htmlName . 'year')) {
-			$value = dol_mktime(GETPOSTINT($htmlName . 'hour'), GETPOSTINT($htmlName . 'min'), GETPOSTINT($htmlName . 'sec'), GETPOSTINT($htmlName . 'month'), GETPOSTINT($htmlName . 'day'), GETPOSTINT($htmlName . 'year'), 'gmt'); // for date without hour, we use gmt
+		if (request()->has($htmlName . 'hour') || request()->has($htmlName . 'min') || request()->has($htmlName . 'sec') || request()->has($htmlName . 'month') || request()->has($htmlName . 'day') || request()->has($htmlName . 'year')) {
+			$value = dol_mktime(request()->integer($htmlName . 'hour', 0), request()->integer($htmlName . 'min', 0), request()->integer($htmlName . 'sec', 0), request()->integer($htmlName . 'month', 0), request()->integer($htmlName . 'day', 0), request()->integer($htmlName . 'year', 0), 'gmt'); // for date without hour, we use gmt
 		} else {
 			$value = $defaultValue;
 		}
@@ -204,14 +204,14 @@ class DatetimegmtField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName . '_startmonth') || GETPOSTISSET($htmlName . '_startday') || GETPOSTISSET($htmlName . '_startyear')) {
-			$start = dol_mktime(0, 0, 0, GETPOSTINT($htmlName . '_startmonth'), GETPOSTINT($htmlName . '_startday'), GETPOSTINT($htmlName . '_startyear'), 'gmt');
+		if (request()->has($htmlName . '_startmonth') || request()->has($htmlName . '_startday') || request()->has($htmlName . '_startyear')) {
+			$start = dol_mktime(0, 0, 0, request()->integer($htmlName . '_startmonth', 0), request()->integer($htmlName . '_startday', 0), request()->integer($htmlName . '_startyear', 0), 'gmt');
 		} else {
 			$start = is_array($defaultValue) && isset($defaultValue['start']) ? $defaultValue['start'] : '';
 		}
 
-		if (GETPOSTISSET($htmlName . '_endmonth') || GETPOSTISSET($htmlName . '_endday') || GETPOSTISSET($htmlName . '_endyear')) {
-			$end = dol_mktime(23, 59, 59, GETPOSTINT($htmlName . '_endmonth'), GETPOSTINT($htmlName . '_endday'), GETPOSTINT($htmlName . '_endyear'), 'gmt');
+		if (request()->has($htmlName . '_endmonth') || request()->has($htmlName . '_endday') || request()->has($htmlName . '_endyear')) {
+			$end = dol_mktime(23, 59, 59, request()->integer($htmlName . '_endmonth', 0), request()->integer($htmlName . '_endday', 0), request()->integer($htmlName . '_endyear', 0), 'gmt');
 		} else {
 			$end = is_array($defaultValue) && isset($defaultValue['end']) ? $defaultValue['end'] : '';
 		}

@@ -103,9 +103,9 @@ foreach ($object->fields as $key => $val) {
 		}
 		$value = GETPOST($key, $check);
 	} elseif ($val['type'] == 'date') {
-		$value = dol_mktime(12, 0, 0, GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'));
+		$value = dol_mktime(12, 0, 0, request()->integer($key . 'month', 0), request()->integer($key . 'day', 0), request()->integer($key . 'year', 0));
 	} elseif ($val['type'] == 'datetime') {
-		$value = dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), 0, GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'));
+		$value = dol_mktime(request()->integer($key . 'hour', 0), request()->integer($key . 'min', 0), 0, request()->integer($key . 'month', 0), request()->integer($key . 'day', 0), request()->integer($key . 'year', 0));
 	} elseif ($val['type'] == 'boolean') {
 		$value = (request()->input($key) == 'on' ? 1 : 0);
 	} elseif ($val['type'] == 'price') {

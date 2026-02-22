@@ -104,7 +104,7 @@ if ($action == 'unset') {
 }
 
 if (($action == 'testsubscribe' || $action == 'testunsubscribe') && getDolGlobalString('ADHERENT_USE_MAILMAN')) {
-	$email = GETPOST($action.'email');
+	$email = request()->input($action . 'email');
 	if (!isValidEmail($email)) {
 		$langs->load("errors");
 		setEventMessages($langs->trans("ErrorBadEMail", $email), null, 'errors');

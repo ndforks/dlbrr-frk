@@ -92,7 +92,7 @@ if (!$sortorder) {
 $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if ($key == 'fk_pays' && !GETPOSTISSET('search_'.$key)) {
+	if ($key == 'fk_pays' && !request()->has('search_' . $key)) {
 		$search[$key] = $mysoc->country_id;
 	} elseif (request()->input('search_' . $key) !== '') {
 		$search[$key] = request()->input('search_' . $key);

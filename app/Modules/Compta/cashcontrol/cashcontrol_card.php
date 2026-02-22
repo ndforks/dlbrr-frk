@@ -242,7 +242,7 @@ if ($action == "start" && $permissiontoadd) {
 		$error++;
 	}
 	foreach ($arrayofpaymentmode as $key => $val) {
-		$object->$key = (float) price2num(GETPOST($key.'_amount', 'alpha'));
+		$object->$key = (float) price2num(request()->input($key . '_amount'));
 	}
 
 	if (!$error) {
@@ -1122,7 +1122,7 @@ if (empty($action) || $action == "view" || $action == "close") {
 					if ($action == 'start') {
 						print 'disabled '; // To start cash user only can set opening cash
 					}
-					print 'name="'.$key.'_amount" type="text"'.($key == 'cash' ? ' autofocus' : '').' class="maxwidth100 center" value="'.GETPOST($key.'_amount', 'alpha').'">';
+					print 'name="'.$key.'_amount" type="text"'.($key == 'cash' ? ' autofocus' : '').' class="maxwidth100 center" value="'.request()->input($key . '_amount').'">';
 					print '</td>';
 					$i++;
 				}
