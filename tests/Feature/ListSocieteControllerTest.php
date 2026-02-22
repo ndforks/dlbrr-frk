@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Societe\ListSociete;
+use App\Services\SocieteService;
 use Illuminate\Http\Request;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -18,20 +19,26 @@ class ListSocieteControllerTest extends TestCase
     #[Test]
     public function it_lists_societes_with_filters(): void
     {
-        $builder = Mockery::mock();
-        $builder->shouldReceive('where')->with(Mockery::type('Closure'))->andReturnSelf();
-        $builder->shouldReceive('where')->with('nom', 'like', '%Acme%')->andReturnSelf();
-        $builder->shouldReceive('where')->with('town', 'like', '%Paris%')->andReturnSelf();
-        $builder->shouldReceive('where')->with('zip', 'like', '%75000%')->andReturnSelf();
-        $builder->shouldReceive('count')->andReturn(1);
-        $builder->shouldReceive('orderBy')->with('nom', 'ASC')->andReturnSelf();
-        $builder->shouldReceive('skip')->with(0)->andReturnSelf();
-        $builder->shouldReceive('take')->with(25)->andReturnSelf();
-        $builder->shouldReceive('get')->andReturn(collect([['nom' => 'Acme']]));
-
-        Mockery::mock('alias:App\Models\Societe')
-            ->shouldReceive('query')
-            ->andReturn($builder);
+        $service = Mockery::mock(SocieteService::class);
+        $service->shouldReceive('list')
+            ->with([
+                'all' => 'Acme',
+                'nom' => 'Acme',
+                'town' => 'Paris',
+                'zip' => '75000',
+            ], 0, 25)
+            ->andReturn([
+                'societes' => collect([['nom' => 'Acme']]),
+                'total' => 1,
+                'page' => 0,
+                'limit' => 25,
+                'search' => [
+                    'all' => 'Acme',
+                    'nom' => 'Acme',
+                    'town' => 'Paris',
+                    'zip' => '75000',
+                ],
+            ]);
 
         $request = Request::create('/societe', 'GET', [
             'search_all' => 'Acme',
@@ -40,7 +47,7 @@ class ListSocieteControllerTest extends TestCase
             'search_zip' => '75000',
         ]);
 
-        $controller = new ListSociete();
+        $controller = new ListSociete($service);
         $response = $controller($request);
 
         $this->assertSame('societe.list', $response->getName());
