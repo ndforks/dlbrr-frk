@@ -7,6 +7,7 @@ use App\Http\Controllers\Adherents\ShowAdherents;
 use App\Http\Controllers\Admin\AdminIndex;
 use App\Http\Controllers\Admin\ModulesAdmin;
 use App\Http\Controllers\Admin\SystemAdmin;
+use App\Http\Controllers\Asterisk\WrapperController as AsteriskWrapper;
 use App\Http\Controllers\Asset\ListAsset;
 use App\Http\Controllers\Asset\ShowAsset;
 use App\Http\Controllers\Bom\ListBom;
@@ -97,6 +98,9 @@ use Illuminate\Support\Facades\Route;
 
 // Home route - redirect to Dolibarr index
 Route::get('/', Home::class);
+
+// Asterisk click-to-dial wrapper
+Route::get('/asterisk/wrapper', AsteriskWrapper::class)->name('asterisk.wrapper');
 
 // User Management Routes
 Route::prefix('user')->name('user.')->group(function () {
