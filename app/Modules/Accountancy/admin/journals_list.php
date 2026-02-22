@@ -228,10 +228,10 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 			if ($i) {
 				$sql .= ",";
 			}
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null"; // For vat, we want/accept code = ''
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -272,7 +272,7 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 				$sql .= ",";
 			}
 			$sql .= $field." = ";
-			$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+			$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			$i++;
 		}
 		$sql .= " WHERE ".$db->sanitize($rowidcol)." = ".((int) $rowid);

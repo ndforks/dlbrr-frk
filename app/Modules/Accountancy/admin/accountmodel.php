@@ -211,17 +211,17 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 		$i = 0;
 		foreach ($listfieldinsert as $f => $value) {
 			if ($value == 'price' || preg_match('/^amount/i', $value) || $value == 'taux') {
-				$_POST[$listfieldvalue[$i]] = price2num(GETPOST($listfieldvalue[$i]), 'MU');
+				$_POST[$listfieldvalue[$i]] = price2num(request()->input($listfieldvalue[$i]), 'MU');
 			} elseif ($value == 'entity') {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
 			if ($i) {
 				$sql .= ",";
 			}
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -250,7 +250,7 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 		$i = 0;
 		foreach ($listfieldmodify as $field) {
 			if ($field == 'price' || preg_match('/^amount/i', $field) || $field == 'taux') {
-				$_POST[$listfieldvalue[$i]] = price2num(GETPOST($listfieldvalue[$i]), 'MU');
+				$_POST[$listfieldvalue[$i]] = price2num(request()->input($listfieldvalue[$i]), 'MU');
 			} elseif ($field == 'entity') {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
@@ -258,10 +258,10 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 				$sql .= ",";
 			}
 			$sql .= $field."=";
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}

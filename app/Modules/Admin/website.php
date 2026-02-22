@@ -213,15 +213,15 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
 			if ($value == 'ref') {
-				$_POST[$listfieldvalue[$i]] = strtolower(GETPOST($listfieldvalue[$i]));
+				$_POST[$listfieldvalue[$i]] = strtolower(request()->input($listfieldvalue[$i]));
 			}
 			if ($i) {
 				$sql .= ",";
 			}
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -271,10 +271,10 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 				$sql .= ",";
 			}
 			$sql .= $field."=";
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}

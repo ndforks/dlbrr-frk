@@ -193,8 +193,8 @@ if ($action == 'update') {
 	foreach ($modules as $module => $delays) {
 		if (isModEnabled($module)) {
 			foreach ($delays as $delay) {
-				if (GETPOST($delay['code']) != '') {
-					dolibarr_set_const($db, $delay['code'], GETPOST($delay['code']), 'chaine', 0, '', $conf->entity);
+				if (request()->input($delay['code']) != '') {
+					dolibarr_set_const($db, $delay['code'], request()->input($delay['code']), 'chaine', 0, '', $conf->entity);
 				}
 			}
 		}

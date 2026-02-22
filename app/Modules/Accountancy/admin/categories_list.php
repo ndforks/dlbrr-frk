@@ -247,10 +247,10 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 			if ($i) {
 				$sql .= ",";
 			}
-			if (GETPOST($listfieldvalue[$i]) == '' && !$listfieldvalue[$i] == 'formula') {
+			if (request()->input($listfieldvalue[$i]) == '' && !$listfieldvalue[$i] == 'formula') {
 				$sql .= "null"; // For vat, we want/accept code = ''
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -296,10 +296,10 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 				$sql .= ",";
 			}
 			$sql .= $field."=";
-			if (GETPOST($listfieldvalue[$i]) == '' && !$listfieldvalue[$i] == 'range_account') {
+			if (request()->input($listfieldvalue[$i]) == '' && !$listfieldvalue[$i] == 'range_account') {
 				$sql .= "null"; // For range_account, we want/accept code = ''
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}

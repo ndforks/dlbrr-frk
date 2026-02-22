@@ -112,9 +112,9 @@ if ($action == 'set') {
 				$newActiveModules[] = $syslogHandler;
 			}
 			foreach ($module->configure() as $option) {
-				if (GETPOSTISSET($option['constant'])) {
+				if (request()->has($option['constant'])) {
 					dolibarr_del_const($db, $option['constant'], -1);
-					dolibarr_set_const($db, $option['constant'], trim(GETPOST($option['constant'])), 'chaine', 0, '', 0);
+					dolibarr_set_const($db, $option['constant'], trim(request()->input($option['constant'])), 'chaine', 0, '', 0);
 				}
 			}
 		}
