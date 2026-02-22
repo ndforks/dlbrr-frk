@@ -4,7 +4,7 @@
 
 Phase 3 of the Laravel refactoring is now underway. This phase focuses on converting legacy Dolibarr action files (card.php, list.php, etc.) into proper Laravel controllers with Blade views.
 
-## Completed Modules (2 of ~48)
+## Completed Modules (7 of ~48)
 
 ### ✅ Asterisk Module - COMPLETE
 **Files Refactored:** 1/1 (100%)
@@ -72,12 +72,101 @@ Phase 3 of the Laravel refactoring is now underway. This phase focuses on conver
 
 ---
 
+### ✅ Collab Module - COMPLETE
+**Files Refactored:** 1/1 (100%)
+
+**Before:**
+- `app/Modules/Collab/index.php` (134 lines)
+
+**After:**
+- Controller: `app/Http/Controllers/Collab/CollabController.php`
+- View: `resources/views/collab/index.blade.php`
+- Route: `GET|POST /collab` → `collab.index`
+
+**Functionality:** Collaborative document editing (PAD) placeholder page.
+
+**Commit:** 64599c78
+
+---
+
+### ✅ Cron Module - COMPLETE
+**Files Refactored:** 3/3 (100%)
+
+**Before:**
+- `app/Modules/Cron/card.php` (836 lines)
+- `app/Modules/Cron/list.php` (943 lines)
+- `app/Modules/Cron/info.php` (88 lines)
+
+**After:**
+- Controllers: `CronCardController.php`, `CronListController.php`, `CronInfoController.php`
+- Views: `cron/card.blade.php`, `cron/list.blade.php`, `cron/info.blade.php`
+- Routes: Multiple routes for CRUD, list, and info
+
+**Functionality:** Full cron jobs management with execution, filtering, and mass actions.
+
+**Commit:** 64599c78
+
+---
+
+### ✅ Delivery Module - COMPLETE
+**Files Refactored:** 1/1 (100%)
+
+**Before:**
+- `app/Modules/Delivery/card.php` (1,295 lines)
+
+**After:**
+- Controller: `app/Http/Controllers/Delivery/DeliveryCardController.php`
+- View: `resources/views/delivery/card.blade.php`
+- Route: `GET|POST /delivery/card` → `delivery.card`
+
+**Functionality:** Delivery receipt management with PDF generation.
+
+**Commit:** 486a0379
+
+---
+
+### ✅ Imports Module - COMPLETE
+**Files Refactored:** 3/3 (100%)
+
+**Before:**
+- `app/Modules/Imports/index.php` (98 lines)
+- `app/Modules/Imports/import.php` (2,539 lines)
+- `app/Modules/Imports/emptyexample.php` (61 lines)
+
+**After:**
+- Controllers: `IndexController.php`, `ImportWizardController.php`, `EmptyExampleController.php`
+- Views: `imports/index.blade.php`, `imports/wizard.blade.php`
+- Routes: Multiple routes for wizard steps
+
+**Functionality:** Multi-step data import wizard with format support and example generation.
+
+**Commit:** 486a0379
+
+---
+
+### ✅ Exports Module - COMPLETE
+**Files Refactored:** 1/1 (100%)
+
+**Before:**
+- `app/Modules/Exports/export.php` (998 lines)
+
+**After:**
+- Controller: `app/Http/Controllers/Exports/ExportWizardController.php`
+- View: `resources/views/exports/wizard.blade.php`
+- Route: `GET|POST /exports/wizard` → `exports.wizard`
+
+**Functionality:** Multi-step data export wizard with format selection and field mapping.
+
+**Commit:** 486a0379
+
+---
+
 ## Statistics
 
 ### Progress Metrics
-- **Modules Completed:** 2 (Asterisk, Barcode)
-- **Files Refactored:** 3 files
-- **Legacy Code Removed:** 1,293 lines
+- **Modules Completed:** 7 (Asterisk, Barcode, Collab, Cron, Delivery, Imports, Exports)
+- **Files Refactored:** 12 files
+- **Legacy Code Removed:** 8,151 lines
 - **Modern Code Added:** ~1,100 lines
 - **Directories Removed:** 1 (Barcode - both files converted)
 
