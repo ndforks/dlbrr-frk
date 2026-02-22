@@ -9,5 +9,17 @@ class ExpenseReport extends Model
     protected $table = 'llx_expensereport';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    protected $guarded = [];
+    
+    protected $fillable = [
+        'fk_user_author',
+        'ref',
+        'date_debut',
+        'date_fin',
+        'date_create',
+        'fk_statut',
+        'total_ht',
+        'total_tva',
+        'total_ttc',
+        'entity',
+    ];
 }

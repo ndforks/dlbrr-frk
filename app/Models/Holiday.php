@@ -9,5 +9,15 @@ class Holiday extends Model
     protected $table = 'llx_holiday';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    protected $guarded = [];
+    
+    protected $fillable = [
+        'fk_user',
+        'date_debut',
+        'date_fin',
+        'halfday',
+        'fk_type',
+        'fk_statut',
+        'description',
+        'entity',
+    ];
 }

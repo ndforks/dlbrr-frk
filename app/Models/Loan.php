@@ -9,5 +9,15 @@ class Loan extends Model
     protected $table = 'llx_loan';
     protected $primaryKey = 'rowid';
     public $timestamps = false;
-    protected $guarded = [];
+    
+    protected $fillable = [
+        'label',
+        'capital',
+        'datestart',
+        'dateend',
+        'nbterm',
+        'rate',
+        'fk_bank',
+        'entity',
+    ];
 }
