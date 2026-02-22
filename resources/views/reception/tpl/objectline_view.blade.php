@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{-- Blade template version
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -36,147 +35,97 @@
  *
  * $type, $text, $description, $line
  */
+--}}
 
-/**
- * @var Conf $conf
- * @var CommonObject $this
- * @var CommonObject $object
- * @var CommonObjectLine $line
- * @var Translate $langs
- * @var User $user
- *
- * @var int $i
- * @var int $num
- * @var string $action
- */
-'
-@phan-var-force receptionlinebatch $line
-@phan-var-force int $num
-@phan-var-force int $i
-@phan-var-force CommonObject $this
-@phan-var-force CommonObject $object
-';
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-global $filtertype;
-if (empty($filtertype)) {
-	$filtertype = 0;
-}
-
-
-global $forceall, $senderissupplier, $inputalsopricewithtax, $outputalsopricetotalwithtax, $langs;
-
-if (empty($dateSelector)) {
-	$dateSelector = 0;
-}
-if (empty($forceall)) {
-	$forceall = 0;
-}
-
-
-// add html5 elements
+@php
+$filtertype = $filtertype ?? 0;
+$forceall = $forceall ?? 0;
 $domData  = ' data-element="'.$line->element.'"';
 $domData .= ' data-id="'.$line->id.'"';
 $domData .= ' data-qty="'.$line->qty.'"';
 $domData .= ' data-product_type="'.$line->product_type.'"';
-
-// Lines for extrafield
-$objectline = new ReceptionLineBatch($this->db);
-
 $coldisplay = 0;
-print "<!-- BEGIN PHP TEMPLATE reception/tpl/objectline_view.tpl.php -->\n";
-print '<tr id="row-'.$line->id.'" class="drag drop oddeven" '.$domData.' >';
-
-// Line nb
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">'.($i + 1).'</td>';
-	$coldisplay++;
-}
-
-// Product
-print '<td class="linecoldescription line minwidth300imp tdoverflowmax300">';
-print '<div id="line_'.$line->id.'"></div>';
-$coldisplay++;
 $tmpproduct = new Product($object->db);
 $tmpproduct->fetch($line->fk_product);
-$tmprecep = new Reception($object->db);
-if ($line->fk_product > 0) {
-	print $tmpproduct->getNomUrl(1);
-	print ' - '.$tmpproduct->label;
-} else {
-	print ' - '.$line->description;
-}
-print '</td>';
+@endphp
 
-// Qty
-print '<td class="linecolqty nowrap right">';
-$coldisplay++;
-echo price($line->qty, 0, '', 0, 0); // Yes, it is a quantity, not a price, but we just want the formatting role of function price
-print '</td>';
+<!-- BEGIN BLADE TEMPLATE reception/tpl/objectline_view.blade.php -->
 
-// Unit
-if (getDolGlobalInt('PRODUCT_USE_UNITS')) {		// For product, unit is shown only if option PRODUCT_USE_UNITS is on
-	print '<td class="linecoluseunit nowrap">';
-	$coldisplay++;
-	$label = measuringUnitString((int) $line->fk_unit, '', null, 1);
-	if ($label !== '') {
-		print $langs->trans($label);
-	}
-	print '</td>';
-}
+<tr id="row-{{ $line->id }}" class="drag drop oddeven" {!! $domData !!}>
+    @if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+        @php $coldisplay++; @endphp
+        <td class="linecolnum center">{{ $i + 1 }}</td>
+    @endif
 
-if ($this->status == 0 && $user->hasRight('reception', 'write') && $action != 'selectlines') {
-	print '<td class="linecoledit center">';
-	$coldisplay++;
-	if (((int) $line->info_bits & 2) == 2 || !empty($disableedit)) {
-	} else {
-		print '<a class="editfielda reposition" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id.'">'.img_edit().'</a>';
-	}
-	print '</td>';
+    @php $coldisplay++; @endphp
+    <td class="linecoldescription line minwidth300imp tdoverflowmax300">
+        <div id="line_{{ $line->id }}"></div>
+        @if ($line->fk_product > 0)
+            {!! $tmpproduct->getNomUrl(1) !!} - {{ $tmpproduct->label }}
+        @else
+            - {{ $line->description }}
+        @endif
+    </td>
 
-	print '<td class="linecoldelete center">';
-	$coldisplay++;
+    @php $coldisplay++; @endphp
+    <td class="linecolqty nowrap right">
+        {{ price($line->qty, 0, '', 0, 0) }}
+    </td>
 
-	print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&action=deleteline&token='.newToken().'&lineid='.$line->id.'">';
-	print img_delete();
-	print '</a>';
+    @if (getDolGlobalInt('PRODUCT_USE_UNITS'))
+        @php 
+            $coldisplay++; 
+            $label = measuringUnitString((int) $line->fk_unit, '', null, 1);
+        @endphp
+        <td class="linecoluseunit nowrap">
+            @if ($label !== '')
+                {{ $langs->trans($label) }}
+            @endif
+        </td>
+    @endif
 
-	print '</td>';
+    @if ($this->status == 0 && $user->hasRight('reception', 'write') && $action != 'selectlines')
+        @php $coldisplay++; @endphp
+        <td class="linecoledit center">
+            @if (((int) $line->info_bits & 2) != 2 && empty($disableedit))
+                <a class="editfielda reposition" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->id }}&action=editline&token={{ newToken() }}&lineid={{ $line->id }}">{!! img_edit() !!}</a>
+            @endif
+        </td>
 
-	if ($num > 1 && $conf->browser->layout != 'phone' && empty($disablemove)) {
-		print '<td class="linecolmove tdlineupdown center">';
-		$coldisplay++;
-		if ($i > 0) {
-			print '<a class="lineupdown" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id.'">';
-			echo img_up('default', 0, 'imgupforline');
-			print '</a>';
-		}
-		if ($i < $num - 1) {
-			print '<a class="lineupdown" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id.'">';
-			echo img_down('default', 0, 'imgdownforline');
-			print '</a>';
-		}
-		print '</td>';
-	} else {
-		print '<td '.(($conf->browser->layout != 'phone' && empty($disablemove)) ? ' class="linecolmove tdlineupdown center"' : ' class="linecolmove center"').'></td>';
-		$coldisplay++;
-	}
-} else {
-	print '<td colspan="3"></td>';
-	$coldisplay += 3;
-}
+        @php $coldisplay++; @endphp
+        <td class="linecoldelete center">
+            <a class="reposition" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->id }}&action=deleteline&token={{ newToken() }}&lineid={{ $line->id }}">
+                {!! img_delete() !!}
+            </a>
+        </td>
 
-if ($action == 'selectlines') {
-	print '<td class="linecolcheck center">';
-	print '<input type="checkbox" class="linecheckbox" name="line_checkbox['.($i + 1).']" value="'.$line->id.'" >';
-	print '</td>';
-}
+        @php $coldisplay++; @endphp
+        @if ($num > 1 && $conf->browser->layout != 'phone' && empty($disablemove))
+            <td class="linecolmove tdlineupdown center">
+                @if ($i > 0)
+                    <a class="lineupdown" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->id }}&action=up&token={{ newToken() }}&rowid={{ $line->id }}">
+                        {!! img_up('default', 0, 'imgupforline') !!}
+                    </a>
+                @endif
+                @if ($i < $num - 1)
+                    <a class="lineupdown" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->id }}&action=down&token={{ newToken() }}&rowid={{ $line->id }}">
+                        {!! img_down('default', 0, 'imgdownforline') !!}
+                    </a>
+                @endif
+            </td>
+        @else
+            <td class="{{ ($conf->browser->layout != 'phone' && empty($disablemove)) ? 'linecolmove tdlineupdown center' : 'linecolmove center' }}"></td>
+        @endif
+    @else
+        @php $coldisplay += 3; @endphp
+        <td colspan="3"></td>
+    @endif
 
-print '</tr>';
+    @if ($action == 'selectlines')
+        <td class="linecolcheck center">
+            <input type="checkbox" class="linecheckbox" name="line_checkbox[{{ $i + 1 }}]" value="{{ $line->id }}">
+        </td>
+    @endif
+</tr>
 
-print "<!-- END PHP TEMPLATE objectline_view.tpl.php -->\n";
+<!-- END BLADE TEMPLATE objectline_view.blade.php -->

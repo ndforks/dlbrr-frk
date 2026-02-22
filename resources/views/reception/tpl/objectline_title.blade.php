@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{-- Blade template version
 /* Copyright (C) 2010-2013	Regis Houssin		        <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	    <eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	    <christophe.battarel@altairis.fr>
@@ -35,68 +34,38 @@
  *
  * $type, $text, $description, $line
  */
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var Form $form
- * @var Translate $langs
- *
- * @var string $action
- */
+--}}
 
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+@php
+$filtertype = $filtertype ?? 0;
+@endphp
 
-'@phan-var-force CommonObject $this
- @phan-var-force CommonObject $object';
+<!-- BEGIN BLADE TEMPLATE reception/tpl/objectline_title.blade.php -->
 
-global $filtertype;
-if (empty($filtertype)) {
-	$filtertype = 0;
-}
+<thead>
+<tr class="liste_titre nodrag nodrop">
+    @if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+    <td class="linecolnum center">&nbsp;</td>
+    @endif
 
-print "<!-- BEGIN PHP TEMPLATE reception/tpl/objectline_title.tpl.php -->\n";
+    <th class="linecoldescription">{{ $langs->trans('Description') }}</th>
+    <th class="linecolqty right">{{ $langs->trans('Qty') }}</th>
 
+    @if (getDolGlobalString('PRODUCT_USE_UNITS'))
+    <th class="linecoluseunit left">{{ $langs->trans('Unit') }}</th>
+    @endif
 
-// Title line
-print "<thead>\n";
+    <td class="linecoledit" style="width: 10px"></td>
+    <td class="linecoldelete" style="width: 10px"></td>
+    <td class="linecolmove" style="width: 10px"></td>
 
-print '<tr class="liste_titre nodrag nodrop">';
+    @if ($action == 'selectlines')
+    <td class="linecolcheckall center">
+        <input type="checkbox" class="linecheckboxtoggle" />
+        <script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>
+    </td>
+    @endif
+</tr>
+</thead>
 
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">&nbsp;</td>';
-}
-
-// Product
-print '<th class="linecoldescription">'.$langs->trans('Description');
-
-// Qty
-print '<th class="linecolqty right">'.$langs->trans('Qty').'</th>';
-
-
-// Unit
-if (getDolGlobalString('PRODUCT_USE_UNITS')) {
-	print '<th class="linecoluseunit left">'.$langs->trans('Unit').'</th>';
-}
-
-print '<td class="linecoledit" style="width: 10px"></td>'; // No width to allow autodim
-
-print '<td class="linecoldelete" style="width: 10px"></td>';
-
-print '<td class="linecolmove" style="width: 10px"></td>';
-
-if ($action == 'selectlines') {
-	print '<td class="linecolcheckall center">';
-	print '<input type="checkbox" class="linecheckboxtoggle" />';
-	print '<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>';
-	print '</td>';
-}
-
-print "</tr>\n";
-print "</thead>\n";
-
-print "<!-- END PHP TEMPLATE objectline_title.tpl.php -->\n";
+<!-- END BLADE TEMPLATE objectline_title.blade.php -->
