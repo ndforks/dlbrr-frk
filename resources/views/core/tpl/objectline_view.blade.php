@@ -127,11 +127,11 @@ if (getDolGlobalString('INVOICE_POSITIVE_CREDIT_NOTE_SCREEN') && in_array($objec
 $coldisplay = 0;
 ?>
 <!-- BEGIN PHP TEMPLATE objectline_view.tpl.php -->
-<tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
+<tr  id="row-{!! $line->id?>" class="drag drop oddeven" {!! $domData !!} >
 <?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-	<td class="linecolnum center"><span class="opacitymedium"><?php $coldisplay++; ?><?php print ($i + 1); ?></span></td>
+	<td class="linecolnum center"><span class="opacitymedium"><?php $coldisplay++ !!}{!! ($i + 1) !!}</span></td>
 <?php } ?>
-	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?><div id="line_<?php print $line->id; ?>"></div>
+	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?><div id="line_{!! $line->id !!}"></div>
 <?php
 
 
@@ -506,13 +506,13 @@ if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 
 if ($usemargins && isModEnabled('margin') && empty($user->socid)) {
 	if ($user->hasRight('margins', 'creer')) { ?>
-		<td class="linecolmargin1 nowrap margininfos right"><?php $coldisplay++; ?><?php print price($line->pa_ht); ?></td>
+		<td class="linecolmargin1 nowrap margininfos right"><?php $coldisplay++; ?>{!! price($line->pa_ht) !!}</td>
 	<?php }
 	if (getDolGlobalString('DISPLAY_MARGIN_RATES') && $user->hasRight('margins', 'liretous')) { ?>
-		<td class="linecolmargin2 nowrap margininfos right"><?php $coldisplay++; ?><?php print(($line->pa_ht == 0) ? 'n/a' : price(price2num($line->marge_tx, 'MT')).'%'); ?></td>
+		<td class="linecolmargin2 nowrap margininfos right">@php $coldisplay++; @endphp{!! ($line->pa_ht == 0) ? 'n/a' : price(price2num($line->marge_tx, 'MT')).'%' !!}</td>
 	<?php }
 	if (getDolGlobalString('DISPLAY_MARK_RATES') && $user->hasRight('margins', 'liretous')) {?>
-		<td class="linecolmark1 nowrap margininfos right"><?php $coldisplay++; ?><?php print price(price2num($line->marque_tx, 'MT')).'%'; ?></td>
+		<td class="linecolmark1 nowrap margininfos right"><?php $coldisplay++; ?>{!! price(price2num($line->marque_tx, 'MT')).'%' !!}</td>
 	<?php }
 }
 
@@ -609,8 +609,8 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 	$coldisplay++;
 	if (($line->info_bits & 2) == 2 || !empty($disableedit)) {
 	} else { ?>
-		<a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id; ?>">
-		<?php print img_edit().'</a>';
+		<a class="editfielda reposition" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id !!}">
+		{!! img_edit().'</a>';
 	}
 	print '</td>';
 
@@ -628,14 +628,14 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 	if ($num > 1 && $conf->browser->layout != 'phone' && ((property_exists($this, 'situation_counter') && $this->situation_counter == 1) || empty($this->situation_cycle_ref)) && empty($disablemove)) {
 		print '<td class="linecolmove tdlineupdown center">';
 		$coldisplay++;
-		if ($i > 0) { ?>
-			<a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_up('default', 0, 'imgupforline'); ?>
+		if ($i > 0) { !!}
+			<a class="lineupdown" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id !!}">
+			{!! img_up('default', 0, 'imgupforline') !!}
 			</a>
 		<?php }
 		if ($i < $num - 1) { ?>
-			<a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_down('default', 0, 'imgdownforline'); ?>
+			<a class="lineupdown" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id !!}">
+			{!! img_down('default', 0, 'imgdownforline') !!}
 			</a>
 		<?php }
 		print '</td>';
@@ -653,7 +653,7 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 }
 
 if ($action == 'selectlines') { ?>
-	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>" ></td>
+	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[{!! $i + 1 !!}]" value="{!! $line->id !!}" ></td>
 <?php }
 
 print "</tr>\n";

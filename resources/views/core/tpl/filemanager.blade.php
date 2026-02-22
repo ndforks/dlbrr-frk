@@ -186,7 +186,7 @@ if ((!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE
 		?>
 		<script>
 		jQuery(document).ready(function() {
-			jQuery('#<?php echo $nameforformuserfile ?>').hide();
+			jQuery('#{{ $nameforformuserfile }}').hide();
 		});
 		</script>
 		<?php

@@ -95,13 +95,13 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 ?>
 
 <td class="linecoldesc minwidth250onall">
-	<div id="line_<?php echo $line->id; ?>"></div>
+	<div id="line_{{ $line->id }}"></div>
 
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
-	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="<?php echo $line->fk_parent_line; ?>">
-	<input type="hidden" name="action" value="update<?php echo $line_type ?>line">
+	<input type="hidden" name="lineid" value="{{ $line->id }}">
+	<input type="hidden" id="product_type" name="type" value="{{ $line->product_type }}">
+	<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
+	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="{{ $line->fk_parent_line }}">
+	<input type="hidden" name="action" value="update{{ $line_type }}line">
 
 	<?php
 
@@ -158,8 +158,8 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 
 
 <td class="center valignmiddle" colspan="4">
-	<input type="submit" class="reposition button buttongen button-save" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
-	<input type="submit" class="reposition button buttongen button-cancel" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+	<input type="submit" class="reposition button buttongen button-save" id="savelinebutton marginbottomonly" name="save" value="{{ $langs->trans("Save") }}"><br>
+	<input type="submit" class="reposition button buttongen button-cancel" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
 </td>
 </tr>
 

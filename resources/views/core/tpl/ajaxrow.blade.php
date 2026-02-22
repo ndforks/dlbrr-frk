@@ -69,26 +69,26 @@ $(document).ready(function(){
 	$(".imgupforline").hide();
 	$(".imgdownforline").hide();
 	$(".lineupdown").removeAttr('href');
-	$(".tdlineupdown").css("background-image",'url(<?php echo DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/grip.png'; ?>)');
+	$(".tdlineupdown").css("background-image",'url({{ DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/grip.png' }})');
 	$(".tdlineupdown").css("background-repeat","no-repeat");
 	$(".tdlineupdown").css("background-position","center center");
 
-	console.log("Prepare tableDnd for #<?php echo $tagidfortablednd; ?>");
-	$("#<?php echo $tagidfortablednd; ?>").tableDnD({
+	console.log("Prepare tableDnd for #{{ $tagidfortablednd }}");
+	$("#{{ $tagidfortablednd }}").tableDnD({
 		onDrop: function(table, row) {
 			var page_y = jQuery(document).scrollTop();
-			var reloadpage = "<?php echo $forcereloadpage; ?>";
+			var reloadpage = "{{ $forcereloadpage }}";
 			console.log("tableDND onDrop");
-			console.log(decodeURI($("#<?php echo $tagidfortablednd; ?>").tableDnDSerialize()));
-			$('#<?php echo $tagidfortablednd; ?> tr[data-element=extrafield]').attr('id', '');	// Set extrafields id to empty value in order to ignore them in tableDnDSerialize function
-			$('#<?php echo $tagidfortablednd; ?> tr[data-ignoreidfordnd=1]').attr('id', '');	// Set id to empty value in order to ignore them in tableDnDSerialize function
-			var roworder = cleanSerialize(decodeURI($("#<?php echo $tagidfortablednd; ?>").tableDnDSerialize()));
-			var table_element_line = "<?php echo $table_element_line; ?>";
-			var fk_element = "<?php echo $fk_element; ?>";
-			var element_id = "<?php echo $id; ?>";
-			var filepath = "<?php echo urlencode($filepath); ?>";
-			var token = "<?php echo currentToken(); ?>";	// We use old 'token' and not 'newtoken' for Ajax call because the ajax page has the NOTOKENRENEWAL constant set.
-			$.post("<?php echo DOL_URL_ROOT; ?>/core/ajax/row.php",
+			console.log(decodeURI($("#{{ $tagidfortablednd }}").tableDnDSerialize()));
+			$('#{{ $tagidfortablednd }} tr[data-element=extrafield]').attr('id', '');	// Set extrafields id to empty value in order to ignore them in tableDnDSerialize function
+			$('#{{ $tagidfortablednd }} tr[data-ignoreidfordnd=1]').attr('id', '');	// Set id to empty value in order to ignore them in tableDnDSerialize function
+			var roworder = cleanSerialize(decodeURI($("#{{ $tagidfortablednd }}").tableDnDSerialize()));
+			var table_element_line = "{{ $table_element_line }}";
+			var fk_element = "{{ $fk_element }}";
+			var element_id = "{{ $id }}";
+			var filepath = "{{ urlencode($filepath) }}";
+			var token = "{{ currentToken() }}";	// We use old 'token' and not 'newtoken' for Ajax call because the ajax page has the NOTOKENRENEWAL constant set.
+			$.post("{{ DOL_URL_ROOT }}/core/ajax/row.php",
 					{
 						roworder: roworder,
 						table_element_line: table_element_line,
@@ -106,9 +106,9 @@ $(document).ready(function(){
 							$redirectURL = preg_replace('/(&|\?)action=[^&#]*/', '', $redirectURL);
 							$redirectURL = preg_replace('/(&|\?)page_y=[^&#]*/', '', $redirectURL);
 							?>
-							location.href = '<?php echo dol_escape_js($redirectURL); ?>&page_y='+page_y;
+							location.href = '{{ dol_escape_js($redirectURL) }}&page_y='+page_y;
 						} else {
-							$("#<?php echo $tagidfortablednd; ?> .drag").each(
+							$("#{{ $tagidfortablednd }} .drag").each(
 									function( intIndex ) {
 										// $(this).removeClass("pair impair");
 										//if (intIndex % 2 == 0) $(this).addClass('impair');

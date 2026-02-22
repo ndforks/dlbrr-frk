@@ -58,7 +58,7 @@ if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 }
 
 if ($line->qty > 0) { ?>
-	<td class="linecollabel" <?php echo !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>><?php echo str_repeat('&nbsp;', (int) ($line->qty - 1) * 8); ?>
+	<td class="linecollabel" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>>{{ str_repeat('&nbsp;', (int) ($line->qty - 1) * 8) }}
 		<?php
 		echo $line->desc;
 		if (array_key_exists('titleshowuponpdf', $line_options)) {
@@ -73,8 +73,7 @@ if ($line->qty > 0) { ?>
 		// Handling td for ref supplier
 		if (in_array($object->element, ['supplier_proposal'])) {
 			echo '<td></td>';
-		}
-		?>
+		} }}
 	</td>
 	<td class="linecolvat nowrap right">
 		<?php
@@ -212,19 +211,15 @@ if ($line->qty > 0) { ?>
 		$colspan += 1;
 	}
 	?>
-	<td class="linecollabel nowrap right" <?php echo !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?> colspan="<?php echo $colspan + 2 ?>">
-		<?php
-		echo $line->desc;
+	<td class="linecollabel nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' }} colspan="{{ $colspan + 2 }}">
+		{{ $line->desc;
 		if (array_key_exists('subtotalshowtotalexludingvatonpdf', $line_options)) {
 			echo '&nbsp; <span title="' . $langs->trans("ShowTotalExludingVATOnPDF") . '">%</span>';
 		}
-		echo ' :';
-		?>
+		echo ' :' }}
 	</td>
-	<td class="linecolamount nowrap right" <?php echo !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>>
-		<?php
-		echo $this->getSubtotalLineAmount($line);
-		?>
+	<td class="linecolamount nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>>
+		{{ $this->getSubtotalLineAmount($line) }}
 	</td>
 	<?php
 	if (isModEnabled('multicurrency') && $object->multicurrency_code != $conf->currency) {
@@ -233,8 +228,7 @@ if ($line->qty > 0) { ?>
 		echo '>';
 		echo $this->getSubtotalLineMulticurrencyAmount($line);
 		echo '</td>';
-	}
-	?>
+	} }}
 <?php }
 
 if ($this->status == 0) {
@@ -292,7 +286,7 @@ if ($this->status == 0) {
 }
 
 if ($action == 'selectlines') { ?>
-	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>" ></td>
+	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[{!! $i + 1 !!}]" value="{!! $line->id !!}" ></td>
 <?php }
 
 echo '</tr>';

@@ -88,24 +88,24 @@ function init(){
 	$(".imgdownforline").hide();
 	$(".lineupdown").removeAttr('href');
 
-	console.log("init() Prepare tableDnd for #<?php echo $tagidfortablednd; ?>");
+	console.log("init() Prepare tableDnd for #{{ $tagidfortablednd }}");
 
 	$(".tdlineupdown").each(function (tdindex, tdline) {
 		var gripimg = tdline.dataset.gripimg ?? 'grip.png';
 
-		$(tdline).css("background-image",'url(<?php echo DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/'; ?>' + gripimg + ')');
+		$(tdline).css("background-image",'url({{ DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/' }}' + gripimg + ')');
 		$(tdline).css("background-repeat","no-repeat");
 		$(tdline).css("background-position","center center");
 		/* console.log($(".tdlineupdown")[tdindex], tdline); */
 	})
 
-	var inital_table = $("#<?php echo $tagidfortablednd; ?> .drag").map((_, el) => $(el)[0]).get();
+	var inital_table = $("#{{ $tagidfortablednd }} .drag").map((_, el) => $(el)[0]).get();
 	var rowsToMove = [];
-	$("#<?php echo $tagidfortablednd; ?>").tableDnD({
+	$("#{{ $tagidfortablednd }}").tableDnD({
 		onDragStart: function (table, row) {
 			if (row.parentNode.dataset.level > 0) {
 				var hide = false;
-				$("#<?php echo $tagidfortablednd; ?> .drag").each(
+				$("#{{ $tagidfortablednd }} .drag").each(
 					function (intIndex) {
 						if (hide) {
 							if ($(this)[0].dataset.level>-row.parentNode.dataset.level && $(this)[0].dataset.level<=row.parentNode.dataset.level) {
@@ -145,20 +145,20 @@ function init(){
 			if (row.dataset.desc !== undefined) {
 				checkLinePosition(row, inital_table);
 			}
-			inital_table = $("#<?php echo $tagidfortablednd; ?> .drag").map((_, el) => $(el)[0]).get();
+			inital_table = $("#{{ $tagidfortablednd }} .drag").map((_, el) => $(el)[0]).get();
 
-			var reloadpage = "<?php echo $forcereloadpage; ?>";
+			var reloadpage = "{{ $forcereloadpage }}";
 			console.log("tableDND onDrop");
-			console.log(decodeURI($("#<?php echo $tagidfortablednd; ?>").tableDnDSerialize()));
-			$('#<?php echo $tagidfortablednd; ?> tr[data-element=extrafield]').attr('id', '');	// Set extrafields id to empty value in order to ignore them in tableDnDSerialize function
-			$('#<?php echo $tagidfortablednd; ?> tr[data-ignoreidfordnd=1]').attr('id', '');	// Set id to empty value in order to ignore them in tableDnDSerialize function
-			var roworder = cleanSerialize(decodeURI($("#<?php echo $tagidfortablednd; ?>").tableDnDSerialize()));
-			var table_element_line = "<?php echo $table_element_line; ?>";
-			var fk_element = "<?php echo $fk_element; ?>";
-			var element_id = "<?php echo $id; ?>";
-			var filepath = "<?php echo urlencode($filepath); ?>";
-			var token = "<?php echo currentToken(); ?>";	// We use old 'token' and not 'newtoken' for Ajax call because the ajax page has the NOTOKENRENEWAL constant set.
-			$.post("<?php echo DOL_URL_ROOT; ?>/core/ajax/row.php",
+			console.log(decodeURI($("#{{ $tagidfortablednd }}").tableDnDSerialize()));
+			$('#{{ $tagidfortablednd }} tr[data-element=extrafield]').attr('id', '');	// Set extrafields id to empty value in order to ignore them in tableDnDSerialize function
+			$('#{{ $tagidfortablednd }} tr[data-ignoreidfordnd=1]').attr('id', '');	// Set id to empty value in order to ignore them in tableDnDSerialize function
+			var roworder = cleanSerialize(decodeURI($("#{{ $tagidfortablednd }}").tableDnDSerialize()));
+			var table_element_line = "{{ $table_element_line }}";
+			var fk_element = "{{ $fk_element }}";
+			var element_id = "{{ $id }}";
+			var filepath = "{{ urlencode($filepath) }}";
+			var token = "{{ currentToken() }}";	// We use old 'token' and not 'newtoken' for Ajax call because the ajax page has the NOTOKENRENEWAL constant set.
+			$.post("{{ DOL_URL_ROOT }}/core/ajax/row.php",
 				{
 					roworder: roworder,
 					table_element_line: table_element_line,
@@ -176,7 +176,7 @@ function init(){
 						// remove action parameter from URL
 						$redirectURL = preg_replace('/(&|\?)action=[^&#]*/', '', $redirectURL);
 						?>
-						location.href = '<?php echo dol_escape_js($redirectURL); ?>';
+						location.href = '{{ dol_escape_js($redirectURL) }}';
 					}
 				});
 		},
@@ -189,7 +189,7 @@ function init(){
 }
 
 function checkLinePosition(row, inital_table) {
-	const tbody = $("#<?php echo $tagidfortablednd; ?> .drag").map((_, el) => $(el)[0]).get();
+	const tbody = $("#{{ $tagidfortablednd }} .drag").map((_, el) => $(el)[0]).get();
 
 	for (var k = 0; k < tbody.length; k++) {
 		const currentRow = tbody[k];
@@ -217,7 +217,7 @@ function checkLinePosition(row, inital_table) {
 					break;
 				} else if (currentRowLevel1 > 0 && currentRowLevel1 < rowLevel) {
 					if (rowLevel - currentRowLevel1 > 1) {
-						$("#notification-message").text("<?php echo $langs->trans("PreviousTitleLevelTooHigh"); ?>");
+						$("#notification-message").text("{{ $langs->trans("PreviousTitleLevelTooHigh") }}");
 						cancelLineMove = true;
 						break;
 					}
@@ -228,7 +228,7 @@ function checkLinePosition(row, inital_table) {
 						if (tbody[j].dataset.desc !== undefined) {
 							const currentRowLevel2 = parseInt(tbody[j].dataset.level, 10);
 							if (tbody[i].dataset.desc === tbody[j].dataset.desc && currentRowLevel1 === -currentRowLevel2) {
-								$("#notification-message").text("<?php echo $langs->trans("TitleUnderSameLevelSTLine"); ?>");
+								$("#notification-message").text("{{ $langs->trans("TitleUnderSameLevelSTLine") }}");
 								cancelLineMove = true;
 								break;
 							}
@@ -239,7 +239,7 @@ function checkLinePosition(row, inital_table) {
 						if (tbody[j].dataset.desc !== undefined) {
 							const currentRowLevel2 = parseInt(tbody[j].dataset.level, 10);
 							if (row.dataset.desc !== tbody[j].dataset.desc && currentRowLevel2 <= -rowLevel) {
-								$("#notification-message").text("<?php echo $langs->trans("TitleAfterStLineOfSameLevelTitle"); ?>");
+								$("#notification-message").text("{{ $langs->trans("TitleAfterStLineOfSameLevelTitle") }}");
 								cancelLineMove = true;
 								break;
 							}
@@ -249,7 +249,7 @@ function checkLinePosition(row, inital_table) {
 				} else if (currentRowLevel1 < -rowLevel) {
 					ignore_level = currentRowLevel1;
 				} else {
-					$("#notification-message").text("<?php echo $langs->trans("TitleUnderSameLevelOrGreater"); ?>");
+					$("#notification-message").text("{{ $langs->trans("TitleUnderSameLevelOrGreater") }}");
 					cancelLineMove = true;
 					break;
 				}
@@ -261,11 +261,11 @@ function checkLinePosition(row, inital_table) {
 						found_title = true;
 						break;
 					}else if (-rowLevel === currentRowLevel1) {
-						$("#notification-message").text("<?php echo $langs->trans("STLineUnderCorrespondingTitleDesc"); ?>");
+						$("#notification-message").text("{{ $langs->trans("STLineUnderCorrespondingTitleDesc") }}");
 						cancelLineMove = true;
 						break;
 					} else if (-rowLevel > currentRowLevel1) {
-						$("#notification-message").text("<?php echo $langs->trans("STLineUnderCorrespondingTitle"); ?>");
+						$("#notification-message").text("{{ $langs->trans("STLineUnderCorrespondingTitle") }}");
 						cancelLineMove = true;
 						break;
 					}
@@ -274,7 +274,7 @@ function checkLinePosition(row, inital_table) {
 		}
 	}
 	if (!found_title) {
-		$("#notification-message").text("<?php echo $langs->trans("STLineUnderTitle"); ?>");
+		$("#notification-message").text("{{ $langs->trans("STLineUnderTitle") }}");
 		cancelLineMove = true;
 	}
 

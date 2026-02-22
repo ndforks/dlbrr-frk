@@ -110,9 +110,9 @@ if ($permission) {
 	print '<div class="div-table-responsive-no-min">'."\n";
 	print '<div class="tagtable tableforcontact centpercent noborder nobordertop allwidth">'."\n"; ?>
 	<form class="tagtr liste_titre">
-		<div class="tagtd liste_titre"><?php echo img_object('', 'company', 'class="optiongrey paddingright"').$langs->trans("ThirdParty"); ?></div>
-		<div class="tagtd liste_titre"><?php echo img_picto($langs->trans("Users"), 'user', 'class="optiongrey paddingright"').$langs->trans("Users").' | '.img_picto($langs->trans("Contacts"), 'contact', 'class="optiongrey paddingright"').$langs->trans("Contacts"); ?></div>
-		<div class="tagtd liste_titre"><?php echo $langs->trans("ContactType"); ?></div>
+		<div class="tagtd liste_titre">{{ img_object('', 'company', 'class="optiongrey paddingright"').$langs->trans("ThirdParty") }}</div>
+		<div class="tagtd liste_titre">{{ img_picto($langs->trans("Users"), 'user', 'class="optiongrey paddingright"').$langs->trans("Users").' | '.img_picto($langs->trans("Contacts"), 'contact', 'class="optiongrey paddingright"').$langs->trans("Contacts") }}</div>
+		<div class="tagtd liste_titre">{{ $langs->trans("ContactType") }}</div>
 		<div class="tagtd liste_titre">&nbsp;</div>
 		<div class="tagtd liste_titre">&nbsp;</div>
 	</form>
@@ -121,24 +121,23 @@ if ($permission) {
 
 	if (empty($hideaddcontactforuser)) {
 		?>
-	<form class="tagtr impair nohover" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
-		<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
-		<input type="hidden" name="id" value="<?php echo $object->id; ?>" />
+	<form class="tagtr impair nohover" action="{{ $_SERVER["PHP_SELF"].'?id='.$object->id }}" method="POST">
+		<input type="hidden" name="token" value="{{ newToken() }}" />
+		<input type="hidden" name="id" value="{{ $object->id }}" />
 		<input type="hidden" name="action" value="addcontact" />
 		<input type="hidden" name="source" value="internal" />
 		<?php if (!empty($withproject)) {
 			print '<input type="hidden" name="withproject" value="'.$withproject.'">';
 		} ?>
 
-		<div class="tagtd"><span class="paddingleft"><?php echo getDolGlobalString('MAIN_INFO_SOCIETE_NOM'); ?></span></div>
-		<!--  <div class="nowrap tagtd"><?php echo img_object('', 'user').' '.$langs->trans("Users"); ?></div> -->
+		<div class="tagtd"><span class="paddingleft">{{ getDolGlobalString('MAIN_INFO_SOCIETE_NOM') }}</span></div>
+		<!--  <div class="nowrap tagtd">{{ img_object('', 'user').' '.$langs->trans("Users") }}</div> -->
 		<div class="tagtd maxwidthonsmartphone">
-		<?php echo img_object('', 'user', 'class="pictofixedwidth"').$form->select_dolusers($user->id, 'userid', 1, (!empty($userAlreadySelected) ? $userAlreadySelected : null), 0, '', '', '0', 56, 0, '', 0, '', 'minwidth100imp widthcentpercentminusxx maxwidth400 userselectcontact');
+		{{ img_object('', 'user', 'class="pictofixedwidth"').$form->select_dolusers($user->id, 'userid', 1, (!empty($userAlreadySelected) ? $userAlreadySelected : null), 0, '', '', '0', 56, 0, '', 0, '', 'minwidth100imp widthcentpercentminusxx maxwidth400 userselectcontact');
 		if (empty($hideaddcontactforgroups) && $module == 'project') {
 			print '<span class="opacitymedium"> '.$langs->trans("or").' </span>';
 			echo img_object('', 'group', 'class="pictofixedwidth"').$form->select_dolgroups(0, 'groupid', 1, '', 0, '', array(), '0', false, 'minwidth100imp widthcentpercentminusxx maxwidth400 groupselectcontact');
-		}
-		?>
+		} }}
 		<script>
 			jQuery(document).ready(function(){
 				$(".userselectcontact").on("change", function(){
@@ -162,7 +161,7 @@ if ($permission) {
 		}
 		$formcompany->selectTypeContact($tmpobject, '', 'type', 'internal', 'position', 0, 'minwidth150imp widthcentpercentminusx maxwidth200'); ?></div>
 		<div class="tagtd">&nbsp;</div>
-		<div class="tagtd center"><input type="submit" class="button small" value="<?php echo $langs->trans("Add"); ?>"></div>
+		<div class="tagtd center"><input type="submit" class="button small" value="{{ $langs->trans("Add") }}"></div>
 	</form>
 		<?php
 	}
@@ -170,9 +169,9 @@ if ($permission) {
 	if (empty($hideaddcontactforthirdparty)) {
 		?>
 
-	<form class="tagtr pair nohover" action="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id; ?>" method="POST">
-		<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
-		<input type="hidden" name="id" value="<?php echo $object->id; ?>" />
+	<form class="tagtr pair nohover" action="{{ $_SERVER["PHP_SELF"].'?id='.$object->id }}" method="POST">
+		<input type="hidden" name="token" value="{{ newToken() }}" />
+		<input type="hidden" name="id" value="{{ $object->id }}" />
 		<input type="hidden" name="action" value="addcontact" />
 		<input type="hidden" name="source" value="external" />
 		<input type="hidden" name="page_y" value="" />
@@ -186,8 +185,7 @@ if ($permission) {
 			$selectedCompany = $formcompany->selectCompaniesForNewContact($object, 'id', $selectedCompany, 'newcompany', array(), 0, '', 'minwidth300imp maxwidth400 widthcentpercentminusx');	// This also print the select component?>
 		</div>
 		<div class="tagtd noborderbottom minwidth500imp">
-			<?php
-			print img_object('', 'contact', 'class="pictofixedwidth"');
+			{!! img_object('', 'contact', 'class="pictofixedwidth"');
 			//print $form->selectcontacts(($selectedCompany > 0 ? $selectedCompany : -1), '', 'contactid', 3, '', '', 1, 'minwidth100imp widthcentpercentminusxx maxwidth400');
 			print $form->select_contact(($selectedCompany > 0 ? $selectedCompany : -1), '', 'contactid', 3, '', '', 1, 'minwidth100imp maxwidth400 widthcentpercentminusx', true);
 
@@ -197,7 +195,7 @@ if ($permission) {
 			if (!empty($object->socid) && $object->socid > 1 && $user->hasRight('societe', 'creer')) {
 				$newcardbutton .= '<a href="'.DOL_URL_ROOT.'/contact/card.php?socid='.$selectedCompany.'&action=create&backtopage='.urlencode($_SERVER["PHP_SELF"].'?id='.$object->id).'" title="'.$langs->trans('NewContact').'"><span class="fa fa-plus-circle valignmiddle paddingleft"></span></a>';
 			}
-			print $newcardbutton; ?>
+			print $newcardbutton !!}
 		</div>
 		<div class="tagtd noborderbottom">
 			<?php
@@ -210,7 +208,7 @@ if ($permission) {
 		</div>
 		<div class="tagtd noborderbottom">&nbsp;</div>
 		<div class="tagtd center noborderbottom">
-			<input type="submit" id="add-customer-contact" class="button small" value="<?php echo $langs->trans("Add"); ?>"<?php if (!$nbofcontacts) {
+			<input type="submit" id="add-customer-contact" class="button small" value="{{ $langs->trans("Add") }}"<?php if (!$nbofcontacts) {
 				echo ' disabled';
 																					   } ?>>
 		</div>

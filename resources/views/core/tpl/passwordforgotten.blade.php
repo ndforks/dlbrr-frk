@@ -128,14 +128,14 @@ $colorbackhmenu1 = implode(',', colorStringToArray($colorbackhmenu1)); // Normal
 ?>
 <!-- BEGIN PHP TEMPLATE PASSWORDFORGOTTEN.TPL.PHP -->
 
-<body class="body bodylogin"<?php print !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file='.urlencode('logos/' . getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"'; ?>>
+<body class="body bodylogin"{!! !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file='.urlencode('logos/' . getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"' !!}>
 
 <?php if (empty($conf->dol_use_jmobile)) { ?>
 <script>
 $(document).ready(function () {
 	// Set focus on correct field
 	<?php if ($focus_element) {
-		?>$('#<?php echo $focus_element; ?>').focus(); <?php
+		?>$('#{{ $focus_element }}').focus(); <?php
 	} ?>		// Warning to use this only on visible element
 });
 </script>
@@ -151,13 +151,13 @@ if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 ?>>
 <div class="login_vertical_align">
 
-<form id="login" name="login" method="POST" action="<?php echo $php_self; ?>">
-<input type="hidden" name="token" value="<?php echo newToken(); ?>">
+<form id="login" name="login" method="POST" action="{{ $php_self }}">
+<input type="hidden" name="token" value="{{ newToken() }}">
 <input type="hidden" name="action" value="buildnewpassword">
 
 
 <!-- Title with version -->
-<div class="login_table_title center" title="<?php echo dol_escape_htmltag($title); ?>">
+<div class="login_table_title center" title="{{ dol_escape_htmltag($title) }}">
 <?php
 if (!empty($disablenofollow)) {
 	echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank" rel="noopener noreferrer external">';
@@ -176,7 +176,7 @@ if (!empty($disablenofollow)) {
 <div id="login_line1">
 
 <div id="login_left">
-<img alt="" title="" src="<?php echo $urllogo; ?>" id="img_logo" />
+<img alt="" title="" src="{{ $urllogo }}" id="img_logo" />
 </div>
 
 <br>
@@ -190,7 +190,7 @@ if (!empty($disablenofollow)) {
 <div class="tagtd nowraponall center valignmiddle tdinputlogin">
 <!-- <span class="span-icon-user">-->
 <span class="fa fa-user"></span>
-<input type="text" maxlength="255" placeholder="<?php echo $langs->trans("Login"); ?>" <?php echo $disabled; ?> id="username" name="username" class="flat input-icon-user minwidth150" value="<?php echo dol_escape_htmltag($username); ?>" tabindex="1" autocapitalize="off" autocomplete="on" spellcheck="false" autocorrect="off" />
+<input type="text" maxlength="255" placeholder="{{ $langs->trans("Login") }}" {{ $disabled }} id="username" name="username" class="flat input-icon-user minwidth150" value="{{ dol_escape_htmltag($username) }}" tabindex="1" autocapitalize="off" autocomplete="on" spellcheck="false" autocorrect="off" />
 </div>
 </div>
 
@@ -263,7 +263,7 @@ if (!empty($morelogincontent)) {
 <div id="login_line2" style="clear: both">
 
 <!-- Button "Regenerate and Send password" -->
-<br><input type="submit" <?php echo $disabled; ?> class="butAction butActionLogin noborderfocus small" id="button_password" name="button_password" value="<?php echo $langs->trans('SendNewPassword'); ?>" tabindex="4" />
+<br><input type="submit" {{ $disabled }} class="butAction butActionLogin noborderfocus small" id="button_password" name="button_password" value="{{ $langs->trans('SendNewPassword') }}" tabindex="4" />
 
 <br>
 <div class="center" style="margin-top: 15px;">
