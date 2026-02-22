@@ -162,13 +162,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$original_file = GETPOST('file', 'alphanohtml');
-$hashp = GETPOST('hashp', 'aZ09', 1);
-$extname = GETPOST('extname', 'alpha', 1);
-$modulepart = GETPOST('modulepart', 'alpha', 1);
-$urlsource = GETPOST('urlsource', 'alpha');
-$entity = (GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity);
+$action = request()->input('action');
+$original_file = request()->input('file');
+$hashp = request()->input('hashp');
+$extname = request()->input('extname');
+$modulepart = request()->input('modulepart');
+$urlsource = request()->input('urlsource');
+$entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity);
 
 // Security check
 if (empty($modulepart) && empty($hashp)) {
@@ -194,7 +194,7 @@ if ($modulepart == 'fckeditor') {
  * View
  */
 
-$cachestring = GETPOST("cache", 'aZ09');	// May be 1, or an int, or a hash
+$cachestring = request()->input("cache");	// May be 1, or an int, or a hash
 if ($cachestring) {
 	// Important: The following code is to avoid a page request by the browser and PHP CPU at each Dolibarr page access.
 	// We are here when param cache=xxx to force a cache policy:
@@ -249,8 +249,8 @@ if (!empty($hashp)) {
 
 // Define mime type
 $type = 'application/octet-stream';
-if (GETPOST('type', 'alpha')) {
-	$type = GETPOST('type', 'alpha');
+if (request()->input('type')) {
+	$type = request()->input('type');
 } else {
 	$type = dol_mimetype($original_file);
 }
@@ -301,7 +301,7 @@ $fullpath_original_file     = $check_access['original_file']; // $fullpath_origi
 if (!empty($hashp)) {
 	$accessallowed = 1; // When using hashp, link is public so we force $accessallowed
 	$sqlprotectagainstexternals = '';
-} elseif (GETPOSTINT("publictakepos")) {
+} elseif (request()->integer("publictakepos", 0)) {
 	if (getDolGlobalString('TAKEPOS_AUTO_ORDER') && in_array($modulepart, array('product', 'category'))) {
 		$accessallowed = 1; // When TakePOS Public Auto Order is enabled, we accept to see all images of product and categories with no login
 		// TODO Replace the use of link to viewimage with a call to get link by getPublicImageOfObject, like done by website templates so
@@ -345,13 +345,13 @@ if (preg_match('/\.\./', $fullpath_original_file) || preg_match('/[<>|]/', $full
 
 
 if ($modulepart == 'barcode') {
-	$generator = GETPOST("generator", "aZ09");
-	$encoding = GETPOST("encoding", "aZ09");
-	$readable = GETPOST("readable", 'aZ09') ? GETPOST("readable", "aZ09") : "Y";
+	$generator = request()->input("generator");
+	$encoding = request()->input("encoding");
+	$readable = request()->input("readable") ? request()->input("readable") : "Y";
 	if (in_array($encoding, array('EAN8', 'EAN13'))) {
-		$code = GETPOST("code", 'alphanohtml');
+		$code = request()->input("code");
 	} else {
-		$code = GETPOST("code", 'restricthtml'); // This can be rich content (qrcode, datamatrix, ...)
+		$code = request()->input("code"); // This can be rich content (qrcode, datamatrix, ...)
 	}
 
 	// If $code is virtualcard_xxx_999.vcf, it is a file to read to get code
@@ -377,7 +377,7 @@ if ($modulepart == 'barcode') {
 			// we must check the securekey that protet against forging url
 			if ($reg[1] == 'user' && (int) $reg[2] > 0) {
 				$encodedsecurekey = dol_hash($conf->file->instance_unique_id.'uservirtualcard'.$id.'-'.$login, 'md5');
-				if ($encodedsecurekey != GETPOST('securekey')) {
+				if ($encodedsecurekey != request()->input('securekey')) {
 					$code = 'badvalueforsecurekey';
 				}
 			}
@@ -430,7 +430,7 @@ if ($modulepart == 'barcode') {
 	// Output files on browser
 	dol_syslog("viewimage.php return file $fullpath_original_file filename=$filename content-type=$type");
 
-	if (!dol_is_file($fullpath_original_file) && !GETPOSTINT("noalt", 1)) {
+	if (!dol_is_file($fullpath_original_file) && !request()->integer("noalt", 0)) {
 		// This test is to replace error images with a nice "notfound image" when image is not available (for example when thumbs not yet generated).
 		$fullpath_original_file = DOL_DOCUMENT_ROOT.'/public/theme/common/nophoto.png';
 		/*$error='Error: File '.$_GET["file"].' does not exists or filesystems permissions are not allowed';
