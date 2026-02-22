@@ -3,10 +3,6 @@
 name: 'PHPStan baseline'
 
 on:
-  # Every day we want to refresh the baseline
-  schedule:
-    - cron: '0 12 * * *'
-
   # We want to be able to manually refresh the baseline too
   workflow_dispatch:
 
@@ -15,8 +11,6 @@ on:
       gh_event:
         required: true
         type: string
-  # Run PHPStan analyse on pull requests
-  # pull_request:
 
 permissions: {} # none
 
