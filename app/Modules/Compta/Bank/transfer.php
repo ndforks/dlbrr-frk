@@ -88,14 +88,14 @@ if ($action == 'add' && $user->hasRight('banque', 'transfer')) {
 	$tabnum = array();
 
 	while ($i < $MAXLINESFORTRANSFERT) {
-		$dateo[$i] = dol_mktime(12, 0, 0, GETPOSTINT($i.'_month'), GETPOSTINT($i.'_day'), GETPOSTINT($i.'_year'));
-		$label[$i] = GETPOST($i.'_label', 'alpha');
-		$amount[$i] = price2num(GETPOST($i.'_amount', 'alpha'), 'MT', 2);
-		$amountto[$i] = price2num(GETPOST($i.'_amountto', 'alpha'), 'MT', 2);
-		$accountfrom[$i] = GETPOSTINT($i.'_account_from');
-		$accountto[$i] = GETPOSTINT($i.'_account_to');
-		$type[$i] = GETPOSTINT($i.'_type');
-		$number[$i] = GETPOST($i.'_num_chq', 'alpha');
+		$dateo[$i] = dol_mktime(12, 0, 0, request()->integer($i.'_month', 0), request()->integer($i.'_day', 0), request()->integer($i.'_year', 0));
+		$label[$i] = request()->input($i.'_label');
+		$amount[$i] = price2num(request()->input($i.'_amount'), 'MT', 2);
+		$amountto[$i] = price2num(request()->input($i.'_amountto'), 'MT', 2);
+		$accountfrom[$i] = request()->integer($i.'_account_from', 0);
+		$accountto[$i] = request()->integer($i.'_account_to', 0);
+		$type[$i] = request()->integer($i.'_type', 0);
+		$number[$i] = request()->input($i.'_num_chq');
 
 		$tabnum[$i] = 0;
 		if (!empty($label[$i]) || !($amount[$i] <= 0) || !($accountfrom[$i] < 0) || !($accountto[$i]  < 0)) {
@@ -136,10 +136,10 @@ if ($action == 'add' && $user->hasRight('banque', 'transfer')) {
 			}
 
 			$tmpaccountfrom = new Account($db);
-			$tmpaccountfrom->fetch(GETPOSTINT($n.'_account_from'));
+			$tmpaccountfrom->fetch(request()->integer($n.'_account_from', 0));
 
 			$tmpaccountto = new Account($db);
-			$tmpaccountto->fetch(GETPOSTINT($n.'_account_to'));
+			$tmpaccountto->fetch(request()->integer($n.'_account_to', 0));
 
 			if ($tmpaccountto->currency_code == $tmpaccountfrom->currency_code) {
 				$amountto[$n] = $amount[$n];
@@ -319,10 +319,10 @@ for ($i = 1 ; $i < $MAXLINESFORTRANSFERT; $i++) {
 	$number = '';
 
 	if ($error) {
-		$label = GETPOST($i.'_label', 'alpha');
-		$amount = GETPOST($i.'_amount', 'alpha');
-		$amountto = GETPOST($i.'_amountto', 'alpha');
-		$number = GETPOST($i.'_num_chq', 'alpha');
+		$label = request()->input($i.'_label');
+		$amount = request()->input($i.'_amount');
+		$amountto = request()->input($i.'_amountto');
+		$number = request()->input($i.'_num_chq');
 	}
 
 	if ($i == 1) {
@@ -335,18 +335,18 @@ for ($i = 1 ; $i < $MAXLINESFORTRANSFERT; $i++) {
 
 	print '<tr class="oddeven nowraponall '.$classi.'"><td>';
 	print img_picto('', 'bank_account', 'class="paddingright"');
-	$form->select_comptes(($error ? GETPOSTINT($i.'_account_from') : ''), $i.'_account_from', 0, '', 1, '', isModEnabled('multicurrency') ? 1 : 0, 'minwidth100');
+	$form->select_comptes(($error ? request()->integer($i.'_account_from', 0) : ''), $i.'_account_from', 0, '', 1, '', isModEnabled('multicurrency') ? 1 : 0, 'minwidth100');
 	print '</td>';
 
 	print '<td class="nowraponall">';
 	print img_picto('', 'bank_account', 'class="paddingright"');
-	$form->select_comptes(($error ? GETPOSTINT($i.'_account_to') : ''), $i.'_account_to', 0, '', 1, '', isModEnabled('multicurrency') ? 1 : 0, 'minwidth100');
+	$form->select_comptes(($error ? request()->integer($i.'_account_to', 0) : ''), $i.'_account_to', 0, '', 1, '', isModEnabled('multicurrency') ? 1 : 0, 'minwidth100');
 	print "</td>\n";
 
 	// Payment mode
 	print '<td class="nowraponall">';
 	$idpaymentmodetransfer = dol_getIdFromCode($db, 'VIR', 'c_paiement');
-	$form->select_types_paiements(($error ? GETPOST($i.'_type', 'aZ09') : $idpaymentmodetransfer), $i.'_type', '', 0, 1, 0, 0, 1, 'minwidth100');
+	$form->select_types_paiements(($error ? request()->input($i.'_type') : $idpaymentmodetransfer), $i.'_type', '', 0, 1, 0, 0, 1, 'minwidth100');
 	print "</td>\n";
 
 	// Date
