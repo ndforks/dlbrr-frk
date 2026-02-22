@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Comm\Propal;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Propal;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowPropal extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -23,35 +27,37 @@ class ShowPropal extends Controller
             default => $this->show($request, $id),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $propal = Propal::with('societe')->findOrFail($id);
-        return view('propal.show', ['propal' => $propal, 'action' => 'view']);
+        return Propal::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $propal = Propal::with('societe')->findOrFail($id);
-        return view('propal.edit', ['propal' => $propal, 'action' => 'edit']);
+        return 'propal';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('propal.create', ['action' => 'create']);
+        return 'propal.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $propal = Propal::findOrFail($id);
-        $data = ['ref' => $request->input('ref'), 'fk_soc' => $request->integer('socid', 0)];
-        $propal->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
-        return redirect()->route('propal.show', ['id' => $id])->with('success', 'Proposal updated');
+        return 'propal.list';
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function loadModel(int $id): Model
     {
-        Propal::findOrFail($id)->delete();
-        return redirect()->route('propal.list')->with('success', 'Proposal deleted');
+        return Propal::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'ref' => $request->input('ref'),
+            'fk_soc' => $request->integer('socid', 0),
+        ];
     }
 }

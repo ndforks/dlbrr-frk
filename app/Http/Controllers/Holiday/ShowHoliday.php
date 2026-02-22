@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Holiday;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Holiday;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,29 +11,46 @@ use Illuminate\View\View;
 
 class ShowHoliday extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         
         return match($action) {
-            'create', 'add' => view('holiday.create', ['action' => 'create']),
-            'edit' => view('holiday.edit', ['holiday' => Holiday::findOrFail($id), 'action' => 'edit']),
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
-            default => view('holiday.show', ['holiday' => Holiday::findOrFail($id), 'action' => 'view']),
+            default => $this->show($request, $id),
         };
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getModelClass(): string
     {
-        Holiday::findOrFail($id)->update(array_filter(['description' => $request->input('description')], fn($v) => $v));
-        return redirect()->route('holiday.show', ['id' => $id])->with('success', 'Holiday updated');
+        return Holiday::class;
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function getViewPrefix(): string
     {
-        Holiday::findOrFail($id)->delete();
-        return redirect()->route('holiday.list')->with('success', 'Holiday deleted');
+        return 'holiday';
+    }
+
+    protected function getShowRouteName(): string
+    {
+        return 'holiday.show';
+    }
+
+    protected function getListRouteName(): string
+    {
+        return 'holiday.list';
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'description' => $request->input('description'),
+        ];
     }
 }

@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Compta\Facture;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Facture;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowFacture extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -23,44 +27,39 @@ class ShowFacture extends Controller
             default => $this->show($request, $id),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $facture = Facture::with('societe')->findOrFail($id);
-        return view('facture.show', ['facture' => $facture, 'action' => 'view']);
+        return Facture::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $facture = Facture::with('societe')->findOrFail($id);
-        return view('facture.edit', ['facture' => $facture, 'action' => 'edit']);
+        return 'facture';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('facture.create', ['action' => 'create']);
+        return 'facture.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $facture = Facture::findOrFail($id);
-        
-        $data = [
+        return 'facture.list';
+    }
+
+    protected function loadModel(int $id): Model
+    {
+        return Facture::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
             'ref' => $request->input('ref'),
             'ref_client' => $request->input('ref_client'),
             'fk_soc' => $request->integer('socid', 0),
             'datef' => $request->input('datef'),
         ];
-        
-        $data = array_filter($data, fn($value) => $value !== null && $value !== '');
-        $facture->update($data);
-        
-        return redirect()->route('facture.show', ['id' => $id])->with('success', 'Invoice updated');
-    }
-    
-    private function delete(Request $request, int $id): RedirectResponse
-    {
-        Facture::findOrFail($id)->delete();
-        return redirect()->route('facture.list')->with('success', 'Invoice deleted');
     }
 }

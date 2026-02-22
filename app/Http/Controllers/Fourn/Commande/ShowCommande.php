@@ -69,6 +69,7 @@ class ShowCommande extends Controller
     {
         global $user;
 
+        // Early return for unauthorized access
         if (!$user->hasRight('fournisseur', 'commande', 'creer') && !$user->hasRight('supplier_order', 'creer')) {
             accessforbidden();
         }
@@ -76,8 +77,10 @@ class ShowCommande extends Controller
         $object->ref_supplier = $request->input('ref_supplier');
         $result = $object->update($user);
 
+        // Early return for failure
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
+            return redirect()->back();
         }
 
         return redirect()->back();

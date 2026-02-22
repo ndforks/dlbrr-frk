@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Projet;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Projet;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowProjet extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -23,44 +27,39 @@ class ShowProjet extends Controller
             default => $this->show($request, $id),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $projet = Projet::with('societe')->findOrFail($id);
-        return view('projet.show', ['projet' => $projet, 'action' => 'view']);
+        return Projet::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $projet = Projet::with('societe')->findOrFail($id);
-        return view('projet.edit', ['projet' => $projet, 'action' => 'edit']);
+        return 'projet';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('projet.create', ['action' => 'create']);
+        return 'projet.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $projet = Projet::findOrFail($id);
-        
-        $data = [
+        return 'projet.list';
+    }
+
+    protected function loadModel(int $id): Model
+    {
+        return Projet::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
             'ref' => $request->input('ref'),
             'title' => $request->input('title'),
             'fk_soc' => $request->integer('socid', 0),
             'description' => $request->input('description'),
         ];
-        
-        $data = array_filter($data, fn($value) => $value !== null && $value !== '');
-        $projet->update($data);
-        
-        return redirect()->route('projet.show', ['id' => $id])->with('success', 'Project updated');
-    }
-    
-    private function delete(Request $request, int $id): RedirectResponse
-    {
-        Projet::findOrFail($id)->delete();
-        return redirect()->route('projet.list')->with('success', 'Project deleted');
     }
 }

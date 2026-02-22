@@ -3,36 +3,60 @@
 namespace App\Http\Controllers\Expedition;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Expedition;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowExpedition extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         
         return match($action) {
-            'create', 'add' => view('expedition.create', ['action' => 'create']),
-            'edit' => view('expedition.edit', ['expedition' => Expedition::with('societe')->findOrFail($id), 'action' => 'edit']),
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
-            default => view('expedition.show', ['expedition' => Expedition::with('societe')->findOrFail($id), 'action' => 'view']),
+            default => $this->show($request, $id),
         };
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getModelClass(): string
     {
-        Expedition::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect()->route('expedition.show', ['id' => $id])->with('success', 'Shipment updated');
+        return Expedition::class;
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function getViewPrefix(): string
     {
-        Expedition::findOrFail($id)->delete();
-        return redirect()->route('expedition.list')->with('success', 'Shipment deleted');
+        return 'expedition';
+    }
+
+    protected function getShowRouteName(): string
+    {
+        return 'expedition.show';
+    }
+
+    protected function getListRouteName(): string
+    {
+        return 'expedition.list';
+    }
+
+    protected function loadModel(int $id): Model
+    {
+        return Expedition::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'ref' => $request->input('ref'),
+        ];
     }
 }
