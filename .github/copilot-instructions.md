@@ -374,8 +374,11 @@ When writing Laravel tests (located in `/tests`), follow these conventions:
 
 4. **Example Test**:
    ```php
+   namespace Tests\Feature;
+   
    use PHPUnit\Framework\Attributes\Test;
    use Tests\TestCase;
+   use App\Models\Contact;
    
    class ContactTest extends TestCase
    {
@@ -425,9 +428,11 @@ When writing Laravel tests (located in `/tests`), follow these conventions:
            // Get filter parameters
            $searchLastname = $request->input('search_lastname');
            
-           // Query with Eloquent
+           // Query with Eloquent (parameter binding for security)
            $contacts = Contact::query()
-               ->when($searchLastname, fn($q) => $q->where('lastname', 'like', "%{$searchLastname}%"))
+               ->when($searchLastname, function($q) use ($searchLastname) {
+                   return $q->where('lastname', 'like', '%' . $searchLastname . '%');
+               })
                ->with('societe')
                ->paginate(25);
            
