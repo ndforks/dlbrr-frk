@@ -19,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Configure Blade engine as the default view handler
+        // Blade is already the default in Laravel, but we can customize it here if needed
+        
+        // You can add custom Blade directives here
+        // Example: Blade::directive('datetime', function ($expression) {
+        //     return "<?php echo ($expression)->format('m/d/Y H:i'); ?>";
+        // });
     }
 }
