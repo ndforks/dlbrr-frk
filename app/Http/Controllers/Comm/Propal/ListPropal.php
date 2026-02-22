@@ -3,35 +3,31 @@
 namespace App\Http\Controllers\Comm\Propal;
 
 use App\Http\Controllers\Controller;
-use App\Models\Propal;
+use App\Services\PropalService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListPropal extends Controller
 {
+    private PropalService $service;
+
+    public function __construct(PropalService $service)
+    {
+        $this->service = $service;
+    }
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
-        $searchRef = $request->input('search_ref');
         $page = $request->integer('page', 0);
         $limit = $request->integer('limit', 25);
-        
-        $query = Propal::with('societe');
-        
-        if ($searchAll) {
-            $query->where(function($q) use ($searchAll) {
-                $q->where('ref', 'like', "%{$searchAll}%");
-            });
-        }
-        
-        if ($searchRef) {
-            $query->where('ref', 'like', "%{$searchRef}%");
-        }
-        
-        $total = $query->count();
-        $offset = $page * $limit;
-        $propals = $query->orderBy('datep', 'DESC')->skip($offset)->take($limit)->get();
-        
-        return view('propal.list', ['propals' => $propals, 'total' => $total, 'page' => $page, 'limit' => $limit]);
+
+        $filters = [
+            'all' => $request->input('search_all'),
+            'ref' => $request->input('search_ref'),
+        ];
+
+        $data = $this->service->list($filters, $page, $limit);
+
+        return view('propal.list', $data);
     }
 }
