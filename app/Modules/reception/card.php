@@ -430,8 +430,8 @@ if (empty($reshook)) {
 				$qty = "qtyl".$i;	// qty
 
 				//reception line for product with no batch management and no multiple stock location
-				if (GETPOST($qty, 'alpha') > 0) {
-					$totalqty += price2num(GETPOST($qty, 'alpha'), 'MS');
+				if (request()->input($qty) > 0) {
+					$totalqty += price2num(request()->input($qty), 'MS');
 				}
 
 				// Extrafields
@@ -443,7 +443,7 @@ if (empty($reshook)) {
 				for ($i = 1; $i <= $num; $i++) {
 					$idl = "idl".$i;	// id line source
 					$lineToTest = '';
-					$lineId = GETPOSTINT($idl);
+					$lineId = request()->integer($idl, 0);
 					foreach ($objectsrc->lines as $linesrc) {
 						if ($linesrc->id == $lineId) {
 							$lineToTest = $linesrc;
@@ -461,14 +461,14 @@ if (empty($reshook)) {
 					$batch = "batch".$i;
 					$cost_price = "cost_price".$i;
 
-					//var_dump(GETPOST("productl".$i, 'int').' '.GETPOST('entl'.$i, 'int').' '.GETPOST($idl, 'int').' '.GETPOST($qty, 'int').' '.GETPOST($batch, 'alpha'));
+					//var_dump(request()->input('productl".$i, 'int').' '.request()->input('entl'.$i).' '.request()->input($idl).' '.request()->input($qty).' '.request()->input($batch));
 
-					//if (GETPOST($qty, 'int') > 0 || (GETPOST($qty, 'int') == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS')) || (GETPOST($qty, 'int') < 0 && getDolGlobalString('RECEPTION_ALLOW_NEGATIVE_QTY'))) {
+					//if (request()->input($qty) > 0 || (request()->input($qty) == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS')) || (request()->input($qty) < 0 && getDolGlobalString('RECEPTION_ALLOW_NEGATIVE_QTY'))) {
 					if ((float)request()->input($qty, 0.0) > 0 || ((float)request()->input($qty, 0.0) == 0 && getDolGlobalString('RECEPTION_GETS_ALL_ORDER_PRODUCTS'))) {
 						$ent = "entl".$i;
 						$idl = "idl".$i;
 
-						$entrepot_id = is_numeric(GETPOST($ent)) ? GETPOSTINT($ent) : request()->integer('entrepot_id', 0);
+						$entrepot_id = is_numeric(request()->input($ent)) ? request()->integer($ent, 0) : request()->integer('entrepot_id', 0);
 
 						/*
 						if (!empty($lineToTest)) {
@@ -476,7 +476,7 @@ if (empty($reshook)) {
 						} else {
 							$fk_product = $linesrc->fk_product;
 						}*/
-						$fk_product = GETPOSTINT("productl".$i);
+						$fk_product = request()->integer("productl".$i, 0);
 
 						if ($entrepot_id < 0) {
 							$entrepot_id = '';
@@ -485,15 +485,15 @@ if (empty($reshook)) {
 							$entrepot_id = 0;
 						}
 
-						$eatby = GETPOST($eatby, 'alpha');
-						$sellby = GETPOST($sellby, 'alpha');
+						$eatby = request()->input($eatby);
+						$sellby = request()->input($sellby);
 						$eatbydate = str_replace('/', '-', $eatby);
 						$sellbydate = str_replace('/', '-', $sellby);
 
 						if (getDolGlobalString('STOCK_CALCULATE_ON_RECEPTION') || getDolGlobalString('STOCK_CALCULATE_ON_RECEPTION_CLOSE')) {
-							$ret = $object->addline($entrepot_id, GETPOSTINT($idl), (float) price2num(GETPOST($qty), 'MS'), $array_options[$i], GETPOST($comment), strtotime($eatbydate), strtotime($sellbydate), GETPOST($batch), (float)request()->input($cost_price, 0.0));
+							$ret = $object->addline($entrepot_id, request()->integer($idl, 0), (float) price2num(request()->input($qty), 'MS'), $array_options[$i], request()->input($comment), strtotime($eatbydate), strtotime($sellbydate), request()->input($batch), (float)request()->input($cost_price, 0.0));
 						} else {
-							$ret = $object->addline($entrepot_id, GETPOSTINT($idl), (float) price2num(GETPOST($qty), 'MS'), $array_options[$i], GETPOST($comment), strtotime($eatbydate), strtotime($sellbydate), GETPOST($batch));
+							$ret = $object->addline($entrepot_id, request()->integer($idl, 0), (float) price2num(request()->input($qty), 'MS'), $array_options[$i], request()->input($comment), strtotime($eatbydate), strtotime($sellbydate), request()->input($batch));
 						}
 						if ($ret < 0) {
 							setEventMessages($object->error, $object->errors, 'errors');
@@ -846,21 +846,21 @@ if (empty($reshook)) {
 						$comment = "comment".$line_id;
 
 						$line->id = $line_id;
-						$line->fk_entrepot = GETPOSTINT($stockLocation);
+						$line->fk_entrepot = request()->integer($stockLocation, 0);
 						$line->qty = (float)request()->input($qty, 0.0);
-						$line->comment = GETPOST($comment, 'alpha');
+						$line->comment = request()->input($comment);
 
 						if (isModEnabled('productbatch')) {
 							$batch = "batch".$line_id;
 							$dlc = "dlc".$line_id;
 							$dluo = "dluo".$line_id;
 							// EATBY <-> DLUO
-							$eatby = GETPOST($dluo, 'alpha');
+							$eatby = request()->input($dluo);
 							$eatbydate = str_replace('/', '-', $eatby);
 							// SELLBY <-> DLC
-							$sellby = GETPOST($dlc, 'alpha');
+							$sellby = request()->input($dlc);
 							$sellbydate = str_replace('/', '-', $sellby);
-							$line->batch = GETPOST($batch, 'alpha');
+							$line->batch = request()->input($batch);
 							$line->eatby = strtotime($eatbydate);
 							$line->sellby = strtotime($sellbydate);
 						}
@@ -936,7 +936,7 @@ if (empty($reshook)) {
 			}
 		}
 
-		$qty = price2num(GETPOST('qty'.$predef, 'alpha'), 'MS', 2);
+		$qty = price2num(request()->input('qty'.$predef), 'MS', 2);
 
 		// Extrafields
 		$extralabelsline = $extrafields->fetch_name_optionals_label($object->table_element_line);
@@ -1552,7 +1552,7 @@ if ($action == 'create' && $permissiontoadd) {
 					$ent = "entrepot_" . $paramSuffix;
 					$pu = "pu_" . $paramSuffix; // This is unit price including discount
 					$fk_commandefourndet = "fk_commandefourndet_" . $paramSuffix;
-					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet));
+					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => request()->integer($prod, 0), 'qty' => price2num(request()->input($qty), 'MS'), 'ent' => request()->integer($ent, 0), 'pu' => price2num(request()->input($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => request()->integer($fk_commandefourndet, 0));
 				}
 
 				// with batch module enabled and product with lot/serial
@@ -1570,10 +1570,10 @@ if ($action == 'create' && $permissiontoadd) {
 					$ent = 'entrepot_' . $paramSuffix;
 					$pu = 'pu_' . $paramSuffix;
 					$lot = 'lot_number_' . $paramSuffix;
-					$dDLUO = dol_mktime(12, 0, 0, GETPOSTINT('dluo_'.$paramSuffix.'month'), GETPOSTINT('dluo_'.$paramSuffix.'day'), GETPOSTINT('dluo_'.$paramSuffix.'year'));
-					$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc_'.$paramSuffix.'month'), GETPOSTINT('dlc_'.$paramSuffix.'day'), GETPOSTINT('dlc_'.$paramSuffix.'year'));
+					$dDLUO = dol_mktime(12, 0, 0, request()->integer('dluo_'.$paramSuffix.'month', 0), request()->integer('dluo_'.$paramSuffix.'day', 0), request()->integer('dluo_'.$paramSuffix.'year', 0));
+					$dDLC = dol_mktime(12, 0, 0, request()->integer('dlc_'.$paramSuffix.'month', 0), request()->integer('dlc_'.$paramSuffix.'day', 0), request()->integer('dlc_'.$paramSuffix.'year', 0));
 					$fk_commandefourndet = 'fk_commandefourndet_'.$paramSuffix;
-					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => GETPOST($lot));
+					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => request()->integer($prod, 0), 'qty' => price2num(request()->input($qty), 'MS'), 'ent' => request()->integer($ent, 0), 'pu' => price2num(request()->input($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => request()->integer($fk_commandefourndet, 0), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => request()->input($lot));
 				}
 
 				// If create form is coming from same page, it means that post was sent but an error occurred
@@ -1592,10 +1592,10 @@ if ($action == 'create' && $permissiontoadd) {
 					$ent = 'entl'.$paramSuffix;
 					$pu = 'pul'.$paramSuffix;
 					$lot = 'batch'.$paramSuffix;
-					$dDLUO = dol_mktime(12, 0, 0, GETPOSTINT('dluo'.$paramSuffix.'month'), GETPOSTINT('dluo'.$paramSuffix.'day'), GETPOSTINT('dluo'.$paramSuffix.'year'));
-					$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc'.$paramSuffix.'month'), GETPOSTINT('dlc'.$paramSuffix.'day'), GETPOSTINT('dlc'.$paramSuffix.'year'));
+					$dDLUO = dol_mktime(12, 0, 0, request()->integer('dluo'.$paramSuffix.'month', 0), request()->integer('dluo'.$paramSuffix.'day', 0), request()->integer('dluo'.$paramSuffix.'year', 0));
+					$dDLC = dol_mktime(12, 0, 0, request()->integer('dlc'.$paramSuffix.'month', 0), request()->integer('dlc'.$paramSuffix.'day', 0), request()->integer('dlc'.$paramSuffix.'year', 0));
 					$fk_commandefourndet = 'fk_commandefournisseurdet'.$paramSuffix;
-					$dispatchLines[$numAsked] = array('prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => GETPOST($comment), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => GETPOSTINT($lot));
+					$dispatchLines[$numAsked] = array('prod' => request()->integer($prod, 0), 'qty' => price2num(request()->input($qty), 'MS'), 'ent' => request()->integer($ent, 0), 'pu' => price2num(request()->input($pu), 'MU'), 'comment' => request()->input($comment), 'fk_commandefourndet' => request()->integer($fk_commandefourndet, 0), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => request()->integer($lot, 0));
 				}
 			}
 
@@ -1801,8 +1801,8 @@ if ($action == 'create' && $permissiontoadd) {
 					// Quantity to send
 					print '<td class="center">';
 					if ($line->product_type == Product::TYPE_PRODUCT || getDolGlobalString('STOCK_SUPPORTS_SERVICES')) {
-						if (GETPOSTINT('qtyl'.$indiceAsked)) {
-							$defaultqty = GETPOSTINT('qtyl'.$indiceAsked);
+						if (request()->integer('qtyl'.$indiceAsked)) {
+							$defaultqty = request()->integer('qtyl'.$indiceAsked, 0);
 						}
 						print '<input name="idl'.$indiceAsked.'" type="hidden" value="'.$line->id.'">';
 						print '<input class="right" name="qtyl'.$indiceAsked.'" id="qtyl'.$indiceAsked.'" type="text" size="4" value="'.$deliverableQty.'">';
@@ -1824,7 +1824,7 @@ if ($action == 'create' && $permissiontoadd) {
 							// Show warehouse combo list
 							$ent = "entl".$indiceAsked;
 							$idl = "idl".$indiceAsked;
-							$tmpentrepot_id = is_numeric(GETPOST($ent)) ? GETPOSTINT($ent) : $warehouse_id;
+							$tmpentrepot_id = is_numeric(request()->input($ent)) ? request()->integer($ent, 0) : $warehouse_id;
 							if ($line->fk_product > 0) {
 								print '<!-- Show warehouse selection -->';
 								print $formproduct->selectWarehouses($tmpentrepot_id, 'entl'.$indiceAsked, '', 0, 0, $line->fk_product, '', 1);
@@ -2099,7 +2099,7 @@ if ($action == 'create' && $permissiontoadd) {
 
 	// Date creation
 	print '<tr><td class="titlefield">'.$langs->trans("DateCreation").'</td>';
-	print '<td colspan="3">'.dol_print_date($object->date_creation, "dayhour", "tzuserrel")."</td>\n";
+	print '<td colspan="3">'.dol_print_date($object->date_creation, "dayhour")."</td>\n";
 	print '</tr>';
 
 	// Reception Date

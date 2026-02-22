@@ -250,7 +250,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			$prod = "product_".$reg[1].'_'.$reg[2];
 			$qty = "qty_".$reg[1].'_'.$reg[2];
 			$ent = "entrepot_".$reg[1].'_'.$reg[2];
-			if (empty(GETPOST($ent))) {
+			if (empty(request()->input($ent))) {
 				$ent = $fk_default_warehouse;
 			}
 			$pu = "pu_".$reg[1].'_'.$reg[2]; // This is unit price including discount
@@ -258,9 +258,9 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 
 			if (getDolGlobalString('SUPPLIER_ORDER_CAN_UPDATE_BUYINGPRICE_DURING_RECEIPT')) {
 				if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
-					$dto = GETPOSTINT("dto_".$reg[1].'_'.$reg[2]);
+					$dto = request()->integer("dto_".$reg[1].'_'.$reg[2], 0);
 					if (!empty($dto)) {
-						$unit_price = price2num((float) GETPOST("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
+						$unit_price = price2num((float) request()->input("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
 					}
 					$saveprice = "saveprice_".$reg[1].'_'.$reg[2];
 				}
@@ -270,7 +270,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			$qtytomove = (float)request()->input($qty, 0.0);
 			$puformove = (float)request()->input($pu, 0.0);
 			if ($qtytomove != 0) {
-				if (!(GETPOSTINT($ent) > 0)) {
+				if (!(request()->integer($ent, 0) > 0)) {
 					dol_syslog('No dispatch for line '.$key.' as no warehouse was chosen.');
 					$text = $langs->transnoentities('Warehouse').', '.$langs->transnoentities('Line').' '.($numline);
 					setEventMessages($langs->trans('ErrorFieldRequired', $text), null, 'errors');
@@ -278,7 +278,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				}
 
 				if (!$error) {
-					$result = $object->dispatchProduct($user, GETPOSTINT($prod), $qtytomove, GETPOSTINT($ent), $puformove, request()->input('comment'), '', '', '', GETPOSTINT($fk_commandefourndet), $notrigger);
+					$result = $object->dispatchProduct($user, request()->integer($prod, 0), $qtytomove, request()->integer($ent, 0), $puformove, request()->input('comment'), '', '', '', request()->integer($fk_commandefourndet, 0), $notrigger);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
 						$error++;
@@ -286,20 +286,20 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 
 					if (!$error && getDolGlobalString('SUPPLIER_ORDER_CAN_UPDATE_BUYINGPRICE_DURING_RECEIPT')) {
 						if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
-							$dto = price2num(GETPOST("dto_".$reg[1].'_'.$reg[2]), '');
+							$dto = price2num(request()->input("dto_".$reg[1].'_'.$reg[2]), '');
 							if (empty($dto)) {
 								$dto = 0;
 							}
 
 							//update supplier price
-							if (GETPOSTISSET($saveprice)) {
+							if (request()->has($saveprice)) {
 								// TODO Use class
 								$sql = "UPDATE ".MAIN_DB_PREFIX."product_fournisseur_price";
-								$sql .= " SET unitprice='".price2num(GETPOST($pu), 'MU')."'";
-								$sql .= ", price=".price2num(GETPOST($pu), 'MU')."*quantity";
+								$sql .= " SET unitprice='".price2num(request()->input($pu), 'MU')."'";
+								$sql .= ", price=".price2num(request()->input($pu), 'MU')."*quantity";
 								$sql .= ", remise_percent = ".((float) $dto);
 								$sql .= " WHERE fk_soc=".((int) $object->socid);
-								$sql .= " AND fk_product=".(GETPOSTINT($prod));
+								$sql .= " AND fk_product=".(request()->integer($prod, 0));
 
 								$resql = $db->query($sql);
 							}
@@ -321,8 +321,8 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			$pu = 'pu_'.$reg[1].'_'.$reg[2];
 			$fk_commandefourndet = 'fk_commandefourndet_'.$reg[1].'_'.$reg[2];
 			$lot = 'lot_number_'.$reg[1].'_'.$reg[2];
-			$dDLUO = dol_mktime(12, 0, 0, GETPOSTINT('dluo_'.$reg[1].'_'.$reg[2].'month'), GETPOSTINT('dluo_'.$reg[1].'_'.$reg[2].'day'), GETPOSTINT('dluo_'.$reg[1].'_'.$reg[2].'year'));
-			$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc_'.$reg[1].'_'.$reg[2].'month'), GETPOSTINT('dlc_'.$reg[1].'_'.$reg[2].'day'), GETPOSTINT('dlc_'.$reg[1].'_'.$reg[2].'year'));
+			$dDLUO = dol_mktime(12, 0, 0, request()->integer('dluo_'.$reg[1].'_'.$reg[2].'month', 0), request()->integer('dluo_'.$reg[1].'_'.$reg[2].'day', 0), request()->integer('dluo_'.$reg[1].'_'.$reg[2].'year', 0));
+			$dDLC = dol_mktime(12, 0, 0, request()->integer('dlc_'.$reg[1].'_'.$reg[2].'month', 0), request()->integer('dlc_'.$reg[1].'_'.$reg[2].'day', 0), request()->integer('dlc_'.$reg[1].'_'.$reg[2].'year', 0));
 
 			$fk_commandefourndet = 'fk_commandefourndet_'.$reg[1].'_'.$reg[2];
 
@@ -330,7 +330,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
 					$dto = (float)request()->input("dto_".$reg[1].'_'.$reg[2], 0.0);
 					if (!empty($dto)) {
-						$unit_price = price2num((float) GETPOST("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
+						$unit_price = price2num((float) request()->input("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
 					}
 					$saveprice = "saveprice_".$reg[1].'_'.$reg[2];
 				}
@@ -340,9 +340,9 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 			$qtytomove = (float)request()->input($qty, 0.0);
 			$puformove = (float)request()->input($pu, 0.0);
 			if ($qtytomove > 0) {
-				$productId = GETPOSTINT($prod);
+				$productId = request()->integer($prod, 0);
 
-				if (!(GETPOSTINT($ent) > 0)) {
+				if (!(request()->integer($ent, 0) > 0)) {
 					dol_syslog('No dispatch for line '.$key.' as no warehouse was chosen.');
 					$text = $langs->transnoentities('Warehouse').', '.$langs->transnoentities('Line').' '.($numline).'-'.((int) $reg[1] + 1);
 					setEventMessages($langs->trans('ErrorFieldRequired', $text), null, 'errors');
@@ -352,13 +352,13 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				// check sell-by / eat-by date is mandatory
 				/* Not required. Mandatory is checked when we insert the lot. Once lot has been recorded and is known, user can just enter the lot/serial
 				$errorMsgArr = Productlot::checkSellOrEatByMandatoryFromProductIdAndDates($productId, $dDLC, $dDLUO);
-				if (!(GETPOST($lot, 'alpha')) || !empty($errorMsgArr)) {
+				if (!(request()->input($lot)) || !empty($errorMsgArr)) {
 					dol_syslog('No dispatch for line '.$key.' as serial/eat-by/sellby date are not set');
 					$text = $langs->transnoentities('atleast1batchfield').', '.$langs->transnoentities('Line').' '.($numline).'-'.($reg[1] + 1);
 					setEventMessages($langs->trans('ErrorFieldRequired', $text), null, 'errors');
 					$error++;
 				}*/
-				if (!GETPOST($lot, 'alpha') && !$dDLUO && !$dDLC) {
+				if (!request()->input($lot) && !$dDLUO && !$dDLC) {
 					dol_syslog('No dispatch for line '.$key.' as serial/eat-by/sellby date are not set');
 					$text = $langs->transnoentities('atleast1batchfield').', '.$langs->transnoentities('Line').' '.($numline).'-'.((int) $reg[1] + 1);
 					setEventMessages($langs->trans('ErrorFieldRequired', $text), null, 'errors');
@@ -366,7 +366,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				}
 
 				if (!$error) {
-					$result = $object->dispatchProduct($user, $productId, $qtytomove, GETPOSTINT($ent), $puformove, request()->input('comment'), $dDLUO, $dDLC, GETPOST($lot, 'alpha'), GETPOSTINT($fk_commandefourndet), $notrigger);
+					$result = $object->dispatchProduct($user, $productId, $qtytomove, request()->integer($ent, 0), $puformove, request()->input('comment'), $dDLUO, $dDLC, request()->input($lot), request()->integer($fk_commandefourndet, 0), $notrigger);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
 						$error++;
@@ -376,11 +376,11 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 						if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
 							$dto = (float)request()->input("dto_".$reg[1].'_'.$reg[2], 0.0);
 							//update supplier price
-							if (GETPOSTISSET($saveprice)) {
+							if (request()->has($saveprice)) {
 								// TODO Use class
 								$sql = "UPDATE ".MAIN_DB_PREFIX."product_fournisseur_price";
-								$sql .= " SET unitprice = ".price2num(GETPOST($pu), 'MU', 2);
-								$sql .= ", price = ".price2num(GETPOST($pu), 'MU', 2)." * quantity";
+								$sql .= " SET unitprice = ".price2num(request()->input($pu), 'MU', 2);
+								$sql .= ", price = ".price2num(request()->input($pu), 'MU', 2)." * quantity";
 								$sql .= ", remise_percent = ".price2num((empty($dto) ? 0 : $dto), 3, 2);
 								$sql .= " WHERE fk_soc = ".((int) $object->socid);
 								$sql .= " AND fk_product=".((int) $productId);
@@ -946,17 +946,17 @@ if ($id > 0 || !empty($ref)) {
 							print '</td>';
 
 							print '<td>';
-							print '<input type="text" class="inputlotnumber quatrevingtquinzepercent" id="lot_number'.$suffix.'" name="lot_number'.$suffix.'" value="'.GETPOST('lot_number'.$suffix).'">';
+							print '<input type="text" class="inputlotnumber quatrevingtquinzepercent" id="lot_number'.$suffix.'" name="lot_number'.$suffix.'" value="'.request()->input('lot_number'.$suffix).'">';
 							print '</td>';
 							if (!getDolGlobalString('PRODUCT_DISABLE_SELLBY')) {
 								print '<td class="nowraponall">';
-								$dlcdatesuffix = dol_mktime(0, 0, 0, GETPOSTINT('dlc'.$suffix.'month'), GETPOSTINT('dlc'.$suffix.'day'), GETPOSTINT('dlc'.$suffix.'year'));
+								$dlcdatesuffix = dol_mktime(0, 0, 0, request()->integer('dlc'.$suffix.'month', 0), request()->integer('dlc'.$suffix.'day', 0), request()->integer('dlc'.$suffix.'year', 0));
 								print $form->selectDate($dlcdatesuffix, 'dlc'.$suffix, 0, 0, 1, '');
 								print '</td>';
 							}
 							if (!getDolGlobalString('PRODUCT_DISABLE_EATBY')) {
 								print '<td class="nowraponall">';
-								$dluodatesuffix = dol_mktime(0, 0, 0, GETPOSTINT('dluo'.$suffix.'month'), GETPOSTINT('dluo'.$suffix.'day'), GETPOSTINT('dluo'.$suffix.'year'));
+								$dluodatesuffix = dol_mktime(0, 0, 0, request()->integer('dluo'.$suffix.'month', 0), request()->integer('dluo'.$suffix.'day', 0), request()->integer('dluo'.$suffix.'year', 0));
 								print $form->selectDate($dluodatesuffix, 'dluo'.$suffix, 0, 0, 1, '');
 								print '</td>';
 							}
@@ -1015,7 +1015,7 @@ if ($id > 0 || !empty($ref)) {
 							$btnLabel = $langs->trans("Fill").' : '.$remaintodispatch;
 							print '<button class="auto-fill-qty btn-low-emphasis --btn-icon" data-rowname="qty'.$suffix.'" data-value="'.$remaintodispatch.'" title="'.dol_escape_htmltag($btnLabel).'" aria-label="'.dol_escape_htmltag($btnLabel).'" >'.img_picto($btnLabel, 'fa-arrow-right', 'aria-hidden="true"', 0, 0, 1).'</button>';
 						}
-						print '<input id="qty'.$suffix.'" name="qty'.$suffix.'" type="number" step="any" class="width50 right qtydispatchinput" value="'.(GETPOSTISSET('qty'.$suffix) ? GETPOSTINT('qty'.$suffix) : (!getDolGlobalString('SUPPLIER_ORDER_DISPATCH_FORCE_QTY_INPUT_TO_ZERO') ? $remaintodispatch : 0)).'">';
+						print '<input id="qty'.$suffix.'" name="qty'.$suffix.'" type="number" step="any" class="width50 right qtydispatchinput" value="'.(request()->has('qty'.$suffix) ? request()->integer('qty'.$suffix) : (!getDolGlobalString('SUPPLIER_ORDER_DISPATCH_FORCE_QTY_INPUT_TO_ZERO', 0) ? $remaintodispatch : 0)).'">';
 						print '<button class="resetline btn-low-emphasis --btn-icon" id="reset'.$suffix.'" title="'.dol_escape_htmltag($langs->trans("Reset")).'" >'.img_picto($langs->trans("Reset"), 'eraser', 'aria-hidden="true"', 0, 0, 1).'</button>';
 						print '</td>';
 
@@ -1033,17 +1033,17 @@ if ($id > 0 || !empty($ref)) {
 							if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
 								// Price
 								print '<td class="right">';
-								print '<input id="pu'.$suffix.'" name="pu'.$suffix.'" type="text" size="8" value="'.price((GETPOST('pu'.$suffix) != '' ? price2num(GETPOST('pu'.$suffix)) : $up_ht_disc)).'">';
+								print '<input id="pu'.$suffix.'" name="pu'.$suffix.'" type="text" size="8" value="'.price((request()->input('pu'.$suffix) != '' ? price2num(request()->input('pu'.$suffix)) : $up_ht_disc)).'">';
 								print '</td>';
 
 								// Discount
 								print '<td class="right">';
-								print '<input id="dto'.$suffix.'" name="dto'.$suffix.'" type="text" size="8" value="'.(GETPOST('dto'.$suffix) != '' ? GETPOST('dto'.$suffix) : '').'">';
+								print '<input id="dto'.$suffix.'" name="dto'.$suffix.'" type="text" size="8" value="'.(request()->input('dto'.$suffix) != '' ? request()->input('dto'.$suffix) : '').'">';
 								print '</td>';
 
 								// Save price
 								print '<td class="center">';
-								print '<input class="flat checkformerge" type="checkbox" name="saveprice'.$suffix.'" value="'.(GETPOST('saveprice'.$suffix) != '' ? GETPOST('saveprice'.$suffix) : '').'">';
+								print '<input class="flat checkformerge" type="checkbox" name="saveprice'.$suffix.'" value="'.(request()->input('saveprice'.$suffix) != '' ? request()->input('saveprice'.$suffix) : '').'">';
 								print '</td>';
 							}
 						}
@@ -1051,9 +1051,9 @@ if ($id > 0 || !empty($ref)) {
 						// Warehouse
 						print '<td class="right">';
 						if (count($listwarehouses) > 1) {
-							print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 1, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+							print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 1, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 						} elseif (count($listwarehouses) == 1) {
-							print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 0, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+							print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 0, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 						} else {
 							$langs->load("errors");
 							print $langs->trans("ErrorNoWarehouseDefined");

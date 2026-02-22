@@ -162,17 +162,17 @@ if (empty($reshook)) {
 				$qty = "qty".$dispatch_line_suffix;
 				$ent = "entrepot".$dispatch_line_suffix;
 				$fk_commandedet = "fk_commandedet".$dispatch_line_suffix;
-				$idline = GETPOSTINT("idline".$dispatch_line_suffix);
-				$warehouse_id = GETPOSTINT($ent);
-				$prod_id = GETPOSTINT($prod);
+				$idline = request()->integer("idline".$dispatch_line_suffix, 0);
+				$warehouse_id = request()->integer($ent, 0);
+				$prod_id = request()->integer($prod, 0);
 				//$pu = "pu".$dispatch_line_suffix; // This is unit price including discount
 				$lot = '';
 				$dDLUO = '';
 				$dDLC = '';
 				if ($modebatch == "batch") { //TODO: Make impossible to input non existing batch code
-					$lot = GETPOST('lot_number'.$dispatch_line_suffix);
-					$dDLUO = dol_mktime(12, 0, 0, GETPOSTINT('dluo'.$dispatch_line_suffix.'month'), GETPOSTINT('dluo'.$dispatch_line_suffix.'day'), GETPOSTINT('dluo'.$dispatch_line_suffix.'year'));
-					$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc'.$dispatch_line_suffix.'month'), GETPOSTINT('dlc'.$dispatch_line_suffix.'day'), GETPOSTINT('dlc'.$dispatch_line_suffix.'year'));
+					$lot = request()->input('lot_number'.$dispatch_line_suffix);
+					$dDLUO = dol_mktime(12, 0, 0, request()->integer('dluo'.$dispatch_line_suffix.'month', 0), request()->integer('dluo'.$dispatch_line_suffix.'day', 0), request()->integer('dluo'.$dispatch_line_suffix.'year', 0));
+					$dDLC = dol_mktime(12, 0, 0, request()->integer('dlc'.$dispatch_line_suffix.'month', 0), request()->integer('dlc'.$dispatch_line_suffix.'day', 0), request()->integer('dlc'.$dispatch_line_suffix.'year', 0));
 				}
 
 				$newqty = (float)request()->input($qty, 0.0);
@@ -228,7 +228,7 @@ if (empty($reshook)) {
 							} else {
 								$qtystart = $expeditiondispatch->qty;
 								$expeditiondispatch->qty = $newqty;
-								$expeditiondispatch->entrepot_id = GETPOSTINT($ent);
+								$expeditiondispatch->entrepot_id = request()->integer($ent, 0);
 
 								if ($newqty > 0) {
 									$result = $expeditiondispatch->update($user);
@@ -243,8 +243,8 @@ if (empty($reshook)) {
 								if (!$error && $modebatch == "batch") {
 									if ($newqty > 0) {
 										$suffixkeyfordate = preg_replace('/^productbatch/', '', $key);
-										$sellby = dol_mktime(12, 0, 0, GETPOSTINT('dlc'.$suffixkeyfordate.'month'), GETPOSTINT('dlc'.$suffixkeyfordate.'day'), GETPOSTINT('dlc'.$suffixkeyfordate.'year'), '');
-										$eatby = dol_mktime(12, 0, 0, GETPOSTINT('dluo'.$suffixkeyfordate.'month'), GETPOSTINT('dluo'.$suffixkeyfordate.'day'), GETPOSTINT('dluo'.$suffixkeyfordate.'year'));
+										$sellby = dol_mktime(12, 0, 0, request()->integer('dlc'.$suffixkeyfordate.'month', 0), request()->integer('dlc'.$suffixkeyfordate.'day', 0), request()->integer('dlc'.$suffixkeyfordate.'year', 0), '');
+										$eatby = dol_mktime(12, 0, 0, request()->integer('dluo'.$suffixkeyfordate.'month', 0), request()->integer('dluo'.$suffixkeyfordate.'day', 0), request()->integer('dluo'.$suffixkeyfordate.'year', 0));
 
 										$sqlsearchdet = "SELECT rowid FROM ".$db->prefix().$expeditionlinebatch->table_element;
 										$sqlsearchdet .= " WHERE fk_expeditiondet = ".((int) $idline);
@@ -286,18 +286,18 @@ if (empty($reshook)) {
 							}
 						} else {
 							$expeditiondispatch->fk_expedition = $object->id;
-							$expeditiondispatch->entrepot_id = GETPOSTINT($ent);
-							$expeditiondispatch->fk_parent = GETPOSTINT('fk_parent'.$dispatch_line_suffix);
+							$expeditiondispatch->entrepot_id = request()->integer($ent, 0);
+							$expeditiondispatch->fk_parent = request()->integer('fk_parent'.$dispatch_line_suffix);
 							$expeditiondispatch->fk_product = $prod_id;
 							if (!($expeditiondispatch->fk_parent > 0)) {
-								$expeditiondispatch->fk_elementdet = GETPOSTINT($fk_commandedet);
+								$expeditiondispatch->fk_elementdet = request()->integer($fk_commandedet, 0);
 							}
 							$expeditiondispatch->qty = $newqty;
 
 							if ($newqty > 0) {
 								$idline = $expeditiondispatch->insert($user);
 								if ($idline < 0) {
-									setEventMessages($expeditiondispatch->error, $expeditiondispatch->errors, 'errors');
+									setEventMessages($expeditiondispatch->error, $expeditiondispatch->errors, 'errors', 0);
 									$error++;
 								}
 
@@ -307,7 +307,7 @@ if (empty($reshook)) {
 									$expeditionlinebatch->batch = $lot;
 									$expeditionlinebatch->qty = $newqty;
 									$expeditionlinebatch->fk_origin_stock = 0;
-									$expeditionlinebatch->fk_warehouse = GETPOSTINT($ent);
+									$expeditionlinebatch->fk_warehouse = request()->integer($ent, 0);
 
 									$result = $expeditionlinebatch->create($idline);
 									if ($result < 0) {
@@ -320,12 +320,12 @@ if (empty($reshook)) {
 
 						// If module stock is enabled and the stock decrease is done on edition of this page
 						/*
-						if (!$error && GETPOST($ent, 'int') > 0 && isModEnabled('stock') && !empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT_DISPATCH_ORDER)) {
+						if (!$error && request()->input($ent) > 0 && isModEnabled('stock') && !empty($conf->global->STOCK_CALCULATE_ON_SHIPMENT_DISPATCH_ORDER)) {
 							$mouv = new MouvementStock($db);
-							$product = GETPOST($prod, 'int');
-							$entrepot = GETPOST($ent, 'int');
-							$qtymouv = price2num(GETPOST($qty, 'alpha'), 'MS') - $qtystart;
-							$price = price2num(GETPOST($pu), 'MU');
+							$product = request()->input($prod);
+							$entrepot = request()->input($ent);
+							$qtymouv = price2num(request()->input($qty), 'MS') - $qtystart;
+							$price = price2num(request()->input($pu), 'MU');
 							$comment = request()->input('comment');
 							$inventorycode = dol_print_date(dol_now(), 'dayhourlog');
 							$now = dol_now();
@@ -398,7 +398,7 @@ $help_url = 'EN:Module_Shipments|FR:Module_Expéditions|ES:M&oacute;dulo_Expedic
 $morejs = array('/expedition/js/lib_dispatch.js.php');
 $typeobject = null;
 
-llxHeader('', $title, $help_url, '', 0, 0, $morejs, '', '', 'mod-expedition page-card_dispatch');
+llxHeader('', $title, $help_url, '', 0, 0, $morejs, '', '');
 
 if ($object->id > 0 || !empty($object->ref)) {
 	$lines = $object->lines;	// This is an array of detail of line, on line per source order line found intolines[]->fk_elementdet, then each line may have sub data
@@ -1009,19 +1009,19 @@ if ($object->id > 0 || !empty($object->ref)) {
 											print '</td>';
 
 											print '<td>';
-											print '<input type="text" class="inputlotnumber quatrevingtquinzepercent csslotnumber" name="lot_number'.$suffix.'" value="'.(GETPOSTISSET('lot_number'.$suffix) ? GETPOST('lot_number'.$suffix) : $objd->batch).'" list="lot_number'.$suffix.'">';
-											print $formproduct->selectLotDataList('lot_number'.$suffix, 0, $objd->fk_product, GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : $objd->fk_warehouse, array());
+											print '<input type="text" class="inputlotnumber quatrevingtquinzepercent csslotnumber" name="lot_number'.$suffix.'" value="'.(request()->has('lot_number'.$suffix) ? request()->input('lot_number'.$suffix) : $objd->batch).'" list="lot_number'.$suffix.'">';
+											print $formproduct->selectLotDataList('lot_number'.$suffix, 0, $objd->fk_product, request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : $objd->fk_warehouse, array());
 											print '</td>';
 
 											if ($is_sell_by_enabled) {
 												print '<td class="nowraponall">';
-												$dlcdatesuffix = !empty($objd->sellby) ? dol_stringtotime($objd->sellby) : dol_mktime(0, 0, 0, GETPOSTINT('dlc'.$suffix.'month'), GETPOSTINT('dlc'.$suffix.'day'), GETPOSTINT('dlc'.$suffix.'year'));
+												$dlcdatesuffix = !empty($objd->sellby) ? dol_stringtotime($objd->sellby) : dol_mktime(0, 0, 0, request()->integer('dlc'.$suffix.'month', 0), request()->integer('dlc'.$suffix.'day', 0), request()->integer('dlc'.$suffix.'year', 0));
 												print $form->selectDate($dlcdatesuffix, 'dlc'.$suffix, 0, 0, 1, '');
 												print '</td>';
 											}
 											if ($is_eat_by_enabled) {
 												print '<td class="nowraponall">';
-												$dluodatesuffix = !empty($objd->eatby) ? dol_stringtotime($objd->eatby) : dol_mktime(0, 0, 0, GETPOSTINT('dluo'.$suffix.'month'), GETPOSTINT('dluo'.$suffix.'day'), GETPOSTINT('dluo'.$suffix.'year'));
+												$dluodatesuffix = !empty($objd->eatby) ? dol_stringtotime($objd->eatby) : dol_mktime(0, 0, 0, request()->integer('dluo'.$suffix.'month', 0), request()->integer('dluo'.$suffix.'day', 0), request()->integer('dluo'.$suffix.'year', 0));
 												print $form->selectDate($dluodatesuffix, 'dluo'.$suffix, 0, 0, 1, '');
 												print '</td>';
 											}
@@ -1069,7 +1069,7 @@ if ($object->id > 0 || !empty($object->ref)) {
 										}
 										// Qty to dispatch
 										print '<td class="right nowraponall">';
-										$suggestedvalue = (GETPOSTISSET('qty'.$suffix) ? (float)request()->input('qty'.$suffix, 0.0) : $objd->qty);
+										$suggestedvalue = (request()->has('qty'.$suffix) ? (float)request()->input('qty'.$suffix, 0.0) : $objd->qty);
 										//var_dump($suggestedvalue);exit;
 										if ($can_update_stock) {
 											print '<a href="" id="reset'.$suffix.'" class="resetline">'.img_picto($langs->trans("Reset"), 'eraser', 'class="pictofixedwidth opacitymedium"').'</a>';
@@ -1088,9 +1088,9 @@ if ($object->id > 0 || !empty($object->ref)) {
 										print '<td class="right">';
 										if ($can_update_stock) {
 											if (count($listwarehouses) > 1) {
-												print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : $objd->fk_warehouse, "entrepot".$suffix, '', 1, 0, $objd->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+												print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : $objd->fk_warehouse, "entrepot".$suffix, '', 1, 0, $objd->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 											} elseif (count($listwarehouses) == 1) {
-												print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : $objd->fk_warehouse, "entrepot".$suffix, '', 0, 0, $objd->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+												print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : $objd->fk_warehouse, "entrepot".$suffix, '', 0, 0, $objd->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 											} else {
 												$langs->load("errors");
 												print $langs->trans("ErrorNoWarehouseDefined");
@@ -1173,17 +1173,17 @@ if ($object->id > 0 || !empty($object->ref)) {
 									print '</td>';
 
 									print '<td>';
-									print '<input type="text" class="inputlotnumber quatrevingtquinzepercent" id="lot_number'.$suffix.'" name="lot_number'.$suffix.'" value="'.GETPOST('lot_number'.$suffix).'">';
+									print '<input type="text" class="inputlotnumber quatrevingtquinzepercent" id="lot_number'.$suffix.'" name="lot_number'.$suffix.'" value="'.request()->input('lot_number'.$suffix).'">';
 									print '</td>';
 									if ($is_sell_by_enabled) {
 										print '<td class="nowraponall">';
-										$dlcdatesuffix = dol_mktime(0, 0, 0, GETPOSTINT('dlc'.$suffix.'month'), GETPOSTINT('dlc'.$suffix.'day'), GETPOSTINT('dlc'.$suffix.'year'));
+										$dlcdatesuffix = dol_mktime(0, 0, 0, request()->integer('dlc'.$suffix.'month', 0), request()->integer('dlc'.$suffix.'day', 0), request()->integer('dlc'.$suffix.'year', 0));
 										print $form->selectDate($dlcdatesuffix, 'dlc'.$suffix, 0, 0, 1, '');
 										print '</td>';
 									}
 									if ($is_eat_by_enabled) {
 										print '<td class="nowraponall">';
-										$dluodatesuffix = dol_mktime(0, 0, 0, GETPOSTINT('dluo'.$suffix.'month'), GETPOSTINT('dluo'.$suffix.'day'), GETPOSTINT('dluo'.$suffix.'year'));
+										$dluodatesuffix = dol_mktime(0, 0, 0, request()->integer('dluo'.$suffix.'month', 0), request()->integer('dluo'.$suffix.'day', 0), request()->integer('dluo'.$suffix.'year', 0));
 										print $form->selectDate($dluodatesuffix, 'dluo'.$suffix, 0, 0, 1, '');
 										print '</td>';
 									}
@@ -1229,11 +1229,11 @@ if ($object->id > 0 || !empty($object->ref)) {
 								// Qty to dispatch
 								print '<td class="right">';
 								print '<a href="" id="reset'.$suffix.'" class="resetline">'.img_picto($langs->trans("Reset"), 'eraser', 'class="pictofixedwidth opacitymedium"').'</a>';
-								$amounttosuggest = (GETPOSTISSET('qty'.$suffix) ? GETPOSTINT('qty'.$suffix) : (!getDolGlobalString('SUPPLIER_ORDER_DISPATCH_FORCE_QTY_INPUT_TO_ZERO') ? $remaintodispatch : 0));
+								$amounttosuggest = (request()->has('qty'.$suffix) ? request()->integer('qty'.$suffix) : (!getDolGlobalString('SUPPLIER_ORDER_DISPATCH_FORCE_QTY_INPUT_TO_ZERO', 0) ? $remaintodispatch : 0));
 								if (count($products_dispatched)) {
 									// There is already existing lines into llx_expeditiondet, this means a plan for the shipment has already been started.
 									// In such a case, we do not suggest new values, we suggest the value known.
-									$amounttosuggest = (GETPOSTISSET('qty'.$suffix) ? GETPOSTINT('qty'.$suffix) : (isset($products_dispatched[$objp->rowid]) ? $products_dispatched[$objp->rowid] : ''));
+									$amounttosuggest = (request()->has('qty'.$suffix) ? request()->integer('qty'.$suffix, 0) : (isset($products_dispatched[$objp->rowid]) ? $products_dispatched[$objp->rowid] : ''));
 								}
 								print '<input id="qty'.$suffix.'" onchange="onChangeDispatchLineQty($(this))" name="qty'.$suffix.'" data-index="'.$i.'" data-type="text" class="width50 right qtydispatchinput" value="'.$amounttosuggest.'" data-expected="'.$amounttosuggest.'">';
 								print '</td>';
@@ -1251,9 +1251,9 @@ if ($object->id > 0 || !empty($object->ref)) {
 								// Warehouse
 								print '<td class="right">';
 								if (count($listwarehouses) > 1) {
-									print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 1, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+									print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 1, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 								} elseif (count($listwarehouses) == 1) {
-									print $formproduct->selectWarehouses(GETPOST("entrepot".$suffix) ? GETPOST("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 0, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
+									print $formproduct->selectWarehouses(request()->input("entrepot".$suffix) ? request()->input("entrepot".$suffix) : ($objp->fk_default_warehouse ? $objp->fk_default_warehouse : ''), "entrepot".$suffix, '', 0, 0, $objp->fk_product, '', 1, 0, array(), 'csswarehouse'.$suffix);
 								} else {
 									$langs->load("errors");
 									print $langs->trans("ErrorNoWarehouseDefined");
