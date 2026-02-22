@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2025		MDW	<mdeweerd@users.noreply.github.com>
  */
 
@@ -15,7 +15,9 @@
  * @var string 	$extrafieldsobjectprefix
  * @var int		$extrafieldspositionoffset
  */
+--}}
 
+@php
 '
 @phan-var-force array<string,array{label:string,checked?:string,position?:int,help?:string,enabled?:string}> $arrayfields
 ';
@@ -60,3 +62,4 @@ if (!empty($extrafieldsobjectkey)) {	// $extrafieldsobject is the $object->table
 		}
 	}
 }
+@endphp

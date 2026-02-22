@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+
 /* Copyright (C) 2010 Regis Houssin <regis.houssin@inodbox.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  */
-?>
 
 <!-- BEGIN TEMPLATE -->
 

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+
 /* Copyright (C) 2014	    Maxime Kohlhaas		<support@atm-consulting.fr>
  * Copyright (C) 2014	    Juanjo Menent		<jmenent@2byte.es>
  * Copyright (C) 2021-2025  Frédéric France     <frederic.france@free.fr>
@@ -51,9 +51,8 @@ if (!is_object($form)) {
 global $objectoffield;
 $objectoffield = $object;
 
-?>
 <!-- BEGIN PHP TEMPLATE core/tpl/extrafields_view.tpl.php to show formObjectOptions + extrafields -->
-<?php
+
 if (!isset($parameters) || !is_array($parameters)) {
 	$parameters = array();
 }
@@ -350,5 +349,4 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 				</script>'."\n";
 	}
 }
-?>
 <!-- END PHP TEMPLATE core/tpl/extrafields_view.tpl.php -->

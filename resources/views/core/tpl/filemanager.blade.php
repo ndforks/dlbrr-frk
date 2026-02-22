@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+
 /* Copyright (C) 2017 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2024-2025	MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France			<frederic.france@free.fr>
@@ -53,12 +53,11 @@ if (empty($conf) || !is_object($conf)) {
 @phan-var-force int $section
 ';
 
-?>
 
 <!-- BEGIN PHP TEMPLATE core/tpl/filemanager.tpl.php -->
 <!-- Doc of fileTree plugin at https://www.abeautifulsite.net/jquery-file-tree -->
 
-<?php
+
 
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
@@ -95,11 +94,10 @@ if (($action == 'delete' || $action == 'file_manager_delete') && empty($conf->us
 }
 
 // Start container of all panels
-?>
 <!-- Begin div id="containerlayout" -->
 <div id="containerlayout">
 <div id="ecm-layout-north" class="toolbar largebutton">
-<?php
+
 
 // Start top panel, toolbar
 print '<div class="inline-block toolbarbutton centpercent">';
@@ -183,13 +181,12 @@ print '<div class="inline-block valignmiddle floatright">';
 // Zone to attach a new file
 if ((!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE_JS')) || !empty($section)) {
 	if ((empty($section) || $section == -1) && ($module != 'medias')) {
-		?>
 		<script>
 		jQuery(document).ready(function() {
 			jQuery('#{{ $nameforformuserfile }}').hide();
 		});
 		</script>
-		<?php
+		
 	}
 
 	$sectiondir = GETPOST('file', 'alpha') ? GETPOST('file', 'alpha') : GETPOST('section_dir', 'alpha');
@@ -209,10 +206,9 @@ print '</div>';
 print '</div>';
 // End top panel, toolbar
 
-?>
 </div>
 <div id="ecm-layout-west" class="inline-block">
-<?php
+
 // Start left area
 
 
@@ -371,12 +367,11 @@ if (empty($action) || $action == 'editfile' || $action == 'file_manager' || preg
 
 
 // End left panel
-?>
 </div>
 <div id="ecm-layout-center" class="inline-block">
 <div class="pane-in ecm-in-layout-center">
 <div id="ecmfileview" class="ecmfileview">
-<?php
+
 // Start right panel - List of content of a directory
 
 $mode = 'noajax';
@@ -393,13 +388,12 @@ include DOL_DOCUMENT_ROOT.'/core/ajax/ajaxdirpreview.php'; // Show content of a 
 
 
 // End right panel
-?>
 </div>
 </div>
 
 </div>
 </div> <!-- End div id="containerlayout" -->
-<?php
+
 
 
 if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE_JS')) { // Show filtree when ajax is enabled
@@ -415,5 +409,4 @@ if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE_
 	include DOL_DOCUMENT_ROOT.'/ecm/tpl/enablefiletreeajax.tpl.php';
 }
 
-?>
 <!-- END PHP TEMPLATE core/tpl/filemanager.tpl.php -->
