@@ -1,6 +1,5 @@
-{{-- Blade template version --}}
-<!-- file footer.tpl.php -->
-<?php
+<!-- file footer.blade.php -->
+@php
 /* Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
  */
 // Protection to avoid direct call of template
@@ -103,13 +102,13 @@ if ($jsOut) {
 print '<script src="'.$context->getControllerUrl().'/js/theme.js"></script>';
 
 // Wrapper to manage document_preview and modal_card
-if (empty($conf->browser->layout) || $conf->browser->layout != 'phone') { ?>
-	<script nonce="<?php print dolPrintHTMLForAttribute(getNonce()) ?>">
+if (empty($conf->browser->layout) || $conf->browser->layout != 'phone') { !!}
+	<script nonce="{!! dolPrintHTMLForAttribute(getNonce()) ?>">
 		/* JS CODE TO ENABLE document_preview */
 		jQuery(document).ready(function () {
 			jQuery(".documentpreview").click(function () {
 				console.log("We click on preview for element with href=" + $(this).attr('href') + " mime=" + $(this).attr('mime'));
-				const modalTitle = $(this).data('modal-title') || $(this).attr('title') || '<?php print dol_escape_js($langs->transnoentities("Preview")) ?>';
+				const modalTitle = $(this).data('modal-title') || $(this).attr('title') || '{!! dol_escape_js($langs->transnoentities("Preview")) ?>';
 				document_preview($(this).attr('href'), $(this).attr('mime'), modalTitle);
 				return false;
 			});
@@ -238,7 +237,7 @@ if (empty($conf->browser->layout) || $conf->browser->layout != 'phone') { ?>
 				if (mode == 'image' && showOriginalSizeButton) {
 					// TODO remove PHP in js...
 					moreButtons += `
-					<button  class="dialog-header-btn btn-low-emphasis" onClick="document_preview_original_size()" ><?php print dol_escape_js($langs->trans("OriginalSize"), 1) ?></button>
+					<button  class="dialog-header-btn btn-low-emphasis" onClick="document_preview_original_size()" >{!! dol_escape_js($langs->trans("OriginalSize"), 1) ?></button>
 					`;
 				}
 
@@ -290,7 +289,6 @@ if (empty($conf->browser->layout) || $conf->browser->layout != 'phone') { ?>
 	<!-- A div to allow modal popup by modal -->
 	<dialog id="modalforcard" class="dialog-full-screen" ><article></article></dialog>
 	<dialog id="modalforpopup" class="dialog-popup" ><article></article></dialog>
-<?php } ?>
-
+@endphp
 </body>
 </html>

@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2022       Open-Dsi				<support@open-dsi.fr>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
@@ -26,25 +24,9 @@
  * $senderissupplier (0 by default, 1 or 2 for supplier invoices/orders)
  * $inputalsopricewithtax (0 by default, 1 to also show column with unit price including tax)
  */
+--}}
 
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var HookManager $hookmanager
- * @var Translate $langs
- *
- * @var string $action
- */
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error: this template page cannot be called directly as an URL";
-	exit;
-}
-
-'@phan-var-force CommonObject $object
- @phan-var-force CommonObject $this';
-
+@php
 global $forcetoshowtitlelines;
 
 // Define colspan for the button 'Add'
@@ -53,42 +35,44 @@ $colspan = 3; // Columns: col edit + col delete + move button
 // Lines for extrafield
 $objectline = null;
 
-print "<!-- BEGIN PHP TEMPLATE productattributevalueline_create.tpl.php -->\n";
 $nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
-?>
-<tr class="pair nodrag nodrop nohoverpair<?php echo $nolinesbefore ? '' : ' liste_titre_create'; ?>">
-	<?php
-	$coldisplay = 0;
-	// Adds a line numbering column
-	if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-		$coldisplay++;
-		echo '<td class="nobottom linecolnum center"></td>';
-	}
-	$coldisplay++;
-	?>
+$coldisplay = 0;
+@endphp
+
+<!-- BEGIN BLADE TEMPLATE productattributevalueline_create -->
+<tr class="pair nodrag nodrop nohoverpair{{ $nolinesbefore ? '' : ' liste_titre_create' }}">
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		@php $coldisplay++; @endphp
+		<td class="nobottom linecolnum center"></td>
+	@endif
+	
+	@php $coldisplay++; @endphp
 	<td class="nobottom linecolref">
-		<?php $coldisplay++; if ($nolinesbefore) {
-			echo $langs->trans('Ref') . ': ';
-		} ?>
-		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(GETPOSTISSET("line_ref") ? GETPOST("line_ref", 'alpha', 2) : ''); ?>" autofocus>
-		<?php
-		if (is_object($hookmanager)) {
+		@php $coldisplay++; @endphp
+		@if($nolinesbefore)
+			{{ $langs->trans('Ref') }}: 
+		@endif
+		<input type="text" name="line_ref" id="line_ref" class="flat w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ GETPOSTISSET("line_ref") ? GETPOST("line_ref", 'alpha', 2) : '' }}" autofocus>
+		@if(is_object($hookmanager ?? null))
+			@php
 			$parameters = array();
 			$reshook = $hookmanager->executeHooks('formCreateValueOptions', $parameters, $object, $action);
 			if (!empty($hookmanager->resPrint)) {
 				print $hookmanager->resPrint;
 			}
-		}
-		?>
+			@endphp
+		@endif
 	</td>
 
-	<td class="nobottom linecolvalue"><?php $coldisplay++; ?>
-		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(GETPOSTISSET("line_value") ? GETPOST("line_value", 'alpha', 2) : ''); ?>">
+	<td class="nobottom linecolvalue">
+		@php $coldisplay++; @endphp
+		<input type="text" name="line_value" id="line_value" class="flat w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ GETPOSTISSET("line_value") ? GETPOST("line_value", 'alpha', 2) : '' }}">
 	</td>
 
-	<td class="nobottom linecoledit center valignmiddle" colspan="<?php echo $colspan; ?>"><?php $coldisplay += $colspan; ?>
-		<input type="submit" class="button reposition small" value="<?php echo $langs->trans('Add'); ?>" name="addline" id="addline">
+	<td class="nobottom linecoledit center valignmiddle" colspan="{{ $colspan }}">
+		@php $coldisplay += $colspan; @endphp
+		<input type="submit" class="button reposition small bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer transition-colors" value="{{ $langs->trans('Add') }}" name="addline" id="addline">
 	</td>
 </tr>
 
-<!-- END PHP TEMPLATE productattributevalueline_create.tpl.php -->
+<!-- END BLADE TEMPLATE productattributevalueline_create -->

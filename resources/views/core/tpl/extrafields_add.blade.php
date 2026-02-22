@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2014	    Maxime Kohlhaas		    <support@atm-consulting.fr>
  * Copyright (C) 2014	    Juanjo Menent		    <jmenent@2byte.es>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
@@ -55,11 +55,10 @@ if (empty($conf) || !is_object($conf)) {
 @phan-var-force array<string,mixed> $parameters
 @phan-var-force Societe $thirdpartytopropagateextrafieldsfrom
 ';
+@endphp
 
-?>
 <!-- BEGIN PHP TEMPLATE extrafields_add.tpl.php -->
-<?php
-
+@php
 // Other attributes
 if (!isset($parameters)) {
 	$parameters = array();
@@ -91,6 +90,6 @@ if (empty($reshook)) {
 
 	print $object->showOptionals($extrafields, 'create', $params);
 }
+@endphp
 
-?>
 <!-- END PHP TEMPLATE extrafields_add.tpl.php -->

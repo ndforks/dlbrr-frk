@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2021  Open-Dsi  <support@open-dsi.fr>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
@@ -26,7 +25,8 @@
  *
  * $parameters
  */
-
+--}}
+@php
 /**
  * @var DoliDB $db
  * @var Form $form
@@ -52,9 +52,9 @@ if (isModEnabled('accounting') && !is_object($formaccounting)) {
 }
 
 
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE accountancy_code_edit.tpl.php -->
-<?php
+@php
 
 if (!is_array($parameters)) {
 	$parameters = array();
@@ -88,5 +88,5 @@ if (empty($reshook)) {
 
 	print '<div class="clearboth"></div>';
 }
-?>
+@endphp
 <!-- END PHP TEMPLATE accountancy_code_edit.tpl.php -->

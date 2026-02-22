@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{-- Blade template version
 /* Copyright (C) 2010-2012	Regis Houssin			    <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2014	Laurent Destailleur			<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel			<christophe.battarel@altairis.fr>
@@ -32,156 +31,101 @@
  * $langs
  * $forceall (0 by default, 1 for supplier invoices/orders)
  */
+--}}
 
-require_once DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php";
-
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var Form $form
- * @var Societe $buyer
- * @var Translate $langs
- */
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error: this template page cannot be called directly as an URL";
-	exit;
-}
-
-'
-@phan-var-force CommonObject $this
-@phan-var-force CommonObject $object
-@phan-var-force Societe $buyer
-';
-
-global $forceall, $forcetoshowtitlelines, $filtertype;
-
-if (empty($forceall)) {
-	$forceall = 0;
-}
-
-if (empty($filtertype)) {
-	$filtertype = 0;
-}
-
-$formproduct = new FormProduct($object->db);
-
-// Define colspan for the button 'Add'
+@php
+$forceall = $forceall ?? 0;
+$filtertype = $filtertype ?? 0;
 $colspan = 3;
-
-
-// Lines for extrafield
-$objectline = new ReceptionLineBatch($this->db);
-
-print "<!-- BEGIN PHP TEMPLATE reception/tpl/objectline_create.tpl.php -->\n";
-
-$nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
-
-if ($nolinesbefore) {
-	print '<tr class="liste_titre nodrag nodrop">';
-	if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-		print '<td class="linecolnum center"></td>';
-	}
-	print '<td class="linecoldescription minwidth500imp">';
-	print '<div id="add"></div><span class="hideonsmartphone">'.$langs->trans('AddNewLine').'</span>';
-	print '</td>';
-	print '<td class="linecolqty right">'.$langs->trans('Qty').'</td>';
-
-	if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
-		print '<td class="linecoluseunit left">';
-		print '<span id="title_units">';
-		print $langs->trans('Unit');
-		print '</span></td>';
-	}
-
-	print '</tr>';
-}
-
-print '<tr class="pair nodrag nodrop nohoverpair'.(($nolinesbefore || $object->element == 'contrat') ? '' : ' liste_titre_create').'">';
+$nolinesbefore = (count($this->lines) == 0 || ($forcetoshowtitlelines ?? false));
 $coldisplay = 0;
+@endphp
 
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	$coldisplay++;
-	echo '<td class="bordertop nobottom linecolnum center"></td>';
-}
+<!-- BEGIN BLADE TEMPLATE reception/tpl/objectline_create.blade.php -->
 
-// Product
-$coldisplay++;
-print '<td class="bordertop nobottom linecoldescription line minwidth500imp">';
+@if ($nolinesbefore)
+<tr class="liste_titre nodrag nodrop">
+    @if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+    <td class="linecolnum center"></td>
+    @endif
+    <td class="linecoldescription minwidth500imp">
+        <div id="add"></div><span class="hideonsmartphone">{{ $langs->trans('AddNewLine') }}</span>
+    </td>
+    <td class="linecolqty right">{{ $langs->trans('Qty') }}</td>
+    @if (getDolGlobalInt('PRODUCT_USE_UNITS'))
+    <td class="linecoluseunit left">
+        <span id="title_units">{{ $langs->trans('Unit') }}</span>
+    </td>
+    @endif
+</tr>
+@endif
 
-// Predefined product/service
-if (isModEnabled("product")) {
-	if ($filtertype == 1) {
-		print $langs->trans("Service");
-	} else {
-		print $langs->trans("Product");
-	}
+<tr class="pair nodrag nodrop nohoverpair{{ ($nolinesbefore || $object->element == 'contrat') ? '' : ' liste_titre_create' }}">
+    @if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+        @php $coldisplay++; @endphp
+        <td class="bordertop nobottom linecolnum center"></td>
+    @endif
 
-	echo '<span class="prod_entry_mode_predef nowraponall">';
+    @php $coldisplay++; @endphp
+    <td class="bordertop nobottom linecoldescription line minwidth500imp">
+        @if (isModEnabled("product"))
+            @if ($filtertype == 1)
+                {{ $langs->trans("Service") }}
+            @else
+                {{ $langs->trans("Product") }}
+            @endif
+            <span class="prod_entry_mode_predef nowraponall"></span>
+        @endif
 
-	$statustoshow = -1;
+        @if (!empty($extrafields))
+            @php
+                $temps = $objectline->showOptionals($extrafields, 'create', array(), '', '', '1', 'line');
+            @endphp
+            @if (!empty($temps))
+                <div style="padding-top: 10px" id="extrafield_lines_area_create" name="extrafield_lines_area_create">
+                    {!! $temps !!}
+                </div>
+            @endif
+        @endif
+    </td>
 
-	echo '</span>';
-}
+    @php $coldisplay++; @endphp
+    <td class="bordertop nobottom linecolqty right">
+        <input type="text" size="2" name="qty" id="qty" class="flat right" value="{{ GETPOSTISSET('qty') ? GETPOST('qty', 'alpha', 2) : 1 }}">
+    </td>
 
+    @if (getDolGlobalInt('PRODUCT_USE_UNITS'))
+        @php $coldisplay++; @endphp
+        <td class="nobottom linecoluseunit"></td>
+    @endif
 
-if (!empty($extrafields)) {
-	$temps = $objectline->showOptionals($extrafields, 'create', array(), '', '', '1', 'line');
+    @php $coldisplay += $colspan; @endphp
+    <td class="bordertop nobottom linecoledit right valignmiddle" colspan="{{ $colspan }}">
+        <input type="submit" class="button button-add small" name="addline" id="addline" value="{{ $langs->trans('Add') }}">
+    </td>
+</tr>
 
-	if (!empty($temps)) {
-		print '<div style="padding-top: 10px" id="extrafield_lines_area_create" name="extrafield_lines_area_create">';
-		print $temps;
-		print '</div>';
-	}
-}
-print '</td>';
-
-// Qty
-$coldisplay++;
-print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(GETPOSTISSET("qty") ? GETPOST("qty", 'alpha', 2) : 1).'">';
-print '</td>';
-
-// Unit
-if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
-	$coldisplay++;
-	print '<td class="nobottom linecoluseunit">';
-	print '</td>';
-}
-
-$coldisplay += $colspan;
-print '<td class="bordertop nobottom linecoledit right valignmiddle" colspan="' . $colspan . '">';
-print '<input type="submit" class="button button-add small" name="addline" id="addline" value="' . $langs->trans('Add') . '">';
-print '</td>';
-print '</tr>';
-
-?>
-
+@push('scripts')
 <script>
-
 /* JQuery for product free or predefined select */
 jQuery(document).ready(function() {
-	/* When changing predefined product, we reload list of supplier prices required for margin combo */
-	$("#idprod").change(function()
-	{
-		console.log("#idprod change triggered");
+    /* When changing predefined product, we reload list of supplier prices required for margin combo */
+    $("#idprod").change(function() {
+        console.log("#idprod change triggered");
 
-		  /* To set focus */
-		  if (jQuery('#idprod').val() > 0)
-			{
-			/* focus work on a standard textarea but not if field was replaced with CKEDITOR */
-			jQuery('#dp_desc').focus();
-			/* focus if CKEDITOR */
-			if (typeof CKEDITOR == "object" && typeof CKEDITOR.instances != "undefined")
-			{
-				var editor = CKEDITOR.instances['dp_desc'];
-				   if (editor) { editor.focus(); }
-			}
-			}
-	});
+        /* To set focus */
+        if (jQuery('#idprod').val() > 0) {
+            /* focus work on a standard textarea but not if field was replaced with CKEDITOR */
+            jQuery('#dp_desc').focus();
+            /* focus if CKEDITOR */
+            if (typeof CKEDITOR == "object" && typeof CKEDITOR.instances != "undefined") {
+                var editor = CKEDITOR.instances['dp_desc'];
+                if (editor) { editor.focus(); }
+            }
+        }
+    });
 });
-
 </script>
+@endpush
 
-<!-- END PHP TEMPLATE objectline_create.tpl.php -->
+<!-- END BLADE TEMPLATE objectline_create.blade.php -->

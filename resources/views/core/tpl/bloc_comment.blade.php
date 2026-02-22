@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
  */
 
@@ -155,3 +155,4 @@ if (!empty($object->comments)) {
 
 print '<br>';
 print '</div>';
+@endphp

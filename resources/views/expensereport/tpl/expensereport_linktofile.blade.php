@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2024-2025	MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
  *
@@ -16,7 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
+--}}
+@php
 /**
  * @var int $colspan
  * @var string $action
@@ -186,3 +186,4 @@ if (!getDolGlobalString('EXPENSEREPORT_DISABLE_ATTACHMENT_ON_LINES')) {
 		print '</td></tr>';
 	}
 }
+@endphp

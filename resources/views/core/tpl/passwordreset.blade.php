@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2022 	Laurent Destailleur 	<eldy@users.sourceforge.net>
  * Copyright (C) 2024	Frédéric France			<frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
@@ -160,43 +160,44 @@ if ($setnewpassword && $username && $passworduidhash) {
 	$langs->load("errors");
 	$message = '<div class="error">'.$langs->trans("ErrorFailedToValidatePasswordReset").'</div>';
 }
-
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE PASSWORDRESET.TPL.PHP -->
 
-<body class="body bodylogin"<?php print !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file='.urlencode('logos/' . getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"'; ?>>
+<body class="body bodylogin"{!! !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file='.urlencode('logos/' . getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"' !!}>
 
-<?php if (empty($conf->dol_use_jmobile)) { ?>
+@if(empty($conf->dol_use_jmobile))
 <script>
 $(document).ready(function () {
 	// Set focus on correct field
-	<?php if ($focus_element) {
-		?>$('#<?php echo $focus_element; ?>').focus(); <?php
-	} ?>		// Warning to use this only on visible element
+	@if($focus_element)
+		$('#{{ $focus_element }}').focus();
+	@endif
+@endphp
+		// Warning to use this only on visible element
 });
 </script>
-<?php } ?>
+@endif
 
 
-<div class="login_center center"<?php
+@php
 if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 	$backstyle = 'background: linear-gradient('.($conf->browser->layout == 'phone' ? '0deg' : '4deg').', var(--colorbackbody) 52%, rgb('.$colorbackhmenu1.') 52.1%);';
 	// old style:  $backstyle = 'background-image: linear-gradient(rgb('.$colorbackhmenu1.',0.3), rgb(240,240,240));';
 	$backstyle = getDolGlobalString('MAIN_LOGIN_BACKGROUND_STYLE', $backstyle);
 	print !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; '.$backstyle.'"' : '';
 }
-?>>
+@endphp
+>
 <div class="login_vertical_align">
 
-<form id="login" name="login" method="POST" action="<?php echo $php_self; ?>">
-<input type="hidden" name="token" value="<?php echo newToken(); ?>">
+<form id="login" name="login" method="POST" action="{{ $php_self }}">
+<input type="hidden" name="token" value="{{ newToken() }}">
 <input type="hidden" name="action" value="buildnewpassword">
 
 
 <!-- Title with version -->
-<div class="login_table_title center" title="<?php echo dol_escape_htmltag($title); ?>">
-<?php
+<div class="login_table_title center" title="{{ dol_escape_htmltag($title) }}">
+@php
 if (!empty($disablenofollow)) {
 	echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank" rel="noopener noreferrer external">';
 }
@@ -204,7 +205,7 @@ echo dol_escape_htmltag($title);
 if (!empty($disablenofollow)) {
 	echo '</a>';
 }
-?>
+@endphp
 </div>
 
 
@@ -214,7 +215,7 @@ if (!empty($disablenofollow)) {
 <div id="login_line1">
 
 <div id="login_left">
-<img alt="" title="" src="<?php echo $urllogo; ?>" id="img_logo" />
+<img alt="" title="" src="{{ $urllogo }}" id="img_logo" />
 </div>
 
 <br>
@@ -228,19 +229,19 @@ if (!empty($disablenofollow)) {
 <div class="tagtd nowraponall center valignmiddle tdinputlogin">
 <!-- <span class="span-icon-user">-->
 <span class="fa fa-user"></span>
-<input type="text" maxlength="255" placeholder="<?php echo $langs->trans("NewPassword"); ?>" <?php echo $disabled; ?> id="newpass1" name="newpass1" class="flat input-icon-user minwidth150" value="<?php echo dol_escape_htmltag($newpass1); ?>" tabindex="1" autofocus />
+<input type="text" maxlength="255" placeholder="{{ $langs->trans("NewPassword") }}" {{ $disabled }} id="newpass1" name="newpass1" class="flat input-icon-user minwidth150" value="{{ dol_escape_htmltag($newpass1) }}" tabindex="1" autofocus />
 </div>
 </div>
 <div class="trinputlogin">
 <div class="tagtd nowraponall center valignmiddle tdinputlogin">
 <!-- <span class="span-icon-user">-->
 <span class="fa fa-user"></span>
-<input type="text" maxlength="255" placeholder="<?php echo $langs->trans("PasswordRetype"); ?>" <?php echo $disabled; ?> id="newpass2" name="newpass2" class="flat input-icon-user minwidth150" value="<?php echo dol_escape_htmltag($newpass2); ?>" tabindex="1" />
+<input type="text" maxlength="255" placeholder="{{ $langs->trans("PasswordRetype") }}" {{ $disabled }} id="newpass2" name="newpass2" class="flat input-icon-user minwidth150" value="{{ dol_escape_htmltag($newpass2) }}" tabindex="1" />
 </div>
 </div>
 
 
-<?php
+@php
 if (!empty($captcha)) {
 	// Add a variable param to force not using cache (jmobile)
 	$php_self = preg_replace('/[&\?]time=(\d+)/', '', $php_self); // Remove param time
@@ -264,24 +265,24 @@ if (!empty($captcha)) {
 	if (is_object($captchaobj) && method_exists($captchaobj, 'getCaptchaCodeForForm')) {
 		// TODO: get this code using a method of captcha
 	} else {
-		?>
+@endphp
 	<!-- Captcha -->
 	<div class="trinputlogin">
 	<div class="tagtd tdinputlogin nowrap none valignmiddle">
 
 	<span class="fa fa-unlock"></span>
 	<span class="nofa inline-block">
-	<input id="securitycode" placeholder="<?php echo $langs->trans("SecurityCode"); ?>" class="flat input-icon-security width125" type="text" maxlength="5" name="code" tabindex="3" autocomplete="off" />
+	<input id="securitycode" placeholder="{{ $langs->trans("SecurityCode") }}" class="flat input-icon-security width125" type="text" maxlength="5" name="code" tabindex="3" autocomplete="off" />
 	</span>
 	<span class="nowrap inline-block">
-	<img class="inline-block valignmiddle" src="<?php echo DOL_URL_ROOT ?>/core/antispamimage.php" border="0" width="80" height="32" id="img_securitycode" />
-	<a class="inline-block valignmiddle" href="<?php echo $php_self; ?>" tabindex="4"><?php echo img_picto($langs->trans("Refresh"), 'refresh', 'id="captcha_refresh_img"'); ?></a>
+	<img class="inline-block valignmiddle" src="{{ DOL_URL_ROOT }}/core/antispamimage.php" border="0" width="80" height="32" id="img_securitycode" />
+	<a class="inline-block valignmiddle" href="{{ $php_self }}" tabindex="4">{{ img_picto($langs->trans("Refresh"), 'refresh', 'id="captcha_refresh_img"') }}</a>
 	</span>
 
 	</div>
 	</div>
-		<?php
-	}
+@php
+}
 }
 
 if (!empty($morelogincontent)) {
@@ -297,7 +298,7 @@ if (!empty($morelogincontent)) {
 		echo $morelogincontent;
 	}
 }
-?>
+@endphp
 
 </div>
 
@@ -309,12 +310,12 @@ if (!empty($morelogincontent)) {
 <div id="login_line2" style="clear: both">
 
 <!-- Button "Regenerate and Send password" -->
-<br><input type="submit" <?php echo $disabled; ?> class="butAction butActionLogin noborderfocus small" name="button_password" value="<?php echo $langs->trans('Save'); ?>" tabindex="4" />
+<br><input type="submit" {{ $disabled }} class="butAction butActionLogin noborderfocus small" name="button_password" value="{{ $langs->trans('Save') }}" tabindex="4" />
 
 <br>
 <div class="center" style="margin-top: 15px;">
-	<?php
-	$moreparam = '';
+@php
+$moreparam = '';
 	if (!empty($conf->dol_hide_topmenu)) {
 		$moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_topmenu='.$conf->dol_hide_topmenu;
 	}
@@ -329,7 +330,7 @@ if (!empty($morelogincontent)) {
 	}
 
 	print '<a class="alogin" href="'.$dol_url_root.'/index.php'.$moreparam.'">'.$langs->trans('BackToLoginPage').'</a>';
-	?>
+@endphp
 </div>
 
 </div>
@@ -339,7 +340,7 @@ if (!empty($morelogincontent)) {
 </form>
 
 
-<?php
+@php
 if ($mode == 'dolibarr' || !$disabled) {
 	if (empty($message)) {
 		print '<div class="center login_main_home divpasswordmessagedesc paddingtopbottom'.(!getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' backgroundsemitransparent boxshadow').'" style="max-width: 70%">';
@@ -355,21 +356,21 @@ if ($mode == 'dolibarr' || !$disabled) {
 	print '</div>';
 	print '</div>';
 }
-?>
+@endphp
 
 
 <br>
 
-<?php if (!empty($message)) { ?>
+@if(!empty($message))
 	<div class="center login_main_message">
-	<?php dol_htmloutput_mesg($message, [], '', 1); ?>
+	@php dol_htmloutput_mesg($message, [], '', 1); @endphp
 	</div>
-<?php } ?>
+@endif
 
 
 <!-- Common footer is not used for passwordforgotten page, this is same than footer but inside passwordforgotten tpl -->
 
-<?php
+@php
 if (getDolGlobalString('MAIN_HTML_FOOTER')) {
 	print $conf->global->MAIN_HTML_FOOTER;
 }
@@ -391,8 +392,7 @@ $parameters = array();
 $dummyobject = new stdClass();
 $result = $hookmanager->executeHooks('getPasswordResetExtraContent', $parameters, $dummyobject, $action);
 print $hookmanager->resPrint;
-
-?>
+@endphp
 
 
 </div>

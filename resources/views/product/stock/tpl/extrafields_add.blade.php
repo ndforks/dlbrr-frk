@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{-- Blade version of template
 /* Copyright (C) 2014	    Maxime Kohlhaas		    <support@atm-consulting.fr>
  * Copyright (C) 2014	    Juanjo Menent		    <jmenent@2byte.es>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -27,53 +25,29 @@
  * $parameters
  * $cols
  */
+--}}
 
-/**
- * @var CommonObject $object
- * @var Conf $conf
- * @var ExtraFields $extrafields
- * @var HookManager $hookmanager
- * @var Translate $conf
- *
- * @var string $action
- * @var array<string,mixed> $parameters
- */
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+<!-- BEGIN BLADE TEMPLATE extrafields_add.blade.php -->
 
-?>
-<!-- BEGIN PHP TEMPLATE extrafields_add.tpl.php -->
-<?php
+@php
+$parameters = $parameters ?? array();
+$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);
+@endphp
 
-// Other attributes
-if (!isset($parameters)) {
-	$parameters = array();
-}
-'
-@phan-var-force CommonObject $object
-@phan-var-force string $action
-@phan-var-force Conf $conf
-@phan-var-force Translate $conf
-@phan-var-force array<string,mixed> $parameters
-';
+{!! $hookmanager->resPrint !!}
 
-$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-print $hookmanager->resPrint;
-if (empty($reshook)) {
-	$params = array();
-	$params['cols'] = array_key_exists('colspanvalue', $parameters) ? $parameters['colspanvalue'] : '';
-	if (!empty($parameters['tdclass'])) {
-		$params['tdclass'] = $parameters['tdclass'];
-	}
-	if (!empty($parameters['tpl_context'])) {
-		$params['tpl_context'] = $parameters['tpl_context'];
-	}
+@if (empty($reshook))
+    @php
+        $params = array();
+        $params['cols'] = array_key_exists('colspanvalue', $parameters) ? $parameters['colspanvalue'] : '';
+        if (!empty($parameters['tdclass'])) {
+            $params['tdclass'] = $parameters['tdclass'];
+        }
+        if (!empty($parameters['tpl_context'])) {
+            $params['tpl_context'] = $parameters['tpl_context'];
+        }
+    @endphp
+    {!! $object->showOptionals($extrafields, 'create', $params) !!}
+@endif
 
-	print $object->showOptionals($extrafields, 'create', $params);
-}
-
-?>
-<!-- END PHP TEMPLATE extrafields_add.tpl.php -->
+<!-- END BLADE TEMPLATE extrafields_add.blade.php -->

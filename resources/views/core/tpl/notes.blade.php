@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2012      Regis Houssin       <regis.houssin@inodbox.com>
  * Copyright (C) 2013      Florian Henry	   <florian.henry@open-concept.pro>
  * Copyright (C) 2014-2020 Laurent Destailleur <eldy@destailleur.fr>
@@ -159,5 +159,5 @@ if (empty($user->socid)) {
 	print '</div>'."\n";
 }
 print '</div>'."\n";
-?>
+@endphp
 <!-- END PHP TEMPLATE NOTES-->

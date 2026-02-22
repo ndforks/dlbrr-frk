@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<!-- file home.tpl.php -->
-<?php
+@php
 /* Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
  */
@@ -14,29 +13,28 @@ if (empty($context) || !is_object($context)) {
  * @var Context $context
  * @var Translate $langs
  */
-
-?>
+@endphp
+<!-- file home.blade.php -->
 
 <main class="container">
 		<div class="home-links-grid grid">
-			<?php
-			if (isModEnabled('propal') && getDolGlobalInt('WEBPORTAL_PROPAL_LIST_ACCESS')) : ?>
+			@if (isModEnabled('propal') && getDolGlobalInt('WEBPORTAL_PROPAL_LIST_ACCESS'))
 			<article class="home-links-card --propal-list">
 				<div class="home-links-card__icon" ></div>
-				<?php print '<a class="home-links-card__link" href="' . $context->getControllerUrl('propallist') . '" title="' . $langs->trans('WebPortalPropalListDesc') . '">' . $langs->trans('WebPortalPropalListTitle') . '</a>'; ?>
+				<a class="home-links-card__link" href="{{ $context->getControllerUrl('propallist') }}" title="{{ $langs->trans('WebPortalPropalListDesc') }}">{{ $langs->trans('WebPortalPropalListTitle') }}</a>
 			</article>
-			<?php endif; ?>
-			<?php if (isModEnabled('order') && getDolGlobalInt('WEBPORTAL_ORDER_LIST_ACCESS')) : ?>
+			@endif
+			@if (isModEnabled('order') && getDolGlobalInt('WEBPORTAL_ORDER_LIST_ACCESS'))
 			<article class="home-links-card --order-list">
 				<div class="home-links-card__icon" ></div>
-				<?php print '<a class="home-links-card__link" href="' . $context->getControllerUrl('orderlist') . '" title="' . $langs->trans('WebPortalOrderListDesc') . '">' . $langs->trans('WebPortalOrderListTitle') . '</a>'; ?>
+				<a class="home-links-card__link" href="{{ $context->getControllerUrl('orderlist') }}" title="{{ $langs->trans('WebPortalOrderListDesc') }}">{{ $langs->trans('WebPortalOrderListTitle') }}</a>
 			</article>
-			<?php endif; ?>
-			<?php if (isModEnabled('invoice') && getDolGlobalInt('WEBPORTAL_INVOICE_LIST_ACCESS')) : ?>
+			@endif
+			@if (isModEnabled('invoice') && getDolGlobalInt('WEBPORTAL_INVOICE_LIST_ACCESS'))
 			<article class="home-links-card --invoice-list">
 				<div class="home-links-card__icon" ></div>
-				<?php print '<a class="home-links-card__link" href="' . $context->getControllerUrl('invoicelist') . '" title="' . $langs->trans('WebPortalInvoiceListDesc') . '">' . $langs->trans('WebPortalInvoiceListTitle') . '</a>'; ?>
+				<a class="home-links-card__link" href="{{ $context->getControllerUrl('invoicelist') }}" title="{{ $langs->trans('WebPortalInvoiceListDesc') }}">{{ $langs->trans('WebPortalInvoiceListTitle') }}</a>
 			</article>
-			<?php endif; ?>
+			@endif
 		</div>
 </main>

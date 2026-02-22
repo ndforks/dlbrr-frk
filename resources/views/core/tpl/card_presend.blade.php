@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2017-2018  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2022	    Charlene Benke           <charlene@patas-monkey.com>
  * Copyright (C) 2023       Maxime Nicolas          <maxime@oarces.com>
@@ -442,3 +442,4 @@ if ($action == 'presend') {
 
 	print dol_get_fiche_end();
 }
+@endphp

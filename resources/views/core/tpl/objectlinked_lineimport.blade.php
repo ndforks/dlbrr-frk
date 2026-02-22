@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2011-2013  Regis Houssin   <regis.houssin@inodbox.com>
  * Copyright (C) 2025		MDW				<mdeweerd@users.noreply.github.com>
  *
@@ -32,8 +32,7 @@ $objectUrl = $object->getNomUrl(0, '', '0', 1);
 if ($object->element == 'propal') {
 	$objectUrl = dolBuildUrl(DOL_URL_ROOT.'/comm/propal/card.php', ['id' => $object->id]);
 }
-
-?>
+@endphp
 
 <!-- START TEMPLATE IMPORT OBJECT LINKED LINES -->
 <script>
@@ -57,7 +56,7 @@ $(function() {
 			});
 
 
-			var $dialog = $('<form id="' + formId + '" action="<?php print $objectUrl; ?>"  method="post" ></form>')
+			var $dialog = $('<form id="' + formId + '" action="{!! $objectUrl !!}"  method="post" ></form>')
 			.load( page + " #tablelines", function() {
 
 				$("#" + formId + " #tablelines").prop("id", "ajaxloaded_tablelines"); // change id attribute
@@ -78,17 +77,17 @@ $(function() {
 				modal: true,
 				height: windowHeight,
 				width: windowWidth,
-				title: "<?php echo $langs->transnoentities('LinesToImport'); ?>",
+				title: "{{ $langs->transnoentities('LinesToImport') }}",
 				buttons: {
-						"<?php echo $langs->trans('Import'); ?>": function() {
+						"{{ $langs->trans('Import') }}": function() {
 							  $( this ).dialog( "close" );
 							  $("#" + formId).append('<input type="hidden" name="action" value="import_lines_from_object" />');
 							  $("#" + formId).append('<input type="hidden" name="fromelement" value="' + fromelement + '" />');
-							  $("#" + formId).append('<input type="hidden" name="token" value="<?php print dol_escape_htmltag(newToken()); ?>" />');
+							  $("#" + formId).append('<input type="hidden" name="token" value="{!! dol_escape_htmltag(newToken()) !!}" />');
 							  $("#" + formId).append('<input type="hidden" name="fromelementid" value="' + fromelementid + '" />');
 							  $("#" + formId).trigger('submit');
 						},
-						"<?php echo $langs->trans("Cancel"); ?>": function() {
+						"{{ $langs->trans("Cancel") }}": function() {
 						  $( this ).dialog( "close" );
 						}
 				}
@@ -98,7 +97,7 @@ $(function() {
 		}
 		else
 		{
-			$.jnotify("<?php echo $langs->trans('ErrorNoUrl'); ?>", "error", true);
+			$.jnotify("{{ $langs->trans('ErrorNoUrl') }}", "error", true);
 		}
 	});
 });

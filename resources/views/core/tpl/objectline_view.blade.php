@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -125,14 +125,16 @@ if (getDolGlobalString('INVOICE_POSITIVE_CREDIT_NOTE_SCREEN') && in_array($objec
 
 
 $coldisplay = 0;
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE objectline_view.tpl.php -->
-<tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-	<td class="linecolnum center"><span class="opacitymedium"><?php $coldisplay++; ?><?php print ($i + 1); ?></span></td>
-<?php } ?>
-	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?><div id="line_<?php print $line->id; ?>"></div>
-<?php
+<tr id="row-{!! $line->id !!}" class="drag drop oddeven" {!! $domData !!}>
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+<td class="linecolnum center"><span class="opacitymedium">@php $coldisplay++; @endphp{!! ($i + 1) !!}</span></td>
+@endif
+	<td class="linecoldescription minwidth300imp">@php $coldisplay++; @endphp<div id="line_{!! $line->id !!}"></div>
+@php
+
+@php
 
 
 $parameters = ['line' => $line, 'i' => & $i, 'coldisplay' => & $coldisplay];
@@ -408,25 +410,29 @@ if (empty($positiverates)) {
 print $tooltiponprice;
 print vatrate($positiverates.($line->vat_src_code ? ' ('.$line->vat_src_code.')' : ''), true, $line->info_bits);
 print $tooltiponpriceend;
-?></td>
-
-<td class="linecoluht nowraponall right">
-	<?php
-	$coldisplay++;
-	if (empty($line->fk_remise_except)) print price($sign * $line->subprice);
-	?>
+@endphp
 </td>
 
-<?php if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) { ?>
-	<td class="linecoluht_currency nowraponall right">
-	<?php $coldisplay++;
-	if (empty($line->fk_remise_except)) print price($sign * $line->multicurrency_subprice);
-	?>
-	</td>
-<?php }
+<td class="linecoluht nowraponall right">
+@php
+$coldisplay++;
+	if (empty($line->fk_remise_except)) print price($sign * $line->subprice);
+@endphp
+</td>
 
-if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) { ?>
-	<td class="linecoluttc nowraponall right"><?php $coldisplay++; ?><?php
+@if(isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency)
+	<td class="linecoluht_currency nowraponall right">
+@php
+$coldisplay++;
+	if (empty($line->fk_remise_except)) print price($sign * $line->multicurrency_subprice);
+@endphp
+	</td>
+@php
+}
+
+if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
+@endphp
+	<td class="linecoluttc nowraponall right">@php $coldisplay++;
 	$upinctax = isset($line->subprice_ttc) ? $line->subprice_ttc : null;
 	if (!$upinctax && $line->total_ttc && $line->qty) {
 		$upinctax = price2num($line->total_ttc / (float) $line->qty, 'MU');
@@ -435,12 +441,15 @@ if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH
 		$multicurrency_upinctax = price2num($line->multicurrency_subprice * (1 + ($line->tva_tx / 100)), 'MU'); // one tax
 	}
 	if (empty($line->fk_remise_except)) print (isset($upinctax) ? price($sign * $upinctax) : price($sign * $line->subprice));	// if upinctax can't be known, we show subprice excl ta
-	?></td>
-<?php }
+@endphp
+	</td>
+@php
+}
 
 // Multicurrency TTC
-if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) { ?>
-	<td class="linecoluttc_currency nowraponall right"><?php $coldisplay++; ?><?php
+if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
+@endphp
+	<td class="linecoluttc_currency nowraponall right">@php $coldisplay++;
 	$multicurrency_upinctax = isset($line->multicurrency_subprice_ttc) ? $line->multicurrency_subprice_ttc : null;
 	if (!$multicurrency_upinctax && $line->multicurrency_total_ttc && $line->qty) {
 		$multicurrency_upinctax = price2num($line->multicurrency_total_ttc / (float) $line->qty, 'MU');
@@ -449,10 +458,11 @@ if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicu
 		$multicurrency_upinctax = price2num($line->multicurrency_subprice * (1 + ($line->tva_tx / 100)), 'MU'); // one tax
 	}
 	if (empty($line->fk_remise_except)) print (isset($multicurrency_upinctax) ? price($sign * $multicurrency_upinctax) : price($sign * $line->multicurrency_subprice));		// if upinctax can't be known, we show subprice excl ta
-	?></td>
-<?php } ?>
-	<td class="linecolqty nowraponall right"><?php $coldisplay++; ?>
-<?php
+@endphp
+	</td>
+@php
+	<td class="linecolqty nowraponall right">@php $coldisplay++; @endphp
+@php
 if ((($line->info_bits & 2) != 2) && $line->special_code != 3) {
 	// I comment this because it shows info even when not required
 	// for example always visible on invoice but must be visible only if stock module on and stock decrease option is on invoice validation and status is not validated
@@ -505,15 +515,21 @@ if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 }
 
 if ($usemargins && isModEnabled('margin') && empty($user->socid)) {
-	if ($user->hasRight('margins', 'creer')) { ?>
-		<td class="linecolmargin1 nowrap margininfos right"><?php $coldisplay++; ?><?php print price($line->pa_ht); ?></td>
-	<?php }
-	if (getDolGlobalString('DISPLAY_MARGIN_RATES') && $user->hasRight('margins', 'liretous')) { ?>
-		<td class="linecolmargin2 nowrap margininfos right"><?php $coldisplay++; ?><?php print(($line->pa_ht == 0) ? 'n/a' : price(price2num($line->marge_tx, 'MT')).'%'); ?></td>
-	<?php }
-	if (getDolGlobalString('DISPLAY_MARK_RATES') && $user->hasRight('margins', 'liretous')) {?>
-		<td class="linecolmark1 nowrap margininfos right"><?php $coldisplay++; ?><?php print price(price2num($line->marque_tx, 'MT')).'%'; ?></td>
-	<?php }
+	if ($user->hasRight('margins', 'creer')) {
+@endphp
+		<td class="linecolmargin1 nowrap margininfos right">@php $coldisplay++; @endphp{!! price($line->pa_ht) !!}</td>
+@php
+}
+	if (getDolGlobalString('DISPLAY_MARGIN_RATES') && $user->hasRight('margins', 'liretous')) {
+@endphp
+		<td class="linecolmargin2 nowrap margininfos right">@php $coldisplay++; @endphp{!! ($line->pa_ht == 0) ? 'n/a' : price(price2num($line->marge_tx, 'MT')).'%' !!}</td>
+@php
+}
+	if (getDolGlobalString('DISPLAY_MARK_RATES') && $user->hasRight('margins', 'liretous')) {
+@endphp
+		<td class="linecolmark1 nowrap margininfos right">@php $coldisplay++; @endphp{!! price(price2num($line->marque_tx, 'MT')).'%' !!}</td>
+@php
+}
 }
 
 // Price total without tax
@@ -608,9 +624,10 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 	print '<td class="linecoledit center">';
 	$coldisplay++;
 	if (($line->info_bits & 2) == 2 || !empty($disableedit)) {
-	} else { ?>
-		<a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id; ?>">
-		<?php print img_edit().'</a>';
+	} else {
+@endphp
+		<a class="editfielda reposition" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id !!}">
+		{!! img_edit().'</a>';
 	}
 	print '</td>';
 
@@ -628,16 +645,19 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 	if ($num > 1 && $conf->browser->layout != 'phone' && ((property_exists($this, 'situation_counter') && $this->situation_counter == 1) || empty($this->situation_cycle_ref)) && empty($disablemove)) {
 		print '<td class="linecolmove tdlineupdown center">';
 		$coldisplay++;
-		if ($i > 0) { ?>
-			<a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_up('default', 0, 'imgupforline'); ?>
+		if ($i > 0) { !!}
+			<a class="lineupdown" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id !!}">
+			{!! img_up('default', 0, 'imgupforline') !!}
 			</a>
-		<?php }
-		if ($i < $num - 1) { ?>
-			<a class="lineupdown" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_down('default', 0, 'imgdownforline'); ?>
+@php
+}
+		if ($i < $num - 1) {
+@endphp
+			<a class="lineupdown" href="{!! $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id !!}">
+			{!! img_down('default', 0, 'imgdownforline') !!}
 			</a>
-		<?php }
+@php
+}
 		print '</td>';
 	} else {
 		print '<td '.(($conf->browser->layout != 'phone' && empty($disablemove)) ? ' class="linecolmove tdlineupdown center"' : ' class="linecolmove center"').'></td>';
@@ -652,10 +672,6 @@ if ($this->status == 0 && $tmppermtoedit && $action != 'selectlines') {
 	$coldisplay += $colspan;
 }
 
-if ($action == 'selectlines') { ?>
-	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>" ></td>
-<?php }
-
-print "</tr>\n";
-
-print "<!-- END PHP TEMPLATE objectline_view.tpl.php -->\n";
+if ($action == 'selectlines') {
+@endphp
+	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[{!! $i + 1 !!}]" value="{!! $line->id !!}" ></td>

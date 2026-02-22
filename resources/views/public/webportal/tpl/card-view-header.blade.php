@@ -1,6 +1,5 @@
-{{-- Blade template version --}}
-<!-- file list.tpl.php -->
-<?php
+<!-- file list.blade.php -->
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -20,14 +19,11 @@ if (empty($context) || !is_object($context)) {
  * @var FormCardWebPortal 		$formCard
  * @var mixed 					$vars  TPL vars
  */
-$formCard = $this->formCard;
-
-?>
-
-<header class="object-card-view" data-element="<?php print dolPrintHTMLForAttribute($formCard->object->element); ?>" >
+$formCard = $this->formCard; !!}
+<header class="object-card-view" data-element="{!! dolPrintHTMLForAttribute($formCard->object->element) !!}" >
 	<div class="header-card-block">
 
-		<?php
+		@php
 		// TODO: CODE QUALITY: Avoid defining object-specific logic directly inside the template.
 		//  If object-specific handling is required, create a dedicated template file or pass the necessary variables in $vars so the template remains generic.
 		//  also you can create a getBannerAddressForWebPortal method into object (who extend Dolibarr object) but its not a good way
@@ -35,15 +31,12 @@ $formCard = $this->formCard;
 			print '<div class="header-card-photo">';
 			print $formCard->form->showphoto('memberphoto', $formCard->object, 0, 0, 0, 'photowithmargin photoref', 'small', 1, 0);
 			print '</div>';
-		}
-		?>
-
+		} !!}
 		<div class="header-card-main-information">
-			<?php if (!empty($formCard->object->ref)) : ?>
-			<div class="header-card-ref"><?php print $langs->trans("Ref") . ' : ' . dol_escape_htmltag($formCard->object->ref) ?></div>
-			<?php endif; ?>
-
-			<?php
+			@if (!empty($formCard->object->ref))
+			<div class="header-card-ref">{!! $langs->trans("Ref") . ' : ' . dol_escape_htmltag($formCard->object->ref) ?></div>
+			@endif
+			@php
 			// TODO: CODE QUALITY: Avoid defining object-specific logic directly inside the template.
 			//  If object-specific handling is required, create a dedicated template file or pass the necessary variables so the template remains generic.
 			//  also you can create a getBannerAddressForWebPortal method into webportal object (who extend Dolibarr object) but its not a good way
@@ -80,29 +73,26 @@ $formCard = $this->formCard;
 					if (empty($object->socid)) {
 						$out .= (!empty($object->company) && $object->company != $fullname) ? ' (' . dol_htmlentities($object->company) . ')' : '';
 					}
-				} ?>
-				<div class="header-card-company" ><?php print $out ?></div>
-			<?php } ?>
-
-			<?php
+				} !!}
+				<div class="header-card-company" >{!! $out ?></div>
+			@endphp
+			@php
 			// TODO : use TPL $vars not the object, there is a controller so use it instead to pass $vars.
 			if (method_exists($formCard->object, 'getBannerAddressForWebPortal')) {
 				$moreaddress = $formCard->object->getBannerAddressForWebPortal('refaddress');
-				if ($moreaddress) { ?>
-					<div class="header-card-address"><?php print $moreaddress ?></div>
-				<?php }
-			}
-			?>
+				if ($moreaddress) { !!}
+					<div class="header-card-address">{!! $moreaddress ?></div>
+				@endphp
+			} !!}
 		</div>
 
 		<div class="header-card-status" >
-			<?php
+			@php
 			$htmlStatus = $formCard->object->getLibStatut(6);
 			if (empty($htmlStatus) || $htmlStatus == $formCard->object->getLibStatut(3)) {
 				$htmlStatus = $formCard->object->getLibStatut(5);
 			}
-			print $htmlStatus;
-			?>
+			print $htmlStatus; !!}
 		</div>
 	</div>
 

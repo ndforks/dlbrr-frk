@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2017-2019  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024-2025  Frédéric France			<frederic.france@free.fr>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
@@ -44,11 +44,9 @@ if (empty($conf) || !is_object($conf)) {
 if (!is_object($form)) {
 	$form = new Form($db);
 }
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE commonfields_edit.tpl.php -->
-<?php
-
+@php
 $object->fields = dol_sort_array($object->fields, 'position');
 
 foreach ($object->fields as $key => $val) {
@@ -126,6 +124,5 @@ foreach ($object->fields as $key => $val) {
 	print '</td>';
 	print '</tr>';
 }
-
-?>
+@endphp
 <!-- END PHP TEMPLATE commonfields_edit.tpl.php -->

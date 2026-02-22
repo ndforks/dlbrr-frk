@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2014-2017  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -29,7 +29,8 @@
  * @var Conf $conf
  * @var int $i
  */
-
+--}}
+@php
 '
 @phan-var-force Propal|Contrat|Commande|Facture|Expedition|Delivery|CommandeFournisseur|FactureFournisseur|SupplierProposal|Fichinter $object
 @phan-var-force CommonObjectLine|CommonInvoiceLine|CommonOrderLine|ExpeditionLigne|PropaleLigne|FichinterLigne $line
@@ -91,20 +92,19 @@ if (!getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
 if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	$colspan += 1;
 }
+@endphp
 
-?>
 
 <td class="linecoldesc minwidth250onall">
-	<div id="line_<?php echo $line->id; ?>"></div>
+	<div id="line_{{ $line->id }}"></div>
 
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
-	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="<?php echo $line->fk_parent_line; ?>">
-	<input type="hidden" name="action" value="update<?php echo $line_type ?>line">
+	<input type="hidden" name="lineid" value="{{ $line->id }}">
+	<input type="hidden" id="product_type" name="type" value="{{ $line->product_type }}">
+	<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
+	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="{{ $line->fk_parent_line }}">
+	<input type="hidden" name="action" value="update{{ $line_type }}line">
 
-	<?php
-
+	@php
 	$situationinvoicelinewithparent = 0;
 	if ($line->fk_prev_id != null && in_array($object->element, array('facture', 'facturedet'))) {
 		/** @var CommonInvoice $object */
@@ -122,7 +122,6 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	}
 
 	$langs->load('subtotals');
-
 
 	if (!$situationinvoicelinewithparent) {
 		print '<input type="text" name="line_desc" class="marginrightonly" id="line_desc" value="';
@@ -154,12 +153,12 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		print GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description;
 		print '"></td>';
 	}
-	?>
+	@endphp
 
 
 <td class="center valignmiddle" colspan="4">
-	<input type="submit" class="reposition button buttongen button-save" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
-	<input type="submit" class="reposition button buttongen button-cancel" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+	<input type="submit" class="reposition button buttongen button-save" id="savelinebutton marginbottomonly" name="save" value="{{ $langs->trans("Save") }}"><br>
+	<input type="submit" class="reposition button buttongen button-cancel" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
 </td>
 </tr>
 

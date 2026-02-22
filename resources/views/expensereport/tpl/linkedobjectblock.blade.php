@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2011	Regis Houssin 			<regis.houssin@inodbox.com>
  * Copyright (C) 2013		Juanjo Menent 			<jmenent@2byte.es>
  * Copyright (C) 2014       Marcos García 			<marcosgdf@gmail.com>
@@ -21,51 +19,43 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-
-print "<!-- BEGIN PHP TEMPLATE expensereport/tpl/linkedobjectblock.tpl.php -->\n";
-
-
-global $user;
-
-$langs = $GLOBALS['langs'];
-'@phan-var-force Translate $langs';
 /**
- * @var CommonObject $object
- * @var Translate $langs
+ *  \file		resources/views/expensereport/tpl/linkedobjectblock.blade.php
+ *  \ingroup	expensereport
+ *  \brief		Template to show objects linked to expense reports
  */
-$linkedObjectBlock = $GLOBALS['linkedObjectBlock'];
-'@phan-var-force ExpenseReport[] $linkedObjectBlock';
-/** @var ExpenseReport[] $linkedObjectBlock */
+--}}
 
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
-		$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	}
-	?>
-<tr <?php echo $trclass; ?> >
-	<td><?php echo $langs->trans("ExpenseReport"); ?></td>
-	<td><?php echo $objectlink->getNomUrl(1); ?></td>
-	<td></td>
-	<td class="center"><?php echo dol_print_date($objectlink->date_debut, 'day'); ?></td>
-	<td class="right"><?php
-	if ($user->hasRight('expensereport', 'lire')) {
-		$total += $objectlink->total_ht;
-		echo price($objectlink->total_ht);
-	} ?></td>
-	<td class="right"><?php echo $objectlink->getLibStatut(3); ?></td>
-	<td class="right"><a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a></td>
-</tr>
-	<?php
-}
+@php
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-print "<!-- END PHP TEMPLATE -->\n";
+@foreach ($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $trclass = 'oddeven';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td>{{ $langs->trans("ExpenseReport") }}</td>
+        <td>{!! $objectlink->getNomUrl(1) !!}</td>
+        <td></td>
+        <td class="center">{{ dol_print_date($objectlink->date_debut, 'day') }}</td>
+        <td class="right">
+            @if ($user->hasRight('expensereport', 'lire'))
+                @php
+                    $total += $objectlink->total_ht;
+                    echo price($objectlink->total_ht);
+                @endphp
+            @endif
+        </td>
+        <td class="right">{!! $objectlink->getLibStatut(3) !!}</td>
+        <td class="right">
+            <a class="reposition" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">{!! img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink') !!}</a>
+        </td>
+    </tr>
+@endforeach

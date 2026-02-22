@@ -1,6 +1,5 @@
-{{-- Blade template version --}}
-<!-- file list-nav.tpl.php -->
-<?php
+<!-- file list-nav.blade.php -->
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -37,39 +36,60 @@ $maxPageNum = min($nbPages, $formList->page + 3);
 $params = $formList->params . '&amp;sortfield=' . $formList->sortfield . '&amp;sortorder=' . $formList->sortorder;
 $params = preg_replace('/^(&|&amp;)/i', '', $params); // remove first & or &amp;
 $url = $context->getControllerUrl($context->controller);
-$url .= (preg_match('/\?/', $url) ? '&amp;' : '?') . $params;
-
-?>
-
-<input type="hidden" name="page" value="<?php print dolPrintHTMLForAttribute((string) $formList->page) ?>">
-<nav id="webportal-<?php print dolPrintHTMLForAttribute($formList->object->element) ?>-pagination">
+$url .= (preg_match('/\?/', $url) ? '&amp;' : '?') . $params; !!}
+<input type="hidden" name="page" value="{!! dolPrintHTMLForAttribute((string) $formList->page) ?>">
+<nav id="webportal-{!! dolPrintHTMLForAttribute($formList->object->element) ?>-pagination">
 	<ul>
-		<li><strong><?php print $langs->trans($formList->titleKey) ?></strong> (<?php print $formList->nbtotalofrecords ?>)</li>
+		<li><strong>{!! $langs->trans($formList->titleKey) ?></strong> ({!! $formList->nbtotalofrecords ?>)</li>
 	</ul>
 
-	<?php if ($nbPages > 1) { ?>
+	
+
+if ($nbPages > 1) { !!}
 	<ul class="pages-nav-list">
-		<?php if ($formList->page > 1) { ?>
-		<li><a class="pages-nav-list__icon --prev" aria-label="<?php print dolPrintHTMLForAttribute((string) $langs->trans('AriaPrevPage')) ?>" href="<?php print $url . '&amp;page=' . ($formList->page - 1) ?>"<?php // print ($formList->page <= 1 ? ' disabled' : '') ?>></a></li>
-		<?php } ?>
+		
 
-		<?php if ($minPageNum > 1) { ?>
-			<li><a class="pages-nav-list__link <?php print ($formList->page == 1 ? '--active' : '') ?>" aria-label="<?php print dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', 1)) ?>" href="<?php print $url . '&amp;page=1' ?>">1</a></li>
+if ($formList->page > 1) { !!}
+		<li><a class="pages-nav-list__icon --prev" aria-label="{!! dolPrintHTMLForAttribute((string) $langs->trans('AriaPrevPage')) ?>" href="{!! $url . '&amp;page=' . ($formList->page - 1) ?>"
+
+// print ($formList->page <= 1 ? ' disabled' : '') ?>></a></li>
+		
+
+} !!}
+		
+
+if ($minPageNum > 1) { !!}
+			<li><a class="pages-nav-list__link {!! ($formList->page == 1 ? '--active' : '') ?>" aria-label="{!! dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', 1)) ?>" href="{!! $url . '&amp;page=1' ?>">1</a></li>
 			<li>&hellip;</li>
-		<?php } ?>
+		
 
-		<?php for ($p = $minPageNum; $p <= $maxPageNum; $p++) { ?>
-			<li><a class="pages-nav-list__link <?php print ($formList->page === $p ? '--active' : '') ?>" aria-label="<?php print dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', $p)) ?>"  href="<?php print $url . '&amp;page=' . $p ?>"><?php print $p ?></a></li>
-		<?php } ?>
+} !!}
+		
 
-		<?php if ($maxPaginationItem < $nbPages) { ?>
+for ($p = $minPageNum; $p <= $maxPageNum; $p++) { !!}
+			<li><a class="pages-nav-list__link {!! ($formList->page === $p ? '--active' : '') ?>" aria-label="{!! dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', $p)) ?>"  href="{!! $url . '&amp;page=' . $p ?>">{!! $p ?></a></li>
+		
+
+} !!}
+		
+
+if ($maxPaginationItem < $nbPages) { !!}
 			<li>&hellip;</li>
-			<li><a class="pages-nav-list__link <?php print ($formList->page == $nbPages ? '--active' : '') ?>" aria-label="<?php print dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', $nbPages)) ?>" href="<?php print $url . '&amp;page=' . $nbPages ?>"><?php print $nbPages ?></a></li>
-		<?php } ?>
+			<li><a class="pages-nav-list__link {!! ($formList->page == $nbPages ? '--active' : '') ?>" aria-label="{!! dolPrintHTMLForAttribute((string) $langs->trans('AriaPageX', $nbPages)) ?>" href="{!! $url . '&amp;page=' . $nbPages ?>">{!! $nbPages ?></a></li>
+		
 
-		<?php if ($formList->page < $nbPages) { ?>
-			<li><a class="pages-nav-list__icon --next" aria-label="<?php print dolPrintHTMLForAttribute((string) $langs->trans('AriaNextPage')) ?>" href="<?php print $url . '&amp;page=' . ($formList->page + 1) ?>"<?php // print ($formList->page >= $nbPages ? ' disabled' : '') ?>></a></li>
-		<?php } ?>
+} !!}
+		
+
+if ($formList->page < $nbPages) { !!}
+			<li><a class="pages-nav-list__icon --next" aria-label="{!! dolPrintHTMLForAttribute((string) $langs->trans('AriaNextPage')) ?>" href="{!! $url . '&amp;page=' . ($formList->page + 1) ?>"
+
+// print ($formList->page >= $nbPages ? ' disabled' : '') ?>></a></li>
+		
+
+} !!}
 	</ul>
-	<?php } ?>
+	
+
+} !!}
 </nav>

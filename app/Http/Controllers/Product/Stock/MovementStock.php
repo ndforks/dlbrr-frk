@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Product\Stock;
 
 use App\Http\Controllers\Controller;
+use App\Models\StockMouvement;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MovementStock extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(Request $request): View
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
@@ -15,6 +17,16 @@ class MovementStock extends Controller
         $hookmanager->initHooks(['stockmovementlist']);
         restrictedArea($user, 'stock');
         
-        return view('stock.movements');
+        // Get recent stock movements
+        $movements = StockMouvement::with(['product', 'entrepot', 'author'])
+            ->orderBy('datem', 'desc')
+            ->limit(100)
+            ->get();
+        
+        return view('stock.movements', [
+            'movements' => $movements,
+            'langs' => $langs,
+            'user' => $user,
+        ]);
     }
 }

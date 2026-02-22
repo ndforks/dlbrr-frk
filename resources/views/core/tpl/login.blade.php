@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+
 /* Copyright (C) 2009-2015 	Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2011-2022 	Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
@@ -213,27 +213,24 @@ print "<!-- BEGIN PHP TEMPLATE LOGIN.TPL.PHP -->\n";
 
 if (getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 	// For example $conf->global->ADD_UNSPLASH_LOGIN_BACKGROUND = 'https://source.unsplash.com/random'?>
-	<body class="body bodylogin" style="background-image: url('<?php echo dol_escape_htmltag(getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')); ?>'); background-repeat: no-repeat; background-position: center center; background-attachment: fixed; background-size: cover; background-color: #ffffff;">
-	<?php
+	<body class="body bodylogin" style="background-image: url('{{ dol_escape_htmltag(getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) }}'); background-repeat: no-repeat; background-position: center center; background-attachment: fixed; background-size: cover; background-color: #ffffff;">
+	
 } else {
-	?>
-	<body class="body bodylogin"<?php print !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file=logos/'.urlencode(getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"'; ?>>
-	<?php
+	<body class="body bodylogin"{!! !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file=logos/'.urlencode(getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"' !!}>
+	
 }
-?>
 
-<?php if (empty($conf->dol_use_jmobile)) { ?>
+@if(empty($conf->dol_use_jmobile))
 <script>
 $(document).ready(function () {
 	/* Set focus on correct field */
-	<?php if ($focus_element) {
-		?>$('#<?php echo $focus_element; ?>').focus(); <?php
+	@if($focus_element)$('#{{ $focus_element }}').focus(); 
 	} ?>		// Warning to use this only on visible element
 });
 </script>
-<?php } ?>
+@endif
 
-<div class="login_center center"<?php
+<div class="login_center center"
 if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 	$backstyle = 'background: linear-gradient('.((!empty($conf->browser->layout) && $conf->browser->layout == 'phone') ? '0deg' : '4deg').', var(--colorbackbody) 52%, rgb('.$colorbackhmenu1.') 52.1%);';
 	// old style:  $backstyle = 'background-image: linear-gradient(rgb('.$colorbackhmenu1.',0.3), rgb(240,240,240));';
@@ -244,12 +241,12 @@ if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 <div class="login_vertical_align">
 
 
-<form id="login" name="login" method="post" action="<?php echo $php_self; ?>">
+<form id="login" name="login" method="post" action="{{ $php_self }}">
 
-<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
+<input type="hidden" name="token" value="{{ newToken() }}" />
 <input type="hidden" name="actionlogin" id="actionlogin" value="login">
 <input type="hidden" name="loginfunction" id="loginfunction" value="loginfunction" />
-<input type="hidden" name="backtopage" value="<?php echo GETPOST('backtopage'); ?>" />
+<input type="hidden" name="backtopage" value="{{ GETPOST('backtopage') }}" />
 <!-- Add fields to store and send local user information. This fields are filled by the core/js/dst.js -->
 <input type="hidden" name="tz" id="tz" value="" />
 <input type="hidden" name="tz_string" id="tz_string" value="" />
@@ -258,17 +255,17 @@ if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 <input type="hidden" name="dst_second" id="dst_second" value="" />
 <input type="hidden" name="screenwidth" id="screenwidth" value="" />
 <input type="hidden" name="screenheight" id="screenheight" value="" />
-<input type="hidden" name="dol_hide_topmenu" id="dol_hide_topmenu" value="<?php echo $dol_hide_topmenu; ?>" />
-<input type="hidden" name="dol_hide_leftmenu" id="dol_hide_leftmenu" value="<?php echo $dol_hide_leftmenu; ?>" />
-<input type="hidden" name="dol_optimize_smallscreen" id="dol_optimize_smallscreen" value="<?php echo $dol_optimize_smallscreen; ?>" />
-<input type="hidden" name="dol_no_mouse_hover" id="dol_no_mouse_hover" value="<?php echo $dol_no_mouse_hover; ?>" />
-<input type="hidden" name="dol_use_jmobile" id="dol_use_jmobile" value="<?php echo $dol_use_jmobile; ?>" />
+<input type="hidden" name="dol_hide_topmenu" id="dol_hide_topmenu" value="{{ $dol_hide_topmenu }}" />
+<input type="hidden" name="dol_hide_leftmenu" id="dol_hide_leftmenu" value="{{ $dol_hide_leftmenu }}" />
+<input type="hidden" name="dol_optimize_smallscreen" id="dol_optimize_smallscreen" value="{{ $dol_optimize_smallscreen }}" />
+<input type="hidden" name="dol_no_mouse_hover" id="dol_no_mouse_hover" value="{{ $dol_no_mouse_hover }}" />
+<input type="hidden" name="dol_use_jmobile" id="dol_use_jmobile" value="{{ $dol_use_jmobile }}" />
 
 
 
 <!-- Title with version -->
-<div class="login_table_title center" tabindex="-1" title="<?php echo dolPrintHTMLForAttribute($title); ?>">
-<?php
+<div class="login_table_title center" tabindex="-1" title="{{ dolPrintHTMLForAttribute($title) }}">
+
 if ($disablenofollow) {
 	echo '<a class="login_table_title" tabindex="-1" href="https://www.dolibarr.org" target="_blank" rel="noopener noreferrer external">';
 }
@@ -276,7 +273,6 @@ echo dolPrintHTML($title);
 if ($disablenofollow) {
 	echo '</a>';
 }
-?>
 </div>
 
 
@@ -286,46 +282,43 @@ if ($disablenofollow) {
 <div id="login_line1">
 
 <div id="login_left">
-<img alt="" src="<?php echo $urllogo; ?>" id="img_logo" />
+<img alt="" src="{{ $urllogo }}" id="img_logo" />
 </div>
 
 <br>
 
 <div id="login_right">
 
-<div class="tagtable left centpercent" title="<?php echo $langs->trans("EnterLoginDetail"); ?>">
+<div class="tagtable left centpercent" title="{{ $langs->trans("EnterLoginDetail") }}">
 
 <!-- Login -->
-<?php if (!isset($conf->file->main_authentication) || $conf->file->main_authentication != 'googleoauth') { ?>
+@if(!isset($conf->file->main_authentication) || $conf->file->main_authentication != 'googleoauth')
 <div class="trinputlogin">
 <div class="tagtd nowraponall center valignmiddle tdinputlogin">
-	<?php if (getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER')) {
-		?><label for="username" class="hidden"><?php echo $langs->trans("Login"); ?></label><?php
+	@if(getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER'))<label for="username" class="hidden">{{ $langs->trans("Login") }}</label>
 	} ?>
 <!-- <span class="span-icon-user">-->
 <span class="fa fa-user"></span>
-<input type="text" id="username" maxlength="255" placeholder="<?php echo $langs->trans("Login"); ?>" name="username" class="flat input-icon-user minwidth150 input-nobottom" value="<?php echo dol_escape_htmltag($login); ?>" tabindex="1" autofocus="autofocus" autocapitalize="off" autocomplete="on" spellcheck="false" />
+<input type="text" id="username" maxlength="255" placeholder="{{ $langs->trans("Login") }}" name="username" class="flat input-icon-user minwidth150 input-nobottom" value="{{ dol_escape_htmltag($login) }}" tabindex="1" autofocus="autofocus" autocapitalize="off" autocomplete="on" spellcheck="false" />
 </div>
 </div>
 
 <!-- Password -->
 <div class="trinputlogin">
 <div class="tagtd nowraponall center valignmiddle tdinputlogin" id="tdpasswordlogin">
-	<?php if (getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER')) {
-		?><label for="password" class="hidden"><?php echo $langs->trans("Password"); ?></label><?php
+	@if(getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER'))<label for="password" class="hidden">{{ $langs->trans("Password") }}</label>
 	} ?>
 <!--<span class="span-icon-password">-->
 <span class="fa fa-key"></span>
-<input type="password" id="password" maxlength="128" placeholder="<?php echo $langs->trans("Password"); ?>" name="password" class="flat input-icon-password minwidth150 input-nobottom" value="<?php echo dol_escape_htmltag($password); ?>" tabindex="2" autocomplete="<?php echo !getDolGlobalString('MAIN_LOGIN_ENABLE_PASSWORD_AUTOCOMPLETE') ? 'off' : 'on'; ?>" />
-	<?php
+<input type="password" id="password" maxlength="128" placeholder="{{ $langs->trans("Password") }}" name="password" class="flat input-icon-password minwidth150 input-nobottom" value="{{ dol_escape_htmltag($password) }}" tabindex="2" autocomplete="{{ !getDolGlobalString('MAIN_LOGIN_ENABLE_PASSWORD_AUTOCOMPLETE') ? 'off' : 'on' }}" />
+	
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 	print showEyeForField('togglepassword', 'password');
-	?>
 </div></div>
-<?php } ?>
+@endif
 
 
-<?php
+
 if (!empty($captcha)) {
 	// Add a variable param to force not using cache (jmobile)
 	$php_self = preg_replace('/[&\?]time=(\d+)/', '', $php_self); // Remove param time
@@ -383,7 +376,6 @@ if (!empty($morelogincontent)) {
 	}
 }
 
-?>
 
 </div>
 
@@ -396,15 +388,15 @@ if (!empty($morelogincontent)) {
 
 
 <!-- Button Connection -->
-<?php if (!isset($conf->file->main_authentication) || $conf->file->main_authentication != 'googleoauth') { ?>
+@if(!isset($conf->file->main_authentication) || $conf->file->main_authentication != 'googleoauth')
 <br>
 <div id="login-submit-wrapper">
-<input type="submit" class="butAction butActionLogin noborderfocus" value="&nbsp; <?php echo $langs->trans('Connection'); ?> &nbsp;" tabindex="5" />
+<input type="submit" class="butAction butActionLogin noborderfocus" value="&nbsp; {{ $langs->trans('Connection') }} &nbsp;" tabindex="5" />
 </div>
-<?php } ?>
+@endif
 
 
-<?php
+
 if (isset($conf->file->main_authentication) && $conf->file->main_authentication == 'googleoauth') {
 	$forgetpasslink = '';
 }
@@ -508,7 +500,6 @@ if (isset($conf->file->main_authentication) && preg_match('/google/', $conf->fil
 	print '</div>';
 }
 
-?>
 
 </div> <!-- end login line 2 -->
 
@@ -518,7 +509,7 @@ if (isset($conf->file->main_authentication) && preg_match('/google/', $conf->fil
 </form>
 
 
-<?php
+
 $message = '';
 // Show error message if defined
 if (!empty($_SESSION['dol_loginmesg'])) {
@@ -538,9 +529,8 @@ if (!empty($message)) {
 			});
 		</script>';
 	} else {
-		?>
 		<div class="center login_main_message">
-		<?php
+		
 		if (preg_match('/<!-- warning -->/', $message)) {	// if it contains this comment, this is a warning message
 			$message = str_replace('<!-- warning -->', '', $message);
 			print '<div class="warning" role="alert">';
@@ -550,7 +540,7 @@ if (!empty($message)) {
 		print dol_escape_htmltag($message);
 		print '</div>'; ?>
 		</div>
-		<?php
+		
 	}
 }
 
@@ -577,25 +567,20 @@ if (getDolGlobalString('MAIN_EASTER_EGG_COMMITSTRIP')) {
 	}
 }
 
-?>
 
-<?php if ($main_home) {
-	?>
-	<div class="center login_main_home paddingtopbottom <?php echo !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' backgroundsemitransparent boxshadow'; ?>" style="max-width: 70%">
-	<?php echo $main_home; ?>
+@if($main_home)
+	<div class="center login_main_home paddingtopbottom {{ !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' backgroundsemitransparent boxshadow' }}" style="max-width: 70%">
+	{{ $main_home }}
 	</div><br>
-	<?php
-}
-?>
+@endif
 
-<!-- authentication mode = <?php echo $main_authentication ?> -->
-<!-- cookie name used for this session = <?php echo $session_name ?> -->
-<!-- urlfrom in this session = <?php echo isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : ''; ?> -->
+<!-- authentication mode = {{ $main_authentication }} -->
+<!-- cookie name used for this session = {{ $session_name }} -->
+<!-- urlfrom in this session = {{ isset($_SESSION["urlfrom"]) ? $_SESSION["urlfrom"] : '' }} -->
 
 <!-- Common footer is not used for login page, this is same than footer but inside login tpl -->
 
-<?php
-
+@php
 print getDolGlobalString('MAIN_HTML_FOOTER');
 
 if (!empty($morelogincontent) && is_array($morelogincontent)) {
@@ -615,8 +600,7 @@ $parameters = array();
 $dummyobject = new stdClass();
 $hookmanager->executeHooks('getLoginPageExtraContent', $parameters, $dummyobject, $action);
 print $hookmanager->resPrint;
-
-?>
+@endphp
 
 
 </div>

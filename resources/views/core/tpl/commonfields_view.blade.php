@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2017       Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
@@ -49,11 +49,9 @@ if (empty($conf) || !is_object($conf)) {
 if (!is_object($form)) {
 	$form = new Form($db);
 }
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE commonfields_view.tpl.php -->
-<?php
-
+@php
 $object->fields = dol_sort_array($object->fields, 'position');
 
 foreach ($object->fields as $key => $val) {
@@ -235,6 +233,5 @@ if (empty($nounderbanner)) {
 print '<table class="border centpercent tableforfield">';
 
 print $rightpart;
-
-?>
+@endphp
 <!-- END PHP TEMPLATE commonfields_view.tpl.php -->

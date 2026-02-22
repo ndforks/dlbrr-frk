@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<!-- file card-edit-lines.tpl.php -->
-<?php
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -20,13 +19,13 @@ if (empty($context) || !is_object($context)) {
  * @var FormCardWebPortal 		$formCard
  */
 $formCard = $this->formCard;
+@endphp
+<!-- file card-edit-lines.blade.php -->
 
-?>
-
-<?php if (!empty($formCard->object->table_element_line)) { ?>
+@if (!empty($formCard->object->table_element_line))
 	<div id="lines">
 	</div>
 
 	<div id="add_line">
 	</div>
-<?php } ?>
+@endif

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+
 /* Copyright (C) 2024  Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2024-2025	MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -52,9 +52,8 @@ if (empty($htmlname)) {
 	exit(1);
 }
 
-?>
 <!-- BEGIN PHP TEMPLATE htdocs/core/tpl/formlayoutai.tpl.php -->
-<?php
+
 
 '
 @phan-var-force ?FormWebSite 	$formwebsite
@@ -175,5 +174,4 @@ if (!empty($showlinktoai)) {
 	$out .= '<!-- No link to the AI feature, $formmail->withaiprompt must be set to the ai feature and module ai must be enabled -->';
 }
 
-?>
 <!-- END PHP TEMPLATE htdocs/core/tpl/formlayoutai.tpl.php -->

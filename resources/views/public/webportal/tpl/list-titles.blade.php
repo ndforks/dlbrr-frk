@@ -1,7 +1,5 @@
-{{-- Blade version of template --}}
-<?php
-<!-- file list-titles.tpl.php -->
-<?php
+<!-- file list-titles.blade.php -->
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -28,27 +26,28 @@ $url .= (preg_match('/\?/', $url) ? '&amp;' : '?') . preg_replace('/^(&|&amp;)/i
 // Make array[sort field => sort order] for this list
 $sortList = array_combine(explode(",", $formList->sortfield), explode(",", $formList->sortorder));
 
-$formList->nbColumn = 0;
-
-?>
-
+$formList->nbColumn = 0; !!}
 <!-- Fields title label -->
 <tr>
 	<th data-col="row-checkbox"></th>
-	<?php $formList->nbColumn++ ?>
+	
 
-	<?php foreach ($formList->object->fields as $key => $val) {
+$formList->nbColumn++ !!}
+	
+
+foreach ($formList->object->fields as $key => $val) {
 		$alias = $val['alias'] ?? 't.';
 		if (array_key_exists($alias . $key, $formList->arrayfields) && !empty($formList->arrayfields[$alias . $key]['checked'])) {
 			$order = array_key_exists($alias . $key, $sortList) ? strtolower(trim($sortList[$alias . $key])) : '';
 			$link_url = $url . '&amp;sortfield=' . urlencode($alias . $key) . '&amp;sortorder=' . ($order == 'desc' ? 'asc' : 'desc');
 			$cssforfield = $formList->getClasseCssList($key, $val);
-			$cssforfield = preg_replace('/small\s*/', '', $cssforfield);
-			?>
-			<th <?php print empty($cssforfield) ? '' : 'class="' . dolPrintHTMLForAttribute($cssforfield) . '" ' ?>data-col="<?php print dolPrintHTMLForAttribute((string) $key) ?>" scope="col"<?php print (!empty($order) ? ' table-order="' . dolPrintHTMLForAttribute($order) . '"' : '') ?>>
-				<a href="<?php print dolPrintHTMLForAttribute($link_url) ?>"><?php print $langs->trans((string) $formList->arrayfields[$alias . $key]['label']) ?></a>
+			$cssforfield = preg_replace('/small\s*/', '', $cssforfield); !!}
+			<th {!! empty($cssforfield) ? '' : 'class="' . dolPrintHTMLForAttribute($cssforfield) . '" ' ?>data-col="{!! dolPrintHTMLForAttribute((string) $key) ?>" scope="col"{!! (!empty($order) ? ' table-order="' . dolPrintHTMLForAttribute($order) . '"' : '') ?>>
+				<a href="{!! dolPrintHTMLForAttribute($link_url) ?>">{!! $langs->trans((string) $formList->arrayfields[$alias . $key]['label']) ?></a>
 			</th>
-			<?php $formList->nbColumn++;
+			
+
+$formList->nbColumn++;
 		}
 	}
 
@@ -58,20 +57,26 @@ $formList->nbColumn = 0;
 	print $hookmanager->resPrint;
 
 	// Remain to pay
-	if (array_key_exists('remain_to_pay', $formList->arrayfields) && !empty($formList->arrayfields['remain_to_pay']['checked'])) { ?>
-		<th scope="col"><?php print  $langs->trans((string) $formList->arrayfields['remain_to_pay']['label']) ?></th>
-		<?php $formList->nbColumn++;
+	if (array_key_exists('remain_to_pay', $formList->arrayfields) && !empty($formList->arrayfields['remain_to_pay']['checked'])) { !!}
+		<th scope="col">{!! $langs->trans((string) $formList->arrayfields['remain_to_pay']['label']) ?></th>
+		
+
+$formList->nbColumn++;
 	}
 
 	// Download link
-	if (array_key_exists('download_link', $formList->arrayfields) && !empty($formList->arrayfields['download_link']['checked'])) { ?>
-		<th scope="col"><?php print  $langs->trans((string) $formList->arrayfields['download_link']['label']) ?></th>
-		<?php $formList->nbColumn++;
+	if (array_key_exists('download_link', $formList->arrayfields) && !empty($formList->arrayfields['download_link']['checked'])) { !!}
+		<th scope="col">{!! $langs->trans((string) $formList->arrayfields['download_link']['label']) ?></th>
+		
+
+$formList->nbColumn++;
 	}
 
 	// Signature link
-	if (array_key_exists('signature_link', $formList->arrayfields) && !empty($formList->arrayfields['signature_link']['checked'])) { ?>
-		<th scope="col"><?php print  $langs->trans((string) $formList->arrayfields['signature_link']['label']) ?></th>
-		<?php $formList->nbColumn++;
-	} ?>
+	if (array_key_exists('signature_link', $formList->arrayfields) && !empty($formList->arrayfields['signature_link']['checked'])) { !!}
+		<th scope="col">{!! $langs->trans((string) $formList->arrayfields['signature_link']['label']) ?></th>
+		
+
+$formList->nbColumn++;
+	} !!}
 </tr>

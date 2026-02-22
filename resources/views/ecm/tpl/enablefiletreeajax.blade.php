@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2012	Regis Houssin			<regis.houssin@inodbox.com>
  * Copyright (C) 2018	Laurent Destailleur 	<eldy@users.sourceforge.net>
  * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
@@ -21,25 +19,25 @@
  * Output javascript for interactions code of ecm module
  * $conf, $module, $param, $preopened, $nameforformuserfile may be defined
  */
-
 /**
  * @var ?Conf $conf
  * @var Translate $langs
  */
+--}}
+@php
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf)) {
 	print "Error, template enablefiletreeajax.tpl.php can't be called as URL";
 	exit;
 }
 // Must have set $module, $nameforformuserfile, $preopened
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE ecm/tpl/enablefiletreeajax.tpl.php -->
 <!-- Doc of fileTree plugin at https://www.abeautifulsite.net/jquery-file-tree -->
 
 <script type="text/javascript">
-
-<?php
+@php
 if (empty($module)) {
 	$module = 'ecm';
 }
@@ -50,16 +48,15 @@ $paramwithoutsection = preg_replace('/&?section=(\d+)/', '', $param);
 
 $openeddir = '/'; // The root directory shown
 // $preopened		// The dir to have preopened
-
-?>
+@endphp
 
 $(document).ready(function() {
 
 	$('#filetree').fileTree({
-		root: '<?php print dol_escape_js($openeddir); ?>',
+		root: '{{ dol_escape_js($openeddir) }}',
 		// Ajax called if we click to expand a dir (not a file). Parameter 'dir' is provided as a POST parameter by fileTree code to this following URL.
 		// We must use token=currentToken() and not newToken() here because ajaxdirtree has NOTOKENRENEWAL define so there is no rollup of token so we must compare with the one valid on main page
-		script: '<?php echo DOL_URL_ROOT.'/core/ajax/ajaxdirtree.php?token='.currentToken().'&modulepart='.urlencode($module).(empty($preopened) ? '' : '&preopened='.urlencode($preopened)).'&openeddir='.urlencode($openeddir).(empty($paramwithoutsection) ? '' : $paramwithoutsection); ?>',
+		script: '{{ DOL_URL_ROOT }}/core/ajax/ajaxdirtree.php?token={{ currentToken() }}&modulepart={{ urlencode($module) }}{{ empty($preopened) ? '' : '&preopened='.urlencode($preopened) }}&openeddir={{ urlencode($openeddir) }}{{ empty($paramwithoutsection) ? '' : $paramwithoutsection }}',
 		folderEvent: 'click',	// 'dblclick'
 		multiFolder: false  },
 		// Called if we click on a file (not a dir)
@@ -72,14 +69,14 @@ $(document).ready(function() {
 		function(elem) {
 			id=elem.attr('id').substr(12);	// We get id that is 'fmdirlia_id_xxx' (id we want is xxx)
 			rel=elem.attr('rel')
-			console.log("We click on a dir id="+id+", we call the ajaxdirtree.php with modulepart=<?php echo $module; ?>, param=<?php echo $paramwithoutsection; ?>");
-			console.log("We also save id and dir name into <?php echo $nameforformuserfile ?>_section_id|dir (vars into form to attach new file in filemanager.tpl.php) with id="+id+" and rel="+rel);
-			jQuery("#<?php echo $nameforformuserfile ?>_section_dir").val(rel);
-			jQuery("#<?php echo $nameforformuserfile ?>_section_id").val(id);
+			console.log("We click on a dir id="+id+", we call the ajaxdirtree.php with modulepart={{ $module }}, param={{ $paramwithoutsection }}");
+			console.log("We also save id and dir name into {{ $nameforformuserfile }}_section_id|dir (vars into form to attach new file in filemanager.tpl.php) with id="+id+" and rel="+rel);
+			jQuery("#{{ $nameforformuserfile }}_section_dir").val(rel);
+			jQuery("#{{ $nameforformuserfile }}_section_id").val(id);
 			jQuery("#section_dir").val(rel);
 			jQuery("#section_id").val(id);
 			jQuery("#section").val(id);
-			jQuery('#<?php echo $nameforformuserfile ?>').show();
+			jQuery('#{{ $nameforformuserfile }}').show();
 			console.log("We also execute the loadandshowpreview() that is on the onclick of each li defined by ajaxdirtree");
 		}
 		// The loadanshowpreview is also call by the 'onclick' set on each li return by ajaxdirtree
@@ -88,17 +85,17 @@ $(document).ready(function() {
 	$('#refreshbutton').click( function() {
 		console.log("Click on refreshbutton");
 
-		dolBlockUI("<?php echo $langs->trans('PleaseBePatient'); ?>");
+		dolBlockUI("{{ $langs->trans('PleaseBePatient') }}");
 
-		$.get("<?php echo DOL_URL_ROOT.'/ecm/ajax/ecmdatabase.php'; ?>", {
+		$.get("{{ DOL_URL_ROOT }}/ecm/ajax/ecmdatabase.php", {
 			action: 'build',
-			token: '<?php echo newToken(); ?>',
+			token: '{{ newToken() }}',
 			element: 'ecm'
 		}, function(response) {
 			setTimeout(() => {
 				  dolUnblockUI();
 
-				  location.href='<?php echo $_SERVER['PHP_SELF']; ?>';
+				  location.href='{{ $_SERVER['PHP_SELF'] }}';
 			}, 1000); // delai 1s
 		});
 	});
@@ -112,7 +109,7 @@ function loadandshowpreview(filedirname,section)
 
 	$('#ecmfileview').empty();
 
-	var url = '<?php echo dol_buildpath('/core/ajax/ajaxdirpreview.php', 1); ?>?action=preview&module=<?php echo $module; ?>&section='+section+'&file='+urlencode(filedirname)<?php echo(empty($paramwithoutsection) ? '' : "+'".$paramwithoutsection."'"); ?>;
+	var url = '{{ dol_buildpath('/core/ajax/ajaxdirpreview.php', 1) }}?action=preview&module={{ $module }}&section='+section+'&file='+urlencode(filedirname){{ empty($paramwithoutsection) ? '' : "+'".$paramwithoutsection."'" }};
 	$.get(url, function(data) {
 		//alert('Load of url '+url+' was performed : '+data);
 		pos=data.indexOf("TYPE=directory",0);

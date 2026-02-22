@@ -1,6 +1,6 @@
 {{-- Blade template version --}}
 <!-- BEGIN TEMPLATE resource_add.tpl.php -->
-<?php
+@php
 /* Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
  *
@@ -92,5 +92,5 @@ $out .= '</div>';
 $out .= '<br>';
 
 print $out;
-?>
+@endphp
 <!-- END TEMPLATE resource_add.tpl.php -->

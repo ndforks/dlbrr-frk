@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2012       Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2013       Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2018-2025  Frédéric France         <frederic.france@free.fr>
@@ -36,11 +36,10 @@ if (isset($parameters['showblocbydefault'])) {
 if (isset($object->extraparams[$blocname]['showhide'])) {
 	$hide = empty($object->extraparams[$blocname]['showhide']);
 }
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE bloc_showhide.tpl.php -->
 
-<?php
+@php
 print '<script>'."\n";
 print '$(document).ready(function() {'."\n";
 print '$("#hide-'.$blocname.'").click(function(){'."\n";
@@ -78,5 +77,5 @@ print '<div id="'.$blocname.'_bloc" class="'.($hide ? 'hideobject' : 'nohideobje
 
 include DOL_DOCUMENT_ROOT.'/core/tpl/'.$blocname.'.tpl.php';
 print '</div><br>';
-?>
+@endphp
 <!-- END PHP TEMPLATE BLOCK SHOW/HIDE -->

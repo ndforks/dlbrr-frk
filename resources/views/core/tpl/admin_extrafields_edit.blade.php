@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2018-2025  Frédéric France     <frederic.france@free.fr>
@@ -51,8 +51,7 @@ if (empty($conf) || !is_object($conf)) {
 $langs->load("modulebuilder");
 
 $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:contact/class/contact.class.php<br>Product:product/class/product.class.php<br>Project:projet/class/project.class.php<br>...';
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE admin_extrafields_edit.tpl.php -->
 <script>
@@ -70,8 +69,8 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			var emptyonclone = jQuery("#emptyonclone");
 			var list = jQuery("#list");
 			var totalizable = jQuery("#totalizable");
-			<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
+			@php
+if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
 				print 'jQuery("#value_choice").hide();';
 			}
 
@@ -79,7 +78,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 				print "jQuery('#size, #default_value, #langfile').val('').prop('disabled', true);";
 				print 'jQuery("#value_choice").hide();';
 			}
-			?>
+@endphp
 
 			// Case of computed field
 			if (type == 'varchar' || type == 'int' || type == 'double' || type == 'price') {
@@ -162,18 +161,18 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 </script>
 
 <!-- Form to edit an extra field -->
-<form action="<?php echo $_SERVER["PHP_SELF"]; ?>?attrname=<?php echo $attrname; ?>" id="formeditextrafield" method="post">
-<input type="hidden" name="token" value="<?php echo newToken(); ?>">
-<input type="hidden" name="attrname" value="<?php echo $attrname; ?>">
+<form action="{{ $_SERVER["PHP_SELF"] }}?attrname={{ $attrname }}" id="formeditextrafield" method="post">
+<input type="hidden" name="token" value="{{ newToken() }}">
+<input type="hidden" name="attrname" value="{{ $attrname }}">
 <input type="hidden" name="action" value="update">
-<input type="hidden" name="rowid" value="<?php echo(empty($rowid) ? '' : $rowid) ?>">
-<input type="hidden" name="enabled" value="<?php echo dol_escape_htmltag((string) $extrafields->attributes[$elementtype]['enabled'][$attrname]); ?>">
+<input type="hidden" name="rowid" value="{{ empty($rowid) ? '' : $rowid }}">
+<input type="hidden" name="enabled" value="{{ dol_escape_htmltag((string) $extrafields->attributes[$elementtype]['enabled'][$attrname]) }}">
 
-<?php print dol_get_fiche_head(); ?>
+{!! dol_get_fiche_head() !!}
 
 <table summary="listofattributes" class="border centpercent">
 
-<?php
+@php
 $label = $extrafields->attributes[$elementtype]['label'][$attrname];
 $type = $extrafields->attributes[$elementtype]['type'][$attrname];
 $size = $extrafields->attributes[$elementtype]['size'][$attrname];
@@ -211,16 +210,16 @@ if (is_array($param)) {
 		$param_chain = $paramlist[0];
 	}
 }
-?>
+@endphp
 <!-- Label -->
-<tr><td class="titlefieldcreate fieldrequired"><?php echo $langs->trans("LabelOrTranslationKey"); ?></td><td class="valeur"><input type="text" name="label" size="40" value="<?php echo $label; ?>"></td></tr>
+<tr><td class="titlefieldcreate fieldrequired">{{ $langs->trans("LabelOrTranslationKey") }}</td><td class="valeur"><input type="text" name="label" size="40" value="{{ $label }}"></td></tr>
 
 <!-- Code -->
-<tr><td class="fieldrequired"><?php echo $form->textwithpicto($langs->trans("AttributeCode"), $langs->trans("AttributeCodeHelp")); ?></td><td class="valeur"><?php echo $attrname; ?></td></tr>
+<tr><td class="fieldrequired">{{ $form->textwithpicto($langs->trans("AttributeCode"), $langs->trans("AttributeCodeHelp")) }}</td><td class="valeur">{{ $attrname }}</td></tr>
 
 <!-- Type -->
-<tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
-<?php
+<tr><td class="fieldrequired">{{ $langs->trans("Type") }}</td><td class="valeur">
+@php
 // Define list of possible type transition
 $typewecanchangeinto = array(
 	'varchar' => array('varchar', 'phone', 'mail', 'url', 'ip', 'select', 'password', 'text', 'html'),
@@ -253,53 +252,59 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 	print $type2label[$type];
 	print '<input type="hidden" name="type" id="type" value="'.$type.'">';
 }
-?>
+@endphp
 </td></tr>
 
 <!-- Size -->
-<tr class="extra_size"><td><?php echo $langs->trans("Size"); ?></td><td><input id="size" type="text" name="size" class="width50" value="<?php echo $size; ?>"></td></tr>
+<tr class="extra_size"><td>{{ $langs->trans("Size") }}</td><td><input id="size" type="text" name="size" class="width50" value="{{ $size }}"></td></tr>
 
 <!--  Value (for some fields like password, select list, radio, ...) -->
 <tr id="value_choice">
 <td>
-	<?php echo $langs->trans("Value"); ?>
+	{{ $langs->trans("Value") }}
 </td>
 <td>
 	<table class="nobordernopadding">
 	<tr><td>
-		<textarea name="param" id="param" cols="80" rows="<?php echo ROWS_4 ?>" spellcheck="false"><?php echo dol_htmlcleanlastbr($param_chain); ?></textarea>
+		<textarea name="param" id="param" cols="80" rows="{{ ROWS_4 }}" spellcheck="false">{{ dol_htmlcleanlastbr($param_chain) }}</textarea>
 	</td><td>
-	<span id="helpselect" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpselect"), 1, 'info', '', 0, 2, 'helpvalue1')?></span>
-	<span id="helpsellist" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue2')?></span>
-	<span id="helpchkbxlst" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue3')?></span>
-	<span id="helplink" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelplink").'<br><br>'.$langs->trans("Examples").':<br>'.$listofexamplesforlink, 1, 'info', '', 0, 2, 'helpvalue4')?></span>
-	<span id="helppassword" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpPassword"), 1, 'info', '', 0, 2, 'helpvalue5')?></span>
-	<span id="helpseparate" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpSeparator"), 1, 'info', '', 0, 2, 'helpvalue6')?></span>
+	<span id="helpselect" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpselect"), 1, 'info', '', 0, 2, 'helpvalue1') }}</span>
+	<span id="helpsellist" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue2') !!}</span>
+	<span id="helpchkbxlst" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue3') !!}</span>
+	<span id="helplink" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelplink").'<br><br>'.$langs->trans("Examples").':<br>'.$listofexamplesforlink, 1, 'info', '', 0, 2, 'helpvalue4') !!}</span>
+	<span id="helppassword" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpPassword"), 1, 'info', '', 0, 2, 'helpvalue5') !!}</span>
+	<span id="helpseparate" class="spanforparamtooltip">{!! $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpSeparator"), 1, 'info', '', 0, 2, 'helpvalue6') !!}</span>
 	</td></tr>
 	</table>
 </td>
 </tr>
 
 <!-- Position -->
-<tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" class="width50" value="<?php echo dol_escape_htmltag((string) $pos); ?>"></td></tr>
+<tr><td class="titlefield">{{ $langs->trans("Position") }}</td><td class="valeur"><input type="text" name="pos" class="width50" value="{{ dol_escape_htmltag((string) $pos) }}"></td></tr>
 
 <!-- Language file -->
-<tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag($langfile); ?>"></td></tr>
+<tr><td class="titlefield">{{ $langs->trans("LanguageFile") }}</td><td class="valeur"><input type="text" name="langfile" class="minwidth200" value="{{ dol_escape_htmltag($langfile) }}"></td></tr>
 
 <!-- Computed value -->
 <tr class="extra_computed_value">
-<?php if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) { ?>
-	<td><?php echo $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3"), 1, 'help', '', 0, 2, 'tooltipcompute'); ?></td>
-<?php } else { ?>
-	<td><?php echo $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3")).$form->textwithpicto($langs->trans("Computedpersistent"), $langs->trans("ComputedpersistentDesc"), 1, 'warning'); ?></td>
-<?php } ?>
-<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo dol_htmlcleanlastbr($computed); ?></textarea></td>
+@php
+if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) {
+@endphp
+	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3"), 1, 'help', '', 0, 2, 'tooltipcompute') }}</td>
+@php
+} else {
+@endphp
+	<td>{{ $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3")).$form->textwithpicto($langs->trans("Computedpersistent"), $langs->trans("ComputedpersistentDesc"), 1, 'warning') }}</td>
+@php
+}
+@endphp
+<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="{{ ROWS_4 }}">{{ dol_htmlcleanlastbr($computed) }}</textarea></td>
 </tr>
 
 <!-- AI Prompt -->
 <tr class="extra_ai_prompt">
-	<td><?php
-	if ($elementtype == "projet") {
+	<td>@php
+if ($elementtype == "projet") {
 		$elementtype = "project";
 	}
 	$elementprop = getElementProperties($elementtype);
@@ -324,68 +329,77 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 		$texthelp .= $key.' -> '.$val.'<br>';
 	}
 	$texthelp .= '</small>';
-	echo $form->textwithpicto($langs->trans("AIPromptExtrafield"), $texthelp, 1, 'help', 'valignmiddle', 0, 3, 'abc');?></td>
-<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo($aiprompt); ?></textarea></td></tr>
+	echo $form->textwithpicto($langs->trans("AIPromptExtrafield"), $texthelp, 1, 'help', 'valignmiddle', 0, 3, 'abc') }}</td>
+<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="{{ ROWS_4
+@endphp">{{ $aiprompt) }}</textarea></td></tr>
 
 <!-- Default Value (at sql setup level) -->
-<tr class="extra_default_value"><td><?php echo $langs->trans("DefaultValue").' ('.$langs->trans("Database").')'; ?></td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="<?php echo dol_escape_htmltag($default); ?>"></td></tr>
+<tr class="extra_default_value"><td>{{ $langs->trans("DefaultValue").' ('.$langs->trans("Database").')' }}</td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="{{ dol_escape_htmltag($default) }}"></td></tr>
 
 <!-- Unique -->
-<tr class="extra_unique"><td><?php echo $langs->trans("Unique"); ?></td><td class="valeur"><input id="unique" type="checkbox" name="unique"<?php echo($unique ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_unique"><td>{{ $langs->trans("Unique") }}</td><td class="valeur"><input id="unique" type="checkbox" name="unique"{{ $unique ? ' checked' : '' }}></td></tr>
 
 <!-- Required -->
-<tr class="extra_required"><td><?php echo $langs->trans("Mandatory"); ?></td><td class="valeur"><input id="required" type="checkbox" name="required"<?php echo($required ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_required"><td>{{ $langs->trans("Mandatory") }}</td><td class="valeur"><input id="required" type="checkbox" name="required"{{ $required ? ' checked' : '' }}></td></tr>
 
 <!-- Always editable -->
-<tr class="extra_alwayseditable"><td><?php echo $form->textwithpicto($langs->trans("AlwaysEditable"), $langs->trans("EditableWhenDraftOnly")); ?></td><td class="valeur"><input id="alwayseditable" type="checkbox" name="alwayseditable"<?php echo($alwayseditable ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_alwayseditable"><td>{{ $form->textwithpicto($langs->trans("AlwaysEditable"), $langs->trans("EditableWhenDraftOnly")) }}</td><td class="valeur"><input id="alwayseditable" type="checkbox" name="alwayseditable"{{ $alwayseditable ? ' checked' : '' }}></td></tr>
 
 <!-- Empty on clone -->
-<tr class="extra_emptyonclone"><td><?php echo $form->textwithpicto($langs->trans("EmptyOnClone"), $langs->trans("EmptyOnCloneDesc")); ?></td><td class="valeur"><input id="emptyonclone" type="checkbox" name="emptyonclone"<?php echo($emptyonclone ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_emptyonclone"><td>{{ $form->textwithpicto($langs->trans("EmptyOnClone"), $langs->trans("EmptyOnCloneDesc")) }}</td><td class="valeur"><input id="emptyonclone" type="checkbox" name="emptyonclone"{{ $emptyonclone ? ' checked' : '' }}></td></tr>
 
 <!-- Permission to edit -->
-<tr class="extra_perms"><td><?php echo $form->textwithpicto($langs->trans("PermissionOnField"), $langs->trans("PermissionToEditField")); ?></td><td class="valeur"><input id="perms" class="minwidth200" type="text" name="perms" value="<?php echo $perms; ?>"></td></tr>
+<tr class="extra_perms"><td>{{ $form->textwithpicto($langs->trans("PermissionOnField"), $langs->trans("PermissionToEditField")) }}</td><td class="valeur"><input id="perms" class="minwidth200" type="text" name="perms" value="{{ $perms }}"></td></tr>
 
 <!-- Visibility -->
-<tr><td class="extra_list"><?php echo $form->textwithpicto($langs->trans("Visibility"), $langs->trans("VisibleDesc").'<br><br>'.$langs->trans("ItCanBeAnExpression")); ?>
-</td><td class="valeur"><input id="list" class="width50" type="text" name="list" value="<?php echo($list != '' ? $list : '1'); ?>"></td></tr>
+<tr><td class="extra_list">{{ $form->textwithpicto($langs->trans("Visibility"), $langs->trans("VisibleDesc").'<br><br>'.$langs->trans("ItCanBeAnExpression")) }}
+</td><td class="valeur"><input id="list" class="width50" type="text" name="list" value="{{ $list != '' ? $list : '1' }}"></td></tr>
 
 <!-- Visibility for PDF-->
-<tr><td class="extra_pdf"><?php echo $form->textwithpicto($langs->trans("DisplayOnPdf"), $langs->trans("DisplayOnPdfDesc")); ?>
-</td><td class="valeur"><input id="printable" class="width50" type="text" name="printable" value="<?php echo dol_escape_htmltag((string) $printable); ?>"></td></tr>
+<tr><td class="extra_pdf">{{ $form->textwithpicto($langs->trans("DisplayOnPdf"), $langs->trans("DisplayOnPdfDesc")) }}
+</td><td class="valeur"><input id="printable" class="width50" type="text" name="printable" value="{{ dol_escape_htmltag((string) $printable) }}"></td></tr>
 
 <!-- Can be summed -->
-<tr class="extra_totalizable"><td><?php echo $form->textwithpicto($langs->trans("Totalizable"), $langs->trans("TotalizableDesc")); ?></td><td class="valeur"><input id="totalizable" type="checkbox" name="totalizable"<?php echo($totalizable ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_totalizable"><td>{{ $form->textwithpicto($langs->trans("Totalizable"), $langs->trans("TotalizableDesc")) }}</td><td class="valeur"><input id="totalizable" type="checkbox" name="totalizable"{{ $totalizable ? ' checked' : '' }}></td></tr>
 
 <!-- Css edit -->
-<tr class="extra_css"><td><?php echo $form->textwithpicto($langs->trans("CssOnEdit"), $langs->trans("HelpCssOnEditDesc")); ?></td><td class="valeur"><input id="css" type="text" class="minwidth200" name="css" value="<?php echo $css ?>"></td></tr>
+<tr class="extra_css"><td>{{ $form->textwithpicto($langs->trans("CssOnEdit"), $langs->trans("HelpCssOnEditDesc")) }}</td><td class="valeur"><input id="css" type="text" class="minwidth200" name="css" value="{{ $css }}"></td></tr>
 
 <!-- Css view -->
-<tr class="extra_cssview"><td><?php echo $form->textwithpicto($langs->trans("CssOnView"), $langs->trans("HelpCssOnViewDesc")); ?></td><td class="valeur"><input id="cssview" class="minwidth200" type="text" name="cssview" value="<?php echo $cssview; ?>"></td></tr>
+<tr class="extra_cssview"><td>{{ $form->textwithpicto($langs->trans("CssOnView"), $langs->trans("HelpCssOnViewDesc")) }}</td><td class="valeur"><input id="cssview" class="minwidth200" type="text" name="cssview" value="{{ $cssview }}"></td></tr>
 
 <!-- Css list -->
-<tr class="extra_csslist"><td><?php echo $form->textwithpicto($langs->trans("CssOnList"), $langs->trans("HelpCssOnListDesc")); ?></td><td class="valeur"><input id="csslist" class="minwidth200" type="text" name="csslist" value="<?php echo $csslist; ?>"></td></tr>
+<tr class="extra_csslist"><td>{{ $form->textwithpicto($langs->trans("CssOnList"), $langs->trans("HelpCssOnListDesc")) }}</td><td class="valeur"><input id="csslist" class="minwidth200" type="text" name="csslist" value="{{ $csslist }}"></td></tr>
 
 <!-- Help tooltip -->
-<tr class="help"><td><?php echo $form->textwithpicto($langs->trans("HelpOnTooltip"), $langs->trans("HelpOnTooltipDesc")); ?></td><td class="valeur"><input id="help" class="quatrevingtpercent" type="text" name="help" value="<?php echo dol_escape_htmltag($help); ?>"></td></tr>
+<tr class="help"><td>{{ $form->textwithpicto($langs->trans("HelpOnTooltip"), $langs->trans("HelpOnTooltipDesc")) }}</td><td class="valeur"><input id="help" class="quatrevingtpercent" type="text" name="help" value="{{ dol_escape_htmltag($help) }}"></td></tr>
 
-<?php if (isModEnabled('multicompany')) { ?>
+@php
+if (isModEnabled('multicompany')) {
+@endphp
 	<!-- Multicompany entity -->
-	<tr><td><?php echo $langs->trans("AllEntities"); ?></td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"<?php echo(empty($entitycurrentorall) ? ' checked' : ''); ?>></td></tr>
-<?php } ?>
+	<tr><td>{{ $langs->trans("AllEntities") }}</td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"{{ empty($entitycurrentorall) ? ' checked' : '' }}></td></tr>
+@php
+}
+@endphp
 
 <!-- Show Enabled property when value is not a common value -->
-<?php if ($enabled != '1') { ?>
-	<tr class="help"><td><?php echo $form->textwithpicto($langs->trans("EnabledCondition"), $langs->trans("EnabledConditionHelp")); ?></td><td class="valeur">
-	<?php echo dol_escape_htmltag((string) $enabled); ?>
-<?php } ?>
+@php
+if ($enabled != '1') {
+@endphp
+	<tr class="help"><td>{{ $form->textwithpicto($langs->trans("EnabledCondition"), $langs->trans("EnabledConditionHelp")) }}</td><td class="valeur">
+	{{ dol_escape_htmltag((string) $enabled) }}
+@php
+}
+@endphp
 </td></tr>
 
 </table>
 
-<?php print dol_get_fiche_end(); ?>
+{!! dol_get_fiche_end() !!}
 
-<div class="center"><input type="submit" name="button" class="button button-save" value="<?php echo $langs->trans("Save"); ?>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="submit" name="button" class="button button-cancel" value="<?php echo $langs->trans("Cancel"); ?>"></div>
+<div class="center"><input type="submit" name="button" class="button button-save" value="{{ $langs->trans("Save") }}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="submit" name="button" class="button button-cancel" value="{{ $langs->trans("Cancel") }}"></div>
 
 </form>
 

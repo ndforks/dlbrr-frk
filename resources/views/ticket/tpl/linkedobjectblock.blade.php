@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2012  Regis Houssin 			<regis.houssin@inodbox.com>
  * Copyright (C) 2013       Jean-François FERRY 	<hello@librethic.io>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
@@ -21,82 +19,51 @@
  */
 
 /**
- *  \file		htdocs/ticket/tpl/linkedobjectblock.tpl.php
+ *  \file		resources/views/ticket/tpl/linkedobjectblock.blade.php
  *  \ingroup	ticket
  *  \brief		Template to show objects linked to tickets
  */
+--}}
 
-/**
- * @var Translate $langs
- * @var Conf $conf
- * @var User $user
- *
- * @var CommonObject $object
- * @var int $noMoreLinkedObjectBlockAfter
- * @var int $showImportButton
- * @var Ticket[] $linkedObjectBlock
- */
+@php
+    $langs->load('ticket');
+    $linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'datec,ref', 'desc', 0, 0, 1);
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+@foreach ($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $trclass = 'oddeven';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="linkedcol-element tdoverflowmax125">{{ $langs->trans("Ticket") }}</td>
+        <td class="linkedcol-name tdoverflowmax150">{!! $objectlink->getNomUrl(1) !!}</td>
+        <td class="linkedcol-ref tdoverflowmax125 center" title="{{ dolPrintHTMLForAttribute($objectlink->track_id) }}">{!! dolPrintHTML($objectlink->track_id) !!}</td>
+        <td class="linkedcol-date center">{{ dol_print_date($objectlink->datec, 'day') }}</td>
+        <td class="linkedcol-amount right"></td>
+        <td class="linkedcol-statut right">{!! $objectlink->getLibStatut(3) !!}</td>
+        <td class="linkedcol-action right">
+            @if ($object->element != 'shipping')
+                <a class="reposition" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">{!! img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink') !!}</a>
+            @endif
+        </td>
+    </tr>
+@endforeach
 
-print "<!-- BEGIN PHP TEMPLATE ticket/tpl/linkedobjectblock.tpl.php -->\n";
-
-// Load translation files required by the page
-$langs->load('ticket');
-
-$linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'datec,ref', 'desc', 0, 0, 1);
-'@phan-var-force Ticket[] $linkedObjectBlock';  // Repeat because type lost after dol_sort_array)
-/** @var Ticket[] $linkedObjectBlock */
-
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
-
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	} ?>
-	<tr class="<?php echo $trclass; ?>" >
-		<td class="linkedcol-element tdoverflowmax125"><?php echo $langs->trans("Ticket"); ?>
-		</td>
-		<td class="linkedcol-name tdoverflowmax150"><?php echo $objectlink->getNomUrl(1); ?></td>
-		<td class="linkedcol-ref tdoverflowmax125 center" title="<?php echo dolPrintHTMLForAttribute($objectlink->track_id); ?>"><?php echo dolPrintHTML($objectlink->track_id); ?></td>
-		<td class="linkedcol-date center"><?php echo dol_print_date($objectlink->datec, 'day'); ?></td>
-		<?php
-		//$objectlink->socid = $objectlink->fk_soc;
-		//$objectlink->fetch_thirdparty();
-		?>
-		<td class="linkedcol-amount right"><?php //echo $objectlink->thirdparty->getNomUrl(1);?></td>
-		<td class="linkedcol-statut right"><?php echo $objectlink->getLibStatut(3); ?></td>
-		<td class="linkedcol-action right">
-			<?php
-			// For now, shipments must stay linked to order, so link is not deletable
-			if ($object->element != 'shipping') {
-				?>
-				<a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a>
-				<?php
-			} ?>
-		</td>
-</tr>
-	<?php
-}
-if (count($linkedObjectBlock) > 1) {
-	?>
-	<tr class="liste_total <?php echo(empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : ''); ?>">
-		<td><?php echo $langs->trans("Total"); ?></td>
-		<td></td>
-		<td class="center"></td>
-		<td class="center"></td>
-		<td class="right"><?php echo price($total); ?></td>
-		<td class="right"></td>
-		<td class="right"></td>
-	</tr>
-	<?php
-}
-
-print "<!-- END PHP TEMPLATE -->\n";
+@if (count($linkedObjectBlock) > 1)
+    <tr class="liste_total {{ empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '' }}">
+        <td>{{ $langs->trans("Total") }}</td>
+        <td></td>
+        <td class="center"></td>
+        <td class="center"></td>
+        <td class="right">{{ price($total) }}</td>
+        <td class="right"></td>
+        <td class="right"></td>
+    </tr>
+@endif

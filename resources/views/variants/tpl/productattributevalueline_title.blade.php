@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2022       Open-Dsi				<support@open-dsi.fr>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
@@ -28,50 +26,31 @@
  *
  * $type, $text, $description, $line
  */
+--}}
 
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-/**
- * @var Translate $langs
- *
- * @var string $action
- */
+<!-- BEGIN BLADE TEMPLATE productattributevalueline_title -->
+<thead>
+	<tr class="liste_titre nodrag nodrop bg-gray-100 dark:bg-gray-800">
+		@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+			<td class="linecolnum center">&nbsp;</td>
+		@endif
 
-print "<!-- BEGIN PHP TEMPLATE productattributevalueline_title.tpl.php -->\n";
+		<td class="linecolref font-semibold">{{ $langs->trans('Ref') }}</td>
 
-// Title line
-print "<thead>\n";
+		<td class="linecolvalue font-semibold">{{ $langs->trans('Value') }}</td>
 
-print '<tr class="liste_titre nodrag nodrop">';
+		<td class="linecoledit"></td>
 
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">&nbsp;</td>';
-}
+		<td class="linecoldelete" style="width: 10px"></td>
 
-// Ref
-print '<td class="linecolref">'.$langs->trans('Ref').'</td>';
+		<td class="linecolmove" style="width: 10px"></td>
 
-// Value
-print '<td class="linecolvalue">'.$langs->trans('Value').'</td>';
-
-print '<td class="linecoledit"></td>'; // No width to allow autodim
-
-print '<td class="linecoldelete" style="width: 10px"></td>';
-
-print '<td class="linecolmove" style="width: 10px"></td>';
-
-if ($action == 'selectlines') {
-	print '<td class="linecolcheckall center">';
-	print '<input type="checkbox" class="linecheckboxtoggle" />';
-	print '<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>';
-	print '</td>';
-}
-
-print "</tr>\n";
-print "</thead>\n";
-
-print "<!-- END PHP TEMPLATE productattributevalueline_title.tpl.php -->\n";
+		@if($action == 'selectlines')
+			<td class="linecolcheckall center">
+				<input type="checkbox" class="linecheckboxtoggle" />
+				<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>
+			</td>
+		@endif
+	</tr>
+</thead>
+<!-- END BLADE TEMPLATE productattributevalueline_title -->

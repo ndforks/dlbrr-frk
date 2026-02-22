@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<!-- file card-edit-footer.tpl.php -->
-<?php
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -20,7 +19,7 @@ if (empty($context) || !is_object($context)) {
  * @var FormCardWebPortal 		$formCard
  */
 $formCard = $this->formCard;
+@endphp
+<!-- file card-edit-footer.blade.php -->
 
-?>
-
-<footer class="object-card-edit__footer"><?php $this->loadTemplate('card-edit-actions-buttons') ?></footer>
+<footer class="object-card-edit__footer">{!! $this->loadTemplate('card-edit-actions-buttons') !!}</footer>

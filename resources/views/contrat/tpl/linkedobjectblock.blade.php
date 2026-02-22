@@ -1,81 +1,68 @@
 {{-- Blade version of template --}}
-<?php
-<?php
-/* Copyright (C) 2010-2011  Regis Houssin 			<regis.houssin@inodbox.com>
- * Copyright (C) 2018       Juanjo Menent 			<jmenent@2byte.es>
- * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
- * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-
-print "<!-- BEGIN PHP TEMPLATE contrat/tpl/linkedobjectblock.tpl.php -->\n";
-
-
-global $user;
-global $noMoreLinkedObjectBlockAfter;
-
-$langs = $GLOBALS['langs'];
-'@phan-var-force Translate $langs';
+{{--
 /**
- * @var CommonObject $object
- * @var Translate $langs
+ * Template to show objects linked to contracts
+ *
+ * Variables expected:
+ * - $linkedObjectBlock: array of Contrat objects
+ * - $object: CommonObject (parent object)
+ * - $noMoreLinkedObjectBlockAfter: int
+ * - $showImportButton: int
+ * - $langs: Translate
+ * - $user: User
  */
-$linkedObjectBlock = $GLOBALS['linkedObjectBlock'];
-'@phan-var-force Contrat[] $linkedObjectBlock';
-/** @var Contrat[] $linkedObjectBlock */
+--}}
 
-// Load translation files required by the page
-$langs->load("contracts");
+<!-- BEGIN BLADE TEMPLATE LINKEDOBJECTBLOCK -->
 
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
+@php
+    $langs->load("contracts");
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	} ?>
-<tr class="<?php echo $trclass; ?>">
-	<td><?php echo $langs->trans("Contract"); ?></td>
-	<td class="nowraponall"><?php echo $objectlink->getNomUrl(1); ?></td>
-	<td></td>
-	<td class="center"><?php echo dol_print_date($objectlink->date_contrat, 'day'); ?></td>
-	<td class="nowraponall right"><?php
-	// Price of contract is not shown by default because a contract is a list of service with
-	// start and end date that change with time and that may be different that the period of reference for price.
-	// So price of a contract does often means nothing. Prices is on the different invoices done on same contract.
-	if ($user->hasRight('contrat', 'lire') && !getDolGlobalString('CONTRACT_SHOW_TOTAL_OF_PRODUCT_AS_PRICE')) {
-		$totalcontrat = 0;
-		foreach ($objectlink->lines as $linecontrat) {
-			$totalcontrat += $linecontrat->total_ht;
-			$total += $linecontrat->total_ht;
-		}
-		echo price($totalcontrat);
-	} ?></td>
-	<td class="right"><?php echo $objectlink->getLibStatut(7); ?></td>
-	<td class="right"><a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a></td>
-</tr>
-	<?php
-}
+@foreach($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $trclass = 'oddeven hover:bg-gray-50 dark:hover:bg-gray-700';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total border-t-2 border-gray-300 dark:border-gray-600';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="px-4 py-2">
+            {{ $langs->trans('Contract') }}
+        </td>
+        <td class="px-4 py-2 whitespace-nowrap">
+            {!! $objectlink->getNomUrl(1) !!}
+        </td>
+        <td class="px-4 py-2"></td>
+        <td class="px-4 py-2 text-center">
+            {{ dol_print_date($objectlink->date_contrat, 'day') }}
+        </td>
+        <td class="px-4 py-2 text-right whitespace-nowrap">
+            @if($user->hasRight('contrat', 'lire') && !getDolGlobalString('CONTRACT_SHOW_TOTAL_OF_PRODUCT_AS_PRICE'))
+                @php
+                    $totalcontrat = 0;
+                    foreach ($objectlink->lines as $linecontrat) {
+                        $totalcontrat += $linecontrat->total_ht;
+                        $total += $linecontrat->total_ht;
+                    }
+                @endphp
+                {{ price($totalcontrat) }}
+            @endif
+        </td>
+        <td class="px-4 py-2 text-right">
+            {!! $objectlink->getLibStatut(7) !!}
+        </td>
+        <td class="px-4 py-2 text-right">
+            <a class="reposition text-red-600 hover:text-red-800 dark:text-red-400" 
+               href="{{ $_SERVER['PHP_SELF'] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">
+                {!! img_picto($langs->transnoentitiesnoconv('RemoveLink'), 'unlink') !!}
+            </a>
+        </td>
+    </tr>
+@endforeach
 
-print "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->

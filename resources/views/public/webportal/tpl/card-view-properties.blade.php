@@ -1,6 +1,5 @@
-{{-- Blade template version --}}
-<!-- file list.tpl.php -->
-<?php
+<!-- file list.blade.php -->
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -21,19 +20,16 @@ if (empty($context) || !is_object($context)) {
  */
 $formCard = $this->formCard;
 
-$fieldShowList = $formCard->fieldsmanager->getAllFieldsInfos($formCard->object, $formCard->extrafields, 'view', 2, array(1 => $formCard->key_for_break));
-
-?>
-
-<div id="properties"  data-element="<?php print dol_escape_htmltag($formCard->object->element) ?>" >
+$fieldShowList = $formCard->fieldsmanager->getAllFieldsInfos($formCard->object, $formCard->extrafields, 'view', 2, array(1 => $formCard->key_for_break)); !!}
+<div id="properties"  data-element="{!! dol_escape_htmltag($formCard->object->element) ?>" >
 	<div class="grid">
 		<div class="card-left">
-			<?php foreach ($fieldShowList['columns'] as $idxColumn => $fields) {
+			@foreach ($fieldShowList['columns'] as $idxColumn => $fields) {
 				// Switch to the second column
-				if ($idxColumn == 2) { ?>
+				if ($idxColumn == 2) { !!}
 		</div>
 		<div class="card-right">
-				<?php }
+				@endphp
 
 				// Display fields for this column
 				foreach ($fields as $fieldKey => $fieldInfos) {
@@ -74,7 +70,7 @@ $fieldShowList = $formCard->fieldsmanager->getAllFieldsInfos($formCard->object, 
 						'value_class' => $value_class,
 					]);
 				}
-			} ?>
+			} !!}
 		</div>
 	</div>
 </div>

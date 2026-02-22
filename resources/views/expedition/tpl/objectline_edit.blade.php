@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2012	Regis Houssin		        <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2012	Laurent Destailleur	    <eldy@users.sourceforge.net>
  * Copyright (C) 2012		    Christophe Battarel	    <christophe.battarel@altairis.fr>
@@ -35,38 +33,10 @@
  * $senderissupplier (0 by default, 1 for supplier invoices/orders)
  * $inputalsopricewithtax (0 by default, 1 to also show column with unit price including tax)
  */
+--}}
 
+@php
 require_once DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php";
-
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var HookManager $hookmanager
- * @var CommonObjectLine $line
- * @var Societe $buyer
- * @var Societe $seller
- * @var Translate $langs
- *
- * @var string $action
- * @var int $i
- * @var bool $var
- */
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-'
-@phan-var-force expeditionligne $line
-@phan-var-force CommonObject $this
-@phan-var-force CommonObject $object
-@phan-var-force int $i
-@phan-var-force bool $var
-@phan-var-force Societe $buyer
-@phan-var-force Societe $seller
-';
 
 global $forceall, $filtertype;
 
@@ -87,81 +57,80 @@ $colspan = 3;
 // Lines for extrafield
 $objectline = new ExpeditionLigne($this->db);
 
-print "<!-- BEGIN PHP TEMPLATE expedition/tpl/objectline_edit.tpl.php -->\n";
-
 $coldisplay = 0;
-print '<tr class="oddeven tredited">';
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">'.($i + 1).'</td>';
+@endphp
+
+<!-- BEGIN BLADE TEMPLATE expedition/tpl/objectline_edit -->
+<tr class="oddeven tredited bg-blue-50 dark:bg-blue-900/20">
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		@php $coldisplay++; @endphp
+		<td class="linecolnum center">{{ $i + 1 }}</td>
+	@endif
+
+	@php
 	$coldisplay++;
-}
-
-$coldisplay++;
-?>
-	<td>
-	<div id="line_<?php echo $line->id; ?>"></div>
-
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="product_id" name="productid" value="<?php echo(!empty($line->fk_product) ? $line->fk_product : 0); ?>" />
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
-
-<?php
-// Predefined product/service
-if ($line->fk_product > 0) {
 	$tmpproduct = new Product($object->db);
 	$tmpproduct->fetch($line->fk_product);
-	print $tmpproduct->getNomUrl(1);
-	print ' - '.$tmpproduct->label;
-}
+	@endphp
 
-//Line extrafield
-if (!empty($extrafields)) {
-	$temps = $line->showOptionals($extrafields, 'edit', array('class' => 'tredited'), '', '', '1', 'line');
-	if (!empty($temps)) {
-		print '<div style="padding-top: 10px" id="extrafield_lines_area_edit" name="extrafield_lines_area_edit">';
-		print $temps;
-		print '</div>';
-	}
-}
+	<td>
+		<div id="line_{{ $line->id }}"></div>
 
-print '</td>';
+		<input type="hidden" name="lineid" value="{{ $line->id }}">
+		<input type="hidden" id="product_type" name="type" value="{{ $line->product_type }}">
+		<input type="hidden" id="product_id" name="productid" value="{{ !empty($line->fk_product) ? $line->fk_product : 0 }}" />
+		<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
 
-$coldisplay++;
+		@if($line->fk_product > 0)
+			{!! $tmpproduct->getNomUrl(1) !!}
+			 - {{ $tmpproduct->label }}
+		@endif
 
-print '<td class="nobottom linecolqty right">';
+		@if(!empty($extrafields))
+			@php
+			$temps = $line->showOptionals($extrafields, 'edit', array('class' => 'tredited'), '', '', '1', 'line');
+			@endphp
+			@if(!empty($temps))
+				<div style="padding-top: 10px" id="extrafield_lines_area_edit" name="extrafield_lines_area_edit">
+					{!! $temps !!}
+				</div>
+			@endif
+		@endif
+	</td>
 
-if (((int) $line->info_bits & 2) != 2) {
-	print '<input size="3" type="text" class="flat right" name="qty" id="qty" value="'.$line->qty.'">';
-}
-print '</td>';
+	@php $coldisplay++; @endphp
+	<td class="nobottom linecolqty right">
+		@if(((int) $line->info_bits & 2) != 2)
+			<input size="3" type="text" class="flat right w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" name="qty" id="qty" value="{{ $line->qty }}">
+		@endif
+	</td>
 
-
-if (getDolGlobalString('PRODUCT_USE_UNITS')) {
-	$unit_type = false;
-	// limit unit select to unit type
-	if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
-		$cUnit = new CUnits($line->db);
-		if ($cUnit->fetch($line->fk_unit) > 0) {
-			if (!empty($cUnit->unit_type)) {
-				$unit_type = $cUnit->unit_type;
+	@if(getDolGlobalString('PRODUCT_USE_UNITS'))
+		@php
+		$unit_type = false;
+		if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
+			include_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+			$cUnit = new CUnits($line->db);
+			if ($cUnit->fetch($line->fk_unit) > 0) {
+				if (!empty($cUnit->unit_type)) {
+					$unit_type = $cUnit->unit_type;
+				}
 			}
 		}
-	}
-	$coldisplay++;
-	print '<td class="left">';
-	print $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type);
-	print '</td>';
-}
+		$coldisplay++;
+		@endphp
+		<td class="left">
+			{!! $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type) !!}
+		</td>
+	@endif
 
-$coldisplay += $colspan;
-print '<td class="nobottom linecoledit center valignmiddle" colspan="'.$colspan.'">';
-$coldisplay += $colspan;
-print '<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-save" id="savelinebutton" name="save" value="'.$langs->trans("Save").'">';
-print '<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="'.$langs->trans("Cancel").'">';
-print '</td>';
-print '</tr>';
+	@php
+	$coldisplay += $colspan;
+	@endphp
+	<td class="nobottom linecoledit center valignmiddle" colspan="{{ $colspan }}">
+		<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-save bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="savelinebutton" name="save" value="{{ $langs->trans("Save") }}">
+		<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-cancel bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
+	</td>
+</tr>
 
-print "<!-- END PHP TEMPLATE objectline_edit.tpl.php -->\n";
+<!-- END BLADE TEMPLATE objectline_edit -->

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Regis Houssin       <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2022	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -115,39 +115,41 @@ if (isModEnabled('asset') && $object->element == 'invoice_supplier') {
 print "<!-- BEGIN PHP TEMPLATE objectline_edit.tpl.php -->\n";
 
 $coldisplay = 0;
-?>
+@endphp
 <tr class="oddeven tredited">
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-		<td class="linecolnum center"><?php $coldisplay++; ?><?php echo($i + 1); ?></td>
-<?php }
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		<td class="linecolnum center">@php $coldisplay++; @endphp{{ $i + 1 }}</td>
+@php
+}
 
 $coldisplay++;
-?>
+@endphp
 	<td class="linecoldesc minwidth250onall">
-	<div id="line_<?php echo $line->id; ?>"></div>
+	<div id="line_{{ $line->id }}"></div>
 
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
-	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="<?php echo $line->fk_parent_line; ?>">
+	<input type="hidden" name="lineid" value="{{ $line->id }}">
+	<input type="hidden" id="product_type" name="type" value="{{ $line->product_type }}">
+	<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
+	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="{{ $line->fk_parent_line }}">
 
-	<?php if ($line->fk_product > 0) { ?>
-		<?php
-		if (empty($canchangeproduct)) {
+	@if($line->fk_product > 0)
+@php
+if (empty($canchangeproduct)) {
 			if ($line->fk_parent_line > 0) {
-				echo img_picto('', 'rightarrow');
-			} ?>
-			<a href="<?php echo DOL_URL_ROOT.'/product/card.php?id='.$line->fk_product; ?>">
-			<?php
-			if ($line->product_type == 1) {
-				echo img_object($langs->trans('ShowService'), 'service');
+{{ img_picto('', 'rightarrow') }}
+			}
+@endphp
+			<a href="{{ DOL_URL_ROOT.'/product/card.php?id='.$line->fk_product }}">
+@php
+if ($line->product_type == 1) {
+{{ img_object($langs->trans('ShowService'), 'service') }}
 			} else {
 				print img_object($langs->trans('ShowProduct'), 'product');
 			}
-			echo ' '.$line->ref; ?>
+			echo ' '.$line->ref;
+@endphp
 			</a>
-			<?php
-			echo ' - '.nl2br($line->product_label);
+			{{ ' - '.nl2br($line->product_label);
 			print '<input type="hidden" id="product_id" name="productid" value="'.(!empty($line->fk_product) ? $line->fk_product : 0).'">';
 		} else {
 			if ($senderissupplier) {
@@ -155,13 +157,12 @@ $coldisplay++;
 			} else {
 				print $form->select_produits(!empty($line->fk_product) ? $line->fk_product : 0, 'productid');
 			}
-		}
-		?>
+		} }}
 		<br><br>
-	<?php }	?>
+	@endif
 
-	<?php
-	if (is_object($hookmanager)) {
+@php
+if (is_object($hookmanager)) {
 		$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOSTINT('fk_parent_line') : $line->fk_parent_line);
 		$parameters = array('line' => $line, 'fk_parent_line' => $fk_parent_line, 'var' => $var, 'dateSelector' => $dateSelector, 'seller' => $seller, 'buyer' => $buyer);
 		$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
@@ -219,23 +220,22 @@ $coldisplay++;
 			$line->date_start_fill = $line->date_start;
 			$line->date_end_fill = $line->date_end;
 		}
-		echo '<br>';
-		echo $langs->trans('AutoFillDateFrom').' ';
-		echo $form->selectyesno('date_start_fill', GETPOSTISSET('date_start_fill') ? GETPOSTINT('date_start_fill') : $line->date_start_fill, 1);
-		echo ' - ';
-		echo $langs->trans('AutoFillDateTo').' ';
-		echo $form->selectyesno('date_end_fill', GETPOSTISSET('date_end_fill') ? GETPOSTINT('date_end_fill') : $line->date_end_fill, 1);
+{{ '<br>' }}
+{{ $langs->trans('AutoFillDateFrom').' ' }}
+{{ $form->selectyesno('date_start_fill', GETPOSTISSET('date_start_fill') ? GETPOSTINT('date_start_fill') : $line->date_start_fill, 1) }}
+{{ ' - ' }}
+{{ $langs->trans('AutoFillDateTo').' ' }}
+{{ $form->selectyesno('date_end_fill', GETPOSTISSET('date_end_fill') ? GETPOSTINT('date_end_fill') : $line->date_end_fill, 1) }}
 	}
-
-	?>
+@endphp
 	</td>
 
-	<?php
-	if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
-		$coldisplay++; ?>
-		<td class="right linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="<?php echo GETPOSTISSET('fourn_ref') ? GETPOST('fourn_ref') : ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); ?>"></td>
-					<?php
-					print '<input type="hidden" id="fournprice" name="fournprice"  class="" value="'.$line->fk_fournprice.'">';
+@php
+if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
+		$coldisplay++;
+@endphp
+		<td class="right linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="{{ GETPOSTISSET('fourn_ref') ? GETPOST('fourn_ref') : ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn) }}"></td>
+					{!! '<input type="hidden" id="fournprice" name="fournprice"  class="" value="'.$line->fk_fournprice.'">';
 	}
 
 	// VAT Rate
@@ -286,10 +286,10 @@ $coldisplay++;
 			$multicurrency_upinctax = price2num($line->multicurrency_subprice * (1 + ($line->tva_tx / 100)), 'MU'); // One tax
 		}
 		print '<td class="right"><input rel="'.$object->multicurrency_tx.'" type="text" class="flat right width50" id="multicurrency_price_ttc" name="multicurrency_price_ttc" value="'. ($multicurrency_upinctax ? $multicurrency_upinctax : price($line->multicurrency_subprice)).'" /></td>';
-	}
-	?>
+	} !!}
 	<td class="right">
-	<?php $coldisplay++;
+@php
+$coldisplay++;
 	if (($line->info_bits & 2) != 2) {
 		// I comment warning of stock because it shows the info even when it should not.
 		// for example always visible on invoice but must be visible only if stock module on and stock decrease option is on invoice validation and status is not validated
@@ -300,13 +300,14 @@ $coldisplay++;
 			print ' readonly';
 		}
 		print '>';
-	} else { ?>
+	} else {
+@endphp
 		&nbsp;
-	<?php } ?>
+	@endif
 	</td>
 
-	<?php
-	if (getDolGlobalString('PRODUCT_USE_UNITS')) {
+@php
+if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		$unit_type = false;
 		// limit unit select to unit type
 		if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
@@ -323,11 +324,11 @@ $coldisplay++;
 		print $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type);
 		print '</td>';
 	}
-	?>
+@endphp
 
 	<td class="nowraponall right linecoldiscount">
-	<?php
-	// Discount
+@php
+// Discount
 	$coldisplay++;
 	if (($line->info_bits & 2) != 2) {
 		print '<input type="text" class="flat right width40" name="remise_percent" id="remise_percent" value="'.(GETPOSTISSET('remise_percent') ? GETPOST('remise_percent') : ($line->remise_percent ? $line->remise_percent : '')).'"';
@@ -335,13 +336,14 @@ $coldisplay++;
 			print ' readonly';
 		}
 		print '><span class="hideonsmartphone opacitymedium">%</span>';
-	} else { ?>
+	} else {
+@endphp
 		&nbsp;
-	<?php } ?>
+	@endif
 	</td>
 
-	<?php
-	// Progression for situation invoices
+@php
+// Progression for situation invoices
 	if ($object->situation_cycle_ref) {
 		$coldisplay++;
 		if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
@@ -361,26 +363,27 @@ $coldisplay++;
 
 	if (!empty($usemargins)) {
 		if ($user->hasRight('margins', 'creer')) {
-			$coldisplay++; ?>
+			$coldisplay++;
+@endphp
 		<td class="margininfos right">
 			<!-- For predef product -->
-						<?php if (isModEnabled("product") || isModEnabled("service")) { ?>
+						@if(isModEnabled("product") || isModEnabled("service"))
 			<select id="fournprice_predef" name="fournprice_predef" class="flat minwidth75imp right" style="display: none;"></select>
-						<?php } ?>
+						@endif
 			<!-- For free product -->
-			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="<?php echo(GETPOSTISSET('buying_price') ? GETPOST('buying_price') : price($line->pa_ht, 0, '', 0)); ?>">
+			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="{{ GETPOSTISSET('buying_price') ? GETPOST('buying_price') : price($line->pa_ht, 0, '', 0) }}">
 		</td>
-						<?php
-		}
+@php
+}
 
 		if ($user->hasRight('margins', 'creer')) {
 			if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
 				$margin_rate = (GETPOSTISSET("np_marginRate") ? GETPOST("np_marginRate", "alpha", 2) : (($line->pa_ht == 0) ? '' : price($line->marge_tx)));
 				// if credit note, don't allow to modify margin
 				if ($line->subprice < 0) {
-					echo '<td class="right nowrap margininfos">'.$margin_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>';
+{{ '<td class="right nowrap margininfos">'.$margin_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>' }}
 				} else {
-					echo '<td class="right nowrap margininfos"><input class="right maxwidth40" type="text" name="np_marginRate" value="'.$margin_rate.'"><span class="opacitymedium hideonsmartphone">%</span></td>';
+{{ '<td class="right nowrap margininfos"><input class="right maxwidth40" type="text" name="np_marginRate" value="'.$margin_rate.'"><span class="opacitymedium hideonsmartphone">%</span></td>' }}
 				}
 				$coldisplay++;
 			}
@@ -388,31 +391,31 @@ $coldisplay++;
 				$mark_rate = (GETPOSTISSET("np_markRate") ? GETPOST("np_markRate", 'alpha', 2) : price($line->marque_tx));
 				// if credit note, don't allow to modify margin
 				if ($line->subprice < 0) {
-					echo '<td class="right nowrap margininfos">'.$mark_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>';
+{{ '<td class="right nowrap margininfos">'.$mark_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>' }}
 				} else {
-					echo '<td class="right nowrap margininfos"><input class="right maxwidth40" type="text" name="np_markRate" value="'.$mark_rate.'"><span class="opacitymedium hideonsmartphone">%</span></td>';
+{{ '<td class="right nowrap margininfos"><input class="right maxwidth40" type="text" name="np_markRate" value="'.$mark_rate.'"><span class="opacitymedium hideonsmartphone">%</span></td>' }}
 				}
 				$coldisplay++;
 			}
 		}
 	}
-	?>
+@endphp
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
-	<td class="center valignmiddle" colspan="<?php echo $colspan; ?>"><?php $coldisplay += $colspan; ?>
-		<input type="submit" class="reposition button buttongen marginbottomonly button-save" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
-		<input type="submit" class="reposition button buttongen marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+	<td class="center valignmiddle" colspan="{{ $colspan }}">@php $coldisplay += $colspan; @endphp
+		<input type="submit" class="reposition button buttongen marginbottomonly button-save" id="savelinebutton marginbottomonly" name="save" value="{{ $langs->trans("Save") }}"><br>
+		<input type="submit" class="reposition button buttongen marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
 	</td>
 </tr>
 
-<?php if (isModEnabled("service") && $line->product_type == 1 && $dateSelector) { ?>
+@if(isModEnabled("service") && $line->product_type == 1 && $dateSelector)
 <tr id="service_duration_area" class="treditedlinefordate">
-	<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
 		<td class="linecolnum center"></td>
-	<?php } ?>
-	<td colspan="<?php echo $coldisplay - (!getDolGlobalString('MAIN_VIEW_LINE_NUMBER') ? 0 : 1) ?>"><?php echo $langs->trans('ServiceLimitedDuration').' '.$langs->trans('From').' '; ?>
-	<?php
-	$prefillDates = false;
+	@endif
+	<td colspan="{{ $coldisplay - (!getDolGlobalString('MAIN_VIEW_LINE_NUMBER') ? 0 : 1 }}">{{ $langs->trans('ServiceLimitedDuration').' '.$langs->trans('From').' ' }}
+@php
+$prefillDates = false;
 	$date_start_prefill = 0;
 	$date_end_prefill = 0;
 	if (getDolGlobalString('MAIN_FILL_SERVICE_DATES_FROM_LAST_SERVICE_LINE') && !empty($object->lines) && $i > 0) {
@@ -431,16 +434,15 @@ $coldisplay++;
 	print ' '.$langs->trans('to').' ';
 	print $form->selectDate($line->date_end, 'date_end', $hourmin, $hourmin, $line->date_end ? 0 : 1, "updateline", 1, 0);
 	if ($prefillDates) {
-		echo ' <span class="small"><a href="#" id="prefill_service_dates">'.$langs->trans('FillWithLastServiceDates').'</a></span>';
+{{ ' <span class="small"><a href="#" id="prefill_service_dates">'.$langs->trans('FillWithLastServiceDates').'</a></span>' }}
 	}
 
 	print '<script>';
-	if ($prefillDates) {
-		?>
+	if ($prefillDates) { }}
 		function prefill_service_dates()
 		{
-			$('#date_start').val("<?php echo dol_escape_js(dol_print_date($date_start_prefill, 'day')); ?>").trigger('change');
-			$('#date_end').val("<?php echo dol_escape_js(dol_print_date($date_end_prefill, 'day')); ?>").trigger('change');
+			$('#date_start').val("{{ dol_escape_js(dol_print_date($date_start_prefill, 'day')) }}").trigger('change');
+			$('#date_end').val("{{ dol_escape_js(dol_print_date($date_end_prefill, 'day')) }}").trigger('change');
 
 			return false; // Prevent default link behaviour (which is go to href URL)
 		}
@@ -450,9 +452,10 @@ $coldisplay++;
 			$('#prefill_service_dates').click(prefill_service_dates);
 		});
 
-		<?php
+@php
 	}
 	if (!$line->date_start) {
+@endphp
 		if (getDolGlobalString('MAIN_DEFAULT_DATE_START_HOUR') != '') {
 			print 'jQuery("#date_starthour").val("' . getDolGlobalString('MAIN_DEFAULT_DATE_START_HOUR').'");';
 		}
@@ -489,37 +492,39 @@ $coldisplay++;
 		}
 	}
 	print '</script>'
-	?>
+@endphp
 	</td>
 </tr>
-<?php }
-?>
+@php
+}
+@endphp
 
 
 <script>
 
-<?php
+@php
 if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
-	?>
+@endphp
 	/* Some js test when we click on button "Add" */
 	jQuery(document).ready(function() {
-	<?php
-	if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
-		?>
+@php
+if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
+@endphp
 			$("input[name='np_marginRate']:first").blur(function(e) {
 				console.log("np_marginRate blur, call checkFreeLine");
 				return checkFreeLine(e, "np_marginRate");
 			});
-		<?php
-	}
+@php
+}
 	if (getDolGlobalString('DISPLAY_MARK_RATES')) {
-		?>
+@endphp
 			$("input[name='np_markRate']:first").blur(function(e) {
 				console.log("np_markRate blur, call checkFreeLine");
 				return checkFreeLine(e, "np_markRate");
 			});
-		<?php
-	} ?>
+@php
+}
+@endphp
 	});
 
 	/* TODO This does not work for number with thousand separator that is , */
@@ -534,13 +539,13 @@ if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
 
 		var ratejs = price2numjs(rate.val());
 		if (! $.isNumeric(rate.val().replace(',','.')))	{		// TODO Use price2numjs ?
-			alert('<?php echo dol_escape_js($langs->transnoentities("rateMustBeNumeric")); ?>');
+			alert('{{ dol_escape_js($langs->transnoentities("rateMustBeNumeric")) }}');
 			e.stopPropagation();
 			setTimeout(function () { rate.focus() }, 50);
 			return false;
 		}
 		if (npRate == "np_markRate" && rate.val() >= 100) {		// TODO Use price2numjs ?
-			alert('<?php echo dol_escape_js($langs->transnoentities("markRateShouldBeLesserThan100")); ?>');
+			alert('{{ dol_escape_js($langs->transnoentities("markRateShouldBeLesserThan100")) }}');
 			e.stopPropagation();
 			setTimeout(function () { rate.focus() }, 50);
 			return false;
@@ -568,9 +573,9 @@ if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
 
 		return true;
 	}
-	<?php
+@php
 }
-?>
+@endphp
 
 jQuery(document).ready(function()
 {
@@ -596,7 +601,7 @@ jQuery(document).ready(function()
 		}
 	});
 
-	<?php if (in_array($object->table_element_line, array('propaldet', 'commandedet', 'facturedet'))) { ?>
+	@if(in_array($object->table_element_line, array('propaldet', 'commandedet', 'facturedet')))
 	$("#date_start, #date_end").focusout(function() {
 		if ( $(this).val() == ''  && !$(this).hasClass('inputmandatory') ) {
 			$(this).addClass('inputmandatory');
@@ -604,11 +609,11 @@ jQuery(document).ready(function()
 			$(this).removeClass('inputmandatory');
 		}
 	});
-		<?php
-	}
+@php
+}
 
 	if (isModEnabled('margin')) {
-		?>
+@endphp
 		/* Add rule to clear margin when we change some data, so when we change sell or buy price, margin will be recalculated after submitting form */
 		jQuery("#tva_tx").click(function() {						/* sometimes field is a text, sometimes a combo */
 			jQuery("input[name='np_marginRate']:first").val('');
@@ -636,23 +641,23 @@ jQuery(document).ready(function()
 		});
 
 		/* Init field buying_price and fournprice */
-		var token = '<?php echo currentToken(); ?>';		// For AJAX Call we use old 'token' and not 'newtoken'
-		$.post('<?php echo DOL_URL_ROOT; ?>/fourn/ajax/getSupplierPrices.php', {'idprod': <?php echo $line->fk_product ? $line->fk_product : 0; ?>, 'token': token }, function(data) {
+		var token = '{{ currentToken() }}';		// For AJAX Call we use old 'token' and not 'newtoken'
+		$.post('{{ DOL_URL_ROOT }}/fourn/ajax/getSupplierPrices.php', {'idprod': {{ $line->fk_product ? $line->fk_product : 0 }}, 'token': token }, function(data) {
 		  if (data && data.length > 0) {
 			var options = '';
 			var trouve=false;
 			$(data).each(function() {
 				options += '<option value="'+this.id+'" price="'+this.price+'"';
-				<?php if ($line->fk_fournprice > 0) { ?>
-				if (this.id == <?php echo $line->fk_fournprice; ?>) {
+				@if($line->fk_fournprice > 0)
+				if (this.id == {{ $line->fk_fournprice }}) {
 					options += ' selected';
 					$("#buying_price").val(this.price);
 					trouve = true;
 				}
-				<?php } ?>
+				@endif
 				options += '>'+this.label+'</option>';
 			});
-			options += '<option value=null'+(trouve?'':' selected')+'><?php echo $langs->trans("InputPrice"); ?></option>';
+			options += '<option value=null'+(trouve?'':' selected')+'>{{ $langs->trans("InputPrice") }}</option>';
 			$("#fournprice").html(options);
 			if (trouve) {
 				$("#buying_price").hide();
@@ -672,9 +677,9 @@ jQuery(document).ready(function()
 			$('#buying_price').show();
 		}
 		}, 'json');
-		<?php
-	}
-	?>
+@php
+}
+@endphp
 });
 
 </script>

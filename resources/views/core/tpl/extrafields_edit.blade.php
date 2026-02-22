@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2014	    Maxime Kohlhaas			<support@atm-consulting.fr>
  * Copyright (C) 2014	    Juanjo Menent			<jmenent@2byte.es>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
@@ -35,7 +35,9 @@
 * @var string $action
 * @var array<string,mixed> $parameters
 */
+--}}
 
+@php
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
@@ -49,11 +51,10 @@ if (empty($conf) || !is_object($conf)) {
 @phan-var-force Translate $langs
 @phan-var-force array<string,mixed> $parameters
 ';
+@endphp
 
-?>
-<!-- BEGIN PHP TEMPLATE extrafields_edit.tpl.php -->
-<?php
-
+<!-- BEGIN BLADE TEMPLATE extrafields_edit.blade.php -->
+@php
 // Other attributes
 if (!isset($parameters)) {
 	$parameters = array();
@@ -67,17 +68,21 @@ if (!isset($parameters)) {
 @phan-var-force ?string $tpl_context
 ';
 
-$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
-print $hookmanager->resPrint;
-if (empty($reshook)) {
+$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action);
+@endphp
+
+{!! $hookmanager->resPrint !!}
+
+@if(empty($reshook))
+	@php
 	$params = array();
 	if (isset($tpl_context)) {
 		$params['tpl_context'] = $tpl_context;
 	}
 	$params['cols'] = array_key_exists('colspanvalue', $parameters) ? $parameters['colspanvalue'] : null;
+	@endphp
+	
+	{!! $object->showOptionals($extrafields, 'edit', $params) !!}
+@endif
 
-	print $object->showOptionals($extrafields, 'edit', $params);
-}
-
-?>
-<!-- END PHP TEMPLATE extrafields_edit.tpl.php -->
+<!-- END BLADE TEMPLATE extrafields_edit.blade.php -->

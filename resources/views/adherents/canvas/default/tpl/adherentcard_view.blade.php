@@ -1,6 +1,5 @@
 {{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2012  Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2012-2022  Philippe Grand          <philippe.grand@atoo-net.com>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
@@ -28,132 +27,127 @@
  *
  * @var string $canvas
  */
+--}}
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+@php $contact = $GLOBALS['objcanvas']->control->object; @endphp
 
+<!-- BEGIN BLADE TEMPLATE ADHERENTCARD_VIEW.TPL.PHP DEFAULT -->
 
-$contact = $GLOBALS['objcanvas']->control->object;
+@php $this->control->tpl['showhead'] @endphp
 
-echo "<!-- BEGIN PHP TEMPLATE ADHERENTCARD_VIEW.TPL.PHP DEFAULT -->\n";
-echo $this->control->tpl['showhead'];
+{!! dol_htmloutput_errors($this->control->tpl['error'], $this->control->tpl['errors']) !!}
 
-dol_htmloutput_errors($this->control->tpl['error'], $this->control->tpl['errors']);
-if (!empty($this->control->tpl['action_create_user'])) {
-	echo $this->control->tpl['action_create_user'];
-}
-if (!empty($this->control->tpl['action_delete'])) {
-	echo $this->control->tpl['action_delete'];
-} ?>
+@if (!empty($this->control->tpl['action_create_user']))
+@php $this->control->tpl['action_create_user'] @endphp
+@endif
+
+@if (!empty($this->control->tpl['action_delete']))
+@php $this->control->tpl['action_delete'] @endphp
+@endif
 
 <table class="border allwidth">
 
 <tr>
-	<td width="20%"><?php echo $langs->trans("Ref"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['showrefnav']; ?></td>
+	<td width="20%">{{ $langs->trans("Ref") }}</td>
+	<td colspan="3">@php $this->control->tpl['showrefnav'] @endphp</td>
 </tr>
 
 <tr>
-	<td width="20%"><?php echo $langs->trans("Lastname"); ?></td>
-	<td width="30%"><?php echo $this->control->tpl['name']; ?></td>
-	<td width="25%"><?php echo $langs->trans("Firstname"); ?></td>
-	<td width="25%"><?php echo $this->control->tpl['firstname']; ?></td>
+	<td width="20%">{{ $langs->trans("Lastname") }}</td>
+	<td width="30%">{{ $this->control->tpl['name'] }}</td>
+	<td width="25%">{{ $langs->trans("Firstname") }}</td>
+	<td width="25%">{{ $this->control->tpl['firstname'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Company"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['company']; ?></td>
+	<td>{{ $langs->trans("Company") }}</td>
+	<td colspan="3">@php $this->control->tpl['company'] @endphp</td>
 </tr>
 
 <tr>
-	<td width="15%"><?php echo $langs->trans("UserTitle"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['civility']; ?></td>
+	<td width="15%">{{ $langs->trans("UserTitle") }}</td>
+	<td colspan="3">{{ $this->control->tpl['civility'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Morphy"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['select_morphy']; ?></td>
+	<td>{{ $langs->trans("Morphy") }}</td>
+	<td colspan="3">{{ $this->control->tpl['select_morphy'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Address"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['address']; ?></td>
+	<td>{{ $langs->trans("Address") }}</td>
+	<td colspan="3">{{ $this->control->tpl['address'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Zip").' / '.$langs->trans("Town"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['zip'].$this->control->tpl['town']; ?></td>
+	<td>{{ $langs->trans("Zip") }} / {{ $langs->trans("Town") }}</td>
+	<td colspan="3">{{ $this->control->tpl['zip'] }}{{ $this->control->tpl['town'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Country"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['country']; ?></td>
+	<td>{{ $langs->trans("Country") }}</td>
+	<td colspan="3">{{ $this->control->tpl['country'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans('State'); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['state']; ?></td>
+	<td>{{ $langs->trans('State') }}</td>
+	<td colspan="3">{{ $this->control->tpl['state'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("PhonePro"); ?></td>
-	<td><?php echo $this->control->tpl['phone_pro']; ?></td>
-	<td><?php echo $langs->trans("PhonePerso"); ?></td>
-	<td><?php echo $this->control->tpl['phone_perso']; ?></td>
+	<td>{{ $langs->trans("PhonePro") }}</td>
+	<td>{{ $this->control->tpl['phone_pro'] }}</td>
+	<td>{{ $langs->trans("PhonePerso") }}</td>
+	<td>{{ $this->control->tpl['phone_perso'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("PhoneMobile"); ?></td>
-	<td><?php echo $this->control->tpl['phone_mobile']; ?></td>
+	<td>{{ $langs->trans("PhoneMobile") }}</td>
+	<td>{{ $this->control->tpl['phone_mobile'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("EMail"); ?></td>
-	<td><?php echo $this->control->tpl['email']; ?></td>
+	<td>{{ $langs->trans("EMail") }}</td>
+	<td>{{ $this->control->tpl['email'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("ContactVisibility"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['visibility']; ?></td>
+	<td>{{ $langs->trans("ContactVisibility") }}</td>
+	<td colspan="3">{{ $this->control->tpl['visibility'] }}</td>
 </tr>
 
 <tr>
-	<td class="tdtop"><?php echo $langs->trans("Note"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['note']; ?></td>
+	<td class="tdtop">{{ $langs->trans("Note") }}</td>
+	<td colspan="3">{{ $this->control->tpl['note'] }}</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("DolibarrLogin"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['dolibarr_user']; ?></td>
+	<td>{{ $langs->trans("DolibarrLogin") }}</td>
+	<td colspan="3">@php $this->control->tpl['dolibarr_user'] @endphp</td>
 </tr>
 
 </table>
 
-<?php echo $this->control->tpl['showend'];
+@php $this->control->tpl['showend'] @endphp
 
-if (empty($user->socid)) {
-	echo '<div class="tabsAction">';
+@if (empty($user->socid))
+<div class="tabsAction">
+	@if ($user->hasRight('adherent', 'creer'))
+	<a class="butAction" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->control->tpl['id'] }}&action=edit&token={{ newToken() }}&canvas={{ $canvas }}">{{ $langs->trans('Modify') }}</a>
+	@endif
 
-	if ($user->hasRight('adherent', 'creer')) {
-		echo '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=edit&token='.newToken().'&canvas='.$canvas.'">'.$langs->trans('Modify').'</a>';
-	}
+	@if (!$this->control->tpl['user_id'] && $user->hasRight('user', 'user', 'creer'))
+	<a class="butAction" href="{{ $_SERVER['PHP_SELF'] }}?id={{ $this->control->tpl['id'] }}&action=create_user&token={{ newToken() }}&canvas={{ $canvas }}">{{ $langs->trans("CreateDolibarrLogin") }}</a>
+	@endif
 
-	if (!$this->control->tpl['user_id'] && $user->hasRight('user', 'user', 'creer')) {
-		echo '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=create_user&token='.newToken().'&canvas='.$canvas.'">'.$langs->trans("CreateDolibarrLogin").'</a>';
-	}
+	@if ($user->hasRight('adherent', 'supprimer'))
+	{!! dolGetButtonAction($langs->trans("Delete"), '', 'delete', $_SERVER['PHP_SELF'].'?id='.$this->control->tpl['id'].'&action=delete&token='.newToken().'&canvas='.$canvas, 'delete', $user->hasRight('adherent', 'supprimer')) !!}
+	@endif
+</div><br>
+@endif
 
-	if ($user->hasRight('adherent', 'supprimer')) {
-		print dolGetButtonAction($langs->trans("Delete"), '', 'delete', $_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=delete&token='.newToken().'&canvas='.$canvas, 'delete', $user->hasRight('adherent', 'supprimer'));
-	}
+@php $this->control->tpl['actionstodo'] @endphp
 
-	echo '</div><br>';
-}
+@php $this->control->tpl['actionsdone'] @endphp
 
-echo $this->control->tpl['actionstodo'];
-
-echo $this->control->tpl['actionsdone'];
-
-echo "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->
