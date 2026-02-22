@@ -325,13 +325,13 @@ class FormListWebPortal
 						$this->search[$key . '_dtendyear'] = '';
 					}
 				} else {
-					if (GETPOST('search_' . $key, 'alpha') !== '') {
-						$this->search[$key] = GETPOST('search_' . $key, 'alpha');
+					if (request()->input('search_' . $key, 'alpha') !== '') {
+						$this->search[$key] = request()->input('search_' . $key, 'alpha');
 					}
 					if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
 						/* Fix: this is not compatible with multilangage date format, replaced with dolibarr method
-						$postDateStart = GETPOST('search_' . $key . '_dtstart', 'alphanohtml');
-						$postDateEnd = GETPOST('search_' . $key . '_dtend', 'alphanohtml');
+						$postDateStart = request()->input('search_' . $key . '_dtstart', 'alphanohtml');
+						$postDateEnd = request()->input('search_' . $key . '_dtend', 'alphanohtml');
 						// extract date YYYY-MM-DD for year, month and day
 						$dateStartArr = explode('-', $postDateStart);
 						$dateEndArr = explode('-', $postDateEnd);
@@ -348,14 +348,14 @@ class FormListWebPortal
 							$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, $dateEndMonth, $dateEndDay, $dateEndYear);
 						}
 						*/
-						$this->search[$key . '_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtstartmonth'), GETPOSTINT('search_'.$key.'_dtstartday'), GETPOSTINT('search_'.$key.'_dtstartyear'));
-						$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_'.$key.'_dtendmonth'), GETPOSTINT('search_'.$key.'_dtendday'), GETPOSTINT('search_'.$key.'_dtendyear'));
-						$this->search[$key . '_dtstartmonth'] = GETPOSTINT('search_' . $key . '_dtstartmonth');
-						$this->search[$key . '_dtstartday'] = GETPOSTINT('search_' . $key . '_dtstartday');
-						$this->search[$key . '_dtstartyear'] = GETPOSTINT('search_' . $key . '_dtstartyear');
-						$this->search[$key . '_dtendmonth'] = GETPOSTINT('search_' . $key . '_dtendmonth');
-						$this->search[$key . '_dtendday'] = GETPOSTINT('search_' . $key . '_dtendday');
-						$this->search[$key . '_dtendyear'] = GETPOSTINT('search_' . $key . '_dtendyear');
+						$this->search[$key . '_dtstart'] = dol_mktime(0, 0, 0, request()->integer('search_'.$key.'_dtstartmonth', 0), request()->integer('search_'.$key.'_dtstartday', 0), request()->integer('search_'.$key.'_dtstartyear', 0));
+						$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, request()->integer('search_'.$key.'_dtendmonth', 0), request()->integer('search_'.$key.'_dtendday', 0), request()->integer('search_'.$key.'_dtendyear', 0));
+						$this->search[$key . '_dtstartmonth'] = request()->integer('search_' . $key . '_dtstartmonth', 0);
+						$this->search[$key . '_dtstartday'] = request()->integer('search_' . $key . '_dtstartday', 0);
+						$this->search[$key . '_dtstartyear'] = request()->integer('search_' . $key . '_dtstartyear', 0);
+						$this->search[$key . '_dtendmonth'] = request()->integer('search_' . $key . '_dtendmonth', 0);
+						$this->search[$key . '_dtendday'] = request()->integer('search_' . $key . '_dtendday', 0);
+						$this->search[$key . '_dtendyear'] = request()->integer('search_' . $key . '_dtendyear', 0);
 					}
 				}
 			}

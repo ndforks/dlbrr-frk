@@ -6395,8 +6395,8 @@ abstract class CommonObject
 		*/
 
 		// If param here has been posted, we use this value first.
-		if (GETPOSTISSET($fieldname)) {
-			return GETPOST($fieldname, $type, 3);
+		if (request()->has($fieldname)) {
+			return request()->input($fieldname, $type, 3);
 		}
 
 		if (isset($alternatevalue)) {
@@ -6548,11 +6548,11 @@ abstract class CommonObject
 			if (in_array($key_type, array('date'))) {
 				// Clean parameters
 				// TODO GMT date in memory must be GMT so we should add gm=true in parameters
-				$value_key = dol_mktime(0, 0, 0, GETPOSTINT($postfieldkey."month"), GETPOSTINT($postfieldkey."day"), GETPOSTINT($postfieldkey."year"));
+				$value_key = dol_mktime(0, 0, 0, request()->integer($postfieldkey."month", 0), request()->integer($postfieldkey."day", 0), request()->integer($postfieldkey."year", 0));
 			} elseif (in_array($key_type, array('datetime'))) {
 				// Clean parameters
 				// TODO GMT date in memory must be GMT so we should add gm=true in parameters
-				$value_key = dol_mktime(GETPOSTINT($postfieldkey."hour"), GETPOSTINT($postfieldkey."min"), 0, GETPOSTINT($postfieldkey."month"), GETPOSTINT($postfieldkey."day"), GETPOSTINT($postfieldkey."year"));
+				$value_key = dol_mktime(request()->integer($postfieldkey."hour", 0), request()->integer($postfieldkey."min", 0), 0, request()->integer($postfieldkey."month", 0), request()->integer($postfieldkey."day", 0), request()->integer($postfieldkey."year", 0));
 			} elseif (in_array($key_type, array('checkbox', 'chkbxlst'))) {
 				$value_arr = request()->input($postfieldkey, []);
 				if (!empty($value_arr)) {
@@ -6561,10 +6561,10 @@ abstract class CommonObject
 					$value_key = '';
 				}
 			} elseif (in_array($key_type, array('price', 'double'))) {
-				$value_arr = GETPOST($postfieldkey, 'alpha');
+				$value_arr = request()->input($postfieldkey, 'alpha');
 				$value_key = price2num($value_arr);
 			} else {
-				$value_key = GETPOST($postfieldkey);
+				$value_key = request()->input($postfieldkey);
 				if (in_array($key_type, array('link')) && $value_key == '-1') {
 					$value_key = '';
 				}
@@ -9469,9 +9469,9 @@ abstract class CommonObject
 							if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('html', 'text'))) {
 								$check = 'restricthtml';
 							}
-							$getposttemp = GETPOST($keyprefix.'options_'.$key.$keysuffix, $check, 3); // GETPOST can get value from GET, POST or setup of default values overwrite.
-							// GETPOST("options_" . $key) can be 'abc' or array(0=>'abc')
-							if (is_array($getposttemp) || $getposttemp != '' || GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix)) {
+							$getposttemp = request()->input($keyprefix.'options_'.$key.$keysuffix, $check, 3); // GETPOST can get value from GET, POST or setup of default values overwrite.
+							// request()->input("options_" . $key) can be 'abc' or array(0=>'abc')
+							if (is_array($getposttemp) || $getposttemp != '' || request()->has($keyprefix.'options_'.$key.$keysuffix)) {
 								if (is_array($getposttemp)) {
 									// $getposttemp is an array but following code expects a comma separated string
 									$value = implode(",", $getposttemp);
@@ -9563,7 +9563,7 @@ abstract class CommonObject
 								}
 							}
 							$datekey = $keyprefix.'options_'.$key.$keysuffix;
-							$value = (GETPOSTISSET($datekey) && $this->id == request()->input('elrowid')) ? dol_mktime(12, 0, 0, GETPOSTINT($datekey.'month', 3), GETPOSTINT($datekey.'day', 3), GETPOSTINT($datekey.'year', 3)) : $datenotinstring;
+							$value = (request()->has($datekey) && $this->id == request()->input('elrowid')) ? dol_mktime(12, 0, 0, request()->integer($datekey.'month', 3, 0), request()->integer($datekey.'day', 3, 0), request()->integer($datekey.'year', 3, 0)) : $datenotinstring;
 						}
 						if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('datetime'))) {
 							$datenotinstring = null;
@@ -9574,11 +9574,11 @@ abstract class CommonObject
 								}
 							}
 							$timekey = $keyprefix.'options_'.$key.$keysuffix;
-							$value = (GETPOSTISSET($timekey)) ? dol_mktime(GETPOSTINT($timekey.'hour', 3), GETPOSTINT($timekey.'min', 3), GETPOSTINT($timekey.'sec', 3), GETPOSTINT($timekey.'month', 3), GETPOSTINT($timekey.'day', 3), GETPOSTINT($timekey.'year', 3), 'tzuserrel') : $datenotinstring;
+							$value = (request()->has($timekey)) ? dol_mktime(request()->integer($timekey.'hour', 3, 0), request()->integer($timekey.'min', 3, 0), request()->integer($timekey.'sec', 3, 0), request()->integer($timekey.'month', 3, 0), request()->integer($timekey.'day', 3, 0), request()->integer($timekey.'year', 3, 0), 'tzuserrel') : $datenotinstring;
 						}
 						// Convert float submitted string into real php numeric (value in memory must be a php numeric)
 						if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('price', 'double'))) {
-							if (GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix) || $value) {
+							if (request()->has($keyprefix.'options_'.$key.$keysuffix) || $value) {
 								$value = price2num($value);
 							} elseif (isset($this->array_options['options_'.$key])) {
 								$value = $this->array_options['options_'.$key];
@@ -9588,13 +9588,13 @@ abstract class CommonObject
 						// HTML, text, select, integer and varchar: take into account default value in database if in create mode
 						if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('html', 'text', 'varchar', 'select', 'radio', 'int', 'boolean'))) {
 							if ($action == 'create' || $mode == 'create') {
-								$value = (GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix) || $value) ? $value : $extrafields->attributes[$this->table_element]['default'][$key];
+								$value = (request()->has($keyprefix.'options_'.$key.$keysuffix) || $value) ? $value : $extrafields->attributes[$this->table_element]['default'][$key];
 							}
 						}
 
 						if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('checkbox'))) {
 							if ($action == 'create') {
-								$value = (GETPOSTISSET($keyprefix.'options_'.$key.$keysuffix) || $value) ? $value : explode(',', $extrafields->attributes[$this->table_element]['default'][$key]);
+								$value = (request()->has($keyprefix.'options_'.$key.$keysuffix) || $value) ? $value : explode(',', $extrafields->attributes[$this->table_element]['default'][$key]);
 							}
 						}
 

@@ -248,7 +248,7 @@ if ($nolinesbefore) {
 			}
 
 			// Select type of line
-			$form->select_type_of_lines(request()->has('type') ? GETPOST("type", 'alpha', 2) : -1, 'type', $labelforempty, 1, $forceall, 'minwidth200', 0);
+			$form->select_type_of_lines(request()->has('type') ? request()->input("type", 'alpha', 2) : -1, 'type', $labelforempty, 1, $forceall, 'minwidth200', 0);
 
 			if ($forceall >= 0 && (isModEnabled("product") || isModEnabled("service"))) {
 				print '</label>';
@@ -481,7 +481,7 @@ if ($nolinesbefore) {
 		echo '</td>';
 		if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
 			$coldisplay++; ?>
-	<td class="nobottom linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="<?php echo(request()->has('fourn_ref') ? GETPOST("fourn_ref", 'alpha', 2) : ''); ?>"></td>
+	<td class="nobottom linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="<?php echo(request()->has('fourn_ref') ? request()->input("fourn_ref", 'alpha', 2) : ''); ?>"></td>
 					<?php
 		}
 		print '<td class="nobottom linecolvat right">';
@@ -495,34 +495,34 @@ if ($nolinesbefore) {
 		if ($seller->tva_assuj == "0") {
 			echo '<input type="hidden" name="tva_tx" id="tva_tx" value="0">'.vatrate('0', true);
 		} else {
-			echo $form->load_tva('tva_tx', (request()->has('tva_tx') ? GETPOST("tva_tx", 'alpha', 2) : -1), $seller, $buyer, 0, 0, '', false, 1, $type_tva);
+			echo $form->load_tva('tva_tx', (request()->has('tva_tx') ? request()->input("tva_tx", 'alpha', 2) : -1), $seller, $buyer, 0, 0, '', false, 1, $type_tva);
 		}
 		?>
 	</td>
 
 	<td class="nobottom linecoluht right"><?php $coldisplay++; ?>
-		<input type="text" name="price_ht" id="price_ht" class="flat right width50" value="<?php echo(request()->has('price_ht') ? GETPOST("price_ht", 'alpha', 2) : ''); ?>">
+		<input type="text" name="price_ht" id="price_ht" class="flat right width50" value="<?php echo(request()->has('price_ht') ? request()->input("price_ht", 'alpha', 2) : ''); ?>">
 	</td>
 
 	<?php
 	if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) {
 		$coldisplay++; ?>
 		<td class="nobottom linecoluht_currency right">
-			<input type="text" name="multicurrency_price_ht" id="multicurrency_price_ht" class="flat right width50" value="<?php echo(request()->has('multicurrency_price_ht') ? GETPOST("multicurrency_price_ht", 'alpha', 2) : ''); ?>">
+			<input type="text" name="multicurrency_price_ht" id="multicurrency_price_ht" class="flat right width50" value="<?php echo(request()->has('multicurrency_price_ht') ? request()->input("multicurrency_price_ht", 'alpha', 2) : ''); ?>">
 		</td>
 		<?php
 	}
 	if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
 		$coldisplay++; ?>
 		<td class="nobottom linecoluttc right">
-			<input type="text" name="price_ttc" id="price_ttc" class="flat right width50" value="<?php echo(request()->has('price_ttc') ? GETPOST("price_ttc", 'alpha', 2) : ''); ?>">
+			<input type="text" name="price_ttc" id="price_ttc" class="flat right width50" value="<?php echo(request()->has('price_ttc') ? request()->input("price_ttc", 'alpha', 2) : ''); ?>">
 		</td>
 					<?php
 	}
 	if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
 		$coldisplay++; ?>
 		<td class="nobottom linecoluttc_currency right">
-			<input type="text" name="multicurrency_price_ttc" id="multicurrency_price_ttc" class="flat right width50" value="<?php echo(request()->has('multicurrency_price_ttc') ? GETPOST("multicurrency_price_ttc", 'alpha', 2) : ''); ?>">
+			<input type="text" name="multicurrency_price_ttc" id="multicurrency_price_ttc" class="flat right width50" value="<?php echo(request()->has('multicurrency_price_ttc') ? request()->input("multicurrency_price_ttc", 'alpha', 2) : ''); ?>">
 		</td>
 					<?php
 	}
@@ -530,7 +530,7 @@ if ($nolinesbefore) {
 	?>
 	<td class="nobottom linecolqty right">
 	<?php $default_qty = (!getDolGlobalString('MAIN_OBJECTLINE_CREATE_EMPTY_QTY_BY_DEFAULT') ? 1 : ''); ?>
-	<input type="text" name="qty" id="qty" class="flat width40 right" value="<?php echo(request()->has('qty') ? GETPOST("qty", 'alpha', 2) : $default_qty); ?>">
+	<input type="text" name="qty" id="qty" class="flat width40 right" value="<?php echo(request()->has('qty') ? request()->input("qty", 'alpha', 2) : $default_qty); ?>">
 	</td>
 	<?php
 	if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
@@ -546,7 +546,7 @@ if ($nolinesbefore) {
 	$coldisplay++;
 	?>
 
-	<td class="nobottom nowrap linecoldiscount right"><input type="text" name="remise_percent" id="remise_percent" class="flat width40 right" value="<?php echo(request()->has('remise_percent') ? GETPOST("remise_percent", 'alpha', 2) : ($remise_percent ? $remise_percent : '')); ?>"><span class="opacitymedium hideonsmartphone">%</span></td>
+	<td class="nobottom nowrap linecoldiscount right"><input type="text" name="remise_percent" id="remise_percent" class="flat width40 right" value="<?php echo(request()->has('remise_percent') ? request()->input("remise_percent", 'alpha', 2) : ($remise_percent ? $remise_percent : '')); ?>"><span class="opacitymedium hideonsmartphone">%</span></td>
 	<?php
 	if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 		$coldisplay++;
@@ -567,15 +567,15 @@ if ($nolinesbefore) {
 					<select id="fournprice_predef" name="fournprice_predef" class="flat minwidth75imp maxwidth150" style="display: none;"></select>
 						<?php } ?>
 				<!-- For free product -->
-				<input type="text" id="buying_price" name="buying_price" class="flat maxwidth75 right" value="<?php echo(request()->has('buying_price') ? GETPOST("buying_price", 'alpha', 2) : ''); ?>">
+				<input type="text" id="buying_price" name="buying_price" class="flat maxwidth75 right" value="<?php echo(request()->has('buying_price') ? request()->input("buying_price", 'alpha', 2) : ''); ?>">
 			</td>
 						<?php
 						if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
-							echo '<td class="nobottom nowraponall margininfos right"><input class="flat right width40" type="text" id="np_marginRate" name="np_marginRate" value="'.(request()->has('np_marginRate') ? GETPOST("np_marginRate", 'alpha', 2) : '').'"><span class="np_marginRate opacitymedium hideonsmartphone">%</span></td>';
+							echo '<td class="nobottom nowraponall margininfos right"><input class="flat right width40" type="text" id="np_marginRate" name="np_marginRate" value="'.(request()->has('np_marginRate') ? request()->input("np_marginRate", 'alpha', 2) : '').'"><span class="np_marginRate opacitymedium hideonsmartphone">%</span></td>';
 							$coldisplay++;
 						}
 						if (getDolGlobalString('DISPLAY_MARK_RATES')) {
-									echo '<td class="nobottom nowraponall margininfos right"><input class="flat right width40" type="text" id="np_markRate" name="np_markRate" value="'.(request()->has('np_markRate') ? GETPOST("np_markRate", 'alpha', 2) : '').'"><span class="np_markRate opacitymedium hideonsmartphone">%</span></td>';
+									echo '<td class="nobottom nowraponall margininfos right"><input class="flat right width40" type="text" id="np_markRate" name="np_markRate" value="'.(request()->has('np_markRate') ? request()->input("np_markRate", 'alpha', 2) : '').'"><span class="np_markRate opacitymedium hideonsmartphone">%</span></td>';
 									$coldisplay++;
 						}
 		}
