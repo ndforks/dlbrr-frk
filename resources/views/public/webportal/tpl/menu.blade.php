@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2024		Frédéric France			<frederic.france@free.fr>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024		sebastien schaffhauser	<sebastien@webmaster67.fr>
@@ -211,11 +210,10 @@ if (empty($reshook)) {
 			uasort($navMenu, 'menuSortInv');
 		}
 	}
-}
-?>
+} !!}
 <nav class="primary-top-nav container-fluid">
 	<ul class="menu-entries-alt">
-		<?php
+		@php
 		// show menu
 		print '<li data-deep="0" class="nav-item">';
 		print '	<details class="main-nav-dropdown dropdown">';
@@ -224,13 +222,12 @@ if (empty($reshook)) {
 		print 			getNav($navMenu);
 		print '		</ul>';
 		print '	</details>';
-		print '</li>';
-		?>
+		print '</li>'; !!}
 	</ul>
 
 	<ul class="brand">
 		<li class="brand">
-		<?php
+		@php
 		$brandTitle = getDolGlobalString('WEBPORTAL_TITLE') ? getDolGlobalString('WEBPORTAL_TITLE') : getDolGlobalString('MAIN_INFO_SOCIETE_NOM');
 		print '<a class="brand__logo-link" href="'.$context->getControllerUrl().'" >';
 		if (!empty($context->theme->menuLogoUrl)) {
@@ -238,26 +235,23 @@ if (empty($reshook)) {
 		} else {
 			print '<span class="brand__name">' . $brandTitle . '</span>';
 		}
-		print '</a>';
-		?>
+		print '</a>'; !!}
 		</li>
 	</ul>
 	<ul class="menu-entries">
-	<?php
+	@php
 	if (empty($context->doNotDisplayMenu) && empty($reshook) && !empty($navMenu)) {
 		// show menu
 		print getNav($navMenu);
-	}
-	?>
+	} !!}
 	</ul>
 
 	<ul class="logout">
-	<?php
+	@php
 	if (empty($context->doNotDisplayMenu) && empty($reshook) && !empty($navUserMenu)) {
 		// show menu
 		uasort($navUserMenu, 'menuSortInv');
 		print getNav($navUserMenu);
-	}
-	?>
+	} !!}
 	</ul>
 </nav>

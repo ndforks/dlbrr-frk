@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<!-- file card-edit-header.tpl.php -->
-<?php
+@php
 /* Copyright (C) 2025		Open-Dsi							<support@open-dsi.fr>
  */
 // Protection to avoid direct call of template
@@ -20,13 +19,13 @@ if (empty($context) || !is_object($context)) {
  * @var FormCardWebPortal 		$formCard
  */
 $formCard = $this->formCard;
-
-?>
+@endphp
+<!-- file card-edit-header.blade.php -->
 
 <header>
 	<div>
 		<div class="header-card-main-information inline-block valignmiddle">
-			<h2><?php print $langs->trans($formCard->titleKey) ?></h2>
+			<h2>{{ $langs->trans($formCard->titleKey) }}</h2>
 		</div>
 	</div>
 </header>

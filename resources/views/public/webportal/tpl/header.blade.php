@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2024  Laurent Destailleur <eldy@users.sourceforge.net>
  * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
  *
@@ -40,35 +39,29 @@ if (!empty($context->title)) {
 // Return HTTP headers
 top_httphead();
 
-// Return HTML header
-?>
+// Return HTML header !!}
 <!DOCTYPE html>
-<?php print '<html lang="'.substr($langs->defaultlang, 0, 2) . '">'."\n"; ?>
+{!! '<html lang="'.substr($langs->defaultlang, 0, 2) . '">'."\n"; !!}
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>
-		<?php print $title;	?>
+		{!! $title; !!}
 	</title>
-	<?php
-
-
+	@php
 	$jQueryUICSSUrl = $context->cdnUrl . '/jquery/css/base/jquery-ui.min.css?layout=classic';
 	print '<link rel="stylesheet" href="'.$jQueryUICSSUrl.' ">'."\n";
 
 	//$jNotifyCSSUrl = $context->rootUrl.'public/includes/jquery/plugins/jnotify/jquery.jnotify.css';
 	//$jNotifyCSSUrl = dol_buildpath('/public/includes/jquery/plugins/jnotify/jquery.jnotify.min.css', 2);
 	$jNotifyCSSUrl =  $context->cdnUrl . '/jquery/plugins/jnotify/jquery.jnotify.min.css?layout=classic';
-	print '<link rel="stylesheet" href="'.$jNotifyCSSUrl.' ">'."\n";
+	print '<link rel="stylesheet" href="'.$jNotifyCSSUrl.' ">'."\n"; !!}
+	<link rel="stylesheet" href="{!! $context->rootUrl.'css/style.css.php?revision='.getDolGlobalInt('WEBPORTAL_PARAMS_REV') !!}">
+	<link rel="stylesheet" type="text/css" href="{!! $context->rootUrl.'css/themes/custom.css.php?revision='.getDolGlobalInt('WEBPORTAL_PARAMS_REV') !!}">
 
-	?>
-	<link rel="stylesheet" href="<?php print $context->rootUrl.'css/style.css.php?revision='.getDolGlobalInt('WEBPORTAL_PARAMS_REV'); ?>">
-	<link rel="stylesheet" type="text/css" href="<?php print $context->rootUrl.'css/themes/custom.css.php?revision='.getDolGlobalInt('WEBPORTAL_PARAMS_REV'); ?>">
-
-	<link rel="stylesheet" href="<?php print dirname($context->rootUrl).'/theme/common/fontawesome-5/css/all.min.css?layout=classic'; ?>">
-	<?php
-
+	<link rel="stylesheet" href="{!! dirname($context->rootUrl).'/theme/common/fontawesome-5/css/all.min.css?layout=classic' !!}">
+	@php
 	// JQuery
 	$jQueryJSUrl =  $context->cdnUrl . '/jquery/js/jquery.min.js';
 	print '<script nonce="'.getNonce().'" src="'.$jQueryJSUrl.'"></script>'."\n";
@@ -109,7 +102,6 @@ top_httphead();
 	$hookmanager->executeHooks('webPortalHeader', $parameters, $context);
 	print $hookmanager->resPrint;
 
-	$bodyCompiledAttributes = commonHtmlAttributeBuilder($bodyAttributes);
-	?>
+	$bodyCompiledAttributes = commonHtmlAttributeBuilder($bodyAttributes); !!}
 </head>
-<body <?php print empty($bodyCompiledAttributes) ? '' : implode(' ', $bodyCompiledAttributes); ?> >
+<body {!! empty($bodyCompiledAttributes) ? '' : implode(' ', $bodyCompiledAttributes) !!} >
