@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	\defgroup   api     Module Api
  *  \brief      Module for API (REST) management

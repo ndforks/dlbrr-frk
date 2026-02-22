@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Fourn\Classes;
 /**
  *	\file       htdocs/fourn/class/fournisseur.class.php
  *	\ingroup    fournisseur,societe

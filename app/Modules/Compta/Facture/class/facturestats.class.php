@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Facture\Classes;
 /**
  *       \file       htdocs/compta/facture/class/facturestats.class.php
  *       \ingroup    invoices

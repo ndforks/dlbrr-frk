@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mailings;
 /**
  *	\file       htdocs/core/modules/mailings/contacts1.modules.php
  *	\ingroup    mailing

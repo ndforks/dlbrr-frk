@@ -4,6 +4,8 @@
  * Point: The most basic geometry type. All other geometries
  * are built out of Points.
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class Point extends Geometry
 {
 	public $coords = array(2);

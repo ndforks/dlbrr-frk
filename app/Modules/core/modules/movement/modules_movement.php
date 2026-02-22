@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Movement;
 /**
  *  \file       htdocs/core/modules/movement/modules_movement.php
  *  \ingroup    stock

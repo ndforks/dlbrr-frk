@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Comm\Action\Classes;
 /**
  * \file        htdocs/comm/action/class/actioncommreminder.class.php
  * \ingroup     agenda

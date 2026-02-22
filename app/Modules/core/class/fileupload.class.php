@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *       \file      htdocs/core/class/fileupload.class.php
  *       \brief     File to return the ajax response of core/ajax/fileupload.php for common file upload.

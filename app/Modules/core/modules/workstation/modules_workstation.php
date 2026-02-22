@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Workstation;
 /**
  *  \file			htdocs/core/modules/workstation/modules_workstation.php
  *  \ingroup		workstation

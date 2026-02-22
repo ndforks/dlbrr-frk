@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Dynamic_price\Classes;
 /**
  *	\file       htdocs/product/dynamic_price/class/price_parser.class.php
  *	\ingroup    product

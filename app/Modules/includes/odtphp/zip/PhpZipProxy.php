@@ -13,6 +13,8 @@ class PhpZipProxyException extends Exception
  * @version 1.3
  */
 
+
+namespace App\Modules\Includes\Odtphp\Zip;
 class PhpZipProxy implements ZipInterface
 {
 	protected $zipArchive;

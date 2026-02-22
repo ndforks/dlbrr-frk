@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   fournisseur     Module suppliers
  *  \brief      Module to manage suppliers relations and activities

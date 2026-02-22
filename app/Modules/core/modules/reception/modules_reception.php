@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Reception;
 /**
  *  \file       htdocs/core/modules/reception/modules_reception.php
  *  \ingroup    reception

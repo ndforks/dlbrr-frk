@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Paiement\Cheque\Classes;
 /**
  *	\file       htdocs/compta/paiement/cheque/class/remisecheque.class.php
  *	\ingroup    compta

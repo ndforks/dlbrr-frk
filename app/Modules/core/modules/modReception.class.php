@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   reception     Module Reception
  *  \brief      Module to manage receptions of products

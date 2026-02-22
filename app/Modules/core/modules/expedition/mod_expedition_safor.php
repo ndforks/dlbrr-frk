@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Expedition;
 /**
  *  \file       htdocs/core/modules/expedition/mod_expedition_safor.php
  *  \ingroup    expedition

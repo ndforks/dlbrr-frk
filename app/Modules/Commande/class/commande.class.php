@@ -30,6 +30,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Commande\Classes;
 /**
  *  \file       htdocs/commande/class/commande.class.php
  *  \ingroup    order

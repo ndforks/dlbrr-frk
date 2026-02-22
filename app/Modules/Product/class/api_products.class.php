@@ -38,6 +38,8 @@ require_once DOL_DOCUMENT_ROOT . '/variants/class/ProductCombination2ValuePair.c
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Product\Classes;
 class Products extends DolibarrApi
 {
 	/**

@@ -53,6 +53,8 @@
  */
 
 
+
+namespace App\Modules\Includes\Nusoap\Lib\Mail;
 /**
  * The Mail_mimePart class is used to create MIME E-mail messages
  *

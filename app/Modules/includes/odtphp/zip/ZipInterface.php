@@ -9,6 +9,8 @@
  * @license    https://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.3
  */
+
+namespace App\Modules\Includes\Odtphp\Zip;
 interface ZipInterface
 {
 	/**

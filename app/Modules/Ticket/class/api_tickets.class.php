@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ticket.lib.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Ticket\Classes;
 class Tickets extends DolibarrApi
 {
 	/**

@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Salaries\Classes;
 /**
  *  \file       htdocs/salaries/class/salary.class.php
  *  \ingroup    salaries

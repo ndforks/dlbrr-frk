@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Printsheet;
 /**
  *	\file       htdocs/core/modules/printsheet/modules_labels.php
  *	\ingroup    member

@@ -6,6 +6,8 @@
  * @see http://en.wikipedia.org/wiki/Geohash
  *
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 class GeoHash extends GeoAdapter
 {
 

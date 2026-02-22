@@ -16,6 +16,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *       \file       htdocs/core/class/geomapeditor.class.php
  *       \brief      Class to manage a leaflet map width geometrics objects

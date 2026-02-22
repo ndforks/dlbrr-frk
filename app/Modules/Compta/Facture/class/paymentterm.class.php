@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Facture\Classes;
 /**
  *      \file       compta/facture/class/paymentterm.class.php
  *      \ingroup    invoice

@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Expedition\Classes;
 class Shipments extends DolibarrApi
 {
 	/**

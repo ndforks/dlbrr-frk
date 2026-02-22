@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 /**
  * PHP Geometry/GeoRSS encoder/decoder
  */

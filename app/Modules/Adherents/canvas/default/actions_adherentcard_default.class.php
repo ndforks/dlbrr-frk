@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Adherents\Canvas\Default;
 /**
  *	\file       htdocs/adherents/canvas/default/actions_adherentcard_default.class.php
  *	\ingroup    member

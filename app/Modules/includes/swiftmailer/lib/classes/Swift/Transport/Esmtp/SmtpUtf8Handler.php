@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Transport\Esmtp;
 /**
  * An ESMTP handler for SMTPUTF8 support (RFC 6531).
  *

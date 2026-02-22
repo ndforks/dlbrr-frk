@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**     \defgroup   margin     Module margin
  *      \brief      Module to manage margins
  *      \file       htdocs/core/modules/modMargin.class.php

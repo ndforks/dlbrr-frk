@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_invoice\Doc;
 /**
  *	\file       htdocs/core/modules/supplier_invoice/doc/doc_generic_supplier_invoice_odt.modules.php
  *	\ingroup    invoice

@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Expedition;
 /**
  *  \file       htdocs/core/modules/expedition/modules_expedition.php
  *  \ingroup    expedition

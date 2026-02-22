@@ -11,6 +11,8 @@
  */
 
 
+
+namespace App\Modules\Core\Classes;
 /**
  * A class containing functions for computing diffs and formatting the output.
  * We can compare 2 strings or 2 files (as one string or line by line)

@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Bom;
 /**
  *  \file			htdocs/core/modules/bom/modules_bom.php
  *  \ingroup		bom

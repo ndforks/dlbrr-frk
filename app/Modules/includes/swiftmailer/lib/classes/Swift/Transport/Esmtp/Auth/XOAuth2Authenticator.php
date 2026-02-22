@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Transport\Esmtp\Auth;
 /**
  * Handles XOAUTH2 authentication.
  *

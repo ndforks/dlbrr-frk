@@ -26,6 +26,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Webportal\Classes;
 /**
  *    \file        htdocs/core/class/webportalfieldsmanager.class.php
  *    \ingroup    core

@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Product_batch;
 /**
  *  \file       htdocs/core/modules/product_batch/mod_sn_standard.php
  *  \ingroup    productbatch

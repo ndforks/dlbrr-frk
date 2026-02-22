@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Recruitment\Core\Modules\Recruitment;
 /**
  *  \file			htdocs/core/modules/recruitment/modules_recruitmentjobposition.php
  *  \ingroup		recruitment

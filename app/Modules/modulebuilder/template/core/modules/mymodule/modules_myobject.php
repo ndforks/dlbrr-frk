@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules\Mymodule;
 /**
  *  \file			htdocs/core/modules/mymodule/modules_myobject.php
  *  \ingroup		mymodule

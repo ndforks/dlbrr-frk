@@ -5,6 +5,8 @@ require 'Segment.php';
 /**
  * Class of ODT Exception
  */
+
+namespace App\Modules\Includes\Odtphp;
 class OdfException extends Exception
 {
 }

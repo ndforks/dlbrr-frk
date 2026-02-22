@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Signers;
 /**
  * Header Signer Interface used to apply Header-Based Signature to a message.
  *

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Printing;
 /**
  *      \file       htdocs/core/modules/printing/printipp.modules.php
  *      \ingroup    printing

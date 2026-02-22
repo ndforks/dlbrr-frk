@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Asset\Classes;
 /**
  * \file        htdocs/asset/class/assetmodel.class.php
  * \ingroup     asset

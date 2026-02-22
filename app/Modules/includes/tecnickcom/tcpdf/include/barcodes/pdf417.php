@@ -90,6 +90,8 @@ if (!defined('PDF417DEFS')) {
  * @author Nicola Asuni
  * @version 1.0.003
  */
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include\Barcodes;
 class PDF417 {
 
 	/**

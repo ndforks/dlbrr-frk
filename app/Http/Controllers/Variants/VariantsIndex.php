@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Variants;
 
-use App\Http\Controllers\DolibarrController;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
-class VariantsIndex extends DolibarrController
+class VariantsIndex extends Controller
 {
     /**
      * Handle the incoming request.
+     * Redirects to list page.
      */
-    public function __invoke(): Response
+    public function __invoke(): RedirectResponse
     {
-        return $this->executeDolibarrFile('Variants/index.php');
+        return redirect('/variants/list.php');
     }
 }

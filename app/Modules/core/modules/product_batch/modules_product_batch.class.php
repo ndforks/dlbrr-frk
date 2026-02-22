@@ -21,6 +21,8 @@
  */
 
 
+
+namespace App\Modules\Core\Modules\Product_batch;
 /**
  *      \class      ModelePDFProductBatch
  *      \brief      Parent class for product code generators

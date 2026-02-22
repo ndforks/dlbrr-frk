@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 /**
  * Class for API REST v1
  */
+
+namespace App\Modules\Api\Classes;
 class DolibarrApi
 {
 	/**

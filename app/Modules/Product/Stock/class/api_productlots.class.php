@@ -31,6 +31,8 @@ require_once DOL_DOCUMENT_ROOT . '/product/stock/class/productlot.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Product\Stock\Classes;
 class Productlots extends DolibarrApi
 {
 	/**

@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Member;
 /**
  * \file       htdocs/core/modules/member/mod_member_custom.php
  * \ingroup    member

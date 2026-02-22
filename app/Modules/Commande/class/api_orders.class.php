@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Commande\Classes;
 class Orders extends DolibarrApi
 {
 	/**

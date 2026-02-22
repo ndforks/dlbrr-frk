@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Signers;
 /**
  * Body Signer Interface used to apply Body-Based Signature to a message.
  *

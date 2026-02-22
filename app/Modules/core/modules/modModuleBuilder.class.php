@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	\defgroup   modulebuilder   Module ModuleBuilder
  *  \brief      Add a log into a block chain for some actions.

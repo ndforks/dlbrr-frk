@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mime\Headers;
 /**
  * A Date MIME Header for Swift Mailer.
  *

@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Knowledgemanagement\Classes;
 /**
  * \file        htdocs/knowledgemanagement/class/knowledgerecord.class.php
  * \ingroup     knowledgemanagement

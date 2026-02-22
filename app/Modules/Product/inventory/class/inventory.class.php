@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Inventory\Classes;
 /**
  * \file        product/inventory/class/inventory.class.php
  * \ingroup     inventory

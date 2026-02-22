@@ -28,6 +28,8 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Fourn\Classes;
 class SupplierOrders extends DolibarrApi
 {
 	/**

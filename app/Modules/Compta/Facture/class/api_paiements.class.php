@@ -29,6 +29,8 @@ dol_include_once('/compta/paiement/class/paiement.class.php');
  * \brief   File for API management of paiement.
  */
 
+
+namespace App\Modules\Compta\Facture\Classes;
 /**
  * API class for paiement
  *

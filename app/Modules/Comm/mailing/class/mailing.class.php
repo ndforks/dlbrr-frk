@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Comm\Mailing\Classes;
 /**
  *	\file       htdocs/comm/mailing/class/mailing.class.php
  *	\ingroup    mailing

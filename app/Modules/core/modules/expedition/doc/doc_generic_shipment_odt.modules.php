@@ -22,6 +22,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Expedition\Doc;
 /**
  *	\file       htdocs/core/modules/expedition/doc/doc_generic_shipment_odt.modules.php
  *	\ingroup    expedition

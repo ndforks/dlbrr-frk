@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Reception\Doc;
 /**
  *	\file       htdocs/core/modules/reception/doc/doc_generic_reception_odt.modules.php
  *	\ingroup    reception

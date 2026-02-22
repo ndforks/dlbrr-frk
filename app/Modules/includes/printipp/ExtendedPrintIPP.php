@@ -41,6 +41,8 @@
         - ...
 */
 
+
+namespace App\Modules\Includes\Printipp;
 require_once("PrintIPP.php");
 
 class ExtendedPrintIPP extends PrintIPP

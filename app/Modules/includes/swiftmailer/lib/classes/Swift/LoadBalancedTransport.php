@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift;
 /**
  * Redundantly and rotationally uses several Transport implementations when sending.
  *

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Plugins\Pop;
 /**
  * Pop3Exception thrown when an error occurs connecting to a POP3 host.
  *

@@ -25,6 +25,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Db;
 /**
  *	\file       htdocs/core/db/pgsql.class.php
  *	\brief      Fichier de la class permettant de gerer une base pgsql

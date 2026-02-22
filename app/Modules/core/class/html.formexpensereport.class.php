@@ -16,6 +16,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  * \file       htdocs/core/class/html.formexpensereport.class.php
  * \ingroup    core

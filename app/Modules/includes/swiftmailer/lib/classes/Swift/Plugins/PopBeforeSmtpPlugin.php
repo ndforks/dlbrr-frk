@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Plugins;
 /**
  * Makes sure a connection to a POP3 host has been established prior to connecting to SMTP.
  *

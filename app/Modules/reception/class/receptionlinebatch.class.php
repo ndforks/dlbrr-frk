@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Reception\Classes;
 /**
  *  \file       htdocs/fourn/class/fournisseur.commande.dispatch.class.php
  *  \ingroup    fournisseur stock

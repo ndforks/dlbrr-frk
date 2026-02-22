@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules\Dons;
 /**
  *	\file       htdocs/core/modules/dons/html_generic.modules.php
  *	\ingroup    don

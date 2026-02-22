@@ -6,6 +6,8 @@
  *
  * @version    3.0.0rc6
  */
+
+namespace App\Modules\Includes\Restler\Framework\Luracast\Restler;
 class ExplorerInfo
 {
     public static $title = 'Restler API Explorer';

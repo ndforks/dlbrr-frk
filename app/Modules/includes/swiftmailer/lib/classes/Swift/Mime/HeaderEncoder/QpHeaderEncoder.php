@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mime\HeaderEncoder;
 /**
  * Handles Quoted Printable (Q) Header Encoding in Swift Mailer.
  *

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mime\ContentEncoder;
 /**
  * Handles Base 64 Transfer Encoding in Swift Mailer.
  *

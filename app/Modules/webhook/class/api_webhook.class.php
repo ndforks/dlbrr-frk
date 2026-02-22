@@ -25,6 +25,8 @@ use Luracast\Restler\RestException;
  * @access protected
  * @class  DolibarrApiAccess {@requires user}
  */
+
+namespace App\Modules\Webhook\Classes;
 class Webhook extends DolibarrApi
 {
 	/**

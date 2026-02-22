@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *       \file       htdocs/core/class/doleditor.class.php
  *       \brief      Class to manage a WYSIWYG editor

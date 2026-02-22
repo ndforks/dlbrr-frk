@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Accountancy;
 /**
  *  \file			htdocs/core/modules/accountancy/modules_accountancy.php
  *  \ingroup		accountancy

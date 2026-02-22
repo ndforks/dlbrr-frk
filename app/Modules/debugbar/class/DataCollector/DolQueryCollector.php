@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Debugbar\Classes\DataCollector;
 /**
  *	\file       htdocs/debugbar/class/DataCollector/DolQueryCollector.php
  *	\brief      Class for debugbar collection

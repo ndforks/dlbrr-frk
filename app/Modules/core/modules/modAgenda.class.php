@@ -25,6 +25,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *		\defgroup   agenda     Module agenda
  *      \brief      Module to manage agenda and events

@@ -25,6 +25,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Fichinter\Classes;
 /**
  *  \file       htdocs/fichinter/class/fichinterrec.class.php
  *  \ingroup    fichinter

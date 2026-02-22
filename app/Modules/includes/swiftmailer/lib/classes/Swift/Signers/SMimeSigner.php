@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Signers;
 /**
  * MIME Message Signer used to apply S/MIME Signature/Encryption to a message.
  *

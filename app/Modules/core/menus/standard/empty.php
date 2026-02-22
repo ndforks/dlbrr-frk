@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Menus\Standard;
 /**
  *	    \file       htdocs/core/menus/standard/empty.php
  *		\brief      This is an example of an empty top menu handler

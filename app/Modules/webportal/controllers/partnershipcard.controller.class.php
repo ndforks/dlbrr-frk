@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Webportal\Controllers;
 /**
  * \file        htdocs/webportal/controllers/partnershipcard.controller.class.php
  * \ingroup     webportal

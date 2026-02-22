@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstation.class.php';
  */
 
 
+
+namespace App\Modules\Workstation\Classes;
 /**
  * API class for workstations
  *

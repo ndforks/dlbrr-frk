@@ -24,6 +24,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Fourn\Classes;
 /**
  *	\file       htdocs/fourn/facture/class/fournisseur.facture-rec.class.php
  *	\ingroup    invoice

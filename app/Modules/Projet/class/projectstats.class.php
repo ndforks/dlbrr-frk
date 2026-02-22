@@ -23,6 +23,8 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 /**
  * Class to manage statistics on projects
  */
+
+namespace App\Modules\Projet\Classes;
 class ProjectStats extends Stats
 {
 	/**

@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Asset\Classes;
 /**
  * \file        asset/class/assetdepreciationoptions.class.php
  * \ingroup     asset

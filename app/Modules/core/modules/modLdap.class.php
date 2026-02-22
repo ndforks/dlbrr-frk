@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   ldap     Module ldap
  *  \brief		Module to manage LDAP interfaces with contacts or users

@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\EventOrganization\Classes;
 /**
  * \file        class/conferenceorbooth.class.php
  * \ingroup     eventorganization

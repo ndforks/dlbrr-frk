@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Adherents\Classes;
 /**
  *		\file 		htdocs/adherents/class/subscription.class.php
  *		\ingroup	member

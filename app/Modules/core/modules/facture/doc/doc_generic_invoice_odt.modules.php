@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Facture\Doc;
 /**
  *	\file       htdocs/core/modules/facture/doc/doc_generic_invoice_odt.modules.php
  *	\ingroup    societe

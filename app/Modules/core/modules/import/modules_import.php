@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Import;
 /**
  *	\file       htdocs/core/modules/import/modules_import.php
  *	\ingroup    export

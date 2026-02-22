@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Stocktransfer;
 /**
  *  \file			htdocs/core/modules/stocktransfer/modules_stocktransfer.php
  *  \ingroup		stocktransfer

@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Comm\Mailing\Classes;
 /**
  * \file    comm/mailing/class/html.formadvtargetemailing.class.php
  * \ingroup mailing

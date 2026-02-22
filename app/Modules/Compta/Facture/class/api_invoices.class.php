@@ -32,6 +32,8 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture-rec.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Compta\Facture\Classes;
 class Invoices extends DolibarrApi
 {
 	/**

@@ -36,6 +36,8 @@
    - RFC 3382
  */
 
+
+namespace App\Modules\Includes\Printipp;
 require_once ("http_class.php");
 
 class ippException extends \Exception

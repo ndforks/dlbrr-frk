@@ -107,6 +107,8 @@ define('ENC_ASCII_NUM', 7);
 * @author Nicola Asuni
 * @version 1.0.004
 */
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include\Barcodes;
 class Datamatrix {
 
 	/**

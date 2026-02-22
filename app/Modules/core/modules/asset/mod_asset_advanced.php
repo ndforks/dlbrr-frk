@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Asset;
 /**
  * \file       htdocs/core/modules/asset/mod_asset_advanced.php
  * \ingroup    asset

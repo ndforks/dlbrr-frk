@@ -38,6 +38,8 @@
  * @package com.tecnick.tcpdf
  */
 
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include;
 /**
  * @class TCPDF_FONT_DATA
  * Unicode data and encoding maps for TCPDF.

@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Adherents\Classes;
 /**
  *	\file       htdocs/adherents/class/adherentstats.class.php
  *	\ingroup    member

@@ -25,6 +25,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mrp\Doc;
 /**
  *	\file       htdocs/core/modules/mrp/doc/pdf_vinci.modules.php
  *	\ingroup    mrp

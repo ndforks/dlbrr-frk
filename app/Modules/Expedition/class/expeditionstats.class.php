@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Expedition\Classes;
 /**
  *  \file       htdocs/expedition/class/expeditionstats.class.php
  *  \ingroup    expedition

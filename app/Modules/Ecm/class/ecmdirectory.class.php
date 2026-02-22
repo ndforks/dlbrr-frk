@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Ecm\Classes;
 /**
  *  \file       htdocs/ecm/class/ecmdirectory.class.php
  *  \ingroup    ecm

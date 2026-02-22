@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *      \file       htdocs/core/class/html.formcron.class.php
  *      \brief      File for class to manage the building of cron form components

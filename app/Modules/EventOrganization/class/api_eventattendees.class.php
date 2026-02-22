@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorboothattend
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\EventOrganization\Classes;
 class EventAttendees extends DolibarrApi
 {
 	/**

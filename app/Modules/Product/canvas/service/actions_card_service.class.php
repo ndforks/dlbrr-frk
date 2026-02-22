@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Canvas\Service;
 /**
  *	\file       htdocs/product/canvas/service/actions_card_service.class.php
  *	\ingroup    service

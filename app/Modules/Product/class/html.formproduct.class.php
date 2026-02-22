@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Classes;
 /**
  *	\file       htdocs/product/class/html.formproduct.class.php
  *	\brief      File for class with methods for building product related HTML components

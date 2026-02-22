@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   don     Module donations
  *	\brief      Module to manage the follow-up of the donations

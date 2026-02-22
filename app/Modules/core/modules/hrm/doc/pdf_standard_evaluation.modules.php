@@ -25,6 +25,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Hrm\Doc;
 /**
  *	\file       htdocs/core/modules/hrm/doc/pdf_standard_evaluation.modules.php
  *	\ingroup    hrm

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Contract;
 /**
  *  \file       htdocs/core/modules/contract/mod_contract_serpis.php
  *  \ingroup    contract

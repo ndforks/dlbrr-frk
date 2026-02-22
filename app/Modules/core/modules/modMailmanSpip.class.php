@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   mailmanspip      Module mailmanspip
  *	\brief      Module to manage mailman and spip

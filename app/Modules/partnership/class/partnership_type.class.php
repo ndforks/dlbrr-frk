@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Partnership\Classes;
 /**
  *	\file       htdocs/partnership/class/partnership_type.class.php
  *	\ingroup    partnership

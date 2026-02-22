@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Product;
 /**
  *       \file       htdocs/core/modules/product/mod_codeproduct_leopard.php
  *       \ingroup    product

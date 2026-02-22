@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Asset;
 /**
  *  \file			htdocs/core/modules/asset/modules_asset.php
  *  \ingroup		asset

@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Zapier\Classes;
 /**
  * \file    htdocs/zapier/class/api_zapier.class.php
  * \ingroup zapier

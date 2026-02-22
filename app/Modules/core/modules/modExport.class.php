@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   export      Module Export
  *  \brief      Module to manage data exports from Dolibarr database

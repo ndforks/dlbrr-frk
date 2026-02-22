@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Multicurrency\Classes;
 /**
  * \file    htdocs/multicurrency/class/multicurrency.class.php
  * \ingroup multicurrency

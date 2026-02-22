@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Movement\Doc;
 /**
  *	\file       htdocs/core/modules/movement/doc/pdf_standard_movementstock.modules.php
  *	\ingroup    societe

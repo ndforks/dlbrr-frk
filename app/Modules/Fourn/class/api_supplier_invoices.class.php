@@ -31,6 +31,8 @@ require_once DOL_DOCUMENT_ROOT . '/fourn/class/paiementfourn.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Fourn\Classes;
 class SupplierInvoices extends DolibarrApi
 {
 	/**

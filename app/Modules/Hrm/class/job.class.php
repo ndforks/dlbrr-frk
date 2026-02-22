@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Hrm\Classes;
 /**
  * \file        class/job.class.php
  * \ingroup     hrm

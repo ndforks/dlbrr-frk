@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Debugbar\Classes;
 /**
  *	\file       htdocs/debugbar/class/DataCollector/TraceableDB.php
  *	\brief      Class for debugbar DB

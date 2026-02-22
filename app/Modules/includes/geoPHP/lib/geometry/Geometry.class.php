@@ -3,6 +3,8 @@
 /**
  * Geometry abstract class
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 abstract class Geometry
 {
 	private   $geos = null;

@@ -27,6 +27,8 @@ use Luracast\Restler\RestException;
  * @class  DolibarrApiAccess {@requires user,external}
  *
  */
+
+namespace App\Modules\Accountancy\Classes;
 class Accountancy extends DolibarrApi
 {
 	/**

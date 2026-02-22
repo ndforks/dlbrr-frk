@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Project;
 /**
  *		\file       htdocs/core/modules/project/modules_project.php
  *      \ingroup    project

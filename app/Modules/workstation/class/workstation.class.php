@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Workstation\Classes;
 /**
  * \file        htdocs/workstation/class/workstation.class.php
  * \ingroup     workstation

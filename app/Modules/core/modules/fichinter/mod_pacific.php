@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Fichinter;
 /**
  *  \file       htdocs/core/modules/fichinter/mod_pacific.php
  *  \ingroup    Intervention card

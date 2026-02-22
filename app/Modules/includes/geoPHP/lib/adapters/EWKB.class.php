@@ -2,6 +2,8 @@
 /**
  * EWKB (Extended Well Known Binary) Adapter
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 class EWKB extends WKB
 {
 

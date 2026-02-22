@@ -28,6 +28,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Contract\Doc;
 /**
  *	\file       htdocs/core/modules/contract/doc/pdf_strato.modules.php
  *	\ingroup    ficheinter

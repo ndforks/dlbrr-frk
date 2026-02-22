@@ -16,6 +16,8 @@ dol_include_once("/mymodule/class/myobject.class.php");
 /**
  * mailing_mailinglist_mymodule
  */
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules\Mailings;
 class mailing_mailing_mymodule_selector1 extends MailingTargets
 {
 	// CHANGE THIS: Put here a name not already used

@@ -27,6 +27,8 @@
  * Lots of code inspired from Dan Potter's CMailFile class
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *      \file       htdocs/core/class/CMailFile.class.php
  *      \brief      File of class to send emails (with attachments or not)

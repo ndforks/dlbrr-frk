@@ -28,6 +28,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Contrat\Classes;
 /**
  *	\file       htdocs/contrat/class/contratligne.class.php
  *	\ingroup    contrat

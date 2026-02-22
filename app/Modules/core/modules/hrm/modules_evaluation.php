@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Hrm;
 /**
  *  \file			htdocs/core/modules/hrm/modules_evaluation.php
  *  \ingroup		hrm

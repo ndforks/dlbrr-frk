@@ -32,6 +32,8 @@ dol_include_once('/categories/class/categorie.class.php');
  * \brief   File for API management of knowledgerecord.
  */
 
+
+namespace App\Modules\Knowledgemanagement\Classes;
 /**
  * API class for knowledgemanagement knowledgerecord
  *

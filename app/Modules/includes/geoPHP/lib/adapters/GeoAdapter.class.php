@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 /**
  * GeoAdapter : abstract class which represents an adapter
  * for reading and writing to and from Geomtry objects

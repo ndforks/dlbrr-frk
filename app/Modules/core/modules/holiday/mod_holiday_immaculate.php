@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Holiday;
 /**
  *  \file       htdocs/core/modules/holiday/mod_holiday_immaculate.php
  *  \ingroup    holiday

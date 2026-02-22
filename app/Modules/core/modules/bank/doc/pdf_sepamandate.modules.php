@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Bank\Doc;
 /**
  *	\file       htdocs/core/modules/bank/doc/pdf_sepamandate.modules.php
  *	\ingroup    project

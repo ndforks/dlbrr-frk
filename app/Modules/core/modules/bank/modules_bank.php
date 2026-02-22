@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Bank;
 /**
  *		\file       htdocs/core/modules/bank/modules_bank.php
  *      \ingroup    project

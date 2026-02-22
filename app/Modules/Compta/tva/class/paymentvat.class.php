@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Tva\Classes;
 /**
  *      \file       htdocs/compta/sociales/class/paymentsocialcontribution.class.php
  *		\ingroup    invoice

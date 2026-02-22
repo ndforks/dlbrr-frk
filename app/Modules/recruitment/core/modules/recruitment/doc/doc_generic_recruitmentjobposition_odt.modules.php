@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Recruitment\Core\Modules\Recruitment\Doc;
 /**
  *	\file       htdocs/recruitment/core/modules/recruitment/doc/doc_generic_recruitmentjobposition_odt.modules.php
  *	\ingroup    recruitment

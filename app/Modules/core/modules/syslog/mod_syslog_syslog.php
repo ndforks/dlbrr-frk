@@ -3,6 +3,8 @@
  * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
  */
 
+
+namespace App\Modules\Core\Modules\Syslog;
 require_once DOL_DOCUMENT_ROOT.'/core/modules/syslog/logHandler.php';
 
 /**

@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   service     Module services
  *	\brief      Module pour gerer le suivi de services predefinis

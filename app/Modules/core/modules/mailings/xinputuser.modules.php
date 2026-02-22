@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mailings;
 /**
  *	\file       htdocs/core/modules/mailings/xinputuser.modules.php
  *	\ingroup    mailing

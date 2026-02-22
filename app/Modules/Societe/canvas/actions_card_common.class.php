@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Societe\Canvas;
 /**
  *	\file       htdocs/societe/canvas/actions_card_common.class.php
  *	\ingroup    thirdparty

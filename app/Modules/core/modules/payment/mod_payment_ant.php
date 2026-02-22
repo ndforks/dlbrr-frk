@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Payment;
 /**
  * \file       htdocs/core/modules/payment/mod_payment_ant.php
  * \ingroup    payment

@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Societe\Classes;
 /**
  * \file        societe/class/societeaccount.class.php
  * \ingroup     societe

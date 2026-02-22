@@ -37,6 +37,8 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/api_projects.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Categories\Classes;
 class Categories extends DolibarrApi
 {
 	/**

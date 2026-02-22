@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Loan\Classes;
 /**
  *      \file       htdocs/loan/class/loanschedule.class.php
  *      \ingroup    loan

@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules\Mymodule\Doc;
 /**
  *	\file       htdocs/core/modules/mymodule/doc/doc_generic_myobject_odt.modules.php
  *	\ingroup    mymodule

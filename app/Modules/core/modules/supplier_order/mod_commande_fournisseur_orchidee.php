@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_order;
 /**
  *	\file       htdocs/core/modules/supplier_order/mod_commande_fournisseur_orchidee.php
  *	\ingroup    order

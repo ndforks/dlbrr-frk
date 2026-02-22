@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Societe;
 /**
  *      \file       htdocs/core/modules/societe/mod_codecompta_digitaria.php
  *      \ingroup    societe

@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Reception\Doc;
 /**
  *	\file       htdocs/core/modules/reception/doc/pdf_squille.modules.php
  *	\ingroup    reception

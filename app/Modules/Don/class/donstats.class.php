@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Don\Classes;
 /**
  *  \file       htdocs/don/class/donstats.class.php
  *  \ingroup    donations

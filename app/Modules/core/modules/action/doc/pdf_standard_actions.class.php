@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Action\Doc;
 /**
  *	\file       htdocs/core/modules/action/doc/pdf_standard_actions.class.php
  *	\ingroup    commercial

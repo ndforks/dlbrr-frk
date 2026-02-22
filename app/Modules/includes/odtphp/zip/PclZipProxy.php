@@ -17,6 +17,8 @@ class PclZipProxyException extends Exception
  * @license    https://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.4
  */
+
+namespace App\Modules\Includes\Odtphp\Zip;
 class PclZipProxy implements ZipInterface
 {
 	protected $tmpdir = '/tmp';

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *       \file       htdocs/core/class/dolgeophp.class.php
  *       \brief      Absctraction class to manage a WYSIWYG editor

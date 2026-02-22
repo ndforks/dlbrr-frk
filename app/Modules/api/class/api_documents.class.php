@@ -37,6 +37,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  * @access protected
  * @class Documents {@requires user,external}
  */
+
+namespace App\Modules\Api\Classes;
 class Documents extends DolibarrApi
 {
 	/**

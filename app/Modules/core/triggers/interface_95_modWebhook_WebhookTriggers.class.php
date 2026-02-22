@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Triggers;
 /**
  * \file    core/triggers/interface_99_modWebhook_WebhookTriggers.class.php
  * \ingroup webhook

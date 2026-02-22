@@ -26,6 +26,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_order\Doc;
 /**
  *	\file       htdocs/core/modules/supplier_order/doc/pdf_cornas.modules.php
  *	\ingroup    fournisseur

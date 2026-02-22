@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Admin\Tools\Ui\Classes;
 /**
  *    \file       htdocs/admint/tools/ui/class/uidoc.class.php
  *    \ingroup    ui

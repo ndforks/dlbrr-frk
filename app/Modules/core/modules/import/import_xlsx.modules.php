@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Import;
 /**
  *		\file       htdocs/core/modules/import/import_xlsx.modules.php
  *		\ingroup    import

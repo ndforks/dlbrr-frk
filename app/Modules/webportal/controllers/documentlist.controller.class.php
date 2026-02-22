@@ -18,6 +18,8 @@
  */
 
 
+
+namespace App\Modules\Webportal\Controllers;
 require_once __DIR__ . '/abstractdocument.controller.class.php';
 
 /**

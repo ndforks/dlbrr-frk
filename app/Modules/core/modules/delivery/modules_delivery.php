@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Delivery;
 /**
  *	\file       htdocs/core/modules/delivery/modules_delivery.php
  *	\ingroup    expedition

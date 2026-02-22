@@ -35,6 +35,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\ExpenseReport\Classes;
 class ExpenseReports extends DolibarrApi
 {
 	/**

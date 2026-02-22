@@ -30,6 +30,8 @@ dol_include_once('/recruitment/class/recruitmentcandidature.class.php');
  * \brief   File for API management of recruitment.
  */
 
+
+namespace App\Modules\Recruitment\Classes;
 /**
  * API class for recruitment
  *

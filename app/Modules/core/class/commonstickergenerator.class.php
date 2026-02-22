@@ -53,6 +53,8 @@
  *	\brief      generate pdf document with labels or cards in Avery or custom format
  */
 
+
+namespace App\Modules\Core\Classes;
 require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';

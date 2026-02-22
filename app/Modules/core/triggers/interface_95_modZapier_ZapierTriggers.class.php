@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Triggers;
 /**
  * \file    htdocs/core/triggers/interface_99_modZapier_ZapierTriggers.class.php
  * \ingroup zapier

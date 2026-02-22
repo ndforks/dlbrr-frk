@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Events;
 /**
  * Generated when the state of a Transport is changed (i.e. stopped/started).
  *

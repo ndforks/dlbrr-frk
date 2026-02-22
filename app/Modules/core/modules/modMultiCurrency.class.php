@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	\defgroup   multicurrency     Module MultiCurrency
  *  \brief      Handle multiple currencies on company/propal/orders ...

@@ -20,6 +20,8 @@
  */
 
 
+
+namespace App\Modules\Webportal\Classes;
 /**
  * \file       htdocs/webportal/class/html.formlistwebportal.class.php
  * \ingroup    webportal

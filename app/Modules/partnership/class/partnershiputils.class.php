@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Partnership\Classes;
 /**
  *  \file       partnership/class/partnershiputils.class.php
  *  \ingroup    partnership

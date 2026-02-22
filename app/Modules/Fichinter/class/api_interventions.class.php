@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Fichinter\Classes;
 /**
  *       \file       htdocs/fichinter/class/api_interventions.class.php
  *       \ingroup    fichinter

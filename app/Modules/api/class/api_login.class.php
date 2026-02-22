@@ -26,6 +26,8 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 /**
  * API that allows to log in with an user account.
  */
+
+namespace App\Modules\Api\Classes;
 class Login
 {
 	/**

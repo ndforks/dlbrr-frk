@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Deplacement\Classes;
 /**
  *      \file       htdocs/compta/deplacement/class/deplacement.class.php
  *      \ingroup    deplacement

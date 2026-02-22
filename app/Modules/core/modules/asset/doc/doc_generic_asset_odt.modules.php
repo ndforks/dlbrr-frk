@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Asset\Doc;
 /**
  *	\file       htdocs/core/modules/asset/doc/doc_generic_asset_odt.modules.php
  *	\ingroup    asset

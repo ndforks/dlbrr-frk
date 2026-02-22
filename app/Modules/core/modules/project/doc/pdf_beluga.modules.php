@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Project\Doc;
 /**
  *	\file       htdocs/core/modules/project/doc/pdf_beluga.modules.php
  *	\ingroup    project

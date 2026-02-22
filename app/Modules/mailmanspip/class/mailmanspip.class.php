@@ -23,6 +23,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Mailmanspip\Classes;
 /**
  *	\file       htdocs/mailmanspip/class/mailmanspip.class.php
  *	\ingroup    member

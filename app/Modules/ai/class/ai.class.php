@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Ai\Classes;
 /**
  * \file    htdocs/ai/class/ai.class.php
  * \ingroup ai

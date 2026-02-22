@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Product\Doc;
 /**
  *	\file       htdocs/core/modules/product/doc/pdf_standard.modules.php
  *	\ingroup    societe

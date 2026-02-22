@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Barcode;
 /**
  *       \file       htdocs/core/modules/barcode/mod_barcode_product_standard.php
  *       \ingroup    barcode

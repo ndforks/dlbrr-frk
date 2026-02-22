@@ -10,6 +10,8 @@
 * Code that need to be changed in this file are marked by "CHANGE THIS" tag.
 */
 
+
+namespace App\Modules\Core\Modules\Mailings;
 /**
  *	\file       htdocs/core/modules/mailings/thirdparties_services_expired.modules.php
  *	\ingroup    mailing

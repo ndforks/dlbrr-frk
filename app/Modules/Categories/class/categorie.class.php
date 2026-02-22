@@ -30,6 +30,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Categories\Classes;
 /**
  *	\file       htdocs/categories/class/categorie.class.php
  *	\ingroup    categorie

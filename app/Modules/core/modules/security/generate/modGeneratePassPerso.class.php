@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Security\Generate;
 /**
  *      \file       htdocs/core/modules/security/generate/modGeneratePassPerso.class.php
  *      \ingroup    core

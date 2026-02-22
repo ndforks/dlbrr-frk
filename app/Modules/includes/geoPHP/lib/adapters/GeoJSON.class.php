@@ -6,6 +6,8 @@
  * means that if you pass it a feature, it will return the
  * geometry of that feature strip everything else.
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 class GeoJSON extends GeoAdapter
 {
 	/**

@@ -28,6 +28,8 @@ require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Don\Classes;
 class Donations extends DolibarrApi
 {
 	/**

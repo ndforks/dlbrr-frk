@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Db;
 /**
  *	\file       htdocs/core/db/sqlite3.class.php
  *	\brief      Class file to manage Dolibarr database access for a SQLite database

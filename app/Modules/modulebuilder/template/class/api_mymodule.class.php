@@ -29,6 +29,8 @@ dol_include_once('/mymodule/class/myobject.class.php');
  * \brief   File for API management of myobject.
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Classes;
 /**
  * API class for mymodule myobject
  *

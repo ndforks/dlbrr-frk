@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 		\defgroup   tax		Module taxes
  * 		\brief      Module pour inclure des functions de saisies des taxes (tva) et charges sociales

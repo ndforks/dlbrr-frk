@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *   	\file       htdocs/core/class/translate.class.php
  *      \ingroup    core

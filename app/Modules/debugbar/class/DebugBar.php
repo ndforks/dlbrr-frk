@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Debugbar\Classes;
 /**
  *	\file       htdocs/debugbar/class/DebugBar.php
  *	\brief      Class for debugbar

@@ -16,6 +16,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 		\defgroup   tax		Module Loans
  * 		\brief      Module to include loans management

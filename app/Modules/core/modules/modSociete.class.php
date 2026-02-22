@@ -23,6 +23,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   societe     Module societe
  *	\brief      Module to manage third parties (customers, prospects)

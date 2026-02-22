@@ -36,6 +36,8 @@
  */
 
 
+
+namespace App\Modules\Core\Classes;
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  *

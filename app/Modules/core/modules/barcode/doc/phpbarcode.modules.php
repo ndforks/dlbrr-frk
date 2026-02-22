@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Barcode\Doc;
 /**
  *	\file       htdocs/core/modules/barcode/doc/phpbarcode.modules.php
  *	\ingroup    barcode

@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Hrm\Classes;
 /**
  *    \file       htdocs/hrm/class/establishment.class.php
  *    \ingroup    HRM

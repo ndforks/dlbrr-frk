@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   salaries		Module salaries
  *  \brief      Module to include salaries management

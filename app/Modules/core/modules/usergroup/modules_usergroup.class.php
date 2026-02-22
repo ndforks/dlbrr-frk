@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Usergroup;
 /**
  *  \file       htdocs/core/modules/contract/modules_contract.php
  *  \ingroup    contract

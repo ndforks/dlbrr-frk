@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Boxes;
 /**
  *     \file        core/boxes/box_last_modified_ticket.php
  *     \ingroup     ticket

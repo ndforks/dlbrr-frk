@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Stocktransfer\Doc;
 /**
  *	\file       htdocs/core/modules/stocktransfer/doc/pdf_eagle.modules.php
  *	\ingroup    expedition

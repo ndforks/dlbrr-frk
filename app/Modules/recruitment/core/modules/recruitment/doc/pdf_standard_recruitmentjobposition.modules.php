@@ -27,6 +27,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Recruitment\Core\Modules\Recruitment\Doc;
 /**
  *  \file       htdocs/modulebuilder/template/core/modules/recruitment/doc/pdf_standard.modules.php
  *  \ingroup    recruitment

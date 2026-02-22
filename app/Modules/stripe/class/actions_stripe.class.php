@@ -28,6 +28,8 @@
  *	\brief      File Class actionsstripeconnect
  */
 
+
+namespace App\Modules\Stripe\Classes;
 require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/commonhookactions.class.php';
 

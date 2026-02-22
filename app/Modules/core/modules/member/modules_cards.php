@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Member;
 /**
  *	\file		htdocs/core/modules/member/modules_cards.php
  *	\ingroup	member

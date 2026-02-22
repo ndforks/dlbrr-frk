@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Accountancy;
 /**
  * \file       htdocs/core/modules/accountancy/mod_bookkeeping_helium.php
  * \ingroup    accountancy

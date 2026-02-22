@@ -28,6 +28,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules\Mymodule\Doc;
 /**
  *  \file       htdocs/modulebuilder/template/core/modules/mymodule/doc/pdf_standard.modules.php
  *  \ingroup    mymodule

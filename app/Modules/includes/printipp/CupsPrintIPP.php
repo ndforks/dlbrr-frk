@@ -36,6 +36,8 @@
         - CUPS-IPP-1.1
 */
 
+
+namespace App\Modules\Includes\Printipp;
 require_once("ExtendedPrintIPP.php");
 
 class CupsPrintIPP extends ExtendedPrintIPP

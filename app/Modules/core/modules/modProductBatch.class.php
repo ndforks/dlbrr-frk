@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   productbatch     Module batch number management
  *	\brief      Management module for batch number, eat-by and sell-by date for product

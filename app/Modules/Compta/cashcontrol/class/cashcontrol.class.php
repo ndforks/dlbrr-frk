@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Cashcontrol\Classes;
 /**
  * \file       htdocs/compta/cashcontrol/class/cashcontrol.class.php
  * \ingroup    cashdesk|takepos

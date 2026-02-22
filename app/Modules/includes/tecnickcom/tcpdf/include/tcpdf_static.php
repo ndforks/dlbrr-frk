@@ -41,6 +41,8 @@
  * @version 1.1.2
  */
 
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include;
 /**
  * @class TCPDF_STATIC
  * Static methods used by the TCPDF class.

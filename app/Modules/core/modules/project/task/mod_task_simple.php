@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Project\Task;
 /**
  *	\file       htdocs/core/modules/project/mod_project_simple.php
  *	\ingroup    project

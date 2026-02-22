@@ -37,6 +37,8 @@
  * The `lessc_formatter` takes a CSS tree, and dumps it to a formatted string,
  * handling things like indentation.
  */
+
+namespace App\Modules\Core\Classes;
 class Lessc
 {
 	public static $VERSION = "v0.8.0";

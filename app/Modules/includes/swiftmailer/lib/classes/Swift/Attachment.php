@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift;
 /**
  * Attachment class for attaching files to a {@link Swift_Mime_SimpleMessage}.
  *

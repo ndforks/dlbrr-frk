@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Stock\Classes;
 /**
  *	\file       htdocs/product/stock/class/mouvementstock.class.php
  *	\ingroup    stock
