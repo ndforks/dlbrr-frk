@@ -125,9 +125,9 @@ if (empty($reshook)) {
 		// Generate payment array and check if there is payment higher than invoice and payment date before invoice date
 		$tmpinvoice = new Facture($db);
 		foreach ($_POST as $key => $value) {
-			if (substr($key, 0, 7) == 'amount_' && GETPOST($key) != '') {
+			if (substr($key, 0, 7) == 'amount_' && request()->input($key) != '') {
 				$cursorfacid = (int) substr($key, 7);
-				$amounts[$cursorfacid] = price2num(GETPOST($key));
+				$amounts[$cursorfacid] = price2num(request()->input($key));
 				if (!empty($amounts[$cursorfacid])) {
 					$totalpayment += (float) $amounts[$cursorfacid];
 					$atleastonepaymentnotnull++;
@@ -151,10 +151,10 @@ if (empty($reshook)) {
 					}
 				}
 
-				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => GETPOST($key));
+				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => request()->input($key));
 			} elseif (substr($key, 0, 21) == 'multicurrency_amount_') {
 				$cursorfacid = (int) substr($key, 21);
-				$multicurrency_amounts[$cursorfacid] = price2num(GETPOST($key));
+				$multicurrency_amounts[$cursorfacid] = price2num(request()->input($key));
 				$multicurrency_totalpayment += (float) $multicurrency_amounts[$cursorfacid];
 				if (!empty($multicurrency_amounts[$cursorfacid])) {
 					$atleastonepaymentnotnull++;
@@ -178,7 +178,7 @@ if (empty($reshook)) {
 					}
 				}
 
-				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => GETPOST($key));
+				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => request()->input($key));
 			}
 		}
 
@@ -853,11 +853,11 @@ if ($result >= 0) {
 								print img_picto("Auto fill", 'rightarrow.png');
 								print '</button>';
 							}
-							print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount maxwidth100" name="'.$namef.'" value="'.GETPOST($namef).'">';
+							print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount maxwidth100" name="'.$namef.'" value="'.request()->input($namef).'">';
 							print '<input type="hidden" class="multicurrency_remain" name="'.$nameRemain.'" value="'.$multicurrency_remaintopay.'">';
 						} else {
-							print '<input type="text" class="maxwidth75" name="'.$namef.'_disabled" value="'.(GETPOST($namef) != '0' ? GETPOST($namef) : '').'" disabled>';
-							print '<input type="hidden" name="'.$namef.'" value="'.GETPOST($namef).'">';
+							print '<input type="text" class="maxwidth75" name="'.$namef.'_disabled" value="'.(request()->input($namef) != '0' ? request()->input($namef) : '').'" disabled>';
+							print '<input type="hidden" name="'.$namef.'" value="'.request()->input($namef).'">';
 						}
 					}
 					print "</td>";
@@ -926,11 +926,11 @@ if ($result >= 0) {
 						print img_picto("Auto fill", 'rightarrow.png');
 						print '</button>';
 					}
-					print '<input '.$max.' '.$min.' type="text" class="amount maxwidth100" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">'; // class is required to be used by javascript callForResult();
+					print '<input '.$max.' '.$min.' type="text" class="amount maxwidth100" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">'; // class is required to be used by javascript callForResult();
 					print '<input type="hidden" class="remain" name="'.$nameRemain.'" value="'.$remaintopay.'">';
 				} else {
-					print '<input type="text" class="maxwidth75" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(GETPOST($namef)).'" disabled>';
-					print '<input type="hidden" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">';
+					print '<input type="text" class="maxwidth75" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(request()->input($namef)).'" disabled>';
+					print '<input type="hidden" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">';
 				}
 				print "</td>";
 
