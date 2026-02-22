@@ -137,7 +137,7 @@ if ($action == 'delete') {
 /*
 if ($action == 'valide')
 {
-	$facid = request()->input('facid');
+	$facid = request()->integer('facid', 0);
 	print $form->formconfirm('card.php?id='.$object->id.'&amp;facid='.$facid, $langs->trans("ValidatePayment"), $langs->trans("ConfirmValidatePayment"), 'confirm_valide','',0,2);
 
 }

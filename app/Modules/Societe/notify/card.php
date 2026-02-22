@@ -45,7 +45,7 @@ $langs->loadLangs(array("companies", "mails", "admin", "other", "errors"));
 
 $socid     = request()->integer('socid', 0);
 $action    = request()->input('action');
-$contactid = request()->input('contactid'); // May be an int or 'thirdparty'
+$contactid = request()->integer('contactid', 0); // May be an int or 'thirdparty'
 $actionid  = request()->integer('actionid', 0);
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 

@@ -83,7 +83,7 @@ if (empty($sortfield)) {
 }
 
 $search_month = request()->input('search_month');	// Can be ''
-$search_year = request()->input('search_year');	// Can be '''
+$search_year = request()->integer('search_year', 0);	// Can be '''
 
 if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) {
 	$search_month = '';

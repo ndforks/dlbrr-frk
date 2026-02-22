@@ -119,7 +119,7 @@ if ($action == 'specimen') {
 
 // Options
 if ($action == 'set_DONATION_ACCOUNTINGACCOUNT') {
-	$account = request()->input('DONATION_ACCOUNTINGACCOUNT');
+	$account = request()->integer('DONATION_ACCOUNTINGACCOUNT', 0);
 
 	$res = dolibarr_set_const($db, "DONATION_ACCOUNTINGACCOUNT", $account, 'chaine', 0, '', $conf->entity);
 

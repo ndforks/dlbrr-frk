@@ -63,12 +63,12 @@ $label = request()->input('label');
 $sens = request()->integer('sens', 0);
 $amount = request()->input('amount');
 $paymenttype = request()->input('paymenttype');
-$accountancy_code = request()->input('accountancy_code');
+$accountancy_code = request()->integer('accountancy_code', 0);
 $projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : request()->integer('fk_project', 0);
 if (isModEnabled('accounting') && getDolGlobalString('ACCOUNTANCY_COMBO_FOR_AUX')) {
-	$subledger_account = request()->input('subledger_account') > 0 ? request()->input('subledger_account') : '';
+	$subledger_account = request()->integer('subledger_account', 0) > 0 ? request()->integer('subledger_account', 0) : '';
 } else {
-	$subledger_account = request()->input('subledger_account');
+	$subledger_account = request()->integer('subledger_account', 0);
 }
 
 // Security check

@@ -51,7 +51,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 $langs->loadLangs(array('mails', 'admin', 'companies', 'categories'));
 
 $action = request()->input('action');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 
 // Load variable for pagination
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;

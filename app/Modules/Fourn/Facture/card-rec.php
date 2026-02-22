@@ -59,11 +59,11 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 $langs->loadLangs(array('bills', 'companies', 'compta', 'admin', 'other', 'products', 'banks', 'suppliers'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
 $cancel = request()->input('cancel');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierinvoicetemplatelist'; // To manage different context of search
 $backtopage = request()->input('backtopage');					// if not set, a default page will be used
 $backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
@@ -75,7 +75,7 @@ $ref = request()->input('title') ? request()->input('title') : request()->input(
 $label = request()->input('label');
 $ref_supplier = request()->input('ref_supplier');
 $projectid = request()->integer('projectid', 0);
-$year_date_when = request()->input('year_date_when');
+$year_date_when = request()->integer('year_date_when', 0);
 $month_date_when = request()->input('month_date_when');
 // Security check
 $socid = request()->integer('socid', 0);
@@ -1008,7 +1008,7 @@ if ($action == 'create') {
 
 		// Project
 		if (isModEnabled('project') && $formproject !== null && is_object($object->thirdparty) && $object->thirdparty->id > 0) {
-			$projectid = request()->input('projectid') ? request()->input('projectid') : $object->fk_project;
+			$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : $object->fk_project;
 			$langs->load('projects');
 			print '<tr><td>' . $langs->trans('Project') . '</td><td>';
 			$numprojet = $formproject->select_projects($object->thirdparty->id, $projectid, 'projectid', 0, 0, 1, 0, 0, 0, 0, '', 0, 0, '');

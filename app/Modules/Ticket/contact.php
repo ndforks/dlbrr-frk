@@ -56,7 +56,7 @@ $langs->loadLangs(array('companies', 'ticket'));
 // Get parameters
 $socid = request()->integer('socid', 0);
 $action = request()->input('action');
-$track_id = request()->input('track_id');
+$track_id = request()->integer('track_id', 0);
 $id = request()->integer('id', 0);
 $ref = request()->input('ref');
 

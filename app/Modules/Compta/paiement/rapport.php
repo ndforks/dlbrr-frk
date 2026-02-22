@@ -128,7 +128,7 @@ print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="builddoc">';
 $cday = request()->input('cday') ? request()->input('cday') : date("d", time());
 $cmonth = request()->input('remonth') ? request()->input('remonth') : date("n", time());
-$syear = request()->input('reyear') ? request()->input('reyear') : date("Y", time());
+$syear = request()->integer('reyear', 0) ? request()->integer('reyear', 0) : date("Y", time());
 
 print $formother->selectDay($cday, 'cday', 1);
 

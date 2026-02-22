@@ -50,7 +50,7 @@ include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
  * @var User $user
  */
 
-$id = request()->input('id');
+$id = request()->integer('id', 0);
 $objecttype = request()->input('objecttype');	// 'module' or 'myobject@mymodule', 'mymodule_myobject'
 
 $params = array('fromajaxtooltip' => 1);

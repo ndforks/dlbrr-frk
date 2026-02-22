@@ -58,7 +58,7 @@ $show_files  = request()->integer('show_files', 0);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'websitelist';  // To manage different context of search
 $backtopage  = request()->input('backtopage');                                              // Go back to a dedicated page
 $optioncss   = request()->input('optioncss');                                                  // Option for the css output (always '' except when 'print')
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 $mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 

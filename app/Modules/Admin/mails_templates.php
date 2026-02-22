@@ -66,9 +66,9 @@ if (isModEnabled('eventorganization')) {
 
 $langs->loadLangs($langsArray);
 
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $action = request()->input('action') ? request()->input('action') : 'view';
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm'); // Result of a confirmation
 $mode = request()->input('mode');
 $optioncss = request()->input('optioncss');

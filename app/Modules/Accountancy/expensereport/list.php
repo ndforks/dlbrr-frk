@@ -49,20 +49,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 $langs->loadLangs(array("bills", "companies", "compta", "accountancy", "other", "trips", "productbatch", "hrm"));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');	// Value can be 'X_Y'
+$toselect = request()->input('toselect', []);	// Value can be 'X_Y'
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'accountancyexpensereportlist'; // To manage different context of search
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
 // Search Getpost
 $search_login = request()->input('search_login');
-$search_lineid = request()->input('search_lineid');
+$search_lineid = request()->integer('search_lineid', 0);
 $search_expensereport = request()->input('search_expensereport');
 $search_label = request()->input('search_label');
 $search_desc = request()->input('search_desc');
 $search_amount = request()->input('search_amount');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_vat = request()->input('search_vat');
 $search_date_startday = request()->integer('search_date_startday', 0);
 $search_date_startmonth = request()->integer('search_date_startmonth', 0);

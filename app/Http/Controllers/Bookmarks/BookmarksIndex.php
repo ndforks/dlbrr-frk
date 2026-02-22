@@ -30,11 +30,11 @@ class BookmarksIndex extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $massaction = $request->input('massaction');
+        $massaction = $request->input('massaction', []);
         $show_files = $request->integer('show_files', 0);
         $confirm = $request->input('confirm');
         $cancel = $request->input('cancel');
-        $toselect = $request->input('toselect');
+        $toselect = $request->input('toselect', []);
         $contextpage = $request->input('contextpage') ? $request->input('contextpage') : 'bookmarklist';
         $backtopage = $request->input('backtopage');
         $optioncss = $request->input('optioncss');

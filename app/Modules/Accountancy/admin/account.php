@@ -46,21 +46,21 @@ $action = request()->input('action');
 $cancel = request()->input('cancel');
 $id = request()->integer('id', 0);
 $rowid = request()->integer('rowid', 0);
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'accountingaccountlist'; // To manage different context of search
 $mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_label = request()->input('search_label');
 $search_labelshort = request()->input('search_labelshort');
-$search_accountparent = request()->input('search_accountparent');
+$search_accountparent = request()->integer('search_accountparent', 0);
 $search_pcgtype = request()->input('search_pcgtype');
 $search_import_key = request()->input('search_import_key');
 $search_reconcilable = request()->input('search_reconcilable');
 $search_centralized = request()->input('search_centralized');
 $search_active = request()->input('search_active');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $confirm = request()->input('confirm');
 

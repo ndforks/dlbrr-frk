@@ -504,7 +504,7 @@ print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipc
 print '</td></tr>';
 // Country
 print '<tr><td>'.$langs->trans('Country').'</td><td>';
-$country_id = request()->input('country_id');
+$country_id = request()->integer('country_id', 0);
 if (!$country_id && getDolGlobalString('PROJECT_NEWFORM_FORCECOUNTRYCODE')) {
 	$country_id = getCountry($conf->global->PROJECT_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 }

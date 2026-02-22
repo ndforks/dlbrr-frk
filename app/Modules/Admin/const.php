@@ -43,7 +43,7 @@ $langs->load("admin");
 $rowid = request()->integer('rowid', 0);
 $entity = request()->integer('entity', 0);
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 
 $debug = request()->integer('debug', 0);
 $consts = request()->input('const');

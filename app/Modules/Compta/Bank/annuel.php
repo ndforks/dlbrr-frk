@@ -46,7 +46,7 @@ $langs->loadLangs(array('banks', 'categories'));
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width', '380'); // Large for one graph in a smarpthone.
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height', '160');
 
-$id = request()->input('account') ? request()->input('account') : request()->input('id');
+$id = request()->integer('account', 0) ? request()->integer('account', 0) : request()->input('id');
 $ref = request()->input('ref');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -60,7 +60,7 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'banque', $fieldvalue, 'bank_account&bank_account', '', '', $fieldtype);
 
-$year_start = request()->input('year_start');
+$year_start = request()->integer('year_start', 0);
 //$year_current = strftime("%Y", time());
 $year_current = (int) dol_print_date(time(), "%Y");
 if (!$year_start) {

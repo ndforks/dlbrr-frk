@@ -44,10 +44,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('banks', 'categories', 'withdrawals'));
 
 $action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $confirm    = request()->input('confirm'); // Result of a confirmation
 $cancel     = request()->input('cancel'); // We click on a Cancel button
-$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'directdebitcredittransferlist'; // To manage different context of search
 $backtopage = request()->input('backtopage'); // Go back to a dedicated page
 $optioncss = request()->input('optioncss');

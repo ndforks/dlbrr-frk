@@ -52,16 +52,16 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 $langs->loadLangs(array('bills', 'banks', 'compta', 'companies'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'paymentlist';
 $mode = request()->input('mode');
 
-$facid = request()->input('facid');
-$socid = request()->input('socid');
-$userid = request()->input('userid');
+$facid = request()->integer('facid', 0);
+$socid = request()->integer('socid', 0);
+$userid = request()->integer('userid', 0);
 
 $search_ref = request()->input('search_ref');
 $search_date_startday = request()->integer('search_date_startday', 0);
@@ -74,7 +74,7 @@ $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_s
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
 $search_company = request()->input('search_company');
 $search_paymenttype = request()->input('search_paymenttype');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_payment_num = request()->input('search_payment_num');
 $search_amount = request()->input('search_amount'); // alpha because we must be able to search on "< x"
 $search_noteprivate = request()->input('search_noteprivate');

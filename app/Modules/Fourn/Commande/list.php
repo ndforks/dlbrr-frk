@@ -64,10 +64,10 @@ $langs->loadLangs(array("orders", "sendings", 'companies', 'compta', 'bills', 'p
 
 // Get Parameters
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierorderlist';
 $mode = request()->input('mode');
 

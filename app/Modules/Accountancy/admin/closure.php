@@ -71,7 +71,7 @@ if ($action == 'update') {
 		$error++;
 	}
 
-	$accountinggroupsusedforbalancesheetaccount = request()->input('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT');
+	$accountinggroupsusedforbalancesheetaccount = request()->integer('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT', 0);
 	if (!empty($accountinggroupsusedforbalancesheetaccount)) {
 		if (!dolibarr_set_const($db, 'ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT', $accountinggroupsusedforbalancesheetaccount, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -80,7 +80,7 @@ if ($action == 'update') {
 		$error++;
 	}
 
-	$accountinggroupsusedforincomestatement = request()->input('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT');
+	$accountinggroupsusedforincomestatement = request()->integer('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT', 0);
 	if (!empty($accountinggroupsusedforincomestatement)) {
 		if (!dolibarr_set_const($db, 'ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT', $accountinggroupsusedforincomestatement, 'chaine', 0, '', $conf->entity)) {
 			$error++;

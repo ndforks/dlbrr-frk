@@ -52,7 +52,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 $langs->loadLangs(array('products', 'stocks', 'productbatch', 'categories'));
 
 $action = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'myobjectlist'; // To manage different context of search
 $backtopage = request()->input('backtopage'); // Go back to a dedicated page
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')

@@ -215,7 +215,7 @@ $assignedtouser = [];
 
 // Remove user to assigned list
 if (empty($reshook) && (request()->input('removedassigned') || request()->input('removedassigned') == '0')) {
-	$idtoremove = request()->input('removedassigned');
+	$idtoremove = request()->integer('removedassigned', 0);
 
 	if (!empty($_SESSION['assignedtouser'])) {
 		$tmpassigneduserids = json_decode($_SESSION['assignedtouser'], true);
@@ -242,7 +242,7 @@ if (empty($reshook) && (request()->input('removedassigned') || request()->input(
 }
 // Remove resource to assigned list
 if (empty($reshook) && (request()->input('removedassignedresource') || request()->input('removedassignedresource') == '0')) {
-	$idtoremove = request()->input('removedassignedresource');
+	$idtoremove = request()->integer('removedassignedresource', 0);
 
 	if (!empty($_SESSION['assignedtoresource'])) {
 		$tmpassignedresourceids = json_decode($_SESSION['assignedtoresource'], true);
@@ -1756,7 +1756,7 @@ if ($action == 'create') {
 
 		// Related contact
 		print '<tr><td class="nowrap">'.$langs->trans("ActionOnContact").'</td><td>';
-		$preselectedids = request()->input('socpeopleassigned');
+		$preselectedids = request()->integer('socpeopleassigned', 0);
 		if (request()->integer('contactid', 0)) {
 			$preselectedids[request()->integer('contactid', 0)] = request()->integer('contactid', 0);
 		}

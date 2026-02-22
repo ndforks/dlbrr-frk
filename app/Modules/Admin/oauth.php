@@ -55,7 +55,7 @@ if (!$user->admin) {
 }
 
 $action = request()->input('action');
-$provider = request()->input('provider');
+$provider = request()->integer('provider', 0);
 $label = request()->input('label');
 
 $servicetoeditname = request()->input('servicetoeditname');
@@ -174,7 +174,7 @@ if ($action == 'update') {
 }
 
 if ($action == 'confirm_delete') {
-	$provider = request()->input('provider');
+	$provider = request()->integer('provider', 0);
 	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;
@@ -207,7 +207,7 @@ if ($action == 'confirm_delete') {
 }
 
 if ($action == 'delete_entry') {
-	$provider = request()->input('provider');
+	$provider = request()->integer('provider', 0);
 	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;

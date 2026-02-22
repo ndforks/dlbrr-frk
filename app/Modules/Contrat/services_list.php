@@ -47,8 +47,8 @@ require_once DOL_DOCUMENT_ROOT."/societe/class/societe.class.php";
 $langs->loadLangs(array('products', 'contracts', 'companies'));
 
 // Get parameters
-$massaction = request()->input('massaction');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction', []);
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 $mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')).$mode; // To manage different context of search
@@ -99,7 +99,7 @@ $socid = request()->integer('socid', 0);
 
 $opouvertureprevuemonth = request()->input('opouvertureprevuemonth');
 $opouvertureprevueday = request()->input('opouvertureprevueday');
-$opouvertureprevueyear = request()->input('opouvertureprevueyear');
+$opouvertureprevueyear = request()->integer('opouvertureprevueyear', 0);
 $filter_opouvertureprevue = request()->input('filter_opouvertureprevue');
 
 $op1month = request()->integer('op1month', 0);

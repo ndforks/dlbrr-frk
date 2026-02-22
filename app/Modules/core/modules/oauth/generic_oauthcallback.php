@@ -58,7 +58,7 @@ $langs->load("oauth");
 
 $action = request()->input('action');
 $backtourl = request()->input('backtourl');
-$keyforprovider = request()->input('keyforprovider');
+$keyforprovider = request()->integer('keyforprovider', 0);
 if (!request()->has('keyforprovider') && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (request()->input('code') || $action == 'delete')) {
 	// If we are coming from the Oauth page
 	$keyforprovider = $_SESSION["oauthkeyforproviderbeforeoauthjump"];

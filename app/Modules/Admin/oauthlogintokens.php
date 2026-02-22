@@ -125,7 +125,7 @@ if ($action == 'setvalue' && $user->admin) {
 
 // Test a refresh of a token using the refresh token
 if ($action == 'refreshtoken' && $user->admin) {
-	$keyforprovider = request()->input('keyforprovider');
+	$keyforprovider = request()->integer('keyforprovider', 0);
 	$OAUTH_SERVICENAME = request()->input('service');
 
 	// Show value of token

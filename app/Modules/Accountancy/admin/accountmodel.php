@@ -60,7 +60,7 @@ $langs->loadLangs(array('accountancy', 'admin', 'companies', 'compta', 'errors',
 $action = request()->input('action') ? request()->input('action') : 'view';
 $confirm = request()->input('confirm');
 $id = 31;
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 $code = request()->input('code');
 
 $acts = array();
@@ -85,7 +85,7 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = request()->input('search_country_id');
+$search_country_id = request()->integer('search_country_id', 0);
 
 
 // Security check

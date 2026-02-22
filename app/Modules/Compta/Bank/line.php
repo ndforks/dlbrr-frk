@@ -70,7 +70,7 @@ $accountid = request()->integer('accountid', 0);		// request()->input('accountid
 $ref = request()->input('ref');
 $action = request()->input('action');
 $confirm = request()->input('confirm');
-$orig_account = request()->input('orig_account');
+$orig_account = request()->integer('orig_account', 0);
 $backtopage = request()->input('backtopage');
 $cancel = request()->input('cancel');
 

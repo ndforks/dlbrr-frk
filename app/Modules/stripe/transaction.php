@@ -51,7 +51,7 @@ if ($user->socid) {
 //restrictedArea($user, 'salaries', '', '', '');
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 $sortfield = request()->input('sortfield');
 $sortorder = request()->input('sortorder');
 $page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);

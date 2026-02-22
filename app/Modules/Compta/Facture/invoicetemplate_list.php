@@ -58,11 +58,11 @@ $langs->loadLangs(array('companies', 'bills', 'compta', 'admin', 'other'));
 $search_all = trim(request()->input('search_all'));
 
 $action     = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm    = request()->input('confirm');
 $cancel     = request()->input('cancel');
-$toselect   = request()->input('toselect');
+$toselect   = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'invoicetemplatelist'; // To manage different context of search
 $optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 $mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)

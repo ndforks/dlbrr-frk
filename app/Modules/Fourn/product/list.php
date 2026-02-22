@@ -48,8 +48,8 @@ $langs->loadLangs(array('products', 'suppliers'));
 
 // Get Parameters
 $action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
-$massaction = request()->input('massaction');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction', []);
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $optioncss = request()->input('optioncss');
 $mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
@@ -77,12 +77,12 @@ if (!$sortorder) {
 	$sortorder = "ASC";
 }
 
-$fourn_id = request()->input('fourn_id');
+$fourn_id = request()->integer('fourn_id', 0);
 if ($user->socid) {
 	$fourn_id = $user->socid;
 }
 
-$catid = request()->input('catid');
+$catid = request()->integer('catid', 0);
 
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
 $hookmanager->initHooks(array('supplierpricelist'));

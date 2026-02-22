@@ -93,9 +93,9 @@ if ($action == 'setcoder') {
 } elseif ($action == 'update') {
 	$location = request()->input('GENBARCODE_LOCATION');
 	$res = dolibarr_set_const($db, "GENBARCODE_LOCATION", $location, 'chaine', 0, '', $conf->entity);
-	$coder_id = request()->input('PRODUIT_DEFAULT_BARCODE_TYPE');
+	$coder_id = request()->integer('PRODUIT_DEFAULT_BARCODE_TYPE', 0);
 	$res = dolibarr_set_const($db, "PRODUIT_DEFAULT_BARCODE_TYPE", $coder_id, 'chaine', 0, '', $conf->entity);
-	$coder_id = request()->input('GENBARCODE_BARCODETYPE_THIRDPARTY');
+	$coder_id = request()->integer('GENBARCODE_BARCODETYPE_THIRDPARTY', 0);
 	$res = dolibarr_set_const($db, "GENBARCODE_BARCODETYPE_THIRDPARTY", $coder_id, 'chaine', 0, '', $conf->entity);
 
 	if ($res > 0) {

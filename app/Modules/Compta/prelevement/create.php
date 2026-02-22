@@ -54,8 +54,8 @@ $langs->loadLangs(array('banks', 'categories', 'withdrawals', 'companies', 'bill
 
 // Get supervariables
 $action = request()->input('action');
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $mode = request()->input('mode') ? request()->input('mode') : 'real';
 
 $type = request()->input('type');

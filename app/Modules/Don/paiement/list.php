@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 $langs->loadLangs(array('companies', 'donations'));
 
 $action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'sclist';
 $mode = request()->input('mode');
 
@@ -63,7 +63,7 @@ $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_s
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
 $search_company = request()->input('search_company');
 $search_paymenttype = request()->input('search_paymenttype');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_payment_num = request()->input('search_payment_num');
 $search_amount = request()->input('search_amount');
 $search_status = request()->input('search_status');

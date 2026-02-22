@@ -90,10 +90,10 @@ if (empty($reshook)) {
 		if ($result > 0 && $id > 0) {
 			if ($source == 'internal') {
 				$idfortaskuser = ((request()->input('userid') != 0 && request()->input('userid') != -1) ? request()->input('userid') : 0); // request()->input('contactid') may val -1 to mean empty or -2 to means "everybody"
-				$typeid = request()->input('type');
+				$typeid = request()->integer('type', 0);
 			} else {
 				$idfortaskuser = ((request()->input('contactid') > 0) ? request()->integer('contactid', 0) : 0); // request()->input('contactid') may val -1 to mean empty or -2 to means "everybody"
-				$typeid = request()->input('typecontact');
+				$typeid = request()->integer('typecontact', 0);
 			}
 			if ($idfortaskuser == -2) {
 				$result = $projectstatic->fetch($object->fk_project);

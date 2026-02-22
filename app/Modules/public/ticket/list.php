@@ -71,7 +71,7 @@ $langs->loadLangs(array("companies", "other", "ticket"));
 $action = request()->input('action');
 $cancel = request()->input('cancel');
 
-$track_id = request()->input('track_id');
+$track_id = request()->integer('track_id', 0);
 $email = strtolower(request()->input('email'));
 $suffix = "";
 $moreforfilter = "";
@@ -215,7 +215,7 @@ if ($action == "view_ticketlist") {
 		$search_fk_status = request()->input('search_fk_status');
 		$search_subject = request()->input('search_subject');
 		$search_type = request()->input('search_type');
-		$search_category = request()->input('search_category');
+		$search_category = request()->input('search_category', []);
 		$search_severity = request()->input('search_severity');
 		$search_fk_user_create = request()->input('search_fk_user_create');
 		$search_fk_user_assign = request()->input('search_fk_user_assign');

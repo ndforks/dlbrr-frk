@@ -55,7 +55,7 @@ $error = 0;
  * Add file in email form
  */
 if (request()->input('addfile')) {
-	$trackid = request()->input('trackid');
+	$trackid = request()->integer('trackid', 0);
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -71,7 +71,7 @@ if (request()->input('addfile')) {
  * Remove file in email form
  */
 if (request()->input('removedfile') && !request()->input('removeAll')) {
-	$trackid = request()->input('trackid');
+	$trackid = request()->integer('trackid', 0);
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -89,7 +89,7 @@ if (request()->input('removedfile') && !request()->input('removeAll')) {
  * Remove all files in email form
  */
 if (request()->input('removeAll')) {
-	$trackid = request()->input('trackid');
+	$trackid = request()->integer('trackid', 0);
 
 	$listofpaths = array();
 	$listofnames = array();
@@ -126,7 +126,7 @@ if (request()->input('removeAll')) {
  */
 if (($action == 'send' || $action == 'relance') && !request()->input('addfile') && !request()->input('removeAll') && !request()->input('removedfile') && !request()->input('cancel') && !request()->input('modelselected')) {
 	if (empty($trackid)) {
-		$trackid = request()->input('trackid');
+		$trackid = request()->integer('trackid', 0);
 	}
 
 	// Set tmp user directory (used to convert images embedded as img src=data:image)

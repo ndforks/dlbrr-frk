@@ -61,10 +61,10 @@ $clone_categories =  (bool) request()->input('clone_categories');
 $form = new Form($db);
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $cancel = request()->input('cancel');
 $delete_product = request()->input('delete_product');
 $subaction = request()->input('subaction');

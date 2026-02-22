@@ -175,7 +175,7 @@ if ($action == "create" || $action == "start" || $action == 'valid' || $action =
 		$sday = $object->day_close;
 	} elseif (request()->input('posnumber') != '' && request()->input('posnumber') != '-1') {
 		$posmodule = request()->input('posmodule');
-		$terminalid = request()->input('posnumber');
+		$terminalid = request()->integer('posnumber', 0);
 		$terminaltouse = $terminalid;
 
 		if ($terminaltouse == '1' && $posmodule == 'cashdesk') {	// for compatibility with an old module
@@ -483,7 +483,7 @@ if ($action == "create" || $action == "start" || $action == 'close') {
 		$sday = $object->day_close;
 	} elseif (request()->input('posnumber') != '' && request()->input('posnumber') != '-1') {
 		$posmodule = request()->input('posmodule');
-		$terminalid = request()->input('posnumber');
+		$terminalid = request()->integer('posnumber', 0);
 		$terminaltouse = $terminalid;
 
 		if ($terminaltouse == '1' && $posmodule == 'cashdesk') {
@@ -710,7 +710,7 @@ if ($action == "create" || $action == "start") {
 	// Table to see/enter balance
 	if ($action == 'start' && request()->input('posnumber') != '' && request()->input('posnumber') != '' && request()->input('posnumber') != '-1') {
 		$posmodule = request()->input('posmodule');
-		$terminalid = request()->input('posnumber');
+		$terminalid = request()->integer('posnumber', 0);
 
 		print '<br>';
 

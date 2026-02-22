@@ -52,7 +52,7 @@ require '../../main.inc.php';
 $action = request()->input('action');
 
 $time = dol_now();
-$listofreminderids = request()->input('listofreminderids');
+$listofreminderids = request()->integer('listofreminderids', 0);
 
 // Security check
 // No permission check at top, but action later are all done with a test on $user->id.
@@ -64,7 +64,7 @@ $listofreminderids = request()->input('listofreminderids');
 
 if ($action == 'stopreminder') {	// Test on permission not required here. Endpoint can be called
 	dol_syslog("Clear notification for listofreminderids=".$listofreminderids);
-	$listofreminderid = request()->input('listofreminderids');
+	$listofreminderid = request()->integer('listofreminderids', 0);
 
 	// Set the reminder as done
 	$sql = 'UPDATE '.MAIN_DB_PREFIX.'actioncomm_reminder SET status = 1';

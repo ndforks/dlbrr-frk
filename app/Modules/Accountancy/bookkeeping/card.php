@@ -70,7 +70,7 @@ $clonedate = (int) request()->integer('clonedate', 0);
 $accountingaccount = new AccountingAccount($db);
 $accountingjournal = new AccountingJournal($db);
 
-$accountingaccount_number = request()->input('accountingaccount_number');
+$accountingaccount_number = request()->integer('accountingaccount_number', 0);
 $accountingaccount->fetch(0, $accountingaccount_number, true);
 $accountingaccount_label = $accountingaccount->label;
 
@@ -78,7 +78,7 @@ $journal_code = request()->input('code_journal');
 $accountingjournal->fetch(0, $journal_code);
 $journal_label = $accountingjournal->label;
 
-$subledger_account = request()->input('subledger_account');
+$subledger_account = request()->integer('subledger_account', 0);
 if ($subledger_account == -1) {
 	$subledger_account = null;
 }

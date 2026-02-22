@@ -43,8 +43,8 @@ require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
 $langs->loadLangs(array('companies', 'bills', 'products', 'margins'));
 
 $action     = request()->input('action');
-$massaction = request()->input('massaction');
-$toselect   = request()->input('toselect');
+$massaction = request()->input('massaction', []);
+$toselect   = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'margindetail'; // To manage different context of search
 $backtopage = request()->input('backtopage');
 $optioncss  = request()->input('optioncss');

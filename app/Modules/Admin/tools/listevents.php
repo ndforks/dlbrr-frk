@@ -65,7 +65,7 @@ if (!$sortorder) {
 	$sortorder = "DESC";
 }
 
-$search_rowid = request()->input('search_rowid');
+$search_rowid = request()->integer('search_rowid', 0);
 $search_code = request()->input('search_code');
 $search_ip   = request()->input('search_ip');
 $search_user = request()->input('search_user');

@@ -2666,7 +2666,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 		$sql .= " AND p.fk_statut = ".(int) $status;
 	}
 	if (getDolGlobalString('PROJECT_LIMIT_YEAR_RANGE')) {
-		$project_year_filter = request()->input('project_year_filter');	// '*' seems allowed
+		$project_year_filter = request()->integer('project_year_filter', 0);	// '*' seems allowed
 		//Check if empty or invalid year. Wildcard ignores the sql check
 		if ($project_year_filter != "*") {
 			if (empty($project_year_filter) || !is_numeric($project_year_filter)) {

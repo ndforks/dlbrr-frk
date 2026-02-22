@@ -63,7 +63,7 @@ global $user, $conf, $db, $langs;
 
 $langs->loadLangs(array("main", "mails"));
 
-$mtid = request()->input('mtid');
+$mtid = request()->integer('mtid', 0);
 $email = request()->input('email');
 $tag = request()->input('tag');	// To retrieve the emailing, and recipient
 $unsuscrib = request()->input('unsuscrib');

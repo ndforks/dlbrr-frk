@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 $langs->loadLangs(array('holiday', 'hrm'));
 
 $action      = request()->input('action') ? request()->input('action') : 'view';
-$massaction  = request()->input('massaction');
+$massaction  = request()->input('massaction', []);
 $contextpage = request()->input('contextpage');
 $optioncss   = request()->input('optioncss');
 

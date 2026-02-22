@@ -154,7 +154,7 @@ if ($action == 'create' && request()->integer('accountid', 0) > 0 && $user->hasR
 	if (GETPOSTISARRAY('toRemise')) {
 		$object->type = $type;
 		$object->date_bordereau = dol_now();
-		$arrayofid = request()->input('toRemise');
+		$arrayofid = request()->integer('toRemise', 0);
 
 		$result = $object->create($user, request()->integer('accountid', 0), 0, $arrayofid);
 		if ($result > 0) {

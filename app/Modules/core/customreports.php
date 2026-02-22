@@ -60,7 +60,7 @@ if (!defined('USE_CUSTOM_REPORT_AS_INCLUDE')) {
 
 	// Get parameters
 	$action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-	$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+	$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 
 	$mode = request()->input('mode');
 	$objecttype = (string) request()->input('objecttype');

@@ -52,7 +52,7 @@ $cancel = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'recruitmentjobpositioncard'; // To manage different context of search
 $backtopage = request()->input('backtopage');
 $backtopageforcancel = request()->input('backtopageforcancel');
-//$lineid   = request()->input('lineid');
+//$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new RecruitmentJobPosition($db);

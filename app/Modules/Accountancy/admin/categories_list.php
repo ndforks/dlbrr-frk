@@ -49,7 +49,7 @@ $langs->loadLangs(array("errors", "admin", "companies", "resource", "holiday", "
 $action = request()->input('action') ? request()->input('action') : 'view';
 $confirm = request()->input('confirm');
 $id = 32;
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 $code = request()->input('code');
 
 // Security access
@@ -78,7 +78,7 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = request()->input('search_country_id');
+$search_country_id = request()->integer('search_country_id', 0);
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('admin'));

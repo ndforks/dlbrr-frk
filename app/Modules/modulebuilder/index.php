@@ -2415,7 +2415,7 @@ if ($dirins && $action == 'addright' && !empty($module) && empty($cancel) /* && 
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Rights")), null, 'errors');
 	}
 
-	$id = request()->input('id');
+	$id = request()->integer('id', 0);
 	$label = request()->input('label');
 	$objectForPerms = strtolower(request()->input('permissionObj'));
 	$crud = request()->input('crud');

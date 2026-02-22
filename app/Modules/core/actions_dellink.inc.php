@@ -39,7 +39,7 @@
 
 $dellinkid = request()->integer('dellinkid', 0);
 $addlink = request()->input('addlink');
-$addlinkids = request()->input('idtolinkto');
+$addlinkids = request()->integer('idtolinkto', 0);
 $addlinkref = request()->input('reftolinkto');
 $cancellink = request()->input('cancel');
 

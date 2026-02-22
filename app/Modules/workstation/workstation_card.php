@@ -59,7 +59,7 @@ $dol_openinpopup = request()->input('dol_openinpopup');
 
 $groups	    = request()->input('groups');
 $resources	= request()->input('resources');
-//$lineid   = request()->input('lineid');
+//$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Workstation($db);

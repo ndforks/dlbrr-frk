@@ -335,7 +335,7 @@ if ($action == 'create') {
 			 *
 			 */
 			if ($action == 'delete') {
-				$expedition_id = request()->input('expid');
+				$expedition_id = request()->integer('expid', 0);
 				print $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$object->id.'&expid='.$expedition_id.'&backtopage='.urlencode($backtopage), $langs->trans("DeleteDeliveryReceipt"), $langs->trans("DeleteDeliveryReceiptConfirm", $object->ref), 'confirm_delete', '', '', 1);
 			}
 

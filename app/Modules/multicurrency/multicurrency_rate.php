@@ -53,10 +53,10 @@ $langs->loadLangs(array('admin', 'multicurrency'));
 
 // Get Parameters
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 $optioncss = request()->input('optioncss');
 $mode       = request()->input('mode'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)

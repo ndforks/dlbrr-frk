@@ -110,7 +110,7 @@ $action = request()->input('action') ? request()->input('action') : 'view';
 $confirm = request()->input('confirm');
 
 $id = request()->integer('id', 0);
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 $entity = request()->input('entity');	// Do not use GETPOSTINT here. Should be '', 0 or >0.
 $code = request()->input('code');
 $from = request()->input('from');
@@ -136,7 +136,7 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = request()->input('search_country_id');
+$search_country_id = request()->integer('search_country_id', 0);
 $search_code = request()->input('search_code');
 $search_active = request()->input('search_active');
 

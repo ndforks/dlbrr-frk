@@ -68,7 +68,7 @@ $id_sw = request()->integer('id_sw', 0);
 $id_tw = request()->integer('id_tw', 0);
 $batch = request()->input('batch');
 $qty = request()->input('qty');
-$idline = request()->input('idline');
+$idline = request()->integer('idline', 0);
 
 // Load variable for pagination
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;

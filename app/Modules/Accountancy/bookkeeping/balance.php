@@ -63,12 +63,12 @@ $show_subgroup = request()->input('show_subgroup');
 $search_date_start = GETPOSTDATE('date_start', 'getpost', 'auto', 'search_date_start_accountancy');
 $search_date_end = GETPOSTDATE('date_end', 'getpostend', 'auto', 'search_date_end_accountancy');
 
-$search_ledger_code = request()->input('search_ledger_code');
-$search_accountancy_code_start = request()->input('search_accountancy_code_start');
+$search_ledger_code = request()->input('search_ledger_code', []);
+$search_accountancy_code_start = request()->integer('search_accountancy_code_start', 0);
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = request()->input('search_accountancy_code_end');
+$search_accountancy_code_end = request()->integer('search_accountancy_code_end', 0);
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }

@@ -47,7 +47,7 @@ $langs->loadlangs(array('users', 'other', 'holiday', 'hrm'));
 
 $action = request()->input('action');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'defineholidaylist';
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss = request()->input('optioncss');
 $mode = request()->input('optioncss');
 
@@ -58,7 +58,7 @@ $search_supervisor = request()->input('search_supervisor');
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $sortfield = request()->input('sortfield');
 $sortorder = request()->input('sortorder');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $confirm = request()->input('confirm');
 
 $page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
@@ -172,7 +172,7 @@ if (empty($reshook)) {
 			}
 
 			//If the user set a comment, we add it to the log comment
-			$note_holiday = request()->input('note_holiday');
+			$note_holiday = request()->integer('note_holiday', 0);
 			$comment = ((isset($note_holiday[$userID]) && !empty($note_holiday[$userID])) ? ' ('.$note_holiday[$userID].')' : '');
 
 			//print 'holiday: '.$val['rowid'].'-'.$userValue;exit;

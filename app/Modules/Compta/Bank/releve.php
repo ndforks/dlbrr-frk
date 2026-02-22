@@ -63,7 +63,7 @@ $langs->loadLangs(array("banks", "categories", "companies", "bills", "trips", "d
 $action = request()->input('action');
 $id = request()->integer('account', 0) ? request()->integer('account', 0) : request()->integer('id', 0);
 $ref = request()->input('ref');
-$dvid = request()->input('dvid');
+$dvid = request()->integer('dvid', 0);
 $numref = request()->input('num');
 $ve = request()->input('ve');
 $brref = request()->input('brref');

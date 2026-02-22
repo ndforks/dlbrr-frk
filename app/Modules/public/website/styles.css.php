@@ -98,7 +98,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 $error = 0;
 $website = request()->input('website');
 $websiteid = request()->integer('websiteid', 0);
-$pageid = request()->input('page') ? request()->input('page') : request()->input('pageid');
+$pageid = request()->integer('page', 0) ? request()->integer('page', 0) : request()->input('pageid');
 
 $accessallowed = 1;
 $type = '';

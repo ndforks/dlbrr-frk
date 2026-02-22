@@ -52,18 +52,18 @@ $langs->loadLangs(array("compta", "bills", "other", "accountancy", "productbatch
 
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-$account_parent = request()->input('account_parent');
-$changeaccount = request()->input('changeaccount');
+$account_parent = request()->integer('account_parent', 0);
+$changeaccount = request()->integer('changeaccount', 0);
 // Search Getpost
 $search_societe = request()->input('search_societe');
-$search_lineid = request()->input('search_lineid');		// Can be '> 100'
+$search_lineid = request()->integer('search_lineid', 0);		// Can be '> 100'
 $search_ref = request()->input('search_ref');
 $search_invoice = request()->input('search_invoice');
 //$search_ref_supplier = request()->input('search_ref_supplier');
 $search_label = request()->input('search_label');
 $search_desc = request()->input('search_desc');
 $search_amount = request()->input('search_amount');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_vat = request()->input('search_vat');
 $search_date_startday = request()->integer('search_date_startday', 0);
 $search_date_startmonth = request()->integer('search_date_startmonth', 0);

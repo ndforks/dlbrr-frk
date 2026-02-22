@@ -51,9 +51,9 @@ $langs->load("members");
 
 $rowid = request()->integer('rowid', 0);
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $cancel = request()->input('cancel');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 $backtopage = request()->input('backtopage');
 $mode = request()->input('mode');
@@ -99,7 +99,7 @@ $duration_value = request()->integer('duration_value', 0);
 $duration_unit = request()->input('duration_unit');
 $vote = request()->integer('vote', 0);
 $comment = request()->input('comment');
-$mail_valid = request()->input('mail_valid');
+$mail_valid = request()->integer('mail_valid', 0);
 
 // Initialize a technical object
 $object = new AdherentType($db);

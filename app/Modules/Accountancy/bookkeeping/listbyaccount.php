@@ -52,15 +52,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 $langs->loadLangs(array("accountancy", "categories", "compta", "other"));
 
 $journal_code = request()->input('code_journal');
-$account = request()->input('account');
+$account = request()->integer('account', 0);
 $massdate = dol_mktime(0, 0, 0, request()->integer('massdatemonth', 0), request()->integer('massdateday', 0), request()->integer('massdateyear', 0));
 
 $action = request()->input('action');
 $socid = request()->integer('socid', 0);
 $mode = (request()->input('mode') ? request()->input('mode') : 'customer'); // Only for tab view
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $type = request()->input('type');
 if ($type == 'sub') {
 	$context_default = 'bookkeepingbysubaccountlist';
@@ -117,11 +117,11 @@ $search_import_key = request()->input('search_import_key');
 
 $search_account_category = request()->integer('search_account_category', 0);
 
-$search_accountancy_code_start = request()->input('search_accountancy_code_start');
+$search_accountancy_code_start = request()->integer('search_accountancy_code_start', 0);
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = request()->input('search_accountancy_code_end');
+$search_accountancy_code_end = request()->integer('search_accountancy_code_end', 0);
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }
@@ -129,7 +129,7 @@ $search_doc_ref = request()->input('search_doc_ref');
 $search_label_operation = request()->input('search_label_operation');
 $search_mvt_num = request()->input('search_mvt_num');
 $search_direction = request()->input('search_direction');
-$search_ledger_code = request()->input('search_ledger_code');
+$search_ledger_code = request()->input('search_ledger_code', []);
 $search_debit = request()->input('search_debit');
 $search_credit = request()->input('search_credit');
 $search_lettering_code = request()->input('search_lettering_code');

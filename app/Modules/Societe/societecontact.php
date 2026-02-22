@@ -52,7 +52,7 @@ $id = request()->integer('id', 0) ? request()->integer('id', 0) : request()->int
 $ref = request()->input('ref');
 $action = request()->input('action');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'thirdpartylist';
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss 	= request()->input('optioncss');
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;

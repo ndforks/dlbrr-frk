@@ -49,10 +49,10 @@ $form  = new Form($db);
 $langs->loadLangs(array('companies', 'projects'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
 
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 
 
 // Security check

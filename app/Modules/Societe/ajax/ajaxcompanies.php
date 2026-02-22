@@ -86,7 +86,7 @@ top_httphead('application/json');
 $return_arr = array();
 
 // Define filter on text typed
-$socid = request()->input('newcompany');
+$socid = request()->integer('newcompany', 0);
 if (!$socid) {
 	$socid = request()->integer('socid', 0);
 }

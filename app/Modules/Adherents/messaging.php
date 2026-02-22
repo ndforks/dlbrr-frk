@@ -63,7 +63,7 @@ if (GETPOSTISARRAY('actioncode')) {
 
 $id = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);
 $ref = request()->input('ref');
-$search_rowid = request()->input('search_rowid');
+$search_rowid = request()->integer('search_rowid', 0);
 $search_agenda_label = request()->input('search_agenda_label');
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;

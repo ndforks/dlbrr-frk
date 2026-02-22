@@ -45,9 +45,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 $langs->loadLangs(array("admin", "cron", "bills", "members"));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $confirm = request()->input('confirm');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'cronjoblist'; // To manage different context of search
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode');

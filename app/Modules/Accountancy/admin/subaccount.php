@@ -44,7 +44,7 @@ $langs->loadLangs(array("accountancy", "admin", "bills", "compta", "errors", "hr
 $action = request()->input('action');
 $cancel = request()->input('cancel');
 
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
@@ -52,7 +52,7 @@ $contextpage = request()->input('contextpage') ? request()->input('contextpage')
 $id = request()->integer('id', 0);
 $rowid = request()->integer('rowid', 0);
 
-$search_subaccount = request()->input('search_subaccount');
+$search_subaccount = request()->integer('search_subaccount', 0);
 $search_label = request()->input('search_label');
 $search_type = request()->input('search_type');
 

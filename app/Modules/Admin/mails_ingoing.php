@@ -43,7 +43,7 @@ $langs->loadLangs(array("companies", "products", "admin", "mails", "other", "err
 $action = request()->input('action');
 $cancel = request()->input('cancel');
 
-$trackid = request()->input('trackid');
+$trackid = request()->integer('trackid', 0);
 
 if (!$user->admin) {
 	abort(403);

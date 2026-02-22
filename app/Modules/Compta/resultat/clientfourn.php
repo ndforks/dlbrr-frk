@@ -62,7 +62,7 @@ $date_startyear = request()->integer('date_startyear', 0);
 $date_endmonth = request()->integer('date_endmonth', 0);
 $date_endday = request()->integer('date_endday', 0);
 $date_endyear = request()->integer('date_endyear', 0);
-$showaccountdetail = request()->input('showaccountdetail') ? request()->input('showaccountdetail') : 'yes';
+$showaccountdetail = request()->integer('showaccountdetail', 0) ? request()->integer('showaccountdetail', 0) : 'yes';
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $sortfield = request()->input('sortfield');

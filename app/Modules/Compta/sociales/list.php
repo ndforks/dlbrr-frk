@@ -49,9 +49,9 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 $langs->loadLangs(array('compta', 'banks', 'bills', 'hrm', 'projects'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
 $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'sclist';
 $mode = request()->input('mode');
@@ -59,7 +59,7 @@ $mode = request()->input('mode');
 
 $search_ref = request()->input('search_ref');
 $search_label = request()->input('search_label');
-$search_typeid = request()->input('search_typeid');
+$search_typeid = request()->integer('search_typeid', 0);
 $search_amount = request()->input('search_amount');
 $search_status = request()->input('search_status');
 $search_date_startday = request()->integer('search_date_startday', 0);
@@ -81,7 +81,7 @@ $search_date_limit_end = dol_mktime(23, 59, 59, $search_date_limit_endmonth, $se
 $search_project_ref = request()->input('search_project_ref');
 $search_users = request()->input('search_users');
 $search_type = request()->input('search_type');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $sortfield = request()->input('sortfield');

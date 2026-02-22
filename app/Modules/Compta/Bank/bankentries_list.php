@@ -76,7 +76,7 @@ $action = request()->input('action');
 $cancel = request()->input('cancel');
 $confirm = request()->input('confirm');
 $contextpage = 'bankentrieslist';
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode');
 
@@ -84,9 +84,9 @@ $dateop = dol_mktime(12, 0, 0, request()->integer('opmonth', 0), request()->inte
 $search_debit = request()->input('search_debit');
 $search_credit = request()->input('search_credit');
 $search_type = request()->input('search_type');
-$search_account = request()->input('search_account') ? request()->input('search_account') : request()->input('account');
-$search_accountancy_code = request()->input('search_accountancy_code') ? request()->input('search_accountancy_code') : request()->input('accountancy_code');
-$search_bid = request()->input('search_bid') ? request()->input('search_bid') : request()->input('bid');		// Category id
+$search_account = request()->integer('search_account', 0) ? request()->integer('search_account', 0) : request()->input('account');
+$search_accountancy_code = request()->integer('search_accountancy_code', 0) ? request()->integer('search_accountancy_code', 0) : request()->input('accountancy_code');
+$search_bid = request()->integer('search_bid', 0) ? request()->integer('search_bid', 0) : request()->input('bid');		// Category id
 $search_ref = request()->input('search_ref');
 $search_description = request()->input('search_description');
 $search_dt_start = dol_mktime(0, 0, 0, request()->integer('search_start_dtmonth', 0), request()->integer('search_start_dtday', 0), request()->integer('search_start_dtyear', 0));
@@ -99,7 +99,7 @@ $search_num_releve = request()->input('search_num_releve');
 $search_conciliated = request()->input('search_conciliated');
 $search_fk_bordereau = request()->input('search_fk_bordereau');
 $optioncss = request()->input('optioncss');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $num_releve = request()->input('num_releve');
 if (empty($dateop)) {
 	$dateop = -1;
@@ -247,7 +247,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 }
 
-$rowids = request()->input('rowid');
+$rowids = request()->integer('rowid', 0);
 
 // Conciliation
 if ((request()->input('confirm_savestatement') || request()->input('confirm_reconcile'))
@@ -262,7 +262,7 @@ if ((request()->input('confirm_savestatement') || request()->input('confirm_reco
 	if ($num_releve) {
 		$bankline = new AccountLine($db);
 
-		$rowids = request()->input('rowid');
+		$rowids = request()->integer('rowid', 0);
 
 		if (!empty($rowids) && is_array($rowids)) {
 			foreach ($rowids as $row) {

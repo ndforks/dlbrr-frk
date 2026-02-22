@@ -126,7 +126,7 @@ if ($result < 0) {
 }
 $user->loadRights();
 
-$id = request()->input('id'); // We accept non numeric id. We will filter later.
+$id = request()->integer('id', 0); // We accept non numeric id. We will filter later.
 
 
 // create a jobs object

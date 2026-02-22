@@ -43,9 +43,9 @@ $langs->loadLangs(array("resource", "companies", "other"));
 // Get parameters
 $id				= request()->integer('id', 0);
 $action			= request()->input('action');
-$massaction		= request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction		= request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $confirm		= request()->input('confirm');
-$toselect		= request()->input('toselect');
+$toselect		= request()->input('toselect', []);
 $contextpage	= request()->input('contextpage') ? request()->input('contextpage') : 'interventionlist';
 
 $lineid			= request()->integer('lineid', 0);

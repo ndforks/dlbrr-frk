@@ -45,9 +45,9 @@ $langs->loadLangs(array('stocks', 'productbatch', 'other', 'users'));
 
 // Get parameters
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $backtopage = request()->input('backtopage');
-$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'productlotlist'; // To manage different context of search
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode');

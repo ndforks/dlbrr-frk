@@ -54,9 +54,9 @@ if (!$user->admin) {
 // Retrieve needed GETPOSTS for this file
 // Action / Massaction
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm    = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 
 // List filters
 $search_user = request()->input('search_user');

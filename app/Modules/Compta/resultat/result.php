@@ -55,12 +55,12 @@ $error = 0;
 
 $mesg = '';
 $action = request()->input('action');
-$cat_id = request()->input('account_category');
+$cat_id = request()->integer('account_category', 0);
 $selectcpt = request()->input('cpt_bk');
 $id = request()->integer('id', 0);
 $rowid = request()->integer('rowid', 0);
 $cancel = request()->input('cancel');
-$showaccountdetail = request()->input('showaccountdetail') ? request()->input('showaccountdetail') : 'no';
+$showaccountdetail = request()->integer('showaccountdetail', 0) ? request()->integer('showaccountdetail', 0) : 'no';
 
 
 $date_startmonth = request()->integer('date_startmonth', 0);

@@ -187,7 +187,7 @@ if ($action == 'confirm_delete' && request()->input('confirm') == 'yes') {
 
 if ($action == 'updatesocialnetwork') {
 	$error = 0;
-	$id = request()->input('key');
+	$id = request()->integer('key', 0);
 	$name = request()->input('socialnetwork_name');
 	$url = request()->input('socialnetwork_url');
 	$paramsKey = request()->input('paramsKey');

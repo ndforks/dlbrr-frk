@@ -1999,7 +1999,7 @@ if ($step == 5 && $datatoimport) {
 
 	$model = $format;
 	$list = $objmodelimport->listOfAvailableImportFormat($db);
-	$importid = request()->input('importid');
+	$importid = request()->integer('importid', 0);
 
 
 	// Create class to use for import

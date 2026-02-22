@@ -65,7 +65,7 @@ if ($action == 'addconst') {
 
 if ($action == 'add') {
 	$error = 0;
-	$boxids = request()->input('boxid');
+	$boxids = request()->integer('boxid', 0);
 
 	$db->begin();
 	if (is_array($boxids)) {

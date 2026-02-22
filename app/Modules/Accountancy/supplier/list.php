@@ -54,16 +54,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 $langs->loadLangs(array("bills", "companies", "compta", "accountancy", "other", "productbatch", "products"));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');	// Value can be 'X_Y'
+$toselect = request()->input('toselect', []);	// Value can be 'X_Y'
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'accountancysupplierlist'; // To manage different context of search
 $optioncss = request()->input('optioncss');
 
 $default_account = request()->integer('default_account', 0);
 
 // Search Getpost
-$search_lineid = request()->input('search_lineid');		// Can be '> 100'
+$search_lineid = request()->integer('search_lineid', 0);		// Can be '> 100'
 $search_societe = request()->input('search_societe');
 $search_ref = request()->input('search_ref');
 $search_ref_supplier = request()->input('search_ref_supplier');
@@ -71,7 +71,7 @@ $search_invoice = request()->input('search_invoice');
 $search_label = request()->input('search_label');
 $search_desc = request()->input('search_desc');
 $search_amount = request()->input('search_amount');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_vat = request()->input('search_vat');
 $search_date_startday = request()->integer('search_date_startday', 0);
 $search_date_startmonth = request()->integer('search_date_startmonth', 0);

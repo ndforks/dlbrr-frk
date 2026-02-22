@@ -52,9 +52,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/website2.lib.php';
 
 $action = request()->input('action');
 $website_ref = request()->input('website_ref');
-$page_id = request()->input('page_id');
+$page_id = request()->integer('page_id', 0);
 $content = request()->input('content');
-$element_id = request()->input('element_id');
+$element_id = request()->integer('element_id', 0);
 $element_type = request()->input('element_type');
 
 $usercanmodify = $user->hasRight('website', 'write');

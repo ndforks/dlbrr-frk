@@ -73,7 +73,7 @@ if (!$sortfield) {
 	$sortfield = "d.dated";
 }
 
-$year = request()->input('year');
+$year = request()->integer('year', 0);
 $month = request()->input('month');
 $day = request()->input('day');
 

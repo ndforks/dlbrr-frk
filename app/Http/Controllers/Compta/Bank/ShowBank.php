@@ -149,7 +149,7 @@ class ShowBank extends Controller
         $object->ics = trim($request->input('ics'));
         $object->ics_transfer = trim($request->input('ics_transfer'));
         
-        $account_number = $request->input('account_number');
+        $account_number = $request->integer('account_number', 0);
         $object->account_number = (empty($account_number) || $account_number == '-1') ? '' : $account_number;
         
         $fk_accountancy_journal = $request->integer('fk_accountancy_journal', 0);
@@ -254,7 +254,7 @@ class ShowBank extends Controller
             $object->ics = trim($request->input('ics'));
             $object->ics_transfer = trim($request->input('ics_transfer'));
             
-            $account_number = $request->input('account_number');
+            $account_number = $request->integer('account_number', 0);
             $object->account_number = (empty($account_number) || $account_number == '-1') ? '' : $account_number;
             
             $fk_accountancy_journal = $request->integer('fk_accountancy_journal', 0);

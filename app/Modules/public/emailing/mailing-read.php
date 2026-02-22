@@ -99,7 +99,7 @@ require '../../main.inc.php';
 /**
  * @var DoliDB $db
  */
-$mtid = request()->input('mtid');
+$mtid = request()->integer('mtid', 0);
 $email = request()->input('email');
 $tag = request()->input('tag');
 $securitykey = request()->input('securitykey');

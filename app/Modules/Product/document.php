@@ -168,7 +168,7 @@ if ($action == 'filemerge' && $permissiontoadd) {
 
 		$lang_id = null;
 		if (getDolGlobalInt('MAIN_MULTILANGS')) {
-			$lang_id = request()->input('lang_id');
+			$lang_id = request()->integer('lang_id', 0);
 		}
 
 		// Delete all file already associated
@@ -308,7 +308,7 @@ if ($object->id > 0 && $upload_dir !== null) {
 		$filetomerge = new Propalmergepdfproduct($db);
 
 		if (getDolGlobalInt('MAIN_MULTILANGS')) {
-			$lang_id = request()->input('lang_id');
+			$lang_id = request()->integer('lang_id', 0);
 			$result = $filetomerge->fetch_by_product($object->id, $lang_id);
 		} else {
 			$result = $filetomerge->fetch_by_product($object->id);

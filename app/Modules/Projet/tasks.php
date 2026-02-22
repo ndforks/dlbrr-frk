@@ -54,7 +54,7 @@ if (isModEnabled('eventorganization')) {
 $langs->loadLangs($langsLoad);
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 //$show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
 $cancel = request()->input('cancel');
@@ -63,7 +63,7 @@ $backtopage = request()->input('backtopage');					// if not set, a default page 
 //$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
 $optioncss  = request()->input('optioncss');
 $backtopage = request()->input('backtopage');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 
 $id = request()->integer('id', 0);
 $ref = request()->input('ref');
@@ -87,10 +87,10 @@ $search_tasklabel = request()->input('search_tasklabel');
 $search_taskdescription = request()->input('search_taskdescription');
 $search_dtstartday = request()->input('search_dtstartday');
 $search_dtstartmonth = request()->input('search_dtstartmonth');
-$search_dtstartyear = request()->input('search_dtstartyear');
+$search_dtstartyear = request()->integer('search_dtstartyear', 0);
 $search_dtendday = request()->input('search_dtendday');
 $search_dtendmonth = request()->input('search_dtendmonth');
-$search_dtendyear = request()->input('search_dtendyear');
+$search_dtendyear = request()->integer('search_dtendyear', 0);
 $search_planedworkload = request()->input('search_planedworkload');
 $search_timespend = request()->input('search_timespend');
 $search_progresscalc = request()->input('search_progresscalc');

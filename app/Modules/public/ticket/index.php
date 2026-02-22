@@ -68,7 +68,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 $langs->loadLangs(array('companies', 'other', 'ticket', 'errors'));
 
 // Get parameters
-$track_id = request()->input('track_id');
+$track_id = request()->integer('track_id', 0);
 $action = request()->input('action');
 $suffix = "";
 

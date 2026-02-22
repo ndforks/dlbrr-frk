@@ -56,14 +56,14 @@ $errors = [];
 $error = 0;
 
 if ($action == 'set') {
-	$client_id = request()->input('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM');
+	$client_id = request()->integer('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', $client_id, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$client_id = request()->input('MAIN_AUTHENTICATION_OIDC_CLIENT_ID');
+	$client_id = request()->integer('MAIN_AUTHENTICATION_OIDC_CLIENT_ID', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_CLIENT_ID', $client_id, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
@@ -112,7 +112,7 @@ if ($action == 'set') {
 		$error++;
 	}
 
-	$openid_url_img = request()->input('MAIN_AUTHENTICATION_OPENID_URL_IMG');
+	$openid_url_img = request()->integer('MAIN_AUTHENTICATION_OPENID_URL_IMG', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OPENID_URL_IMG', $openid_url_img, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();

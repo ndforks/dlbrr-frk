@@ -56,11 +56,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $langs->loadLangs(array('bills', 'compta', 'admin', 'other', 'suppliers'));
 
 $action     = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm    = request()->input('confirm');
 $cancel     = request()->input('cancel');
-$toselect   = request()->input('toselect');
+$toselect   = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierinvoicestemplatelist'; // To manage different context of search
 $optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 $mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)

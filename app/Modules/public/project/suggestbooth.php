@@ -84,7 +84,7 @@ $label = request()->input('label');
 $note = request()->input('note');
 $datestart = dol_mktime(0, 0, 0, request()->integer('datestartmonth', 0), request()->integer('datestartday', 0), request()->integer('datestartyear', 0));
 $dateend = dol_mktime(23, 59, 59, request()->integer('dateendmonth', 0), request()->integer('dateendday', 0), request()->integer('dateendyear', 0));
-$id = request()->input('id');
+$id = request()->integer('id', 0);
 
 $project = new Project($db);
 $resultproject = $project->fetch((int) $id);
@@ -684,7 +684,7 @@ print '</td></tr>';
 print '<tr><td>'.$langs->trans('Country');
 print '<span class="star">*</span>';
 print '</td><td>';
-$country_id = request()->input('country_id');
+$country_id = request()->integer('country_id', 0);
 if (!$country_id && getDolGlobalString('MEMBER_NEWFORM_FORCECOUNTRYCODE')) {
 	$country_id = getCountry($conf->global->MEMBER_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 }

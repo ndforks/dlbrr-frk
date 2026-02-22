@@ -190,7 +190,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 	$firstname = request()->input('firstname');
 	$lastname = request()->input('lastname');
 	$societe = request()->input('societe');
-	$idprof2 = request()->input('idprof2');
+	$idprof2 = request()->integer('idprof2', 0);
 	$tva_intra = request()->input('tva_intra');
 	$address = request()->input('address');
 	$zipcode = request()->input('zipcode');

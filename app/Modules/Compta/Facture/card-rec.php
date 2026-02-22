@@ -57,11 +57,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $langs->loadLangs(array('bills', 'companies', 'compta', 'admin', 'other', 'products', 'banks'));
 
 $action     = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm    = request()->input('confirm');
 $cancel     = request()->input('cancel');
-$toselect   = request()->input('toselect');
+$toselect   = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'invoicetemplatelist'; // To manage different context of search
 $backtopage = request()->input('backtopage');					// if not set, a default page will be used
 $backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
@@ -80,7 +80,7 @@ if ($action == "create" || $action == "add") {
 }
 $projectid = request()->integer('projectid', 0);
 
-$year_date_when = request()->input('year_date_when');
+$year_date_when = request()->integer('year_date_when', 0);
 $month_date_when = request()->input('month_date_when');
 $selectedLines = request()->input('toselect');
 
@@ -1381,7 +1381,7 @@ if ($action == 'create') {
 
 		// Project
 		if (isModEnabled('project') && is_object($sourceInvoice->thirdparty) && $sourceInvoice->thirdparty->id > 0 && is_object($formproject)) {
-			$projectid = request()->input('projectid') ? request()->input('projectid') : $sourceInvoice->fk_project;
+			$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : $sourceInvoice->fk_project;
 			$langs->load('projects');
 			print '<tr><td>'.$langs->trans('Project').'</td><td>';
 			print img_picto('', 'project', 'class="pictofixedwidth"');

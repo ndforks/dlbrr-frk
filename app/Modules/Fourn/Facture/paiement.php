@@ -70,7 +70,7 @@ $month = request()->integer('month', 0);
 $year = request()->integer('year', 0);
 
 $search_ref = request()->input('search_ref');
-$search_account = request()->input('search_account');
+$search_account = request()->integer('search_account', 0);
 $search_paymenttype = request()->input('search_paymenttype');
 $search_amount = request()->input('search_amount'); // alpha because we must be able to search on "< x"
 $search_company = request()->input('search_company');

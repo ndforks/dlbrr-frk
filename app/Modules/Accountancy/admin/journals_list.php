@@ -52,7 +52,7 @@ $langs->loadLangs(array("admin", "compta", "accountancy"));
 $action = request()->input('action') ? request()->input('action') : 'view';
 $confirm = request()->input('confirm');
 $id = 35;
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 $code = request()->input('code');
 
 // Security access
@@ -90,7 +90,7 @@ if (empty($sortorder)) {
 
 $error = 0;
 
-$search_country_id = request()->input('search_country_id');
+$search_country_id = request()->integer('search_country_id', 0);
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('admin'));

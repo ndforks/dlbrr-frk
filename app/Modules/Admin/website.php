@@ -49,7 +49,7 @@ $action = request()->input('action') ? request()->input('action') : 'view';
 $confirm = request()->input('confirm');
 $backtopage = request()->input('backtopage');
 
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 
 $id = 1;
 

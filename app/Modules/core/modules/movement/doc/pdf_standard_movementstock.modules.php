@@ -201,7 +201,7 @@ class pdf_standard_movementstock extends ModelePDFMovement
 		$id = request()->integer('id', 0);
 		$ref = request()->input('ref');
 		$msid = request()->integer('msid', 0);
-		$product_id = request()->input('product_id');
+		$product_id = request()->integer('product_id', 0);
 		$action = request()->input('action');
 		$cancel = request()->input('cancel');
 		$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'movementlist';

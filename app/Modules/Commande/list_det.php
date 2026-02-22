@@ -66,10 +66,10 @@ if (isModEnabled('category')) {
 $langs->loadLangs(array("categories", "orders", 'sendings', 'companies', 'compta', 'bills', 'stocks', 'products'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'orderlistdet';
 $optioncss = request()->input('optioncss');
 
@@ -104,7 +104,7 @@ if (isModEnabled('category')) {
 $socid = request()->integer('socid', 0);
 
 // Search filters
-$search_id = request()->input('search_id');
+$search_id = request()->integer('search_id', 0);
 $search_refProduct = request()->input('search_refProduct');
 $search_descProduct = request()->input('search_descProduct');
 

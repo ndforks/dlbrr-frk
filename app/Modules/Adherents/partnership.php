@@ -54,7 +54,7 @@ $cancel = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'partnershipcard'; // To manage different context of search
 $backtopage = request()->input('backtopage');
 $backtopageforcancel = request()->input('backtopageforcancel');
-//$lineid   = request()->input('lineid');
+//$lineid   = request()->integer('lineid', 0);
 
 $object = new Adherent($db);
 if ($id > 0) {

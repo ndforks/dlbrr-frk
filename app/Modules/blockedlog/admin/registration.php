@@ -96,20 +96,20 @@ if ($action == 'update') {
 	$company_name = request()->input('BLOCKEDLOG_REGISTRATION_NAME');
 	$company_email = request()->input('BLOCKEDLOG_REGISTRATION_EMAIL');
 	$company_country_code = request()->input('BLOCKEDLOG_REGISTRATION_COUNTRY_CODE');
-	$company_idprof1 = request()->input('BLOCKEDLOG_REGISTRATION_IDPROF1');
+	$company_idprof1 = request()->integer('BLOCKEDLOG_REGISTRATION_IDPROF1', 0);
 	$company_address = request()->input('BLOCKEDLOG_REGISTRATION_ADDRESS');
 	$company_state = request()->input('BLOCKEDLOG_REGISTRATION_STATE');
 	$company_zip = request()->input('BLOCKEDLOG_REGISTRATION_ZIP');
 	$company_town = request()->input('BLOCKEDLOG_REGISTRATION_TOWN');
 
-	$provider_name = request()->input('MAIN_INFO_ITPROVIDER_NAME');
-	$provider_email = request()->input('MAIN_INFO_ITPROVIDER_MAIL');
-	$provider_country_id = request()->input('MAIN_INFO_ITPROVIDER_COUNTRY');
-	$provider_idprof1 = request()->input('MAIN_INFO_ITPROVIDER_IDPROF1');
-	$provider_address = request()->input('MAIN_INFO_ITPROVIDER_ADDRESS');
-	$provider_state = request()->input('MAIN_INFO_ITPROVIDER_STATE');
-	$provider_zip = request()->input('MAIN_INFO_ITPROVIDER_ZIP');
-	$provider_town = request()->input('MAIN_INFO_ITPROVIDER_TOWN');
+	$provider_name = request()->integer('MAIN_INFO_ITPROVIDER_NAME', 0);
+	$provider_email = request()->integer('MAIN_INFO_ITPROVIDER_MAIL', 0);
+	$provider_country_id = request()->integer('MAIN_INFO_ITPROVIDER_COUNTRY', 0);
+	$provider_idprof1 = request()->integer('MAIN_INFO_ITPROVIDER_IDPROF1', 0);
+	$provider_address = request()->integer('MAIN_INFO_ITPROVIDER_ADDRESS', 0);
+	$provider_state = request()->integer('MAIN_INFO_ITPROVIDER_STATE', 0);
+	$provider_zip = request()->integer('MAIN_INFO_ITPROVIDER_ZIP', 0);
+	$provider_town = request()->integer('MAIN_INFO_ITPROVIDER_TOWN', 0);
 
 	if (!$error) {
 		//Company

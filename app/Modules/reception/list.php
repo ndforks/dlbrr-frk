@@ -55,8 +55,8 @@ $contextpage = request()->input('contextpage') ? request()->input('contextpage')
 $socid = request()->integer('socid', 0);
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
-$toselect = request()->input('toselect');
+$massaction = request()->input('massaction', []);
+$toselect = request()->input('toselect', []);
 $show_files = request()->integer('show_files', 0);
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode');

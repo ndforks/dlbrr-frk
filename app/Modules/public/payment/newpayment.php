@@ -835,7 +835,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 
 		// We go here if getDolGlobalString('STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION') is set.
 		// In such a case, payment is always ok when we call the "charge" action.
-		$paymentintent_id = request()->input('paymentintent_id');
+		$paymentintent_id = request()->integer('paymentintent_id', 0);
 
 		// Force to use the correct API key
 		global $stripearrayofkeysbyenv;

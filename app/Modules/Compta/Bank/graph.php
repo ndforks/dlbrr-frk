@@ -50,15 +50,15 @@ $hookmanager->initHooks(array('bankstats', 'globalcard'));
 
 // Security check
 if (request()->input('account') || request()->input('ref')) {
-	$id = request()->input('account') ? request()->input('account') : request()->input('ref');
+	$id = request()->integer('account', 0) ? request()->integer('account', 0) : request()->input('ref');
 }
-$fieldid = request()->input('ref') ? 'ref' : 'rowid';
+$fieldid = request()->integer('ref', 0) ? 'ref' : 'rowid';
 if ($user->socid) {
 	$socid = $user->socid;
 }
 $result = restrictedArea($user, 'banque', $id, 'bank_account&bank_account', '', '', $fieldid);
 
-$account = request()->input('account');
+$account = request()->integer('account', 0);
 $mode = 'standard';
 if (request()->input('mode') == 'showalltime') {
 	$mode = 'showalltime';

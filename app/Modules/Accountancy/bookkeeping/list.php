@@ -55,14 +55,14 @@ $langs->loadLangs(array("accountancy", "categories", "compta", "other"));
 // Get Parameters
 $socid = request()->integer('socid', 0);
 $journal_code = request()->input('code_journal');
-$account = request()->input('account');
+$account = request()->integer('account', 0);
 $massdate = dol_mktime(0, 0, 0, request()->integer('massdatemonth', 0), request()->integer('massdateday', 0), request()->integer('massdateyear', 0));
 
 // action+display Parameters
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php'));
 
 // Search Parameters
@@ -103,22 +103,22 @@ $search_import_key = request()->input('search_import_key');
 
 $search_account_category = request()->integer('search_account_category', 0);
 
-$search_accountancy_code = request()->input('search_accountancy_code');
-$search_accountancy_code_start = request()->input('search_accountancy_code_start');
+$search_accountancy_code = request()->integer('search_accountancy_code', 0);
+$search_accountancy_code_start = request()->integer('search_accountancy_code_start', 0);
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = request()->input('search_accountancy_code_end');
+$search_accountancy_code_end = request()->integer('search_accountancy_code_end', 0);
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }
 
-$search_accountancy_aux_code = request()->input('search_accountancy_aux_code');
-$search_accountancy_aux_code_start = request()->input('search_accountancy_aux_code_start');
+$search_accountancy_aux_code = request()->integer('search_accountancy_aux_code', 0);
+$search_accountancy_aux_code_start = request()->integer('search_accountancy_aux_code_start', 0);
 if ($search_accountancy_aux_code_start == - 1) {
 	$search_accountancy_aux_code_start = '';
 }
-$search_accountancy_aux_code_end = request()->input('search_accountancy_aux_code_end');
+$search_accountancy_aux_code_end = request()->integer('search_accountancy_aux_code_end', 0);
 if ($search_accountancy_aux_code_end == - 1) {
 	$search_accountancy_aux_code_end = '';
 }
@@ -126,7 +126,7 @@ $search_mvt_label = request()->input('search_mvt_label');
 $search_direction = request()->input('search_direction');
 $search_debit = request()->input('search_debit');
 $search_credit = request()->input('search_credit');
-$search_ledger_code = request()->input('search_ledger_code');
+$search_ledger_code = request()->input('search_ledger_code', []);
 $search_lettering_code = request()->input('search_lettering_code');
 $search_not_reconciled = request()->input('search_not_reconciled');
 

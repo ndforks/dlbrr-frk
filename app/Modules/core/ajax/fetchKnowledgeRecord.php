@@ -59,8 +59,8 @@ include '../../main.inc.php';
  */
 
 $action = request()->input('action');
-$idticketgroup = request()->input('idticketgroup');
-$idticketgroup = request()->input('idticketgroup');
+$idticketgroup = request()->integer('idticketgroup', 0);
+$idticketgroup = request()->integer('idticketgroup', 0);
 $lang = request()->input('lang');
 
 // Security check

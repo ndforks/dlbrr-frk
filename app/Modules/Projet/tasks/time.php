@@ -63,10 +63,10 @@ if (isModEnabled('eventorganization')) {
 $langs->loadLangs($langsLoad);
 
 $action = request()->input('action');
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $confirm = request()->input('confirm');
 $cancel = request()->input('cancel');
-$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'timespentlist'; // To manage different context of search
 $backtopage = request()->input('backtopage'); // Go back to a dedicated page
 $optioncss = request()->input('optioncss');

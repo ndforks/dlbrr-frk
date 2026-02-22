@@ -96,10 +96,10 @@ $search_zip = request()->input('search_zip');
 $search_town = request()->input('search_town');
 $search_country = request()->input('search_country');
 
-$date_startyear = request()->input('date_startyear');
+$date_startyear = request()->integer('date_startyear', 0);
 $date_startmonth = request()->input('date_startmonth');
 $date_startday = request()->input('date_startday');
-$date_endyear = request()->input('date_endyear');
+$date_endyear = request()->integer('date_endyear', 0);
 $date_endmonth = request()->input('date_endmonth');
 $date_endday = request()->input('date_endday');
 

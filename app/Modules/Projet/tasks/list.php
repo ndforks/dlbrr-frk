@@ -48,10 +48,10 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 $langs->loadLangs(array('projects', 'users', 'companies'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 //$show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $optioncss = request()->input('optioncss');
 $mode = request()->input('mode');
 

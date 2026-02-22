@@ -81,7 +81,7 @@ $langs->loadLangs(array("main", "other", "dict", "bills", "companies", "errors",
 $errmsg = '';
 $error = 0;
 $action = request()->input('action');
-$id = request()->input('id');
+$id = request()->integer('id', 0);
 $securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY') . 'conferenceorbooth'.((int) $id), 'md5');
 

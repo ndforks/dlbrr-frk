@@ -54,7 +54,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
  */
 
 $action = request()->input('action');
-$hash_unique_id = request()->input('hash_unique_id');
+$hash_unique_id = request()->integer('hash_unique_id', 0);
 $hash_algo = request()->input('hash_algo');
 
 

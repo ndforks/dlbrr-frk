@@ -104,7 +104,7 @@ function checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $auth
 						$conf->authmode = $mode; // This properties is defined only when logged to say what mode was successfully used
 						/*$dol_tz = request()->input('tz');
 						$dol_dst = request()->input('dst');
-						$dol_screenwidth = request()->input('screenwidth');
+						$dol_screenwidth = request()->integer('screenwidth', 0);
 						$dol_screenheight = request()->input('screenheight');*/
 					}
 				} else {

@@ -50,8 +50,8 @@ $langs->loadLangs(array("compta", "banks", "bills", "accountancy"));
 
 $optioncss = request()->input('optioncss');
 $mode      = request()->input('mode');
-$massaction = request()->input('massaction');
-$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction', []);
+$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'directdebitcredittransferlist'; // To manage different context of search
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
@@ -64,13 +64,13 @@ $search_datev_start = dol_mktime(0, 0, 0, request()->integer('search_date_value_
 $search_datev_end = dol_mktime(23, 59, 59, request()->integer('search_date_value_endmonth', 0), request()->integer('search_date_value_endday', 0), request()->integer('search_date_value_endyear', 0));
 $search_amount_deb = request()->input('search_amount_deb');
 $search_amount_cred = request()->input('search_amount_cred');
-$search_bank_account = request()->input('search_account');
+$search_bank_account = request()->integer('search_account', 0);
 $search_bank_entry = request()->input('search_bank_entry');
-$search_accountancy_account = request()->input('search_accountancy_account');
+$search_accountancy_account = request()->integer('search_accountancy_account', 0);
 if ($search_accountancy_account == - 1) {
 	$search_accountancy_account = '';
 }
-$search_accountancy_subledger = request()->input('search_accountancy_subledger');
+$search_accountancy_subledger = request()->integer('search_accountancy_subledger', 0);
 if ($search_accountancy_subledger == - 1) {
 	$search_accountancy_subledger = '';
 }
@@ -86,7 +86,7 @@ if (empty($search_datev_start)) {
 if (empty($search_datev_end)) {
 	$search_datev_end = request()->integer('search_datev_end', 0);
 }
-$search_type_id = request()->input('search_type_id');
+$search_type_id = request()->integer('search_type_id', 0);
 
 $sortfield = request()->input('sortfield');
 $sortorder = request()->input('sortorder');

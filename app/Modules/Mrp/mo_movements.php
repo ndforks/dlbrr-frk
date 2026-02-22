@@ -59,12 +59,12 @@ $cancel      = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'mostockmovement'; // To manage different context of search
 $backtopage  = request()->input('backtopage');
 $optioncss   = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
-$massaction  = request()->input('massaction');
+$massaction  = request()->input('massaction', []);
 $lineid      = request()->integer('lineid', 0);
 
 $msid  = request()->integer('msid', 0);
 
-$year  = request()->input('year');		// TODO Rename into search_year
+$year  = request()->integer('year', 0);		// TODO Rename into search_year
 $month = request()->input('month');		// TODO Rename into search_month
 
 $search_ref = request()->input('search_ref');

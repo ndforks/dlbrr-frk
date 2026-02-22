@@ -42,7 +42,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
  * @var User $user
  */
 
-$id = request()->input('id');
+$id = request()->integer('id', 0);
 $ref = request()->input('ref');
 
 $mode = request()->input('mode');

@@ -47,7 +47,7 @@ $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'moduleoverview';
 
 $search_name = request()->input('search_name');
-$search_id = request()->input('search_id');
+$search_id = request()->integer('search_id', 0);
 $search_version = request()->input('search_version');
 $search_permission = request()->input('search_permission');
 

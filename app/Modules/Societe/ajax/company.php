@@ -58,7 +58,7 @@ $filter = request()->input('filter');
 $outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
 $action = request()->input('action');
 $id = request()->integer('id', 0);
-$excludeids = request()->input('excludeids');
+$excludeids = request()->integer('excludeids', 0);
 $showtype = request()->integer('showtype', 0);
 $showcode = request()->integer('showcode', 0);
 

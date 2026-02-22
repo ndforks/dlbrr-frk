@@ -56,8 +56,8 @@ if ($user->socid > 0) {
 $feature2 = (($socid && $user->hasRight("user", "self", "write")) ? '' : 'user');
 
 // Retrieve needed GETPOSTS for this file
-$toselect = request()->input('toselect');
-$tokenid = request()->input('tokenid');
+$toselect = request()->input('toselect', []);
+$tokenid = request()->integer('tokenid', 0);
 $confirm = request()->input('confirm');
 $module = request()->input('module');
 $rights = request()->integer('rights', 0);

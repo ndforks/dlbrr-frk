@@ -82,7 +82,7 @@ if (!$sortfield) {
 $selected_cat = request()->input('search_categ');
 $selected_catsoc = request()->input('search_categ_soc');
 $selected_soc = request()->input('search_soc');
-$typent_id = request()->input('typent_id');
+$typent_id = request()->integer('typent_id', 0);
 $subcat = false;
 if (request()->input('subcat') === 'yes') {
 	$subcat = true;
@@ -98,10 +98,10 @@ if ($selected_type == '') {
 // Date range
 $year = request()->integer('year', 0);
 $month = request()->integer('month', 0);
-$date_startyear = request()->input('date_startyear');
+$date_startyear = request()->integer('date_startyear', 0);
 $date_startmonth = request()->input('date_startmonth');
 $date_startday = request()->input('date_startday');
-$date_endyear = request()->input('date_endyear');
+$date_endyear = request()->integer('date_endyear', 0);
 $date_endmonth = request()->input('date_endmonth');
 $date_endday = request()->input('date_endday');
 if (empty($year)) {

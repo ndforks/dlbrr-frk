@@ -54,7 +54,7 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 $langs->loadLangs(array('trips', 'bills', 'banks', 'compta'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'vendorpaymentlist';
 $mode = request()->input('mode');
@@ -79,7 +79,7 @@ $search_date_end		= dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_e
 $search_user			= request()->input('search_user');
 $search_payment_type	= request()->input('search_payment_type');
 $search_cheque_num		= request()->input('search_cheque_num');
-$search_bank_account	= request()->input('search_bank_account');
+$search_bank_account	= request()->integer('search_bank_account', 0);
 $search_amount			= request()->input('search_amount'); // alpha because we must be able to search on '< x'
 
 $limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;

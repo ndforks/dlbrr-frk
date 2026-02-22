@@ -49,7 +49,7 @@ include_once DOL_DOCUMENT_ROOT . '/core/class/html.form.class.php';
  */
 
 // object id
-$objectid = request()->input('objectid');
+$objectid = request()->integer('objectid', 0);
 // 'module' or 'myobject@mymodule', 'mymodule_myobject'
 $objecttype = request()->input('objecttype');
 $objectkey = request()->input('objectkey');

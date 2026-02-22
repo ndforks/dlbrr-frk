@@ -60,7 +60,7 @@ if (!$mode) {
 }
 
 $username = request()->input('username');
-$passworduidhash = request()->input('passworduidhash');
+$passworduidhash = request()->integer('passworduidhash', 0);
 $setnewpassword = request()->input('setnewpassword');
 
 $conf->entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : 1);

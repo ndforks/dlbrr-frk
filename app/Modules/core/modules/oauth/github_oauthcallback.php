@@ -46,7 +46,7 @@ $urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domai
 
 $action = request()->input('action');
 $backtourl = request()->input('backtourl');
-$keyforprovider = request()->input('keyforprovider');
+$keyforprovider = request()->integer('keyforprovider', 0);
 if (empty($keyforprovider) && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (request()->input('code') || $action == 'delete')) {
 	$keyforprovider = $_SESSION["oauthkeyforproviderbeforeoauthjump"];
 }

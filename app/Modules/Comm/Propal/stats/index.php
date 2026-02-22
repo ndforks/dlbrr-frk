@@ -55,7 +55,7 @@ $hookmanager->initHooks(array('propalstats', 'globalcard'));
 $object_status = request()->input('object_status');
 $typent_id = request()->integer('typent_id', 0);
 $categ_id = request()->integer('categ_id', 0);
-$select_categ_propal_id=request()->input('select_categ_propal_id');
+$select_categ_propal_id=request()->integer('select_categ_propal_id', 0);
 
 $userid = request()->integer('userid', 0);
 $socid = request()->integer('socid', 0);

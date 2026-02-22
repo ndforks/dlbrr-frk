@@ -890,7 +890,7 @@ if ((!empty($conference->id) && $conference->status == ConferenceOrBooth::STATUS
 		// Country
 		print '<tr><td><span class="fieldrequired">'.$langs->trans('Country').'</span></td><td>';
 		print img_picto('', 'country', 'class="pictofixedwidth"');
-		$country_id = request()->input('country_id');
+		$country_id = request()->integer('country_id', 0);
 		if (!$country_id && getDolGlobalString('MEMBER_NEWFORM_FORCECOUNTRYCODE')) {
 			$country_id = getCountry($conf->global->MEMBER_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 		}

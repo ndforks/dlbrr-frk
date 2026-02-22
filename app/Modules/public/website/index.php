@@ -106,7 +106,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 $error = 0;
 $websitekey = request()->input('website');
-$pageid = request()->input('page') ? request()->input('page') : request()->input('pageid');
+$pageid = request()->integer('page', 0) ? request()->integer('page', 0) : request()->input('pageid');
 $pageref = request()->input('pageref') ? request()->input('pageref') : '';
 // If page is xx/pagename, xx is a language, we set $pageref to pagename
 $reg = array();

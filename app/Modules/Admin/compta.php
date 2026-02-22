@@ -79,7 +79,7 @@ if ($action == 'update') {
 		'CREANCES-DETTES'
 	);
 
-	$accounting_mode = request()->input('accounting_mode');
+	$accounting_mode = request()->integer('accounting_mode', 0);
 
 
 	if (in_array($accounting_mode, $accounting_modes)) {

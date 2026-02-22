@@ -52,7 +52,7 @@ $ref = request()->input('ref');
 $rowid = request()->integer('rowid', 0);
 $cancel = request()->input('cancel');
 
-$account_number = request()->input('account_number');
+$account_number = request()->integer('account_number', 0);
 $label = request()->input('label');
 
 // Security check

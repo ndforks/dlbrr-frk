@@ -63,10 +63,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
 $langs->loadLangs(array('products', 'bills', 'companies', 'projects', 'banks'));
 
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $show_files = request()->integer('show_files', 0);
 $confirm = request()->input('confirm');
-$toselect = request()->input('toselect');
+$toselect = request()->input('toselect', []);
 $optioncss = request()->input('optioncss');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierinvoicelist';
 $mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
@@ -107,7 +107,7 @@ if (empty($search_status) && request()->has('search_status')) {
 }
 $search_paymentmode = request()->input('search_paymentmode');
 $search_paymentcond = request()->input('search_paymentcond') ? request()->integer('search_paymentcond', 0) : '';
-$search_bankaccount = request()->input('search_bankaccount');
+$search_bankaccount = request()->integer('search_bankaccount', 0);
 $search_vat_reverse_charge = request()->input('search_vat_reverse_charge');
 $search_town = request()->input('search_town');
 $search_zip = request()->input('search_zip');

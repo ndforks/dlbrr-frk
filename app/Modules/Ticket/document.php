@@ -55,7 +55,7 @@ $langs->loadLangs(array("companies", "other", "ticket", "mails"));
 $id       = request()->integer('id', 0);
 $socid = request()->integer('socid', 0);
 $ref      = request()->input('ref');
-$track_id = request()->input('track_id');
+$track_id = request()->integer('track_id', 0);
 $action   = request()->input('action');
 $confirm  = request()->input('confirm');
 

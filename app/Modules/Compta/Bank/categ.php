@@ -51,7 +51,7 @@ $langs->loadLangs(array('banks', 'categories'));
 // Get Parameters
 $action = request()->input('action');
 $optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
-$categid = request()->input('categid');
+$categid = request()->integer('categid', 0);
 $label = request()->input('label');
 
 

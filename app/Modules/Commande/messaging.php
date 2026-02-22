@@ -76,7 +76,7 @@ if (GETPOSTISARRAY('actioncode')) {
 	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = request()->input('search_rowid');
+$search_rowid = request()->integer('search_rowid', 0);
 $search_agenda_label = request()->input('search_agenda_label');
 
 $hookmanager->initHooks(array('orderagenda', 'globalcard'));

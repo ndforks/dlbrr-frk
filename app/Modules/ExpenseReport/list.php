@@ -53,11 +53,11 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport_ik.class.php'
 $langs->loadLangs(array('companies', 'users', 'trips'));
 
 $action      = request()->input('action');
-$massaction  = request()->input('massaction');
+$massaction  = request()->input('massaction', []);
 $show_files  = request()->integer('show_files', 0);
 $confirm     = request()->input('confirm');
 $cancel      = request()->input('cancel'); // We click on a Cancel button
-$toselect    = request()->input('toselect');
+$toselect    = request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'expensereportlist';
 $mode        = request()->input('mode');
 

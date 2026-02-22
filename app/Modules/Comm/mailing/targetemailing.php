@@ -49,8 +49,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
 $langs->loadLangs(array("mails", "admin"));
 
 $action = request()->input('action');
-$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
-$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
 $mode       = request()->input('mode'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)
 
 // Load variable for pagination

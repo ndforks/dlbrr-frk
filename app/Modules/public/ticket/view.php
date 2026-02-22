@@ -72,7 +72,7 @@ $langs->loadLangs(array("companies", "other", "ticket"));
 $action   = request()->input('action');
 $cancel = request()->input('cancel');
 
-$track_id = request()->input('track_id');
+$track_id = request()->integer('track_id', 0);
 $email    = request()->input('email');
 $suffix = "";
 

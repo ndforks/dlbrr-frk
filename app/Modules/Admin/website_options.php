@@ -66,7 +66,7 @@ $hookmanager->initHooks(array('admin'));
 $arrayofparameters = array();
 
 $status = 1;
-$rowid = request()->input('rowid');
+$rowid = request()->integer('rowid', 0);
 
 if (!$user->admin || !isModEnabled('website')) {
 	abort(403);

@@ -51,10 +51,10 @@ $langs->loadLangs(array("users", "companies", "agenda", "commercial", "other", "
 
 // Get Parameters
 $action 	= request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm 	= request()->input('confirm');
 $cancel     = request()->input('cancel');
-$toselect 	= request()->input('toselect');
+$toselect 	= request()->input('toselect', []);
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'actioncommlist'; // To manage different context of search
 $optioncss 	= request()->input('optioncss');
 $mode = request()->input('mode');
@@ -95,7 +95,7 @@ if (is_array($actioncode)) {
 }
 
 // Search Fields
-$search_id = request()->input('search_id');
+$search_id = request()->integer('search_id', 0);
 $search_title = request()->input('search_title');
 $search_note = request()->input('search_note');
 

@@ -155,7 +155,7 @@ if ($action == 'add' && $permissiontoadd) {
 
 	// gestion des fréquences et des échéances
 	$frequency = request()->integer('frequency', 0);
-	$rec_year = request()->input('rec_year');
+	$rec_year = request()->integer('rec_year', 0);
 	$rec_month = request()->input('rec_month');
 	$rec_day = request()->input('rec_day');
 	$rec_hour = request()->input('rec_hour');
@@ -358,7 +358,7 @@ if ($action == 'create') {
 		if (isModEnabled('project')) {
 			$formproject = new FormProjets($db);
 			print "<tr><td>".$langs->trans("Project")."</td><td>";
-			$projectid = request()->input('projectid') ? request()->input('projectid') : $object->fk_project;
+			$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : $object->fk_project;
 
 			$numprojet = $formproject->select_projects($object->thirdparty->id, $projectid, 'projectid', 0, 0, 1, 0, 0, 0, 0, '', 0, 0, '');
 			print ' &nbsp; <a href="'.DOL_URL_ROOT.'/projet/card.php?socid='.$object->thirdparty->id;
@@ -372,7 +372,7 @@ if ($action == 'create') {
 		if (isModEnabled('contract')) {
 			$formcontract = new FormContract($db);
 			print "<tr><td>".$langs->trans("Contract")."</td><td>";
-			$contractid = request()->input('contractid') ? request()->input('contractid') : (!empty($object->fk_contrat) ? $object->fk_contrat : 0) ;
+			$contractid = request()->integer('contractid', 0) ? request()->integer('contractid', 0) : (!empty($object->fk_contrat) ? $object->fk_contrat : 0) ;
 			$numcontract = $formcontract->select_contract($object->thirdparty->id, $contractid, 'contracttid');
 			print "</td></tr>";
 		}

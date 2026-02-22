@@ -52,12 +52,12 @@ $langs->loadLangs(array("companies", "compta", "accountancy", "products"));
 
 // search & action GETPOST
 $action = request()->input('action');
-$massaction = request()->input('massaction');
+$massaction = request()->input('massaction', []);
 $confirm = request()->input('confirm');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 $optioncss = request()->input('optioncss');
 
-$toselect = request()->input('chk_prod');
+$toselect = request()->input('chk_prod', []);
 '@phan-var-force string[] $toselect';
 $default_account = request()->integer('default_account', 0);
 $searchCategoryProductOperator = request()->integer('search_category_product_operator', 0);
@@ -67,8 +67,8 @@ $search_ref = request()->input('search_ref');
 $search_label = request()->input('search_label');
 $search_desc = request()->input('search_desc');
 $search_vat = request()->input('search_vat');
-$search_current_account = request()->input('search_current_account');
-$search_current_account_valid = request()->input('search_current_account_valid');
+$search_current_account = request()->integer('search_current_account', 0);
+$search_current_account_valid = request()->integer('search_current_account_valid', 0);
 if ($search_current_account_valid == '') {
 	$search_current_account_valid = 'withoutvalidaccount';
 }
@@ -79,7 +79,7 @@ if (!is_array($toselect)) {
 	$toselect = array();
 }
 
-$accounting_product_mode = request()->input('accounting_product_mode');
+$accounting_product_mode = request()->integer('accounting_product_mode', 0);
 $btn_changetype = request()->input('changetype');
 
 // Show/hide child product variants

@@ -1234,7 +1234,7 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 		$search_status = 1; // always display active customer first
 	}
 
-	$search_rowid   = request()->input('search_rowid');
+	$search_rowid   = request()->integer('search_rowid', 0);
 	$search_name    = request()->input('search_name');
 	$search_address = request()->input('search_address');
 	$search_poste   = request()->input('search_poste');
