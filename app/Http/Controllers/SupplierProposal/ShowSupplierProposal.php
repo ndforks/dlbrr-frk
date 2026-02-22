@@ -99,7 +99,7 @@ class ShowSupplierProposal extends Controller
             
             $result = $object->create($user);
             if ($result > 0) {
-                return redirect("/supplier_proposal/card.php?id={$object->id}");
+                return redirect()->route('supplier_proposal.show', ['id' => $object->id]);
             } else {
                 setEventMessages($object->error, $object->errors, 'errors');
             }
@@ -134,11 +134,11 @@ class ShowSupplierProposal extends Controller
         
         $result = $object->update($user);
         if ($result > 0) {
-            return redirect("/supplier_proposal/card.php?id={$id}");
+            return redirect()->route('supplier_proposal.show', ['id' => $id]);
         }
         
         setEventMessages($object->error, $object->errors, 'errors');
-        return redirect("/supplier_proposal/card.php?id={$id}&action=edit");
+        return redirect()->route('supplier_proposal.show', ['id' => $id, 'action' => 'edit']);
     }
     
     private function delete(Request $request, int $id): RedirectResponse
@@ -152,12 +152,12 @@ class ShowSupplierProposal extends Controller
             
             $result = $object->delete($user);
             if ($result > 0) {
-                return redirect('/supplier_proposal/list.php');
+                return redirect()->route('supplier_proposal.list');
             }
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        return redirect("/supplier_proposal/card.php?id={$id}");
+        return redirect()->route('supplier_proposal.show', ['id' => $id]);
     }
     
     private function validate(Request $request, int $id): RedirectResponse
@@ -171,12 +171,12 @@ class ShowSupplierProposal extends Controller
             
             $result = $object->valid($user);
             if ($result >= 0) {
-                return redirect("/supplier_proposal/card.php?id={$id}");
+                return redirect()->route('supplier_proposal.show', ['id' => $id]);
             }
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        return redirect("/supplier_proposal/card.php?id={$id}");
+        return redirect()->route('supplier_proposal.show', ['id' => $id]);
     }
     
     private function close(Request $request, int $id): RedirectResponse
@@ -188,11 +188,11 @@ class ShowSupplierProposal extends Controller
         
         $result = $object->cloture($user, $request->integer('statut', 0), $request->input('note'));
         if ($result >= 0) {
-            return redirect("/supplier_proposal/card.php?id={$id}");
+            return redirect()->route('supplier_proposal.show', ['id' => $id]);
         }
         
         setEventMessages($object->error, $object->errors, 'errors');
-        return redirect("/supplier_proposal/card.php?id={$id}");
+        return redirect()->route('supplier_proposal.show', ['id' => $id]);
     }
     
     private function setDraft(Request $request, int $id): RedirectResponse
@@ -204,10 +204,10 @@ class ShowSupplierProposal extends Controller
         
         $result = $object->setDraft($user);
         if ($result >= 0) {
-            return redirect("/supplier_proposal/card.php?id={$id}");
+            return redirect()->route('supplier_proposal.show', ['id' => $id]);
         }
         
         setEventMessages($object->error, $object->errors, 'errors');
-        return redirect("/supplier_proposal/card.php?id={$id}");
+        return redirect()->route('supplier_proposal.show', ['id' => $id]);
     }
 }

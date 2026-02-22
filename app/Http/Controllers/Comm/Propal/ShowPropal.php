@@ -46,12 +46,12 @@ class ShowPropal extends Controller
         $propal = Propal::findOrFail($id);
         $data = ['ref' => $request->input('ref'), 'fk_soc' => $request->integer('socid', 0)];
         $propal->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
-        return redirect("/comm/propal/card.php?id={$id}")->with('success', 'Proposal updated');
+        return redirect()->route('propal.show', ['id' => $id])->with('success', 'Proposal updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Propal::findOrFail($id)->delete();
-        return redirect('/comm/propal/list.php')->with('success', 'Proposal deleted');
+        return redirect()->route('propal.list')->with('success', 'Proposal deleted');
     }
 }
