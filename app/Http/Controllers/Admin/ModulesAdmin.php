@@ -11,27 +11,23 @@ use Illuminate\View\View;
 class ModulesAdmin extends Controller
 {
     /**
-     * Module service instance
+     * Constructor with dependency injection
      */
-    protected ModuleService $moduleService;
-
-    /**
-     * Constructor
-     */
-    public function __construct(ModuleService $moduleService)
-    {
-        $this->moduleService = $moduleService;
+    public function __construct(
+        protected ModuleService $moduleService
+    ) {
     }
 
     public function __invoke(Request $request): View|RedirectResponse
     {
-        global $conf, $user, $langs, $db;
+        global $user;
         
-        $action = $request->input('action');
-        
+        // Early return for unauthorized access
         if (!$user->admin) {
             abort(403);
         }
+        
+        $action = $request->input('action');
         
         return match($action) {
             'set' => $this->setModule($request),
@@ -66,52 +62,63 @@ class ModulesAdmin extends Controller
     
     private function setModule(Request $request): RedirectResponse
     {
-        global $conf, $user, $langs;
+        global $user, $langs;
         
         $value = $request->input('value');
         $module = $request->input('module');
         
-        if ($module && $user->admin) {
-            $activate = (bool) $value;
-            $res = $this->moduleService->setModuleStatus($module, $activate);
-            
-            if ($res) {
-                $message = $activate 
-                    ? $langs->trans("ModuleActivated", $module) 
-                    : $langs->trans("ModuleDeactivated", $module);
-                setEventMessages($message, null, 'mesgs');
-            } else {
-                setEventMessages($langs->trans("ModuleNotActivated", $module), null, 'errors');
-            }
+        // Early return for missing parameters or unauthorized access
+        if (!$module || !$user->admin) {
+            return redirect()->route('admin.modules');
         }
+        
+        $activate = (bool) $value;
+        $res = $this->moduleService->setModuleStatus($module, $activate);
+        
+        $message = $res
+            ? $langs->trans($activate ? "ModuleActivated" : "ModuleDeactivated", $module)
+            : $langs->trans("ModuleNotActivated", $module);
+        
+        setEventMessages($message, null, $res ? 'mesgs' : 'errors');
         
         return redirect()->route('admin.modules');
     }
     
     private function resetModules(Request $request): RedirectResponse
     {
-        global $conf, $user, $langs;
+        global $user, $langs;
         
-        if ($user->admin && $request->input('confirm') == 'yes') {
-            $langs->load('admin');
-            
-            // Use service to reset all modules via Eloquent
-            $deletedCount = $this->moduleService->resetAllModules();
-            
-            setEventMessages($langs->trans("ModulesReset") . " ({$deletedCount} configurations removed)", null, 'mesgs');
+        // Early return if not confirmed or unauthorized
+        if (!$user->admin || $request->input('confirm') !== 'yes') {
+            return redirect()->route('admin.modules');
         }
+        
+        $langs->load('admin');
+        
+        $deletedCount = $this->moduleService->resetAllModules();
+        
+        setEventMessages(
+            $langs->trans("ModulesReset") . " ({$deletedCount} configurations removed)",
+            null,
+            'mesgs'
+        );
         
         return redirect()->route('admin.modules');
     }
     
     private function installModule(Request $request): RedirectResponse
     {
-        global $conf, $langs;
+        global $langs;
         
         $allowonlineinstall = $this->moduleService->getConfig('MAIN_ALLOW_ONLINE_INSTALL', 0);
         
+        // Early return if online install is not allowed
         if (!$allowonlineinstall) {
-            setEventMessages($langs->trans("InstallModuleFromWebHasBeenDisabledContactUs"), null, 'errors');
+            setEventMessages(
+                $langs->trans("InstallModuleFromWebHasBeenDisabledContactUs"),
+                null,
+                'errors'
+            );
             return redirect()->route('admin.modules');
         }
         

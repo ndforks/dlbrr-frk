@@ -3,86 +3,75 @@
 namespace App\Http\Controllers\Contact;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Contact;
 use App\Models\Societe;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowContact extends Controller
 {
-    /**
-     * Handle the incoming request.
-     * Displays, edits, creates, or updates a contact.
-     */
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         $socid = $request->integer('socid', 0);
         
-        // Handle different actions
         return match($action) {
-            'create', 'add' => $this->create($request, $socid),
+            'create', 'add' => $this->create($request),
             'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
             default => $this->show($request, $id),
         };
     }
-    
-    /**
-     * Show contact details
-     */
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $contact = Contact::with('societe')->findOrFail($id);
-        
-        return view('contact.show', [
-            'contact' => $contact,
-            'action' => 'view',
-        ]);
+        return Contact::class;
     }
-    
-    /**
-     * Show edit form
-     */
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $contact = Contact::with('societe')->findOrFail($id);
-        $societes = Societe::orderBy('nom')->get();
-        
-        return view('contact.edit', [
-            'contact' => $contact,
-            'societes' => $societes,
-            'action' => 'edit',
-        ]);
+        return 'contact';
     }
-    
-    /**
-     * Show create form
-     */
-    private function create(Request $request, ?int $socid = null): View
+
+    protected function getShowRouteName(): string
     {
-        $societes = Societe::orderBy('nom')->get();
-        $selectedSociete = $socid ? Societe::find($socid) : null;
-        
-        return view('contact.create', [
-            'societes' => $societes,
-            'selectedSociete' => $selectedSociete,
-            'action' => 'create',
-        ]);
+        return 'contact.show';
     }
-    
-    /**
-     * Update existing contact
-     */
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $contact = Contact::findOrFail($id);
-        
-        // Get form data using Laravel request
-        $data = [
+        return 'contact.list';
+    }
+
+    protected function loadModel(int $id): Model
+    {
+        return Contact::with('societe')->findOrFail($id);
+    }
+
+    protected function getAdditionalViewData(Request $request, ?Model $model = null): array
+    {
+        // Early return if we're just showing the contact
+        if ($request->input('action') === 'view') {
+            return [];
+        }
+
+        // For edit and create actions, load societes
+        return [
+            'societes' => Societe::orderBy('nom')->get(),
+            'selectedSociete' => $this->getSelectedSociete($request),
+        ];
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
             'lastname' => $request->input('lastname'),
             'firstname' => $request->input('firstname'),
             'email' => $request->input('email'),
@@ -100,25 +89,16 @@ class ShowContact extends Controller
             'note_public' => $request->input('note_public'),
             'note_private' => $request->input('note_private'),
         ];
-        
-        // Remove null values
-        $data = array_filter($data, fn($value) => $value !== null && $value !== '');
-        
-        $contact->update($data);
-        
-        return redirect()->route('contact.show', ['id' => $id])
-            ->with('success', 'Contact updated successfully');
     }
-    
-    /**
-     * Delete contact
-     */
-    private function delete(Request $request, int $id): RedirectResponse
+
+    private function getSelectedSociete(Request $request): ?Societe
     {
-        $contact = Contact::findOrFail($id);
-        $contact->delete();
+        $socid = $request->integer('socid', 0);
         
-        return redirect()->route('contact.list')
-            ->with('success', 'Contact deleted successfully');
+        if ($socid === 0) {
+            return null;
+        }
+        
+        return Societe::find($socid);
     }
 }

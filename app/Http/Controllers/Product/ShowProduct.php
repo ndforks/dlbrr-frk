@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class ShowProduct extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -23,45 +26,35 @@ class ShowProduct extends Controller
             default => $this->show($request, $id),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $product = Product::findOrFail($id);
-        return view('product.show', ['product' => $product, 'action' => 'view']);
+        return Product::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $product = Product::findOrFail($id);
-        return view('product.edit', ['product' => $product, 'action' => 'edit']);
+        return 'product';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('product.create', ['action' => 'create']);
+        return 'product.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $product = Product::findOrFail($id);
-        
-        $data = [
+        return 'product.list';
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
             'ref' => $request->input('ref'),
             'label' => $request->input('label'),
             'description' => $request->input('description'),
             'price' => $request->input('price'),
             'tva_tx' => $request->input('tva_tx'),
         ];
-        
-        $data = array_filter($data, fn($value) => $value !== null && $value !== '');
-        $product->update($data);
-        
-        return redirect()->route('product.show', ['id' => $id])->with('success', 'Product updated');
-    }
-    
-    private function delete(Request $request, int $id): RedirectResponse
-    {
-        Product::findOrFail($id)->delete();
-        return redirect()->route('product.list')->with('success', 'Product deleted');
     }
 }
