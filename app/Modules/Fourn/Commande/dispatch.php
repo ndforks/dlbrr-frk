@@ -328,7 +328,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 
 			if (getDolGlobalString('SUPPLIER_ORDER_CAN_UPDATE_BUYINGPRICE_DURING_RECEIPT')) {
 				if (!isModEnabled("multicurrency") && empty($conf->dynamicprices->enabled)) {
-					$dto = GETPOSTFLOAT("dto_".$reg[1].'_'.$reg[2]);
+					$dto = (float)request()->input("dto_".$reg[1].'_'.$reg[2], 0.0);
 					if (!empty($dto)) {
 						$unit_price = price2num((float) GETPOST("pu_".$reg[1]) * (100 - $dto) / 100, 'MU');
 					}
