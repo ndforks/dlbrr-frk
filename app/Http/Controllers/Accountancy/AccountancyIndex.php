@@ -37,7 +37,7 @@ class AccountancyIndex extends Controller
             setEventMessages($langs->trans("BoxAdded"), null);
         }
         
-        return redirect('/accountancy/');
+        return redirect()->route('accountancy.index');
     }
     
     private function show(Request $request): View

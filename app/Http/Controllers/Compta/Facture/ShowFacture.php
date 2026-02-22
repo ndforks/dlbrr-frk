@@ -55,12 +55,12 @@ class ShowFacture extends Controller
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $facture->update($data);
         
-        return redirect("/compta/facture/card.php?id={$id}")->with('success', 'Invoice updated');
+        return redirect()->route('facture.show', ['id' => $id])->with('success', 'Invoice updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Facture::findOrFail($id)->delete();
-        return redirect('/compta/facture/list.php')->with('success', 'Invoice deleted');
+        return redirect()->route('facture.list')->with('success', 'Invoice deleted');
     }
 }

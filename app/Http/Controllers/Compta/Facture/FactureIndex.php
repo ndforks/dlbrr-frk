@@ -9,6 +9,6 @@ class FactureIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/compta/facture/list.php');
+        return redirect()->route('facture.list');
     }
 }

@@ -9,6 +9,6 @@ class BankIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/compta/bank/list.php');
+        return redirect()->route('bank.list');
     }
 }
