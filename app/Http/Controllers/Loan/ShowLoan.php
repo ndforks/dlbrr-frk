@@ -27,12 +27,12 @@ class ShowLoan extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Loan::findOrFail($id)->update(array_filter(['label' => $request->input('label')], fn($v) => $v));
-        return redirect("/loan/card.php?id={$id}")->with('success', 'Loan updated');
+        return redirect()->route('loan.show', ['id' => $id])->with('success', 'Loan updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Loan::findOrFail($id)->delete();
-        return redirect('/loan/list.php')->with('success', 'Loan deleted');
+        return redirect()->route('loan.list')->with('success', 'Loan deleted');
     }
 }

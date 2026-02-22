@@ -27,12 +27,12 @@ class ShowDon extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Don::findOrFail($id)->update(array_filter(['fk_soc' => $request->integer('socid', 0)], fn($v) => $v));
-        return redirect("/don/card.php?id={$id}")->with('success', 'Donation updated');
+        return redirect()->route('don.show', ['id' => $id])->with('success', 'Donation updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Don::findOrFail($id)->delete();
-        return redirect('/don/list.php')->with('success', 'Donation deleted');
+        return redirect()->route('don.list')->with('success', 'Donation deleted');
     }
 }

@@ -9,6 +9,6 @@ class DonIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/don/list.php');
+        return redirect()->route('don.list');
     }
 }

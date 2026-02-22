@@ -9,6 +9,6 @@ class LoanIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/loan/list.php');
+        return redirect()->route('loan.list');
     }
 }

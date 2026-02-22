@@ -9,6 +9,6 @@ class BomIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/bom/list.php');
+        return redirect()->route('bom.list');
     }
 }

@@ -27,12 +27,12 @@ class ShowBom extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Bom::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/bom/card.php?id={$id}")->with('success', 'BOM updated');
+        return redirect()->route('bom.show', ['id' => $id])->with('success', 'BOM updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Bom::findOrFail($id)->delete();
-        return redirect('/bom/list.php')->with('success', 'BOM deleted');
+        return redirect()->route('bom.list')->with('success', 'BOM deleted');
     }
 }

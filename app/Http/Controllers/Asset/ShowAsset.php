@@ -27,12 +27,12 @@ class ShowAsset extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Asset::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/asset/card.php?id={$id}")->with('success', 'Asset updated');
+        return redirect()->route('asset.show', ['id' => $id])->with('success', 'Asset updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Asset::findOrFail($id)->delete();
-        return redirect('/asset/list.php')->with('success', 'Asset deleted');
+        return redirect()->route('asset.list')->with('success', 'Asset deleted');
     }
 }
