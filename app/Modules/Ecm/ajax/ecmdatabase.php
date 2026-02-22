@@ -45,8 +45,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$element = GETPOST('element', 'alpha');
+$action = request()->input('action');
+$element = request()->input('element');
 
 $permissiontoread = $user->hasRight('ecm', 'read');
 

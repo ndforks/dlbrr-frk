@@ -48,16 +48,16 @@ require_once DOL_DOCUMENT_ROOT . '/hrm/lib/hrm_job.lib.php';
 $langs->loadLangs(array('hrm', 'companies', 'other', 'mails'));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
-$id = (GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id'));
-$ref = GETPOST('ref', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$id = (request()->integer('socid', 0) ? request()->integer('socid', 0) : request()->integer('id', 0));
+$ref = request()->input('ref');
 
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -94,15 +94,15 @@ $permissiontoread = $user->hasRight('hrm', 'all', 'read');
 $permissiontoadd = $user->hasRight('hrm', 'all', 'write'); // Used by the include of actions_addupdatedelete.inc.php and actions_linkedfiles.inc.php
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (empty($conf->hrm->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -175,7 +175,7 @@ if ($object->id && $upload_dir !== null) {
 
 	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
-	accessforbidden('', 0, 1);
+	abort(403);
 }
 
 // End of page

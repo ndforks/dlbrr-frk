@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/security2.lib.php';
 $langs->loadLangs(array("admin", "mails"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $form = new Form($db);
 
@@ -59,15 +59,15 @@ $error = 0;
 if ($action == 'setvalue') {
 	$db->begin();
 
-	$mailfrom = GETPOST('MAILING_EMAIL_FROM', 'alpha');
-	$mailerror = GETPOST('MAILING_EMAIL_ERRORSTO', 'alpha');
-	$checkread = GETPOST('value', 'alpha');
-	$checkread_key = GETPOST('MAILING_EMAIL_UNSUBSCRIBE_KEY', 'alpha');
-	$contactbulkdefault = GETPOSTINT('MAILING_CONTACT_DEFAULT_BULK_STATUS');
-	$batchlimit = GETPOSTINT('MAILING_LIMIT_SENDBYWEB');
+	$mailfrom = request()->input('MAILING_EMAIL_FROM');
+	$mailerror = request()->input('MAILING_EMAIL_ERRORSTO');
+	$checkread = request()->input('value');
+	$checkread_key = request()->input('MAILING_EMAIL_UNSUBSCRIBE_KEY');
+	$contactbulkdefault = request()->integer('MAILING_CONTACT_DEFAULT_BULK_STATUS', 0);
+	$batchlimit = request()->integer('MAILING_LIMIT_SENDBYWEB', 0);
 
-	if (GETPOST('MAILING_DELAY', 'alpha') != '') {
-		$mailingdelay = price2num(GETPOST('MAILING_DELAY', 'alpha'), 3);		// Not less than 1 millisecond.
+	if (request()->input('MAILING_DELAY') != '') {
+		$mailingdelay = price2num(request()->input('MAILING_DELAY'), 3);		// Not less than 1 millisecond.
 	} else {
 		$mailingdelay = '';
 	}
@@ -76,7 +76,7 @@ if ($action == 'setvalue') {
 	if ((float) $mailingdelay > 10) {
 		$mailingdelay = 10;
 	}
-	if (GETPOST('MAILING_DELAY', 'alpha') != '' && GETPOST('MAILING_DELAY', 'alpha') != '0' && (float) $mailingdelay < 0.001) {
+	if (request()->input('MAILING_DELAY') != '' && request()->input('MAILING_DELAY') != '0' && (float) $mailingdelay < 0.001) {
 		$mailingdelay = 0.001;
 	}
 
@@ -117,7 +117,7 @@ if ($action == 'setvalue') {
 	}
 }
 if ($action == 'setonsearchandlistgooncustomerorsuppliercard') {
-	$setonsearchandlistgooncustomerorsuppliercard = GETPOSTINT('value');
+	$setonsearchandlistgooncustomerorsuppliercard = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "SOCIETE_ON_SEARCH_AND_LIST_GO_ON_CUSTOMER_OR_SUPPLIER_CARD", $setonsearchandlistgooncustomerorsuppliercard, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;

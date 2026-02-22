@@ -824,7 +824,7 @@ class FormSetupItem
 					$val_const = GETPOSTINT($this->confKey);
 				}
 			} elseif ($this->type == 'multiselect') {
-				$val = GETPOST($this->confKey, 'array');
+				$val = request()->input($this->confKey, []);
 				if ($val && is_array($val)) {
 					$val_const = implode(',', $val);
 				} else {

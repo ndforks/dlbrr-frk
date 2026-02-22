@@ -80,8 +80,8 @@ $object = new stdClass(); // For triggers
 $error = 0;
 
 // Security check
-$id = GETPOSTINT("id");
-$securekeyreceived = GETPOST("securekey");
+$id = request()->integer('id', 0);
+$securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY') . 'conferenceorbooth'.((int) $id), 'md5');
 
 if ($securekeyreceived != $securekeytocompare) {
@@ -91,7 +91,7 @@ if ($securekeyreceived != $securekeytocompare) {
 
 // Module check
 if (empty($conf->eventorganization->enabled)) {
-	httponly_accessforbidden('Module Event organization not enabled');
+	httponly_abort(403);
 }
 
 /**

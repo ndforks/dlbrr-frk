@@ -9,6 +9,6 @@ class ProductIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/product/list.php');
+        return redirect()->route('product.list');
     }
 }

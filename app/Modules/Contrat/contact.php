@@ -49,11 +49,11 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('contracts', 'companies'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$socid = GETPOSTINT('socid');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$socid = request()->integer('socid', 0);
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 // Security check
 if ($user->socid) {
@@ -86,9 +86,9 @@ if (empty($reshook)) {
 		$result = $object->fetch($id);
 
 		if ($result > 0 && $id > 0) {
-			$contactid = (GETPOST('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-			$typeid    = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-			$result    = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+			$contactid = (request()->input('userid') ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+			$typeid    = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+			$result    = $object->add_contact($contactid, $typeid, request()->input('source'));
 		}
 
 		if ($result >= 0) {
@@ -109,7 +109,7 @@ if (empty($reshook)) {
 	// Toggle the status of a contact
 	if ($action == 'swapstatut' && $user->hasRight('contrat', 'creer')) {
 		if ($object->fetch($id)) {
-			$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+			$result = $object->swapContactStatus(request()->integer('ligne', 0));
 		} else {
 			dol_print_error($db, $object->error);
 		}
@@ -118,7 +118,7 @@ if (empty($reshook)) {
 	// Delete contact
 	if ($action == 'deletecontact' && $user->hasRight('contrat', 'creer')) {
 		$object->fetch($id);
-		$result = $object->delete_contact(GETPOSTINT("lineid"));
+		$result = $object->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);

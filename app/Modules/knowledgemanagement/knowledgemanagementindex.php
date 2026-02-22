@@ -41,14 +41,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("knowledgemanagement"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 // Security check
 // if (! $user->rights->knowledgemanagement->myobject->read) {
-// 	accessforbidden();
+// 	abort(403);
 // }
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if (!empty($user->socid) && $user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
@@ -148,7 +148,7 @@ if (!empty($conf->knowledgemanagement->enabled) && $user->rights->knowledgemanag
 	}
 	else
 	{
-		dol_print_error($db);
+		abort(500);
 	}
 }
 END MODULEBUILDER DRAFT MYOBJECT */

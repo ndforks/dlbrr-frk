@@ -50,7 +50,7 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
 // init getSupplierPrices hook
 $hookmanager->initHooks(array('ajaxGetSupplierPrices'));
 
-$idprod = GETPOSTINT('idprod');
+$idprod = request()->integer('idprod', 0);
 
 $prices = array();
 
@@ -71,7 +71,7 @@ if ($idprod > 0) {
 	$producttmp->fetch($idprod);
 
 	$sorttouse = 's.nom, pfp.quantity, pfp.price';
-	if (GETPOST('bestpricefirst')) {
+	if (request()->input('bestpricefirst')) {
 		$sorttouse = 'pfp.unitprice, s.nom, pfp.quantity, pfp.price';
 	}
 
@@ -169,7 +169,7 @@ if ($idprod > 0) {
 	$parameters = array(
 		'prices' => &$prices,
 		'idprod' => $idprod,
-		'bestpricefirst' => GETPOST('bestpricefirst')
+		'bestpricefirst' => request()->input('bestpricefirst')
 	);
 
 	$hookmanager->executeHooks('afterGetSupplierPrices', $parameters, $producttmp);

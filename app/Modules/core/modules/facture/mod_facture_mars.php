@@ -243,7 +243,7 @@ class mod_facture_mars extends ModeleNumRefFactures
 					$ref = $obj->ref;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			return $ref;

@@ -936,8 +936,8 @@ class EmailCollector extends CommonObject
 		// set output lang
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 			$newlang = !empty($object->thirdparty->default_lang) ? $object->thirdparty->default_lang : $newlang;

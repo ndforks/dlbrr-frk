@@ -45,17 +45,17 @@ require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
 
 // Security check
 if (!$user->hasRight('opensurvey', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialize Variables
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 $numsondage = '';
 
-if (GETPOST('id')) {
-	$numsondage = (string) GETPOST('id', 'alpha');
+if (request()->input('id')) {
+	$numsondage = (string) request()->input('id');
 }
 
 // Initialize objects
@@ -63,13 +63,13 @@ $object = new Opensurveysondage($db);
 
 $result = $object->fetch('', $numsondage);
 if ($result <= 0) {
-	accessforbidden("Record not found");
+	abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('surveycard', 'globalcard'));
 
-$expiredate = dol_mktime(0, 0, 0, GETPOSTINT('expiremonth'), GETPOSTINT('expireday'), GETPOSTINT('expireyear'));
+$expiredate = dol_mktime(0, 0, 0, request()->integer('expiremonth', 0), request()->integer('expireday', 0), request()->integer('expireyear', 0));
 
 $permissiontoread = $user->hasRight('opensurvey', 'read');
 $permissiontoadd = $user->hasRight('opensurvey', 'write');
@@ -95,7 +95,7 @@ if (empty($reshook)) {
 	if ($action == 'delete_confirm' && $permissiontodelete) {
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
-			accessforbidden();
+			abort(403);
 		}
 
 		$result = $object->delete($user, 0, $numsondage);
@@ -120,25 +120,25 @@ if (empty($reshook)) {
 	if ($action == 'update' && $permissiontoadd) {
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
-			accessforbidden();
+			abort(403);
 		}
 
 		$error = 0;
 
-		if (!GETPOST('nouveautitre')) {
+		if (!request()->input('nouveautitre')) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Title")), null, 'errors');
 			$error++;
 			$action = 'edit';
 		}
 
 		if (!$error) {
-			$object->title = (string) GETPOST('nouveautitre', 'alphanohtml');
-			$object->description = (string) GETPOST('nouveauxcommentaires', 'restricthtml');
-			$object->mail_admin = (string) GETPOST('nouvelleadresse', 'alpha');
+			$object->title = (string) request()->input('nouveautitre');
+			$object->description = (string) request()->input('nouveauxcommentaires');
+			$object->mail_admin = (string) request()->input('nouvelleadresse');
 			$object->date_fin = $expiredate;
-			$object->allow_comments = GETPOST('cancomment', 'aZ09') == 'on' ? 1 : 0;
-			$object->allow_spy = GETPOST('canseeothersvote', 'aZ09') == 'on' ? 1 : 0;
-			$object->mailsonde = GETPOST('mailsonde', 'aZ09') == 'on' ? 1 : 0;
+			$object->allow_comments = request()->input('cancomment') == 'on' ? 1 : 0;
+			$object->allow_spy = request()->input('canseeothersvote') == 'on' ? 1 : 0;
+			$object->mailsonde = request()->input('mailsonde') == 'on' ? 1 : 0;
 
 			$res = $object->update($user);
 			if ($res < 0) {
@@ -149,21 +149,21 @@ if (empty($reshook)) {
 	}
 
 	// Add comment
-	if (GETPOST('ajoutcomment') && $permissiontoadd) {
+	if (request()->input('ajoutcomment') && $permissiontoadd) {
 		$error = 0;
 
-		if (!GETPOST('comment', "alphanohtml")) {
+		if (!request()->input('comment')) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Comment")), null, 'errors');
 		}
-		if (!GETPOST('commentuser', "alphanohtml")) {
+		if (!request()->input('commentuser')) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("User")), null, 'errors');
 		}
 
 		if (!$error) {
-			$comment = (string) GETPOST("comment", "alphanohtml");
-			$comment_user = (string) GETPOST('commentuser', "alphanohtml");
+			$comment = (string) request()->input('comment');
+			$comment_user = (string) request()->input('commentuser');
 
 			$resql = $object->addComment($comment, $comment_user);
 
@@ -175,11 +175,11 @@ if (empty($reshook)) {
 
 	// Delete comment
 	if ($action == 'deletecomment' && $permissiontoadd) {
-		$idcomment = GETPOSTINT('idcomment');
+		$idcomment = request()->integer('idcomment', 0);
 		if ($idcomment > 0) {
 			// Security check
 			if (!$user->hasRight('opensurvey', 'write')) {
-				accessforbidden();
+				abort(403);
 			}
 
 			$resql = $object->deleteComment($idcomment);
@@ -189,7 +189,7 @@ if (empty($reshook)) {
 	if ($action == 'edit' && $permissiontoadd) {
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
-			accessforbidden();
+			abort(403);
 		}
 	}
 }

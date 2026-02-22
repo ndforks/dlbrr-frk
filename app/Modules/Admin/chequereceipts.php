@@ -47,11 +47,11 @@ require_once DOL_DOCUMENT_ROOT.'/compta/paiement/cheque/class/remisecheque.class
 $langs->loadLangs(array("admin", "companies", "bills", "other", "banks"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
+$action = request()->input('action');
+$value = request()->input('value');
 
 
 if (!getDolGlobalString('CHEQUERECEIPTS_ADDON')) {
@@ -66,8 +66,8 @@ if (!getDolGlobalString('CHEQUERECEIPTS_ADDON')) {
 $error = 0;
 
 if ($action == 'updateMask') {
-	$maskconstchequereceipts = GETPOST('maskconstchequereceipts', 'aZ09');
-	$maskchequereceipts = GETPOST('maskchequereceipts', 'alpha');
+	$maskconstchequereceipts = request()->input('maskconstchequereceipts');
+	$maskchequereceipts = request()->input('maskchequereceipts');
 
 	$res = 0;
 
@@ -91,7 +91,7 @@ if ($action == 'setmod') {
 }
 
 if ($action == 'set_BANK_CHEQUERECEIPT_FREE_TEXT') {
-	$freetext = GETPOST('BANK_CHEQUERECEIPT_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('BANK_CHEQUERECEIPT_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "BANK_CHEQUERECEIPT_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 

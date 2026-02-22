@@ -46,10 +46,10 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 $langs->loadLangs(array("admin", "errors"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 /*
  * Actions
@@ -60,56 +60,56 @@ if ($action == 'setvalue' /* && $user->admin */) {
 
 	$db->begin();
 
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_DN', GETPOST("contactdn"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_DN', request()->input('contactdn'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_OBJECT_CLASS', GETPOST("objectclass"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_OBJECT_CLASS', request()->input('objectclass'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FULLNAME', GETPOST("fieldfullname"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FULLNAME', request()->input('fieldfullname'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_NAME', GETPOST("fieldname"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_NAME', request()->input('fieldname'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FIRSTNAME', GETPOST("fieldfirstname"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FIRSTNAME', request()->input('fieldfirstname'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_COMPANY', GETPOST("fieldcompany"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_COMPANY', request()->input('fieldcompany'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_MAIL', GETPOST("fieldmail"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_MAIL', request()->input('fieldmail'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_PHONE', GETPOST("fieldphone"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_PHONE', request()->input('fieldphone'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_HOMEPHONE', GETPOST("fieldhomephone"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_HOMEPHONE', request()->input('fieldhomephone'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_MOBILE', GETPOST("fieldmobile"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_MOBILE', request()->input('fieldmobile'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FAX', GETPOST("fieldfax"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_FAX', request()->input('fieldfax'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_ADDRESS', GETPOST("fieldaddress"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_ADDRESS', request()->input('fieldaddress'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_ZIP', GETPOST("fieldzip"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_ZIP', request()->input('fieldzip'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_TOWN', GETPOST("fieldtown"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_TOWN', request()->input('fieldtown'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_COUNTRY', GETPOST("fieldcountry"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_CONTACT_FIELD_COUNTRY', request()->input('fieldcountry'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
 	// This one must be after the others
 	$valkey = '';
-	$key = GETPOST("key");
+	$key = request()->input('key');
 	if ($key) {
 		$valkey = getDolGlobalString($key);
 	}
@@ -122,7 +122,7 @@ if ($action == 'setvalue' /* && $user->admin */) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

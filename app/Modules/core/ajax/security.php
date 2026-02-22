@@ -52,7 +52,7 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$action = GETPOST('action');
+$action = request()->input('action');
 
 // Security check
 // None. This is public component with no access and effect on data.
@@ -77,11 +77,11 @@ top_httphead();
 if ($action) {
 	if ($action == 'getrandompassword') {	// Test on permission not required here. Endpoint can be called by anu logged user.
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
-		$generic = GETPOST('generic') ? true : false;
+		$generic = request()->input('generic') ? true : false;
 		echo getRandomPassword($generic);
 	}
 } else {
-	if (GETPOST('errorcode') == 'InvalidToken') {
+	if (request()->input('errorcode') == 'InvalidToken') {
 		http_response_code(401);
 	}
 }

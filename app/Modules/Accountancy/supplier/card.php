@@ -43,22 +43,22 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("bills", "accountancy"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$codeventil = GETPOSTINT('codeventil');
-$id = GETPOSTINT('id');
+$codeventil = request()->integer('codeventil', 0);
+$id = request()->integer('id', 0);
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 

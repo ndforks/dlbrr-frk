@@ -58,15 +58,15 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array("mails", "admin"));
 
-$id = (GETPOSTINT('mailid') ? GETPOSTINT('mailid') : GETPOSTINT('id'));
+$id = (request()->integer('mailid', 0) ? request()->integer('mailid', 0) : request()->integer('id', 0));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$urlfrom = GETPOST('urlfrom');
-$projectid = GETPOSTINT('projectid');
-$backtopage = GETPOST('backtopage');
-$backtopageforcancel = GETPOST('backtopageforcancel');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$urlfrom = request()->input('urlfrom');
+$projectid = request()->integer('projectid', 0);
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
 // Initialize a technical objects
 $object = new Mailing($db);
@@ -116,10 +116,10 @@ if (version_compare(phpversion(), '7.0', '>=')) {
 
 // Security check
 if (!$user->hasRight('mailing', 'lire') || (!getDolGlobalString('EXTERNAL_USERS_ARE_AUTHORIZED') && $user->socid > 0)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($action) && empty($object->id)) {
-	accessforbidden('Object not found');
+	abort(403);
 }
 
 $upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
@@ -169,10 +169,10 @@ if (empty($reshook)) {
 
 	// Action clone object
 	if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontocreate) {
-		if (!GETPOST("clone_content", 'alpha') && !GETPOST("clone_receivers", 'alpha')) {
+		if (!request()->input('clone_content') && !request()->input('clone_receivers')) {
 			setEventMessages($langs->trans("NoCloneOptionsSpecified"), null, 'errors');
 		} else {
-			$result = $object->createFromClone($user, $object->id, GETPOST("clone_content") ? 1 : 0, GETPOST("clone_receivers") ? 1 : 0);
+			$result = $object->createFromClone($user, $object->id, request()->input('clone_content') ? 1 : 0, request()->input('clone_receivers') ? 1 : 0);
 			if ($result > 0) {
 				header("Location: ".$_SERVER['PHP_SELF'].'?id='.$result);
 				exit;
@@ -239,7 +239,7 @@ if (empty($reshook)) {
 					$sql = "UPDATE ".MAIN_DB_PREFIX."mailing SET date_envoi='".$db->idate($now)."' WHERE rowid=".((int) $object->id);
 					$resql2 = $db->query($sql);
 					if (!$resql2) {
-						dol_print_error($db);
+						abort(500);
 					}
 
 					$thirdpartystatic = new Societe($db);
@@ -420,7 +420,7 @@ if (empty($reshook)) {
 							$sql .= " SET statut=1, date_envoi = '".$db->idate($now)."' WHERE rowid=".((int) $obj->rowid);
 							$resql2 = $db->query($sql);
 							if (!$resql2) {
-								dol_print_error($db);
+								abort(500);
 							} else {
 								//if check read is use then update prospect contact status
 								if (strpos($message, '__CHECK_READ__') !== false) {
@@ -429,7 +429,7 @@ if (empty($reshook)) {
 									dol_syslog("card.php: set prospect thirdparty status", LOG_DEBUG);
 									$resql2 = $db->query($sql);
 									if (!$resql2) {
-										dol_print_error($db);
+										abort(500);
 									}
 
 									//Update status communication of contact prospect
@@ -438,7 +438,7 @@ if (empty($reshook)) {
 
 									$resql2 = $db->query($sql);
 									if (!$resql2) {
-										dol_print_error($db);
+										abort(500);
 									}
 								}
 							}
@@ -459,7 +459,7 @@ if (empty($reshook)) {
 							$sql .= " SET statut=-1, error_text='".$db->escape(dol_trunc($mail->error, 250))."', date_envoi='".$db->idate($now)."' WHERE rowid=".((int) $obj->rowid);
 							$resql2 = $db->query($sql);
 							if (!$resql2) {
-								dol_print_error($db);
+								abort(500);
 							}
 						}
 
@@ -486,11 +486,11 @@ if (empty($reshook)) {
 				dol_syslog("comm/mailing/card.php: update global status", LOG_DEBUG);
 				$resql2 = $db->query($sql);
 				if (!$resql2) {
-					dol_print_error($db);
+					abort(500);
 				}
 			} else {
 				dol_syslog($db->error());
-				dol_print_error($db);
+				abort(500);
 			}
 			$object->fetch($id);
 			$action = '';
@@ -503,7 +503,7 @@ if (empty($reshook)) {
 
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
-		$object->sendto = GETPOST("sendto", 'alphawithlgt');
+		$object->sendto = request()->input('sendto');
 		if (!$object->sendto) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MailTo")), null, 'errors');
 			$error++;
@@ -575,20 +575,20 @@ if (empty($reshook)) {
 	$mesgs = array();
 	// Action add emailing
 	if ($action == 'add' && $permissiontocreate) {
-		$object->messtype       = (string) GETPOST("messtype");
+		$object->messtype       = (string) request()->input('messtype');
 		if ($object->messtype == 'sms') {
-			$object->email_from     = (string) GETPOST("from_phone", 'alphawithlgt'); // Must allow 'name <email>'
+			$object->email_from     = (string) request()->input('from_phone'); // Must allow 'name <email>'
 		} else {
-			$object->email_from     = (string) GETPOST("from", 'alphawithlgt'); // Must allow 'name <email>'
+			$object->email_from     = (string) request()->input('from'); // Must allow 'name <email>'
 		}
-		$object->email_replyto  = (string) GETPOST("replyto", 'alphawithlgt'); // Must allow 'name <email>'
-		$object->email_errorsto = (string) GETPOST("errorsto", 'alphawithlgt'); // Must allow 'name <email>'
-		$object->title          = (string) GETPOST("title");
-		$object->sujet          = (string) GETPOST("subject");
-		$object->body           = (string) GETPOST("bodyemail", 'restricthtml');
-		$object->bgcolor        = preg_replace('/^#/', '', (string) GETPOST("bgcolor"));
-		$object->bgimage        = (string) GETPOST("bgimage");
-		$object->fk_project		= GETPOSTINT('projectid');
+		$object->email_replyto  = (string) request()->input('replyto'); // Must allow 'name <email>'
+		$object->email_errorsto = (string) request()->input('errorsto'); // Must allow 'name <email>'
+		$object->title          = (string) request()->input('title');
+		$object->sujet          = (string) request()->input('subject');
+		$object->body           = (string) request()->input('bodyemail');
+		$object->bgcolor        = preg_replace('/^#/', '', (string) request()->input('bgcolor'));
+		$object->bgimage        = (string) request()->input('bgimage');
+		$object->fk_project		= request()->integer('projectid', 0);
 
 		if (!$object->title) {
 			$mesgs[] = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailTitle"));
@@ -615,7 +615,7 @@ if (empty($reshook)) {
 
 	if ($action == 'classin' && $permissiontocreate) {
 		$mesgs = array();
-		$setResult = $object->setProject(GETPOSTINT('projectid'));
+		$setResult = $object->setProject(request()->integer('projectid', 0));
 		dol_syslog('Mailing card, action classin, setProject', LOG_DEBUG);
 		if ($setResult) {
 			$result = $object->update($user);
@@ -635,19 +635,19 @@ if (empty($reshook)) {
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
 		if ($action == 'settitle') {					// Test on permission already done
-			$object->title = trim(GETPOST('title', 'alpha'));
+			$object->title = trim(request()->input('title'));
 		} elseif ($action == 'setemail_from') {			// Test on permission already done
-			$object->email_from = trim(GETPOST('email_from', 'alphawithlgt')); // Must allow 'name <email>'
+			$object->email_from = trim(request()->input('email_from')); // Must allow 'name <email>'
 		} elseif ($action == 'setemail_replyto') {		// Test on permission already done
-			$object->email_replyto = trim(GETPOST('email_replyto', 'alphawithlgt')); // Must allow 'name <email>'
+			$object->email_replyto = trim(request()->input('email_replyto')); // Must allow 'name <email>'
 		} elseif ($action == 'setemail_errorsto') {		// Test on permission already done
-			$object->email_errorsto = trim(GETPOST('email_errorsto', 'alphawithlgt')); // Must allow 'name <email>'
+			$object->email_errorsto = trim(request()->input('email_errorsto')); // Must allow 'name <email>'
 		} elseif ($action == 'settitle' && empty($object->title)) {		// Test on permission already done
 			$mesg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailTitle"));
 		} elseif ($action == 'setfrom' && empty($object->email_from)) {	// Test on permission already done
 			$mesg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailFrom"));
 		} elseif ($action == 'setevenunsubscribe') {	// Test on permission already done
-			$object->evenunsubscribe = (GETPOST('evenunsubscribe') ? 1 : 0);
+			$object->evenunsubscribe = (request()->input('evenunsubscribe') ? 1 : 0);
 		}
 
 		if (isset($mesg) && !$mesg) {
@@ -666,7 +666,7 @@ if (empty($reshook)) {
 	/*
 	 * Action of adding a file in email form
 	 */
-	if (GETPOST('addfile') && $permissiontocreate) {
+	if (request()->input('addfile') && $permissiontocreate) {
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
@@ -678,18 +678,18 @@ if (empty($reshook)) {
 	}
 
 	// Action of file remove
-	if (GETPOSTINT("removedfile") && $permissiontocreate) {
+	if (request()->integer('removedfile', 0) && $permissiontocreate) {
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
-		dol_remove_file_process(GETPOSTINT('removedfile'), 0, 0); // We really delete file linked to mailing
+		dol_remove_file_process(request()->integer('removedfile', 0), 0, 0); // We really delete file linked to mailing
 
 		$action = "edit";
 	}
 
 	// Action of emailing update
-	if ($action == 'update' && !GETPOSTINT("removedfile") && !$cancel && $permissiontocreate) {
+	if ($action == 'update' && !request()->integer('removedfile', 0) && !$cancel && $permissiontocreate) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$isupload = 0;
@@ -697,11 +697,11 @@ if (empty($reshook)) {
 		if (!$isupload) {
 			$mesgs = array();
 
-			//$object->messtype       = (string) GETPOST("messtype");	// We must not be able to change the messtype
-			$object->sujet          = (string) GETPOST("subject");
-			$object->body           = (string) GETPOST("bodyemail", 'restricthtml');
-			$object->bgcolor        = preg_replace('/^#/', '', (string) GETPOST("bgcolor"));
-			$object->bgimage        = (string) GETPOST("bgimage");
+			//$object->messtype       = (string) request()->input('messtype');	// We must not be able to change the messtype
+			$object->sujet          = (string) request()->input('subject');
+			$object->body           = (string) request()->input('bodyemail');
+			$object->bgcolor        = preg_replace('/^#/', '', (string) request()->input('bgcolor'));
+			$object->bgimage        = (string) request()->input('bgimage');
 
 			if ($object->messtype != 'sms' && !$object->sujet) {
 				$mesgs[] = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailTopic"));
@@ -734,7 +734,7 @@ if (empty($reshook)) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -750,7 +750,7 @@ if (empty($reshook)) {
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -773,7 +773,7 @@ if (empty($reshook)) {
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -842,7 +842,7 @@ if ($action == 'create') {	// aaa
 
 	print '<table class="border centpercent">';
 
-	$title = GETPOST('title');
+	$title = request()->input('title');
 	if (empty($title)) {
 		$title = $langs->transnoentities("MailingOf", dol_print_date(dol_now(), 'dayrfc'));
 	}
@@ -862,7 +862,7 @@ if ($action == 'create') {	// aaa
 	if (getDolGlobalInt('EMAILINGS_SUPPORT_ALSO_SMS')) {
 		$arrayoftypes = array("email" => "Email", "sms" => "SMS");
 		print '<tr><td class="fieldrequired titlefieldcreate">'.$langs->trans("Type").'</td><td>';
-		print $form->selectarray('messtype', $arrayoftypes, (GETPOSTISSET('messtype') ? GETPOST('messtype') : 'email'), 0, 0);
+		print $form->selectarray('messtype', $arrayoftypes, (request()->has('messtype') ? request()->input('messtype') : 'email'), 0, 0);
 
 		print '<script>
 		$( document ).ready(function() {
@@ -890,10 +890,10 @@ if ($action == 'create') {	// aaa
 	print '<table class="border centpercent">';
 
 	print '<tr class="fieldsforemail"><td class="fieldrequired titlefieldcreate">'.$langs->trans("MailFrom").'</td>';
-	print '<td>'.img_picto('', 'email', 'class="pictofixedwidth"').'<input class="flat minwidth200" name="from" value="'.(GETPOSTISSET('from') ? GETPOST('from') : getDolGlobalString('MAILING_EMAIL_FROM')).'" spellcheck="false"></td></tr>';
+	print '<td>'.img_picto('', 'email', 'class="pictofixedwidth"').'<input class="flat minwidth200" name="from" value="'.(request()->has('from') ? request()->input('from') : getDolGlobalString('MAILING_EMAIL_FROM')).'" spellcheck="false"></td></tr>';
 
 	print '<tr class="fieldsforsms hidden"><td class="fieldrequired titlefieldcreate">'.$langs->trans("PhoneFrom").'</td>';
-	print '<td>'.img_picto('', 'email', 'class="pictofixedwidth"').'<input class="flat minwidth200" name="fromphone" value="'.(GETPOSTISSET('fromphone') ? GETPOST('fromphone') : getDolGlobalString('MAILING_SMS_FROM')).'" placeholder="+123..."></td></tr>';
+	print '<td>'.img_picto('', 'email', 'class="pictofixedwidth"').'<input class="flat minwidth200" name="fromphone" value="'.(request()->has('fromphone') ? request()->input('fromphone') : getDolGlobalString('MAILING_SMS_FROM')).'" placeholder="+123..."></td></tr>';
 
 	print '<tr class="fieldsforemail"><td>'.$langs->trans("MailErrorsTo").'</td>';
 	print '<td>'.img_picto('', 'email', 'class="pictofixedwidth"').'<input class="flat minwidth200" name="errorsto" value="'.getDolGlobalString('MAILING_EMAIL_ERRORSTO', getDolGlobalString('MAIN_MAIL_ERRORS_TO')).'"></td></tr>';
@@ -915,7 +915,7 @@ if ($action == 'create') {	// aaa
 
 	print '<table class="border centpercent">';
 
-	$subject = GETPOST('subject');
+	$subject = request()->input('subject');
 	if (empty($subject)) {
 		$subject = '['.$mysoc->name.'] '.$langs->trans("Information");
 	}
@@ -926,7 +926,7 @@ if ($action == 'create') {	// aaa
 	// Background color
 	/* if (getDolGlobalString('EMAILING_CAN_EDIT_BACKGROUND_COLOR')) {
 		print '<tr class="fieldsforemail"><td>'.$langs->trans("BackgroundColorByDefault").'</td><td colspan="3">';
-		print $htmlother->selectColor(GETPOST('bgcolor'), 'bgcolor', '', 0);
+		print $htmlother->selectColor(request()->input('bgcolor'), 'bgcolor', '', 0);
 		print '</td></tr>';
 	} */
 
@@ -959,7 +959,7 @@ if ($action == 'create') {	// aaa
 	print '<div style="padding-top: 10px">';
 	// wysiwyg editor
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('bodyemail', GETPOST('bodyemail', 'restricthtmlallowunvalid'), '', 600, 'dolibarr_mailings', '', true, -1, getDolGlobalInt('FCKEDITOR_ENABLE_MAILING'), 20, '100%');
+	$doleditor = new DolEditor('bodyemail', request()->input('bodyemail'), '', 600, 'dolibarr_mailings', '', true, -1, getDolGlobalInt('FCKEDITOR_ENABLE_MAILING'), 20, '100%');
 	$doleditor->Create();
 	print '</div>';
 
@@ -1262,7 +1262,7 @@ if ($action == 'create') {	// aaa
 			}
 
 			// Actions Buttons
-			if (GETPOST('cancel', 'alpha') || $confirm == 'no' || $action == '' || in_array($action, array('settodraft', 'valid', 'delete', 'sendall', 'clone', 'test', 'editevenunsubscribe'))) {
+			if (request()->input('cancel') || $confirm == 'no' || $action == '' || in_array($action, array('settodraft', 'valid', 'delete', 'sendall', 'clone', 'test', 'editevenunsubscribe'))) {
 				print "\n\n<div class=\"tabsAction\">\n";
 
 				if (($object->status == 1) && ($user->hasRight('mailing', 'valider') || $object->user_validation_id == $user->id)) {

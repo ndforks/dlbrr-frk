@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $langs->loadLangs(array("admin", "other", "bills", "orders", "suppliers"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $extrafields = new ExtraFields($db);
@@ -55,8 +55,8 @@ $form = new Form($db);
 // List of supported format
 $type2label = ExtraFields::getListOfTypesLabels();
 
-$action = GETPOST('action', 'aZ09');
-$attrname = GETPOST('attrname', 'alpha');
+$action = request()->input('action');
+$attrname = request()->input('attrname');
 $elementtype = 'facture_fourn_rec'; //Must be the $table_element of the class that manage extrafield
 
 

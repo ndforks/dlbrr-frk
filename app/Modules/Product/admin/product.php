@@ -53,15 +53,15 @@ $langs->loadLangs(array("admin", "products"));
 
 // Security check
 if (!$user->admin || (!isModEnabled("product") && !isModEnabled("service"))) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'product';
 
 // Pricing Rules
@@ -103,24 +103,24 @@ if ($action == 'setcodeproduct') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
-if ($action == 'other' && GETPOST('value_PRODUIT_LIMIT_SIZE') >= 0) {
-	$res = dolibarr_set_const($db, "PRODUIT_LIMIT_SIZE", GETPOST('value_PRODUIT_LIMIT_SIZE'), 'chaine', 0, '', $conf->entity);
+if ($action == 'other' && request()->input('value_PRODUIT_LIMIT_SIZE') >= 0) {
+	$res = dolibarr_set_const($db, "PRODUIT_LIMIT_SIZE", request()->input('value_PRODUIT_LIMIT_SIZE'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 }
-if ($action == 'other' && GETPOST('value_PRODUIT_MULTIPRICES_LIMIT') > 0) {
-	$res = dolibarr_set_const($db, "PRODUIT_MULTIPRICES_LIMIT", GETPOST('value_PRODUIT_MULTIPRICES_LIMIT'), 'chaine', 0, '', $conf->entity);
+if ($action == 'other' && request()->input('value_PRODUIT_MULTIPRICES_LIMIT') > 0) {
+	$res = dolibarr_set_const($db, "PRODUIT_MULTIPRICES_LIMIT", request()->input('value_PRODUIT_MULTIPRICES_LIMIT'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 }
 if ($action == 'other') {
-	$princingrules = GETPOST('princingrule', 'alpha');
+	$princingrules = request()->input('princingrule');
 	foreach ($select_pricing_rules as $tmprule => $tmplabel) { // Loop on each possible mode
 		if ($tmprule == $princingrules) { // We are on selected rule, we enable it
 			if ($princingrules == 'PRODUCT_PRICE_UNIQ') { // For this case, we disable entries manually
@@ -144,46 +144,46 @@ if ($action == 'other') {
 		}
 	}
 
-	$value = GETPOST('price_base_type', 'alpha');
+	$value = request()->input('price_base_type');
 	$res = dolibarr_set_const($db, "PRODUCT_PRICE_BASE_TYPE", $value, 'chaine', 0, '', $conf->entity);
 
-	/*$value = GETPOST('PRODUIT_SOUSPRODUITS', 'alpha');
+	/*$value = request()->input('PRODUIT_SOUSPRODUITS');
 	$res = dolibarr_set_const($db, "PRODUIT_SOUSPRODUITS", $value, 'chaine', 0, '', $conf->entity);*/
 
-	$value = GETPOST('PRODUIT_DESC_IN_FORM', 'alpha');
+	$value = request()->input('PRODUIT_DESC_IN_FORM');
 	$res = dolibarr_set_const($db, "PRODUIT_DESC_IN_FORM", $value, 'chaine', 0, '', $conf->entity);
 
-	$value = GETPOST('activate_viewProdTextsInThirdpartyLanguage', 'alpha');
+	$value = request()->input('activate_viewProdTextsInThirdpartyLanguage');
 	$res = dolibarr_set_const($db, "PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE", $value, 'chaine', 0, '', $conf->entity);
 
-	$value = GETPOST('activate_mergePropalProductCard', 'alpha');
+	$value = request()->input('activate_mergePropalProductCard');
 	$res = dolibarr_set_const($db, "PRODUIT_PDF_MERGE_PROPAL", $value, 'chaine', 0, '', $conf->entity);
 
-	$value = GETPOST('activate_usesearchtoselectproduct', 'alpha');
+	$value = request()->input('activate_usesearchtoselectproduct');
 	$res = dolibarr_set_const($db, "PRODUIT_USE_SEARCH_TO_SELECT", $value, 'chaine', 0, '', $conf->entity);
 
-	$value = GETPOST('activate_FillProductDescAuto', 'alpha');
+	$value = request()->input('activate_FillProductDescAuto');
 	$res = dolibarr_set_const($db, "PRODUIT_AUTOFILL_DESC", $value, 'chaine', 0, '', $conf->entity);
 
-	if (GETPOSTISSET('PRODUIT_FOURN_TEXTS')) {
-		$value = GETPOST('PRODUIT_FOURN_TEXTS', 'alpha');
+	if (request()->has('PRODUIT_FOURN_TEXTS')) {
+		$value = request()->input('PRODUIT_FOURN_TEXTS');
 		$res = dolibarr_set_const($db, "PRODUIT_FOURN_TEXTS", $value, 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('PRODUCT_USE_SUPPLIER_PACKAGING')) {
-		$value = GETPOST('PRODUCT_USE_SUPPLIER_PACKAGING', 'alpha');
+	if (request()->has('PRODUCT_USE_SUPPLIER_PACKAGING')) {
+		$value = request()->input('PRODUCT_USE_SUPPLIER_PACKAGING');
 		$res = dolibarr_set_const($db, "PRODUCT_USE_SUPPLIER_PACKAGING", $value, 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('PRODUCT_USE_CUSTOMER_PACKAGING')) {
-		$value = GETPOST('PRODUCT_USE_CUSTOMER_PACKAGING', 'alpha');
+	if (request()->has('PRODUCT_USE_CUSTOMER_PACKAGING')) {
+		$value = request()->input('PRODUCT_USE_CUSTOMER_PACKAGING');
 		$res = dolibarr_set_const($db, "PRODUCT_USE_CUSTOMER_PACKAGING", $value, 'chaine', 0, '', $conf->entity);
 	}
 }
 
 
 if ($action == 'specimen') { // For products
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$product = new Product($db);
 	$product->initAsSpecimen();
@@ -251,9 +251,9 @@ if ($action == 'setdoc') {
 
 
 if ($action == 'set') {
-	$const = "PRODUCT_SPECIAL_".strtoupper(GETPOST('spe', 'alpha'));
-	$value = GETPOST('value');
-	if (GETPOST('value', 'alpha')) {
+	$const = "PRODUCT_SPECIAL_".strtoupper(request()->input('spe'));
+	$value = request()->input('value');
+	if (request()->input('value')) {
 		$res = dolibarr_set_const($db, $const, $value, 'chaine', 0, '', $conf->entity);
 	} else {
 		$res = dolibarr_del_const($db, $const, $conf->entity);
@@ -423,7 +423,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<br>';

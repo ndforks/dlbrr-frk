@@ -168,8 +168,8 @@ class IpField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alphanohtml');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}
@@ -193,8 +193,8 @@ class IpField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

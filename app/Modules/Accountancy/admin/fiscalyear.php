@@ -35,14 +35,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/fiscalyear.class.php';
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -74,10 +74,10 @@ $hookmanager->initHooks(array('fiscalyearlist'));
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'fiscalyear', 'write')) {              // If we can read accounting records, we should be able to see fiscal year.
-	accessforbidden();
+	abort(403);
 }
 
 /*
@@ -87,8 +87,8 @@ if ($action == 'setdefault') {
 	// Set a fiscal year as default
 	$error = 0;
 
-	$defaultFiscalYear = GETPOSTINT('value');
-	$defaultFiscalYearLabel = GETPOST('label', 'alpha');
+	$defaultFiscalYear = request()->integer('value', 0);
+	$defaultFiscalYearLabel = request()->input('label');
 
 	if (!empty($defaultFiscalYear)) {
 		dolibarr_set_const($db, 'ACCOUNTANCY_FISCALYEAR_DEFAULT', $defaultFiscalYear, 'chaine', 0, '', $conf->entity);
@@ -215,7 +215,7 @@ if ($result) {
 	print '</table>';
 	print '</div>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

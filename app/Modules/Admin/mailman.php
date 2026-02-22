@@ -46,14 +46,14 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("admin", "members", "mailmanspip"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
 
-$action = GETPOST('action', 'aZ09');
-$testsubscribeemail = GETPOST("testsubscribeemail");
-$testunsubscribeemail = GETPOST("testunsubscribeemail");
+$action = request()->input('action');
+$testsubscribeemail = request()->input('testsubscribeemail');
+$testunsubscribeemail = request()->input('testunsubscribeemail');
 
 $error = 0;
 
@@ -64,9 +64,9 @@ $error = 0;
 
 // Action updated or added a constant
 if ($action == 'update' || $action == 'add') {
-	$tmparray = GETPOST('constname', 'array');
-	$tmpvalue = GETPOST('constvalue', 'array');
-	$tmpnote = GETPOST('constnote', 'array');
+	$tmparray = request()->input('constname');
+	$tmpvalue = request()->input('constvalue');
+	$tmpnote = request()->input('constnote');
 	if (is_array($tmparray)) {
 		foreach ($tmparray as $key => $val) {
 			$constname = $tmparray[$key];
@@ -89,22 +89,22 @@ if ($action == 'update' || $action == 'add') {
 
 // Action to activate a submodule of the 'adherent' module
 if ($action == 'set') {
-	$result = dolibarr_set_const($db, GETPOST("name", 'aZ09'), GETPOST("value"), '', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, request()->input('name'), request()->input('value'), '', 0, '', $conf->entity);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Action to deactivate a submodule of the 'adherent' module
 if ($action == 'unset') {
-	$result = dolibarr_del_const($db, GETPOST("name", 'aZ09'), $conf->entity);
+	$result = dolibarr_del_const($db, request()->input('name'), $conf->entity);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if (($action == 'testsubscribe' || $action == 'testunsubscribe') && getDolGlobalString('ADHERENT_USE_MAILMAN')) {
-	$email = GETPOST($action.'email');
+	$email = request()->input($action . 'email');
 	if (!isValidEmail($email)) {
 		$langs->load("errors");
 		setEventMessages($langs->trans("ErrorBadEMail", $email), null, 'errors');
@@ -229,7 +229,7 @@ if (getDolGlobalString('ADHERENT_USE_MAILMAN')) {
 	print '<input type="hidden" name="action" value="testsubscribe">';
 
 	print $langs->trans("TestSubscribe").'<br>';
-	print $langs->trans("EMail").' <input type="email" class="flat" name="testsubscribeemail" value="'.GETPOST('testsubscribeemail').'"> <input type="submit" class="button" value="'.$langs->trans("Test").'"><br>';
+	print $langs->trans("EMail").' <input type="email" class="flat" name="testsubscribeemail" value="'.request()->input('testsubscribeemail').'"> <input type="submit" class="button" value="'.$langs->trans("Test").'"><br>';
 
 	print '</form>';
 
@@ -238,7 +238,7 @@ if (getDolGlobalString('ADHERENT_USE_MAILMAN')) {
 	print '<input type="hidden" name="action" value="testunsubscribe">';
 
 	print $langs->trans("TestUnSubscribe").'<br>';
-	print $langs->trans("EMail").' <input type="email" class="flat" name="testunsubscribeemail" value="'.GETPOST('testunsubscribeemail').'"> <input type="submit" class="button" value="'.$langs->trans("Test").'"><br>';
+	print $langs->trans("EMail").' <input type="email" class="flat" name="testunsubscribeemail" value="'.request()->input('testunsubscribeemail').'"> <input type="submit" class="button" value="'.$langs->trans("Test").'"><br>';
 
 	print '</form>';
 }

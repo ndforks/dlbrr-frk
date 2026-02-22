@@ -110,11 +110,11 @@ class box_graph_propales_permonth extends ModeleBoxes
 
 			include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
 			include_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propalestats.class.php';
-			$autosetarray = preg_split("/[,;:]+/", GETPOST('DOL_AUTOSET_COOKIE'));
+			$autosetarray = preg_split("/[,;:]+/", request()->input('DOL_AUTOSET_COOKIE'));
 			if (in_array('DOLUSER_box_'.$this->boxcode, $autosetarray)) {
-				$endyear = GETPOSTINT($param_year);
-				$shownb = GETPOST($param_shownb, 'alpha');
-				$showtot = GETPOST($param_showtot, 'alpha');
+				$endyear = request()->integer($param_year, 0);
+				$shownb = request()->input($param_shownb);
+				$showtot = request()->input($param_showtot);
 			} else {
 				$tmparray = (!empty($_COOKIE['DOLUSER_box_'.$this->boxcode]) ? json_decode($_COOKIE['DOLUSER_box_'.$this->boxcode], true) : array());
 				$endyear = (!empty($tmparray['year']) ? $tmparray['year'] : '');
@@ -138,7 +138,7 @@ class box_graph_propales_permonth extends ModeleBoxes
 
 			// Build graphic number of object. $data = array(array('Lib',val1,val2,val3),...)
 			if ($shownb) {
-				$data1 = $stats->getNbByMonthWithPrevYear($endyear, $startyear, (GETPOST('action', 'aZ09') == $refreshaction ? -1 : (3600 * 24)), ($WIDTH < 300 ? 2 : 0), $startmonth);
+				$data1 = $stats->getNbByMonthWithPrevYear($endyear, $startyear, (request()->input('action') == $refreshaction ? -1 : (3600 * 24)), ($WIDTH < 300 ? 2 : 0), $startmonth);
 				$datatype1 = array_pad(array(), ($endyear - $startyear + 1), 'bars');
 
 				$filenamenb = $dir."/".$prefix."propalsnbinyear-".$endyear.".png";
@@ -177,7 +177,7 @@ class box_graph_propales_permonth extends ModeleBoxes
 
 			// Build graphic number of object. $data = array(array('Lib',val1,val2,val3),...)
 			if ($showtot) {
-				$data2 = $stats->getAmountByMonthWithPrevYear($endyear, $startyear, (GETPOST('action', 'aZ09') == $refreshaction ? -1 : (3600 * 24)), ($WIDTH < 300 ? 2 : 0), $startmonth);
+				$data2 = $stats->getAmountByMonthWithPrevYear($endyear, $startyear, (request()->input('action') == $refreshaction ? -1 : (3600 * 24)), ($WIDTH < 300 ? 2 : 0), $startmonth);
 				$datatype2 = array_pad(array(), ($endyear - $startyear + 1), 'bars');
 				//$datatype2 = array('lines','bars');
 

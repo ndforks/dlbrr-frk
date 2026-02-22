@@ -36,18 +36,18 @@ require '../../main.inc.php';
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->load("cashdesk");
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 //$_GET['optioncss'] = "print";
 
 print '<center>';
 
-if (GETPOSTISSET("id")) {
+if (request()->has('id')) {
 	print '<h1><b>'.$langs->trans("ScanToOrder").'</b></h1>';
 	print "<img src='".DOL_URL_ROOT."/takepos/genimg/qr.php?key=".dol_encode((string) $id)."' width='30%'>";
 } else {

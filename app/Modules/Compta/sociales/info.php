@@ -44,8 +44,8 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
 
 $object = new ChargeSociales($db);
 if ($id > 0) {
@@ -53,7 +53,7 @@ if ($id > 0) {
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -66,7 +66,7 @@ $result = restrictedArea($user, 'tax', $object->id, 'chargesociales', 'charges')
 
 if ($action == 'setlib' && $user->hasRight('tax', 'charges', 'creer')) {
 	$object->fetch($id);
-	$result = $object->setValueFrom('libelle', GETPOST('lib'), '', null, 'text', '', $user, 'TAX_MODIFY');
+	$result = $object->setValueFrom('libelle', request()->input('lib'), '', null, 'text', '', $user, 'TAX_MODIFY');
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}

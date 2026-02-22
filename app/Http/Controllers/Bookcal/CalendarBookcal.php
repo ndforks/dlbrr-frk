@@ -15,11 +15,11 @@ class CalendarBookcal extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager, $mysoc;
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
-        $confirm = GETPOST('confirm', 'alpha');
-        $cancel = GETPOST('cancel', 'alpha');        require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_calendar.lib.php';
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
+        $confirm = $request->input('confirm');
+        $cancel = $request->input('cancel');        require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_calendar.lib.php';
         
         $langs->loadLangs(array("agenda", "other"));
         
@@ -57,9 +57,9 @@ class CalendarBookcal extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-        $dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+        $backtopage = $request->input('backtopage');
+        $backtopageforcancel = $request->input('backtopageforcancel');
+        $dol_openinpopup = $request->input('dol_openinpopup');
         
         return view('bookcal.calendar_create', [
             'object' => $object,
@@ -91,8 +91,8 @@ class CalendarBookcal extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+        $backtopage = $request->input('backtopage');
+        $backtopageforcancel = $request->input('backtopageforcancel');
         
         return view('bookcal.calendar_edit', [
             'object' => $object,
@@ -114,7 +114,7 @@ class CalendarBookcal extends Controller
         
         foreach ($object->fields as $key => $val) {
             if (isset($_POST[$key])) {
-                $object->$key = GETPOST($key, $val['type']);
+                $object->$key = $request->input($key);
             }
         }
         
@@ -229,7 +229,7 @@ class CalendarBookcal extends Controller
         $object = new Calendar($db);
         $object->fetch($id);
         
-        $object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, 'BOOKCAL_MYOBJECT_MODIFY');
+        $object->setValueFrom('fk_soc', $request->integer('fk_soc', 0), '', null, 'date', '', $user, 'BOOKCAL_MYOBJECT_MODIFY');
         
         return redirect("/bookcal/calendar_card.php?id=".$id);
     }
@@ -247,7 +247,7 @@ class CalendarBookcal extends Controller
         $object = new Calendar($db);
         $object->fetch($id);
         
-        $object->setProject(GETPOSTINT('projectid'));
+        $object->setProject($request->integer('projectid', 0));
         
         return redirect("/bookcal/calendar_card.php?id=".$id);
     }
@@ -302,7 +302,7 @@ class CalendarBookcal extends Controller
             'permissiontoread' => $permissiontoread,
             'permissiontoadd' => $permissiontoadd,
             'permissiontodelete' => $permissiontodelete,
-            'action' => GETPOST('action', 'aZ09'),
+            'action' => $request->input('action'),
         ]);
     }
 }

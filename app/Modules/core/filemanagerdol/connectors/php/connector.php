@@ -46,8 +46,8 @@ function DoResponse()
 	}
 
 	// Get the main request information.
-	$sCommand = GETPOST('Command');
-	$sResourceType = GETPOST('Type');
+	$sCommand = request()->input('Command');
+	$sResourceType = request()->input('Type');
 	$sCurrentFolder = GetCurrentFolder();
 
 	// Check if it is an allowed command

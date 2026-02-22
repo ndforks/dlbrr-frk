@@ -50,9 +50,9 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class
 
 $langs->loadLangs(array("orders", "receptions", "companies"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 $object = new Reception($db);
 $typeobject = '';
@@ -87,7 +87,7 @@ if ($origin == 'reception') {
 	if ($origin == 'supplierorder' || $origin == 'order_supplier') {
 		$result = restrictedArea($user, 'fournisseur', $object, 'commande_fournisseur', 'commande');
 	} elseif (!$user->hasRight($origin, 'lire') && !$user->hasRight($origin, 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -112,9 +112,9 @@ if (isModEnabled("reception")) {
 
 if ($action == 'addcontact' && $user->hasRight('reception', 'creer')) {
 	if ($result > 0 && $id > 0) {
-		$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-		$result = $objectsrc->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+		$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+		$result = $objectsrc->add_contact($contactid, $typeid, request()->input('source'));
 	}
 
 	if ($result >= 0) {
@@ -132,16 +132,16 @@ if ($action == 'addcontact' && $user->hasRight('reception', 'creer')) {
 	}
 } elseif ($action == 'swapstatut' && $user->hasRight('reception', 'creer')) {
 	// bascule du statut d'un contact
-	$result = $objectsrc->swapContactStatus(GETPOSTINT('ligne'));
+	$result = $objectsrc->swapContactStatus(request()->integer('ligne', 0));
 } elseif ($action == 'deletecontact' && $user->hasRight('reception', 'creer')) {
 	// Efface un contact
-	$result = $objectsrc->delete_contact(GETPOSTINT("lineid"));
+	$result = $objectsrc->delete_contact(request()->integer('lineid', 0));
 
 	if ($result >= 0) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

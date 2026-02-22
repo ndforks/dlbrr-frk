@@ -79,7 +79,7 @@ function member_prepare_head(Adherent $object)
 				$obj = $db->fetch_object($resql);
 				$nbNote = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			if ($nbNote > 0) {
 				$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';

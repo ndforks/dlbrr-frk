@@ -55,7 +55,7 @@ require_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
  */
 
 if (!isModEnabled('ai')) {
-	accessforbidden('Module AI not enabled');
+	abort(403);
 }
 
 
@@ -70,7 +70,7 @@ $rawData = file_get_contents('php://input');
 $jsonData = json_decode($rawData, true);
 
 if (is_null($jsonData)) {
-	dol_print_error($db, 'data in POST has not a valid JSON format.');
+	abort(500, 'data in POST has not a valid JSON format.');
 }
 $ai = new Ai($db);
 

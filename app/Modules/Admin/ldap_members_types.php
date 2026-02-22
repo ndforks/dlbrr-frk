@@ -47,10 +47,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 $langs->loadLangs(array('admin', 'errors'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -61,26 +61,26 @@ if ($action == 'setvalue' /* && $user->admin */) {
 	$error = 0;
 	$db->begin();
 
-	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_DN', GETPOST("membertype"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_DN', request()->input('membertype'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_OBJECT_CLASS', GETPOST("objectclass"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_OBJECT_CLASS', request()->input('objectclass'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
-	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_FULLNAME', GETPOST("fieldfullname"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_FULLNAME', request()->input('fieldfullname'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_DESCRIPTION', GETPOST("fielddescription"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_DESCRIPTION', request()->input('fielddescription'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_GROUPMEMBERS', GETPOST("fieldmembertypemembers"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_FIELD_GROUPMEMBERS', request()->input('fieldmembertypemembers'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
 	// This one must be after the others
 	$valkey = '';
-	$key = GETPOST("key");
+	$key = request()->input('key');
 	if ($key) {
 		$valkey = getDolGlobalString($key);
 	}
@@ -93,7 +93,7 @@ if ($action == 'setvalue' /* && $user->admin */) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

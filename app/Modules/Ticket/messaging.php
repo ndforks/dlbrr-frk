@@ -50,19 +50,19 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array('companies', 'other', 'ticket'));
 
 // Get parameters
-$id       = GETPOSTINT('id');
-$ref      = GETPOST('ref', 'alpha');
-$track_id = GETPOST('track_id', 'alpha', 3);
-$socid    = GETPOSTINT('socid');
-$action   = GETPOST('action', 'aZ09');
+$id       = request()->integer('id', 0);
+$ref      = request()->input('ref');
+$track_id = request()->input('track_id');
+$socid    = request()->integer('socid', 0);
+$action   = request()->input('action');
 
 // Store current page url
 $url_page_current = DOL_URL_ROOT.'/ticket/messaging.php';
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST("sortfield", "aZ09comma");
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 $page = is_numeric($page) ? $page : 0;
 $page = $page == -1 ? 0 : $page;
 if (!$sortfield) {
@@ -75,19 +75,19 @@ $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	} else {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$search_rowid = request()->integer('search_rowid', 0);
+$search_agenda_label = request()->input('search_agenda_label');
 
 
 $hookmanager->initHooks(array('ticketmessaging', 'globalcard')); // Note that conf->hooks_modules contains array
@@ -102,7 +102,7 @@ if (!$action) {
 }
 
 // Security check
-$id = GETPOSTINT("id");
+$id = request()->integer('id', 0);
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
@@ -110,11 +110,11 @@ $result = restrictedArea($user, 'ticket', $object->id, '');
 
 // restrict access for externals users
 if ($user->socid > 0 && ($object->fk_soc != $user->socid)) {
-	accessforbidden();
+	abort(403);
 }
 // or for unauthorized internals users
 if (!$user->socid && (getDolGlobalString('TICKET_LIMIT_VIEW_ASSIGNED_ONLY') && $object->fk_user_assign != $user->id) && !$user->hasRight('ticket', 'manage')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('ticket', 'write');
@@ -136,16 +136,16 @@ if (empty($reshook)) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 	$actioncode = '';
 	$search_agenda_label = '';
 }
 
 // Set parent company
 if ($action == 'set_thirdparty' && $user->hasRight('ticket', 'write')) {
-	if ($object->fetch(GETPOSTINT('id'), '', GETPOST('track_id', 'alpha')) >= 0) {
-		$result = $object->setCustomer(GETPOSTINT('editcustomer'));
-		$url = $_SERVER["PHP_SELF"].'?track_id='.GETPOST('track_id', 'alpha');
+	if ($object->fetch(request()->integer('id', 0), '', request()->input('track_id')) >= 0) {
+		$result = $object->setCustomer(request()->integer('editcustomer', 0));
+		$url = $_SERVER["PHP_SELF"].'?track_id='.request()->input('track_id');
 		header("Location: ".$url);
 		exit();
 	}

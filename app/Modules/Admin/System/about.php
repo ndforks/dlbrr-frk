@@ -41,10 +41,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("help", "members", "other", "admin"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $sfurl = '';

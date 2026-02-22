@@ -15,9 +15,9 @@ class ShowBank extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref', '');
         
         return match($action) {
             'add' => $this->store($request),
@@ -121,50 +121,50 @@ class ShowBank extends Controller
         $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
-        $object->ref = dol_string_nospecial(trim(GETPOST('ref', 'alpha')));
-        $object->label = trim(GETPOST('label', 'alphanohtml'));
-        $object->type = GETPOSTINT('type');
+        $object->ref = dol_string_nospecial(trim($request->input('ref')));
+        $object->label = trim($request->input('label'));
+        $object->type = $request->integer('type', 0);
         $object->courant = $object->type;
-        $object->status = GETPOSTINT('clos');
+        $object->status = $request->integer('clos', 0);
         $object->clos = $object->status;
-        $object->rappro = (GETPOST('norappro', 'alpha') ? 0 : 1);
-        $object->url = trim(GETPOST('url', 'alpha'));
+        $object->rappro = ($request->input('norappro') ? 0 : 1);
+        $object->url = trim($request->input('url'));
         
-        $object->bank = trim(GETPOST('bank'));
-        $object->code_banque = trim(GETPOST('code_banque'));
-        $object->code_guichet = trim(GETPOST('code_guichet'));
-        $object->number = trim(GETPOST('number'));
-        $object->cle_rib = trim(GETPOST('cle_rib'));
-        $object->bic = trim(GETPOST('bic'));
-        $object->iban = trim(GETPOST('iban'));
-        $object->pti_in_ctti = empty(GETPOST('pti_in_ctti')) ? 0 : 1;
+        $object->bank = trim($request->input('bank'));
+        $object->code_banque = trim($request->input('code_banque'));
+        $object->code_guichet = trim($request->input('code_guichet'));
+        $object->number = trim($request->input('number'));
+        $object->cle_rib = trim($request->input('cle_rib'));
+        $object->bic = trim($request->input('bic'));
+        $object->iban = trim($request->input('iban'));
+        $object->pti_in_ctti = empty($request->input('pti_in_ctti')) ? 0 : 1;
         
-        $object->address = trim(GETPOST('account_address', 'alphanohtml'));
-        $object->owner_name = trim(GETPOST('proprio', 'alphanohtml'));
-        $object->owner_address = trim(GETPOST('owner_address', 'alphanohtml'));
-        $object->owner_zip = trim(GETPOST('owner_zip', 'alphanohtml'));
-        $object->owner_town = trim(GETPOST('owner_town', 'alphanohtml'));
-        $object->owner_country_id = GETPOSTINT('owner_country_id');
+        $object->address = trim($request->input('account_address'));
+        $object->owner_name = trim($request->input('proprio'));
+        $object->owner_address = trim($request->input('owner_address'));
+        $object->owner_zip = trim($request->input('owner_zip'));
+        $object->owner_town = trim($request->input('owner_town'));
+        $object->owner_country_id = $request->integer('owner_country_id', 0);
         
-        $object->ics = trim(GETPOST('ics', 'alpha'));
-        $object->ics_transfer = trim(GETPOST('ics_transfer', 'alpha'));
+        $object->ics = trim($request->input('ics'));
+        $object->ics_transfer = trim($request->input('ics_transfer'));
         
-        $account_number = GETPOST('account_number', 'alphanohtml');
+        $account_number = $request->integer('account_number', 0);
         $object->account_number = (empty($account_number) || $account_number == '-1') ? '' : $account_number;
         
-        $fk_accountancy_journal = GETPOSTINT('fk_accountancy_journal');
+        $fk_accountancy_journal = $request->integer('fk_accountancy_journal', 0);
         $object->fk_accountancy_journal = ($fk_accountancy_journal <= 0) ? 0 : $fk_accountancy_journal;
         
-        $object->balance = GETPOSTFLOAT('solde');
+        $object->balance = $request->input('solde', 0.0);
         $object->solde = $object->balance;
-        $object->date_solde = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+        $object->date_solde = dol_mktime(12, 0, 0, $request->integer('remonth', 0), $request->integer('reday', 0), $request->integer('reyear', 0));
         
-        $object->currency_code = trim(GETPOST('account_currency_code'));
-        $object->state_id = GETPOSTINT('account_state_id');
-        $object->country_id = GETPOSTINT('account_country_id');
-        $object->min_allowed = GETPOSTFLOAT('account_min_allowed');
-        $object->min_desired = GETPOSTFLOAT('account_min_desired');
-        $object->comment = trim(GETPOST('account_comment', 'restricthtml'));
+        $object->currency_code = trim($request->input('account_currency_code'));
+        $object->state_id = $request->integer('account_state_id', 0);
+        $object->country_id = $request->integer('account_country_id', 0);
+        $object->min_allowed = $request->input('account_min_allowed', 0.0);
+        $object->min_desired = $request->input('account_min_desired', 0.0);
+        $object->comment = trim($request->input('account_comment'));
         $object->fk_user_author = $user->id;
         
         $error = 0;
@@ -182,16 +182,16 @@ class ShowBank extends Controller
             $error++;
         }
         
-        $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
+        $ret = $extrafields->setOptionsFromPost($request, $object);
         
         if (!$error) {
             $id = $object->create($user);
             if ($id > 0) {
-                $categories = GETPOST('categories', 'array:int');
+                $categories = $request->input('categories');
                 $object->setCategories($categories);
                 $db->commit();
                 
-                $backtopage = GETPOST('backtopage', 'alpha');
+                $backtopage = $request->input('backtopage');
                 if (!empty($backtopage)) {
                     $backtopage = str_replace('__ID__', (string) $id, $backtopage);
                     return redirect($backtopage);
@@ -214,7 +214,7 @@ class ShowBank extends Controller
             return redirect("/compta/bank/card.php?id={$id}")->with('error', 'Permission denied');
         }
         
-        $cancel = GETPOST('cancel', 'alpha');
+        $cancel = $request->input('cancel');
         if ($cancel) {
             return redirect("/compta/bank/card.php?id={$id}");
         }
@@ -226,52 +226,52 @@ class ShowBank extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($object->fetch($id)) {
-            $object->ref = dol_string_nospecial(trim(GETPOST('ref', 'alpha')));
-            $object->label = trim(GETPOST('label', 'alphanohtml'));
-            $object->type = GETPOSTINT('type');
+            $object->ref = dol_string_nospecial(trim($request->input('ref')));
+            $object->label = trim($request->input('label'));
+            $object->type = $request->integer('type', 0);
             $object->courant = $object->type;
-            $object->status = GETPOSTINT('clos');
+            $object->status = $request->integer('clos', 0);
             $object->clos = $object->status;
-            $object->rappro = (GETPOST('norappro', 'alpha') ? 0 : 1);
-            $object->url = trim(GETPOST('url', 'alpha'));
+            $object->rappro = ($request->input('norappro') ? 0 : 1);
+            $object->url = trim($request->input('url'));
             
-            $object->bank = trim(GETPOST('bank'));
-            $object->code_banque = trim(GETPOST('code_banque'));
-            $object->code_guichet = trim(GETPOST('code_guichet'));
-            $object->number = trim(GETPOST('number'));
-            $object->cle_rib = trim(GETPOST('cle_rib'));
-            $object->bic = trim(GETPOST('bic'));
-            $object->iban = trim(GETPOST('iban'));
-            $object->pti_in_ctti = empty(GETPOST('pti_in_ctti')) ? 0 : 1;
+            $object->bank = trim($request->input('bank'));
+            $object->code_banque = trim($request->input('code_banque'));
+            $object->code_guichet = trim($request->input('code_guichet'));
+            $object->number = trim($request->input('number'));
+            $object->cle_rib = trim($request->input('cle_rib'));
+            $object->bic = trim($request->input('bic'));
+            $object->iban = trim($request->input('iban'));
+            $object->pti_in_ctti = empty($request->input('pti_in_ctti')) ? 0 : 1;
             
-            $object->address = trim(GETPOST('account_address', 'alphanohtml'));
-            $object->owner_name = trim(GETPOST('proprio', 'alphanohtml'));
-            $object->owner_address = trim(GETPOST('owner_address', 'alphanohtml'));
-            $object->owner_zip = trim(GETPOST('owner_zip', 'alphanohtml'));
-            $object->owner_town = trim(GETPOST('owner_town', 'alphanohtml'));
-            $object->owner_country_id = GETPOSTINT('owner_country_id');
+            $object->address = trim($request->input('account_address'));
+            $object->owner_name = trim($request->input('proprio'));
+            $object->owner_address = trim($request->input('owner_address'));
+            $object->owner_zip = trim($request->input('owner_zip'));
+            $object->owner_town = trim($request->input('owner_town'));
+            $object->owner_country_id = $request->integer('owner_country_id', 0);
             
-            $object->ics = trim(GETPOST('ics', 'alpha'));
-            $object->ics_transfer = trim(GETPOST('ics_transfer', 'alpha'));
+            $object->ics = trim($request->input('ics'));
+            $object->ics_transfer = trim($request->input('ics_transfer'));
             
-            $account_number = GETPOST('account_number', 'alphanohtml');
+            $account_number = $request->integer('account_number', 0);
             $object->account_number = (empty($account_number) || $account_number == '-1') ? '' : $account_number;
             
-            $fk_accountancy_journal = GETPOSTINT('fk_accountancy_journal');
+            $fk_accountancy_journal = $request->integer('fk_accountancy_journal', 0);
             $object->fk_accountancy_journal = ($fk_accountancy_journal <= 0) ? 0 : $fk_accountancy_journal;
             
-            $object->currency_code = trim(GETPOST('account_currency_code'));
-            $object->state_id = GETPOSTINT('account_state_id');
-            $object->country_id = GETPOSTINT('account_country_id');
-            $object->min_allowed = GETPOSTFLOAT('account_min_allowed');
-            $object->min_desired = GETPOSTFLOAT('account_min_desired');
-            $object->comment = trim(GETPOST('account_comment', 'restricthtml'));
+            $object->currency_code = trim($request->input('account_currency_code'));
+            $object->state_id = $request->integer('account_state_id', 0);
+            $object->country_id = $request->integer('account_country_id', 0);
+            $object->min_allowed = $request->input('account_min_allowed', 0.0);
+            $object->min_desired = $request->input('account_min_desired', 0.0);
+            $object->comment = trim($request->input('account_comment'));
             
-            $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
+            $ret = $extrafields->setOptionsFromPost($request, $object);
             
             $result = $object->update($user);
             if ($result > 0) {
-                $categories = GETPOST('categories', 'array:int');
+                $categories = $request->input('categories');
                 $object->setCategories($categories);
                 $db->commit();
                 setEventMessages($langs->trans('RecordSaved'), null, 'mesgs');
@@ -295,7 +295,7 @@ class ShowBank extends Controller
             return redirect("/compta/bank/card.php?id={$id}")->with('error', 'Permission denied');
         }
         
-        $confirm = GETPOST('confirm');
+        $confirm = $request->input('confirm');
         if ($confirm !== 'yes') {
             return redirect("/compta/bank/card.php?id={$id}");
         }        $object = new Account($db);

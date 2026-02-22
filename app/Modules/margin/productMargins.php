@@ -43,20 +43,20 @@ require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'products', 'margins'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$TSelectedCats = GETPOST('categories', 'array:int');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$TSelectedCats = request()->input('categories');
 $socid = 0;
 
 $mesg = '';
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -74,11 +74,11 @@ if (!$sortfield) {
 }
 
 $startdate = $enddate = '';
-if (GETPOST('startdatemonth')) {
-	$startdate = dol_mktime(0, 0, 0, GETPOSTINT('startdatemonth'), GETPOSTINT('startdateday'), GETPOSTINT('startdateyear'));
+if (request()->input('startdatemonth')) {
+	$startdate = dol_mktime(0, 0, 0, request()->integer('startdatemonth', 0), request()->integer('startdateday', 0), request()->integer('startdateyear', 0));
 }
-if (GETPOST('enddatemonth')) {
-	$enddate = dol_mktime(23, 59, 59, GETPOSTINT('enddatemonth'), GETPOSTINT('enddateday'), GETPOSTINT('enddateyear'));
+if (request()->input('enddatemonth')) {
+	$enddate = dol_mktime(23, 59, 59, request()->integer('enddatemonth', 0), request()->integer('enddateday', 0), request()->integer('enddateyear', 0));
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -93,7 +93,7 @@ if (!empty($user->socid)) {
 }
 $result = restrictedArea($user, 'produit|service', $fieldvalue, 'product&product', '', '', $fieldtype);
 if (!$user->hasRight('margins', 'liretous')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -240,17 +240,17 @@ $sql .= $db->order($sortfield, $sortorder);
 //$sql.= $db->plimit($conf->liste_limit +1, $offset);
 
 $param = '&id='.((int) $id);
-if (GETPOSTINT('startdatemonth')) {
-	$param .= '&startdateyear='.GETPOSTINT('startdateyear');
-	$param .= '&startdatemonth='.GETPOSTINT('startdatemonth');
-	$param .= '&startdateday='.GETPOSTINT('startdateday');
+if (request()->integer('startdatemonth', 0)) {
+	$param .= '&startdateyear='.request()->integer('startdateyear', 0);
+	$param .= '&startdatemonth='.request()->integer('startdatemonth', 0);
+	$param .= '&startdateday='.request()->integer('startdateday', 0);
 }
-if (GETPOSTINT('enddatemonth')) {
-	$param .= '&enddateyear='.GETPOSTINT('enddateyear');
-	$param .= '&enddatemonth='.GETPOSTINT('enddatemonth');
-	$param .= '&enddateday='.GETPOSTINT('enddateday');
+if (request()->integer('enddatemonth', 0)) {
+	$param .= '&enddateyear='.request()->integer('enddateyear', 0);
+	$param .= '&enddatemonth='.request()->integer('enddatemonth', 0);
+	$param .= '&enddateday='.request()->integer('enddateday', 0);
 }
-$listofcateg = GETPOST('categories', 'array:int');
+$listofcateg = request()->input('categories');
 if (is_array($listofcateg)) {
 	foreach ($listofcateg as $val) {
 		$param .= '&categories[]='.$val;
@@ -406,7 +406,7 @@ if ($result) {
 	print "</table>";
 	print '</div>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 $db->free($result);
 

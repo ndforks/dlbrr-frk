@@ -40,12 +40,12 @@ require '../../main.inc.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$table = GETPOST('table', 'aZ09');
-$field = GETPOST('field', 'aZ09');
-$action = GETPOST('action', 'aZ09');
+$table = request()->input('table');
+$field = request()->input('field');
+$action = request()->input('action');
 
 
 /*

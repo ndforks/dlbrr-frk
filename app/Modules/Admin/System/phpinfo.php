@@ -42,7 +42,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 $langs->loadLangs(array("admin", "install", "errors"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

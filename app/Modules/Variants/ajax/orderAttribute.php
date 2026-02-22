@@ -50,10 +50,10 @@ require DOL_DOCUMENT_ROOT . '/variants/class/ProductAttribute.class.php';
 
 // Security check
 if (!isModEnabled('variants')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 if ($user->socid > 0) { // Protection if external user
-	accessforbidden();
+	abort(403);
 }
 $result = restrictedArea($user, 'variants');
 
@@ -67,8 +67,8 @@ top_httphead();
 print '<!-- Ajax page called with url '.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.dol_escape_htmltag($_SERVER["QUERY_STRING"]).' -->'."\n";
 
 // Registering the location of boxes
-if (GETPOST('roworder', 'alpha', 3)) {
-	$roworder = GETPOST('roworder', 'alpha', 3);
+if (request()->input('roworder')) {
+	$roworder = request()->input('roworder');
 
 	dol_syslog("AjaxOrderAttribute roworder=" . $roworder, LOG_DEBUG);
 

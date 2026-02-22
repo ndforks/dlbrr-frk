@@ -102,10 +102,10 @@ function checkLoginPassEntity($usertotest, $passwordtotest, $entitytotest, $auth
 						// Login is successful with this method
 						$test = false; // To stop once at first login success
 						$conf->authmode = $mode; // This properties is defined only when logged to say what mode was successfully used
-						/*$dol_tz = GETPOST('tz');
-						$dol_dst = GETPOST('dst');
-						$dol_screenwidth = GETPOST('screenwidth');
-						$dol_screenheight = GETPOST('screenheight');*/
+						/*$dol_tz = request()->input('tz');
+						$dol_dst = request()->input('dst');
+						$dol_screenwidth = request()->integer('screenwidth', 0);
+						$dol_screenheight = request()->input('screenheight');*/
 					}
 				} else {
 					dol_syslog("Authentication KO - failed to load file '".$authfile."'", LOG_ERR);
@@ -165,7 +165,7 @@ if (!function_exists('dol_loginfunction')) {
 
 		// Note: $conf->css looks like '/theme/eldy/style.css.php'
 		/*
-		$conf->css = "/theme/".(GETPOST('theme','aZ09')?GETPOST('theme','aZ09'):$conf->theme)."/style.css.php";
+		$conf->css = "/theme/".(request()->input('theme')?request()->input('theme'):$conf->theme)."/style.css.php";
 		$themepath=dol_buildpath($conf->css,1);
 		if (!empty($conf->modules_parts['theme']))		// Using this feature slow down application
 		{
@@ -207,13 +207,13 @@ if (!function_exists('dol_loginfunction')) {
 			}
 		}
 
-		if (GETPOST('urlfrom', 'alpha')) {
-			$_SESSION["urlfrom"] = GETPOST('urlfrom', 'alpha');
+		if (request()->input('urlfrom')) {
+			$_SESSION["urlfrom"] = request()->input('urlfrom');
 		} else {
 			unset($_SESSION["urlfrom"]);
 		}
 
-		if (!GETPOST("username", 'alpha')) {
+		if (!request()->input('username')) {
 			$focus_element = 'username';
 		} else {
 			$focus_element = 'password';
@@ -228,22 +228,22 @@ if (!function_exists('dol_loginfunction')) {
 		}
 
 		// Execute hook getLoginPageOptions (for table)
-		$parameters = array('entity' => GETPOSTINT('entity'), 'switchentity' => GETPOSTINT('switchentity'));
+		$parameters = array('entity' => request()->integer('entity', 0), 'switchentity' => request()->integer('switchentity', 0));
 		$reshook = $hookmanager->executeHooks('getLoginPageOptions', $parameters); // Note that $action and $object may have been modified by some hooks.
 		$morelogincontent = $hookmanager->resPrint;
 
 		// Execute hook getLoginPageExtraOptions (eg for js)
-		$parameters = array('entity' => GETPOSTINT('entity'), 'switchentity' => GETPOSTINT('switchentity'));
+		$parameters = array('entity' => request()->integer('entity', 0), 'switchentity' => request()->integer('switchentity', 0));
 		$reshook = $hookmanager->executeHooks('getLoginPageExtraOptions', $parameters); // Note that $action and $object may have been modified by some hooks.
 		$moreloginextracontent = $hookmanager->resPrint;
 
 		//Redirect after connection
-		$parameters = array('entity' => GETPOSTINT('entity'), 'switchentity' => GETPOSTINT('switchentity'));
+		$parameters = array('entity' => request()->integer('entity', 0), 'switchentity' => request()->integer('switchentity', 0));
 		$reshook = $hookmanager->executeHooks('redirectAfterConnection', $parameters); // Note that $action and $object may have been modified by some hooks.
 		$php_self = $hookmanager->resPrint;
 
 		// Login
-		$login = (!empty($hookmanager->resArray['username']) ? $hookmanager->resArray['username'] : (GETPOST("username", "alpha") ? GETPOST("username", "alpha") : $demologin));
+		$login = (!empty($hookmanager->resArray['username']) ? $hookmanager->resArray['username'] : (request()->input('username') ? request()->input('username') : $demologin));
 		$password = $demopassword;
 
 		// Show logo (search in order: small company logo, large company logo, theme logo, common logo)
@@ -310,11 +310,11 @@ if (!function_exists('dol_loginfunction')) {
 		}
 
 		// Set dol_hide_topmenu, dol_hide_leftmenu, dol_optimize_smallscreen, dol_no_mouse_hover
-		$dol_hide_topmenu = GETPOSTINT('dol_hide_topmenu');
-		$dol_hide_leftmenu = GETPOSTINT('dol_hide_leftmenu');
-		$dol_optimize_smallscreen = GETPOSTINT('dol_optimize_smallscreen');
-		$dol_no_mouse_hover = GETPOSTINT('dol_no_mouse_hover');
-		$dol_use_jmobile = GETPOSTINT('dol_use_jmobile');
+		$dol_hide_topmenu = request()->integer('dol_hide_topmenu', 0);
+		$dol_hide_leftmenu = request()->integer('dol_hide_leftmenu', 0);
+		$dol_optimize_smallscreen = request()->integer('dol_optimize_smallscreen', 0);
+		$dol_no_mouse_hover = request()->integer('dol_no_mouse_hover', 0);
+		$dol_use_jmobile = request()->integer('dol_use_jmobile', 0);
 
 		// Include login page template
 		include $template_dir.'login.tpl.php';

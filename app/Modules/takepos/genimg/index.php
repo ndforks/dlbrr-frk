@@ -44,13 +44,13 @@ if (!defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE')) {
 /**
  * @var Conf $conf
  */
-$id = GETPOSTINT('id');
-$w = GETPOSTINT('w');
-$h = GETPOSTINT('h');
-$query = GETPOST('query', 'alpha');
+$id = request()->integer('id', 0);
+$w = request()->integer('w', 0);
+$h = request()->integer('h', 0);
+$query = request()->input('query');
 
 if (!isModEnabled('takepos')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 
 

@@ -74,7 +74,7 @@ $langs->loadLangs(array("main", "other"));
 
 
 if (empty($conf->dav->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 
 // Restrict API to some IPs
@@ -90,7 +90,7 @@ if (getDolGlobalString('DAV_RESTRICT_ON_IP')) {
 }
 
 
-$entity = (GETPOSTINT('entity') ? GETPOSTINT('entity') : (!empty($conf->entity) ? $conf->entity : 1));
+$entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : (!empty($conf->entity) ? $conf->entity : 1));
 
 // settings
 $publicDir = DOL_DATA_ROOT.'/dav/public';
@@ -149,7 +149,7 @@ $authBackend = new \Sabre\DAV\Auth\Backend\BasicCallBack(
 		}
 
 		$authmode = explode(',', $dolibarr_main_authentication);
-		$entity = (GETPOSTINT('entity') ? GETPOSTINT('entity') : (!empty($conf->entity) ? $conf->entity : 1));
+		$entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : (!empty($conf->entity) ? $conf->entity : 1));
 
 		if (checkLoginPassEntity($username, $password, $entity, $authmode, 'dav') != $username) {
 			return false;

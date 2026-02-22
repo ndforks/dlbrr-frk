@@ -106,14 +106,14 @@ const DICT_ASSET_DISPOSAL_TYPE = 44;
 // Load translation files required by the page
 $langs->loadLangs(array("errors", "admin", "main", "companies", "resource", "holiday", "accountancy", "hrm", "orders", "contracts", "projects", "propal", "bills", "interventions", "ticket"));
 
-$action = GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
 
-$id = GETPOSTINT('id');
-$rowid = GETPOST('rowid', 'alpha');
-$entity = GETPOST('entity', 'alpha');	// Do not use GETPOSTINT here. Should be '', 0 or >0.
-$code = GETPOST('code', 'alpha');
-$from = GETPOST('from', 'alpha');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
+$entity = request()->input('entity');	// Do not use GETPOSTINT here. Should be '', 0 or >0.
+$code = request()->input('code');
+$from = request()->input('from');
 
 $acts = array();
 $actl = array();
@@ -123,12 +123,12 @@ $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"')
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
 // Load variable for pagination
-$listoffset = GETPOST('listoffset');
-$listlimit = GETPOST('listlimit') > 0 ? GETPOST('listlimit') : 1000; // To avoid too long dictionaries
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$listoffset = request()->input('listoffset');
+$listlimit = request()->input('listlimit') > 0 ? request()->input('listlimit') : 1000; // To avoid too long dictionaries
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -136,12 +136,12 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = GETPOST('search_country_id', 'int');
-$search_code = GETPOST('search_code', 'alpha');
-$search_active = GETPOST('search_active', 'alpha');
+$search_country_id = request()->integer('search_country_id', 0);
+$search_code = request()->input('search_code');
+$search_active = request()->input('search_active');
 
 // Special case to set a default value for country according to dictionary
-if (!GETPOSTISSET('search_country_id') && $search_country_id == '' && ($id == DICT_DEPARTEMENTS || $id == DICT_REGIONS || $id == DICT_TVA)) {	// Not a so good idea to force on current country for all dictionaries. Some tables have entries that are for all countries, we must be able to see them, so this is done for dedicated dictionaries only.
+if (!request()->has('search_country_id') && $search_country_id == '' && ($id == DICT_DEPARTEMENTS || $id == DICT_REGIONS || $id == DICT_TVA)) {	// Not a so good idea to force on current country for all dictionaries. Some tables have entries that are for all countries, we must be able to see them, so this is done for dedicated dictionaries only.
 	$search_country_id = $mysoc->country_id;
 }
 
@@ -159,7 +159,7 @@ if ($id == DICT_TYPE_FEES && $user->hasRight('accounting', 'chartofaccount')) {
 	$allowed = 1; // Dictionary with type of expense report and accounting account allowed to manager of chart account
 }
 if (!$allowed) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $allowed;
@@ -787,7 +787,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
+if (request()->input('button_removefilter') || request()->input('button_removefilter.x') || request()->input('button_removefilter_x')) {
 	$search_country_id = '';
 	$search_code = '';
 	$search_active = '';
@@ -795,7 +795,7 @@ if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 
 
 if (empty($reshook)) {
 	// Actions add or modify an entry into a dictionary
-	if (GETPOST('actionadd') || GETPOST('actionmodify')) {
+	if (request()->input('actionadd') || request()->input('actionmodify')) {
 		$listfield = explode(',', str_replace(' ', '', $tabfield[$id]));
 		$listfieldinsert = explode(',', $tabfieldinsert[$id]);
 		$listfieldmodify = explode(',', $tabfieldinsert[$id]);
@@ -812,7 +812,7 @@ if (empty($reshook)) {
 				continue; // For some pages, country is not mandatory
 			}
 			// Discard check of mandatory fields for department buyer id for some tables (only for add action)
-			if (GETPOST('actionadd') && $value == 'department_buyer_id' && $tablib[$id] == 'DictionaryVAT') {
+			if (request()->input('actionadd') && $value == 'department_buyer_id' && $tablib[$id] == 'DictionaryVAT') {
 				continue; // For some pages, department buyer id is not mandatory
 			}
 			// Discard check of mandatory fields for department buyer for some tables
@@ -820,25 +820,25 @@ if (empty($reshook)) {
 				continue; // For some pages, department buyer is not mandatory
 			}
 			// Discard check of mandatory fields for other fields
-			if ($value == 'localtax1' && !GETPOST('localtax1_type')) {
+			if ($value == 'localtax1' && !request()->input('localtax1_type')) {
 				continue;
 			}
-			if ($value == 'localtax2' && !GETPOST('localtax2_type')) {
+			if ($value == 'localtax2' && !request()->input('localtax2_type')) {
 				continue;
 			}
-			if ($value == 'color' && !GETPOST('color')) {
+			if ($value == 'color' && !request()->input('color')) {
 				continue;
 			}
-			if ($value == 'formula' && !GETPOST('formula')) {
+			if ($value == 'formula' && !request()->input('formula')) {
 				continue;
 			}
-			if ($value == 'dayrule' && !GETPOST('dayrule')) {
+			if ($value == 'dayrule' && !request()->input('dayrule')) {
 				continue;
 			}
 			if ($value == 'sortorder') {
 				continue; // For a column name 'sortorder', we use the field name 'position'
 			}
-			if ((!GETPOSTISSET($value) || GETPOST($value) == '')
+			if ((!request()->has($value) || request()->input($value) == '')
 				&& (
 					!in_array($value, array('decalage', 'module', 'accountancy_code', 'accountancy_code_sell', 'accountancy_code_buy', 'tracking', 'picto', 'deposit_percent'))  // Fields that are not mandatory
 					&& ($id != DICT_TVA || ($value != 'code' && $value != 'note')) // Field code and note is not mandatory for dictionary table 10
@@ -903,17 +903,17 @@ if (empty($reshook)) {
 			}
 		}
 		// Other special checks
-		if (GETPOST('actionadd') && $tabname[$id] == "c_actioncomm" && GETPOSTISSET("type") && in_array(GETPOST("type"), array('system', 'systemauto'))) {
+		if (request()->input('actionadd') && $tabname[$id] == "c_actioncomm" && request()->has('type') && in_array(request()->input('type'), array('system', 'systemauto'))) {
 			$ok = 0;
 			setEventMessages($langs->transnoentities('ErrorReservedTypeSystemSystemAuto'), null, 'errors');
 		}
-		if (GETPOSTISSET("code")) {
-			if (GETPOST("code") == '0') {
+		if (request()->has('code')) {
+			if (request()->input('code') == '0') {
 				$ok = 0;
 				setEventMessages($langs->transnoentities('ErrorCodeCantContainZero'), null, 'errors');
 			}
 		}
-		if (GETPOSTISSET("country") && (GETPOST("country") == '0') && ($id != DICT_DEPARTEMENTS)) {
+		if (request()->has('country') && (request()->input('country') == '0') && ($id != DICT_DEPARTEMENTS)) {
 			if (in_array($tablib[$id], array('DictionaryCompanyType', 'DictionaryHolidayTypes'))) {	// Field country is no mandatory for such dictionaries
 				$_POST["country"] = '';
 			} else {
@@ -921,47 +921,47 @@ if (empty($reshook)) {
 				setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->transnoentities("Country")), null, 'errors');
 			}
 		}
-		if (($id == DICT_REGIONS || $id == DICT_PRODUCT_NATURE) && !is_numeric(GETPOST("code")) && GETPOST('actionadd')) {
+		if (($id == DICT_REGIONS || $id == DICT_PRODUCT_NATURE) && !is_numeric(request()->input('code')) && request()->input('actionadd')) {
 			$ok = 0;
 			setEventMessages($langs->transnoentities("ErrorFieldMustBeANumeric", $langs->transnoentities("Code")), null, 'errors');
 		}
-		if ($id == DICT_COUNTRY && strlen(GETPOST("code")) != 2) {  // 2 char on code for country code
+		if ($id == DICT_COUNTRY && strlen(request()->input('code')) != 2) {  // 2 char on code for country code
 			$ok = 0;
 			setEventMessages($langs->transnoentities("ErrorCountryCodeMustBe2Char", $langs->transnoentities("Code")), null, 'errors');
 		}
-		if ($id == DICT_PAIEMENT && strlen(GETPOST("code")) >= 6) {  // 6 char max on code for payment mode codes
+		if ($id == DICT_PAIEMENT && strlen(request()->input('code')) >= 6) {  // 6 char max on code for payment mode codes
 			$ok = 0;
 			setEventMessages($langs->transnoentities("ErrorFieldMustHaveLessThanXChar", $langs->transnoentities("Code"), '6'), null, 'errors');
 		}
 
 		// Clean some parameters
-		if ((GETPOST("localtax1_type") || (GETPOST('localtax1_type') == '0')) && !GETPOST("localtax1")) {
+		if ((request()->input('localtax1_type') || (request()->input('localtax1_type') == '0')) && !request()->input('localtax1')) {
 			$_POST["localtax1"] = '0'; // If empty, we force to 0
 		}
-		if ((GETPOST("localtax2_type") || (GETPOST('localtax2_type') == '0')) && !GETPOST("localtax2")) {
+		if ((request()->input('localtax2_type') || (request()->input('localtax2_type') == '0')) && !request()->input('localtax2')) {
 			$_POST["localtax2"] = '0'; // If empty, we force to 0
 		}
-		if (GETPOST('department_buyer_id') <= 0) {
+		if (request()->input('department_buyer_id') <= 0) {
 			$_POST['department_buyer_id'] = ''; // If empty, we force to null
 		}
-		if (GETPOST("accountancy_code") <= 0) {
+		if (request()->input('accountancy_code') <= 0) {
 			$_POST["accountancy_code"] = ''; // If empty, we force to null
 		}
-		if (GETPOST("accountancy_code_sell") <= 0) {
+		if (request()->input('accountancy_code_sell') <= 0) {
 			$_POST["accountancy_code_sell"] = ''; // If empty, we force to null
 		}
-		if (GETPOST("accountancy_code_buy") <= 0) {
+		if (request()->input('accountancy_code_buy') <= 0) {
 			$_POST["accountancy_code_buy"] = ''; // If empty, we force to null
 		}
-		if ($id == DICT_TVA && GETPOSTISSET("code")) {  // Spaces are not allowed into code for tax dictionary
-			$_POST["code"] = preg_replace('/[^a-zA-Z0-9_\-\+]/', '', GETPOST("code"));
+		if ($id == DICT_TVA && request()->has('code')) {  // Spaces are not allowed into code for tax dictionary
+			$_POST["code"] = preg_replace('/[^a-zA-Z0-9_\-\+]/', '', request()->input('code'));
 		}
 
 		$tablename = $tabname[$id];
 		$tablename = preg_replace('/^'.preg_quote(MAIN_DB_PREFIX, '/').'/', '', $tablename);
 
 		// If check ok and action add, add the line
-		if ($ok && GETPOST('actionadd')) {
+		if ($ok && request()->input('actionadd')) {
 			$newid = 0;
 			if ($tabrowid[$id] && !in_array($tabrowid[$id], $listfieldinsert)) {
 				// Get free id for insert
@@ -971,7 +971,7 @@ if (empty($reshook)) {
 					$obj = $db->fetch_object($result);
 					$newid = ((int) $obj->newid) + 1;
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 
@@ -997,9 +997,9 @@ if (empty($reshook)) {
 				}
 
 				if ($value == 'price' || preg_match('/^amount/i', $value)) {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 'MU');
+					$_POST[$keycode] = price2num(request()->input($keycode), 'MU');
 				} elseif ($value == 'taux' || $value == 'localtax1') {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
+					$_POST[$keycode] = price2num(request()->input($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
 				} elseif ($value == 'entity') {
 					$_POST[$keycode] = (int) getEntity($tablename, 0);
 				}
@@ -1009,15 +1009,15 @@ if (empty($reshook)) {
 				}
 
 				if ($keycode == 'sortorder') {		// For column name 'sortorder', we use the field name 'position'
-					$sql .= GETPOSTINT('position');
-				} elseif (GETPOST($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
+					$sql .= request()->integer('position', 0);
+				} elseif (request()->input($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
 					$sql .= "null"; // For vat, we want/accept code = ''
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfile', 'private', 'pos', 'position', 'scale', 'use_default'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 
 				$i++;
@@ -1030,21 +1030,21 @@ if (empty($reshook)) {
 				setEventMessages($langs->transnoentities("RecordCreatedSuccessfully"), null, 'mesgs');
 
 				// Clean $_POST array, we keep only id of dictionary
-				if ($id == DICT_TVA && GETPOSTINT('country') > 0) {
-					$search_country_id = GETPOSTINT('country');
+				if ($id == DICT_TVA && request()->integer('country', 0) > 0) {
+					$search_country_id = request()->integer('country', 0);
 				}
 				$_POST = array('id' => $id);
 			} else {
 				if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 					setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 		}
 
 		// If verif ok and action modify, modify the line
-		if ($ok && GETPOST('actionmodify')) {
+		if ($ok && request()->input('actionmodify')) {
 			if ($tabrowid[$id]) {
 				$rowidcol = $tabrowid[$id];
 			} else {
@@ -1066,9 +1066,9 @@ if (empty($reshook)) {
 				}
 
 				if ($field == 'price' || preg_match('/^amount/i', $field)) {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 'MU');
+					$_POST[$keycode] = price2num(request()->input($keycode), 'MU');
 				} elseif ($field == 'taux' || $field == 'localtax1') {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
+					$_POST[$keycode] = price2num(request()->input($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
 				} elseif ($field == 'entity') {
 					$_POST[$keycode] = (int) getEntity($tablename, 0);
 				}
@@ -1078,15 +1078,15 @@ if (empty($reshook)) {
 				}
 				$sql .= $field."=";
 				if ($keycode == 'sortorder') {		// For column name 'sortorder', we use the field name 'position'
-					$sql .= GETPOSTINT('position');
-				} elseif (GETPOST($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
+					$sql .= request()->integer('position', 0);
+				} elseif (request()->input($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
 					$sql .= "null"; // For vat, we want/accept code = ''
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfile', 'private', 'pos', 'position', 'scale', 'use_default'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 
 				$i++;
@@ -1108,10 +1108,10 @@ if (empty($reshook)) {
 			}
 		}
 
-		if (!$ok && GETPOST('actionadd')) {
+		if (!$ok && request()->input('actionadd')) {
 			$action = 'create';
 		}
-		if (!$ok && GETPOST('actionmodify')) {
+		if (!$ok && request()->input('actionmodify')) {
 			$action = 'edit';
 		}
 	}
@@ -1134,7 +1134,7 @@ if (empty($reshook)) {
 			if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -1161,7 +1161,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1190,7 +1190,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1219,7 +1219,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1248,7 +1248,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1277,7 +1277,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1306,7 +1306,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1335,7 +1335,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1364,7 +1364,7 @@ if (empty($reshook)) {
 		if ($sql !== null) {
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			dol_print_error(null, "No DB entry or no code");
@@ -1384,7 +1384,7 @@ $title = $langs->trans("DictionarySetup");
 
 llxHeader('', $title, '', '', 0, 0, '', '', '', 'mod-admin page-dict');
 
-if (GETPOSTINT('id') == DICT_SOCIALNETWORKS && $from == 'socialnetworksetup') {
+if (request()->integer('id', 0) == DICT_SOCIALNETWORKS && $from == 'socialnetworksetup') {
 	$head = socialnetwork_prepare_head();
 	print dol_get_fiche_head($head, 'dict', $langs->trans('MenuDict'), -1, 'user');
 }
@@ -1396,17 +1396,17 @@ if ($id && empty($from)) {
 	$linkback = '<a href="'.$_SERVER['PHP_SELF'].'">'.img_picto($langs->trans("BackToDictionaryList"), 'back', 'class="pictofixedwidth"').'<span class="hideonsmartphone">'.$langs->trans("BackToDictionaryList").'</span></a>';
 }
 $titlepicto = 'title_setup';
-if ($id == DICT_TVA && GETPOST('from') == 'accountancy') {
+if ($id == DICT_TVA && request()->input('from') == 'accountancy') {
 	$title = $langs->trans("MenuVatAccounts");
 	$titlepicto = 'accountancy';
 }
-if ($id == DICT_CHARGESOCIALES && GETPOST('from') == 'accountancy') {
+if ($id == DICT_CHARGESOCIALES && request()->input('from') == 'accountancy') {
 	$title = $langs->trans("MenuTaxAccounts");
 	$titlepicto = 'accountancy';
 }
 
 $param = '&id='.urlencode((string) ($id));
-if ($search_country_id || GETPOSTISSET('page') || GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
+if ($search_country_id || request()->has('page') || request()->input('button_removefilter') || request()->input('button_removefilter.x') || request()->input('button_removefilter_x')) {
 	$param .= '&search_country_id='.urlencode((string) ($search_country_id ? $search_country_id : -1));
 }
 if ($search_code != '') {
@@ -1505,7 +1505,7 @@ if ($id > 0) {
 			$objforcount = $db->fetch_object($resql);
 			$nbtotalofrecords = $objforcount->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (($page * $listlimit) > $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -1534,7 +1534,7 @@ if ($id > 0) {
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 	$num = $db->num_rows($resql);
@@ -1867,10 +1867,10 @@ if ($id > 0) {
 
 				$obj = new stdClass();
 				// If data was already input, we define them in obj to populate input fields.
-				if (GETPOST('actionadd')) {
+				if (request()->input('actionadd')) {
 					foreach ($fieldlist as $key => $val) {
-						if (GETPOST($val) != '') {
-							$obj->$val = GETPOST($val);
+						if (request()->input($val) != '') {
+							$obj->$val = request()->input($val);
 						}
 					}
 				}
@@ -1912,7 +1912,7 @@ if ($id > 0) {
 
 			print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$id.'" method="POST">';
 			print '<input type="hidden" name="token" value="'.newToken().'">';
-			print '<input type="hidden" name="from" value="'.dol_escape_htmltag(GETPOST('from', 'alpha')).'">';
+			print '<input type="hidden" name="from" value="'.dol_escape_htmltag(request()->input('from')).'">';
 		}
 
 
@@ -2547,10 +2547,10 @@ if ($id > 0) {
 								$showfield = 0;
 							} elseif ($value == 'unicode') {
 								$valuetoshow = $langs->getCurrencySymbol($obj->code, 1);
-							} elseif ($value == 'label' && $tabname[GETPOSTINT("id")] == 'c_units') {
+							} elseif ($value == 'label' && $tabname[request()->integer('id', 0)] == 'c_units') {
 								$langs->load("products");
 								$valuetoshow = $langs->trans($obj->$value);
-							} elseif ($value == 'short_label' && $tabname[GETPOSTINT("id")] == 'c_units') {
+							} elseif ($value == 'short_label' && $tabname[request()->integer('id', 0)] == 'c_units') {
 								$langs->load("products");
 								$valuetoshow = $langs->trans($obj->$value);
 							} elseif (($value == 'unit') && ($tabname[$id] == 'c_paper_format')) {
@@ -2734,7 +2734,7 @@ if ($id > 0) {
 		print '</table>';
 		print '</div>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '</form>';
@@ -2812,7 +2812,7 @@ if ($id > 0) {
 }
 
 print '<br>';
-if (GETPOST('id') && GETPOST('id') == DICT_SOCIALNETWORKS) {
+if (request()->input('id') && request()->input('id') == DICT_SOCIALNETWORKS) {
 	print dol_get_fiche_end();
 }
 // End of page
@@ -2864,8 +2864,8 @@ function dictFieldList($fieldlist, $obj = null, $tabname = '', $context = '')
 			print '<td>';
 
 			$selected = (!empty($obj->country_code) ? $obj->country_code : (!empty($obj->country) ? $obj->country : ''));
-			if (!GETPOSTISSET('code')) {
-				$selected = GETPOST('countryidforinsert');
+			if (!request()->has('code')) {
+				$selected = request()->input('countryidforinsert');
 			}
 			print $form->select_country($selected, $value, '', 28, 'minwidth100 maxwidth150 maxwidthonsmartphone');
 			print '</td>';

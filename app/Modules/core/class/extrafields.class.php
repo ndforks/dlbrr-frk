@@ -2727,7 +2727,7 @@ class ExtraFields
 		$expand_display = false;
 		if (is_array($extrafield_param_list) && count($extrafield_param_list) > 0) {
 			$extrafield_collapse_display_value = intval($extrafield_param_list[0]);
-			$expand_display = ((isset($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key]) || GETPOSTINT('ignorecollapsesetup')) ? (!empty($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key])) : !($extrafield_collapse_display_value == 2));
+			$expand_display = ((isset($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key]) || request()->integer('ignorecollapsesetup', 0)) ? (!empty($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key])) : !($extrafield_collapse_display_value == 2));
 		}
 		$disabledcookiewrite = 0;
 		if ($mode == 'create') {
@@ -2820,7 +2820,7 @@ class ExtraFields
 					continue;
 				}
 
-				if (!empty($onlykey) && $onlykey == '@GETPOSTISSET' && !GETPOSTISSET('options_'.$key) && (! in_array($this->attributes[$object->table_element]['type'][$key], array('boolean', 'checkbox', 'chkbxlst', 'point', 'multipts', 'linestrg', 'polygon', 'duration')))) {
+				if (!empty($onlykey) && $onlykey == '@GETPOSTISSET' && !request()->has('options_'.$key) && (! in_array($this->attributes[$object->table_element]['type'][$key], array('boolean', 'checkbox', 'chkbxlst', 'point', 'multipts', 'linestrg', 'polygon', 'duration')))) {
 					//when unticking boolean field, it's not set in POST
 					continue;
 				}
@@ -2849,7 +2849,7 @@ class ExtraFields
 						$onlykey === '@GETPOSTISSET'
 						&& in_array($this->attributes[$object->table_element]['type'][$key], array('boolean', 'checkbox', 'chkbxlst'))
 						&& in_array(abs($enabled), array(2, 5))
-						&& ! GETPOSTISSET('options_' . $key) // Update hidden checkboxes and multiselect only if they are provided
+						&& ! request()->has('options_' . $key) // Update hidden checkboxes and multiselect only if they are provided
 					)
 				) {
 					continue;
@@ -2885,35 +2885,35 @@ class ExtraFields
 
 				if (in_array($key_type, array('date'))) {
 					// Clean parameters
-					$value_key = dol_mktime(12, 0, 0, GETPOSTINT("options_".$key."month"), GETPOSTINT("options_".$key."day"), GETPOSTINT("options_".$key."year"));
+					$value_key = dol_mktime(12, 0, 0, request()->integer("options_".$key."month", 0), request()->integer("options_".$key."day", 0), request()->integer("options_".$key."year", 0));
 				} elseif (in_array($key_type, array('datetime'))) {
 					// Clean parameters
-					$value_key = dol_mktime(GETPOSTINT("options_".$key."hour"), GETPOSTINT("options_".$key."min"), GETPOSTINT("options_".$key."sec"), GETPOSTINT("options_".$key."month"), GETPOSTINT("options_".$key."day"), GETPOSTINT("options_".$key."year"), 'tzuserrel');
+					$value_key = dol_mktime(request()->integer("options_".$key."hour", 0), request()->integer("options_".$key."min", 0), request()->integer("options_".$key."sec", 0), request()->integer("options_".$key."month", 0), request()->integer("options_".$key."day", 0), request()->integer("options_".$key."year", 0), 'tzuserrel');
 				} elseif (in_array($key_type, array('datetimegmt'))) {
 					// Clean parameters
-					$value_key = dol_mktime(GETPOSTINT("options_".$key."hour"), GETPOSTINT("options_".$key."min"), GETPOSTINT("options_".$key."sec"), GETPOSTINT("options_".$key."month"), GETPOSTINT("options_".$key."day"), GETPOSTINT("options_".$key."year"), 'gmt');
+					$value_key = dol_mktime(request()->integer("options_".$key."hour", 0), request()->integer("options_".$key."min", 0), request()->integer("options_".$key."sec", 0), request()->integer("options_".$key."month", 0), request()->integer("options_".$key."day", 0), request()->integer("options_".$key."year", 0), 'gmt');
 				} elseif (in_array($key_type, array('duration'))) {
-					$value_hours = GETPOSTINT("options_" . $key . "hour");
-					$value_minutes = GETPOSTINT("options_" . $key . "min");
+					$value_hours = request()->integer("options_" . $key . "hour", 0);
+					$value_minutes = request()->integer("options_" . $key . "min", 0);
 					$value_key = $value_hours * 3600 + $value_minutes * 60;
 				} elseif (in_array($key_type, array('checkbox', 'chkbxlst'))) {
-					$value_arr = GETPOST("options_".$key, 'array'); // check if an array
+					$value_arr = request()->input("options_".$key, []);
 					if (!empty($value_arr)) {
 						$value_key = implode(',', $value_arr);
 					} else {
 						$value_key = '';
 					}
 				} elseif (in_array($key_type, array('price', 'double'))) {
-					$value_arr = GETPOST("options_".$key, 'alpha');
+					$value_arr = request()->input("options_".$key);
 					$value_key = price2num($value_arr);
 				} elseif (in_array($key_type, array('pricecy', 'double'))) {
-					$value_key = price2num(GETPOST("options_".$key, 'alpha')).':'.GETPOST("options_".$key."currency_id", 'alpha');
+					$value_key = price2num(request()->input("options_".$key)).':'.request()->input("options_".$key."currency_id");
 				} elseif (in_array($key_type, array('html'))) {
-					$value_key = GETPOST("options_".$key, 'restricthtml');
+					$value_key = request()->input("options_".$key);
 				} elseif (in_array($key_type, ['point', 'multipts', 'linestrg', 'polygon'])) {
 					// construct point
 					require_once DOL_DOCUMENT_ROOT.'/core/class/dolgeophp.class.php';
-					$geojson = GETPOST("options_".$key, 'restricthtml');
+					$geojson = request()->input("options_".$key);
 					if ($geojson != '{}') {
 						$dolgeophp = new DolGeoPHP($this->db);
 						$value_key = $dolgeophp->getWkt($geojson);
@@ -2928,9 +2928,9 @@ class ExtraFields
 					} else {
 						$label_security_check = !getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_LABELS_WITH_HTML') ? 'alphanohtml' : 'restricthtml';
 					}
-					$value_key = GETPOST("options_".$key, $label_security_check);
+					$value_key = request()->input("options_".$key);
 				} else {
-					$value_key = GETPOST("options_".$key);
+					$value_key = request()->input("options_".$key);
 					if (in_array($key_type, array('link')) && $value_key == '-1') {
 						$value_key = '';
 					}
@@ -3003,18 +3003,18 @@ class ExtraFields
 					$dateparamname_start = $keyprefix . 'options_' . $key . $keysuffix . '_start';
 					$dateparamname_end   = $keyprefix . 'options_' . $key . $keysuffix . '_end';
 
-					if (GETPOST($dateparamname_start . 'year') || GETPOST($dateparamname_end . 'year')) {
+					if (request()->input($dateparamname_start . 'year') || request()->input($dateparamname_end . 'year')) {
 						$value_key = array();
 						// values provided as a component year, month, day, etc.
-						if (GETPOST($dateparamname_start . 'year')) {
-							$value_key['start'] = dol_mktime(0, 0, 0, GETPOSTINT($dateparamname_start . 'month'), GETPOSTINT($dateparamname_start . 'day'), GETPOSTINT($dateparamname_start . 'year'));
+						if (request()->input($dateparamname_start . 'year')) {
+							$value_key['start'] = dol_mktime(0, 0, 0, request()->integer($dateparamname_start . 'month', 0), request()->integer($dateparamname_start . 'day', 0), request()->integer($dateparamname_start . 'year', 0));
 						}
-						if (GETPOST($dateparamname_end . 'year')) {
-							$value_key['end'] = dol_mktime(23, 59, 59, GETPOSTINT($dateparamname_end . 'month'), GETPOSTINT($dateparamname_end . 'day'), GETPOSTINT($dateparamname_end . 'year'));
+						if (request()->input($dateparamname_end . 'year')) {
+							$value_key['end'] = dol_mktime(23, 59, 59, request()->integer($dateparamname_end . 'month', 0), request()->integer($dateparamname_end . 'day', 0), request()->integer($dateparamname_end . 'year', 0));
 						}
-					} elseif (GETPOST($keyprefix."options_".$key.$keysuffix."year")) {
+					} elseif (request()->input($keyprefix."options_".$key.$keysuffix."year")) {
 						// Clean parameters
-						$value_key = dol_mktime(12, 0, 0, GETPOSTINT($keyprefix."options_".$key.$keysuffix."month"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."day"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."year"));
+						$value_key = dol_mktime(12, 0, 0, request()->integer($keyprefix."options_".$key.$keysuffix."month", 0), request()->integer($keyprefix."options_".$key.$keysuffix."day", 0), request()->integer($keyprefix."options_".$key.$keysuffix."year", 0));
 					} else {
 						continue; // Value was not provided, we should not set it.
 					}
@@ -3022,60 +3022,60 @@ class ExtraFields
 					$dateparamname_start = $keyprefix . 'options_' . $key . $keysuffix . '_start';
 					$dateparamname_end   = $keyprefix . 'options_' . $key . $keysuffix . '_end';
 
-					if (GETPOST($dateparamname_start . 'year') || GETPOST($dateparamname_end . 'year')) {
+					if (request()->input($dateparamname_start . 'year') || request()->input($dateparamname_end . 'year')) {
 						// values provided as a date pair (start date + end date), each date being broken down as year, month, day, etc.
-						$dateparamname_start_hour = GETPOSTINT($dateparamname_start . 'hour') != '-1' ? GETPOSTINT($dateparamname_start . 'hour') : '00';
-						$dateparamname_start_min = GETPOSTINT($dateparamname_start . 'min') != '-1' ? GETPOSTINT($dateparamname_start . 'min') : '00';
-						$dateparamname_start_sec = GETPOSTINT($dateparamname_start . 'sec') != '-1' ? GETPOSTINT($dateparamname_start . 'sec') : '00';
-						$dateparamname_end_hour = GETPOSTINT($dateparamname_end . 'hour') != '-1' ? GETPOSTINT($dateparamname_end . 'hour') : '23';
-						$dateparamname_end_min = GETPOSTINT($dateparamname_end . 'min') != '-1' ? GETPOSTINT($dateparamname_end . 'min') : '59';
-						$dateparamname_end_sec = GETPOSTINT($dateparamname_end . 'sec') != '-1' ? GETPOSTINT($dateparamname_end . 'sec') : '59';
+						$dateparamname_start_hour = request()->integer($dateparamname_start . 'hour', 0) != '-1' ? request()->integer($dateparamname_start . 'hour', 0) : '00';
+						$dateparamname_start_min = request()->integer($dateparamname_start . 'min', 0) != '-1' ? request()->integer($dateparamname_start . 'min', 0) : '00';
+						$dateparamname_start_sec = request()->integer($dateparamname_start . 'sec', 0) != '-1' ? request()->integer($dateparamname_start . 'sec', 0) : '00';
+						$dateparamname_end_hour = request()->integer($dateparamname_end . 'hour', 0) != '-1' ? request()->integer($dateparamname_end . 'hour', 0) : '23';
+						$dateparamname_end_min = request()->integer($dateparamname_end . 'min', 0) != '-1' ? request()->integer($dateparamname_end . 'min', 0) : '59';
+						$dateparamname_end_sec = request()->integer($dateparamname_end . 'sec', 0) != '-1' ? request()->integer($dateparamname_end . 'sec', 0) : '59';
 						if ($key_type == 'datetimegmt') {
 							$value_key = array(
-								'start' => dol_mktime($dateparamname_start_hour, $dateparamname_start_min, $dateparamname_start_sec, GETPOSTINT($dateparamname_start . 'month'), GETPOSTINT($dateparamname_start . 'day'), GETPOSTINT($dateparamname_start . 'year'), 'gmt'),
-								'end' => dol_mktime($dateparamname_end_hour, $dateparamname_end_min, $dateparamname_end_sec, GETPOSTINT($dateparamname_end . 'month'), GETPOSTINT($dateparamname_end . 'day'), GETPOSTINT($dateparamname_end . 'year'), 'gmt')
+								'start' => dol_mktime($dateparamname_start_hour, $dateparamname_start_min, $dateparamname_start_sec, request()->integer($dateparamname_start . 'month', 0), request()->integer($dateparamname_start . 'day', 0), request()->integer($dateparamname_start . 'year', 0), 'gmt'),
+								'end' => dol_mktime($dateparamname_end_hour, $dateparamname_end_min, $dateparamname_end_sec, request()->integer($dateparamname_end . 'month', 0), request()->integer($dateparamname_end . 'day', 0), request()->integer($dateparamname_end . 'year', 0), 'gmt')
 							);
 						} else {
 							$value_key = array(
-								'start' => dol_mktime($dateparamname_start_hour, $dateparamname_start_min, $dateparamname_start_sec, GETPOSTINT($dateparamname_start . 'month'), GETPOSTINT($dateparamname_start . 'day'), GETPOSTINT($dateparamname_start . 'year'), 'tzuserrel'),
-								'end' => dol_mktime($dateparamname_end_hour, $dateparamname_end_min, $dateparamname_end_sec, GETPOSTINT($dateparamname_end . 'month'), GETPOSTINT($dateparamname_end . 'day'), GETPOSTINT($dateparamname_end . 'year'), 'tzuserrel')
+								'start' => dol_mktime($dateparamname_start_hour, $dateparamname_start_min, $dateparamname_start_sec, request()->integer($dateparamname_start . 'month', 0), request()->integer($dateparamname_start . 'day', 0), request()->integer($dateparamname_start . 'year', 0), 'tzuserrel'),
+								'end' => dol_mktime($dateparamname_end_hour, $dateparamname_end_min, $dateparamname_end_sec, request()->integer($dateparamname_end . 'month', 0), request()->integer($dateparamname_end . 'day', 0), request()->integer($dateparamname_end . 'year', 0), 'tzuserrel')
 							);
 						}
-					} elseif (GETPOST($keyprefix."options_".$key.$keysuffix."year")) {
+					} elseif (request()->input($keyprefix."options_".$key.$keysuffix."year")) {
 						// Clean parameters
 						if ($key_type == 'datetimegmt') {
-							$value_key = dol_mktime(GETPOSTINT($keyprefix."options_".$key.$keysuffix."hour"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."min"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."sec"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."month"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."day"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."year"), 'gmt');
+							$value_key = dol_mktime(request()->integer($keyprefix."options_".$key.$keysuffix."hour", 0), request()->integer($keyprefix."options_".$key.$keysuffix."min", 0), request()->integer($keyprefix."options_".$key.$keysuffix."sec", 0), request()->integer($keyprefix."options_".$key.$keysuffix."month", 0), request()->integer($keyprefix."options_".$key.$keysuffix."day", 0), request()->integer($keyprefix."options_".$key.$keysuffix."year", 0), 'gmt');
 						} else {
-							$value_key = dol_mktime(GETPOSTINT($keyprefix."options_".$key.$keysuffix."hour"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."min"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."sec"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."month"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."day"), GETPOSTINT($keyprefix."options_".$key.$keysuffix."year"), 'tzuserrel');
+							$value_key = dol_mktime(request()->integer($keyprefix."options_".$key.$keysuffix."hour", 0), request()->integer($keyprefix."options_".$key.$keysuffix."min", 0), request()->integer($keyprefix."options_".$key.$keysuffix."sec", 0), request()->integer($keyprefix."options_".$key.$keysuffix."month", 0), request()->integer($keyprefix."options_".$key.$keysuffix."day", 0), request()->integer($keyprefix."options_".$key.$keysuffix."year", 0), 'tzuserrel');
 						}
 					} else {
 						continue; // Value was not provided, we should not set it.
 					}
 				} elseif ($key_type == 'select') {
 					// to detect if we are in search context
-					if (GETPOSTISARRAY($keyprefix."options_".$key.$keysuffix)) {
-						$value_arr = GETPOST($keyprefix."options_".$key.$keysuffix, 'array:aZ09');
+					if (is_array(request()->input($keyprefix."options_".$key.$keysuffix))) {
+						$value_arr = request()->input($keyprefix."options_".$key.$keysuffix);
 						// Make sure we get an array even if there's only one selected
 						$value_arr = (array) $value_arr;
 						$value_key = implode(',', $value_arr);
 					} else {
-						$value_key = GETPOST($keyprefix."options_".$key.$keysuffix);
+						$value_key = request()->input($keyprefix."options_".$key.$keysuffix);
 					}
 				} elseif (in_array($key_type, array('checkbox', 'chkbxlst'))) {
 					// We test on a hidden field named "..._multiselect" that is always set to 1 if param is in form so
 					// when nothing is provided we can make a difference between noparam in the form and param was set to nothing.
-					if (!GETPOSTISSET($keyprefix."options_".$key.$keysuffix.'_multiselect')) {
+					if (!request()->has($keyprefix."options_".$key.$keysuffix.'_multiselect')) {
 						continue; // Value was not provided, we should not set it.
 					}
-					$value_arr = GETPOST($keyprefix."options_".$key.$keysuffix);
+					$value_arr = request()->input($keyprefix."options_".$key.$keysuffix);
 					// Make sure we get an array even if there's only one checkbox
 					$value_arr = (array) $value_arr;
 					$value_key = implode(',', $value_arr);
 				} elseif (in_array($key_type, array('price', 'double', 'int'))) {
-					if (!GETPOSTISSET($keyprefix."options_".$key.$keysuffix)) {
+					if (!request()->has($keyprefix."options_".$key.$keysuffix)) {
 						continue; // Value was not provided, we should not set it.
 					}
-					$value_arr = GETPOST($keyprefix."options_".$key.$keysuffix);
+					$value_arr = request()->input($keyprefix."options_".$key.$keysuffix);
 					if ($keyprefix != 'search_') {    // If value is for a search, we must keep complex string like '>100 <=150'
 						$value_key = price2num($value_arr);
 					} else {
@@ -3084,23 +3084,23 @@ class ExtraFields
 				} elseif (in_array($key_type, array('boolean'))) {
 					// We test on a hidden field named "..._boolean" that is always set to 1 if param is in form so
 					// when nothing is provided we can make a difference between noparam in the form and param was set to nothing.
-					if (!GETPOSTISSET($keyprefix."options_".$key.$keysuffix."_boolean")) {
+					if (!request()->has($keyprefix."options_".$key.$keysuffix."_boolean")) {
 						$value_key = '';
 					} else {
-						$value_arr = GETPOST($keyprefix."options_".$key.$keysuffix);
+						$value_arr = request()->input($keyprefix."options_".$key.$keysuffix);
 						$value_key = $value_arr;
 					}
 				} elseif (in_array($key_type, array('html'))) {
-					if (!GETPOSTISSET($keyprefix."options_".$key.$keysuffix)) {
+					if (!request()->has($keyprefix."options_".$key.$keysuffix)) {
 						continue; // Value was not provided, we should not set it.
 					}
-					$value_key = dol_htmlcleanlastbr(GETPOST($keyprefix."options_".$key.$keysuffix, 'restricthtml'));
+					$value_key = dol_htmlcleanlastbr(request()->input($keyprefix."options_".$key.$keysuffix));
 				} else {
-					if (!GETPOSTISSET($keyprefix."options_".$key.$keysuffix)) {
+					if (!request()->has($keyprefix."options_".$key.$keysuffix)) {
 						continue; // Value was not provided, we should not set it.
 					}
 
-					$value_key = GETPOST($keyprefix."options_".$key.$keysuffix);
+					$value_key = request()->input($keyprefix."options_".$key.$keysuffix);
 					if ($value_key === '') {
 						$value_key = null;
 					}

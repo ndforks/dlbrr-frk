@@ -42,11 +42,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 $langs->loadLangs(array("users", "admin", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$handler = GETPOST('handler', 'aZ09');
+$action = request()->input('action');
+$handler = request()->input('handler');
 
 
 /*
@@ -55,12 +55,12 @@ $handler = GETPOST('handler', 'aZ09');
 
 if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
-	$value = (GETPOST($code, 'alpha') ? GETPOST($code, 'alpha') : 1);
+	$value = (request()->input($code) ? request()->input($code) : 1);
 	if (dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity) > 0) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
@@ -68,11 +68,11 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'setcaptchahandler') {
-	if (!dolibarr_set_const($db, 'MAIN_SECURITY_ENABLECAPTCHA_HANDLER', GETPOST("value", "aZ09"), 'chaine', 0, '', $conf->entity)) {
-		dol_print_error($db);
+	if (!dolibarr_set_const($db, 'MAIN_SECURITY_ENABLECAPTCHA_HANDLER', request()->input('value'), 'chaine', 0, '', $conf->entity)) {
+		abort(500);
 	}
 }
 

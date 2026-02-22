@@ -181,7 +181,7 @@ if ($permission) {
 
 		<div class="tagtd nowrap noborderbottom">
 			<?php
-			$selectedCompany = GETPOSTISSET("newcompany") ? GETPOSTINT("newcompany") : (empty($object->socid) ? 0 : $object->socid);
+			$selectedCompany = request()->has('newcompany') ? request()->integer('newcompany', 0) : (empty($object->socid) ? 0 : $object->socid);
 			$selectedCompany = $formcompany->selectCompaniesForNewContact($object, 'id', $selectedCompany, 'newcompany', array(), 0, '', 'minwidth300imp maxwidth400 widthcentpercentminusx');	// This also print the select component?>
 		</div>
 		<div class="tagtd noborderbottom minwidth500imp">
@@ -297,8 +297,8 @@ foreach (array('internal', 'external') as $source) {
 }
 
 
-$sortfield = GETPOST("sortfield", "aZ09comma");
-$sortorder = GETPOST("sortorder", 'aZ09comma');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 
 if (!$sortfield) {
 	$sortfield = "nature";

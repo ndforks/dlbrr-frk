@@ -66,10 +66,10 @@ if (isModEnabled('incoterm')) {
 	$langs->load('incoterm');
 }
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$id = GETPOSTINT('id');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$backtopage = request()->input('backtopage');
+$id = request()->integer('id', 0);
 
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -102,14 +102,14 @@ $permissiontovalidate = ((!getDolGlobalString('MAIN_USE_ADVANCED_PERMS') && $use
 $permissionnote = $user->hasRight('expedition', 'delivery', 'creer'); // Used by the include of actions_setnotes.inc.php
 $permissiondellink = $user->hasRight('expedition', 'delivery', 'creer'); // Used by the include of actions_dellink.inc.php
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 $permissiontoeditextraline = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element_line]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element_line]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextraline = dol_eval((string) $extrafields->attributes[$object->table_element_line]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextraline = dol_eval((string) $extrafields->attributes[$object->table_element_line]['perms'][request()->input('attribute')]);
 }
 
 
@@ -128,11 +128,11 @@ if ($action == 'add' && $permissiontoadd) {
 	$db->begin();
 
 	$object->date_delivery = dol_now();
-	$object->note_private  = GETPOST("note", 'restricthtml');
+	$object->note_private  = request()->input('note');
 	$object->note          = $object->note_private;	// deprecated
-	$object->commande_id   = GETPOSTINT("commande_id");
-	$object->fk_incoterms  = GETPOSTINT('incoterm_id');
-	// $object->entrepot_id = GETPOST('entrepot_id', 'int');	entrepot_id does not exists on delivery note, only on shipment document
+	$object->commande_id   = request()->integer('commande_id', 0);
+	$object->fk_incoterms  = request()->integer('incoterm_id', 0);
+	// $object->entrepot_id = request()->input('entrepot_id');	entrepot_id does not exists on delivery note, only on shipment document
 
 	// We loop on each line of order to complete object delivery with qty to delivery
 	$commande = new Commande($db);
@@ -143,9 +143,9 @@ if ($action == 'add' && $permissiontoadd) {
 	for ($i = 0; $i < $num; $i++) {
 		$qty = "qtyl".$i;
 		$idl = "idl".$i;
-		$qtytouse = price2num(GETPOSTFLOAT($qty));
+		$qtytouse = price2num((float)request()->input($qty, 0.0));
 		if ($qtytouse > 0) {
-			$object->addline(GETPOSTINT($idl), (float) price2num($qtytouse), $array_options);
+			$object->addline(request()->integer($idl, 0), (float) price2num($qtytouse), $array_options);
 		}
 	}
 
@@ -167,8 +167,8 @@ if ($action == 'add' && $permissiontoadd) {
 	if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 			$newlang = $object->thirdparty->default_lang;
@@ -206,21 +206,21 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $permissiontodelete) {
 }
 
 if ($action == 'setdate_delivery' && $permissiontoadd) {
-	$datedelivery = dol_mktime(GETPOSTINT('liv_hour'), GETPOSTINT('liv_min'), 0, GETPOSTINT('liv_month'), GETPOSTINT('liv_day'), GETPOSTINT('liv_year'));
+	$datedelivery = dol_mktime(request()->integer('liv_hour', 0), request()->integer('liv_min', 0), 0, request()->integer('liv_month', 0), request()->integer('liv_day', 0), request()->integer('liv_year', 0));
 	$result = $object->setDeliveryDate($user, $datedelivery);
 	if ($result < 0) {
 		$mesg = '<div class="error">'.$object->error.'</div>';
 	}
 } elseif ($action == 'set_incoterms' && isModEnabled('incoterm') && $permissiontoadd) {
 	// Set incoterm
-	$result = $object->setIncoterms(GETPOSTINT('incoterm_id'), GETPOST('location_incoterms'));
+	$result = $object->setIncoterms(request()->integer('incoterm_id', 0), request()->input('location_incoterms'));
 }
 
 // Update extrafields
 if ($action == 'update_extras' && $permissiontoeditextra) {
 	$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-	$attribute_name = GETPOST('attribute', 'aZ09');
+	$attribute_name = request()->input('attribute');
 
 	// Fill array 'array_options' with data from update form
 	$ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
@@ -335,7 +335,7 @@ if ($action == 'create') {
 			 *
 			 */
 			if ($action == 'delete') {
-				$expedition_id = GETPOST("expid");
+				$expedition_id = request()->integer('expid', 0);
 				print $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$object->id.'&expid='.$expedition_id.'&backtopage='.urlencode($backtopage), $langs->trans("DeleteDeliveryReceipt"), $langs->trans("DeleteDeliveryReceiptConfirm", $object->ref), 'confirm_delete', '', '', 1);
 			}
 
@@ -581,8 +581,8 @@ if ($action == 'create') {
 						if (getDolGlobalInt('MAIN_MULTILANGS') && getDolGlobalString('PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE')) {
 							$outputlangs = $langs;
 							$newlang = '';
-							if (/* empty($newlang) && */ GETPOST('lang_id', 'aZ09')) {
-								$newlang = GETPOST('lang_id', 'aZ09');
+							if (/* empty($newlang) && */ request()->input('lang_id')) {
+								$newlang = request()->input('lang_id');
 							}
 							if (empty($newlang)) {
 								$newlang = $object->thirdparty->default_lang;
@@ -751,7 +751,7 @@ if ($action == 'create') {
 	* Action presend
 	*/
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

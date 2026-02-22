@@ -43,11 +43,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
@@ -57,11 +57,11 @@ if (!$sortfield) {
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -70,21 +70,21 @@ if (!$user->admin) {
  */
 
 if ($action == 'deletefile') {
-	if (preg_match('/^backup\//', GETPOST('urlfile', 'alpha'))) {
-		$file = $conf->admin->dir_output.'/backup/'.basename(GETPOST('urlfile', 'alpha'));
+	if (preg_match('/^backup\//', request()->input('urlfile'))) {
+		$file = $conf->admin->dir_output.'/backup/'.basename(request()->input('urlfile'));
 		$ret = dol_delete_file($file, 1);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 		}
 	} else {
-		$file = $conf->admin->dir_output.'/documents/'.basename(GETPOST('urlfile', 'alpha'));
+		$file = $conf->admin->dir_output.'/documents/'.basename(request()->input('urlfile'));
 		$ret = dol_delete_file($file, 1);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 		}
 	}
 	$action = '';
@@ -306,7 +306,7 @@ if (in_array($type, array('mysql', 'mysqli'))) {
 	}
 	if ($execmethod == 1) {
 		// If we use the "exec" method for shell, we ask if we need to use the alternative low memory exec mode.
-		print '<input type="checkbox" name="lowmemorydump" value="1" id="lowmemorydump"'.((GETPOSTISSET('lowmemorydump') ? GETPOSTINT('lowmemorydump') : getDolGlobalInt('MAIN_LOW_MEMORY_DUMP')) ? ' checked="checked"' : '').'" />';
+		print '<input type="checkbox" name="lowmemorydump" value="1" id="lowmemorydump"'.((request()->has('lowmemorydump') ? request()->integer('lowmemorydump', 0) : getDolGlobalInt('MAIN_LOW_MEMORY_DUMP')) ? ' checked="checked"' : '').'" />';
 		print '<label for="lowmemorydump">';
 		print $form->textwithpicto($langs->trans('ExportUseLowMemoryMode'), $langs->trans('ExportUseLowMemoryModeHelp'));
 		print '</label>';
@@ -325,7 +325,7 @@ if (in_array($type, array('mysql', 'mysqli'))) {
 	print '<label for="checkbox_sql_structure">'.$langs->trans('ExportStructure').'</label>';
 	print '</legend>';
 
-	print '<input type="checkbox" name="drop"'.((!GETPOSTISSET("drop") || GETPOST('drop')) ? ' checked' : '').' id="checkbox_dump_drop" />';
+	print '<input type="checkbox" name="drop"'.((!request()->has('drop') || request()->input('drop')) ? ' checked' : '').' id="checkbox_dump_drop" />';
 	print '<label for="checkbox_dump_drop">'.$langs->trans("AddDropTable").'</label>';
 	print '<br>';
 	print '</fieldset>';
@@ -389,7 +389,7 @@ if (in_array($type, array('mysql', 'mysqli'))) {
 
 	print '<br>';
 	print '<fieldset><legend>'.$langs->trans('ExportStructure').'</legend>';
-	print '<input type="checkbox" name="nobin_drop"'.((!GETPOSTISSET("nobin_drop") || GETPOST('nobin_drop')) ? ' checked' : '').' id="checkbox_dump_drop" />';
+	print '<input type="checkbox" name="nobin_drop"'.((!request()->has('nobin_drop') || request()->input('nobin_drop')) ? ' checked' : '').' id="checkbox_dump_drop" />';
 	print '<label for="checkbox_dump_drop">'.$langs->trans("AddDropTable").'</label>';
 	print '<br>';
 	print '</fieldset>';

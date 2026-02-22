@@ -42,7 +42,7 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/takepos.lib.php";
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "cashdesk", "printing"));
@@ -55,12 +55,12 @@ $res = 0;
  */
 $error = 0;
 
-if (GETPOST('action', 'alpha') == 'set') {
+if (request()->input('action') == 'set') {
 	$db->begin();
 
 	dol_syslog("admin/bar");
 
-	$suplement_category = GETPOST('TAKEPOS_SUPPLEMENTS_CATEGORY', 'alpha');
+	$suplement_category = request()->input('TAKEPOS_SUPPLEMENTS_CATEGORY');
 	if ($suplement_category < 0) {
 		$suplement_category = 0;
 	}

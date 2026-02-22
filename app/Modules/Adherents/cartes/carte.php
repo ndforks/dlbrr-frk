@@ -49,12 +49,12 @@ $now = dol_now();
 $year = dol_print_date($now, '%Y');
 $month = dol_print_date($now, '%m');
 $day = dol_print_date($now, '%d');
-$foruserid = GETPOST('foruserid', 'alphanohtml');
-$foruserlogin = GETPOST('foruserlogin', 'alphanohtml');
-$mode = GETPOST('mode', 'aZ09');
-$modelcard = GETPOST("modelcard", 'aZ09'); // Doc template to use for business cards
-$model = GETPOST("model", 'aZ09'); // Doc template to use for business cards
-$modellabel = GETPOST("modellabel", 'aZ09'); // Doc template to use for address sheet
+$foruserid = request()->integer('foruserid', 0);
+$foruserlogin = request()->input('foruserlogin');
+$mode = request()->input('mode');
+$modelcard = request()->input('modelcard'); // Doc template to use for business cards
+$model = request()->input('model'); // Doc template to use for business cards
+$modellabel = request()->input('modellabel'); // Doc template to use for address sheet
 $mesg = '';
 
 $adherentstatic = new Adherent($db);
@@ -293,7 +293,7 @@ if ((!empty($foruserid) || !empty($foruserlogin) || !empty($mode)) && !$mesg) {
 			dol_print_error(null, $mesg);
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (!$mesg) {
@@ -336,7 +336,7 @@ foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];
 }
 asort($arrayoflabels);
-print $form->selectarray('modelcard', $arrayoflabels, (GETPOST('modelcard') ? GETPOST('modelcard') : getDolGlobalString('ADHERENT_CARD_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
+print $form->selectarray('modelcard', $arrayoflabels, (request()->input('modelcard') ? request()->input('modelcard') : getDolGlobalString('ADHERENT_CARD_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
 print '<br><input type="submit" class="button small" value="'.$langs->trans("BuildDoc").'">';
 print '</form>';
 
@@ -354,8 +354,8 @@ foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];
 }
 asort($arrayoflabels);
-print $form->selectarray('model', $arrayoflabels, (GETPOST('model') ? GETPOST('model') : getDolGlobalString('ADHERENT_CARD_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
-print '<br>'.$langs->trans("Login").': <input class="width100" type="text" name="foruserlogin" value="'.GETPOST('foruserlogin').'">';
+print $form->selectarray('model', $arrayoflabels, (request()->input('model') ? request()->input('model') : getDolGlobalString('ADHERENT_CARD_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
+print '<br>'.$langs->trans("Login").': <input class="width100" type="text" name="foruserlogin" value="'.request()->input('foruserlogin').'">';
 print '<br><input type="submit" class="button small" value="'.$langs->trans("BuildDoc").'">';
 print '</form>';
 
@@ -373,7 +373,7 @@ foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];
 }
 asort($arrayoflabels);
-print $form->selectarray('modellabel', $arrayoflabels, (GETPOST('modellabel') ? GETPOST('modellabel') : getDolGlobalString('ADHERENT_ETIQUETTE_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
+print $form->selectarray('modellabel', $arrayoflabels, (request()->input('modellabel') ? request()->input('modellabel') : getDolGlobalString('ADHERENT_ETIQUETTE_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
 print '<br><input type="submit" class="button small" value="'.$langs->trans("BuildDoc").'">';
 print '</form>';
 

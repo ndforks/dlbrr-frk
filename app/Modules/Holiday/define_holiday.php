@@ -45,23 +45,23 @@ require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 // Load translation files required by the page
 $langs->loadlangs(array('users', 'other', 'holiday', 'hrm'));
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'defineholidaylist';
-$massaction = GETPOST('massaction', 'alpha');
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('optioncss', 'aZ');
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'defineholidaylist';
+$massaction = request()->input('massaction', []);
+$optioncss = request()->input('optioncss');
+$mode = request()->input('optioncss');
 
-$search_name = GETPOST('search_name', 'alpha');
-$search_supervisor = GETPOST('search_supervisor', "intcomma");
+$search_name = request()->input('search_name');
+$search_supervisor = request()->input('search_supervisor');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$confirm = GETPOST('confirm', 'alpha');
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
+$confirm = request()->input('confirm');
 
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -99,17 +99,17 @@ $permissiontoapprove = $user->hasRight('holiday', 'approve');
 $permissiontosetup = $user->hasRight('holiday', 'define_holiday');
 
 if (!isModEnabled('holiday')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // If the user does not have perm to read the page
 if (!$user->hasRight('holiday', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -117,11 +117,11 @@ if (!$user->hasRight('holiday', 'read')) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -136,7 +136,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_name = '';
 		$search_supervisor = '';
 		$toselect = array();
@@ -150,19 +150,19 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 
 	// If there is an update action
-	if ($action == 'update' && GETPOSTISSET('update_cp') && $permissiontosetup) {
+	if ($action == 'update' && request()->has('update_cp') && $permissiontosetup) {
 		$error = 0;
 		$nbok = 0;
 
 		$typeleaves = $holiday->getTypes(1, 1);
 
-		$userID = array_keys(GETPOST('update_cp'));
+		$userID = array_keys(request()->input('update_cp'));
 		$userID = $userID[0];
 
 		$db->begin();
 
 		foreach ($typeleaves as $key => $val) {
-			$userValue = GETPOST('nb_holiday_'.$val['rowid']);
+			$userValue = request()->input('nb_holiday_' . $val['rowid']);
 			$userValue = $userValue[$userID];
 
 			if (!empty($userValue) || (string) $userValue == '0') {
@@ -172,7 +172,7 @@ if (empty($reshook)) {
 			}
 
 			//If the user set a comment, we add it to the log comment
-			$note_holiday = GETPOST('note_holiday');
+			$note_holiday = request()->integer('note_holiday', 0);
 			$comment = ((isset($note_holiday[$userID]) && !empty($note_holiday[$userID])) ? ' ('.$note_holiday[$userID].')' : '');
 
 			//print 'holiday: '.$val['rowid'].'-'.$userValue;exit;
@@ -285,12 +285,12 @@ if ($massaction == 'preincreaseholiday') {
 	$formquestion [] = array( 'type' => 'other',
 		'name' => 'typeofholiday',
 		'label' => $langs->trans("Type"),
-		'value' => $form->selectarray('typeholiday', $labeltypes, GETPOST('typeholiday', 'alpha'), 1)
+		'value' => $form->selectarray('typeholiday', $labeltypes, request()->input('typeholiday'), 1)
 	);
 	$formquestion [] = array( 'type' => 'other',
 		'name' => 'nbdaysholydays',
 		'label' => $langs->trans("NumberDayAddMass"),
-		'value' => '<input name="nbdaysholidays" class="maxwidth75" id="nbdaysholidays" value="'.GETPOSTINT('nbdaysholidays').'">'
+		'value' => '<input name="nbdaysholidays" class="maxwidth75" id="nbdaysholidays" value="'.request()->integer('nbdaysholidays', 0).'">'
 	);
 	print $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans("ConfirmMassIncreaseHoliday"), $langs->trans("ConfirmMassIncreaseHolidayQuestion", count($toselect)), "increaseholiday", $formquestion, 1, 0, 200, 500, 1);
 }

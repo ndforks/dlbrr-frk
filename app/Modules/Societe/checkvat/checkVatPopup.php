@@ -57,7 +57,7 @@ print load_fiche_titre($langs->trans("VATIntraCheckableOnEUSite"), '', 'title_se
 
 $messagetoshow = '';
 
-$vatNumber = GETPOST("vatNumber", 'alpha');
+$vatNumber = request()->input('vatNumber');
 
 if (!$vatNumber) {
 	print '<br>';

@@ -196,11 +196,11 @@ class FormListWebPortal
 
 		// Set form list
 		$this->element = $elementEn;
-		$this->action = GETPOST('action', 'aZ09');
-		$this->limit = GETPOSTISSET('limit') ? GETPOSTINT('limit') : -1;
-		$this->sortfield = GETPOST('sortfield', 'aZ09comma');
-		$this->sortorder = GETPOST('sortorder', 'aZ09comma');
-		$this->page = GETPOSTISSET('page') ? GETPOSTINT('page') : 1;
+		$this->action = request()->input('action');
+		$this->limit = request()->has('limit') ? request()->integer('limit', 0) : -1;
+		$this->sortfield = request()->input('sortfield');
+		$this->sortorder = request()->input('sortorder');
+		$this->page = request()->has('page') ? request()->integer('page', 0) : 1;
 		if (empty($this->titleKey)) {
 			$this->titleKey = $objectclass . 'ListTitle';
 		}
@@ -248,7 +248,7 @@ class FormListWebPortal
 	public function doActions()
 	{
 		// Purge search criteria
-		if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+		if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 			$this->setSearchValues(true);
 		}
 	}
@@ -325,13 +325,13 @@ class FormListWebPortal
 						$this->search[$key . '_dtendyear'] = '';
 					}
 				} else {
-					if (GETPOST('search_' . $key, 'alpha') !== '') {
-						$this->search[$key] = GETPOST('search_' . $key, 'alpha');
+					if (request()->input('search_' . $key, 'alpha') !== '') {
+						$this->search[$key] = request()->input('search_' . $key, 'alpha');
 					}
 					if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
 						/* Fix: this is not compatible with multilangage date format, replaced with dolibarr method
-						$postDateStart = GETPOST('search_' . $key . '_dtstart', 'alphanohtml');
-						$postDateEnd = GETPOST('search_' . $key . '_dtend', 'alphanohtml');
+						$postDateStart = request()->input('search_' . $key . '_dtstart', 'alphanohtml');
+						$postDateEnd = request()->input('search_' . $key . '_dtend', 'alphanohtml');
 						// extract date YYYY-MM-DD for year, month and day
 						$dateStartArr = explode('-', $postDateStart);
 						$dateEndArr = explode('-', $postDateEnd);
@@ -348,21 +348,21 @@ class FormListWebPortal
 							$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, $dateEndMonth, $dateEndDay, $dateEndYear);
 						}
 						*/
-						$this->search[$key . '_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtstartmonth'), GETPOSTINT('search_'.$key.'_dtstartday'), GETPOSTINT('search_'.$key.'_dtstartyear'));
-						$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_'.$key.'_dtendmonth'), GETPOSTINT('search_'.$key.'_dtendday'), GETPOSTINT('search_'.$key.'_dtendyear'));
-						$this->search[$key . '_dtstartmonth'] = GETPOSTINT('search_' . $key . '_dtstartmonth');
-						$this->search[$key . '_dtstartday'] = GETPOSTINT('search_' . $key . '_dtstartday');
-						$this->search[$key . '_dtstartyear'] = GETPOSTINT('search_' . $key . '_dtstartyear');
-						$this->search[$key . '_dtendmonth'] = GETPOSTINT('search_' . $key . '_dtendmonth');
-						$this->search[$key . '_dtendday'] = GETPOSTINT('search_' . $key . '_dtendday');
-						$this->search[$key . '_dtendyear'] = GETPOSTINT('search_' . $key . '_dtendyear');
+						$this->search[$key . '_dtstart'] = dol_mktime(0, 0, 0, request()->integer('search_'.$key.'_dtstartmonth', 0), request()->integer('search_'.$key.'_dtstartday', 0), request()->integer('search_'.$key.'_dtstartyear', 0));
+						$this->search[$key . '_dtend'] = dol_mktime(23, 59, 59, request()->integer('search_'.$key.'_dtendmonth', 0), request()->integer('search_'.$key.'_dtendday', 0), request()->integer('search_'.$key.'_dtendyear', 0));
+						$this->search[$key . '_dtstartmonth'] = request()->integer('search_' . $key . '_dtstartmonth', 0);
+						$this->search[$key . '_dtstartday'] = request()->integer('search_' . $key . '_dtstartday', 0);
+						$this->search[$key . '_dtstartyear'] = request()->integer('search_' . $key . '_dtstartyear', 0);
+						$this->search[$key . '_dtendmonth'] = request()->integer('search_' . $key . '_dtendmonth', 0);
+						$this->search[$key . '_dtendday'] = request()->integer('search_' . $key . '_dtendday', 0);
+						$this->search[$key . '_dtendyear'] = request()->integer('search_' . $key . '_dtendyear', 0);
 					}
 				}
 			}
 		}
 
 		// List of fields to search into when doing a "search in all"
-		$this->search_all = GETPOST('search_all', 'alphanohtml');
+		$this->search_all = request()->input('search_all');
 
 		$this->controller->listSetSearchValues($clear);
 	}
@@ -404,7 +404,7 @@ class FormListWebPortal
 			$reshook = $hookmanager->executeHooks('printFieldListFrom', $parameters, $context);
 			$this->sql_body .= $hookmanager->resPrint;
 			if ($this->object->ismultientitymanaged == 1) {
-				$this->sql_body .= " WHERE t.entity IN (" . getEntity($this->object->element, (GETPOSTINT('search_current_entity') ? 0 : 1)) . ")";
+				$this->sql_body .= " WHERE t.entity IN (" . getEntity($this->object->element, (request()->integer('search_current_entity', 0) ? 0 : 1)) . ")";
 			} else {
 				$this->sql_body .= " WHERE 1 = 1";
 			}

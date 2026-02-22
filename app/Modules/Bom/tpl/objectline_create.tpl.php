@@ -143,9 +143,9 @@ if (isModEnabled("product") || isModEnabled("service")) {
 	$statustoshow = -1;
 	if (getDolGlobalString('ENTREPOT_EXTRA_STATUS')) {
 		// hide products in closed warehouse, but show products for internal transfer
-		print $form->select_produits(GETPOSTINT('idprod'), (($filtertype == 1) ? 'idprodservice' : 'idprod'), $filtertype, getDolGlobalInt('PRODUIT_LIMIT_SIZE'), 0, $statustoshow, 2, '', 1, array(), 0, '1', 0, 'maxwidth500 widthcentpercentminusx', 0, 'warehouseopen,warehouseinternal', GETPOST('combinations', 'array:alphanohtml'), 1);
+		print $form->select_produits(request()->integer('idprod', 0), (($filtertype == 1) ? 'idprodservice' : 'idprod'), $filtertype, getDolGlobalInt('PRODUIT_LIMIT_SIZE'), 0, $statustoshow, 2, '', 1, array(), 0, '1', 0, 'maxwidth500 widthcentpercentminusx', 0, 'warehouseopen,warehouseinternal', request()->input('combinations'), 1);
 	} else {
-		print $form->select_produits(GETPOSTINT('idprod'), (($filtertype == 1) ? 'idprodservice' : 'idprod'), $filtertype, getDolGlobalInt('PRODUIT_LIMIT_SIZE'), 0, $statustoshow, 2, '', 1, array(), 0, '1', 0, 'maxwidth500 widthcentpercentminusx', 0, '', GETPOST('combinations', 'array:alphanohtml'), 1);
+		print $form->select_produits(request()->integer('idprod', 0), (($filtertype == 1) ? 'idprodservice' : 'idprod'), $filtertype, getDolGlobalInt('PRODUIT_LIMIT_SIZE'), 0, $statustoshow, 2, '', 1, array(), 0, '1', 0, 'maxwidth500 widthcentpercentminusx', 0, '', request()->input('combinations'), 1);
 	}
 	$urltocreateproduct = DOL_URL_ROOT.'/product/card.php?action=create'.(($filtertype == 1) ? '&leftmenu=service&type=1' : '&leftmenu=product&type=0').'&backtopage='.urlencode($_SERVER["PHP_SELF"].'?id='.$object->id);
 	print '<a href="'.$urltocreateproduct.'"><span class="fa fa-plus-circle valignmiddle paddingleft" title="'.$langs->trans("AddProduct").'"></span></a>';
@@ -171,7 +171,7 @@ print '</td>';
 
 
 $coldisplay++;
-print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(GETPOSTISSET("qty") ? GETPOST("qty", 'alpha', 2) : 1).'">';
+print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(request()->has('qty') ? request()->input('qty') : 1).'">';
 print '</td>';
 
 if ($filtertype != 1) { // Product
@@ -192,18 +192,18 @@ if ($filtertype != 1) { // Product
 if ($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES')) { // Product or stock support for Services is active
 	// Qty frozen
 	$coldisplay++;
-	print '<td class="bordertop nobottom linecolqtyfrozen right"><input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"' . (GETPOST("qty_frozen", 'alpha') ? ' checked="checked"' : '') . '>';
+	print '<td class="bordertop nobottom linecolqtyfrozen right"><input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"' . (request()->input('qty_frozen') ? ' checked="checked"' : '') . '>';
 	print '</td>';
 
 	// Disable stock change
 	$coldisplay++;
-	print '<td class="bordertop nobottom linecoldisablestockchange right"><input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"' . (GETPOST("disable_stock_change", 'alpha') ? ' checked="checked"' : '') . '">';
+	print '<td class="bordertop nobottom linecoldisablestockchange right"><input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"' . (request()->input('disable_stock_change') ? ' checked="checked"' : '') . '">';
 	print '</td>';
 
 	// Efficiency
 	$coldisplay++;
 	print '<td class="bordertop nobottom nowrap linecollost right">';
-	print '<input type="text" size="2" name="efficiency" id="efficiency" class="flat right" value="' . ((GETPOSTISSET("efficiency") && $action == 'addline') ? GETPOST("efficiency", 'alpha') : 1) . '">';
+	print '<input type="text" size="2" name="efficiency" id="efficiency" class="flat right" value="' . ((request()->has('efficiency') && $action == 'addline') ? request()->input('efficiency') : 1) . '">';
 	print '</td>';
 }
 // Service and workstations are active

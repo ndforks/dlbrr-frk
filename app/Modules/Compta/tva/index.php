@@ -48,10 +48,10 @@ $langs->loadLangs(array("other", "compta", "banks", "bills", "companies", "produ
 
 $now = dol_now();
 
-$refresh = GETPOSTISSET('submit') ? true : false;
-$year_current = GETPOSTISSET('year') ? GETPOSTINT('year') : dol_print_date($now, '%Y', 'tzserver');
+$refresh = request()->has('submit') ? true : false;
+$year_current = request()->has('year') ? request()->integer('year', 0) : dol_print_date($now, '%Y', 'tzserver');
 $year_start = $year_current;
-$month_current = GETPOSTISSET('month') ? GETPOSTINT('month') : dol_print_date($now, '%m', 'tzserver');
+$month_current = request()->has('month') ? request()->integer('month', 0) : dol_print_date($now, '%m', 'tzserver');
 $month_start = $month_current;
 
 $refresh = true;
@@ -71,15 +71,15 @@ include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
 // Define modetax (0 or 1)
 // 0=normal, 1=option vat for services is on debit, 2=option on payments for products
 $modetax = getDolGlobalString('TAX_MODE');
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -183,7 +183,7 @@ function pt($db, $sql, $date)
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

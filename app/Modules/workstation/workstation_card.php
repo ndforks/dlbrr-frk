@@ -47,19 +47,19 @@ require_once DOL_DOCUMENT_ROOT.'/workstation/lib/workstation_workstation.lib.php
 $langs->loadLangs(array('mrp', 'other'));
 
 // Get parameters
-$id          = GETPOSTINT('id');
-$ref         = GETPOST('ref', 'alpha');
-$action      = GETPOST('action', 'aZ09');
-$confirm     = GETPOST('confirm', 'alpha');
-$cancel      = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage  = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$id          = request()->integer('id', 0);
+$ref         = request()->input('ref');
+$action      = request()->input('action');
+$confirm     = request()->input('confirm');
+$cancel      = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage  = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$dol_openinpopup = request()->input('dol_openinpopup');
 
-$groups	    = GETPOST('groups', 'array:int');
-$resources	= GETPOST('resources', 'array:int');
-//$lineid   = GETPOST('lineid', 'int');
+$groups	    = request()->input('groups');
+$resources	= request()->input('resources');
+//$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Workstation($db);
@@ -74,11 +74,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = trim(GETPOST("search_all", 'alpha'));
+$search_all = trim(request()->input('search_all'));
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -204,7 +204,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-workstation page-wor
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden('NotEnoughPermissions', 0, 1);
+		abort(403);
 	}
 
 	// Set default value of the property ref

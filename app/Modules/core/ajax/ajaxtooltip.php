@@ -50,15 +50,15 @@ include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
  * @var User $user
  */
 
-$id = GETPOST('id', 'aZ09');
-$objecttype = GETPOST('objecttype', 'aZ09arobase');	// 'module' or 'myobject@mymodule', 'mymodule_myobject'
+$id = request()->integer('id', 0);
+$objecttype = request()->input('objecttype');	// 'module' or 'myobject@mymodule', 'mymodule_myobject'
 
 $params = array('fromajaxtooltip' => 1);
-if (GETPOSTISSET('infologin')) {
-	$params['infologin'] = GETPOSTINT('infologin');
+if (request()->has('infologin')) {
+	$params['infologin'] = request()->integer('infologin', 0);
 }
-if (GETPOSTISSET('option')) {
-	$params['option'] = GETPOST('option', 'restricthtml');
+if (request()->has('option')) {
+	$params['option'] = request()->input('option');
 }
 $element_ref = '';
 if (is_numeric($id)) {
@@ -70,7 +70,7 @@ if (is_numeric($id)) {
 // Load object according to $element
 $object = fetchObjectByElement($id, $objecttype, $element_ref);
 if (empty($object->element)) {
-	httponly_accessforbidden('Failed to get object with fetchObjectByElement(id='.$id.', objecttype='.$objecttype.')');
+	httponly_abort(403);');
 }
 
 $module = $object->module;

@@ -40,7 +40,7 @@ require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
 
 // Security check
 if (!$user->hasRight('opensurvey', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -49,8 +49,8 @@ if (!$user->hasRight('opensurvey', 'write')) {
  * Action
  */
 
-$arrayofchoices = GETPOST('choix', 'array');
-$arrayoftypecolumn = GETPOST('typecolonne', 'array');
+$arrayofchoices = request()->input('choix');
+$arrayoftypecolumn = request()->input('typecolonne');
 
 // Set session vars
 if (isset($_SESSION["nbrecases"])) {
@@ -66,18 +66,18 @@ if (isset($_SESSION["nbrecases"])) {
 	$_SESSION["nbrecases"] = 5;
 }
 
-if (GETPOST("ajoutcases") || GETPOST("ajoutcases_x")) {
+if (request()->input('ajoutcases') || request()->input('ajoutcases_x')) {
 	if ($_SESSION["nbrecases"] < 100) {
 		$_SESSION["nbrecases"] += 5;
 	}
 }
 
 // Create survey into database
-if (GETPOSTISSET("confirmecreation")) {
+if (request()->has('confirmecreation')) {
 	$toutchoix = '';
 	for ($i = 0; $i < $_SESSION["nbrecases"] + 1; $i++) {
 		$tmpchoice = $arrayofchoices[$i];
-		$tmptypecolumn = GETPOST('typecolonne'.$i, 'alphanohtml');
+		$tmptypecolumn = request()->input('typecolonne' . $i);
 		if (!empty($tmpchoice)) {
 			$toutchoix .= ',';
 			$toutchoix .= str_replace(array(",", "@"), " ", $tmpchoice).(empty($tmptypecolumn) ? '' : '@'.$tmptypecolumn);

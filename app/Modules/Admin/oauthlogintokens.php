@@ -48,11 +48,11 @@ $supportedoauth2array = getSupportedOauth2Array();
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'printing', 'oauth'));
 
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST('mode', 'alpha');
-$value = GETPOST('value', 'alpha');
-$varname = GETPOST('varname', 'alpha');
-$driver = GETPOST('driver', 'alpha');
+$action = request()->input('action');
+$mode = request()->input('mode');
+$value = request()->input('value');
+$varname = request()->input('varname');
+$driver = request()->input('driver');
 
 if (!empty($driver)) {
 	$langs->load($driver);
@@ -63,7 +63,7 @@ if (!$mode) {
 }
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -81,7 +81,7 @@ $error = 0;
 if ($action == 'setconst' && $user->admin) {
 	$db->begin();
 
-	$setupconstarray = GETPOST('setupdriver', 'array');
+	$setupconstarray = request()->input('setupdriver');
 
 	foreach ($setupconstarray as $setupconst) {
 		$constname = dol_escape_htmltag($setupconst['varname']);
@@ -100,7 +100,7 @@ if ($action == 'setconst' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null);
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 	$action = '';
 }
@@ -118,15 +118,15 @@ if ($action == 'setvalue' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null);
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 	$action = '';
 }
 
 // Test a refresh of a token using the refresh token
 if ($action == 'refreshtoken' && $user->admin) {
-	$keyforprovider = GETPOST('keyforprovider');
-	$OAUTH_SERVICENAME = GETPOST('service');
+	$keyforprovider = request()->integer('keyforprovider', 0);
+	$OAUTH_SERVICENAME = request()->input('service');
 
 	// Show value of token
 	$tokenobj = null;
@@ -207,7 +207,7 @@ if ($action == 'refreshtoken' && $user->admin) {
 				setEventMessages($langs->trans("OldTokenWasNotExpiredButItHasBeenRefresh"), null, 'mesgs');
 			}
 		} else {
-			dol_print_error($db, 'apiService is not a correct OAUTH2 Abstract service');
+			abort(500, 'apiService is not a correct OAUTH2 Abstract service');
 		}
 
 		dol_syslog("oauthlogintokens.php: Read token again for service ".$OAUTH_SERVICENAME);
@@ -243,8 +243,8 @@ $head = oauthadmin_prepare_head();
 
 print dol_get_fiche_head($head, 'tokengeneration', '', -1, '');
 
-if (GETPOST('error')) {
-	setEventMessages(GETPOST('error'), null, 'errors');
+if (request()->input('error')) {
+	setEventMessages(request()->input('error'), null, 'errors');
 }
 
 if ($mode == 'setup' && $user->admin) {

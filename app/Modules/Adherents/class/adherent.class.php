@@ -2050,8 +2050,8 @@ class Adherent extends CommonObject
 
 				// Possibility to add external linked objects with hooks
 				$invoice->linked_objects['subscription'] = $subscriptionid;
-				if (GETPOSTISARRAY('other_linked_objects')) {
-					$invoice->linked_objects = array_merge($invoice->linked_objects, GETPOST('other_linked_objects', 'array:int'));
+				if (is_array(request()->input('other_linked_objects'))) {
+					$invoice->linked_objects = array_merge($invoice->linked_objects, request()->input('other_linked_objects'));
 				}
 
 				$result = $invoice->create($user);
@@ -2152,7 +2152,7 @@ class Adherent extends CommonObject
 				// Define output language
 				$outputlangs = $langs;
 				$newlang = '';
-				$lang_id = GETPOST('lang_id');
+				$lang_id = request()->integer('lang_id', 0);
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && !empty($lang_id)) {
 					$newlang = $lang_id;
 				}

@@ -55,36 +55,36 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'banks', 'compta'));
 
-$action = GETPOST('action', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$optioncss = GETPOST('optioncss', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$optioncss = request()->input('optioncss');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$facid = GETPOSTINT('facid');
-$socid = GETPOSTINT('socid');
-$accountid = GETPOSTINT('accountid');
-$day = GETPOSTINT('day');
-$month = GETPOSTINT('month');
-$year = GETPOSTINT('year');
+$facid = request()->integer('facid', 0);
+$socid = request()->integer('socid', 0);
+$accountid = request()->integer('accountid', 0);
+$day = request()->integer('day', 0);
+$month = request()->integer('month', 0);
+$year = request()->integer('year', 0);
 
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_account = GETPOST('search_account', 'alpha');
-$search_paymenttype = GETPOST('search_paymenttype');
-$search_amount = GETPOST('search_amount', 'alpha'); // alpha because we must be able to search on "< x"
-$search_company = GETPOST('search_company', 'alpha');
-$search_payment_num = GETPOST('search_payment_num', 'alpha');
+$search_ref = request()->input('search_ref');
+$search_account = request()->integer('search_account', 0);
+$search_paymenttype = request()->input('search_paymenttype');
+$search_amount = request()->input('search_amount'); // alpha because we must be able to search on "< x"
+$search_company = request()->input('search_company');
+$search_payment_num = request()->input('search_payment_num');
 
 $displayAllInvoices = getDolGlobalInt('MAIN_PAIMENTS_SHOW_ALL_INVOICE_TYPES', 0);
-if (GETPOSTISSET('display-all-invoices')) {
-	$displayAllInvoices = GETPOSTINT('display-all-invoices');
+if (request()->has('display-all-invoices')) {
+	$displayAllInvoices = request()->integer('display-all-invoices', 0);
 }
 
-$limit = GETPOSTINT('limit') ? GETPOST('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->input('limit') : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -143,7 +143,7 @@ if ($cancel) {
 	exit;
 }
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_ref = "";
 	$search_account = "";
 	$search_amount = "";
@@ -177,18 +177,18 @@ if (empty($reshook)) {
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 7) == 'amount_') {
 				$cursorfacid = (int) substr($key, 7);
-				$amounts[$cursorfacid] = price2num(GETPOST($key));
+				$amounts[$cursorfacid] = price2num(request()->input($key));
 				if (!empty($amounts[$cursorfacid])) {
 					$atleastonepaymentnotnull++;
 					if (is_numeric($amounts[$cursorfacid])) {
 						$totalpayment += (float) $amounts[$cursorfacid];
 					} else {
-						setEventMessages($langs->transnoentities("InputValueIsNotAnNumber", GETPOST($key)), null, 'warnings');
+						setEventMessages($langs->transnoentities("InputValueIsNotAnNumber", request()->input($key)), null, 'warnings');
 					}
 				}
 				$result = $tmpinvoice->fetch($cursorfacid);
 				if ($result <= 0) {
-					dol_print_error($db);
+					abort(500);
 				}
 				$amountsresttopay[$cursorfacid] = price2num($tmpinvoice->total_ttc - $tmpinvoice->getSommePaiement());
 				if ($amounts[$cursorfacid]) {
@@ -205,17 +205,17 @@ if (empty($reshook)) {
 					}
 				}
 
-				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => GETPOST($key));
+				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => request()->input($key));
 			} elseif (substr($key, 0, 21) == 'multicurrency_amount_') {
 				$cursorfacid = (int) substr($key, 21);
-				$multicurrency_amounts[$cursorfacid] = (GETPOST($key) ? price2num(GETPOST($key)) : 0);
+				$multicurrency_amounts[$cursorfacid] = (request()->input($key) ? price2num(request()->input($key)) : 0);
 				$multicurrency_totalpayment += $multicurrency_amounts[$cursorfacid];
 				if (!empty($multicurrency_amounts[$cursorfacid])) {
 					$atleastonepaymentnotnull++;
 				}
 				$result = $tmpinvoice->fetch($cursorfacid);
 				if ($result <= 0) {
-					dol_print_error($db);
+					abort(500);
 				}
 				$multicurrency_amountsresttopay[$cursorfacid] = price2num($tmpinvoice->multicurrency_total_ttc - $tmpinvoice->getSommePaiement(1));
 				if ($multicurrency_amounts[$cursorfacid]) {
@@ -232,19 +232,19 @@ if (empty($reshook)) {
 					}
 				}
 
-				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => GETPOSTFLOAT($key));
+				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => (float)request()->input($key, 0.0));
 			}
 		}
 
 		// Check parameters
-		if (GETPOST('paiementid') <= 0) {
+		if (request()->input('paiementid') <= 0) {
 			setEventMessages($langs->transnoentities('ErrorFieldRequired', $langs->transnoentities('PaymentMode')), null, 'errors');
 			$error++;
 		}
 
 		if (isModEnabled("bank")) {
 			// If bank module is on, account is required to enter a payment
-			if (GETPOST('accountid') <= 0) {
+			if (request()->input('accountid') <= 0) {
 				setEventMessages($langs->transnoentities('ErrorFieldRequired', $langs->transnoentities('AccountToCredit')), null, 'errors');
 				$error++;
 			}
@@ -282,7 +282,7 @@ if (empty($reshook)) {
 	 * Action confirm_paiement
 	 */
 	if ($action == 'confirm_paiement' && $confirm == 'yes' && $permissiontoadd) {
-		$datepaye = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		$datepaye = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
 		$multicurrency_code = array();
 		$multicurrency_tx = array();
@@ -331,22 +331,22 @@ if (empty($reshook)) {
 			$paiement->multicurrency_amounts = $multicurrency_amounts;
 			$paiement->multicurrency_code = $multicurrency_code; // Array with all currency of payments dispatching
 			$paiement->multicurrency_tx = $multicurrency_tx; // Array with all currency tx of payments dispatching
-			$paiement->paiementid = GETPOSTINT('paiementid');
-			$paiement->num_payment = GETPOST('num_paiement', 'alphanohtml');
-			$paiement->note_private = GETPOST('comment', 'alpha');
-			$paiement->fk_account = GETPOSTINT('accountid');
+			$paiement->paiementid = request()->integer('paiementid', 0);
+			$paiement->num_payment = request()->input('num_paiement');
+			$paiement->note_private = request()->input('comment');
+			$paiement->fk_account = request()->integer('accountid', 0);
 
 			// Create payment and update this->multicurrency_amounts if this->amounts filled or
 			// this->amounts if this->multicurrency_amounts filled.
 			// This also set ->amount and ->multicurrency_amount
-			$paiement_id = $paiement->create($user, (GETPOST('closepaidinvoices') == 'on' ? 1 : 0), $thirdparty);
+			$paiement_id = $paiement->create($user, (request()->input('closepaidinvoices') == 'on' ? 1 : 0), $thirdparty);
 			if ($paiement_id < 0) {
 				setEventMessages($paiement->error, $paiement->errors, 'errors');
 				$error++;
 			}
 
 			if (!$error) {
-				$result = $paiement->addPaymentToBank($user, 'payment_supplier', '(SupplierInvoicePayment)', $accountid, GETPOST('chqemetteur'), GETPOST('chqbank'));
+				$result = $paiement->addPaymentToBank($user, 'payment_supplier', '(SupplierInvoicePayment)', $accountid, request()->input('chqemetteur'), request()->input('chqbank'));
 				if ($result < 0) {
 					setEventMessages($paiement->error, $paiement->errors, 'errors');
 					$error++;
@@ -399,7 +399,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 	$object = new FactureFournisseur($db);
 	$result = $object->fetch($facid);
 
-	$datefacture = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+	$datefacture = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 	$dateinvoice = ($datefacture == '' ? (!getDolGlobalString('MAIN_AUTOFILL_DATE') ? -1 : '') : $datefacture);
 
 	$sql = 'SELECT s.nom as name, s.rowid as socid,';
@@ -528,7 +528,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 			print $form->selectDate($dateinvoice, '', 0, 0, 0, "addpaiement", 1, 1, 0, '', '', $adddateof);
 			print '</td></tr>';
 			print '<tr><td class="fieldrequired">'.$langs->trans('PaymentMode').'</td><td>';
-			$form->select_types_paiements(!GETPOST('paiementid') ? $obj->fk_mode_reglement : GETPOST('paiementid'), 'paiementid');
+			$form->select_types_paiements(!request()->input('paiementid') ? $obj->fk_mode_reglement : request()->input('paiementid'), 'paiementid');
 			print '</td>';
 			if (isModEnabled("bank")) {
 				print '<tr><td class="fieldrequired">'.$langs->trans('Account').'</td><td>';
@@ -538,10 +538,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 			} else {
 				print '<tr><td>&nbsp;</td></tr>';
 			}
-			print '<tr><td>'.$langs->trans('Numero').'</td><td><input name="num_paiement" type="text" value="'.(!GETPOST('num_paiement') ? '' : GETPOST('num_paiement')).'"></td></tr>';
+			print '<tr><td>'.$langs->trans('Numero').'</td><td><input name="num_paiement" type="text" value="'.(!request()->input('num_paiement') ? '' : request()->input('num_paiement')).'"></td></tr>';
 			print '<tr><td>'.$langs->trans('Comments').'</td>';
 			print '<td class="tdtop">';
-			print '<textarea name="comment" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.(!GETPOST('comment') ? '' : GETPOST('comment')).'</textarea></td></tr>';
+			print '<textarea name="comment" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.(!request()->input('comment') ? '' : request()->input('comment')).'</textarea></td></tr>';
 			print '</table>';
 			print dol_get_fiche_end();
 
@@ -790,10 +790,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 											print '</button>';
 										}
 										print '<input type=hidden class="multicurrency_remain" name="'.$nameRemain.'" value="'.$multicurrency_remaintopay.'">';
-										print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount width100" name="'.$namef.'" value="'.GETPOST($namef).'">';
+										print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount width100" name="'.$namef.'" value="'.request()->input($namef).'">';
 									} else {
-										print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.GETPOST($namef).'" disabled>';
-										print '<input type="hidden" name="'.$namef.'" value="'.GETPOST($namef).'">';
+										print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.request()->input($namef).'" disabled>';
+										print '<input type="hidden" name="'.$namef.'" value="'.request()->input($namef).'">';
 									}
 								}
 								print "</td>";
@@ -827,7 +827,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 									$numdirectdebitopen = $obj->nb;
 									$totaldirectdebit = $obj->amount;
 								} else {
-									dol_print_error($db);
+									abort(500);
 								}
 								if ($numdirectdebitopen) {
 									$langs->load("withdrawals");
@@ -858,10 +858,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 									print '</button>';
 								}
 								print '<input type="hidden" class="remain" name="'.$nameRemain.'" value="'.$remaintopay.'">';
-								print '<input '.$max.' '.$min.' type="text" class="amount width100" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">'; // class is required to be used by javascript callForResult();
+								print '<input '.$max.' '.$min.' type="text" class="amount width100" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">'; // class is required to be used by javascript callForResult();
 							} else {
-								print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(GETPOST($namef)).'" disabled>';
-								print '<input type="hidden" class="amount" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">'; // class is required to be used by javascript callForResult();
+								print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(request()->input($namef)).'" disabled>';
+								print '<input type="hidden" class="amount" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">'; // class is required to be used by javascript callForResult();
 							}
 							print "</td>";
 
@@ -917,7 +917,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 					}
 					$db->free($resql);
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 
@@ -942,9 +942,9 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 				if (!empty($multicurrency_totalpayment)) {
 					$text .= '<br>'.$langs->trans('ConfirmSupplierPayment', price($multicurrency_totalpayment), $langs->transnoentitiesnoconv("paymentInInvoiceCurrency"));
 				}
-				if (GETPOST('closepaidinvoices')) {
+				if (request()->input('closepaidinvoices')) {
 					$text .= '<br>'.$langs->trans("AllCompletelyPayedInvoiceWillBeClosed");
-					print '<input type="hidden" name="closepaidinvoices" value="'.GETPOST('closepaidinvoices').'">';
+					print '<input type="hidden" name="closepaidinvoices" value="'.request()->input('closepaidinvoices').'">';
 				}
 				print $form->formconfirm($_SERVER['PHP_SELF'].'?facid='.$object->id.'&socid='.$object->socid.'&type='.$object->type, $langs->trans('PayedSuppliersPayments'), $text, 'confirm_paiement', $formquestion, $preselectedchoice);
 			}
@@ -952,7 +952,7 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 			print '</form>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

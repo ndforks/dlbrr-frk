@@ -47,19 +47,19 @@ require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'users', 'companies'));
 
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST("mode", 'alpha');
-$id = GETPOSTINT('id');
-$taskid = GETPOSTINT('taskid');
+$action = request()->input('action');
+$mode = request()->input('mode');
+$id = request()->integer('id', 0);
+$taskid = request()->integer('taskid', 0);
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'timespent';
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'timespent';
 
 $mine = 0;
 if ($mode == 'mine') {
 	$mine = 1;
 }
 
-$projectid = GETPOSTISSET("id") ? GETPOSTINT("id", 1) : GETPOSTINT("projectid");
+$projectid = request()->has('id') ? request()->integer('id', 0) : request()->integer('projectid', 0);
 
 $hookmanager->initHooks(array('timesheetperweekcard'));
 
@@ -71,23 +71,23 @@ $result = restrictedArea($user, 'projet', $projectid);
 
 $now = dol_now();
 
-$year = GETPOSTINT('reyear') ? GETPOSTINT('reyear') : (GETPOSTINT("year") ? GETPOSTINT("year") : date("Y"));
-$month = GETPOSTINT('remonth') ? GETPOSTINT('remonth') : (GETPOSTINT("month") ? GETPOSTINT("month") : date("m"));
-$day = GETPOSTINT('reday') ? GETPOSTINT('reday') : (GETPOSTINT("day") ? GETPOSTINT("day") : date("d"));
-$week = GETPOSTINT("week") ? GETPOSTINT("week") : date("W");
+$year = request()->integer('reyear', 0) ? request()->integer('reyear', 0) : (request()->integer('year', 0) ? request()->integer('year', 0) : date("Y"));
+$month = request()->integer('remonth', 0) ? request()->integer('remonth', 0) : (request()->integer('month', 0) ? request()->integer('month', 0) : date("m"));
+$day = request()->integer('reday', 0) ? request()->integer('reday', 0) : (request()->integer('day', 0) ? request()->integer('day', 0) : date("d"));
+$week = request()->integer('week', 0) ? request()->integer('week', 0) : date("W");
 
 $day = (int) $day;
 
-//$search_categ = GETPOST("search_categ", 'alpha');
-$search_usertoprocessid = GETPOSTINT('search_usertoprocessid');
-$search_task_ref = GETPOST('search_task_ref', 'alpha');
-$search_task_label = GETPOST('search_task_label', 'alpha');
-$search_project_ref = GETPOST('search_project_ref', 'alpha');
-$search_thirdparty = GETPOST('search_thirdparty', 'alpha');
-$search_declared_progress = GETPOST('search_declared_progress', 'alpha');
+//$search_categ = request()->input('search_categ');
+$search_usertoprocessid = request()->integer('search_usertoprocessid', 0);
+$search_task_ref = request()->input('search_task_ref');
+$search_task_label = request()->input('search_task_label');
+$search_project_ref = request()->input('search_project_ref');
+$search_thirdparty = request()->input('search_thirdparty');
+$search_declared_progress = request()->input('search_declared_progress');
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 
 $startdayarray = dol_get_first_day_week($day, $month, $year);
 
@@ -170,7 +170,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 // Purge criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$action = '';
 	//$search_categ = '';
 	$search_usertoprocessid = $user->id;
@@ -186,13 +186,13 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 	// We redefine $usertoprocess
 	$usertoprocess = $user;
 }
-if (GETPOST("button_search_x", 'alpha') || GETPOST("button_search.x", 'alpha') || GETPOST("button_search", 'alpha')) {
+if (request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 	$action = '';
 }
 
-if (GETPOST('submitdateselect')) {
-	if (GETPOSTINT('remonth') && GETPOSTINT('reday') && GETPOSTINT('reyear')) {
-		$daytoparse = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+if (request()->input('submitdateselect')) {
+	if (request()->integer('remonth', 0) && request()->integer('reday', 0) && request()->integer('reyear', 0)) {
+		$daytoparse = dol_mktime(0, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 	}
 
 	$action = '';
@@ -200,7 +200,7 @@ if (GETPOST('submitdateselect')) {
 
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('assigntask') && GETPOST('formfilteraction') != 'listafterchangingselectedfields') {
+if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->input('assigntask') && request()->input('formfilteraction') != 'listafterchangingselectedfields') {
 	$action = 'assigntask';
 
 	if ($taskid > 0) {
@@ -212,14 +212,14 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('assign
 		setEventMessages($langs->transnoentitiesnoconv("ErrorFieldRequired", $langs->transnoentitiesnoconv("Task")), null, 'errors');
 		$error++;
 	}
-	if (!GETPOST('type')) {
+	if (!request()->input('type')) {
 		setEventMessages($langs->transnoentitiesnoconv("ErrorFieldRequired", $langs->transnoentitiesnoconv("Type")), null, 'errors');
 		$error++;
 	}
 
 	if (!$error) {
 		$idfortaskuser = $usertoprocess->id;
-		$result = $object->add_contact($idfortaskuser, GETPOST("type"), 'internal');
+		$result = $object->add_contact($idfortaskuser, request()->input('type'), 'internal');
 
 		if ($result >= 0 || $result == -2) {	// Contact add ok or already contact of task
 			// Test if we are already contact of the project (should be rare but sometimes we can add as task contact without being contact of project, like when admin user has been removed from contact of project)
@@ -241,7 +241,7 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('assign
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -264,8 +264,8 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('assign
 	$action = '';
 }
 
-if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('formfilteraction') != 'listafterchangingselectedfields') {
-	$timetoadd = GETPOST('task');
+if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->input('formfilteraction') != 'listafterchangingselectedfields') {
+	$timetoadd = request()->input('task');
 	if (empty($timetoadd)) {
 		setEventMessages($langs->trans("ErrorTimeSpentIsEmpty"), null, 'errors');
 	} else {
@@ -289,8 +289,8 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('formfi
 					if ($newduration > 0) {
 						$object->fetch($tmptaskid);
 
-						if (GETPOSTISSET($tmptaskid.'progress')) {
-							$object->progress = GETPOSTINT($tmptaskid.'progress');
+						if (request()->has($tmptaskid . 'progress')) {
+							$object->progress = request()->integer($tmptaskid . 'progress', 0);
 						} else {
 							unset($object->progress);
 						}
@@ -313,12 +313,12 @@ if ($action == 'addtime' && $user->hasRight('projet', 'lire') && GETPOST('formfi
 				}
 			}
 
-			if (!$updateoftaskdone && GETPOSTISSET($tmptaskid.'progress')) {  // Check to update progress if no update were done on task.
+			if (!$updateoftaskdone && request()->has($tmptaskid . 'progress')) {  // Check to update progress if no update were done on task.
 				$object->fetch($tmptaskid);
 				//var_dump($object->progress);
 				//var_dump(GETPOST($tmptaskid . 'progress', 'int')); exit;
-				if ($object->progress != GETPOSTINT($tmptaskid.'progress')) {
-					$object->progress = GETPOSTINT($tmptaskid.'progress');
+				if ($object->progress != request()->integer($tmptaskid . 'progress', 0)) {
+					$object->progress = request()->integer($tmptaskid . 'progress', 0);
 					$result = $object->update($user);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');

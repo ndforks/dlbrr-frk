@@ -21,7 +21,7 @@ class EmployeeHrm extends Controller
             accessforbidden();
         }
         
-        return redirect('/user/list.php');
+        return redirect()->route('user.list');
     }
 }
 

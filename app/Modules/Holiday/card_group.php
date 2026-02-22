@@ -54,20 +54,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
  */
 
 // Get parameters
-$action 		= GETPOST('action', 'aZ09');
-$cancel 		= GETPOST('cancel', 'alpha');
-$confirm 		= GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');					// if not set, a default page will be used
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');	// if not set, $backtopage will be used
+$action 		= request()->input('action');
+$cancel 		= request()->input('cancel');
+$confirm 		= request()->input('confirm');
+$backtopage = request()->input('backtopage');					// if not set, a default page will be used
+$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
 
-$id 			= GETPOSTINT('id');
-$ref 			= GETPOST('ref', 'alpha');
-$fuserid 		= (GETPOSTINT('fuserid') ? GETPOSTINT('fuserid') : $user->id);
-$users 			= (GETPOST('users', 'array') ? GETPOST('users', 'array') : array($user->id));
-$groups 		= GETPOST('groups', 'array');
-$socid 			= GETPOSTINT('socid');
-$autoValidation = GETPOSTINT('autoValidation');
-$AutoSendMail   = GETPOSTINT('AutoSendMail');
+$id 			= request()->integer('id', 0);
+$ref 			= request()->input('ref');
+$fuserid 		= (request()->integer('fuserid', 0) ? request()->integer('fuserid', 0) : $user->id);
+$users 			= (request()->input('users') ? request()->input('users') : array($user->id));
+$groups 		= request()->input('groups');
+$socid 			= request()->integer('socid', 0);
+$autoValidation = request()->integer('autoValidation', 0);
+$AutoSendMail   = request()->integer('AutoSendMail', 0);
 
 // Load translation files required by the page
 $langs->loadLangs(array("other", "holiday", "mails", "trips"));
@@ -102,7 +102,7 @@ if (($id > 0) || $ref) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -170,16 +170,16 @@ if (empty($reshook)) {
 
 	// Add leave request
 	if ($action == 'add' && $permissiontoadd) {
-		$users 		=  GETPOST('users', 'array');
-		$groups 	=  GETPOST('groups', 'array');
+		$users 		=  request()->input('users');
+		$groups 	=  request()->input('groups');
 
-		$date_debut = dol_mktime(0, 0, 0, GETPOSTINT('date_debut_month'), GETPOSTINT('date_debut_day'), GETPOSTINT('date_debut_year'));
-		$date_fin = dol_mktime(0, 0, 0, GETPOSTINT('date_fin_month'), GETPOSTINT('date_fin_day'), GETPOSTINT('date_fin_year'));
-		$date_debut_gmt = dol_mktime(0, 0, 0, GETPOSTINT('date_debut_month'), GETPOSTINT('date_debut_day'), GETPOSTINT('date_debut_year'), 1);
-		$date_fin_gmt = dol_mktime(0, 0, 0, GETPOSTINT('date_fin_month'), GETPOSTINT('date_fin_day'), GETPOSTINT('date_fin_year'), 1);
-		$starthalfday = GETPOST('starthalfday');
-		$endhalfday = GETPOST('endhalfday');
-		$type = GETPOSTINT('type');
+		$date_debut = dol_mktime(0, 0, 0, request()->integer('date_debut_month', 0), request()->integer('date_debut_day', 0), request()->integer('date_debut_year', 0));
+		$date_fin = dol_mktime(0, 0, 0, request()->integer('date_fin_month', 0), request()->integer('date_fin_day', 0), request()->integer('date_fin_year', 0));
+		$date_debut_gmt = dol_mktime(0, 0, 0, request()->integer('date_debut_month', 0), request()->integer('date_debut_day', 0), request()->integer('date_debut_year', 0), 1);
+		$date_fin_gmt = dol_mktime(0, 0, 0, request()->integer('date_fin_month', 0), request()->integer('date_fin_day', 0), request()->integer('date_fin_year', 0), 1);
+		$starthalfday = request()->input('starthalfday');
+		$endhalfday = request()->input('endhalfday');
+		$type = request()->integer('type', 0);
 
 		$halfday = 0;
 		if ($starthalfday == 'afternoon' && $endhalfday == 'morning') {
@@ -190,8 +190,8 @@ if (empty($reshook)) {
 			$halfday = 1;
 		}
 
-		$approverid = GETPOSTINT('valideur');
-		$description = trim(GETPOST('description', 'restricthtml'));
+		$approverid = request()->integer('valideur', 0);
+		$description = trim(request()->input('description'));
 
 		// Check that leave is for a user inside the hierarchy or advanced permission for all is set
 		if (!$permissiontoaddall) {
@@ -388,8 +388,8 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 		print load_fiche_titre($langs->trans('MenuCollectiveAddCP'), '', 'title_hrm.png');
 
 		// Error management
-		if (GETPOST('error')) {
-			switch (GETPOST('error')) {
+		if (request()->input('error')) {
+			switch (request()->input('error')) {
 				case 'datefin':
 					$errors[] = $langs->trans('ErrorEndDateCP');
 					break;
@@ -510,7 +510,7 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 			$Tgroup[$obj->rowid] = $obj->nom;
 		}
 
-		print $form->multiselectarray('groups', $Tgroup, GETPOST('groups', 'array'), 0, 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
+		print $form->multiselectarray('groups', $Tgroup, request()->input('groups'), 0, 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
 
 		print '</td>';
 
@@ -545,7 +545,7 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 			}
 		}
 
-		print img_picto('', 'users', 'class="pictofixedwidth"') . $form->multiselectarray('users', $userlist, GETPOST('users', 'array'), 0, 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
+		print img_picto('', 'users', 'class="pictofixedwidth"') . $form->multiselectarray('users', $userlist, request()->input('users'), 0, 0, 'quatrevingtpercent widthcentpercentminusx', 0, 0);
 		print '</td>';
 
 		// Type
@@ -559,7 +559,7 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 			$labeltoshow .= ($val['delay'] > 0 ? ' ('.$langs->trans("NoticePeriod").': '.$val['delay'].' '.$langs->trans("days").')' : '');
 			$arraytypeleaves[$val['rowid']] = $labeltoshow;
 		}
-		print $form->selectarray('type', $arraytypeleaves, (GETPOST('type', 'alpha') ? GETPOST('type', 'alpha') : ''), 1, 0, 0, '', 0, 0, 0, '', '', 1);
+		print $form->selectarray('type', $arraytypeleaves, (request()->input('type') ? request()->input('type') : ''), 1, 0, 0, '', 0, 0, 0, '', '', 1);
 		if ($user->admin) {
 			print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 		}
@@ -573,14 +573,14 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 		print '</td>';
 		print '<td>';
 		// Si la demande ne vient pas de l'agenda
-		if (!GETPOST('date_debut_')) {
+		if (!request()->input('date_debut_')) {
 			print $form->selectDate(-1, 'date_debut_', 0, 0, 0, '', 1, 1);
 		} else {
-			$tmpdate = dol_mktime(0, 0, 0, GETPOSTINT('date_debut_month'), GETPOSTINT('date_debut_day'), GETPOSTINT('date_debut_year'));
+			$tmpdate = dol_mktime(0, 0, 0, request()->integer('date_debut_month', 0), request()->integer('date_debut_day', 0), request()->integer('date_debut_year', 0));
 			print $form->selectDate($tmpdate, 'date_debut_', 0, 0, 0, '', 1, 1);
 		}
 		print ' &nbsp; &nbsp; ';
-		print $form->selectarray('starthalfday', $listhalfday, (GETPOST('starthalfday', 'alpha') ? GETPOST('starthalfday', 'alpha') : 'morning'));
+		print $form->selectarray('starthalfday', $listhalfday, (request()->input('starthalfday') ? request()->input('starthalfday') : 'morning'));
 		print '</td>';
 		print '</tr>';
 
@@ -590,14 +590,14 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 		print $form->textwithpicto($langs->trans("DateFinCP"), $langs->trans("LastDayOfHoliday"));
 		print '</td>';
 		print '<td>';
-		if (!GETPOST('date_fin_')) {
+		if (!request()->input('date_fin_')) {
 			print $form->selectDate(-1, 'date_fin_', 0, 0, 0, '', 1, 1);
 		} else {
-			$tmpdate = dol_mktime(0, 0, 0, GETPOSTINT('date_fin_month'), GETPOSTINT('date_fin_day'), GETPOSTINT('date_fin_year'));
+			$tmpdate = dol_mktime(0, 0, 0, request()->integer('date_fin_month', 0), request()->integer('date_fin_day', 0), request()->integer('date_fin_year', 0));
 			print $form->selectDate($tmpdate, 'date_fin_', 0, 0, 0, '', 1, 1);
 		}
 		print ' &nbsp; &nbsp; ';
-		print $form->selectarray('endhalfday', $listhalfday, (GETPOST('endhalfday', 'alpha') ? GETPOST('endhalfday', 'alpha') : 'afternoon'));
+		print $form->selectarray('endhalfday', $listhalfday, (request()->input('endhalfday') ? request()->input('endhalfday') : 'afternoon'));
 		print '</td>';
 		print '</tr>';
 
@@ -617,8 +617,8 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 			if (getDolGlobalString('HOLIDAY_DEFAULT_VALIDATOR')) {
 				$defaultselectuser = getDolGlobalString('HOLIDAY_DEFAULT_VALIDATOR'); // Can force default approver
 			}
-			if (GETPOSTINT('valideur') > 0) {
-				$defaultselectuser = GETPOSTINT('valideur');
+			if (request()->integer('valideur', 0) > 0) {
+				$defaultselectuser = request()->integer('valideur', 0);
 			}
 			$s = $form->select_dolusers($defaultselectuser, "valideur", 1, null, 0, $include_users, '', '0,'.$conf->entity, 0, 0, '', 0, '', 'minwidth200 maxwidth500');
 			print img_picto('', 'user').$form->textwithpicto($s, $langs->trans("AnyOtherInThisListCanValidate"));
@@ -643,7 +643,7 @@ if ((empty($id) && empty($ref)) || $action == 'create' || $action == 'add') {
 		print '<tr>';
 		print '<td>'.$langs->trans("DescCP").'</td>';
 		print '<td class="tdtop">';
-		$doleditor = new DolEditor('description', GETPOST('description', 'restricthtml'), '', 80, 'dolibarr_notes', 'In', false, false, isModEnabled('fckeditor'), ROWS_3, '90%');
+		$doleditor = new DolEditor('description', request()->input('description'), '', 80, 'dolibarr_notes', 'In', false, false, isModEnabled('fckeditor'), ROWS_3, '90%');
 		print $doleditor->Create(1);
 		print '</td></tr>';
 

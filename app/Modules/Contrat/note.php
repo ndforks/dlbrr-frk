@@ -46,11 +46,11 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'contracts'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$socid = GETPOSTINT('socid');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$socid = request()->integer('socid', 0);
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 // Security check
 if ($user->socid) {

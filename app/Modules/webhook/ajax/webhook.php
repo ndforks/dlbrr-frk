@@ -59,12 +59,12 @@ require_once DOL_DOCUMENT_ROOT.'/webhook/class/target.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$triggercode = GETPOST('triggercode');
+$action = request()->input('action');
+$triggercode = request()->input('triggercode');
 
 // Security check
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 

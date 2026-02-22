@@ -39,10 +39,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 $langs->loadLangs(array("banks", "bills", "donations"));
 
-$chid = GETPOSTINT("rowid");
-$action = GETPOST('action', 'aZ09');
+$chid = request()->integer('rowid', 0);
+$action = request()->input('action');
 $amounts = array();
-$cancel = GETPOST('cancel');
+$cancel = request()->input('cancel');
 
 // Security check
 $socid = 0;
@@ -70,9 +70,9 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		exit;
 	}
 
-	$datepaid = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
+	$datepaid = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
-	if (!(GETPOST("paymenttype") > 0)) {
+	if (!(request()->input('paymenttype') > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("PaymentMode")), null, 'errors');
 		$error++;
 	}
@@ -80,7 +80,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Date")), null, 'errors');
 		$error++;
 	}
-	if (isModEnabled("bank") && !(GETPOSTINT("accountid") > 0)) {
+	if (isModEnabled("bank") && !(request()->integer('accountid', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("AccountToCredit")), null, 'errors');
 		$error++;
 	}
@@ -92,7 +92,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 7) == 'amount_') {
 				$other_chid = (int) substr($key, 7);
-				$amounts[$other_chid] = (float) price2num(GETPOST($key));
+				$amounts[$other_chid] = (float) price2num(request()->input($key));
 			}
 		}
 
@@ -110,9 +110,9 @@ if ($action == 'add_payment' && $permissiontoadd) {
 			$payment->chid        = $chid;
 			$payment->datep     = $datepaid;
 			$payment->amounts     = $amounts; // Tableau de montant
-			$payment->paymenttype = GETPOSTINT("paymenttype");
-			$payment->num_payment = GETPOST("num_payment", 'alphanohtml');
-			$payment->note_public = GETPOST("note_public", 'restricthtml');
+			$payment->paymenttype = request()->integer('paymenttype', 0);
+			$payment->num_payment = request()->input('num_payment');
+			$payment->note_public = request()->input('note_public');
 
 			if (!$error) {
 				$paymentid = $payment->create($user);
@@ -124,7 +124,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 			}
 
 			if (!$error) {
-				$result = $payment->addPaymentToBank($user, 'payment_donation', '(DonationPayment)', GETPOSTINT('accountid'), GETPOST('chqemetteur'), GETPOST('chqbank'));
+				$result = $payment->addPaymentToBank($user, 'payment_donation', '(DonationPayment)', request()->integer('accountid', 0), request()->input('chqemetteur'), request()->input('chqbank'));
 				if (!($result > 0)) {
 					$errmsg = $payment->error;
 					setEventMessages($errmsg, null, 'errors');
@@ -198,40 +198,40 @@ if ($action == 'create') {
 	print '<table class="border centpercent tableforfieldcreate">';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("Date").'</td><td colspan="2">';
-	$datepaid = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
-	$datepayment = !getDolGlobalString('MAIN_AUTOFILL_DATE') ? (GETPOST("remonth") ? $datepaid : -1) : 0;
+	$datepaid = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
+	$datepayment = !getDolGlobalString('MAIN_AUTOFILL_DATE') ? (request()->input('remonth') ? $datepaid : -1) : 0;
 	print $form->selectDate($datepayment, '', 0, 0, 0, "add_payment", 1, 1, 0, '', '', $object->date, '', 1, $langs->trans("DonationDate"));
 	print "</td>";
 	print '</tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PaymentMode").'</td><td colspan="2">';
-	$form->select_types_paiements(GETPOSTISSET("paymenttype") ? GETPOST("paymenttype") : $object->fk_typepayment, "paymenttype");
+	$form->select_types_paiements(request()->has('paymenttype') ? request()->input('paymenttype') : $object->fk_typepayment, "paymenttype");
 	print "</td>\n";
 	print '</tr>';
 
 	print '<tr>';
 	print '<td class="fieldrequired">'.$langs->trans('AccountToCredit').'</td>';
 	print '<td colspan="2">';
-	$form->select_comptes(GETPOSTISSET("accountid") ? GETPOST("accountid") : "0", "accountid", 0, '', 2); // Show open bank account list
+	$form->select_comptes(request()->has('accountid') ? request()->input('accountid') : "0", "accountid", 0, '', 2); // Show open bank account list
 	print '</td></tr>';
 
 	// Bank check or transfer number
 	print '<tr><td>'.$langs->trans('Numero');
 	print ' <em>('.$langs->trans("ChequeOrTransferNumber").')</em>';
 	print '</td>';
-	print '<td colspan="2"><input name="num_payment" type="text" value="'.GETPOST('num_payment').'" spellcheck="false"></td></tr>'."\n";
+	print '<td colspan="2"><input name="num_payment" type="text" value="'.request()->input('num_payment').'" spellcheck="false"></td></tr>'."\n";
 
 	// Check transmitter
-	print '<tr><td class="'.(GETPOST('paiementcode') == 'CHQ' ? 'fieldrequired ' : '').'fieldrequireddyn">'.$langs->trans('CheckTransmitter');
+	print '<tr><td class="'.(request()->input('paiementcode') == 'CHQ' ? 'fieldrequired ' : '').'fieldrequireddyn">'.$langs->trans('CheckTransmitter');
 	print ' <em class="opacitymedium">('.$langs->trans("ChequeMaker").')</em>';
 	print '</td>';
-	print '<td colspan="2"><input id="fieldchqemetteur" class="maxwidth300" name="chqemetteur" type="text" value="'.GETPOST('chqemetteur', 'alphanohtml').'"></td></tr>';
+	print '<td colspan="2"><input id="fieldchqemetteur" class="maxwidth300" name="chqemetteur" type="text" value="'.request()->input('chqemetteur').'"></td></tr>';
 
 	// Bank name
 	print '<tr><td>'.$langs->trans('Bank');
 	print ' <em class="opacitymedium">('.$langs->trans("ChequeBank").')</em>';
 	print '</td>';
-	print '<td colspan="2"><input name="chqbank" class="maxwidth300" type="text" value="'.GETPOST('chqbank', 'alphanohtml').'"></td></tr>';
+	print '<td colspan="2"><input name="chqbank" class="maxwidth300" type="text" value="'.request()->input('chqbank').'"></td></tr>';
 
 	// Comments
 	print '<tr>';

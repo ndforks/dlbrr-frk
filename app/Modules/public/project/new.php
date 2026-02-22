@@ -61,8 +61,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 // Init vars
 $errmsg = '';
 $error = 0;
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
 /**
  * @var Conf $conf
@@ -92,7 +92,7 @@ $user->loadDefaultValues();
 
 // Security check
 if (empty($conf->project->enabled)) {
-	httponly_accessforbidden('Module Project not enabled');
+	httponly_abort(403);
 }
 
 
@@ -160,26 +160,26 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	$db->begin();
 
-	if (!GETPOST('lastname', 'alpha')) {
+	if (!request()->input('lastname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Lastname"))."<br>\n";
 	}
-	if (!GETPOST('firstname', 'alpha')) {
+	if (!request()->input('firstname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Firstname"))."<br>\n";
 	}
-	if (!GETPOST('email', 'alpha')) {
+	if (!request()->input('email')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Email"))."<br>\n";
 	}
-	if (!GETPOST('description', 'alpha')) {
+	if (!request()->input('description')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Message"))."<br>\n";
 	}
-	if (GETPOST('email', 'alpha') && !isValidEmail(GETPOST('email', 'alpha'))) {
+	if (request()->input('email') && !isValidEmail(request()->input('email'))) {
 		$error++;
 		$langs->load("errors");
-		$errmsg .= $langs->trans("ErrorBadEMail", GETPOST('email', 'alpha'))."<br>\n";
+		$errmsg .= $langs->trans("ErrorBadEMail", request()->input('email'))."<br>\n";
 	}
 	// Set default opportunity status
 	$defaultoppstatus = getDolGlobalInt('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD');
@@ -196,23 +196,23 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	if (!$error) {
 		// Search thirdparty and set it if found to the new created project
-		$result = $thirdparty->fetch(0, '', '', '', '', '', '', '', '', '', GETPOST('email', 'alpha'));
+		$result = $thirdparty->fetch(0, '', '', '', '', '', '', '', '', '', request()->input('email'));
 		if ($result > 0) {
 			$proj->socid = $thirdparty->id;
 		} else {
 			// Create the prospect
-			if (GETPOST('societe', 'alpha')) {
-				$thirdparty->name =  GETPOST('societe', 'alpha');
-				$thirdparty->name_alias = dolGetFirstLastname(GETPOST('firstname', 'alpha'), GETPOST('lastname', 'alpha'));
+			if (request()->input('societe')) {
+				$thirdparty->name =  request()->input('societe');
+				$thirdparty->name_alias = dolGetFirstLastname(request()->input('firstname'), request()->input('lastname'));
 			} else {
-				$thirdparty->name = dolGetFirstLastname(GETPOST('firstname', 'alpha'), GETPOST('lastname', 'alpha'));
+				$thirdparty->name = dolGetFirstLastname(request()->input('firstname'), request()->input('lastname'));
 			}
-			$thirdparty->email = GETPOST('email', 'alpha');
-			$thirdparty->address = GETPOST('address', 'alpha');
-			$thirdparty->zip = GETPOST('zip', 'int');
-			$thirdparty->town = GETPOST('town', 'alpha');
-			$thirdparty->country_id = GETPOSTINT('country_id');
-			$thirdparty->state_id = GETPOSTINT('state_id');
+			$thirdparty->email = request()->input('email');
+			$thirdparty->address = request()->input('address');
+			$thirdparty->zip = request()->input('zip');
+			$thirdparty->town = request()->input('town');
+			$thirdparty->country_id = request()->integer('country_id', 0);
+			$thirdparty->state_id = request()->integer('state_id', 0);
 			$thirdparty->client = $thirdparty::PROSPECT;
 			$thirdparty->code_client = 'auto';
 			$thirdparty->code_fournisseur = 'auto';
@@ -288,7 +288,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 		$proj->status      = $proj::STATUS_DRAFT;
 		$proj->usage_opportunity = 1;
 		$proj->title       = $langs->trans("LeadFromPublicForm");
-		$proj->description = GETPOST("description", "alphanohtml");
+		$proj->description = request()->input('description');
 		$proj->opp_status = $defaultoppstatus;
 		$proj->fk_opp_status = $defaultoppstatus;
 
@@ -486,25 +486,25 @@ jQuery(document).ready(function () {
 print '<table class="border" summary="form to subscribe" id="tablesubscribe">'."\n";
 
 // Lastname
-print '<tr><td>'.$langs->trans("Lastname").' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('lastname')).'" required></td></tr>'."\n";
+print '<tr><td>'.$langs->trans("Lastname").' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('lastname')).'" required></td></tr>'."\n";
 // Firstname
-print '<tr><td>'.$langs->trans("Firstname").' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('firstname')).'" required></td></tr>'."\n";
+print '<tr><td>'.$langs->trans("Firstname").' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('firstname')).'" required></td></tr>'."\n";
 // EMail
-print '<tr><td>'.$langs->trans("Email").' <span class="star">*</span></td><td><input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('email')).'" required></td></tr>'."\n";
+print '<tr><td>'.$langs->trans("Email").' <span class="star">*</span></td><td><input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(request()->input('email')).'" required></td></tr>'."\n";
 // Company
-print '<tr id="trcompany" class="trcompany"><td>'.$langs->trans("Company").'</td><td><input type="text" name="societe" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('societe')).'"></td></tr>'."\n";
+print '<tr id="trcompany" class="trcompany"><td>'.$langs->trans("Company").'</td><td><input type="text" name="societe" class="minwidth150" value="'.dol_escape_htmltag(request()->input('societe')).'"></td></tr>'."\n";
 // Address
 print '<tr><td>'.$langs->trans("Address").'</td><td>'."\n";
-print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_2.'">'.dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_2.'">'.dol_escape_htmltag(request()->input('address'), 0, 1).'</textarea></td></tr>'."\n";
 // Zip / Town
 print '<tr><td>'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td><td>';
-print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
+print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
 print ' / ';
-print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 print '</td></tr>';
 // Country
 print '<tr><td>'.$langs->trans('Country').'</td><td>';
-$country_id = GETPOST('country_id');
+$country_id = request()->integer('country_id', 0);
 if (!$country_id && getDolGlobalString('PROJECT_NEWFORM_FORCECOUNTRYCODE')) {
 	$country_id = getCountry($conf->global->PROJECT_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 }
@@ -526,7 +526,7 @@ print '</td></tr>';
 if (!getDolGlobalString('SOCIETE_DISABLE_STATE')) {
 	print '<tr><td>'.$langs->trans('State').'</td><td>';
 	if ($country_code) {
-		print $formcompany->select_state(GETPOSTINT("state_id"), $country_code);
+		print $formcompany->select_state(request()->integer('state_id', 0), $country_code);
 	} else {
 		print '';
 	}
@@ -539,7 +539,7 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
 // Comments
 print '<tr>';
 print '<td class="tdtop">'.$langs->trans("Message").' <span class="star">*</span></td>';
-print '<td class="tdtop"><textarea name="description" id="description" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_5.'" required>'.dol_escape_htmltag(GETPOST('description', 'restricthtml'), 0, 1).'</textarea></td>';
+print '<td class="tdtop"><textarea name="description" id="description" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_5.'" required>'.dol_escape_htmltag(request()->input('description'), 0, 1).'</textarea></td>';
 print '</tr>'."\n";
 
 print "</table>\n";

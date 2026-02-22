@@ -268,24 +268,24 @@ abstract class ActionsAdherentCardCommon
 		// phpcs:enable
 		global $langs, $mysoc;
 
-		$this->object->old_name = GETPOST("old_name");
-		$this->object->old_firstname = GETPOST("old_firstname");
+		$this->object->old_name = request()->input('old_name');
+		$this->object->old_firstname = request()->input('old_firstname');
 
-		$this->object->fk_soc = GETPOSTINT("fk_soc");
-		$this->object->socid = GETPOSTINT("fk_soc");
-		$this->object->lastname = GETPOST("lastname");
-		$this->object->firstname = GETPOST("firstname");
-		$this->object->civility_id = GETPOST("civility_id");
-		$this->object->address = GETPOST("address");
-		$this->object->zip = GETPOST("zipcode");
-		$this->object->town = GETPOST("town");
-		$this->object->country_id = GETPOSTINT("country_id") ? GETPOSTINT("country_id") : $mysoc->country_id;
-		$this->object->state_id = GETPOSTINT("state_id");
-		$this->object->phone_perso = GETPOST("phone_perso");
-		$this->object->phone_mobile = GETPOST("phone_mobile");
-		$this->object->email = GETPOST("email", 'alphawithlgt');
-		$this->object->note_private = GETPOST("note", 'restricthtml');
-		$this->object->canvas = GETPOST("canvas");
+		$this->object->fk_soc = request()->integer('fk_soc', 0);
+		$this->object->socid = request()->integer('fk_soc', 0);
+		$this->object->lastname = request()->input('lastname');
+		$this->object->firstname = request()->input('firstname');
+		$this->object->civility_id = request()->input('civility_id');
+		$this->object->address = request()->input('address');
+		$this->object->zip = request()->input('zipcode');
+		$this->object->town = request()->input('town');
+		$this->object->country_id = request()->integer('country_id', 0) ? request()->integer('country_id', 0) : $mysoc->country_id;
+		$this->object->state_id = request()->integer('state_id', 0);
+		$this->object->phone_perso = request()->input('phone_perso');
+		$this->object->phone_mobile = request()->input('phone_mobile');
+		$this->object->email = request()->input('email');
+		$this->object->note_private = request()->input('note');
+		$this->object->canvas = request()->input('canvas');
 
 		// We set country_id, and country_code label of the chosen country
 		if ($this->object->country_id) {

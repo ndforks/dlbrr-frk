@@ -74,7 +74,7 @@ if (empty($reshook)) {
 		foreach ($mode_info['fields'] as $field_key => $field_info) {
 			$html_name = $mode_key . '_' . $field_key;
 			print '<tr><td class="width40p">' . $langs->trans($field_info['label']) . '</td><td>';
-			$accountancy_code = GETPOSTISSET($html_name) ? GETPOST($html_name, 'aZ09') : (!empty($assetaccountancycodes->accountancy_codes[$mode_key][$field_key]) ? $assetaccountancycodes->accountancy_codes[$mode_key][$field_key] : '');
+			$accountancy_code = request()->has($html_name) ? request()->input($html_name) : (!empty($assetaccountancycodes->accountancy_codes[$mode_key][$field_key]) ? $assetaccountancycodes->accountancy_codes[$mode_key][$field_key] : '');
 			if (isModEnabled('accounting')) {
 				print $formaccounting->select_account($accountancy_code, $html_name, 1, array(), 1, 1, 'minwidth100 maxwidth300 maxwidthonsmartphone', '1');
 			} else {

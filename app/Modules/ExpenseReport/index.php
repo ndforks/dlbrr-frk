@@ -47,10 +47,10 @@ $langs->loadLangs(array('companies', 'users', 'trips'));
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
 $hookmanager->initHooks(array('expensereportindex'));
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -63,12 +63,12 @@ if (!$sortorder) {
 if (!$sortfield) {
 	$sortfield = "d.tms";
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 
 $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -120,7 +120,7 @@ if ($result) {
 	}
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -273,7 +273,7 @@ if ($result) {
 	}
 	print '</table></div><br>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</div></div>';

@@ -65,8 +65,8 @@ require_once DOL_DOCUMENT_ROOT.'/includes/stripe/stripe-php/init.php';
 require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
 
 // You can find your endpoint's secret in your webhook settings
-if (GETPOSTISSET('connect')) {
-	if (GETPOSTISSET('test')) {
+if (request()->has('connect')) {
+	if (request()->has('test')) {
 		$endpoint_secret = getDolGlobalString('STRIPE_TEST_WEBHOOK_CONNECT_KEY');
 		$service = 'StripeTest';
 		$servicestatus = 0;
@@ -76,7 +76,7 @@ if (GETPOSTISSET('connect')) {
 		$servicestatus = 1;
 	}
 } else {
-	if (GETPOSTISSET('test')) {
+	if (request()->has('test')) {
 		$endpoint_secret = getDolGlobalString('STRIPE_TEST_WEBHOOK_KEY');
 		$service = 'StripeTest';
 		$servicestatus = 0;
@@ -88,11 +88,11 @@ if (GETPOSTISSET('connect')) {
 }
 
 if (!isModEnabled('stripe')) {
-	httponly_accessforbidden('Module Stripe not enabled');
+	httponly_abort(403);
 }
 
 if (empty($endpoint_secret)) {
-	httponly_accessforbidden('Error: Setup of module Stripe not complete for mode '.dol_escape_htmltag($service).'. The WEBHOOK_KEY is not defined.', 400, 1);
+	httponly_abort(403);.'. The WEBHOOK_KEY is not defined.', 400, 1);
 }
 
 if (getDolGlobalString('STRIPE_USER_ACCOUNT_FOR_ACTIONS')) {
@@ -101,7 +101,7 @@ if (getDolGlobalString('STRIPE_USER_ACCOUNT_FOR_ACTIONS')) {
 	$user->fetch(getDolGlobalInt('STRIPE_USER_ACCOUNT_FOR_ACTIONS'));
 	$user->loadRights();
 } else {
-	httponly_accessforbidden('Error: Setup of module Stripe not complete for mode '.dol_escape_htmltag($service).'. The STRIPE_USER_ACCOUNT_FOR_ACTIONS is not defined.', 400, 1);
+	httponly_abort(403);.'. The STRIPE_USER_ACCOUNT_FOR_ACTIONS is not defined.', 400, 1);
 }
 
 $now = dol_now();
@@ -136,15 +136,15 @@ try {
 	// Invalid payload
 	dol_syslog("***** Stripe IPN was called with UnexpectedValueException (invalid payload) service=".$service);
 	dol_syslog("***** Stripe IPN was called with UnexpectedValueException (invalid payload) service=".$service, LOG_DEBUG, 0, '_payment');
-	httponly_accessforbidden('Invalid payload', 400);
+	httponly_abort(403);
 } catch (\Stripe\Exception\SignatureVerificationException $e) {
 	dol_syslog("***** Stripe IPN was called with SignatureVerificationException service=".$service);
 	dol_syslog("***** Stripe IPN was called with SignatureVerificationException service=".$service, LOG_DEBUG, 0, '_payment');
-	httponly_accessforbidden('Invalid signature. May be a hook for an event created by another Stripe env or a hack attempt ? Check setup of your keys whsec_...', 400);
+	httponly_abort(403);
 } catch (Exception $e) {
 	dol_syslog("***** Stripe IPN was called with Exception (".$e->getMessage().") service=".$service);
 	dol_syslog("***** Stripe IPN was called with Exception (".$e->getMessage().") service=".$service, LOG_DEBUG, 0, '_payment');
-	httponly_accessforbidden('Error '.$e->getMessage(), 400);
+	httponly_abort(403);, 400);
 }
 
 // Do something with $event

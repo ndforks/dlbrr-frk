@@ -40,7 +40,7 @@ $graphwidth = 700;
 $mapratio = 0.5;
 $graphheight = round($graphwidth * $mapratio);
 
-$mode = GETPOST('mode') ? GETPOST('mode') : '';
+$mode = request()->input('mode') ? request()->input('mode') : '';
 
 
 // Security check
@@ -108,7 +108,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 $sql = "SELECT COUNT(DISTINCT d.rowid) as nb, COUNT(s.rowid) as nbsubscriptions,";
@@ -143,7 +143,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

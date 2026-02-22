@@ -186,7 +186,7 @@ class mod_takepos_ref_simple extends ModeleNumRefTakepos
 					$ref = $obj->ref;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			return $ref;

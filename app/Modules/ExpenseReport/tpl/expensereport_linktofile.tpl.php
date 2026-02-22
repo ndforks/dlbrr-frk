@@ -42,7 +42,7 @@ if (!getDolGlobalString('EXPENSEREPORT_DISABLE_ATTACHMENT_ON_LINES')) {
 	$nbLinks = Link::count($db, $object->element, $object->id);
 
 	if ($nbFiles > 0) {
-		print '<tr class="trattachnewfilenow'.(empty($tredited) ? ' oddeven nohover' : ' '.$tredited).'"'.(!GETPOSTISSET('sendit') && !getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER') ? ' style="display: none"' : '').'>';
+		print '<tr class="trattachnewfilenow'.(empty($tredited) ? ' oddeven nohover' : ' '.$tredited).'"'.(!request()->has('sendit') && !getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER') ? ' style="display: none"' : '').'>';
 
 		// Num line
 		if ($action == 'editline') {
@@ -141,10 +141,10 @@ if (!getDolGlobalString('EXPENSEREPORT_DISABLE_ATTACHMENT_ON_LINES')) {
 			// If a file was just uploaded, we check to preselect it
 			if (is_array($_FILES['userfile']) && is_array($_FILES['userfile']['name'])) {
 				foreach ($_FILES['userfile']['name'] as $tmpfile) {
-					if ($file['relativename'] == (GETPOST('savingdocmask', 'alpha') ? dol_sanitizeFileName($object->ref.'-') : '').$tmpfile) {
+					if ($file['relativename'] == (request()->input('savingdocmask') ? dol_sanitizeFileName($object->ref.'-') : '').$tmpfile) {
 						$checked = ' checked';
 						break;
-					} elseif ($file['relativename'] && in_array($file['relativename'], GETPOST('attachfile', 'array'))) {
+					} elseif ($file['relativename'] && in_array($file['relativename'], request()->input('attachfile'))) {
 						$checked = ' checked';
 						break;
 					}
@@ -176,7 +176,7 @@ if (!getDolGlobalString('EXPENSEREPORT_DISABLE_ATTACHMENT_ON_LINES')) {
 			$css = 'trattachnewfilenow tredited';
 			$newcolspan = $colspan - 1;
 		}
-		print '<tr class="'.$css.'"'.(!GETPOSTISSET('sendit') && !getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER') ? ' style="display: none"' : '').'>';
+		print '<tr class="'.$css.'"'.(!request()->has('sendit') && !getDolGlobalString('MAIN_OPTIMIZEFORTEXTBROWSER') ? ' style="display: none"' : '').'>';
 		if (!empty($tredited)) {
 			print '<td></td>';
 		}

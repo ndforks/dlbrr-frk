@@ -63,25 +63,25 @@ if (isModEnabled('stock')) {
 // Load translation files required by page
 $langs->loadLangs(array('users', 'companies', 'ldap', 'admin', 'hrm', 'stocks', 'other'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST('mode', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$optioncss = GETPOST('optioncss', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'usercredentials'; // To manage different context of search
-$backtopage = GETPOST('backtopage');
-$backtopageforcancel = GETPOST('backtopageforcancel');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$mode = request()->input('mode');
+$confirm = request()->input('confirm');
+$optioncss = request()->input('optioncss');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'usercredentials'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$group = GETPOSTINT("group", 3);
-$search_secret_key = GETPOST('search_secret_key');
+$group = request()->integer('group', 0);
+$search_secret_key = request()->input('search_secret_key');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -140,7 +140,7 @@ if (getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE') && $conf->entity > 1) {
 }
 
 if ($user->id != $id && !$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 $caneditpasswordandsee = false;
@@ -246,7 +246,7 @@ if ($resql) {
 		$listoftotps = array('id' => $obj->rowid);
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 $nbtotalofrecords = $num = count($listoftotps);
@@ -257,7 +257,7 @@ print_barre_liste($langs->trans("TOTP"), $page, $_SERVER["PHP_SELF"], $param, $s
 
 /*
 print '<div class="hideobject divsectiontotp marginbottom">';
-print '<input placeholder="'.dolPrintHTML("TOPTSecret").'" class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.GETPOST('api_key', 'alphanohtml').'" autocomplete="off">';
+print '<input placeholder="'.dolPrintHTML("TOPTSecret").'" class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.request()->input('api_key').'" autocomplete="off">';
 if (!empty($conf->use_javascript_ajax)) {
 	print img_picto($langs->transnoentities('Generate'), 'refresh', 'id="generate_api_key" class="linkobject paddingleft"');
 }

@@ -12,8 +12,8 @@ class ShowLoan extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => view('loan.create', ['action' => 'create']),
@@ -26,13 +26,13 @@ class ShowLoan extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        Loan::findOrFail($id)->update(array_filter(['label' => GETPOST('label', 'alpha')], fn($v) => $v));
-        return redirect("/loan/card.php?id={$id}")->with('success', 'Loan updated');
+        Loan::findOrFail($id)->update(array_filter(['label' => $request->input('label')], fn($v) => $v));
+        return redirect()->route('loan.show', ['id' => $id])->with('success', 'Loan updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Loan::findOrFail($id)->delete();
-        return redirect('/loan/list.php')->with('success', 'Loan deleted');
+        return redirect()->route('loan.list')->with('success', 'Loan deleted');
     }
 }

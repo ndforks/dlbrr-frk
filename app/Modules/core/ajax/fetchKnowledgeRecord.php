@@ -58,10 +58,10 @@ include '../../main.inc.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$idticketgroup = GETPOST('idticketgroup', 'aZ09');
-$idticketgroup = GETPOST('idticketgroup', 'aZ09');
-$lang = GETPOST('lang', 'aZ09');
+$action = request()->input('action');
+$idticketgroup = request()->integer('idticketgroup', 0);
+$idticketgroup = request()->integer('idticketgroup', 0);
+$lang = request()->input('lang');
 
 // Security check
 if (!defined("NOLOGIN")) {	// No need of restrictedArea if not logged: Later the select will filter on public articles only if not logged.
@@ -106,7 +106,7 @@ if ($action == "getKnowledgeRecord") {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$response =json_encode($response);

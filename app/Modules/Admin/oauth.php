@@ -51,14 +51,14 @@ $langs->loadLangs(array('admin', 'oauth', 'modulebuilder'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$provider = GETPOST('provider', 'aZ09');
-$label = GETPOST('label', 'aZ09');
+$action = request()->input('action');
+$provider = request()->integer('provider', 0);
+$label = request()->input('label');
 
-$servicetoeditname = GETPOST('servicetoeditname', 'aZ09');
+$servicetoeditname = request()->input('servicetoeditname');
 
 $error = 0;
 
@@ -85,41 +85,41 @@ if ($action == 'update') {
 		if (!empty($val) && preg_match('/^OAUTH_.+_ID$/', $key)) {
 			$constvalue = str_replace('_ID', '', $key);
 			$newconstvalue = $constvalue;
-			if (GETPOSTISSET($constvalue.'_NAME')) {
-				$newconstvalue = preg_replace('/-.*$/', '', $constvalue).'-'.preg_replace('/[^a-z]/', '', GETPOST($constvalue.'_NAME'));
+			if (request()->has($constvalue.'_NAME')) {
+				$newconstvalue = preg_replace('/-.*$/', '', $constvalue).'-'.preg_replace('/[^a-z]/', '', request()->input($constvalue.'_NAME'));
 			}
 
-			if (GETPOSTISSET($constvalue.'_ID')) {
-				if (!dolibarr_set_const($db, $newconstvalue.'_ID', GETPOST($constvalue.'_ID'), 'chaine', 0, '', $conf->entity)) {
+			if (request()->has($constvalue.'_ID')) {
+				if (!dolibarr_set_const($db, $newconstvalue.'_ID', request()->input($constvalue.'_ID'), 'chaine', 0, '', $conf->entity)) {
 					$error++;
 				}
 			}
 			// If we reset this provider, we also remove the secret
-			if (GETPOSTISSET($constvalue.'_SECRET')) {
-				if (!dolibarr_set_const($db, $newconstvalue.'_SECRET', GETPOST($constvalue.'_ID') ? GETPOST($constvalue.'_SECRET') : '', 'chaine', 0, '', $conf->entity)) {
+			if (request()->has($constvalue.'_SECRET')) {
+				if (!dolibarr_set_const($db, $newconstvalue.'_SECRET', request()->input($constvalue.'_ID') ? request()->input($constvalue.'_SECRET') : '', 'chaine', 0, '', $conf->entity)) {
 					$error++;
 				}
 			}
-			if (GETPOSTISSET($constvalue.'_URL')) {
-				if (!dolibarr_set_const($db, $newconstvalue.'_URL', GETPOST($constvalue.'_URL'), 'chaine', 0, '', $conf->entity)) {
+			if (request()->has($constvalue.'_URL')) {
+				if (!dolibarr_set_const($db, $newconstvalue.'_URL', request()->input($constvalue.'_URL'), 'chaine', 0, '', $conf->entity)) {
 					$error++;
 				}
 			}
-			if (GETPOSTISSET($constvalue.'_URLAUTHORIZE')) {
-				if (!dolibarr_set_const($db, $newconstvalue.'_URLAUTHORIZE', GETPOST($constvalue.'_URLAUTHORIZE'), 'chaine', 0, '', $conf->entity)) {
+			if (request()->has($constvalue.'_URLAUTHORIZE')) {
+				if (!dolibarr_set_const($db, $newconstvalue.'_URLAUTHORIZE', request()->input($constvalue.'_URLAUTHORIZE'), 'chaine', 0, '', $conf->entity)) {
 					$error++;
 				}
 			}
-			if (GETPOSTISSET($constvalue.'_TENANT')) {
-				if (!dolibarr_set_const($db, $constvalue.'_TENANT', GETPOST($constvalue.'_TENANT'), 'chaine', 0, '', $conf->entity)) {
+			if (request()->has($constvalue.'_TENANT')) {
+				if (!dolibarr_set_const($db, $constvalue.'_TENANT', request()->input($constvalue.'_TENANT'), 'chaine', 0, '', $conf->entity)) {
 					$error++;
 				}
 			}
-			if (GETPOSTISSET($constvalue.'_SCOPE')) {
-				if (is_array(GETPOST($constvalue.'_SCOPE'))) {
-					$scopestring = implode(',', GETPOST($constvalue.'_SCOPE'));
+			if (request()->has($constvalue.'_SCOPE')) {
+				if (is_array(request()->input($constvalue.'_SCOPE'))) {
+					$scopestring = implode(',', request()->input($constvalue.'_SCOPE'));
 				} else {
-					$scopestring = GETPOST($constvalue.'_SCOPE');
+					$scopestring = request()->input($constvalue.'_SCOPE');
 				}
 				if (!dolibarr_set_const($db, $newconstvalue.'_SCOPE', $scopestring, 'chaine', 0, '', $conf->entity)) {
 					$error++;
@@ -174,8 +174,8 @@ if ($action == 'update') {
 }
 
 if ($action == 'confirm_delete') {
-	$provider = GETPOST('provider', 'aZ09');
-	$label = GETPOST('label');
+	$provider = request()->integer('provider', 0);
+	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;
 
@@ -207,8 +207,8 @@ if ($action == 'confirm_delete') {
 }
 
 if ($action == 'delete_entry') {
-	$provider = GETPOST('provider', 'aZ09');
-	$label = GETPOST('label');
+	$provider = request()->integer('provider', 0);
+	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;
 
@@ -240,7 +240,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-admin page-oauth');
 // Confirmation of action process
 if ($action == 'delete') {
 	$formquestion = array();
-	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?provider='.GETPOST('provider').'&label='.GETPOST('label'), $langs->trans('OAuthServiceConfirmDeleteTitle'), $langs->trans('OAuthServiceConfirmDeleteMessage'), 'confirm_delete', $formquestion, 0, 1, 220);
+	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?provider='.request()->input('provider').'&label='.request()->input('label'), $langs->trans('OAuthServiceConfirmDeleteTitle'), $langs->trans('OAuthServiceConfirmDeleteMessage'), 'confirm_delete', $formquestion, 0, 1, 220);
 	print $formconfirm;
 }
 

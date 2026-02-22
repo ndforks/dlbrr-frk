@@ -46,31 +46,31 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'bills', 'companies', 'orders', 'propal'));
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'thirdpartyagenda';
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'thirdpartyagenda';
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
-$search_complete = GETPOST('search_complete');
-$search_filtert = GETPOSTINT('search_filtert');
+$search_rowid = request()->integer('search_rowid', 0);
+$search_agenda_label = request()->input('search_agenda_label');
+$search_complete = request()->input('search_complete');
+$search_filtert = request()->integer('search_filtert', 0);
 $search_dateevent_start = GETPOSTDATE('dateevent_start');
 $search_dateevent_end = GETPOSTDATE('dateevent_end');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -84,13 +84,13 @@ if (!$sortorder) {
 	$sortorder = 'DESC,DESC';
 }
 
-if (GETPOST('actioncode', 'array')) {
-	$actioncode = GETPOST('actioncode', 'array', 3);
+if (request()->input('actioncode')) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
 // Initialize a technical objects
@@ -100,14 +100,14 @@ $object = new Societe($db);
 $hookmanager->initHooks(array('thirdpartyagenda', 'agendathirdparty', 'globalcard'));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 
 $result = $object->fetch($socid);
 if ($result <= 0) {
-	accessforbidden('Third party not found');
+	abort(403);
 }
 
 $result = restrictedArea($user, 'societe', $socid, '&societe');
@@ -126,13 +126,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$actioncode = '';
 		$search_rowid = '';
 		$search_agenda_label = '';
@@ -244,14 +244,14 @@ if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') ||
 		$param .= '&search_filtert='.urlencode((string) $search_filtert);
 	}
 	if ($search_dateevent_start != '') {
-		$param .= '&dateevent_startyear='.GETPOSTINT('dateevent_startyear');
-		$param .= '&dateevent_startmonth='.GETPOSTINT('dateevent_startmonth');
-		$param .= '&dateevent_startday='.GETPOSTINT('dateevent_startday');
+		$param .= '&dateevent_startyear='.request()->integer('dateevent_startyear', 0);
+		$param .= '&dateevent_startmonth='.request()->integer('dateevent_startmonth', 0);
+		$param .= '&dateevent_startday='.request()->integer('dateevent_startday', 0);
 	}
 	if ($search_dateevent_end != '') {
-		$param .= '&dateevent_endyear='.GETPOSTINT('dateevent_endyear');
-		$param .= '&dateevent_endmonth='.GETPOSTINT('dateevent_endmonth');
-		$param .= '&dateevent_endday='.GETPOSTINT('dateevent_endday');
+		$param .= '&dateevent_endyear='.request()->integer('dateevent_endyear', 0);
+		$param .= '&dateevent_endmonth='.request()->integer('dateevent_endmonth', 0);
+		$param .= '&dateevent_endday='.request()->integer('dateevent_endday', 0);
 	}
 
 	// Try to know count of actioncomm from cache

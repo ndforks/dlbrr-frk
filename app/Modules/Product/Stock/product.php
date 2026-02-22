@@ -70,32 +70,32 @@ if (isModEnabled('productbatch')) {
 	$langs->load("productbatch");
 }
 
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$stocklimit = GETPOSTFLOAT('seuil_stock_alerte');
-$desiredstock = GETPOSTFLOAT('desiredstock');
-$cancel = GETPOST('cancel', 'alpha');
-$fieldid = GETPOSTISSET("ref") ? 'ref' : 'rowid';
-$d_eatby = dol_mktime(0, 0, 0, GETPOSTINT('eatbymonth'), GETPOSTINT('eatbyday'), GETPOSTINT('eatbyyear'));
-$d_sellby = dol_mktime(0, 0, 0, GETPOSTINT('sellbymonth'), GETPOSTINT('sellbyday'), GETPOSTINT('sellbyyear'));
-$pdluoid = GETPOSTINT('pdluoid');
-$batchnumber = GETPOST('batch_number', 'aZ09comma');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$stocklimit = (float)request()->input('seuil_stock_alerte', 0.0);
+$desiredstock = (float)request()->input('desiredstock', 0.0);
+$cancel = request()->input('cancel');
+$fieldid = request()->has('ref') ? 'ref' : 'rowid';
+$d_eatby = dol_mktime(0, 0, 0, request()->integer('eatbymonth', 0), request()->integer('eatbyday', 0), request()->integer('eatbyyear', 0));
+$d_sellby = dol_mktime(0, 0, 0, request()->integer('sellbymonth', 0), request()->integer('sellbyday', 0), request()->integer('sellbyyear', 0));
+$pdluoid = request()->integer('pdluoid', 0);
+$batchnumber = request()->input('batch_number');
 if (!empty($batchnumber)) {
 	$batchnumber = trim($batchnumber);
 }
-$cost_price = GETPOST('cost_price', 'alpha');
+$cost_price = request()->input('cost_price');
 
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -126,7 +126,7 @@ if (empty($id) && !empty($object->id)) {
 $modulepart = 'product';
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-$canvas = !empty($object->canvas) ? $object->canvas : GETPOST("canvas");
+$canvas = !empty($object->canvas) ? $object->canvas : request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
@@ -193,8 +193,8 @@ if ($action == 'setcost_price' && $usercancreate) {
 }
 
 if ($action == 'addlimitstockwarehouse' && $usercancreate) {
-	$seuil_stock_alerte = GETPOST('seuil_stock_alerte');
-	$desiredstock = GETPOST('desiredstock');
+	$seuil_stock_alerte = request()->input('seuil_stock_alerte');
+	$desiredstock = request()->input('desiredstock');
 
 	$maj_ok = true;
 	if ($seuil_stock_alerte == '') {
@@ -211,7 +211,7 @@ if ($action == 'addlimitstockwarehouse' && $usercancreate) {
 	if ($maj_ok) {
 		$pse = new ProductStockEntrepot($db);
 		// @phan-suppress-next-line PhanPluginSuspiciousParamPosition
-		if ($pse->fetch(0, $id, GETPOSTINT('fk_entrepot')) > 0) {
+		if ($pse->fetch(0, $id, request()->integer('fk_entrepot', 0)) > 0) {
 			// Update
 			$pse->seuil_stock_alerte = $seuil_stock_alerte;
 			$pse->desiredstock = $desiredstock;
@@ -220,10 +220,10 @@ if ($action == 'addlimitstockwarehouse' && $usercancreate) {
 			}
 		} else {
 			// Create
-			$pse->fk_entrepot = GETPOSTINT('fk_entrepot');
+			$pse->fk_entrepot = request()->integer('fk_entrepot', 0);
 			$pse->fk_product  	 	 = $id;
-			$pse->seuil_stock_alerte = GETPOST('seuil_stock_alerte');
-			$pse->desiredstock  	 = GETPOSTFLOAT('desiredstock');
+			$pse->seuil_stock_alerte = request()->input('seuil_stock_alerte');
+			$pse->desiredstock  	 = (float)request()->input('desiredstock', 0.0);
 			if ($pse->create($user) > 0) {
 				setEventMessages($langs->trans('ProductStockWarehouseCreated'), null, 'mesgs');
 			}
@@ -237,7 +237,7 @@ if ($action == 'addlimitstockwarehouse' && $usercancreate) {
 if ($action == 'delete_productstockwarehouse' && $usercancreate) {
 	$pse = new ProductStockEntrepot($db);
 
-	$pse->fetch(GETPOSTINT('fk_productstockwarehouse'));
+	$pse->fetch(request()->integer('fk_productstockwarehouse', 0));
 	if ($pse->delete($user) > 0) {
 		setEventMessages($langs->trans('ProductStockWarehouseDeleted'), null, 'mesgs');
 	}
@@ -274,12 +274,12 @@ if ($action == 'setdesiredstock' && $usercancreate) {
 
 // Correct stock
 if ($action == "correct_stock" && !$cancel && $usercanupdatestock) {
-	if (!(GETPOSTINT("id_entrepot") > 0)) {
+	if (!(request()->integer('id_entrepot', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Warehouse")), null, 'errors');
 		$error++;
 		$action = 'correction';
 	}
-	if (!GETPOST("nbpiece")) {
+	if (!request()->input('nbpiece')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("NumberOfUnit")), null, 'errors');
 		$error++;
 		$action = 'correction';
@@ -297,15 +297,15 @@ if ($action == "correct_stock" && !$cancel && $usercanupdatestock) {
 	}
 
 	if (!$error) {
-		$priceunit = price2num(GETPOST("unitprice"));
-		$nbpiece = price2num(GETPOST("nbpiece", 'alphanohtml'));
+		$priceunit = price2num(request()->input('unitprice'));
+		$nbpiece = price2num(request()->input('nbpiece'));
 		if (is_numeric($nbpiece) && $nbpiece != 0 && $id) {
 			$origin_element = '';
 			$origin_id = null;
 
-			if (GETPOSTINT('projectid')) {
+			if (request()->integer('projectid', 0)) {
 				$origin_element = 'project';
-				$origin_id = GETPOSTINT('projectid');
+				$origin_id = request()->integer('projectid', 0);
 			}
 
 			if (empty($object)) {
@@ -314,22 +314,22 @@ if ($action == "correct_stock" && !$cancel && $usercanupdatestock) {
 			}
 
 			$disablestockchangeforsubproduct = 0;
-			if (GETPOST('disablesubproductstockchange')) {
+			if (request()->input('disablesubproductstockchange')) {
 				$disablestockchangeforsubproduct = 1;
 			}
 
 			if ($object->hasbatch()) {
 				$result = $object->correct_stock_batch(
 					$user,
-					GETPOSTINT("id_entrepot"),
+					request()->integer('id_entrepot', 0),
 					(float) $nbpiece,
-					GETPOSTINT("mouvement"),
-					GETPOST("label", 'alphanohtml'), // label movement
+					request()->integer('mouvement', 0),
+					request()->input('label'), // label movement
 					(float) $priceunit,
 					$d_eatby,
 					$d_sellby,
 					$batchnumber,
-					GETPOST('inventorycode', 'alphanohtml'),
+					request()->input('inventorycode'),
 					$origin_element,
 					$origin_id,
 					$disablestockchangeforsubproduct
@@ -337,12 +337,12 @@ if ($action == "correct_stock" && !$cancel && $usercanupdatestock) {
 			} else {
 				$result = $object->correct_stock(
 					$user,
-					GETPOSTINT("id_entrepot"),
+					request()->integer('id_entrepot', 0),
 					(float) $nbpiece,
-					GETPOSTINT("mouvement"),
-					GETPOST("label", 'alphanohtml'),
+					request()->integer('mouvement', 0),
+					request()->input('label'),
 					(float) $priceunit,
-					GETPOST('inventorycode', 'alphanohtml'),
+					request()->input('inventorycode'),
 					$origin_element,
 					$origin_id,
 					$disablestockchangeforsubproduct
@@ -367,17 +367,17 @@ if ($action == "correct_stock" && !$cancel && $usercanupdatestock) {
 
 // Transfer stock from a warehouse to another warehouse
 if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
-	if (!(GETPOSTINT("id_entrepot") > 0) || !(GETPOSTINT("id_entrepot_destination") > 0)) {
+	if (!(request()->integer('id_entrepot', 0) > 0) || !(request()->integer('id_entrepot_destination', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Warehouse")), null, 'errors');
 		$error++;
 		$action = 'transfer';
 	}
-	if (!GETPOST("nbpiece")) {
+	if (!request()->input('nbpiece')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("NumberOfUnit")), null, 'errors');
 		$error++;
 		$action = 'transfer';
 	}
-	if (GETPOSTINT("id_entrepot") == GETPOSTINT("id_entrepot_destination")) {
+	if (request()->integer('id_entrepot', 0) == request()->integer('id_entrepot_destination', 0)) {
 		setEventMessages($langs->trans("ErrorSrcAndTargetWarehouseMustDiffers"), null, 'errors');
 		$error++;
 		$action = 'transfer';
@@ -414,7 +414,7 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 			}
 			$pricedest = $pricesrc;
 
-			$nbpiece = price2num(GETPOST("nbpiece", 'alphanohtml'));
+			$nbpiece = price2num(request()->input('nbpiece'));
 
 			if ($object->hasbatch()) {
 				$pdluo = new Productbatch($db);
@@ -433,13 +433,13 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 						$error++;
 					}
 				} else {
-					$srcwarehouseid = GETPOSTINT('id_entrepot');
+					$srcwarehouseid = request()->integer('id_entrepot', 0);
 					$batch = $batchnumber;
 					$eatby = $d_eatby;
 					$sellby = $d_sellby;
 				}
 
-				$nbpiece = price2num(GETPOST("nbpiece", 'alphanohtml'));
+				$nbpiece = price2num(request()->input('nbpiece'));
 
 				if (!$error) {
 					// Remove stock
@@ -448,12 +448,12 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 						$srcwarehouseid,
 						(float) $nbpiece,
 						1,
-						GETPOST("label", 'alphanohtml'),
+						request()->input('label'),
 						(float) $pricesrc,
 						$eatby,
 						$sellby,
 						$batch,
-						GETPOST('inventorycode', 'alphanohtml')
+						request()->input('inventorycode')
 					);
 					if ($result1 < 0) {
 						$error++;
@@ -463,15 +463,15 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 					// Add stock
 					$result2 = $object->correct_stock_batch(
 						$user,
-						GETPOSTINT("id_entrepot_destination"),
+						request()->integer('id_entrepot_destination', 0),
 						(float) $nbpiece,
 						0,
-						GETPOST("label", 'alphanohtml'),
+						request()->input('label'),
 						(float) $pricedest,
 						$eatby,
 						$sellby,
 						(string) $batch,
-						GETPOST('inventorycode', 'alphanohtml')
+						request()->input('inventorycode')
 					);
 					if ($result2 < 0) {
 						$error++;
@@ -482,12 +482,12 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 					// Remove stock
 					$result1 = $object->correct_stock(
 						$user,
-						GETPOSTINT("id_entrepot"),
+						request()->integer('id_entrepot', 0),
 						(float) $nbpiece,
 						1,
-						GETPOST("label", 'alphanohtml'),
+						request()->input('label'),
 						(float) $pricesrc,
-						GETPOST('inventorycode', 'alphanohtml')
+						request()->input('inventorycode')
 					);
 					if ($result1 < 0) {
 						$error++;
@@ -497,12 +497,12 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 					// Add stock
 					$result2 = $object->correct_stock(
 						$user,
-						GETPOSTINT("id_entrepot_destination"),
+						request()->integer('id_entrepot_destination', 0),
 						(float) $nbpiece,
 						0,
-						GETPOST("label", 'alphanohtml'),
+						request()->input('label'),
 						(float) $pricedest,
-						GETPOST('inventorycode', 'alphanohtml')
+						request()->input('inventorycode')
 					);
 					if ($result2 < 0) {
 						$error++;
@@ -531,17 +531,17 @@ if ($action == "transfert_stock" && !$cancel && $usercanupdatestock) {
 }
 
 // Update batch information
-if ($action == 'updateline' && GETPOST('save') == $langs->trans("Save") && $usercancreate) {
+if ($action == 'updateline' && request()->input('save') == $langs->trans("Save") && $usercancreate) {
 	$pdluo = new Productbatch($db);
-	$result = $pdluo->fetch(GETPOSTINT('pdluoid'));
+	$result = $pdluo->fetch(request()->integer('pdluoid', 0));
 
 	if ($result > 0) {
 		if ($pdluo->id) {
-			if ((!GETPOST("sellby")) && (!GETPOST("eatby")) && (!$batchnumber)) {
+			if ((!request()->input('sellby')) && (!request()->input('eatby')) && (!$batchnumber)) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("atleast1batchfield")), null, 'errors');
 			} else {
-				$d_eatby = dol_mktime(0, 0, 0, GETPOSTINT('eatbymonth'), GETPOSTINT('eatbyday'), GETPOSTINT('eatbyyear'));
-				$d_sellby = dol_mktime(0, 0, 0, GETPOSTINT('sellbymonth'), GETPOSTINT('sellbyday'), GETPOSTINT('sellbyyear'));
+				$d_eatby = dol_mktime(0, 0, 0, request()->integer('eatbymonth', 0), request()->integer('eatbyday', 0), request()->integer('eatbyyear', 0));
+				$d_sellby = dol_mktime(0, 0, 0, request()->integer('sellbymonth', 0), request()->integer('sellbyday', 0), request()->integer('sellbyyear', 0));
 				$pdluo->batch = $batchnumber;
 				$pdluo->eatby = $d_eatby;
 				$pdluo->sellby = $d_sellby;
@@ -588,11 +588,11 @@ if ($id > 0 || $ref) {
 	$title = $langs->trans('ProductServiceCard');
 	$helpurl = '';
 	$shortlabel = dol_trunc($object->label, 16);
-	if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+	if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 		$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Stock');
 		$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 	}
-	if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+	if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 		$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Stock');
 		$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 	}
@@ -949,7 +949,7 @@ if ($id > 0 || $ref) {
 						$obj = $db->fetch_object($resqlbis);
 						$lastmovementdate = $db->jdate($obj->datem);
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 					print '<tr><td class="tdtop">'.$langs->trans("LastMovement").'</td><td>';
 					if ($lastmovementdate) {
@@ -1208,7 +1208,7 @@ if ($showstockdetails) {
 			if ((isModEnabled('productbatch')) && $object->hasbatch()) {
 				$details = Productbatch::findAll($db, $obj->product_stock_id, 0, $object->id);
 				if ($details < 0) {
-					dol_print_error($db);
+					abort(500);
 				}
 				foreach ($details as $pdluo) {
 					$product_lot_static->id = $pdluo->lotid;
@@ -1216,7 +1216,7 @@ if ($showstockdetails) {
 					$product_lot_static->eatby = $pdluo->eatby;
 					$product_lot_static->sellby = $pdluo->sellby;
 
-					if ($action == 'editline' && GETPOSTINT('lineid') == $pdluo->id) { //Current line edit
+					if ($action == 'editline' && request()->integer('lineid', 0) == $pdluo->id) { //Current line edit
 						print "\n".'<tr>';
 						print '<td colspan="9">';
 						print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST">';
@@ -1294,7 +1294,7 @@ if ($showstockdetails) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Total line

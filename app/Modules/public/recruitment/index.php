@@ -58,26 +58,26 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 $langs->loadLangs(array("companies", "other", "recruitment"));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$SECUREKEY = GETPOST("securekey");
-$entity = GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity;
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$SECUREKEY = request()->input('securekey');
+$entity = request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity;
 $backtopage = '';
 $suffix = "";
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-if (GETPOST('btn_view')) {
+if (request()->input('btn_view')) {
 	unset($_SESSION['email_customer']);
 }
 if (isset($_SESSION['email_customer'])) {
@@ -93,7 +93,7 @@ $urlwithroot = DOL_MAIN_URL_ROOT; // This is to use same domain name than curren
 
 // Security check
 if (!isModEnabled('recruitment')) {
-	httponly_accessforbidden('Module Recruitment not enabled');
+	httponly_abort(403);
 }
 
 
@@ -135,8 +135,8 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dosign">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
-print '<input type="hidden" name="suffix" value="'.GETPOST("suffix", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
+print '<input type="hidden" name="suffix" value="'.request()->input('suffix').'">'."\n";
 print '<input type="hidden" name="securekey" value="'.$SECUREKEY.'">'."\n";
 print '<input type="hidden" name="entity" value="'.$entity.'" />';
 print "\n";

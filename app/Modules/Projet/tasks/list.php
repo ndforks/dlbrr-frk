@@ -47,40 +47,40 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'users', 'companies'));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-//$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$optioncss = GETPOST('optioncss', 'aZ09');
-$mode = GETPOST('mode', 'aZ');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+//$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect', []);
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
-$search_categ = GETPOST("search_categ", 'intcomma');
-$search_projectstatus = GETPOST('search_projectstatus', 'intcomma');
-$search_project_ref = GETPOST('search_project_ref');
-$search_project_title = GETPOST('search_project_title');
-$search_task_ref = GETPOST('search_task_ref');
-$search_task_label = GETPOST('search_task_label');
-$search_task_description = GETPOST('search_task_description');
-$search_task_ref_parent = GETPOST('search_task_ref_parent');
-$search_project_user = GETPOST('search_project_user', 'intcomma');
-$search_task_user = GETPOST('search_task_user', 'intcomma');
-$search_task_progress = GETPOST('search_task_progress');
-$search_task_budget_amount = GETPOST('search_task_budget_amount');
-$search_task_status = GETPOSTISSET('search_task_status') ? GETPOSTINT('search_task_status') : -1;
-$search_societe = GETPOST('search_societe');
-$search_societe_alias = GETPOST('search_societe_alias');
-$search_opp_status = GETPOST("search_opp_status", 'alpha');
+$search_all = trim(request()->input('search_all'));
+$search_categ = request()->input('search_categ');
+$search_projectstatus = request()->input('search_projectstatus');
+$search_project_ref = request()->input('search_project_ref');
+$search_project_title = request()->input('search_project_title');
+$search_task_ref = request()->input('search_task_ref');
+$search_task_label = request()->input('search_task_label');
+$search_task_description = request()->input('search_task_description');
+$search_task_ref_parent = request()->input('search_task_ref_parent');
+$search_project_user = request()->input('search_project_user');
+$search_task_user = request()->input('search_task_user');
+$search_task_progress = request()->input('search_task_progress');
+$search_task_budget_amount = request()->input('search_task_budget_amount');
+$search_task_status = request()->has('search_task_status') ? request()->integer('search_task_status', 0) : -1;
+$search_societe = request()->input('search_societe');
+$search_societe_alias = request()->input('search_societe_alias');
+$search_opp_status = request()->input('search_opp_status');
 $searchCategoryCustomerOperator = 0;
-if (GETPOSTISSET('formfilteraction')) {
-	$searchCategoryCustomerOperator = GETPOSTINT('search_category_customer_operator');
+if (request()->has('formfilteraction')) {
+	$searchCategoryCustomerOperator = request()->integer('search_category_customer_operator', 0);
 } elseif (getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT')) {
 	$searchCategoryCustomerOperator = getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT');
 }
-$searchCategoryCustomerList = GETPOST('search_category_customer_list', 'array:int');
+$searchCategoryCustomerList = request()->input('search_category_customer_list');
 
 if (!isset($search_projectstatus) || $search_projectstatus === '') {
 	if ($search_all != '') {
@@ -90,32 +90,32 @@ if (!isset($search_projectstatus) || $search_projectstatus === '') {
 	}
 }
 
-$mine = GETPOST('mode', 'alpha') == 'mine' ? 1 : 0;
+$mine = request()->input('mode') == 'mine' ? 1 : 0;
 if ($mine) {
 	$search_task_user = $user->id;
 	$mine = 0;
 }
-$type = GETPOST('type');
+$type = request()->input('type');
 
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_datelimit_startday = GETPOSTINT('search_datelimit_startday');
-$search_datelimit_startmonth = GETPOSTINT('search_datelimit_startmonth');
-$search_datelimit_startyear = GETPOSTINT('search_datelimit_startyear');
-$search_datelimit_endday = GETPOSTINT('search_datelimit_endday');
-$search_datelimit_endmonth = GETPOSTINT('search_datelimit_endmonth');
-$search_datelimit_endyear = GETPOSTINT('search_datelimit_endyear');
+$search_datelimit_startday = request()->integer('search_datelimit_startday', 0);
+$search_datelimit_startmonth = request()->integer('search_datelimit_startmonth', 0);
+$search_datelimit_startyear = request()->integer('search_datelimit_startyear', 0);
+$search_datelimit_endday = request()->integer('search_datelimit_endday', 0);
+$search_datelimit_endmonth = request()->integer('search_datelimit_endmonth', 0);
+$search_datelimit_endyear = request()->integer('search_datelimit_endyear', 0);
 $search_datelimit_start = dol_mktime(0, 0, 0, $search_datelimit_startmonth, $search_datelimit_startday, $search_datelimit_startyear);
 $search_datelimit_end = dol_mktime(23, 59, 59, $search_datelimit_endmonth, $search_datelimit_endday, $search_datelimit_endyear);
 
 // Initialize context for list
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'tasklist';
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'tasklist';
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $object = new Task($db);
@@ -130,16 +130,16 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 $socid = 0;
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignment.
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $diroutputmassaction = $conf->project->dir_output.'/tasks/temp/massgeneration/'.$user->id;
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -200,7 +200,7 @@ $permissiontocreate = $user->hasRight('projet', 'creer');
 $permissiontodelete = $user->hasRight('projet', 'supprimer');
 
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -208,11 +208,11 @@ if (!$permissiontoread) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -227,7 +227,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_all = "";
 		$search_categ = "";
 		$search_projectstatus = -1;
@@ -330,7 +330,7 @@ if ($resql) {
 		$listofprojectcontacttype[$obj->rowid] = $obj->code;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 if (count($listofprojectcontacttype) == 0) {
 	$listofprojectcontacttype[0] = '0'; // To avoid sql syntax error if not found
@@ -346,7 +346,7 @@ if ($resql) {
 		$listoftaskcontacttype[$obj->rowid] = $obj->code;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 if (count($listoftaskcontacttype) == 0) {
 	$listoftaskcontacttype[0] = '0'; // To avoid sql syntax error if not found
@@ -574,7 +574,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -592,7 +592,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -734,7 +734,7 @@ $arrayofmassactions = array(
 if (!empty($permissiontodelete)) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

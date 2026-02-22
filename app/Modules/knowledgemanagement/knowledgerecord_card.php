@@ -47,15 +47,15 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("knowledgemanagement", "ticket", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'knowledgerecordcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid   = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'knowledgerecordcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new KnowledgeRecord($db);
@@ -69,11 +69,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -94,12 +94,12 @@ $permissiondellink = $user->hasRight('knowledgemanagement', 'knowledgerecord', '
 $upload_dir = $conf->knowledgemanagement->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, $object->module, $object->id, $object->table_element.'&'.$object->element, $object->element, '', 'rowid', $isdraft);
-//if (empty($conf->knowledgemanagement->enabled)) accessforbidden();
-//if (empty($permissiontoread)) accessforbidden();
+//if (empty($conf->knowledgemanagement->enabled)) abort(403);
+//if (empty($permissiontoread)) abort(403);
 
 
 /*
@@ -131,7 +131,7 @@ if (empty($reshook)) {
 
 	// Update / add for lang
 	if (($action == 'update' || $action == 'add') && !empty($permissiontoadd)) {
-		$object->lang = (GETPOSTISSET('langkm') ? GETPOST('langkm', 'aZ09') : $object->lang);
+		$object->lang = (request()->has('langkm') ? request()->input('langkm') : $object->lang);
 	}
 
 	// Actions cancel, add, update, update_extras, confirm_validate, confirm_delete, confirm_deleteline, confirm_clone, confirm_close, confirm_setdraft, confirm_reopen
@@ -150,10 +150,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -338,7 +338,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		 // 'text' => $langs->trans("ConfirmClone"),
 		 // array('type' => 'checkbox', 'name' => 'clone_content', 'label' => $langs->trans("CloneMainAttributes"), 'value' => 1),
 		 // array('type' => 'checkbox', 'name' => 'update_prices', 'label' => $langs->trans("PuttingPricesUpToDate"), 'value' => 1),
-		 // array('type' => 'other',    'name' => 'idwarehouse',   'label' => $langs->trans("SelectWarehouseForStockDecrease"), 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse')?GETPOST('idwarehouse'):'ifone', 'idwarehouse', '', 1, 0, 0, '', 0, $forcecombo))
+		 // array('type' => 'other',    'name' => 'idwarehouse',   'label' => $langs->trans("SelectWarehouseForStockDecrease"), 'value' => $formproduct->selectWarehouses(request()->input('idwarehouse')?request()->input('idwarehouse'):'ifone', 'idwarehouse', '', 1, 0, 0, '', 0, $forcecombo))
 		 );
 		 */
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('SetObsolete'), $text, 'confirm_close', $formquestion, 0, 1, 220);
@@ -363,7 +363,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		 // 'text' => $langs->trans("ConfirmClone"),
 		 // array('type' => 'checkbox', 'name' => 'clone_content', 'label' => $langs->trans("CloneMainAttributes"), 'value' => 1),
 		 // array('type' => 'checkbox', 'name' => 'update_prices', 'label' => $langs->trans("PuttingPricesUpToDate"), 'value' => 1),
-		 // array('type' => 'other',    'name' => 'idwarehouse',   'label' => $langs->trans("SelectWarehouseForStockDecrease"), 'value' => $formproduct->selectWarehouses(GETPOST('idwarehouse')?GETPOST('idwarehouse'):'ifone', 'idwarehouse', '', 1, 0, 0, '', 0, $forcecombo))
+		 // array('type' => 'other',    'name' => 'idwarehouse',   'label' => $langs->trans("SelectWarehouseForStockDecrease"), 'value' => $formproduct->selectWarehouses(request()->input('idwarehouse')?request()->input('idwarehouse'):'ifone', 'idwarehouse', '', 1, 0, 0, '', 0, $forcecombo))
 		 );
 		 */
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('Re-Open'), $text, 'confirm_reopen', $formquestion, 0, 1, 220);
@@ -535,7 +535,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -580,7 +580,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

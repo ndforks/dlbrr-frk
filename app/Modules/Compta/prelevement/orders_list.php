@@ -43,29 +43,29 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'withdrawals'));
 
-$action     = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$confirm    = GETPOST('confirm', 'alpha'); // Result of a confirmation
-$cancel     = GETPOST('cancel', 'alpha'); // We click on a Cancel button
-$toselect = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'directdebitcredittransferlist'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
+$confirm    = request()->input('confirm'); // Result of a confirmation
+$cancel     = request()->input('cancel'); // We click on a Cancel button
+$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'directdebitcredittransferlist'; // To manage different context of search
+$backtopage = request()->input('backtopage'); // Go back to a dedicated page
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
 // Get supervariables
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_amount = GETPOST('search_amount', 'alpha');
-$search_status = GETPOSTISARRAY('search_status') ? GETPOST('search_status', 'array:int') : array(GETPOST('search_status') ? GETPOST('search_status') : GETPOSTINT('status'));
+$search_ref = request()->input('search_ref');
+$search_amount = request()->input('search_amount');
+$search_status = is_array(request()->input('search_status')) ? request()->input('search_status') : array(request()->input('search_status') ? request()->input('search_status') : request()->integer('status', 0));
 
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -90,7 +90,7 @@ if ($type == 'bank-transfer') {
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -106,7 +106,7 @@ if ($type == 'bank-transfer') {
  */
 $error = 0;
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_ref = "";
 	$search_amount = "";
 	$search_status = array();
@@ -228,7 +228,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -246,7 +246,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

@@ -68,15 +68,15 @@ include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "companies"));
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0); // $place is id of table for Bar or Restaurant
+$place = (request()->input('place') ? request()->input('place') : 0); // $place is id of table for Bar or Restaurant
 
-$facid = GETPOSTINT('facid');
+$facid = request()->integer('facid', 0);
 
-$action = GETPOST('action', 'aZ09');
-$gift = GETPOSTINT('gift');
+$action = request()->input('action');
+$gift = request()->integer('gift', 0);
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -105,7 +105,7 @@ if ((string) $place != '' && !empty($_SESSION["takeposterminal"])) {
 	}
 }
 $object = new Facture($db);
-if ($facid > 0 && !GETPOST('specimen')) {
+if ($facid > 0 && !request()->input('specimen')) {
 	$object->fetch($facid);
 } else {
 	$object->initAsSpecimen('takepos');
@@ -118,7 +118,7 @@ print '<body>';
 // This will also increase the counter of printings of the receipt
 // DOL_DOCUMENT_ROOT.'/blockedlog/ajax/block-add.php?id='.$object->id.'&element='.$object->element.'&action=DOC_PREVIEW&token='.newToken();
 
-if (!GETPOST('specimen') && empty($nojs)) {
+if (!request()->input('specimen') && empty($nojs)) {
 	print "
 	<script>
 		console.log('Call /blockedlog/ajax/block-add from Ajax call on receipt.php.');
@@ -185,7 +185,7 @@ if (isALNERunningVersion()) {
 <?php
 echo '<b>'.$mysoc->name.'</b>';
 
-if (GETPOST('specimen')) {
+if (request()->input('specimen')) {
 	print '<br>';
 	print '!!!!! SPECIMEN !!!!!';
 }
@@ -219,7 +219,7 @@ if ($object->status == Facture::STATUS_DRAFT) {
 		//$orderprinterallowed = false;
 	}
 
-	if (!$canprintifnotvalidate && empty($facid) && !GETPOST('specimen')) {
+	if (!$canprintifnotvalidate && empty($facid) && !request()->input('specimen')) {
 		print "Error: Printing ticket is not allowed when invoice is not validated/paid.";
 		exit;
 	}
@@ -234,10 +234,10 @@ if (getDolGlobalString('TAKEPOS_RECEIPT_NAME')) {
 } else {
 	print $langs->trans("InvoiceRef")." ";
 }
-if ($object->status == Facture::STATUS_DRAFT || empty($facid) || GETPOST('specimen')) {
+if ($object->status == Facture::STATUS_DRAFT || empty($facid) || request()->input('specimen')) {
 	// Printing ticket is not allowed if invoice not yet validate.
 	// Reaching this code may happen for specimen or if a feature to validate invoice and print it before paying is implemented.
-	if (empty($facid) || GETPOST('specimen')) {
+	if (empty($facid) || request()->input('specimen')) {
 		print '99999';
 	} else {
 		print $object->ref;
@@ -246,7 +246,7 @@ if ($object->status == Facture::STATUS_DRAFT || empty($facid) || GETPOST('specim
 	print $object->ref;
 }
 // POS terminal
-print '<br>'.$langs->trans("Terminal").' '.(GETPOST('specimen') ? '99' : ($object->pos_source ? $object->pos_source : 'Backoffice'));
+print '<br>'.$langs->trans("Terminal").' '.(request()->input('specimen') ? '99' : ($object->pos_source ? $object->pos_source : 'Backoffice'));
 if (getDolGlobalString('TAKEPOS_SHOW_CUSTOMER')) {
 	if ($object->socid != getDolGlobalInt('CASHDESK_ID_THIRDPARTY'.$_SESSION["takeposterminal"])) {
 		$soc = new Societe($db);
@@ -330,9 +330,9 @@ if ($object->status != $object::STATUS_CLOSED) {
 	<tbody>
 	<?php
 	if ($action == 'without_details') {
-		$qty = GETPOSTINT('qty') > 0 ? GETPOSTINT('qty') : 1;
+		$qty = request()->integer('qty', 0) > 0 ? request()->integer('qty', 0) : 1;
 		print '<tr>';
-		print '<td>' . GETPOST('label', 'alphanohtml') . '</td>';
+		print '<td>' . request()->input('label') . '</td>';
 		print '<td class="right">' . $qty . '</td>';
 		print '<td class="right">' . price(price2num($object->total_ttc / $qty, 'MU'), 1) . '</td>';
 		if (getDolGlobalString('TAKEPOS_SHOW_HT_RECEIPT')) {
@@ -577,7 +577,7 @@ if (isALNEQualifiedVersion() || isALNERunningVersion()) {
 }
 
 
-if (!GETPOST('forcenoautoopen') && !GETPOST('specimen') && empty($nojs)) {
+if (!request()->input('forcenoautoopen') && !request()->input('specimen') && empty($nojs)) {
 	?>
 	<script type="text/javascript">
 	<?php

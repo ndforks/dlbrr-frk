@@ -48,9 +48,9 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 $langs->loadLangs(array('agenda', 'admin', 'other'));
 
 $def = array();
-$actiontest = GETPOST('test', 'alpha');
-$actionsave = GETPOST('save', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'useragenda'; // To manage different context of search
+$actiontest = request()->input('test');
+$actionsave = request()->input('save');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'useragenda'; // To manage different context of search
 
 if (!getDolGlobalString('AGENDA_EXT_NB')) {
 	$conf->global->AGENDA_EXT_NB = 5;
@@ -61,10 +61,10 @@ $MAXAGENDA = getDolGlobalString('AGENDA_EXT_NB');
 $colorlist = array('BECEDD', 'DDBECE', 'BFDDBE', 'F598B4', 'F68654', 'CBF654', 'A4A4A5');
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new User($db);
@@ -85,7 +85,7 @@ $result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
 
 // If user is not user that read and no permission to read other users, we stop
 if (($object->id != $user->id) && (!$user->hasRight('user', 'user', 'lire'))) {
-	accessforbidden();
+	abort(403);
 }
 
 /*

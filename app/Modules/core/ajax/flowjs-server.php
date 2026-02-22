@@ -55,21 +55,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$module = GETPOST('module', 'aZ09arobase');
-$uploaddirname = dol_sanitizeFileName(GETPOST('uploaddirname', 'alpha'));
+$module = request()->input('module');
+$uploaddirname = dol_sanitizeFileName(request()->input('uploaddirname'));
 
-$flowFilename = GETPOST('flowFilename', 'alpha');
-$flowIdentifier = GETPOST('flowIdentifier', 'alpha');
-$flowChunkNumber = GETPOST('flowChunkNumber', 'alpha');
-$flowChunkSize = GETPOST('flowChunkSize', 'alpha');
-$flowTotalSize = GETPOST('flowTotalSize', 'alpha');
+$flowFilename = request()->input('flowFilename');
+$flowIdentifier = request()->input('flowIdentifier');
+$flowChunkNumber = request()->input('flowChunkNumber');
+$flowChunkSize = request()->input('flowChunkSize');
+$flowTotalSize = request()->input('flowTotalSize');
 
 $result = restrictedArea($user, $module, 0, '', '', 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 
 if ($action != 'upload') {
-	httponly_accessforbidden("Param action must be 'upload'");
+	httponly_abort(403);
 }
 
 if (!empty($conf->$module->dir_temp)) {
@@ -78,7 +78,7 @@ if (!empty($conf->$module->dir_temp)) {
 		$upload_dir .= "/".$uploaddirname;
 	}
 } else {
-	httponly_accessforbidden("Param module does not has a dir_temp directory. Module does not exists or is not activated.");
+	httponly_abort(403);
 }
 
 /*

@@ -107,7 +107,7 @@ class ImportCsv extends ModeleImports
 		parent::__construct();
 		$this->db = $db;
 
-		$this->separator = (GETPOST('separator') ? GETPOST('separator') : getDolGlobalString('IMPORT_CSV_SEPARATOR_TO_USE', ','));
+		$this->separator = (request()->input('separator') ? request()->input('separator') : getDolGlobalString('IMPORT_CSV_SEPARATOR_TO_USE', ','));
 		$this->enclosure = '"';
 		$this->escape = '"';
 

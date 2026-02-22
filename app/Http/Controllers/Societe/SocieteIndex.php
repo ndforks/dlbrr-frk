@@ -9,6 +9,6 @@ class SocieteIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/societe/list.php');
+        return redirect()->route('societe.list');
     }
 }

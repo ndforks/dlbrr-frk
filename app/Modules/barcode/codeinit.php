@@ -45,10 +45,10 @@ $now = dol_now();
 $year = dol_print_date($now, '%Y');
 $month = dol_print_date($now, '%m');
 $day = dol_print_date($now, '%d');
-$eraseallproductbarcode = GETPOST('eraseallproductbarcode');
-$eraseallthirdpartybarcode = GETPOST('eraseallthirdpartybarcode');
+$eraseallproductbarcode = request()->input('eraseallproductbarcode');
+$eraseallthirdpartybarcode = request()->input('eraseallthirdpartybarcode');
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $modBarCodeProduct = '';
 $modBarCodeThirdparty = '';
@@ -56,14 +56,14 @@ $modBarCodeThirdparty = '';
 $maxperinit = getDolGlobalInt('BARCODE_INIT_MAX', 1000);
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 if (!isModEnabled('barcode')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 //restrictedArea($user, 'barcode');
 if (empty($user->admin)) {
-	accessforbidden('Must be admin');
+	abort(403);
 }
 
 
@@ -124,7 +124,7 @@ if ($action == 'initbarcodethirdparties' && $user->hasRight('societe', 'lire')) 
 				setEventMessages($langs->trans("AllBarcodeReset"), null, 'mesgs');
 			} else {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			$sql = "SELECT rowid";
@@ -159,7 +159,7 @@ if ($action == 'initbarcodethirdparties' && $user->hasRight('societe', 'lire')) 
 				}
 			} else {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (!$error) {
@@ -230,7 +230,7 @@ if ($action == 'initbarcodeproducts' && $user->hasRight('produit', 'lire')) {
 				setEventMessages($langs->trans("AllBarcodeReset"), null, 'mesgs');
 			} else {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			$sql = "SELECT rowid, ref, fk_product_type";
@@ -268,7 +268,7 @@ if ($action == 'initbarcodeproducts' && $user->hasRight('produit', 'lire')) {
 				}
 			} else {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (!$error) {
@@ -294,7 +294,7 @@ if ($action == 'initbarcodeproducts' && $user->hasRight('produit', 'lire')) {
 
 llxHeader('', $langs->trans("MassBarcodeInit"), '', '', 0, 0, '', '', '', 'mod-barcode page-codeinit');
 
-if (!GETPOST('dol_openinpopup', 'aZ')) {
+if (!request()->input('dol_openinpopup')) {
 	print load_fiche_titre($langs->trans("MassBarcodeInit"), '', 'title_setup');
 	print '<br>';
 }
@@ -318,7 +318,7 @@ if (isModEnabled('product') || isModEnabled('service')) {
 	print '<input type="hidden" name="mode" value="label">';
 	print '<input type="hidden" name="action" value="initbarcodeproducts">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
-	print '<input type="hidden" name="dol_openinpopup" value="'.GETPOST('dol_openinpopup', 'aZ').'">';
+	print '<input type="hidden" name="dol_openinpopup" value="'.request()->input('dol_openinpopup').'">';
 
 	$nbproductno = $nbproducttotal = 0;
 
@@ -344,7 +344,7 @@ if (isModEnabled('product') || isModEnabled('service')) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$sql = "SELECT count(rowid) as nb FROM ".MAIN_DB_PREFIX."product";
@@ -354,7 +354,7 @@ if (isModEnabled('product') || isModEnabled('service')) {
 		$obj = $db->fetch_object($resql);
 		$nbproducttotal = $obj->nb;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print $langs->trans("CurrentlyNWithoutBarCode", $nbproductno, $nbproducttotal, $langs->transnoentitiesnoconv("ProductsOrServices"))."\n";
@@ -399,7 +399,7 @@ if (isModEnabled('societe')) {
 	print '<input type="hidden" name="mode" value="label">';
 	print '<input type="hidden" name="action" value="initbarcodethirdparties">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
-	print '<input type="hidden" name="dol_openinpopup" value="'.GETPOST('dol_openinpopup', 'aZ').'">';
+	print '<input type="hidden" name="dol_openinpopup" value="'.request()->input('dol_openinpopup').'">';
 
 	$nbthirdpartyno = $nbthirdpartytotal = 0;
 
@@ -413,7 +413,7 @@ if (isModEnabled('societe')) {
 		$obj = $db->fetch_object($resql);
 		$nbthirdpartyno = $obj->nb;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$sql = "SELECT count(rowid) as nb FROM ".MAIN_DB_PREFIX."societe";
@@ -423,7 +423,7 @@ if (isModEnabled('societe')) {
 		$obj = $db->fetch_object($resql);
 		$nbthirdpartytotal = $obj->nb;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print $langs->trans("CurrentlyNWithoutBarCode", $nbthirdpartyno, $nbthirdpartytotal, $langs->transnoentitiesnoconv("ThirdParties"))."\n";

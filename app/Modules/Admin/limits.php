@@ -41,9 +41,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'products', 'admin'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$currencycode = GETPOST('currencycode', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$currencycode = request()->input('currencycode');
 
 if (isModEnabled('multicompany') && getDolGlobalString('MULTICURRENCY_USE_LIMIT_BY_CURRENCY')) {
 	// When MULTICURRENCY_USE_LIMIT_BY_CURRENCY is on, we use always a defined currency code instead of '' even for default.
@@ -55,13 +55,13 @@ $mainmaxdecimalstot = 'MAIN_MAX_DECIMALS_TOT'.(!empty($currencycode) ? '_'.$curr
 $mainmaxdecimalsshown = 'MAIN_MAX_DECIMALS_SHOWN'.(!empty($currencycode) ? '_'.$currencycode : '');
 $mainroundingruletot = 'MAIN_ROUNDING_RULE_TOT'.(!empty($currencycode) ? '_'.$currencycode : '');
 
-$valmainmaxdecimalsunit = GETPOSTINT($mainmaxdecimalsunit);
-$valmainmaxdecimalstot = GETPOSTINT($mainmaxdecimalstot);
-$valmainmaxdecimalsshown = GETPOST($mainmaxdecimalsshown, 'alpha');	// Can be 'x.y' but also 'x...'
-$valmainroundingruletot = price2num(GETPOST($mainroundingruletot, 'alphanohtml'), '', 2);
+$valmainmaxdecimalsunit = request()->integer($mainmaxdecimalsunit, 0);
+$valmainmaxdecimalstot = request()->integer($mainmaxdecimalstot, 0);
+$valmainmaxdecimalsshown = request()->input($mainmaxdecimalsshown);	// Can be 'x.y' but also 'x...'
+$valmainroundingruletot = price2num(request()->input($mainroundingruletot), '', 2);
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -177,18 +177,18 @@ if ($action == 'edit') {
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("MAIN_MAX_DECIMALS_UNIT"), $langs->trans("ParameterActiveForNextInputOnly"));
-	print '</td><td><input class="flat right" name="'.$mainmaxdecimalsunit.'" size="3" value="'.(GETPOSTISSET($mainmaxdecimalsunit) ? GETPOST($mainmaxdecimalsunit) : getDolGlobalInt('MAIN_MAX_DECIMALS_UNIT', 0)).'"></td></tr>';
+	print '</td><td><input class="flat right" name="'.$mainmaxdecimalsunit.'" size="3" value="'.(request()->has($mainmaxdecimalsunit) ? request()->input($mainmaxdecimalsunit) : getDolGlobalInt('MAIN_MAX_DECIMALS_UNIT', 0)).'"></td></tr>';
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("MAIN_MAX_DECIMALS_TOT"), $langs->trans("ParameterActiveForNextInputOnly"));
-	print '</td><td><input class="flat right" name="'.$mainmaxdecimalstot.'" size="3" value="'.(GETPOSTISSET($mainmaxdecimalstot) ? GETPOST($mainmaxdecimalstot) : getDolGlobalInt('MAIN_MAX_DECIMALS_TOT', 0)).'"></td></tr>';
+	print '</td><td><input class="flat right" name="'.$mainmaxdecimalstot.'" size="3" value="'.(request()->has($mainmaxdecimalstot) ? request()->input($mainmaxdecimalstot) : getDolGlobalInt('MAIN_MAX_DECIMALS_TOT', 0)).'"></td></tr>';
 
 	print '<tr class="oddeven"><td>'.$langs->trans("MAIN_MAX_DECIMALS_SHOWN").'</td>';
-	print '<td><input class="flat right" name="'.$mainmaxdecimalsshown.'" size="3" value="'.(GETPOSTISSET($mainmaxdecimalsshown) ? GETPOST($mainmaxdecimalsshown) : getDolGlobalString('MAIN_MAX_DECIMALS_SHOWN')).'"></td></tr>';
+	print '<td><input class="flat right" name="'.$mainmaxdecimalsshown.'" size="3" value="'.(request()->has($mainmaxdecimalsshown) ? request()->input($mainmaxdecimalsshown) : getDolGlobalString('MAIN_MAX_DECIMALS_SHOWN')).'"></td></tr>';
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("MAIN_ROUNDING_RULE_TOT"), $langs->trans("ParameterActiveForNextInputOnly"));
-	print '</td><td><input class="flat right" name="'.$mainroundingruletot.'" size="3" value="'.(GETPOSTISSET($mainroundingruletot) ? GETPOST($mainroundingruletot) : getDolGlobalString('MAIN_ROUNDING_RULE_TOT')).'"></td></tr>';
+	print '</td><td><input class="flat right" name="'.$mainroundingruletot.'" size="3" value="'.(request()->has($mainroundingruletot) ? request()->input($mainroundingruletot) : getDolGlobalString('MAIN_ROUNDING_RULE_TOT')).'"></td></tr>';
 
 	print '</table>';
 
@@ -291,7 +291,7 @@ if (empty($mysoc->country_code)) {
 			}
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (count($vat_rates)) {

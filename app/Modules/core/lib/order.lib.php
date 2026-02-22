@@ -344,7 +344,7 @@ function getCustomerOrderPieChart($socid = 0)
 		$result .= '<tr class="liste_total"><td>'.$langs->trans("Total").'</td><td class="right">'.$total.'</td></tr>';
 		$result .= "</table></div><br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	return $result;

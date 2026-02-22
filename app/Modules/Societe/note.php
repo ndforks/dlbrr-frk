@@ -45,8 +45,8 @@ $langs->load("companies");
 
 
 // Get parameters
-$id = GETPOST('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
+$id = request()->input('id') ? request()->integer('id', 0) : request()->integer('socid', 0);
+$action = request()->input('action');
 
 
 // Initialize objects

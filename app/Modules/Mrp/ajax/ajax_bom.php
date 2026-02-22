@@ -53,8 +53,8 @@ require_once DOL_DOCUMENT_ROOT.'/bom/class/bom.class.php';
  * @var User $user
  */
 
-$idbom = GETPOSTINT('idbom');
-//$action = GETPOST('action', 'aZ09');
+$idbom = request()->integer('idbom', 0);
+//$action = request()->input('action');
 
 $object = new BOM($db);
 $result = $object->fetch($idbom);

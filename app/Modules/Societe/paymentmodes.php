@@ -57,16 +57,16 @@ $langs->loadLangs(array("companies", "commercial", "banks", "bills", 'paypal', '
 
 
 // Get parameters
-$action = GETPOST("action", 'alpha', 3);
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$id = GETPOSTINT("id");
-$source = GETPOST("source", "alpha"); // source can be a source or a paymentmode
-$ribid = GETPOSTINT("ribid");
+$id = request()->integer('id', 0);
+$source = request()->input('source'); // source can be a source or a paymentmode
+$ribid = request()->integer('ribid', 0);
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -106,7 +106,7 @@ $site_account = 'UnknownSiteAccount';
 // Init Stripe objects
 if (isModEnabled('stripe')) {
 	$service = 'StripeTest';
-	if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+	if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 		$service = 'StripeLive';
 		$servicestatus = 1;
 	}
@@ -149,11 +149,11 @@ if (empty($reshook)) {
 
 	if ($action == 'update' && $permissiontoaddupdatepaymentinformation) {
 		// Update the bank account
-		if (!GETPOST('label', 'alpha') || !(GETPOST('bank', 'alpha') || (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') != 0))) {
-			if (!GETPOST('label', 'alpha')) {
+		if (!request()->input('label') || !(request()->input('bank') || (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') != 0))) {
+			if (!request()->input('label')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 			}
-			if (!GETPOST('bank', 'alpha') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
+			if (!request()->input('bank') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("BankName")), null, 'errors');
 			}
 			$action = 'edit';
@@ -161,14 +161,14 @@ if (empty($reshook)) {
 		}
 		$companybankaccount->fetch($id);
 		if ($companybankaccount->needIBAN() == 1) {
-			if (!GETPOST('iban')) {
+			if (!request()->input('iban')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("IBAN")), null, 'errors');
 				$action = 'edit';
 				$error++;
 			}
 		}
 		if ($companybankaccount->needBIC() == 1) {
-			if (!GETPOST('bic') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
+			if (!request()->input('bic') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("BIC")), null, 'errors');
 				$action = 'edit';
 				$error++;
@@ -180,34 +180,34 @@ if (empty($reshook)) {
 
 			$companybankaccount->socid           = $object->id;
 
-			$companybankaccount->bank            = GETPOST('bank', 'alpha');
-			$companybankaccount->label           = GETPOST('label', 'alpha');
-			$companybankaccount->status          = GETPOSTINT('clos');
+			$companybankaccount->bank            = request()->input('bank');
+			$companybankaccount->label           = request()->input('label');
+			$companybankaccount->status          = request()->integer('clos', 0);
 			$companybankaccount->clos            = $companybankaccount->status;
-			$companybankaccount->code_banque     = GETPOST('code_banque', 'alpha');
-			$companybankaccount->code_guichet    = GETPOST('code_guichet', 'alpha');
-			$companybankaccount->number          = GETPOST('number', 'alpha');
-			$companybankaccount->cle_rib         = GETPOST('cle_rib', 'alpha');
-			$companybankaccount->bic             = GETPOST('bic', 'alpha');
-			$companybankaccount->iban            = GETPOST('iban', 'alpha');
+			$companybankaccount->code_banque     = request()->input('code_banque');
+			$companybankaccount->code_guichet    = request()->input('code_guichet');
+			$companybankaccount->number          = request()->input('number');
+			$companybankaccount->cle_rib         = request()->input('cle_rib');
+			$companybankaccount->bic             = request()->input('bic');
+			$companybankaccount->iban            = request()->input('iban');
 
-			$companybankaccount->address         = GETPOST('address', 'alpha');
+			$companybankaccount->address         = request()->input('address');
 
-			$companybankaccount->owner_name      = GETPOST('proprio', 'alpha');
+			$companybankaccount->owner_name      = request()->input('proprio');
 			$companybankaccount->proprio         = $companybankaccount->owner_name;
-			$companybankaccount->owner_address   = GETPOST('owner_address', 'alpha');
-			$companybankaccount->frstrecur       = GETPOST('frstrecur', 'alpha');
-			$companybankaccount->rum             = GETPOST('rum', 'alpha');
+			$companybankaccount->owner_address   = request()->input('owner_address');
+			$companybankaccount->frstrecur       = request()->input('frstrecur');
+			$companybankaccount->rum             = request()->input('rum');
 			$companybankaccount->date_rum = GETPOSTDATE('date_rum', '00:00:00');
 			if (empty($companybankaccount->rum)) {
 				$companybankaccount->rum = $prelevement->buildRumNumber($object->code_client, $companybankaccount->datec, (string) $companybankaccount->id);
 			}
 
-			if (GETPOST('stripe_card_ref', 'alpha') && GETPOST('stripe_card_ref', 'alpha') != $companypaymentmode->stripe_card_ref) {
+			if (request()->input('stripe_card_ref') && request()->input('stripe_card_ref') != $companypaymentmode->stripe_card_ref) {
 				// If we set a stripe value that is different than previous one, we also set the stripe account
 				$companypaymentmode->stripe_account = $stripecu.'@'.$site_account;
 			}
-			$companybankaccount->stripe_card_ref = GETPOST('stripe_card_ref', 'alpha');
+			$companybankaccount->stripe_card_ref = request()->input('stripe_card_ref');
 
 			$result = $companybankaccount->update($user);
 			if ($result <= 0) {
@@ -235,18 +235,18 @@ if (empty($reshook)) {
 
 	if ($action == 'updatecard' && $permissiontoaddupdatepaymentinformation) {
 		// Update credit card
-		if (!GETPOST('label', 'alpha') || !GETPOST('proprio', 'alpha') || !GETPOST('exp_date_month', 'alpha') || !GETPOST('exp_date_year', 'alpha')) {
-			if (!GETPOST('label', 'alpha')) {
+		if (!request()->input('label') || !request()->input('proprio') || !request()->input('exp_date_month') || !request()->input('exp_date_year')) {
+			if (!request()->input('label')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 			}
-			if (!GETPOST('proprio', 'alpha')) {
+			if (!request()->input('proprio')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("NameOnCard")), null, 'errors');
 			}
-			//if (!GETPOST('cardnumber', 'alpha')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CardNumber")), null, 'errors');
-			if (!(GETPOST('exp_date_month', 'alpha') > 0) || !(GETPOST('exp_date_year', 'alpha') > 0)) {
+			//if (!request()->input('cardnumber')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CardNumber")), null, 'errors');
+			if (!(request()->input('exp_date_month') > 0) || !(request()->input('exp_date_year') > 0)) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ExpiryDate")), null, 'errors');
 			}
-			//if (!GETPOST('cvn', 'alpha')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CVN")), null, 'errors');
+			//if (!request()->input('cvn')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CVN")), null, 'errors');
 			$action = 'createcard';
 			$error++;
 		}
@@ -257,22 +257,22 @@ if (empty($reshook)) {
 
 			$companypaymentmode->fk_soc          = $object->id;
 
-			$companypaymentmode->bank            = GETPOST('bank', 'alpha');
-			$companypaymentmode->label           = GETPOST('label', 'alpha');
-			$companypaymentmode->number          = GETPOST('cardnumber', 'alpha');
-			$companypaymentmode->last_four       = substr(GETPOST('cardnumber', 'alpha'), -4);
-			$companypaymentmode->owner_name      = GETPOST('proprio', 'alpha');
+			$companypaymentmode->bank            = request()->input('bank');
+			$companypaymentmode->label           = request()->input('label');
+			$companypaymentmode->number          = request()->input('cardnumber');
+			$companypaymentmode->last_four       = substr(request()->input('cardnumber'), -4);
+			$companypaymentmode->owner_name      = request()->input('proprio');
 			$companypaymentmode->proprio         = $companypaymentmode->owner_name;
-			$companypaymentmode->exp_date_month  = GETPOSTINT('exp_date_month');
-			$companypaymentmode->exp_date_year   = GETPOSTINT('exp_date_year');
-			$companypaymentmode->cvn             = GETPOST('cvn', 'alpha');
+			$companypaymentmode->exp_date_month  = request()->integer('exp_date_month', 0);
+			$companypaymentmode->exp_date_year   = request()->integer('exp_date_year', 0);
+			$companypaymentmode->cvn             = request()->input('cvn');
 			$companypaymentmode->country_code    = $object->country_code;
 
-			if (GETPOST('stripe_card_ref', 'alpha') && GETPOST('stripe_card_ref', 'alpha') != $companypaymentmode->stripe_card_ref) {
+			if (request()->input('stripe_card_ref') && request()->input('stripe_card_ref') != $companypaymentmode->stripe_card_ref) {
 				// If we set a stripe value that is different than previous one, we also set the stripe account
 				$companypaymentmode->stripe_account = $stripecu.'@'.$site_account;
 			}
-			$companypaymentmode->stripe_card_ref = GETPOST('stripe_card_ref', 'alpha');
+			$companypaymentmode->stripe_card_ref = request()->input('stripe_card_ref');
 
 			$result = $companypaymentmode->update($user);
 			if (!$result) {
@@ -300,7 +300,7 @@ if (empty($reshook)) {
 	if ($action == 'add' && $permissiontoaddupdatepaymentinformation) {
 		$error = 0;
 
-		if (!GETPOST('label', 'alpha')) {
+		if (!request()->input('label')) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 			$action = 'create';
 			$error++;
@@ -314,27 +314,27 @@ if (empty($reshook)) {
 
 			$companybankaccount->fetch_thirdparty();
 
-			$companybankaccount->bank            = GETPOST('bank', 'alpha');
-			$companybankaccount->label           = GETPOST('label', 'alpha');
-			$companybankaccount->code_banque     = GETPOST('code_banque', 'alpha');
-			$companybankaccount->code_guichet    = GETPOST('code_guichet', 'alpha');
-			$companybankaccount->number          = GETPOST('number', 'alpha');
-			$companybankaccount->cle_rib         = GETPOST('cle_rib', 'alpha');
-			$companybankaccount->bic             = GETPOST('bic', 'alpha');
-			$companybankaccount->iban            = GETPOST('iban', 'alpha');
+			$companybankaccount->bank            = request()->input('bank');
+			$companybankaccount->label           = request()->input('label');
+			$companybankaccount->code_banque     = request()->input('code_banque');
+			$companybankaccount->code_guichet    = request()->input('code_guichet');
+			$companybankaccount->number          = request()->input('number');
+			$companybankaccount->cle_rib         = request()->input('cle_rib');
+			$companybankaccount->bic             = request()->input('bic');
+			$companybankaccount->iban            = request()->input('iban');
 
-			$companybankaccount->address         = GETPOST('address', 'alpha');
+			$companybankaccount->address         = request()->input('address');
 
-			$companybankaccount->owner_name      = GETPOST('proprio', 'alpha');
+			$companybankaccount->owner_name      = request()->input('proprio');
 			$companybankaccount->proprio         = $companybankaccount->owner_name;
-			$companybankaccount->owner_address   = GETPOST('owner_address', 'alpha');
-			$companybankaccount->frstrecur       = GETPOST('frstrecur', 'alpha');
-			$companybankaccount->rum             = GETPOST('rum', 'alpha');
+			$companybankaccount->owner_address   = request()->input('owner_address');
+			$companybankaccount->frstrecur       = request()->input('frstrecur');
+			$companybankaccount->rum             = request()->input('rum');
 			$companybankaccount->date_rum        = GETPOSTDATE('date_rum', '00:00:00');
 			$companybankaccount->datec           = dol_now();
 
-			//$companybankaccount->clos          = GETPOSTINT('clos');
-			$companybankaccount->status          = GETPOSTINT('clos');
+			//$companybankaccount->clos          = request()->integer('clos', 0);
+			$companybankaccount->status          = request()->integer('clos', 0);
 
 			$companybankaccount->bank = trim($companybankaccount->bank);
 			if (empty($companybankaccount->bank) && !empty($companybankaccount->thirdparty)) {
@@ -346,14 +346,14 @@ if (empty($reshook)) {
 
 			// This test can be done only once properties were set
 			if ($companybankaccount->needIBAN() == 1) {
-				if (!GETPOST('iban')) {
+				if (!request()->input('iban')) {
 					setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("IBAN")), null, 'errors');
 					$action = 'create';
 					$error++;
 				}
 			}
 			if ($companybankaccount->needBIC() == 1) {
-				if (!GETPOST('bic') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
+				if (!request()->input('bic') && (getDolGlobalInt('WITHDRAWAL_WITHOUT_BIC') == 0)) {
 					setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("BIC")), null, 'errors');
 					$action = 'create';
 					$error++;
@@ -398,18 +398,18 @@ if (empty($reshook)) {
 	if ($action == 'addcard' && $permissiontoaddupdatepaymentinformation) {
 		$error = 0;
 
-		if (!GETPOST('label', 'alpha') || !GETPOST('proprio', 'alpha') || !GETPOST('exp_date_month', 'alpha') || !GETPOST('exp_date_year', 'alpha')) {
-			if (!GETPOST('label', 'alpha')) {
+		if (!request()->input('label') || !request()->input('proprio') || !request()->input('exp_date_month') || !request()->input('exp_date_year')) {
+			if (!request()->input('label')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 			}
-			if (!GETPOST('proprio', 'alpha')) {
+			if (!request()->input('proprio')) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("NameOnCard")), null, 'errors');
 			}
-			//if (!GETPOST('cardnumber', 'alpha')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CardNumber")), null, 'errors');
-			if (!(GETPOST('exp_date_month', 'alpha') > 0) || !(GETPOST('exp_date_year', 'alpha') > 0)) {
+			//if (!request()->input('cardnumber')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CardNumber")), null, 'errors');
+			if (!(request()->input('exp_date_month') > 0) || !(request()->input('exp_date_year') > 0)) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ExpiryDate")), null, 'errors');
 			}
-			//if (!GETPOST('cvn', 'alpha')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CVN")), null, 'errors');
+			//if (!request()->input('cvn')) setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CVN")), null, 'errors');
 			$action = 'createcard';
 			$error++;
 		}
@@ -419,25 +419,25 @@ if (empty($reshook)) {
 			$companypaymentmode = new CompanyPaymentMode($db);
 
 			$companypaymentmode->fk_soc          = $object->id;
-			$companypaymentmode->bank            = GETPOST('bank', 'alpha');
-			$companypaymentmode->label           = GETPOST('label', 'alpha');
-			$companypaymentmode->number          = GETPOST('cardnumber', 'alpha');
-			$companypaymentmode->last_four       = substr(GETPOST('cardnumber', 'alpha'), -4);
-			$companypaymentmode->proprio         = GETPOST('proprio', 'alpha');
-			$companypaymentmode->exp_date_month  = GETPOSTINT('exp_date_month');
-			$companypaymentmode->exp_date_year   = GETPOSTINT('exp_date_year');
-			$companypaymentmode->cvn             = GETPOST('cvn', 'alpha');
+			$companypaymentmode->bank            = request()->input('bank');
+			$companypaymentmode->label           = request()->input('label');
+			$companypaymentmode->number          = request()->input('cardnumber');
+			$companypaymentmode->last_four       = substr(request()->input('cardnumber'), -4);
+			$companypaymentmode->proprio         = request()->input('proprio');
+			$companypaymentmode->exp_date_month  = request()->integer('exp_date_month', 0);
+			$companypaymentmode->exp_date_year   = request()->integer('exp_date_year', 0);
+			$companypaymentmode->cvn             = request()->input('cvn');
 			$companypaymentmode->datec           = dol_now();
 			$companypaymentmode->default_rib     = 0;
 			$companypaymentmode->type            = 'card';
 			$companypaymentmode->country_code    = $object->country_code;
 			$companypaymentmode->status          = $servicestatus;
 
-			if (GETPOST('stripe_card_ref', 'alpha')) {
+			if (request()->input('stripe_card_ref')) {
 				// If we set a stripe value, we also set the stripe account
 				$companypaymentmode->stripe_account = $stripecu.'@'.$site_account;
 			}
-			$companypaymentmode->stripe_card_ref = GETPOST('stripe_card_ref', 'alpha');
+			$companypaymentmode->stripe_card_ref = request()->input('stripe_card_ref');
 
 			$db->begin();
 
@@ -462,9 +462,9 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setasbankdefault' && GETPOSTINT('ribid') > 0 && $permissiontoaddupdatepaymentinformation) {
+	if ($action == 'setasbankdefault' && request()->integer('ribid', 0) > 0 && $permissiontoaddupdatepaymentinformation) {
 		$companybankaccount = new CompanyBankAccount($db);
-		$res = $companybankaccount->setAsDefault(GETPOSTINT('ribid'));
+		$res = $companybankaccount->setAsDefault(request()->integer('ribid', 0));
 		if ($res) {
 			$url = DOL_URL_ROOT.'/societe/paymentmodes.php?socid='.$object->id;
 			header('Location: '.$url);
@@ -474,7 +474,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'confirm_deletecard' && GETPOST('confirm', 'alpha') == 'yes' && $permissiontoaddupdatepaymentinformation) {
+	if ($action == 'confirm_deletecard' && request()->input('confirm') == 'yes' && $permissiontoaddupdatepaymentinformation) {
 		// Delete the credi card
 		$companypaymentmode = new CompanyPaymentMode($db);
 		if ($companypaymentmode->fetch($ribid ? $ribid : $id)) {
@@ -501,7 +501,7 @@ if (empty($reshook)) {
 			setEventMessages($companypaymentmode->error, $companypaymentmode->errors, 'errors');
 		}
 	}
-	if ($action == 'confirm_deletebank' && GETPOST('confirm', 'alpha') == 'yes' && $permissiontoaddupdatepaymentinformation) {
+	if ($action == 'confirm_deletebank' && request()->input('confirm') == 'yes' && $permissiontoaddupdatepaymentinformation) {
 		// Delete the bank account
 		$companybankaccount = new CompanyBankAccount($db);
 		if ($companybankaccount->fetch($ribid ? $ribid : $id) > 0) {
@@ -536,11 +536,11 @@ if (empty($reshook)) {
 	if ($action == 'builddocrib' && $permissiontoread) {
 		$action = 'builddoc';
 		$moreparams = array(
-			'use_companybankid' => GETPOST('companybankid'),
+			'use_companybankid' => request()->input('companybankid'),
 			'force_dir_output' => $conf->societe->multidir_output[$object->entity ?? $conf->entity].'/'.dol_sanitizeFileName((string) $object->id)
 		);
-		$_POST['lang_id'] = GETPOST('lang_idrib'.GETPOSTINT('companybankid'), 'alphanohtml');	// This is required by core/action_builddoc.inc.php
-		$_POST['model'] = GETPOST('modelrib'.GETPOSTINT('companybankid'), 'alphanohtml'); 		// This is required by core/action_builddoc.inc.php
+		$_POST['lang_id'] = GETPOST('lang_idrib'.request()->integer('companybankid', 0), 'alphanohtml');	// This is required by core/action_builddoc.inc.php
+		$_POST['model'] = GETPOST('modelrib'.request()->integer('companybankid', 0), 'alphanohtml'); 		// This is required by core/action_builddoc.inc.php
 	}
 
 	$id = $socid;
@@ -657,9 +657,9 @@ if (empty($reshook)) {
 			$tmpsite_account = $stripearrayofkeysbyenv[$tmpservicestatus]['publishable_key'];
 
 			if ($action == 'setkey_account') {	// Test on permission not required
-				$newcu = GETPOST('key_account', 'alpha');
+				$newcu = request()->input('key_account');
 			} else {
-				$newcu = GETPOST('key_accounttest', 'alpha');
+				$newcu = request()->input('key_accounttest');
 			}
 
 			$db->begin();
@@ -726,9 +726,9 @@ if (empty($reshook)) {
 			$tmpsite_account = $stripearrayofkeysbyenv[$tmpservicestatus]['publishable_key'];
 
 			if ($action == 'setkey_account_supplier') {		// Test on permission not required
-				$newsup = GETPOST('key_account_supplier', 'alpha');
+				$newsup = request()->input('key_account_supplier');
 			} else {
-				$newsup = GETPOST('key_account_suppliertest', 'alpha');
+				$newsup = request()->input('key_account_suppliertest');
 			}
 
 			$db->begin();
@@ -870,8 +870,8 @@ if (empty($reshook)) {
 				}
 
 				$url = DOL_URL_ROOT.'/societe/paymentmodes.php?socid='.$object->id;
-				if (GETPOSTINT('page_y')) {
-					$url .= '&page_y='.GETPOSTINT('page_y');
+				if (request()->integer('page_y', 0)) {
+					$url .= '&page_y='.request()->integer('page_y', 0);
 				}
 
 				header('Location: '.$url);
@@ -905,10 +905,10 @@ llxHeader('', $title, $help_url);
 $head = societe_prepare_head($object);
 
 // Show sandbox warning
-//if (isModEnabled('paypal') && (getDolGlobalString('PAYPAL_API_SANDBOX')/* || GETPOST('forcesandbox','alpha') */))	{
+//if (isModEnabled('paypal') && (getDolGlobalString('PAYPAL_API_SANDBOX')/* || request()->input('forcesandbox') */))	{
 //	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Paypal'), [], 'warning');
 //}
-if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');
 }
 
@@ -934,7 +934,7 @@ if ($socid && ($action == 'edit' || $action == 'editcard') && $permissiontoaddup
 		$actionforadd = 'updatecard';
 	}
 	print '<input type="hidden" name="action" value="'.$actionforadd.'">';
-	print '<input type="hidden" name="id" value="'.GETPOSTINT("id").'">';
+	print '<input type="hidden" name="id" value="'.request()->integer('id', 0).'">';
 }
 if ($socid && ($action == 'create' || $action == 'createcard') && $permissiontoaddupdatepaymentinformation) {
 	print '<form action="'.$_SERVER["PHP_SELF"].'?socid='.$object->id.'" method="post">';
@@ -989,7 +989,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 		$sql = "SELECT count(*) as nb from ".MAIN_DB_PREFIX."facture where fk_soc = ".((int) $socid);
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$obj = $db->fetch_object($resql);
@@ -1087,7 +1087,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 		$sql = "SELECT count(*) as nb from ".MAIN_DB_PREFIX."facture where fk_soc = ".((int) $socid);
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$obj = $db->fetch_object($resql);
 		$nbFactsClient = $obj->nb;
@@ -1162,7 +1162,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 				} else {
 					$service = 'StripeTest';
 					$servicestatus = 0;
-					if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+					if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 						$service = 'StripeLive';
 						$servicestatus = 1;
 					}
@@ -1352,7 +1352,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -1914,7 +1914,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 		print '</table>';
 		print '</div>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	//Hook to display your print listing (list of CB card from Stancer Plugin for example)
@@ -2101,7 +2101,7 @@ if ($socid && $action == 'edit' && $permissiontoaddupdatepaymentinformation) {
 
 		print '<tr><td>'.$langs->trans("WithdrawMode").'</td><td>';
 		$tblArraychoice = array("FRST" => $langs->trans("FRST"), "RCUR" => $langs->trans("RECUR"));
-		print $form->selectarray("frstrecur", $tblArraychoice, dol_escape_htmltag(GETPOST('frstrecur', 'alpha') ? GETPOST('frstrecur', 'alpha') : $companybankaccount->frstrecur), 0);
+		print $form->selectarray("frstrecur", $tblArraychoice, dol_escape_htmltag(request()->input('frstrecur') ? request()->input('frstrecur') : $companybankaccount->frstrecur), 0);
 		print '</td></tr>';
 
 		print '<tr><td>'.$langs->trans("ExternalSystemID")." ('pm_...' or 'src_...')</td>";
@@ -2183,10 +2183,10 @@ if ($socid && $action == 'create' && $permissiontoaddupdatepaymentinformation) {
 	print '<table class="border tableforfield centpercent">';
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td>';
-	print '<td><input class="minwidth250" type="text" id="label" name="label" value="'.(GETPOSTISSET('label') ? GETPOST('label') : $langs->trans("Bank").' '.$object->name).'"></td></tr>';
+	print '<td><input class="minwidth250" type="text" id="label" name="label" value="'.(request()->has('label') ? request()->input('label') : $langs->trans("Bank").' '.$object->name).'"></td></tr>';
 
 	print '<tr><td>'.$langs->trans("Bank").'</td>';
-	print '<td><input class="minwidth250" type="text" id="bank" name="bank" value="'.GETPOST('bank').'"></td></tr>';
+	print '<td><input class="minwidth250" type="text" id="bank" name="bank" value="'.request()->input('bank').'"></td></tr>';
 
 	// Show fields of bank account
 	foreach ($companybankaccount->getFieldsToShow(1) as $val) {
@@ -2237,22 +2237,22 @@ if ($socid && $action == 'create' && $permissiontoaddupdatepaymentinformation) {
 			print $langs->trans($val);
 		}
 		print '</td>';
-		print '<td><input size="'.$size.'" type="text" class="flat" name="'.$name.'" value="'.GETPOST($name).'"></td>';
+		print '<td><input size="'.$size.'" type="text" class="flat" name="'.$name.'" value="'.request()->input($name).'"></td>';
 		print '</tr>';
 	}
 
 	print '<tr><td class="tdtop">'.$langs->trans("BankAccountDomiciliation").'</td><td>';
 	print '<textarea name="address" rows="'.ROWS_4.'" class="quatrevingtpercent" maxlength="255">';
-	print GETPOST('address');
+	print request()->input('address');
 	print "</textarea></td></tr>";
 
 	print '<tr><td>'.$langs->trans("BankAccountOwner").'</td>';
-	print '<td><input class="minwidth200" type="text" name="proprio" value="'.GETPOST('proprio').'"></td></tr>';
+	print '<td><input class="minwidth200" type="text" name="proprio" value="'.request()->input('proprio').'"></td></tr>';
 	print "</td></tr>\n";
 
 	print '<tr><td class="tdtop">'.$langs->trans("BankAccountOwnerAddress").'</td><td>';
 	print '<textarea name="owner_address" rows="'.ROWS_4.'" class="quatrevingtpercent" maxlength="255">';
-	print GETPOST('owner_address');
+	print request()->input('owner_address');
 	print "</textarea></td></tr>";
 
 	print '</table>';
@@ -2269,7 +2269,7 @@ if ($socid && $action == 'create' && $permissiontoaddupdatepaymentinformation) {
 
 		// RUM
 		print '<tr><td class="titlefieldcreate">'.$form->textwithpicto($langs->trans("RUM"), $langs->trans("RUMLong").'<br>'.$langs->trans("RUMWillBeGenerated")).'</td>';
-		print '<td colspan="4"><input type="text" class="minwidth300" name="rum" value="'.GETPOST('rum', 'alpha').'"></td></tr>';
+		print '<td colspan="4"><input type="text" class="minwidth300" name="rum" value="'.request()->input('rum').'"></td></tr>';
 
 		$date_rum = GETPOSTDATE('date_rum', '00:00:00');
 
@@ -2278,11 +2278,11 @@ if ($socid && $action == 'create' && $permissiontoaddupdatepaymentinformation) {
 
 		print '<tr><td>'.$langs->trans("WithdrawMode").'</td><td>';
 		$tblArraychoice = array("FRST" => $langs->trans("FRST"), "RCUR" => $langs->trans("RECUR"));
-		print $form->selectarray("frstrecur", $tblArraychoice, (GETPOSTISSET('frstrecur') ? GETPOST('frstrecur') : 'FRST'), 0);
+		print $form->selectarray("frstrecur", $tblArraychoice, (request()->has('frstrecur') ? request()->input('frstrecur') : 'FRST'), 0);
 		print '</td></tr>';
 
 		print '<tr><td>'.$langs->trans("ExternalSystemID")." ('src_....')</td>";
-		print '<td><input class="minwidth300" type="text" name="stripe_card_ref" value="'.GETPOST('stripe_card_ref', 'alpha').'"></td></tr>';
+		print '<td><input class="minwidth300" type="text" name="stripe_card_ref" value="'.request()->input('stripe_card_ref').'"></td></tr>';
 
 		print '</table>';
 		print '</div>';
@@ -2315,25 +2315,25 @@ if ($socid && $action == 'createcard' && $permissiontoaddupdatepaymentinformatio
 	print '<table class="border centpercent">';
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td>';
-	print '<td><input class="minwidth200" type="text" id="label" name="label" value="'.GETPOST('label', 'alpha').'"></td></tr>';
+	print '<td><input class="minwidth200" type="text" id="label" name="label" value="'.request()->input('label').'"></td></tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("NameOnCard").'</td>';
-	print '<td><input class="minwidth200" type="text" name="proprio" value="'.GETPOST('proprio', 'alpha').'"></td></tr>';
+	print '<td><input class="minwidth200" type="text" name="proprio" value="'.request()->input('proprio').'"></td></tr>';
 
 	print '<tr><td>'.$langs->trans("CardNumber").'</td>';
-	print '<td><input class="minwidth200" type="text" name="cardnumber" value="'.GETPOST('cardnumber', 'alpha').'"></td></tr>';
+	print '<td><input class="minwidth200" type="text" name="cardnumber" value="'.request()->input('cardnumber').'"></td></tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("ExpiryDate").'</td>';
 	print '<td>';
-	print $formother->select_month((string) GETPOSTINT('exp_date_month'), 'exp_date_month', 1);
-	print $formother->selectyear((string) GETPOSTINT('exp_date_year'), 'exp_date_year', 1, 5, 10, 0, 0, '', 'marginleftonly');
+	print $formother->select_month((string) request()->integer('exp_date_month', 0), 'exp_date_month', 1);
+	print $formother->selectyear((string) request()->integer('exp_date_year', 0), 'exp_date_year', 1, 5, 10, 0, 0, '', 'marginleftonly');
 	print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("CVN").'</td>';
-	print '<td><input class="width50" type="text" name="cvn" value="'.GETPOST('cvn', 'alpha').'"></td></tr>';
+	print '<td><input class="width50" type="text" name="cvn" value="'.request()->input('cvn').'"></td></tr>';
 
 	print '<tr><td>'.$langs->trans("ExternalSystemID")." ('card_....')</td>";
-	print '<td><input class="minwidth300" type="text" name="stripe_card_ref" value="'.GETPOST('stripe_card_ref', 'alpha').'"></td></tr>';
+	print '<td><input class="minwidth300" type="text" name="stripe_card_ref" value="'.request()->input('stripe_card_ref').'"></td></tr>';
 
 	print '</table>';
 	print '</div>';

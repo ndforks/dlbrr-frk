@@ -42,18 +42,18 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('orders', 'companies'));
 
-$action = GETPOST('action', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$id = GETPOSTINT('id');
-$_socid = GETPOSTINT("id");
+$id = request()->integer('id', 0);
+$_socid = request()->integer('id', 0);
 // Security check
 if ($user->socid > 0) {
 	$_socid = $user->socid;
 }
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid > 0) {
 	$action = '';
 	$id = $user->socid;
@@ -69,7 +69,7 @@ $result = restrictedArea($user, 'societe', $id, '&societe', '', 'fk_soc', 'rowid
 if ($action == 'setpricelevel' && $user->hasRight('societe', 'creer')) {
 	$soc = new Societe($db);
 	$soc->fetch($id);
-	$soc->setPriceLevel(GETPOSTINT("price_level"), $user);
+	$soc->setPriceLevel(request()->integer('price_level', 0), $user);
 
 	header("Location: multiprix.php?id=".$id);
 	exit;
@@ -177,7 +177,7 @@ if ($_socid > 0) {
 		$db->free($resql);
 		print "</table>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -35,16 +35,16 @@ if (!defined('NOBROWSERNOTIF')) {
 require '../../main.inc.php';
 
 if (!getDolGlobalString('TAKEPOS_AUTO_ORDER')) {
-	accessforbidden('Auto order is not allowed'); // If Auto Order is disabled never allow access to this page (that is a NO LOGIN access)
+	abort(403); // If Auto Order is disabled never allow access to this page (that is a NO LOGIN access)
 }
 
 $_SESSION["basiclayout"] = 1;	// For the simple layout for public submission
 $_SESSION["takeposterminal"] = getDolGlobalInt('TAKEPOS_TERMINAL_NB_FOR_PUBLIC', 1);	// Default terminal for public submission is 1
 
 define('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE', 1);
-if (GETPOSTISSET("mobilepage")) {
+if (request()->has('mobilepage')) {
 	require DOL_DOCUMENT_ROOT.'/takepos/invoice.php';	// The section with list of selected products in order
-} elseif (GETPOSTISSET("genimg")) {
+} elseif (request()->has('genimg')) {
 	require DOL_DOCUMENT_ROOT.'/takepos/genimg/index.php';
 } else {
 	require DOL_DOCUMENT_ROOT.'/takepos/phone.php';

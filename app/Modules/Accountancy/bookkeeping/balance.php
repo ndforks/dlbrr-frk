@@ -49,37 +49,37 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("accountancy", "compta"));
 
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optioncss', 'alpha');
-$type = GETPOST('type', 'alpha');
+$action = request()->input('action');
+$optioncss = request()->input('optioncss');
+$type = request()->input('type');
 if ($type == 'sub') {
 	$context_default = 'balancesubaccountlist';
 } else {
 	$context_default = 'balancelist';
 }
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : $context_default;
-$show_subgroup = GETPOST('show_subgroup', 'alpha');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : $context_default;
+$show_subgroup = request()->input('show_subgroup');
 
 $search_date_start = GETPOSTDATE('date_start', 'getpost', 'auto', 'search_date_start_accountancy');
 $search_date_end = GETPOSTDATE('date_end', 'getpostend', 'auto', 'search_date_end_accountancy');
 
-$search_ledger_code = GETPOST('search_ledger_code', 'array');
-$search_accountancy_code_start = GETPOST('search_accountancy_code_start', 'alpha');
+$search_ledger_code = request()->input('search_ledger_code', []);
+$search_accountancy_code_start = request()->integer('search_accountancy_code_start', 0);
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = GETPOST('search_accountancy_code_end', 'alpha');
+$search_accountancy_code_end = request()->integer('search_accountancy_code_end', 0);
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }
-$search_not_reconciled = GETPOST('search_not_reconciled', 'alpha');
+$search_not_reconciled = request()->input('search_not_reconciled');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -100,7 +100,7 @@ $hookmanager->initHooks(array($contextpage));  // Note that conf->hooks_modules 
 $formaccounting = new FormAccounting($db);
 $form = new Form($db);
 
-if (empty($search_date_start) && empty($search_date_end) && !GETPOSTISSET('formfilteraction')) {
+if (empty($search_date_start) && empty($search_date_end) && !request()->has('formfilteraction')) {
 	$sql = "SELECT date_start, date_end";
 	$sql .=" FROM ".MAIN_DB_PREFIX."accounting_fiscalyear ";
 	if (getDolGlobalInt('ACCOUNTANCY_FISCALYEAR_DEFAULT')) {
@@ -133,13 +133,13 @@ if (empty($search_date_start) && empty($search_date_end) && !GETPOSTISSET('formf
 }
 
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'mouvements', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('accounting', 'mouvements', 'creer');
@@ -160,7 +160,7 @@ if ($reshook < 0) {
 $filter = array();
 
 if (empty($reshook)) {
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$show_subgroup = '';
 		$search_date_start = '';
 		$search_date_end = '';
@@ -178,11 +178,11 @@ if (empty($reshook)) {
 
 	if (!empty($search_date_start)) {
 		$filter['t.doc_date>='] = $search_date_start;
-		$param .= '&date_startmonth=' . GETPOSTINT('date_startmonth') . '&date_startday=' . GETPOSTINT('date_startday') . '&date_startyear=' . GETPOSTINT('date_startyear');
+		$param .= '&date_startmonth=' . request()->integer('date_startmonth', 0) . '&date_startday=' . request()->integer('date_startday', 0) . '&date_startyear=' . request()->integer('date_startyear', 0);
 	}
 	if (!empty($search_date_end)) {
 		$filter['t.doc_date<='] = $search_date_end;
-		$param .= '&date_endmonth=' . GETPOSTINT('date_endmonth') . '&date_endday=' . GETPOSTINT('date_endday') . '&date_endyear=' . GETPOSTINT('date_endyear');
+		$param .= '&date_endmonth=' . request()->integer('date_endmonth', 0) . '&date_endday=' . request()->integer('date_endday', 0) . '&date_endyear=' . request()->integer('date_endyear', 0);
 	}
 	if (!empty($search_accountancy_code_start)) {
 		if ($type == 'sub') {
@@ -222,7 +222,7 @@ if (empty($reshook)) {
 }
 
 if ($action == 'export' && $user->hasRight('accounting', 'mouvements', 'lire')) {
-	$exportType = GETPOST('export_type');
+	$exportType = request()->input('export_type');
 
 	if ($type == 'sub') {
 		$result = $object->fetchAllBalance($sortorder, $sortfield, $limit, 0, $filter, 'AND', 1);
@@ -256,13 +256,13 @@ if ($action == 'export' && $user->hasRight('accounting', 'mouvements', 'lire')) 
 	} else {
 		require_once DOL_DOCUMENT_ROOT . '/core/modules/accountancy/doc/pdf_balance.modules.php';
 		$pdf = new pdf_balance($db);
-		$pdf->fromDate = dol_mktime(12, 0, 0, GETPOSTINT('search_date_startmonth'), GETPOSTINT('search_date_startday'), GETPOSTINT('search_date_startyear'));
+		$pdf->fromDate = dol_mktime(12, 0, 0, request()->integer('search_date_startmonth', 0), request()->integer('search_date_startday', 0), request()->integer('search_date_startyear', 0));
 		if (empty($pdf->fromDate)) {
-			$pdf->fromDate = dol_mktime(12, 0, 0, GETPOSTINT('date_startmonth'), GETPOSTINT('date_startday'), GETPOSTINT('date_startyear'));
+			$pdf->fromDate = dol_mktime(12, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
 		}
-		$pdf->toDate = dol_mktime(12, 0, 0, GETPOSTINT('search_date_endmonth'), GETPOSTINT('search_date_endday'), GETPOSTINT('search_date_endyear'));
+		$pdf->toDate = dol_mktime(12, 0, 0, request()->integer('search_date_endmonth', 0), request()->integer('search_date_endday', 0), request()->integer('search_date_endyear', 0));
 		if (empty($pdf->toDate)) {
-			$pdf->toDate = dol_mktime(12, 0, 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'));
+			$pdf->toDate = dol_mktime(12, 0, 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 		}
 		$pdf->balanceType = $type;
 
@@ -534,7 +534,7 @@ if ($action != 'export') {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -646,21 +646,21 @@ if ($action != 'export') {
 		if ($type == 'sub') {
 			if ($line->subledger_account) {
 				$urlzoom = DOL_URL_ROOT . '/accountancy/bookkeeping/listbyaccount.php?type=sub&search_accountancy_code_start=' . urlencode($line->subledger_account) . '&search_accountancy_code_end=' . urlencode($line->subledger_account);
-				if (GETPOSTISSET('date_startmonth')) {
-					$urlzoom .= '&search_date_startmonth=' . GETPOSTINT('date_startmonth') . '&search_date_startday=' . GETPOSTINT('date_startday') . '&search_date_startyear=' . GETPOSTINT('date_startyear');
+				if (request()->has('date_startmonth')) {
+					$urlzoom .= '&search_date_startmonth=' . request()->integer('date_startmonth', 0) . '&search_date_startday=' . request()->integer('date_startday', 0) . '&search_date_startyear=' . request()->integer('date_startyear', 0);
 				}
-				if (GETPOSTISSET('date_endmonth')) {
-					$urlzoom .= '&search_date_endmonth=' . GETPOSTINT('date_endmonth') . '&search_date_endday=' . GETPOSTINT('date_endday') . '&search_date_endyear=' . GETPOSTINT('date_endyear');
+				if (request()->has('date_endmonth')) {
+					$urlzoom .= '&search_date_endmonth=' . request()->integer('date_endmonth', 0) . '&search_date_endday=' . request()->integer('date_endday', 0) . '&search_date_endyear=' . request()->integer('date_endyear', 0);
 				}
 			}
 		} else {
 			if ($line->numero_compte) {
 				$urlzoom = DOL_URL_ROOT . '/accountancy/bookkeeping/listbyaccount.php?search_accountancy_code_start=' . urlencode($line->numero_compte) . '&search_accountancy_code_end=' . urlencode($line->numero_compte);
-				if (GETPOSTISSET('date_startmonth')) {
-					$urlzoom .= '&search_date_startmonth=' . GETPOSTINT('date_startmonth') . '&search_date_startday=' . GETPOSTINT('date_startday') . '&search_date_startyear=' . GETPOSTINT('date_startyear');
+				if (request()->has('date_startmonth')) {
+					$urlzoom .= '&search_date_startmonth=' . request()->integer('date_startmonth', 0) . '&search_date_startday=' . request()->integer('date_startday', 0) . '&search_date_startyear=' . request()->integer('date_startyear', 0);
 				}
-				if (GETPOSTISSET('date_endmonth')) {
-					$urlzoom .= '&search_date_endmonth=' . GETPOSTINT('date_endmonth') . '&search_date_endday=' . GETPOSTINT('date_endday') . '&search_date_endyear=' . GETPOSTINT('date_endyear');
+				if (request()->has('date_endmonth')) {
+					$urlzoom .= '&search_date_endmonth=' . request()->integer('date_endmonth', 0) . '&search_date_endday=' . request()->integer('date_endday', 0) . '&search_date_endyear=' . request()->integer('date_endyear', 0);
 				}
 			}
 		}

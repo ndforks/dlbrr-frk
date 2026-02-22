@@ -43,12 +43,12 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("compta", "bills", "other", "accountancy"));
 
-$validatemonth = GETPOSTINT('validatemonth');
-$validateyear = GETPOSTINT('validateyear');
+$validatemonth = request()->integer('validatemonth', 0);
+$validateyear = request()->integer('validateyear', 0);
 
 $month_start = getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
-if (GETPOSTINT("year")) {
-	$year_start = GETPOSTINT("year");
+if (request()->integer('year', 0)) {
+	$year_start = request()->integer('year', 0);
 } else {
 	$year_start = dol_print_date(dol_now(), '%Y');
 	if (dol_print_date(dol_now(), '%m') < $month_start) {
@@ -66,19 +66,19 @@ $search_date_end = dol_get_last_day($year_end, $month_end);
 $year_current = $year_start;
 
 // Validate History
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $chartaccountcode = dol_getIdFromCode($db, getDolGlobalString('CHARTOFACCOUNTS'), 'accounting_system', 'rowid', 'pcg_version');
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 

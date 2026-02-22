@@ -48,15 +48,15 @@ $form  = new Form($db);
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'projects'));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm');
 
-$toselect = GETPOST('toselect', 'array:int');
+$toselect = request()->input('toselect', []);
 
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -76,10 +76,10 @@ $permissiontodelete = $user->hasRight('societe', 'supprimer');
  */
 
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 	$massactionbutton = '';
 }
@@ -99,7 +99,7 @@ if (in_array($massaction, array('presend', 'predelete','preaffecttag'))) {
 	$arrayofmassactions = array();
 }
 
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete', 'preaffecttag', 'preenable', 'preclose'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete', 'preaffecttag', 'preenable', 'preclose'))) {
 	$arrayofmassactions = array();
 }
 

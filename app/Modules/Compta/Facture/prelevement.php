@@ -55,11 +55,11 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'banks', 'withdrawals', 'companies'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
-$type = GETPOST('type', 'aZ09');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$action = request()->input('action');
+$type = request()->input('type');
 
 $fieldid = (!empty($ref) ? 'ref' : 'rowid');
 if ($user->socid) {
@@ -89,12 +89,12 @@ $hookmanager->initHooks(array('directdebitcard', 'globalcard'));
 if ($type == 'bank-transfer') {
 	$result = restrictedArea($user, 'fournisseur', $id, 'facture_fourn', 'facture', 'fk_soc', $fieldid, $isdraft);
 	if (!$user->hasRight('fournisseur', 'facture', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 } else {
 	$result = restrictedArea($user, 'facture', $id, '', '', 'fk_soc', $fieldid, $isdraft);
 	if (!$user->hasRight('facture', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -126,11 +126,11 @@ if (empty($reshook)) {
 				$sourcetype = 'supplier_invoice';
 				$newtype = 'bank-transfer';
 			}
-			$paymentservice = GETPOST('paymentservice');
+			$paymentservice = request()->input('paymentservice');
 
 			// Get chosen iban id
-			$iban = GETPOSTINT('accountcustomerid');
-			$amount = GETPOST('withdraw_request_amount', 'alpha');
+			$iban = request()->integer('accountcustomerid', 0);
+			$amount = request()->input('withdraw_request_amount');
 			$result = $object->demande_prelevement($user, (float) price2num($amount), $newtype, $sourcetype, 0, $iban ?? 0);
 
 			if ($result > 0) {
@@ -147,7 +147,7 @@ if (empty($reshook)) {
 
 	if ($action == "delete" && $usercancreate) {
 		if ($object->id > 0) {
-			$result = $object->demande_prelevement_delete($user, GETPOSTINT('did'));
+			$result = $object->demande_prelevement_delete($user, request()->integer('did', 0));
 			if ($result == 0) {
 				header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id.'&type='.$type);
 				exit;
@@ -157,7 +157,7 @@ if (empty($reshook)) {
 
 	// Request payment with a Stripe Direct Debit for a customer invoice
 	if ($action == 'sepastripedirectdebit' && $usercancreate) {
-		$result = $object->makeStripeSepaRequest($user, GETPOSTINT('did'), 'direct-debit', 'facture');
+		$result = $object->makeStripeSepaRequest($user, request()->integer('did', 0), 'direct-debit', 'facture');
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		} else {
@@ -172,7 +172,7 @@ if (empty($reshook)) {
 
 	// Make payment with a stripe sepa for a supplier invoice
 	if ($action == 'sepastripecredittransfer' && $usercancreate) {
-		$result = $object->makeStripeSepaRequest($user, GETPOSTINT('did'), 'bank-transfer', 'supplier_invoice');
+		$result = $object->makeStripeSepaRequest($user, request()->integer('did', 0), 'bank-transfer', 'supplier_invoice');
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		} else {
@@ -196,7 +196,7 @@ if (empty($reshook)) {
 		$db->begin();
 
 		if (!$error) {
-			$result = $object->setPaymentTerms(GETPOSTINT('cond_reglement_id'));
+			$result = $object->setPaymentTerms(request()->integer('cond_reglement_id', 0));
 			if ($result < 0) {
 				$error++;
 				setEventMessages($object->error, $object->errors, 'errors');
@@ -226,9 +226,9 @@ if (empty($reshook)) {
 		}
 	} elseif ($action == 'setmode' && $usercancreate) {
 		// payment mode
-		$result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+		$result = $object->setPaymentMethods(request()->integer('mode_reglement_id', 0));
 	} elseif ($action == 'setdatef' && $usercancreate) {
-		$newdate = dol_mktime(0, 0, 0, GETPOSTINT('datefmonth'), GETPOSTINT('datefday'), GETPOSTINT('datefyear'), 'tzserver');
+		$newdate = dol_mktime(0, 0, 0, request()->integer('datefmonth', 0), request()->integer('datefday', 0), request()->integer('datefyear', 0), 'tzserver');
 		if ($newdate > (dol_now('tzuserrel') + getDolGlobalInt('INVOICE_MAX_FUTURE_DELAY'))) {
 			if (!getDolGlobalString('INVOICE_MAX_FUTURE_DELAY')) {
 				setEventMessages($langs->trans("WarningInvoiceDateInFuture"), null, 'warnings');
@@ -251,7 +251,7 @@ if (empty($reshook)) {
 			dol_print_error($db, $object->error);
 		}
 	} elseif ($action == 'setdate_lim_reglement' && $usercancreate) {
-		$object->date_echeance = dol_mktime(12, 0, 0, GETPOSTINT('date_lim_reglementmonth'), GETPOSTINT('date_lim_reglementday'), GETPOSTINT('date_lim_reglementyear'));
+		$object->date_echeance = dol_mktime(12, 0, 0, request()->integer('date_lim_reglementmonth', 0), request()->integer('date_lim_reglementday', 0), request()->integer('date_lim_reglementyear', 0));
 		if (!empty($object->date_echeance) && $object->date_echeance < $object->date) {
 			$object->date_echeance = $object->date;
 			setEventMessages($langs->trans("DatePaymentTermCantBeLowerThanObjectDate"), null, 'warnings');
@@ -743,7 +743,7 @@ if ($object->id > 0) {
 			$pending += (float) $obj->amount;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	// Get pending request with a transfer receipt generated but not yet processed
 	$sqlPending = "SELECT SUM(pl.amount) as amount";
@@ -781,7 +781,7 @@ if ($object->id > 0) {
 			$pendingAmount = $obj->amount;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	*/
 
@@ -1084,7 +1084,7 @@ if ($object->id > 0) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 
@@ -1220,7 +1220,7 @@ if ($object->id > 0) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print "</table>";

@@ -54,24 +54,24 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 $langs->loadLangs(array("eventorganization", "projects", "companies", "other", "mails"));
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'conferenceorboothcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'conferenceorboothcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$withproject = GETPOSTINT('withproject');
-$project_ref = GETPOST('project_ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$withproject = request()->integer('withproject', 0);
+$project_ref = request()->input('project_ref');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -115,7 +115,7 @@ $permissiondellink = $user->hasRight('project', 'write'); // Used by the include
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 restrictedArea($user, 'projet', $object->fk_project, 'projet&project');
@@ -201,25 +201,25 @@ if (!empty($withproject)) {
 		print '</td>';
 		print '<td>';
 		if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-			print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowOpportunity");
 			print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-			print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowTasks");
 			print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-			print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectBillTimeDescription");
 			print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 			print '<br>';
 		}
 		if (isModEnabled('eventorganization')) {
-			print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 			print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 		}
@@ -460,7 +460,7 @@ if ($object->id) {
 
 	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
-	accessforbidden('', 0, 1);
+	abort(403);
 }
 
 // End of page

@@ -70,16 +70,16 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array("compta", "bills", "users", "salaries", "hrm", "withdrawals"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 $type = 'salaire';
 
-$label = GETPOST('label', 'alphanohtml');
-$projectid = (GETPOSTINT('projectid') ? GETPOSTINT('projectid') : GETPOSTINT('fk_project'));
+$label = request()->input('label');
+$projectid = (request()->integer('projectid', 0) ? request()->integer('projectid', 0) : request()->integer('fk_project', 0));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -109,7 +109,7 @@ if ($id > 0) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -165,7 +165,7 @@ if ($reshook < 0) {
 // payment mode
 if ($action == 'setmode' && $permissiontoadd) {
 	$object->fetch($id);
-	$result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+	$result = $object->setPaymentMethods(request()->integer('mode_reglement_id', 0));
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
@@ -174,7 +174,7 @@ if ($action == 'setmode' && $permissiontoadd) {
 // bank account
 if ($action == 'setbankaccount' && $permissiontoadd) {
 	$object->fetch($id);
-	$result = $object->setBankAccount(GETPOSTINT('fk_account'));
+	$result = $object->setBankAccount(request()->integer('fk_account', 0));
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
@@ -188,16 +188,16 @@ if ($action == "add" && $permissiontoadd) {
 		$sourcetype = 'salaire';
 		$newtype = 'salaire';
 
-		$paymentservice = GETPOST('paymentservice');	// value can be 'stripesepa'. not used yet.
+		$paymentservice = request()->input('paymentservice');	// value can be 'stripesepa'. not used yet.
 
-		$result = $object->demande_prelevement($user, GETPOSTFLOAT('request_transfer'), $newtype, $sourcetype);
+		$result = $object->demande_prelevement($user, (float)request()->input('request_transfer', 0.0), $newtype, $sourcetype);
 
 		if ($result > 0) {
 			$db->commit();
 
 			setEventMessages($langs->trans("RecordSaved"), null, 'mesgs');
 		} else {
-			dol_print_error($db, $error);
+			abort(500, $error);
 			$db->rollback();
 			setEventMessages($obj->error, $obj->errors, 'errors');
 		}
@@ -207,7 +207,7 @@ if ($action == "add" && $permissiontoadd) {
 
 if ($action == "delete" && $permissiontodelete) {
 	if ($object->id > 0) {
-		$result = $object->demande_prelevement_delete($user, GETPOSTINT('did'));
+		$result = $object->demande_prelevement_delete($user, request()->integer('did', 0));
 		if ($result == 0) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
@@ -469,7 +469,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 print '</div>';
 print '</div>';
@@ -676,7 +676,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // Past requests when bon prelevement
@@ -786,7 +786,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 if ($num == 0 && $numOfBp == 0) {

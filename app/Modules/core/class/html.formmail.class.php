@@ -490,7 +490,7 @@ class FormMail extends Form
 		$langs->loadLangs(array('other', 'mails', 'members'));
 
 		// Clear temp files. Must be done before call of triggers, at beginning (mode = init), or when we select a new template
-		if (GETPOST('mode', 'alpha') == 'init' || (GETPOST('modelselected') && GETPOST('modelmailselected', 'alpha') && GETPOST('modelmailselected', 'alpha') != '-1')) {
+		if (request()->input('mode') == 'init' || (request()->input('modelselected') && request()->input('modelmailselected') && request()->input('modelmailselected') != '-1')) {
 			$this->clear_attached_files();
 		}
 
@@ -540,7 +540,7 @@ class FormMail extends Form
 			$listofmimes = array();
 			$keytoavoidconflict = empty($this->trackid) ? '' : '-'.$this->trackid; // this->trackid must be defined
 
-			if (GETPOST('mode', 'alpha') == 'init' || (GETPOST('modelselected') && GETPOST('modelmailselected', 'alpha') && GETPOST('modelmailselected', 'alpha') != '-1')) {
+			if (request()->input('mode') == 'init' || (request()->input('modelselected') && request()->input('modelmailselected') && request()->input('modelmailselected') != '-1')) {
 				if (!empty($arraydefaultmessage->joinfiles) && !empty($this->param['fileinit']) && is_array($this->param['fileinit'])) {
 					foreach ($this->param['fileinit'] as $path) {
 						if (!empty($path)) {
@@ -614,7 +614,7 @@ class FormMail extends Form
 
 			// Zone to select email template
 			if (count($modelmail_array) > 0) {
-				$model_mail_selected_id = GETPOSTISSET('modelmailselected') ? GETPOSTINT('modelmailselected') : ($arraydefaultmessage->id > 0 ? $arraydefaultmessage->id : 0);
+				$model_mail_selected_id = request()->has('modelmailselected') ? request()->integer('modelmailselected', 0) : ($arraydefaultmessage->id > 0 ? $arraydefaultmessage->id : 0);
 
 				// If list of template is filled
 				$out .= '<div class="center" style="padding: 0px 0 12px 0">'."\n";
@@ -813,8 +813,8 @@ class FormMail extends Form
 				foreach ($tmparray as $key => $val) {
 					$tmparray[$key] = dol_htmlentities($tmparray[$key], 0, 'UTF-8', true);
 				}
-				$withtoselected = GETPOST("receiveruser", 'array'); // Array of selected value
-				if (empty($withtoselected) && count($tmparray) == 1 && GETPOST('action', 'aZ09') == 'presend') {
+				$withtoselected = request()->input('receiveruser'); // Array of selected value
+				if (empty($withtoselected) && count($tmparray) == 1 && request()->input('action') == 'presend') {
 					$withtoselected = array_keys($tmparray);
 				}
 				$out .= $form->multiselectarray("receiveruser", $tmparray, $withtoselected, 0, 0, 'inline-block minwidth500', 0, "");
@@ -862,8 +862,8 @@ class FormMail extends Form
 				foreach ($tmparray as $key => $val) {
 					$tmparray[$key] = dol_htmlentities($tmparray[$key], 0, 'UTF-8', true);
 				}
-				$withtoselected = GETPOST("receiverccuser", 'array'); // Array of selected value
-				if (empty($withtoselected) && count($tmparray) == 1 && GETPOST('action', 'aZ09') == 'presend') {
+				$withtoselected = request()->input('receiverccuser'); // Array of selected value
+				if (empty($withtoselected) && count($tmparray) == 1 && request()->input('action') == 'presend') {
 					$withtoselected = array_keys($tmparray);
 				}
 				$out .= $form->multiselectarray("receiverccuser", $tmparray, $withtoselected, 0, 0, 'inline-block minwidth500', 0, "");
@@ -909,8 +909,8 @@ class FormMail extends Form
 
 				if ($this->withmaindocfile) {
 					// withmaindocfile is set to 1 or -1 to show the checkbox (-1 = checked or 1 = not checked)
-					if (GETPOSTISSET('sendmail')) {
-						$this->withmaindocfile = (GETPOST('addmaindocfile', 'alpha') ? -1 : 1);
+					if (request()->has('sendmail')) {
+						$this->withmaindocfile = (request()->input('addmaindocfile') ? -1 : 1);
 					} elseif (is_object($arraydefaultmessage) && $arraydefaultmessage->id > 0) {
 						// If a template was selected, we use setup of template to define if join file checkbox is selected or not.
 						$this->withmaindocfile = ($arraydefaultmessage->joinfiles ? -1 : 1);
@@ -991,8 +991,8 @@ class FormMail extends Form
 
 			// Message (+ Links to choose layout or ai prompt)
 			if (!empty($this->withbody)) {
-				$defaultmessage = GETPOST('message', 'restricthtml');
-				if (!GETPOST('modelselected', 'alpha') || GETPOST('modelmailselected') != '-1') {
+				$defaultmessage = request()->input('message');
+				if (!request()->input('modelselected') || request()->input('modelmailselected') != '-1') {
 					if ($arraydefaultmessage && $arraydefaultmessage->content) {
 						$defaultmessage = (string) $arraydefaultmessage->content;
 					} elseif (!is_numeric($this->withbody)) {
@@ -1085,8 +1085,8 @@ class FormMail extends Form
 					}
 				}
 
-				if (GETPOSTISSET("message") && !GETPOST('modelselected')) {
-					$defaultmessage = GETPOST("message", "restricthtml");
+				if (request()->has('message') && !request()->input('modelselected')) {
+					$defaultmessage = request()->input('message');
 				} else {
 					$defaultmessage = make_substitutions($defaultmessage, $this->substit);
 					// Clean first \n and br (to avoid empty line when CONTACTCIVNAME is empty)
@@ -1218,7 +1218,7 @@ class FormMail extends Form
 				}
 				$out .= ' &lt;'.$this->tomail.'&gt;';
 				if ($this->withtofree) {
-					$out .= '<br>'.$langs->trans("and").' <input class="minwidth200" id="sendto" name="sendto" spellcheck="false" value="'.(!is_array($this->withto) && !is_numeric($this->withto) ? (GETPOSTISSET("sendto") ? GETPOST("sendto") : $this->withto) : "").'" />';
+					$out .= '<br>'.$langs->trans("and").' <input class="minwidth200" id="sendto" name="sendto" spellcheck="false" value="'.(!is_array($this->withto) && !is_numeric($this->withto) ? (request()->has('sendto') ? request()->input('sendto') : $this->withto) : "").'" />';
 				}
 			} else {
 				// Note withto may be a text like 'AllRecipientSelected'
@@ -1227,7 +1227,7 @@ class FormMail extends Form
 		} else {
 			// The free input of email
 			if (!empty($this->withtofree)) {
-				$out .= '<input class="minwidth200" id="sendto" name="sendto" spellcheck="false" value="'.(($this->withtofree && !is_numeric($this->withtofree)) ? $this->withtofree : (!is_array($this->withto) && !is_numeric($this->withto) ? (GETPOSTISSET("sendto") ? GETPOST("sendto") : $this->withto) : "")).'" />';
+				$out .= '<input class="minwidth200" id="sendto" name="sendto" spellcheck="false" value="'.(($this->withtofree && !is_numeric($this->withtofree)) ? $this->withtofree : (!is_array($this->withto) && !is_numeric($this->withto) ? (request()->has('sendto') ? request()->input('sendto') : $this->withto) : "")).'" />';
 			}
 			// The select combo
 			if (!empty($this->withto) && is_array($this->withto)) {
@@ -1256,9 +1256,9 @@ class FormMail extends Form
 					$tmparray[$key]['labelhtml'] = str_replace(array('__LTCHAR__', '__GTCHAR__'), array('<span class="opacitymedium">(', ')</span>'), $tmparray[$key]['labelhtml']);
 				}
 
-				$withtoselected = GETPOST("receiver", 'array'); // Array of selected value
+				$withtoselected = request()->input('receiver'); // Array of selected value
 				if (!getDolGlobalInt('MAIN_MAIL_NO_WITH_TO_SELECTED')) {
-					if (empty($withtoselected) && count($tmparray) == 1 && GETPOST('action', 'aZ09') == 'presend') {
+					if (empty($withtoselected) && count($tmparray) == 1 && request()->input('action') == 'presend') {
 						$withtoselected = array_keys($tmparray);
 					}
 				}
@@ -1284,7 +1284,7 @@ class FormMail extends Form
 		if ($this->withtoccreadonly) {
 			$out .= (!is_array($this->withtocc) && !is_numeric($this->withtocc)) ? $this->withtocc : "";
 		} else {
-			$out .= '<input class="minwidth200" id="sendtocc" name="sendtocc" value="'.(GETPOST("sendtocc", "alpha") ? GETPOST("sendtocc", "alpha") : ((!is_array($this->withtocc) && !is_numeric($this->withtocc)) ? $this->withtocc : '')).'" />';
+			$out .= '<input class="minwidth200" id="sendtocc" name="sendtocc" value="'.(request()->input('sendtocc') ? request()->input('sendtocc') : ((!is_array($this->withtocc) && !is_numeric($this->withtocc)) ? $this->withtocc : '')).'" />';
 			if (!empty($this->withtocc) && is_array($this->withtocc)) {
 				$out .= ' <span class="opacitymedium">'.$langs->trans("and")."/".$langs->trans("or")."</span> ";
 
@@ -1309,7 +1309,7 @@ class FormMail extends Form
 					$tmparray[$key]['labelhtml'] = str_replace(array('__LTCHAR__', '__GTCHAR__'), array('<span class="opacitymedium">(', ')</span>'), $tmparray[$key]['labelhtml']);
 				}
 
-				$withtoccselected = GETPOST("receivercc", 'array'); // Array of selected value
+				$withtoccselected = request()->input('receivercc'); // Array of selected value
 
 				$out .= $form->multiselectarray("receivercc", $tmparray, $withtoccselected, 0, 0, 'inline-block minwidth500', 0, 0);
 			}
@@ -1334,7 +1334,7 @@ class FormMail extends Form
 		if (!empty($this->withtocccreadonly)) {
 			$out .= (!is_array($this->withtoccc) && !is_numeric($this->withtoccc)) ? $this->withtoccc : "";
 		} else {
-			$out .= '<input class="minwidth200" id="sendtoccc" name="sendtoccc" value="'.(GETPOSTISSET("sendtoccc") ? GETPOST("sendtoccc", "alpha") : ((!is_array($this->withtoccc) && !is_numeric($this->withtoccc)) ? $this->withtoccc : '')).'" />';
+			$out .= '<input class="minwidth200" id="sendtoccc" name="sendtoccc" value="'.(request()->has('sendtoccc') ? request()->input('sendtoccc') : ((!is_array($this->withtoccc) && !is_numeric($this->withtoccc)) ? $this->withtoccc : '')).'" />';
 			if (!empty($this->withtoccc) && is_array($this->withtoccc)) {
 				$out .= ' <span class="opacitymedium">'.$langs->trans("and")."/".$langs->trans("or")."</span> ";
 
@@ -1358,7 +1358,7 @@ class FormMail extends Form
 					$tmparray[$key]['labelhtml'] = str_replace(array('__LTCHAR__', '__GTCHAR__'), array('<span class="opacitymedium">(', ')</span>'), $tmparray[$key]['labelhtml']);
 				}
 
-				$withtocccselected = GETPOST("receiverccc", 'array'); // Array of selected value
+				$withtocccselected = request()->input('receiverccc'); // Array of selected value
 
 				$out .= $form->multiselectarray("receiverccc", $tmparray, $withtocccselected, 0, 0, 'inline-block minwidth500', 0, 0);
 			}
@@ -1453,8 +1453,8 @@ class FormMail extends Form
 			if (getDolGlobalString('MAIL_FORCE_DELIVERY_RECEIPT_SUPPLIER_ORDER') && !empty($this->param['models']) && $this->param['models'] == 'order_supplier_send') {
 				$defaultvaluefordeliveryreceipt = 1;
 			}
-			//$out .= $form->selectyesno('deliveryreceipt', (GETPOSTISSET("deliveryreceipt") ? GETPOST("deliveryreceipt") : $defaultvaluefordeliveryreceipt), 1);
-			$out .= '<input type="checkbox" id="deliveryreceipt" name="deliveryreceipt" value="1"'.((GETPOSTISSET("deliveryreceipt") ? GETPOST("deliveryreceipt") : $defaultvaluefordeliveryreceipt) ? ' checked="checked"' : '').'>';
+			//$out .= $form->selectyesno('deliveryreceipt', (request()->has('deliveryreceipt') ? request()->input('deliveryreceipt') : $defaultvaluefordeliveryreceipt), 1);
+			$out .= '<input type="checkbox" id="deliveryreceipt" name="deliveryreceipt" value="1"'.((request()->has('deliveryreceipt') ? request()->input('deliveryreceipt') : $defaultvaluefordeliveryreceipt) ? ' checked="checked"' : '').'>';
 		}
 		$out .= "</td></tr>\n";
 		return $out;
@@ -1471,9 +1471,9 @@ class FormMail extends Form
 	{
 		global $langs, $form;
 
-		$defaulttopic = GETPOST('subject', 'restricthtml');
+		$defaulttopic = request()->input('subject');
 
-		if (!GETPOST('modelselected', 'alpha') || GETPOST('modelmailselected') != '-1') {
+		if (!request()->input('modelselected') || request()->input('modelmailselected') != '-1') {
 			if ($arraydefaultmessage && $arraydefaultmessage->topic) {
 				$defaulttopic = $arraydefaultmessage->topic;
 			} elseif (!is_numeric($this->withtopic)) {
@@ -1492,7 +1492,7 @@ class FormMail extends Form
 			$out .= $defaulttopic;
 			$out .= '<input type="hidden" class="quatrevingtpercent" id="subject" name="subject" value="'.$defaulttopic.'" />';
 		} else {
-			$out .= '<input type="text" class="quatrevingtpercent" id="subject" name="subject" value="'.((GETPOSTISSET("subject") && !GETPOST('modelselected')) ? GETPOST("subject") : ($defaulttopic ? $defaulttopic : '')).'" />';
+			$out .= '<input type="text" class="quatrevingtpercent" id="subject" name="subject" value="'.((request()->has('subject') && !request()->input('modelselected')) ? request()->input('subject') : ($defaulttopic ? $defaulttopic : '')).'" />';
 		}
 		$out .= "</td></tr>\n";
 		return $out;
@@ -1797,7 +1797,7 @@ class FormMail extends Form
 
 		$resql = $dbs->query($sql);
 		if (!$resql) {
-			dol_print_error($dbs);
+			abort(500);
 			return -1;
 		}
 

@@ -58,7 +58,7 @@ if ($resql) {
 		$_Avery_Labels[$row['code']]['custom_y'] = $row['custom_y'];
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // We add characteristics to the name

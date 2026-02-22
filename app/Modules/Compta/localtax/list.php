@@ -39,17 +39,17 @@ require_once DOL_DOCUMENT_ROOT.'/compta/localtax/class/localtax.class.php';
 // Load translation files required by the page
 $langs->load("compta");
 
-$limit = GETPOSTINT('limit');
+$limit = request()->integer('limit', 0);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 
 $result = restrictedArea($user, 'tax', '', '', 'charges');
-$ltt = GETPOSTINT("localTaxType");
-$mode = GETPOST('mode', 'alpha');
+$ltt = request()->integer('localTaxType', 0);
+$mode = request()->input('mode');
 
 
 /*
@@ -143,7 +143,7 @@ if ($result) {
 
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

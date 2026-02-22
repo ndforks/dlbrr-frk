@@ -42,19 +42,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/vat.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'banks', 'bills'));
 
-$id = GETPOSTINT("id");
-$action = GETPOST("action", "aZ09");
-$cancel = GETPOST('cancel', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$refund = GETPOSTINT("refund");
+$refund = request()->integer('refund', 0);
 if (empty($refund)) {
 	$refund = 0;
 }
 
-$lttype = GETPOSTINT('localTaxType');
+$lttype = request()->integer('localTaxType', 0);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -81,15 +81,15 @@ if ($cancel && !$id) {
 if ($action == 'add' && !$cancel && $permissiontoadd) {
 	$db->begin();
 
-	$datev = dol_mktime(12, 0, 0, GETPOSTINT("datevmonth"), GETPOSTINT("datevday"), GETPOSTINT("datevyear"));
-	$datep = dol_mktime(12, 0, 0, GETPOSTINT("datepmonth"), GETPOSTINT("datepday"), GETPOSTINT("datepyear"));
+	$datev = dol_mktime(12, 0, 0, request()->integer('datevmonth', 0), request()->integer('datevday', 0), request()->integer('datevyear', 0));
+	$datep = dol_mktime(12, 0, 0, request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
 
-	$object->accountid = GETPOSTINT("accountid");
-	$object->paymenttype = GETPOST("paiementtype");
+	$object->accountid = request()->integer('accountid', 0);
+	$object->paymenttype = request()->input('paiementtype');
 	$object->datev = $datev;
 	$object->datep = $datep;
-	$object->amount = price2num(GETPOST("amount"));
-	$object->label = GETPOST("label");
+	$object->amount = price2num(request()->input('amount'));
+	$object->label = request()->input('label');
 	$object->ltt = $lttype;
 
 	$ret = $object->addPayment($user);
@@ -152,7 +152,7 @@ $form = new Form($db);
 if ($id) {
 	$result = $object->fetch($id);
 	if ($result <= 0) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 }
@@ -162,8 +162,8 @@ $help_url = '';
 llxHeader('', $title, $help_url);
 
 if ($action == 'create') {
-	$datev = dol_mktime(12, 0, 0, GETPOSTINT("datevmonth"), GETPOSTINT("datevday"), GETPOSTINT("datevyear"));
-	$datep = dol_mktime(12, 0, 0, GETPOSTINT("datepmonth"), GETPOSTINT("datepday"), GETPOSTINT("datepyear"));
+	$datev = dol_mktime(12, 0, 0, request()->integer('datevmonth', 0), request()->integer('datevday', 0), request()->integer('datevyear', 0));
+	$datep = dol_mktime(12, 0, 0, request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
 
 	print load_fiche_titre($langs->transcountry($lttype == 2 ? "newLT2Payment" : "newLT1Payment", $mysoc->country_code));
 
@@ -188,28 +188,28 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	// Label
-	print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" class="minwidth200" value="'.(GETPOSTISSET("label") ? GETPOST("label", 'alphanohtml', 2) : $langs->transcountry(($lttype == 2 ? "LT2Payment" : "LT1Payment"), $mysoc->country_code)).'"></td></tr>';
+	print '<tr><td class="fieldrequired">'.$langs->trans("Label").'</td><td><input name="label" class="minwidth200" value="'.(request()->has('label') ? request()->input('label') : $langs->transcountry(($lttype == 2 ? "LT2Payment" : "LT1Payment"), $mysoc->country_code)).'"></td></tr>';
 
 	// Amount
-	print '<tr><td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input name="amount" size="10" value="'.GETPOST("amount").'"></td></tr>';
+	print '<tr><td class="fieldrequired">'.$langs->trans("Amount").'</td><td><input name="amount" size="10" value="'.request()->input('amount').'"></td></tr>';
 
 	if (isModEnabled("bank")) {
 		// Type payment
 		print '<tr><td class="fieldrequired">'.$langs->trans("PaymentMode").'</td><td>';
-		print $form->select_types_paiements(GETPOST("paiementtype"), "paiementtype", '', 0, 1, 0, 0, 1, 'maxwidth500 widthcentpercentminusx', 1);
+		print $form->select_types_paiements(request()->input('paiementtype'), "paiementtype", '', 0, 1, 0, 0, 1, 'maxwidth500 widthcentpercentminusx', 1);
 		print "</td>\n";
 		print "</tr>";
 
 		// Bank account
 		print '<tr><td class="fieldrequired" id="label_fk_account">'.$langs->trans("BankAccount").'</td><td>';
 		print img_picto('', 'bank_account', 'class="pictofixedwidth"');
-		$form->select_comptes(GETPOSTINT("accountid"), "accountid", 0, "courant=1", 2, '', 0, 'maxwidth500 widthcentpercentminusx'); // Affiche liste des comptes courant
+		$form->select_comptes(request()->integer('accountid', 0), "accountid", 0, "courant=1", 2, '', 0, 'maxwidth500 widthcentpercentminusx'); // Affiche liste des comptes courant
 		print '</td></tr>';
 
 		// Number
 		print '<tr><td>'.$langs->trans('Numero');
 		print ' <em>('.$langs->trans("ChequeOrTransferNumber").')</em>';
-		print '<td><input name="num_payment" type="text" value="'.GETPOST("num_payment").'"></td></tr>'."\n";
+		print '<td><input name="num_payment" type="text" value="'.request()->input('num_payment').'"></td></tr>'."\n";
 	}
 
 	// Other attributes

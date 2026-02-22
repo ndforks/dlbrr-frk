@@ -51,10 +51,10 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -67,7 +67,7 @@ if (!$sortorder) {
 if (!$sortfield) {
 	$sortfield = "p.lastname";
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $begin = '';
 
 
@@ -145,7 +145,7 @@ if ($result) {
 	print "</table>";
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

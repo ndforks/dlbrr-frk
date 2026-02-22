@@ -54,31 +54,31 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
 
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 $langs->loadLangs(array("main", "other", "exports"));
 
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');
 
 $upload_dir = $conf->user->dir_temp.'/import';
 
 // Delete the temporary files that are used when uploading files
 //dol_delete_file($upload_dir.'/upload_page-by'.$user->id.'-*');
 
-$file = GETPOST('file');
+$file = request()->input('file');
 
 $reg = array();
 if (preg_match('/^upload_page-([a-z_]+)-uid(\d+)-/', $file, $reg)) {
 	$modulepart = $reg[1];
 
 	if ($reg[2] != $user->id) {
-		accessforbidden('User id found in filename to process does not match current user id');
+		abort(403);
 	}
 } else {
-	accessforbidden('Bad value for file parameter');
+	abort(403);
 }
 
 $error = 0;

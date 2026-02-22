@@ -70,11 +70,11 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			var list = jQuery("#list");
 			var totalizable = jQuery("#totalizable");
 			<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
+			if ((request()->input('type') != "select") && (request()->input('type') != "sellist")) {
 				print 'jQuery("#value_choice").hide();';
 			}
 
-			if (in_array(GETPOST('type', 'alpha'), ["separate", 'point', 'linestrg', 'polygon'])) {
+			if (in_array(request()->input('type'), ["separate", 'point', 'linestrg', 'polygon'])) {
 				print "jQuery('#size, #default_value, #langfile').val('').prop('disabled', true);";
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -246,7 +246,7 @@ if (in_array($type, array_keys($typewecanchangeinto))) {
 		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 		$formadmin = new FormAdmin($db);
 	}
-	print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha') ? GETPOST('type', 'alpha') : $type, $typewecanchangeinto);
+	print $formadmin->selectTypeOfFields('type', request()->input('type') ? request()->input('type') : $type, $typewecanchangeinto);
 } else {
 	print getPictoForType($type);
 	print $type2label[$type];

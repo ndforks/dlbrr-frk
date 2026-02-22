@@ -50,7 +50,7 @@ $hookmanager->initHooks(array('admin', 'dictionaryadmin','expensereport_rules'))
 $object = new ExpenseReportRule($db);
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -71,18 +71,18 @@ if (empty($reshook)) {
 	//Init error
 	$error = false;
 
-	$action = GETPOST('action', 'aZ09');
-	$id = GETPOSTINT('id');
+	$action = request()->input('action');
+	$id = request()->integer('id', 0);
 
-	$apply_to = GETPOST('apply_to');
-	$fk_user = GETPOSTINT('fk_user');
-	$fk_usergroup = GETPOSTINT('fk_usergroup');
-	$restrictive = GETPOSTINT('restrictive');
-	$fk_c_type_fees = GETPOSTINT('fk_c_type_fees');
-	$code_expense_rules_type = GETPOST('code_expense_rules_type');
-	$dates = dol_mktime(12, 0, 0, GETPOSTINT('startmonth'), GETPOSTINT('startday'), GETPOSTINT('startyear'));
-	$datee = dol_mktime(12, 0, 0, GETPOSTINT('endmonth'), GETPOSTINT('endday'), GETPOSTINT('endyear'));
-	$amount = (float) price2num(GETPOST('amount'), 'MT', 2);
+	$apply_to = request()->input('apply_to');
+	$fk_user = request()->integer('fk_user', 0);
+	$fk_usergroup = request()->integer('fk_usergroup', 0);
+	$restrictive = request()->integer('restrictive', 0);
+	$fk_c_type_fees = request()->integer('fk_c_type_fees', 0);
+	$code_expense_rules_type = request()->input('code_expense_rules_type');
+	$dates = dol_mktime(12, 0, 0, request()->integer('startmonth', 0), request()->integer('startday', 0), request()->integer('startyear', 0));
+	$datee = dol_mktime(12, 0, 0, request()->integer('endmonth', 0), request()->integer('endday', 0), request()->integer('endyear', 0));
+	$amount = (float) price2num(request()->input('amount'), 'MT', 2);
 
 	if (!empty($id)) {
 		$result = $object->fetch($id);

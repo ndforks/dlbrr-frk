@@ -9,6 +9,6 @@ class PropalIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/comm/propal/list.php');
+        return redirect()->route('propal.list');
     }
 }

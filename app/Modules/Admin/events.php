@@ -39,22 +39,22 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/events.class.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("users", "admin", "other"));
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'auditeventslist'; // To manage different context of search
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'auditeventslist'; // To manage different context of search
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters
 $offset = $limit * $page;
@@ -76,8 +76,8 @@ if ($action == "save") {
 
 	foreach ($eventstolog as $key => $arr) {
 		$param = 'MAIN_LOGEVENTS_'.$arr['id'];
-		if (GETPOST($param, 'alphanohtml')) {
-			dolibarr_set_const($db, $param, GETPOST($param, 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		if (request()->input($param)) {
+			dolibarr_set_const($db, $param, request()->input($param), 'chaine', 0, '', $conf->entity);
 		} else {
 			dolibarr_del_const($db, $param, $conf->entity);
 		}

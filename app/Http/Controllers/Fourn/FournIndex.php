@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Fourn;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class FournIndex extends Controller
 {
-    public function __invoke(): View
+    public function __invoke(Request $request): View
     {
         global $db, $user, $conf, $langs;
 
         $langs->loadLangs(array("suppliers", "orders", "companies"));
 
-        $socid = GETPOSTINT("socid");
+        $socid = $request->integer("socid", 0);
         if ($user->socid) {
             $socid = $user->socid;
         }

@@ -61,9 +61,9 @@ if ($callbackUrl === '/') {
 <form id="login" name="login" method="post" action="<?php echo dolPrintHTMLForAttributeUrl($callbackUrl); ?>">
 	<!-- Add fields to send OpenID information -->
 	<input type="hidden" name="openid_mode" value="true" />
-	<input type="hidden" name="state" value="<?php echo GETPOST('state'); ?>" />
-	<input type="hidden" name="session_state" value="<?php echo GETPOST('session_state'); ?>" />
-	<input type="hidden" name="code" value="<?php echo GETPOST('code'); ?>" />
+	<input type="hidden" name="state" value="<?php echo request()->input('state'); ?>" />
+	<input type="hidden" name="session_state" value="<?php echo request()->input('session_state'); ?>" />
+	<input type="hidden" name="code" value="<?php echo request()->input('code'); ?>" />
 	<input type="hidden" name="token" value="<?php echo newToken(); ?>" />
 	<!-- Add fields to send local user information -->
 	<input type="hidden" name="tz" id="tz" value="" />

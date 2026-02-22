@@ -71,27 +71,27 @@ const PAY_CREDIT = 1;
 
 $langs->loadLangs(array("accountancy", "bills", "companies", "salaries", "compta", "trips", "banks", "loan"));
 
-$date_start = GETPOST('date_start', 'alpha');
-$date_startDay = GETPOSTINT('date_startday');
-$date_startMonth = GETPOSTINT('date_startmonth');
-$date_startYear = GETPOSTINT('date_startyear');
+$date_start = request()->input('date_start');
+$date_startDay = request()->integer('date_startday', 0);
+$date_startMonth = request()->integer('date_startmonth', 0);
+$date_startYear = request()->integer('date_startyear', 0);
 $date_start = dol_mktime(0, 0, 0, $date_startMonth, $date_startDay, $date_startYear, 'tzuserrel');
-$date_stop = GETPOST('date_stop', 'alpha');
-$date_stopDay = GETPOSTINT('date_stopday');
-$date_stopMonth = GETPOSTINT('date_stopmonth');
-$date_stopYear = GETPOSTINT('date_stopyear');
+$date_stop = request()->input('date_stop');
+$date_stopDay = request()->integer('date_stopday', 0);
+$date_stopMonth = request()->integer('date_stopmonth', 0);
+$date_stopYear = request()->integer('date_stopyear', 0);
 $date_stop = dol_mktime(23, 59, 59, $date_stopMonth, $date_stopDay, $date_stopYear, 'tzuserrel');
-$action = GETPOST('action', 'aZ09');
-$projectid = GETPOSTINT('projectid');
+$action = request()->input('action');
+$projectid = request()->integer('projectid', 0);
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('comptafileslist', 'globallist'));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -121,10 +121,10 @@ $arrayfields = array(
 
 // Security check
 if (!isModEnabled('comptabilite') && !isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Define $arrayofentities if multientity is set.
@@ -133,7 +133,7 @@ if (isModEnabled('multicompany') && isset($mc) && is_object($mc)) {
 	$arrayofentities = $mc->getEntitiesList();
 }
 
-$entity = (GETPOSTISSET('entity') ? GETPOSTINT('entity') : (GETPOSTISSET('search_entity') ? GETPOSTINT('search_entity') : $conf->entity));
+$entity = (request()->has('entity') ? request()->integer('entity', 0) : (request()->has('search_entity') ? request()->integer('search_entity', 0) : $conf->entity));
 if (isModEnabled('multicompany') && isset($mc) && is_object($mc)) {
 	if (empty($entity) && getDolGlobalString('MULTICOMPANY_ALLOW_EXPORT_ACCOUNTING_DOC_FOR_ALL_ENTITIES')) {
 		$entity = '0,'.implode(',', array_keys($arrayofentities));
@@ -187,7 +187,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 		$wheretail = " '".$db->idate($date_start)."' AND '".$db->idate($date_stop)."'";
 
 		// Customer invoices
-		if (GETPOST('selectinvoices') && !empty($listofchoices['selectinvoices']['perms'])) {
+		if (request()->input('selectinvoices') && !empty($listofchoices['selectinvoices']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -203,7 +203,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Vendor invoices
-		if (GETPOST('selectsupplierinvoices') && !empty($listofchoices['selectsupplierinvoices']['perms'])) {
+		if (request()->input('selectsupplierinvoices') && !empty($listofchoices['selectsupplierinvoices']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -219,7 +219,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Expense reports
-		if (GETPOST('selectexpensereports') && !empty($listofchoices['selectexpensereports']['perms'])) {
+		if (request()->input('selectexpensereports') && !empty($listofchoices['selectexpensereports']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -248,7 +248,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Donations
-		if (GETPOST('selectdonations') && !empty($listofchoices['selectdonations']['perms'])) {
+		if (request()->input('selectdonations') && !empty($listofchoices['selectdonations']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -264,7 +264,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Payments of salaries
-		if (GETPOST('selectpaymentsofsalaries') && !empty($listofchoices['selectpaymentsofsalaries']['perms'])) {
+		if (request()->input('selectpaymentsofsalaries') && !empty($listofchoices['selectpaymentsofsalaries']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -280,7 +280,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Social contributions
-		if (GETPOST('selectsocialcontributions') && !empty($listofchoices['selectsocialcontributions']['perms'])) {
+		if (request()->input('selectsocialcontributions') && !empty($listofchoices['selectsocialcontributions']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -296,7 +296,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Various payments
-		if (GETPOST('selectvariouspayment') && !empty($listofchoices['selectvariouspayment']['perms'])) {
+		if (request()->input('selectvariouspayment') && !empty($listofchoices['selectvariouspayment']['perms'])) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -311,7 +311,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 			}
 		}
 		// Loan payments
-		if (GETPOST('selectloanspayment') && !empty($listofchoices['selectloanspayment']['perms']) && empty($projectid)) {
+		if (request()->input('selectloanspayment') && !empty($listofchoices['selectloanspayment']['perms']) && empty($projectid)) {
 			if (!empty($sql)) {
 				$sql .= " UNION ALL";
 			}
@@ -494,7 +494,7 @@ if ($action == 'searchfiles' || $action == 'dl') {	// Test on permission not req
 					$i++;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			$db->free($resd);
@@ -659,7 +659,7 @@ if (isModEnabled('multicompany') && isset($mc) && is_object($mc)) {
 	print ' &nbsp; <span class="marginleftonly marginrightonly'.(!getDolGlobalString('MULTICOMPANY_ALLOW_EXPORT_ACCOUNTING_DOC_FOR_ALL_ENTITIES') ? ' opacitymedium' : '').'">'.$langs->trans("Entity").' : ';
 	if (getDolGlobalString('MULTICOMPANY_ALLOW_EXPORT_ACCOUNTING_DOC_FOR_ALL_ENTITIES')) {
 		$socid = $mc->id;
-		print $mc->select_entities(GETPOSTISSET('search_entity') ? GETPOSTINT('search_entity') : $mc->id, 'search_entity', '', false, false, false, false, true);
+		print $mc->select_entities(request()->has('search_entity') ? request()->integer('search_entity', 0) : $mc->id, 'search_entity', '', false, false, false, false, true);
 	} else {
 		print $mc->label;
 	}
@@ -689,7 +689,7 @@ foreach ($listofchoices as $choice => $val) {
 	if (empty($val['perms'])) {
 		$disabled = ' disabled';
 	}
-	$checked = (((!GETPOSTISSET('search') && $action != 'searchfiles') || GETPOST($choice)) ? ' checked="checked"' : '');
+	$checked = (((!request()->has('search') && $action != 'searchfiles') || request()->input($choice)) ? ' checked="checked"' : '');
 	print '<div class="inline-block marginrightonlylarge paddingright margintoponly"><input type="checkbox" id="'.$choice.'" name="'.$choice.'" value="1"'.$checked.$disabled.'><label for="'.$choice.'"> ';
 	print img_picto($langs->trans($val['label']), $val['picto'], 'class=""').' '.$langs->trans($val['label']);
 	print '</label></div>';
@@ -704,14 +704,14 @@ print dol_get_fiche_end();
 
 $param = '';
 if (!empty($date_start) && !empty($date_stop)) {
-	$param .= '&date_startday='.GETPOSTINT('date_startday');
-	$param .= '&date_startmonth='.GETPOSTINT('date_startmonth');
-	$param .= '&date_startyear='.GETPOSTINT('date_startyear');
-	$param .= '&date_stopday='.GETPOSTINT('date_stopday');
-	$param .= '&date_stopmonth='.GETPOSTINT('date_stopmonth');
-	$param .= '&date_stopyear='.GETPOSTINT('date_stopyear');
+	$param .= '&date_startday='.request()->integer('date_startday', 0);
+	$param .= '&date_startmonth='.request()->integer('date_startmonth', 0);
+	$param .= '&date_startyear='.request()->integer('date_startyear', 0);
+	$param .= '&date_stopday='.request()->integer('date_stopday', 0);
+	$param .= '&date_stopmonth='.request()->integer('date_stopmonth', 0);
+	$param .= '&date_stopyear='.request()->integer('date_stopyear', 0);
 	foreach ($listofchoices as $choice => $val) {
-		if (GETPOSTINT($choice)) {
+		if (request()->integer($choice, 0)) {
 			$param .= '&'.$choice.'=1';
 		}
 	}
@@ -736,12 +736,12 @@ if (!empty($date_start) && !empty($date_stop)) {
 
 	/*
 	print '<input type="hidden" name="token" value="'.currentToken().'">';
-	print '<input type="hidden" name="date_startday" value="'.GETPOST('date_startday', 'int').'" />';
-	print '<input type="hidden" name="date_startmonth" value="'.GETPOST('date_startmonth', 'int').'" />';
-	print '<input type="hidden" name="date_startyear" value="'.GETPOST('date_startyear', 'int').'" />';
-	print '<input type="hidden" name="date_stopday" value="'.GETPOST('date_stopday', 'int').'" />';
-	print '<input type="hidden" name="date_stopmonth" value="'.GETPOST('date_stopmonth', 'int').'" />';
-	print '<input type="hidden" name="date_stopyear" value="'.GETPOST('date_stopyear', 'int').'" />';
+	print '<input type="hidden" name="date_startday" value="'.request()->input('date_startday').'" />';
+	print '<input type="hidden" name="date_startmonth" value="'.request()->input('date_startmonth').'" />';
+	print '<input type="hidden" name="date_startyear" value="'.request()->input('date_startyear').'" />';
+	print '<input type="hidden" name="date_stopday" value="'.request()->input('date_stopday').'" />';
+	print '<input type="hidden" name="date_stopmonth" value="'.request()->input('date_stopmonth').'" />';
+	print '<input type="hidden" name="date_stopyear" value="'.request()->input('date_stopyear').'" />';
 	foreach ($listofchoices as $choice => $val) {
 		print '<input type="hidden" name="'.$choice.'" value="'.GETPOST($choice).'">';
 	}

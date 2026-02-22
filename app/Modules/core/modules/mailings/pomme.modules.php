@@ -188,16 +188,16 @@ class mailing_pomme extends MailingTargets
 		$sql .= " WHERE u.email <> ''"; // u.email IS NOT NULL est implicit dans ce test
 		$sql .= " AND u.entity IN (0,".$conf->entity.")";
 		$sql .= " AND u.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing=".((int) $mailing_id).")";
-		if (GETPOSTISSET("filter") && GETPOST("filter") == '1') {
+		if (request()->has('filter') && request()->input('filter') == '1') {
 			$sql .= " AND u.statut=1";
 		}
-		if (GETPOSTISSET("filter") && GETPOST("filter") == '0') {
+		if (request()->has('filter') && request()->input('filter') == '0') {
 			$sql .= " AND u.statut=0";
 		}
-		if (GETPOSTISSET("filteremployee") && GETPOST("filteremployee") == '1') {
+		if (request()->has('filteremployee') && request()->input('filteremployee') == '1') {
 			$sql .= " AND u.employee=1";
 		}
-		if (GETPOSTISSET("filteremployee") && GETPOST("filteremployee") == '0') {
+		if (request()->has('filteremployee') && request()->input('filteremployee') == '0') {
 			$sql .= " AND u.employee=0";
 		}
 		if (empty($this->evenunsubscribe)) {

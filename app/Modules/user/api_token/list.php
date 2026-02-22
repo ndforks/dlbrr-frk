@@ -41,10 +41,10 @@ $langs->loadLangs(array('admin', 'users'));
 $error = 0;
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
 $socid = 0;
@@ -60,41 +60,41 @@ $canreaduser = ($user->admin || ($user->id == $id));
 $canedittoken = ($user->admin || (($user->id == $id) && $user->hasRight("user", "self", "write")));
 
 if (!$canreaduser) {
-	accessforbidden();
+	abort(403);
 }
 
 // Retrieve needed GETPOSTS for this file
 // Action / Massaction
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm    = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm    = request()->input('confirm');
+$toselect = request()->input('toselect', []);
 
 // List filters
-$search_entity = GETPOST('search_entity', 'alpha');
-$search_datec_startday = GETPOSTINT('search_datec_startday');
-$search_datec_startmonth = GETPOSTINT('search_datec_startmonth');
-$search_datec_startyear = GETPOSTINT('search_datec_startyear');
-$search_datec_endday = GETPOSTINT('search_datec_endday');
-$search_datec_endmonth = GETPOSTINT('search_datec_endmonth');
-$search_datec_endyear = GETPOSTINT('search_datec_endyear');
+$search_entity = request()->input('search_entity');
+$search_datec_startday = request()->integer('search_datec_startday', 0);
+$search_datec_startmonth = request()->integer('search_datec_startmonth', 0);
+$search_datec_startyear = request()->integer('search_datec_startyear', 0);
+$search_datec_endday = request()->integer('search_datec_endday', 0);
+$search_datec_endmonth = request()->integer('search_datec_endmonth', 0);
+$search_datec_endyear = request()->integer('search_datec_endyear', 0);
 $search_datec_start = dol_mktime(0, 0, 0, $search_datec_startmonth, $search_datec_startday, $search_datec_startyear);
 $search_datec_end = dol_mktime(23, 59, 59, $search_datec_endmonth, $search_datec_endday, $search_datec_endyear);
-$search_tms_startday = GETPOSTINT('search_tms_startday');
-$search_tms_startmonth = GETPOSTINT('search_tms_startmonth');
-$search_tms_startyear = GETPOSTINT('search_tms_startyear');
-$search_tms_endday = GETPOSTINT('search_tms_endday');
-$search_tms_endmonth = GETPOSTINT('search_tms_endmonth');
-$search_tms_endyear = GETPOSTINT('search_tms_endyear');
+$search_tms_startday = request()->integer('search_tms_startday', 0);
+$search_tms_startmonth = request()->integer('search_tms_startmonth', 0);
+$search_tms_startyear = request()->integer('search_tms_startyear', 0);
+$search_tms_endday = request()->integer('search_tms_endday', 0);
+$search_tms_endmonth = request()->integer('search_tms_endmonth', 0);
+$search_tms_endyear = request()->integer('search_tms_endyear', 0);
 $search_tms_start = dol_mktime(0, 0, 0, $search_tms_startmonth, $search_tms_startday, $search_tms_startyear);
 $search_tms_end = dol_mktime(23, 59, 59, $search_tms_endmonth, $search_tms_endday, $search_tms_endyear);
 
 // Pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	$page = 0;
 }
 $offset = $limit * $page;
@@ -119,7 +119,7 @@ $object->loadRights();
 
 // Deny access if user not using api
 if (empty($object->api_key)) {
-	accessforbidden();
+	abort(403);
 }
 
 $form = new Form($db);
@@ -136,7 +136,7 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_entity = '';
 		$search_datec_start = '';
 		$search_datec_end = '';
@@ -145,8 +145,8 @@ if (empty($reshook)) {
 
 		$toselect = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -212,7 +212,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -319,7 +319,7 @@ $arrayofmassactions = array(
 	'predelete' => img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete")
 );
 
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

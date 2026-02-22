@@ -46,17 +46,17 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadlangs(array('banks', 'categories', 'bills', 'companies', 'withdrawals'));
 
 // Get supervariables
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$socid = GETPOSTINT('socid');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$socid = request()->integer('socid', 0);
 
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -92,10 +92,10 @@ $error = 0;
  */
 
 if ($action == 'confirm_rejet' && $permissiontoadd) {
-	if (GETPOST("confirm") == 'yes') {
+	if (request()->input('confirm') == 'yes') {
 		$daterej = null;
-		if (GETPOSTINT('remonth')) {
-			$daterej = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		if (request()->integer('remonth', 0)) {
+			$daterej = dol_mktime(0, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 		}
 
 		if (empty($daterej)) {
@@ -107,7 +107,7 @@ if ($action == 'confirm_rejet' && $permissiontoadd) {
 			setEventMessages($langs->transnoentities("ErrorDateMustBeBeforeToday"), null, 'errors');
 		}
 
-		if (GETPOST('motif', 'alpha') == 0) {
+		if (request()->input('motif') == 0) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("RefusedReason")), null, 'errors');
 		}
@@ -118,7 +118,7 @@ if ($action == 'confirm_rejet' && $permissiontoadd) {
 			if ($lipre->fetch($id) == 0) {
 				$rej = new RejetPrelevement($db, $user, $type);
 
-				$result = $rej->create($user, $id, GETPOSTINT('motif'), (int) $daterej, $lipre->bon_rowid, GETPOSTINT('facturer'));
+				$result = $rej->create($user, $id, request()->integer('motif', 0), (int) $daterej, $lipre->bon_rowid, request()->integer('facturer', 0));
 
 				if ($result > 0) {
 					header("Location: line.php?id=".urlencode((string) ($id)).'&type='.urlencode((string) ($type)));
@@ -217,7 +217,7 @@ if ($id) {
 		print '</table>';
 		print dol_get_fiche_end();
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Form to record a reject
@@ -255,7 +255,7 @@ if ($id) {
 		//Reason
 		print '<tr><td class="fieldrequired valid">'.$langs->trans("RefusedReason").'</td>';
 		print '<td class="valid">';
-		print $form->selectarray("motif", $rej->motifs, GETPOSTISSET('motif') ? GETPOSTINT('motif') : '');
+		print $form->selectarray("motif", $rej->motifs, request()->has('motif') ? request()->integer('motif', 0) : '');
 		print '</td></tr>';
 
 		//Facturer
@@ -263,7 +263,7 @@ if ($id) {
 		print $form->textwithpicto($langs->trans("RefusedInvoicing"), $langs->trans("DirectDebitRefusedInvoicingDesc"));
 		print '</td>';
 		print '<td class="valid">';
-		print $form->selectarray("facturer", $rej->labelsofinvoicing, GETPOSTISSET('facturer') ? GETPOSTINT('facturer') : '', 0);
+		print $form->selectarray("facturer", $rej->labelsofinvoicing, request()->has('facturer') ? request()->integer('facturer', 0) : '', 0);
 		print '</td></tr>';
 
 		print '</table>';
@@ -338,7 +338,7 @@ if ($id) {
 			$objforcount = $db->fetch_object($resql);
 			$nbtotalofrecords = $objforcount->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -415,7 +415,7 @@ if ($id) {
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

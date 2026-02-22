@@ -212,7 +212,7 @@ if ($resql)
 else
 {
 	$error++;
-	dol_print_error($db);
+	abort(500);
 }
 */
 

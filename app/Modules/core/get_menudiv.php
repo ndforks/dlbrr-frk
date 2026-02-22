@@ -77,8 +77,8 @@ require_once '../main.inc.php';
  * @var User $user
  */
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 $langs->load("main");
@@ -91,10 +91,10 @@ $left = ($langs->trans("DIRECTION") == 'rtl' ? 'right' : 'left');
  */
 
 // Important: Following code is to avoid page request by browser and PHP CPU at each Dolibarr page access.
-if (empty($dolibarr_nocache) && GETPOSTINT('cache')) {
-	header('Cache-Control: max-age='.GETPOSTINT('cache').', public, must-revalidate');
+if (empty($dolibarr_nocache) && request()->integer('cache', 0)) {
+	header('Cache-Control: max-age='.request()->integer('cache', 0).', public, must-revalidate');
 	// For a .php, we must set an Expires to avoid to have it forced to an expired value by the web server
-	header('Expires: '.gmdate('D, d M Y H:i:s', dol_now('gmt') + GETPOSTINT('cache')).' GMT');
+	header('Expires: '.gmdate('D, d M Y H:i:s', dol_now('gmt') + request()->integer('cache', 0)).' GMT');
 	// HTTP/1.0
 	header('Pragma: token=public');
 } else {
@@ -282,8 +282,8 @@ if (empty($user->socid)) {	// If internal user or not defined
 
 // Load the menu manager (only if not already done)
 $file_menu = $conf->standard_menu;
-if (GETPOST('menu', 'aZ09')) {
-	$file_menu = GETPOST('menu', 'aZ09'); // example: menu=eldy_menu.php
+if (request()->input('menu')) {
+	$file_menu = request()->input('menu'); // example: menu=eldy_menu.php
 }
 if (!class_exists('MenuManager')) {
 	$menufound = 0;

@@ -45,16 +45,16 @@ require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
 $langs->loadLangs(array("partnership", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid   = GETPOSTINT('lineid');
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid   = request()->integer('lineid', 0);
+$dol_openinpopup = request()->input('dol_openinpopup');
 
 // Initialize a technical objects
 $object = new Partnership($db);
@@ -68,12 +68,12 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -94,21 +94,21 @@ $upload_dir 			= $conf->partnership->multidir_output[isset($object->entity) ? $o
 $managedfor 			= getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR', 'thirdparty');
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (isset($object->status) && ($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->module, $object->id, $object->table_element, $object->element, 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled('partnership')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_member > 0) && $managedfor == 'member') {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_soc > 0) && $managedfor == 'thirdparty') {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -137,7 +137,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	$fk_partner 	= ($managedfor == 'member') ? GETPOSTINT('fk_member') : GETPOSTINT('fk_soc');
+	$fk_partner 	= ($managedfor == 'member') ? request()->integer('fk_member', 0) : request()->integer('fk_soc', 0);
 	$obj_partner 	= ($managedfor == 'member') ? $object->fk_member : $object->fk_soc;
 
 	$triggermodname = 'PARTNERSHIP_MODIFY'; // Name of trigger action code to execute when we modify record
@@ -153,8 +153,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -183,8 +183,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -206,9 +206,9 @@ if (empty($reshook)) {
 		} else {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
-	} elseif ($action == 'confirm_refuse' && $permissiontoadd && !GETPOST('cancel', 'alpha')) {
+	} elseif ($action == 'confirm_refuse' && $permissiontoadd && !request()->input('cancel')) {
 		// Close proposal
-		if (!(GETPOST('reason_decline_or_cancel', 'alpha'))) {
+		if (!(request()->input('reason_decline_or_cancel'))) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Refuse")), null, 'errors');
 			$action = 'refuse';
 		} else {
@@ -216,12 +216,12 @@ if (empty($reshook)) {
 			if ($object->status != $object::STATUS_REFUSED) {
 				$db->begin();
 
-				$result = $object->refused($user, GETPOST('reason_decline_or_cancel', 'restricthtml'));
+				$result = $object->refused($user, request()->input('reason_decline_or_cancel'));
 				if ($result < 0) {
 					setEventMessages($object->error, $object->errors, 'errors');
 					$error++;
 				} else {
-					$object->reason_decline_or_cancel = GETPOST('reason_decline_or_cancel', 'restricthtml');
+					$object->reason_decline_or_cancel = request()->input('reason_decline_or_cancel');
 				}
 
 				if (!$error) {
@@ -245,10 +245,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -257,7 +257,7 @@ if (empty($reshook)) {
 	$trackid = 'pship'.$object->id;
 	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-	if (!empty($id) && !empty(GETPOST('confirm'))) {
+	if (!empty($id) && !empty(request()->input('confirm'))) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$id);
 		exit;
 	}
@@ -284,7 +284,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-partnership page-car
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden('NotEnoughPermissions', 0, 1);
+		abort(403);
 	}
 
 	print load_fiche_titre($langs->trans("NewPartnership"), '', 'object_'.$object->picto);
@@ -493,7 +493,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
 		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
 		<input type="hidden" name="mode" value="">
@@ -511,7 +511,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		if (!empty($object->lines)) {
-			$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 1);
+			$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 1);
 		}
 
 		// Form to add new line
@@ -607,7 +607,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -652,7 +652,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

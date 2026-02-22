@@ -68,15 +68,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 $langs->loadLangs(array("companies", "other", "ticket"));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$track_id = GETPOST('track_id', 'alpha');
-$email = strtolower(GETPOST('email', 'alpha'));
+$track_id = request()->integer('track_id', 0);
+$email = strtolower(request()->input('email'));
 $suffix = "";
 $moreforfilter = "";
 
-if (GETPOST('btn_view_ticket_list')) {
+if (request()->input('btn_view_ticket_list')) {
 	unset($_SESSION['track_id_customer']);
 	unset($_SESSION['email_customer']);
 }
@@ -93,7 +93,7 @@ $object = new Ticket($db);
 $hookmanager->initHooks(array('ticketpubliclist', 'globalcard'));
 
 if (!isModEnabled('ticket')) {
-	httponly_accessforbidden('Module Ticket not enabled');
+	httponly_abort(403);
 }
 
 
@@ -212,20 +212,20 @@ if ($action == "view_ticketlist") {
 	print '<br>';
 	if ($display_ticket_list) {
 		// Filters
-		$search_fk_status = GETPOST("search_fk_status", 'alpha');
-		$search_subject = GETPOST("search_subject", 'alpha');
-		$search_type = GETPOST("search_type", 'alpha');
-		$search_category = GETPOST("search_category", 'alpha');
-		$search_severity = GETPOST("search_severity", 'alpha');
-		$search_fk_user_create = GETPOST("search_fk_user_create", "intcomma");
-		$search_fk_user_assign = GETPOST("search_fk_user_assign", "intcomma");
+		$search_fk_status = request()->input('search_fk_status');
+		$search_subject = request()->input('search_subject');
+		$search_type = request()->input('search_type');
+		$search_category = request()->input('search_category', []);
+		$search_severity = request()->input('search_severity');
+		$search_fk_user_create = request()->input('search_fk_user_create');
+		$search_fk_user_assign = request()->input('search_fk_user_assign');
 
 		// Store current page url
 		$url_page_current = dol_buildpath('/public/ticket/list.php', 1);
 		$contextpage = $url_page_current;
 
 		// Do we click on purge search criteria ?
-		if (GETPOST("button_removefilter_x")) {
+		if (request()->input('button_removefilter_x')) {
 			$search_fk_status = '';
 			$search_subject = '';
 			$search_type = '';
@@ -321,8 +321,8 @@ if ($action == "view_ticketlist") {
 
 		require DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-		$sortfield = GETPOST('sortfield', 'aZ09comma');
-		$sortorder = GETPOST('sortorder', 'aZ09comma');
+		$sortfield = request()->input('sortfield');
+		$sortorder = request()->input('sortorder');
 
 		if (!$sortfield) {
 			$sortfield = 't.datec';
@@ -333,7 +333,7 @@ if ($action == "view_ticketlist") {
 
 		$limit = $conf->liste_limit;
 
-		$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+		$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 		if (empty($page) || $page == -1) {
 			$page = 0;
 		}     // If $page is not defined, or '' or -1
@@ -745,7 +745,7 @@ if ($action == "view_ticketlist") {
                 </script>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
 		print '<div class="error">Not Allowed<br><a href="'.$_SERVER['PHP_SELF'].'?track_id='.$object->track_id.'">'.$langs->trans("GoBack").'</a></div>';
@@ -769,14 +769,14 @@ if ($action == "view_ticketlist") {
 	print $langs->trans("OneOfTicketTrackId");
 	print '</span></label>';
 	print '<br class="showonsmartphone hidden">';
-	print '<input class="minwidth100" id="track_id" name="track_id" value="'.(GETPOST('track_id', 'alpha') ? GETPOST('track_id', 'alpha') : '').'" />';
+	print '<input class="minwidth100" id="track_id" name="track_id" value="'.(request()->input('track_id') ? request()->input('track_id') : '').'" />';
 	print '</p>';
 
 	print '<p><label for="email" style="display: inline-block" class="titlefieldcreate left"><span class="fieldrequired">';
 	print img_picto($langs->trans("Email"), 'email', 'class="pictofixedwidth"');
 	print $langs->trans('Email').'</span></label>';
 	print '<br class="showonsmartphone hidden">';
-	print '<input class="minwidth100" id="email" name="email" value="'.(GETPOST('email', 'alpha') ? GETPOST('email', 'alpha') : (!empty($_SESSION['customer_email']) ? $_SESSION['customer_email'] : "")).'" />';
+	print '<input class="minwidth100" id="email" name="email" value="'.(request()->input('email') ? request()->input('email') : (!empty($_SESSION['customer_email']) ? $_SESSION['customer_email'] : "")).'" />';
 	print '</p>';
 
 	print '<p style="text-align: center; margin-top: 1.5em;">';

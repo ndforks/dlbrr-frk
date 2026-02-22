@@ -45,73 +45,73 @@ $servicename = 'PayBox';
 $langs->loadLangs(array('admin', 'other', 'paypal', 'stripe'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $error = 0;
 
 if ($action == 'setvalue' && $user->admin) {
 	$db->begin();
-	//$result=dolibarr_set_const($db, "PAYBOX_IBS_DEVISE", GETPOST("PAYBOX_IBS_DEVISE"),'chaine',0,'',$conf->entity);
-	$result = dolibarr_set_const($db, "PAYBOX_CGI_URL_V1", GETPOST('PAYBOX_CGI_URL_V1', 'alpha'), 'chaine', 0, '', $conf->entity);
+	//$result=dolibarr_set_const($db, "PAYBOX_IBS_DEVISE", request()->input('PAYBOX_IBS_DEVISE'),'chaine',0,'',$conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_CGI_URL_V1", request()->input('PAYBOX_CGI_URL_V1'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_CGI_URL_V2", GETPOST('PAYBOX_CGI_URL_V2', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_CGI_URL_V2", request()->input('PAYBOX_CGI_URL_V2'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_IBS_SITE", GETPOST('PAYBOX_IBS_SITE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_IBS_SITE", request()->input('PAYBOX_IBS_SITE'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_IBS_RANG", GETPOST('PAYBOX_IBS_RANG', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_IBS_RANG", request()->input('PAYBOX_IBS_RANG'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_PBX_IDENTIFIANT", GETPOST('PAYBOX_PBX_IDENTIFIANT', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_PBX_IDENTIFIANT", request()->input('PAYBOX_PBX_IDENTIFIANT'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CREDITOR", GETPOST('ONLINE_PAYMENT_CREDITOR', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CREDITOR", request()->input('ONLINE_PAYMENT_CREDITOR'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_BANK_ACCOUNT_FOR_PAYMENTS", GETPOSTINT('PAYBOX_BANK_ACCOUNT_FOR_PAYMENTS'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_BANK_ACCOUNT_FOR_PAYMENTS", request()->integer('PAYBOX_BANK_ACCOUNT_FOR_PAYMENTS', 0), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CSS_URL", GETPOST('ONLINE_PAYMENT_CSS_URL', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CSS_URL", request()->input('ONLINE_PAYMENT_CSS_URL'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_FORM", GETPOST('ONLINE_PAYMENT_MESSAGE_FORM', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_FORM", request()->input('ONLINE_PAYMENT_MESSAGE_FORM'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_OK", GETPOST('ONLINE_PAYMENT_MESSAGE_OK', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_OK", request()->input('ONLINE_PAYMENT_MESSAGE_OK'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_KO", GETPOST('ONLINE_PAYMENT_MESSAGE_KO', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_KO", request()->input('ONLINE_PAYMENT_MESSAGE_KO'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_SENDEMAIL", GETPOST('ONLINE_PAYMENT_SENDEMAIL', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_SENDEMAIL", request()->input('ONLINE_PAYMENT_SENDEMAIL'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
 	// Payment token for URL
-	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN", GETPOST('PAYMENT_SECURITY_TOKEN', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN", request()->input('PAYMENT_SECURITY_TOKEN'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN_UNIQUE", GETPOST('PAYMENT_SECURITY_TOKEN_UNIQUE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN_UNIQUE", request()->input('PAYMENT_SECURITY_TOKEN_UNIQUE'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "PAYBOX_HMAC_KEY", dol_encode(GETPOST('PAYBOX_HMAC_KEY', 'alpha')), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYBOX_HMAC_KEY", dol_encode(request()->input('PAYBOX_HMAC_KEY')), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
@@ -122,7 +122,7 @@ if ($action == 'setvalue' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

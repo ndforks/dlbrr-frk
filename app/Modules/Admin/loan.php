@@ -46,10 +46,10 @@ $langs->loadLangs(array('admin', 'loan'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Other parameters LOAN_*
 $list = array(
@@ -66,7 +66,7 @@ if ($action == 'update') {
 	$error = 0;
 
 	foreach ($list as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;

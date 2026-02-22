@@ -44,10 +44,10 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id'); // id of thirdparty
-$action = GETPOST('action', 'aZ09');
-$htmlname = GETPOST('htmlname', 'alpha');
-$showempty = GETPOSTINT('showempty');
+$id = request()->integer('id', 0); // id of thirdparty
+$action = request()->input('action');
+$htmlname = request()->input('htmlname');
+$showempty = request()->integer('showempty', 0);
 
 // Security check
 $result = restrictedArea($user, 'societe', $id, '&societe', '', 'fk_soc', 'rowid', 0);

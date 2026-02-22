@@ -179,7 +179,7 @@ function societe_prepare_head(Societe $object)
 				$obj = $db->fetch_object($resql);
 				$nbProject = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			dol_setcache($cachekey, $nbProject, 120);	// If setting cache fails, this is not a problem, so we do not test result.
 		}
@@ -220,7 +220,7 @@ function societe_prepare_head(Societe $object)
 
 		$servicestatus = 0;
 		if (isModEnabled('stripe')) {
-			if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha')*/) {
+			if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox')*/) {
 				$servicestatus = 1;
 			}
 
@@ -246,7 +246,7 @@ function societe_prepare_head(Societe $object)
 			$obj = $db->fetch_object($resql);
 			$nbBankAccount = $obj->nb;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		//if (isModEnabled('stripe') && $nbBankAccount > 0) $nbBankAccount = '...';	// No way to know exact number
@@ -286,7 +286,7 @@ function societe_prepare_head(Societe $object)
 			$obj = $db->fetch_object($resql);
 			$nbNote = $obj->nb;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		if ($nbNote > 0) {
 			$head[$h][1] .= '<span class="badge marginleftonlyshort">' . $nbNote . '</span>';
@@ -311,7 +311,7 @@ function societe_prepare_head(Societe $object)
 				$obj = $db->fetch_object($resql);
 				$nbNote = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			if ($nbNote > 0) {
 				$head[$h][1] .= '<span class="badge marginleftonlyshort">' . $nbNote . '</span>';
@@ -344,7 +344,7 @@ function societe_prepare_head(Societe $object)
 				$obj = $db->fetch_object($resql);
 				$nbTicket = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			dol_setcache($cachekey, $nbTicket, 120);		// If setting cache fails, this is not a problem, so we do not test result.
 		}
@@ -390,7 +390,7 @@ function societe_prepare_head(Societe $object)
 					$obj = $db->fetch_object($resql);
 					$nbNotif = $obj->nb;
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 				dol_setcache($cachekey, $nbNotif, 120);		// If setting cache fails, this is not a problem, so we do not test result.
 			}
@@ -654,7 +654,7 @@ function getCountry($searchkey, $withcode = '', $dbtouse = null, $outputlangs = 
 		$dbtouse->free($resql);
 		return $result;
 	} else {
-		dol_print_error($dbtouse, '');
+		abort(500, '');
 	}
 	return 'Error';
 }
@@ -732,7 +732,7 @@ function getState($id, $withcode = '0', $dbtouse = null, $withregion = 0, $outpu
 			return $langs->transnoentitiesnoconv("NotDefined");
 		}
 	} else {
-		dol_print_error($dbtouse, '');
+		abort(500, '');
 	}
 
 	return '';
@@ -858,7 +858,7 @@ function getCountriesInEEC()
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$conf->cache['country_code_in_EEC'] = $country_code_in_EEC;
 	}
@@ -913,7 +913,7 @@ function getCountriesInSEPA()
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$conf->cache['country_code_in_SEPA'] = $country_code_in_SEPA;
 	}
@@ -1089,7 +1089,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 			}
 			$db->free($result);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		//projects linked to that thirdpart because of a people of that company is linked to a project
@@ -1186,7 +1186,7 @@ function show_projects($conf, $langs, $db, $object, $backtopage = '', $nocreatel
 				}
 				$db->free($result);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -1224,28 +1224,28 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 	$formcompany = new FormCompany($db);
 	$form = new Form($db);
 
-	$optioncss = GETPOST('optioncss', 'alpha');
-	$sortfield = GETPOST('sortfield', 'aZ09comma');
-	$sortorder = GETPOST('sortorder', 'aZ09comma');
-	$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+	$optioncss = request()->input('optioncss');
+	$sortfield = request()->input('sortfield');
+	$sortorder = request()->input('sortorder');
+	$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
-	$search_status = GETPOST("search_status", "intcomma");
+	$search_status = request()->input('search_status');
 	if ($search_status == '') {
 		$search_status = 1; // always display active customer first
 	}
 
-	$search_rowid   = GETPOST("search_rowid", "intcomma");
-	$search_name    = GETPOST("search_name", 'alpha');
-	$search_address = GETPOST("search_address", 'alpha');
-	$search_poste   = GETPOST("search_poste", 'alpha');
-	$search_note_private = GETPOST('search_note_private', 'alphanohtml');
-	$search_roles = GETPOST("search_roles", 'array');
-	$search_birthday_dtstart = GETPOST("search_birthday_dtstart", 'alpha');
-	$search_birthday_dtend = GETPOST("search_birthday_dtend", 'alpha');
+	$search_rowid   = request()->integer('search_rowid', 0);
+	$search_name    = request()->input('search_name');
+	$search_address = request()->input('search_address');
+	$search_poste   = request()->input('search_poste');
+	$search_note_private = request()->input('search_note_private');
+	$search_roles = request()->input('search_roles');
+	$search_birthday_dtstart = request()->input('search_birthday_dtstart');
+	$search_birthday_dtend = request()->input('search_birthday_dtend');
 
 	if ($search_birthday_dtstart != '' || $search_birthday_dtend != '') {
-		$search_birthday_dtstart = dol_mktime(0, 0, 0, GETPOSTINT('search_birthday_dtstartmonth'), GETPOSTINT('search_birthday_dtstartday'), GETPOSTINT('search_birthday_dtstartyear'));
-		$search_birthday_dtend = dol_mktime(23, 59, 59, GETPOSTINT('search_birthday_dtendmonth'), GETPOSTINT('search_birthday_dtendday'), GETPOSTINT('search_birthday_dtendyear'));
+		$search_birthday_dtstart = dol_mktime(0, 0, 0, request()->integer('search_birthday_dtstartmonth', 0), request()->integer('search_birthday_dtstartday', 0), request()->integer('search_birthday_dtstartyear', 0));
+		$search_birthday_dtend = dol_mktime(23, 59, 59, request()->integer('search_birthday_dtendmonth', 0), request()->integer('search_birthday_dtendday', 0), request()->integer('search_birthday_dtendyear', 0));
 	}
 	$socialnetworks = getArrayOfSocialNetworks();
 
@@ -1322,14 +1322,14 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 	$search = array();
 	foreach ($arrayfields as $key => $val) {
 		$queryName = 'search_' . substr($key, 2);
-		if (GETPOST($queryName, 'alpha')) {
-			$search[substr($key, 2)] = GETPOST($queryName, 'alpha');
+		if (request()->input($queryName)) {
+			$search[substr($key, 2)] = request()->input($queryName);
 		}
 	}
 	$search_array_options = $extrafields->getOptionalsFromPost($contactstatic->table_element, '', 'search_');
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_rowid = '';
 		$search_status = '';
 		$search_name = '';
@@ -1474,7 +1474,7 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 	dol_syslog('core/lib/company.lib.php :: show_contacts', LOG_DEBUG);
 	$result = $db->query($sql);
 	if (!$result) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$num = $db->num_rows($result);
@@ -1584,7 +1584,7 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 
 	$i = -1;
 
-	if ($num || (GETPOST('button_search') || GETPOST('button_search.x') || GETPOST('button_search_x'))) {
+	if ($num || (request()->input('button_search') || request()->input('button_search.x') || request()->input('button_search_x'))) {
 		$i = 0;
 
 		while ($i < $num) {
@@ -1839,12 +1839,12 @@ function show_actions_done($conf, $langs, $db, $filterobj, $objcon = null, $nopr
 
 	global $param, $massactionbutton;
 
-	$start_year = GETPOSTINT('dateevent_startyear');
-	$start_month = GETPOSTINT('dateevent_startmonth');
-	$start_day = GETPOSTINT('dateevent_startday');
-	$end_year = GETPOSTINT('dateevent_endyear');
-	$end_month = GETPOSTINT('dateevent_endmonth');
-	$end_day = GETPOSTINT('dateevent_endday');
+	$start_year = request()->integer('dateevent_startyear', 0);
+	$start_month = request()->integer('dateevent_startmonth', 0);
+	$start_day = request()->integer('dateevent_startday', 0);
+	$end_year = request()->integer('dateevent_endyear', 0);
+	$end_month = request()->integer('dateevent_endmonth', 0);
+	$end_day = request()->integer('dateevent_endday', 0);
 	$tms_start = '';
 	$tms_end = '';
 
@@ -1854,7 +1854,7 @@ function show_actions_done($conf, $langs, $db, $filterobj, $objcon = null, $nopr
 	if (!empty($end_year) && !empty($end_month) && !empty($end_day)) {
 		$tms_end = dol_mktime(23, 59, 59, $end_month, $end_day, $end_year, 'tzuserrel');
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$tms_start = '';
 		$tms_end = '';
 	}
@@ -2185,7 +2185,7 @@ function show_actions_done($conf, $langs, $db, $filterobj, $objcon = null, $nopr
 					$contactaction->id = $obj->id;
 					$result = $contactaction->fetchResources();
 					if ($result < 0) {
-						dol_print_error($db);
+						abort(500);
 						setEventMessage("company.lib::show_actions_done Error fetch resource", 'errors');
 					}
 
@@ -2253,7 +2253,7 @@ function show_actions_done($conf, $langs, $db, $filterobj, $objcon = null, $nopr
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

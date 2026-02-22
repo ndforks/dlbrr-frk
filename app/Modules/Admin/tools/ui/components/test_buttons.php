@@ -55,7 +55,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 
 // Security
 if ($dolibarr_main_prod) {
-	accessforbidden();
+	abort(403);
 }
 
 

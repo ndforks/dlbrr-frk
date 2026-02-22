@@ -45,22 +45,22 @@ $error = 0;
 // Load translation files required by the page
 $langs->loadLangs(array('accountancy', 'bills', 'compta'));
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$rowid = GETPOSTINT('rowid');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$rowid = request()->integer('rowid', 0);
+$cancel = request()->input('cancel');
 
-$account_number = GETPOST('account_number', 'alphanohtml');
-$label = GETPOST('label', 'alpha');
+$account_number = request()->integer('account_number', 0);
+$label = request()->input('label');
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -71,7 +71,7 @@ $object = new AccountingAccount($db);
  * Action
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$urltogo = (!empty($backtopage) ? $backtopage : DOL_URL_ROOT.'/accountancy/admin/account.php');
 	header("Location: ".$urltogo);
 	exit;
@@ -99,15 +99,15 @@ if ($action == 'add' /* && $user->hasRight('accounting', 'chartofaccount') // al
 				$account_number = clean_account($account_number);
 			}
 
-			$account_parent = (GETPOSTINT('account_parent') > 0) ? GETPOSTINT('account_parent') : 0;
+			$account_parent = (request()->integer('account_parent', 0) > 0) ? request()->integer('account_parent', 0) : 0;
 
 			$object->fk_pcg_version = $obj->pcg_version;
-			$object->pcg_type = GETPOST('pcg_type', 'alpha');
+			$object->pcg_type = request()->input('pcg_type');
 			$object->account_number = $account_number;
 			$object->account_parent = $account_parent;
-			$object->account_category = GETPOSTINT('account_category');
+			$object->account_category = request()->integer('account_category', 0);
 			$object->label = $label;
-			$object->labelshort = GETPOST('labelshort', 'alpha');
+			$object->labelshort = request()->input('labelshort');
 			$object->active = 1;
 
 			$res = $object->create($user);
@@ -156,15 +156,15 @@ if ($action == 'add' /* && $user->hasRight('accounting', 'chartofaccount') // al
 				$account_number = clean_account($account_number);
 			}
 
-			$account_parent = (GETPOSTINT('account_parent') > 0) ? GETPOSTINT('account_parent') : 0;
+			$account_parent = (request()->integer('account_parent', 0) > 0) ? request()->integer('account_parent', 0) : 0;
 
 			$object->fk_pcg_version = $obj->pcg_version;
-			$object->pcg_type = GETPOST('pcg_type', 'alpha');
+			$object->pcg_type = request()->input('pcg_type');
 			$object->account_number = $account_number;
 			$object->account_parent = $account_parent;
-			$object->account_category = GETPOSTINT('account_category');
+			$object->account_category = request()->integer('account_category', 0);
 			$object->label = $label;
-			$object->labelshort = GETPOST('labelshort', 'alpha');
+			$object->labelshort = request()->input('labelshort');
 
 			$result = $object->update($user);
 
@@ -260,7 +260,7 @@ if ($action == 'create') {
 	print $form->textwithpicto($langs->trans("Pcgtype"), $langs->transnoentitiesnoconv("PcgtypeDesc"));
 	print '</td>';
 	print '<td>';
-	print '<input type="text" name="pcg_type" list="pcg_type_datalist" value="'.dol_escape_htmltag(GETPOSTISSET('pcg_type') ? GETPOST('pcg_type', 'alpha') : $object->pcg_type).'">';
+	print '<input type="text" name="pcg_type" list="pcg_type_datalist" value="'.dol_escape_htmltag(request()->has('pcg_type') ? request()->input('pcg_type') : $object->pcg_type).'">';
 	// autosuggest from existing account types if found
 	print '<datalist id="pcg_type_datalist">';
 	$sql = "SELECT DISTINCT pcg_type FROM " . MAIN_DB_PREFIX . "accounting_account";
@@ -337,7 +337,7 @@ if ($action == 'create') {
 			print $form->textwithpicto($langs->trans("Pcgtype"), $langs->transnoentitiesnoconv("PcgtypeDesc"));
 			print '</td>';
 			print '<td>';
-			print '<input type="text" name="pcg_type" list="pcg_type_datalist" value="'.dol_escape_htmltag(GETPOSTISSET('pcg_type') ? GETPOST('pcg_type', 'alpha') : $object->pcg_type).'">';
+			print '<input type="text" name="pcg_type" list="pcg_type_datalist" value="'.dol_escape_htmltag(request()->has('pcg_type') ? request()->input('pcg_type') : $object->pcg_type).'">';
 			// autosuggest from existing account types if found
 			print '<datalist id="pcg_type_datalist">';
 			$sql = 'SELECT DISTINCT pcg_type FROM ' . MAIN_DB_PREFIX . 'accounting_account';

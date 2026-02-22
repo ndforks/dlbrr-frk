@@ -52,15 +52,15 @@ $langs->loadLangs(array("compta", "bills", "admin", "accountancy", "other"));
 
 // Security access
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 if (empty($action)) {
 	$action = 'edit';
 }
 
-$nbletter = GETPOSTINT('ACCOUNTING_LETTERING_NBLETTERS');
+$nbletter = request()->integer('ACCOUNTING_LETTERING_NBLETTERS', 0);
 
 // New form setup options
 $formSetup = new FormSetup($db);
@@ -141,7 +141,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if (in_array($action, array('setACCOUNTANCY_ER_DATE_RECORD', 'setACCOUNTING_BANK_CONCILIATED'))) {
 	$constname = preg_replace('/^set/', '', $action);
-	$constvalue = GETPOSTINT('value');
+	$constvalue = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, $constname, $constvalue, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -162,7 +162,7 @@ if ($action == 'updatemode') {
 		'RECETTES-DEPENSES'
 	);
 
-	$accounting_mode = GETPOST('accounting_mode', 'alpha');
+	$accounting_mode = request()->integer('accounting_mode', 0);
 
 	if (in_array($accounting_mode, $accounting_modes)) {
 		if (dolibarr_set_const($db, 'ACCOUNTING_MODE', $accounting_mode, 'chaine', 0, '', $conf->entity)) {
@@ -179,7 +179,7 @@ if ($action == 'update') {
 	$error = 0;
 
 	foreach ($list as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -197,10 +197,10 @@ if ($action == 'update_binding') {
 	$error = 0;
 
 	foreach ($list_binding as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if ($constname == 'ACCOUNTING_DATE_START_BINDING') {
-			$constvalue = dol_mktime(0, 0, 0, GETPOSTINT($constname.'month'), GETPOSTINT($constname.'day'), GETPOSTINT($constname.'year'));
+			$constvalue = dol_mktime(0, 0, 0, request()->integer($constname . 'month', 0), request()->integer($constname . 'day', 0), request()->integer($constname . 'year', 0));
 		}
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
@@ -218,8 +218,8 @@ if ($action == 'update_binding') {
 if ($action == 'update_advanced') {
 	$error = 0;
 
-	if (GETPOSTISSET('ACCOUNTING_LETTERING_NBLETTERS')) {
-		if (!dolibarr_set_const($db, 'ACCOUNTING_LETTERING_NBLETTERS', GETPOST('ACCOUNTING_LETTERING_NBLETTERS'), 'chaine', 0, '', $conf->entity)) {
+	if (request()->has('ACCOUNTING_LETTERING_NBLETTERS')) {
+		if (!dolibarr_set_const($db, 'ACCOUNTING_LETTERING_NBLETTERS', request()->input('ACCOUNTING_LETTERING_NBLETTERS'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
 	}
@@ -235,7 +235,7 @@ if ($action == 'update_export') {
 	$error = 0;
 
 	// Export options
-	$modelcsv = GETPOSTINT('ACCOUNTING_EXPORT_MODELCSV');
+	$modelcsv = request()->integer('ACCOUNTING_EXPORT_MODELCSV', 0);
 
 	// reload
 	$configuration = $accountancyexport->getTypeConfig();
@@ -253,7 +253,7 @@ if ($action == 'update_export') {
 	}
 
 	foreach ($main_option as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -264,7 +264,7 @@ if ($action == 'update_export') {
 		$constante = $key;
 
 		if (strpos($constante, 'ACCOUNTING') !== false) {
-			$constvalue = GETPOST($key, 'alpha');
+			$constvalue = request()->input($key);
 			if (!dolibarr_set_const($db, $constante, $constvalue, 'chaine', 0, '', $conf->entity)) {
 				$error++;
 			}
@@ -279,7 +279,7 @@ if ($action == 'update_export') {
 }
 
 if ($action == 'setenabledraftexport') {
-	$setenabledraftexport = GETPOSTINT('value');
+	$setenabledraftexport = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ENABLE_EXPORT_DRAFT_JOURNAL", $setenabledraftexport, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -293,7 +293,7 @@ if ($action == 'setenabledraftexport') {
 }
 
 if ($action == 'setdisablebindingonsales') {
-	$setdisablebindingonsales = GETPOSTINT('value');
+	$setdisablebindingonsales = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_DISABLE_BINDING_ON_SALES", $setdisablebindingonsales, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -307,7 +307,7 @@ if ($action == 'setdisablebindingonsales') {
 }
 
 if ($action == 'setdisablebindingonpurchases') {
-	$setdisablebindingonpurchases = GETPOSTINT('value');
+	$setdisablebindingonpurchases = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_DISABLE_BINDING_ON_PURCHASES", $setdisablebindingonpurchases, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -321,7 +321,7 @@ if ($action == 'setdisablebindingonpurchases') {
 }
 
 if ($action == 'setdisablebindingonexpensereports') {
-	$setdisablebindingonexpensereports = GETPOSTINT('value');
+	$setdisablebindingonexpensereports = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_DISABLE_BINDING_ON_EXPENSEREPORTS", $setdisablebindingonexpensereports, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -335,7 +335,7 @@ if ($action == 'setdisablebindingonexpensereports') {
 }
 
 if ($action == 'setdisabletransferonassets') {
-	$setdisabletransferonassets = GETPOSTINT('value');
+	$setdisabletransferonassets = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_DISABLE_TRANSFER_ON_ASSETS", $setdisabletransferonassets, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -349,7 +349,7 @@ if ($action == 'setdisabletransferonassets') {
 }
 
 if ($action == 'setdisabletransferondiscounts') {
-	$setdisabletransferondiscounts = GETPOSTINT('value');
+	$setdisabletransferondiscounts = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_DISABLE_TRANSFER_ON_DISCOUNTS", $setdisabletransferondiscounts, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -363,7 +363,7 @@ if ($action == 'setdisabletransferondiscounts') {
 }
 
 if ($action == 'setenablelettering') {
-	$setenablelettering = GETPOSTINT('value');
+	$setenablelettering = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ENABLE_LETTERING", $setenablelettering, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -377,7 +377,7 @@ if ($action == 'setenablelettering') {
 }
 
 if ($action == 'setenableautolettering') {
-	$setenableautolettering = GETPOSTINT('value');
+	$setenableautolettering = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ENABLE_AUTOLETTERING", $setenableautolettering, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -391,7 +391,7 @@ if ($action == 'setenableautolettering') {
 }
 
 if ($action == 'setenablevatreversecharge') {
-	$setenablevatreversecharge = GETPOSTINT('value');
+	$setenablevatreversecharge = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_FORCE_ENABLE_VAT_REVERSE_CHARGE", $setenablevatreversecharge, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -405,7 +405,7 @@ if ($action == 'setenablevatreversecharge') {
 }
 
 if ($action == 'setenabletabonthirdparty') {
-	$setenabletabonthirdparty = GETPOSTINT('value');
+	$setenabletabonthirdparty = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ENABLE_TABONTHIRDPARTY", $setenabletabonthirdparty, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -419,8 +419,8 @@ if ($action == 'setenabletabonthirdparty') {
 }
 
 if ($action == 'updateMask') {
-	$maskconstbookkeeping = GETPOST('maskconstbookkeeping', 'aZ09');
-	$maskbookkeeping = GETPOST('maskbookkeeping', 'alpha');
+	$maskconstbookkeeping = request()->input('maskconstbookkeeping');
+	$maskbookkeeping = request()->input('maskbookkeeping');
 
 	$res = 0;
 
@@ -440,7 +440,7 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'setmod') {
-	$value = GETPOST('value', 'alpha');
+	$value = request()->input('value');
 	dolibarr_set_const($db, "BOOKKEEPING_ADDON", $value, 'chaine', 0, '', $conf->entity);
 }
 

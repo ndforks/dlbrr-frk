@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment_recruitmentcandidat
 $langs->loadLangs(array("recruitment", "other", "users"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'recruitmentcandidaturecard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'recruitmentcandidaturecard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new RecruitmentCandidature($db);
@@ -67,11 +67,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -91,13 +91,13 @@ $permissiondellink = $user->hasRight('recruitment', 'recruitmentjobposition', 'w
 $upload_dir = $conf->recruitment->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'recruitment', $object->id, 'recruitment_recruitmentcandidature', 'recruitmentjobposition', '', 'rowid', $isdraft);
 
 
-if (GETPOST("action", "aZ09") == 'create') {
+if (request()->input('action') == 'create') {
 	$reg = array();
 	preg_match('/^(integer|link):(.*):(.*):(.*):(.*)/i', $object->fields['fk_recruitmentjobposition']['type'], $reg);
 	if (!empty($reg)) {
@@ -152,7 +152,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 	if ($action == 'confirm_decline' && $confirm == 'yes' && $permissiontoadd) {
 		$result = $object->setStatut($object::STATUS_REFUSED, null, '', $triggermodname);
@@ -161,8 +161,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'confirm_makeofferordecline' && $permissiontoadd && !GETPOST('cancel', 'alpha')) {
-		if (!(GETPOSTINT('status') > 0)) {
+	if ($action == 'confirm_makeofferordecline' && $permissiontoadd && !request()->input('cancel')) {
+		if (!(request()->integer('status', 0) > 0)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CloseAs")), null, 'errors');
 			$action = 'makeofferordecline';
 		} else {
@@ -170,7 +170,7 @@ if (empty($reshook)) {
 			if ($object->status == $object::STATUS_VALIDATED) {
 				$db->begin();
 
-				if (GETPOSTINT('status') == $object::STATUS_REFUSED) {
+				if (request()->integer('status', 0) == $object::STATUS_REFUSED) {
 					$result = $object->setStatut($object::STATUS_REFUSED, null, '', $triggermodname);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
@@ -191,8 +191,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'confirm_closeas' && $permissiontoadd && !GETPOST('cancel', 'alpha')) {
-		if (!(GETPOSTINT('status') > 0)) {
+	if ($action == 'confirm_closeas' && $permissiontoadd && !request()->input('cancel')) {
+		if (!(request()->integer('status', 0) > 0)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CloseAs")), null, 'errors');
 			$action = 'makeofferordecline';
 		} else {
@@ -200,7 +200,7 @@ if (empty($reshook)) {
 			if ($object->status == $object::STATUS_CONTRACT_PROPOSED) {
 				$db->begin();
 
-				if (GETPOSTINT('status') == $object::STATUS_CONTRACT_REFUSED) {
+				if (request()->integer('status', 0) == $object::STATUS_CONTRACT_REFUSED) {
 					$result = $object->setStatut($object::STATUS_CONTRACT_REFUSED, null, '', $triggermodname);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
@@ -230,7 +230,7 @@ if (empty($reshook)) {
 
 		// Creation user
 		$nuser = new User($db);
-		$nuser->login = GETPOST('login', 'alphanohtml');
+		$nuser->login = request()->input('login');
 		$nuser->fk_soc = 0;
 		$nuser->employee = 1;
 		$nuser->firstname = $object->firstname;
@@ -426,7 +426,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	// Confirm create user
 	if ($action == 'create_user') {
-		$login = (GETPOSTISSET('login') ? GETPOST('login', 'alphanohtml') : $object->login);
+		$login = (request()->has('login') ? request()->input('login') : $object->login);
 		if (empty($login)) {
 			// Full firstname and name separated with a dot : firstname.name
 			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
@@ -634,7 +634,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -679,7 +679,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

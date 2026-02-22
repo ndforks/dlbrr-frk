@@ -317,7 +317,7 @@ function limitChars(textarea, limit, infodiv)
 			if ($this->withtoreadonly) {
 				print (!is_array($this->withto) && !is_numeric($this->withto)) ? $this->withto : "";
 			} else {
-				print '<input class="width150" id="sendto" name="sendto" spellcheck="false" value="'.dol_escape_htmltag(!is_array($this->withto) ? (GETPOSTISSET("sendto") ? GETPOST("sendto") : $this->withto) : "+").'">';
+				print '<input class="width150" id="sendto" name="sendto" spellcheck="false" value="'.dol_escape_htmltag(!is_array($this->withto) ? (request()->has('sendto') ? request()->input('sendto') : $this->withto) : "+").'">';
 				if (!empty($this->withtosocid) && $this->withtosocid > 0) {
 					$liste = array();
 					foreach ($soc->thirdparty_and_contact_phone_array() as $key => $value) {
@@ -325,7 +325,7 @@ function limitChars(textarea, limit, infodiv)
 					}
 					print " ".$langs->trans("or")." ";
 					//var_dump($_REQUEST);exit;
-					print $form->selectarray("receiver", $liste, GETPOST("receiver"), 1);
+					print $form->selectarray("receiver", $liste, request()->input('receiver'), 1);
 				}
 				print '<span class="opacitymedium hideonsmartphone"> '.$langs->trans("SmsInfoNumero").'</span>';
 			}
@@ -339,8 +339,8 @@ function limitChars(textarea, limit, infodiv)
 				$defaultmessage = $this->withbody;
 			}
 			$defaultmessage = make_substitutions($defaultmessage, $this->substit);
-			if (GETPOSTISSET("message")) {
-				$defaultmessage = GETPOST("message", 'restricthtml');
+			if (request()->has('message')) {
+				$defaultmessage = request()->input('message');
 			}
 			$defaultmessage = str_replace('\n', "\n", $defaultmessage);
 

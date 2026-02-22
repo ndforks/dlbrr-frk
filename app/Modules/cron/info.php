@@ -41,10 +41,10 @@ $langs->loadLangs(array('admin', 'cron'));
 
 // Security check
 if (!$user->hasRight('cron', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 $object = new Cronjob($db);
 

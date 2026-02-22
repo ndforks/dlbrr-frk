@@ -53,23 +53,23 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$htmlname = GETPOST('htmlname', 'aZ09');
-$socid = GETPOSTINT('socid');
+$htmlname = request()->input('htmlname');
+$socid = request()->integer('socid', 0);
 // type can be empty string or 0 or 1
-$type = GETPOST('type', 'int');
-$mode = GETPOSTINT('mode');
-$status = ((GETPOSTINT('status') >= 0) ? GETPOSTINT('status') : - 1);	// status buy when mode = customer , status purchase when mode = supplier
-$status_purchase = ((GETPOSTINT('status_purchase') >= 0) ? GETPOSTINT('status_purchase') : - 1);	// status purchase when mode = customer
-$outjson = (GETPOSTINT('outjson') ? GETPOSTINT('outjson') : 0);
-$price_level = GETPOSTINT('price_level');
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$price_by_qty_rowid = GETPOSTINT('pbq');
-$finished = GETPOSTINT('finished');
-$alsoproductwithnosupplierprice = GETPOSTINT('alsoproductwithnosupplierprice');
-$warehouseStatus = GETPOST('warehousestatus', 'alpha');
-$hidepriceinlabel = GETPOSTINT('hidepriceinlabel');
-$warehouseId = GETPOSTINT('warehouseid');
+$type = request()->input('type');
+$mode = request()->integer('mode', 0);
+$status = ((request()->integer('status', 0) >= 0) ? request()->integer('status', 0) : - 1);	// status buy when mode = customer , status purchase when mode = supplier
+$status_purchase = ((request()->integer('status_purchase', 0) >= 0) ? request()->integer('status_purchase', 0) : - 1);	// status purchase when mode = customer
+$outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
+$price_level = request()->integer('price_level', 0);
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$price_by_qty_rowid = request()->integer('pbq', 0);
+$finished = request()->integer('finished', 0);
+$alsoproductwithnosupplierprice = request()->integer('alsoproductwithnosupplierprice', 0);
+$warehouseStatus = request()->input('warehousestatus');
+$hidepriceinlabel = request()->integer('hidepriceinlabel', 0);
+$warehouseId = request()->integer('warehouseid', 0);
 
 // Security check
 restrictedArea($user, 'produit|service|commande|propal|facture', 0, 'product&product');
@@ -254,7 +254,7 @@ if ($action == 'fetch' && !empty($id)) {
 		$product_outdefault_vat_code = $outdefault_vat_code;
 
 		// If we ask the price according to buyer, we change it.
-		if (GETPOSTINT('addalsovatforthirdpartyid')) {
+		if (request()->integer('addalsovatforthirdpartyid', 0)) {
 			$thirdparty_buyer = new Societe($db);
 			$thirdparty_buyer->fetch($socid);
 
@@ -322,13 +322,13 @@ if ($action == 'fetch' && !empty($id)) {
 
 	$idprod = (empty($match[0]) ? '' : $match[0]);		// Take first key found into GET array with matching $htmlname123
 
-	if (GETPOST($htmlname, 'alpha') == '' && (!$idprod || !GETPOST($idprod, 'alpha'))) {
+	if (request()->input($htmlname) == '' && (!$idprod || !request()->input($idprod))) {
 		print json_encode(array());
 		return;
 	}
 
 	// When used from jQuery, the search term is added as GET param "term".
-	$searchkey = (($idprod && GETPOST($idprod, 'alpha')) ? GETPOST($idprod, 'alpha') : (GETPOST($htmlname, 'alpha') ? GETPOST($htmlname, 'alpha') : ''));
+	$searchkey = (($idprod && request()->input($idprod)) ? request()->input($idprod) : (request()->input($htmlname) ? request()->input($htmlname) : ''));
 
 	if (!isset($form) || !is_object($form)) {
 		$form = new Form($db);

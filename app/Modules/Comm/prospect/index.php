@@ -45,7 +45,7 @@ if ($user->socid > 0) {
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$action = '';
 	$socid = $user->socid;
@@ -272,7 +272,7 @@ if (isModEnabled("propal") && $user->hasRight('propal', 'lire')) {
 			print "</table><br>";
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

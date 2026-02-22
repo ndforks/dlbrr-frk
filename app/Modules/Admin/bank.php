@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "companies", "bills", "other", "banks"));
 
-$action = GETPOST('action', 'aZ09');
-$actionsave = GETPOST('save', 'alpha');
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$actionsave = request()->input('save');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'bankaccount';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -65,7 +65,7 @@ $error = 0;
 
 if (in_array($action, array('setBANK_DISABLE_DIRECT_INPUT'))) {
 	$constname = preg_replace('/^set/', '', $action);
-	$constvalue = GETPOSTINT('value');
+	$constvalue = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, $constname, $constvalue, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -80,9 +80,9 @@ if (in_array($action, array('setBANK_DISABLE_DIRECT_INPUT'))) {
 
 // Order display of bank account
 if ($action == 'setbankorder') {
-	if (dolibarr_set_const($db, "BANK_SHOW_ORDER_OPTION", GETPOST('value', 'alpha'), 'chaine', 0, '', $conf->entity) > 0) {
+	if (dolibarr_set_const($db, "BANK_SHOW_ORDER_OPTION", request()->input('value'), 'chaine', 0, '', $conf->entity) > 0) {
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -90,12 +90,12 @@ if ($action == 'setbankorder') {
 if ($action == 'setreportlastnumreleve') {
 	if (dolibarr_set_const($db, "BANK_REPORT_LAST_NUM_RELEVE", 1, 'chaine', 0, '', $conf->entity) > 0) {
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'unsetreportlastnumreleve') {
 	if (dolibarr_set_const($db, "BANK_REPORT_LAST_NUM_RELEVE", 0, 'chaine', 0, '', $conf->entity) > 0) {
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -103,12 +103,12 @@ if ($action == 'setreportlastnumreleve') {
 if ($action == 'setbankcolorizemovement') {
 	if (dolibarr_set_const($db, "BANK_COLORIZE_MOVEMENT", 1, 'chaine', 0, '', $conf->entity) > 0) {
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'unsetbankcolorizemovement') {
 	if (dolibarr_set_const($db, "BANK_COLORIZE_MOVEMENT", 0, 'chaine', 0, '', $conf->entity) > 0) {
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -121,7 +121,7 @@ if ($actionsave) {
 
 	// Save colors
 	while ($i <= 2) {
-		$color = GETPOST('BANK_COLORIZE_MOVEMENT_COLOR'.$i, 'alpha');
+		$color = request()->input('BANK_COLORIZE_MOVEMENT_COLOR' . $i);
 		if ($color == '-1') {
 			$color = '';
 		}
@@ -146,7 +146,7 @@ if ($actionsave) {
 
 
 if ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	if ($modele == 'sepamandate') {
 		$object = new CompanyBankAccount($db);
@@ -316,7 +316,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<div class="div-table-responsive-no-min">';
@@ -479,7 +479,7 @@ if (getDolGlobalInt('BANK_COLORIZE_MOVEMENT')) {
 		print '<td colspan="4" width="180" class="nowrap">'.$langs->trans("BankColorizeMovementName".$key)."</td>";
 		// Color
 		print '<td class="nowrap right">';
-		print $formother->selectColor((GETPOST("BANK_COLORIZE_MOVEMENT_COLOR".$key) ? GETPOST("BANK_COLORIZE_MOVEMENT_COLOR".$key) : getDolGlobalString($color)), "BANK_COLORIZE_MOVEMENT_COLOR".$key, '', 1, array(), 'right hideifnotset');
+		print $formother->selectColor((request()->input("BANK_COLORIZE_MOVEMENT_COLOR" . $key) ? request()->input("BANK_COLORIZE_MOVEMENT_COLOR" . $key) : getDolGlobalString($color)), "BANK_COLORIZE_MOVEMENT_COLOR".$key, '', 1, array(), 'right hideifnotset');
 		print '</td>';
 		print "</tr>";
 		$i++;

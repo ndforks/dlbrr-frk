@@ -47,9 +47,9 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class
 
 $langs->loadLangs(array("receptions", "companies", "bills", 'orders', 'stocks', 'other', 'propal'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 $morejs = '';
 
@@ -103,7 +103,7 @@ if ($origin == 'reception') {
 	if ($origin == 'supplierorder' || $origin == 'order_supplier') {
 		$result = restrictedArea($user, 'fournisseur', $object, 'commande_fournisseur', 'commande');
 	} elseif (!$user->hasRight($origin, 'lire') && !$user->hasRight($origin, 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

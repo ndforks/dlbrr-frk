@@ -39,17 +39,17 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'orders', 'bills'));
 
-$id = GETPOSTINT("id");
+$id = request()->integer('id', 0);
 
-$socid = GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
+$socid = request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('socid', 0);
 // Security check
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$backtopage = GETPOST('backtopage', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$cancel = request()->input('cancel');
+$action = request()->input('action');
 
 // Security check
 if ($user->socid > 0) {
@@ -75,12 +75,12 @@ if ($action == 'setremise' && $user->hasRight('societe', 'lire')) {
 	$object = new Societe($db);
 	$object->fetch($id);
 
-	$discount_type = GETPOSTINT('discount_type');
+	$discount_type = request()->integer('discount_type', 0);
 
 	if (!empty($discount_type)) {
-		$result = $object->set_remise_supplier((float) price2num(GETPOST("remise")), GETPOST("note", "alphanohtml"), $user);
+		$result = $object->set_remise_supplier((float) price2num(request()->input('remise')), request()->input('note'), $user);
 	} else {
-		$result = $object->set_remise_client((float) price2num(GETPOST("remise")), GETPOST("note", "alphanohtml"), $user);
+		$result = $object->set_remise_client((float) price2num(request()->input('remise')), request()->input('note'), $user);
 	}
 
 	if ($result > 0) {
@@ -88,7 +88,7 @@ if ($action == 'setremise' && $user->hasRight('societe', 'lire')) {
 			header("Location: ".$backtopage);
 			exit;
 		} else {
-			header("Location: remise.php?id=".GETPOSTINT("id"));
+			header("Location: remise.php?id=".request()->integer('id', 0));
 			exit;
 		}
 	} else {
@@ -105,7 +105,7 @@ if ($action == 'setremise' && $user->hasRight('societe', 'lire')) {
 $form = new Form($db);
 
 if (! ($socid > 0)) {
-	accessforbidden('Record not found');
+	abort(403);
 }
 
 // On recupere les donnees societes par l'objet
@@ -172,24 +172,24 @@ if ($isCustomer || $isSupplier) {
 	// Discount type
 	print '<tr class="trfirstline"><td class="titlefield fieldrequired">'.$langs->trans('DiscountType').'</td><td>';
 	if ($isCustomer) {
-		print '<input type="radio" name="discount_type" id="discount_type_0" '.(GETPOSTISSET('discount_type') ? (GETPOSTINT('discount_type') == 0 ? ' checked' : '') : ' checked').' value="0"> <label for="discount_type_0">'.$langs->trans('Customer').'</label>';
+		print '<input type="radio" name="discount_type" id="discount_type_0" '.(request()->has('discount_type') ? (request()->integer('discount_type', 0) == 0 ? ' checked' : '') : ' checked').' value="0"> <label for="discount_type_0">'.$langs->trans('Customer').'</label>';
 	}
 	if ($isCustomer && $isSupplier) {
 		print ' &nbsp; &nbsp; ';
 	}
 	if ($isSupplier) {
-		print ' <input type="radio" name="discount_type" id="discount_type_1"'.(GETPOSTISSET('discount_type') ? (GETPOSTINT('discount_type') ? ' checked' : '') : ($isCustomer ? '' : ' checked')).' value="1"> <label for="discount_type_1">'.$langs->trans('Supplier').'</label>';
+		print ' <input type="radio" name="discount_type" id="discount_type_1"'.(request()->has('discount_type') ? (request()->integer('discount_type', 0) ? ' checked' : '') : ($isCustomer ? '' : ' checked')).' value="1"> <label for="discount_type_1">'.$langs->trans('Supplier').'</label>';
 	}
 	print '</td></tr>';
 }
 
 // New value
 print '<tr><td class="titlefield fieldrequired">';
-print $langs->trans("NewValue").'</td><td><input type="text" size="5" name="remise" value="'.dol_escape_htmltag(GETPOST("remise")).'"> <span class="opacitymedium">%</span></td></tr>';
+print $langs->trans("NewValue").'</td><td><input type="text" size="5" name="remise" value="'.dol_escape_htmltag(request()->input('remise')).'"> <span class="opacitymedium">%</span></td></tr>';
 
 // Motif/Note
 print '<tr class="lastline"><td class="fieldrequired">';
-print $langs->trans("NoteReason").'</td><td><input type="text" size="60" name="note" value="'.dol_escape_htmltag(GETPOST("note", "alphanohtml")).'"></td></tr>';
+print $langs->trans("NoteReason").'</td><td><input type="text" size="60" name="note" value="'.dol_escape_htmltag(request()->input('note')).'"></td></tr>';
 
 print "</table>";
 
@@ -251,7 +251,7 @@ if ($isCustomer) {
 		$db->free($resql);
 		print "</table>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -301,7 +301,7 @@ if ($isSupplier) {
 		$db->free($resql);
 		print "</table>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if ($isCustomer) {

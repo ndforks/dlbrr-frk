@@ -53,40 +53,40 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('trips', 'bills', 'banks', 'compta'));
 
-$action = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'vendorpaymentlist';
-$mode = GETPOST('mode', 'alpha');
-$toselect = GETPOSTISSET('toselect') ? GETPOST('toselect', 'array:int') : array();
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'vendorpaymentlist';
+$mode = request()->input('mode');
+$toselect = request()->has('toselect') ? request()->input('toselect') : array();
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 // Security check
 if ($user->socid) {
 	$socid = $user->socid;
 }
 
-$search_ref				= GETPOST('search_ref', 'alpha');
-$search_date_startday	= GETPOSTINT('search_date_startday');
-$search_date_startmonth	= GETPOSTINT('search_date_startmonth');
-$search_date_startyear	= GETPOSTINT('search_date_startyear');
-$search_date_endday		= GETPOSTINT('search_date_endday');
-$search_date_endmonth	= GETPOSTINT('search_date_endmonth');
-$search_date_endyear	= GETPOSTINT('search_date_endyear');
+$search_ref				= request()->input('search_ref');
+$search_date_startday	= request()->integer('search_date_startday', 0);
+$search_date_startmonth	= request()->integer('search_date_startmonth', 0);
+$search_date_startyear	= request()->integer('search_date_startyear', 0);
+$search_date_endday		= request()->integer('search_date_endday', 0);
+$search_date_endmonth	= request()->integer('search_date_endmonth', 0);
+$search_date_endyear	= request()->integer('search_date_endyear', 0);
 $search_date_start		= dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end		= dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_user			= GETPOST('search_user', 'alpha');
-$search_payment_type	= GETPOST('search_payment_type');
-$search_cheque_num		= GETPOST('search_cheque_num', 'alpha');
-$search_bank_account	= GETPOST('search_bank_account', 'int');
-$search_amount			= GETPOST('search_amount', 'alpha'); // alpha because we must be able to search on '< x'
+$search_user			= request()->input('search_user');
+$search_payment_type	= request()->input('search_payment_type');
+$search_cheque_num		= request()->input('search_cheque_num');
+$search_bank_account	= request()->integer('search_bank_account', 0);
+$search_amount			= request()->input('search_amount'); // alpha because we must be able to search on '< x'
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield				= GETPOST('sortfield', 'aZ09comma');
-$sortorder				= GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield				= request()->input('sortfield');
+$sortorder				= request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -101,7 +101,7 @@ if (!$sortfield) {
 	$sortfield = "pndf.datep";
 }
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
+$search_all = trim(request()->input('search_all'));
 
 // List of fields to search into when doing a "search in all"
 $fieldstosearchall = array(
@@ -138,7 +138,7 @@ if ($user->socid) {
 // $object = new PaiementFourn($db);
 // restrictedArea($user, $object->element);
 if (!$user->hasRight('expensereport', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -159,7 +159,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {	// All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {	// All tests are required to be compatible with all browsers
 		$search_ref = '';
 		$search_date_startday = '';
 		$search_date_startmonth = '';
@@ -269,7 +269,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -287,7 +287,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -369,7 +369,7 @@ $arrayofmassactions = array(
 	//'presend'=>img_picto('', 'email', 'class="pictofixedwidth"').$langs->trans("SendByMail"),
 );
 
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

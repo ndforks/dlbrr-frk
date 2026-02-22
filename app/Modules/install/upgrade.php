@@ -83,12 +83,12 @@ error_reporting(0);
 error_reporting($err);
 
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : 'auto';
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : 'auto';
 $langs->setDefaultLang($setuplang);
-$versionfrom = GETPOST("versionfrom", 'alpha', 3) ? GETPOST("versionfrom", 'alpha', 3) : (empty($argv[1]) ? '' : $argv[1]);
-$versionto = GETPOST("versionto", 'alpha', 3) ? GETPOST("versionto", 'alpha', 3) : (empty($argv[2]) ? '' : $argv[2]);
-$dirmodule = ((GETPOST("dirmodule", 'alpha', 3) && GETPOST("dirmodule", 'alpha', 3) != 'ignoredbversion')) ? GETPOST("dirmodule", 'alpha', 3) : ((empty($argv[3]) || $argv[3] == 'ignoredbversion') ? '' : $argv[3]);
-$ignoredbversion = (GETPOST('ignoredbversion', 'alpha', 3) == 'ignoredbversion') ? GETPOST('ignoredbversion', 'alpha', 3) : ((empty($argv[3]) || $argv[3] != 'ignoredbversion') ? '' : $argv[3]);
+$versionfrom = request()->input('versionfrom') ? request()->input('versionfrom') : (empty($argv[1]) ? '' : $argv[1]);
+$versionto = request()->input('versionto') ? request()->input('versionto') : (empty($argv[2]) ? '' : $argv[2]);
+$dirmodule = ((request()->input('dirmodule') && request()->input('dirmodule') != 'ignoredbversion')) ? request()->input('dirmodule') : ((empty($argv[3]) || $argv[3] == 'ignoredbversion') ? '' : $argv[3]);
+$ignoredbversion = (request()->input('ignoredbversion') == 'ignoredbversion') ? request()->input('ignoredbversion') : ((empty($argv[3]) || $argv[3] != 'ignoredbversion') ? '' : $argv[3]);
 
 $langs->loadLangs(array("admin", "install", "other", "errors"));
 
@@ -117,12 +117,12 @@ if (!$versionfrom && !$versionto) {
 }
 
 
-pHeader('', "upgrade2", GETPOST('action', 'aZ09'), 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
+pHeader('', "upgrade2", request()->input('action'), 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
 
 $actiondone = 0;
 
 // Action to launch the migrate script
-if (!GETPOST('action', 'aZ09') || preg_match('/upgrade/i', GETPOST('action', 'aZ09'))) {
+if (!request()->input('action') || preg_match('/upgrade/i', request()->input('action'))) {
 	$actiondone = 1;
 
 	print '<h3><img class="valignmiddle inline-block paddingright" src="../public/theme/common/database.svg" width="20" alt="Database"> ';
@@ -436,9 +436,9 @@ if (!$ok && isset($argv[1])) {
 }
 dolibarr_install_syslog("Exit ".$ret);
 
-dolibarr_install_syslog("--- upgrade: end ".((int) (!$ok && !GETPOST("ignoreerrors")))." dirmodule=".$dirmodule);
+dolibarr_install_syslog("--- upgrade: end ".((int) (!$ok && !request()->input('ignoreerrors')))." dirmodule=".$dirmodule);
 
-$nonext = (!$ok && !GETPOST("ignoreerrors")) ? 2 : 0;
+$nonext = (!$ok && !request()->input('ignoreerrors')) ? 2 : 0;
 if ($dirmodule) {
 	$nonext = 1;
 }

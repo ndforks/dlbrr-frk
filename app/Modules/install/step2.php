@@ -58,8 +58,8 @@ error_reporting(0);      // Disable all errors
 @set_time_limit(1800);   // Need 1800 on some very slow OS like Windows 7/64
 error_reporting($err);
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : (empty($argv[1]) ? '' : $argv[1]);
-$setuplang = GETPOST('selectlang', 'aZ09', 3) ? GETPOST('selectlang', 'aZ09', 3) : (empty($argv[2]) ? 'auto' : $argv[2]);
+$action = request()->input('action') ? request()->input('action') : (empty($argv[1]) ? '' : $argv[1]);
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (empty($argv[2]) ? 'auto' : $argv[2]);
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("admin", "install"));
@@ -172,10 +172,10 @@ if ($action == "set") {		// Test on permission not required. Already managed by 
 
 	// To disable some code, so you can call step2 with url like
 	// http://localhost/dolibarrnew/install/step2.php?action=set&token='.newToken().'&createtables=0&createkeys=0&createfunctions=0&createdata=llx_20_c_departements
-	$createtables = GETPOSTISSET('createtables') ? GETPOST('createtables') : 1;
-	$createkeys = GETPOSTISSET('createkeys') ? GETPOST('createkeys') : 1;
-	$createfunctions = GETPOSTISSET('createfunctions') ? GETPOST('createfunction') : 1;
-	$createdata = GETPOSTISSET('createdata') ? GETPOST('createdata') : 1;
+	$createtables = request()->has('createtables') ? request()->input('createtables') : 1;
+	$createkeys = request()->has('createkeys') ? request()->input('createkeys') : 1;
+	$createfunctions = request()->has('createfunctions') ? request()->input('createfunction') : 1;
+	$createdata = request()->has('createdata') ? request()->input('createdata') : 1;
 
 
 	// To say that SQL we pass to query are already escaped for mysql, so we need to unescape them

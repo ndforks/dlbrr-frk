@@ -51,37 +51,37 @@ require_once DOL_DOCUMENT_ROOT.'/mrp/lib/mrp_mo.lib.php';
 $langs->loadLangs(array("mrp", "stocks", "other"));
 
 // Get parameters
-$id          = GETPOSTINT('id');
-$ref         = GETPOST('ref', 'alpha');
-$action      = GETPOST('action', 'aZ09');
-$confirm     = GETPOST('confirm', 'alpha');
-$cancel      = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'mostockmovement'; // To manage different context of search
-$backtopage  = GETPOST('backtopage', 'alpha');
-$optioncss   = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$massaction  = GETPOST('massaction', 'aZ09');
-$lineid      = GETPOSTINT('lineid');
+$id          = request()->integer('id', 0);
+$ref         = request()->input('ref');
+$action      = request()->input('action');
+$confirm     = request()->input('confirm');
+$cancel      = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'mostockmovement'; // To manage different context of search
+$backtopage  = request()->input('backtopage');
+$optioncss   = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$massaction  = request()->input('massaction', []);
+$lineid      = request()->integer('lineid', 0);
 
-$msid  = GETPOSTINT('msid');
+$msid  = request()->integer('msid', 0);
 
-$year  = GETPOST("year");		// TODO Rename into search_year
-$month = GETPOST("month");		// TODO Rename into search_month
+$year  = request()->integer('year', 0);		// TODO Rename into search_year
+$month = request()->input('month');		// TODO Rename into search_month
 
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_movement = GETPOST("search_movement", 'alpha');
-$search_product_ref = trim(GETPOST("search_product_ref", 'alpha'));
-$search_product = trim(GETPOST("search_product", 'alpha'));
-$search_warehouse = trim(GETPOST("search_warehouse", 'alpha'));
-$search_inventorycode = trim(GETPOST("search_inventorycode", 'alpha'));
-$search_user = trim(GETPOST("search_user", 'alpha'));
-$search_batch = trim(GETPOST("search_batch", 'alpha'));
-$search_qty = trim(GETPOST("search_qty", 'alpha'));
-$search_type_mouvement = GETPOST('search_type_mouvement', "intcomma");
+$search_ref = request()->input('search_ref');
+$search_movement = request()->input('search_movement');
+$search_product_ref = trim(request()->input('search_product_ref'));
+$search_product = trim(request()->input('search_product'));
+$search_warehouse = trim(request()->input('search_warehouse'));
+$search_inventorycode = trim(request()->input('search_inventorycode'));
+$search_user = trim(request()->input('search_user'));
+$search_batch = trim(request()->input('search_batch'));
+$search_qty = trim(request()->input('search_qty'));
+$search_type_mouvement = request()->input('search_type_mouvement');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$page  = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$page  = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -105,11 +105,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = trim(GETPOST("search_all", 'alpha'));
+$search_all = trim(request()->input('search_all'));
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -121,7 +121,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'mrp', $object->id, 'mrp_mo', '', 'fk_soc', 'rowid', $isdraft);
@@ -179,11 +179,11 @@ $arrayofselected = array();
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -196,7 +196,7 @@ if ($reshook < 0) {
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Do we click on purge search criteria ?
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$year = '';
 	$month = '';
 	$search_ref = '';
@@ -248,10 +248,10 @@ if (empty($reshook)) {
 	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	if ($action == 'confirm_reopen' && $permissiontoadd) {
@@ -505,7 +505,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 	$num = $db->num_rows($resql);
 

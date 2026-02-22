@@ -52,13 +52,13 @@ if (isModEnabled('margin')) {
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'banks', 'companies'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$backtopage = request()->input('backtopage');
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($socid < 0) {
 	$socid = 0;
 }
@@ -79,7 +79,7 @@ if ($user->socid) {
 // Now check also permission on thirdparty of invoices of payments. Thirdparty were loaded by the fetch_object before based on first invoice.
 // It should be enough because all payments are done on invoices of the same thirdparty.
 if ($socid && $socid != $object->thirdparty->id) {
-	accessforbidden();
+	abort(403);
 }
 
 $stripecu = null;
@@ -91,7 +91,7 @@ if (isModEnabled('stripe')) {
 
 	$service = 'StripeTest';
 	$servicestatus = 0;
-	if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha')*/) {
+	if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox')*/) {
 		$service = 'StripeLive';
 		$servicestatus = 1;
 	}
@@ -119,7 +119,7 @@ if (empty($reshook)) {
 	if ($action == 'setnote' && $user->hasRight('facture', 'paiement')) {
 		$db->begin();
 
-		$result = $object->update_note(GETPOST('note', 'restricthtml'));
+		$result = $object->update_note(request()->input('note'));
 		if ($result > 0) {
 			$db->commit();
 			$action = '';
@@ -159,9 +159,9 @@ if (empty($reshook)) {
 			// Loop on each invoice linked to this payment to rebuild PDF
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
-				if (GETPOST('lang_id', 'aZ09')) {
+				if (request()->input('lang_id')) {
 					$outputlangs = new Translate("", $conf);
-					$outputlangs->setDefaultLang(GETPOST('lang_id', 'aZ09'));
+					$outputlangs->setDefaultLang(request()->input('lang_id'));
 				}
 
 				$hidedetails = getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS') ? 1 : 0;
@@ -220,8 +220,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setnum_paiement' && GETPOST('num_paiement') && $user->hasRight('facture', 'paiement')) {
-		$res = $object->update_num(GETPOST('num_paiement'));
+	if ($action == 'setnum_paiement' && request()->input('num_paiement') && $user->hasRight('facture', 'paiement')) {
+		$res = $object->update_num(request()->input('num_paiement'));
 		if ($res === 0) {
 			setEventMessages($langs->trans('PaymentNumberUpdateSucceeded'), null, 'mesgs');
 		} else {
@@ -229,8 +229,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setdatep' && GETPOST('datepday') && $user->hasRight('facture', 'paiement')) {
-		$datepaye = dol_mktime(GETPOSTINT('datephour'), GETPOSTINT('datepmin'), GETPOSTINT('datepsec'), GETPOSTINT('datepmonth'), GETPOSTINT('datepday'), GETPOSTINT('datepyear'));
+	if ($action == 'setdatep' && request()->input('datepday') && $user->hasRight('facture', 'paiement')) {
+		$datepaye = dol_mktime(request()->integer('datephour', 0), request()->integer('datepmin', 0), request()->integer('datepsec', 0), request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
 		$res = $object->update_date($datepaye);
 		if ($res === 0) {
 			setEventMessages($langs->trans('PaymentDateUpdateSucceeded'), null, 'mesgs');
@@ -245,11 +245,11 @@ if (empty($reshook)) {
 		// Create the record into bank for the amount of payment $object
 		if (!$error) {
 			$label = '(CustomerInvoicePayment)';
-			if (GETPOST('type') == Facture::TYPE_CREDIT_NOTE) {
+			if (request()->input('type') == Facture::TYPE_CREDIT_NOTE) {
 				$label = '(CustomerInvoicePaymentBack)'; // Refund of a credit note
 			}
 
-			$bankaccountid = GETPOSTINT('accountid');
+			$bankaccountid = request()->integer('accountid', 0);
 			if ($bankaccountid > 0) {
 				$object->paiementcode = $object->type_code;
 				$object->amounts = $object->getAmountsArray();
@@ -300,7 +300,7 @@ if ($action == 'delete') {
 
 // Confirmation of payment validation
 if ($action == 'valide') {
-	$facid = GETPOSTINT('facid');
+	$facid = request()->integer('facid', 0);
 	print $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$object->id.'&facid='.((int) $facid), $langs->trans("ValidatePayment"), $langs->trans("ConfirmValidatePayment"), 'confirm_validate', '', 0, 2);
 }
 
@@ -615,7 +615,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

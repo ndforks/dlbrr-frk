@@ -43,15 +43,15 @@ $langs->loadLangs(array("admin", "website", "other"));
 
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
 if (empty($action)) {
 	$action = 'edit';
 }
 
-$content = GETPOST('content');
+$content = request()->input('content');
 
 $error = 0;
 $setupnotempty = 0;
@@ -107,10 +107,10 @@ $dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 if (!isModEnabled('ai')) {
-	accessforbidden('Module AI not activated.');
+	abort(403);
 }
 
 

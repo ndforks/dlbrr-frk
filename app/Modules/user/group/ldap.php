@@ -42,8 +42,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 // Load translation files required by page
 $langs->loadLangs(array('companies', 'ldap', 'users', 'admin'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
 
 $socid = 0;
 if ($user->socid > 0) {
@@ -56,7 +56,7 @@ $object->loadRights();
 
 // Users/Groups management only in master entity if transverse mode
 if (isModEnabled('multicompany') && $conf->entity > 1 && getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoread = true;

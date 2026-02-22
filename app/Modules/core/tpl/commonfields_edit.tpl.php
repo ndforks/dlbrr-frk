@@ -82,9 +82,9 @@ foreach ($object->fields as $key => $val) {
 	}
 
 	if (in_array($val['type'], array('int', 'integer'))) {
-		$value = GETPOSTISSET($key) ? GETPOSTINT($key) : $object->$key;
+		$value = request()->has($key) ? request()->integer($key, 0) : $object->$key;
 	} elseif ($val['type'] == 'double') {
-		$value = GETPOSTISSET($key) ? price2num(GETPOST($key, 'alphanohtml')) : $object->$key;
+		$value = request()->has($key) ? price2num(request()->input($key)) : $object->$key;
 	} elseif (preg_match('/^text/', $val['type'])) {
 		$tmparray = explode(':', $val['type']);
 		if (!empty($tmparray[1])) {
@@ -92,7 +92,7 @@ foreach ($object->fields as $key => $val) {
 		} else {
 			$check = 'nohtml';
 		}
-		$value = GETPOSTISSET($key) ? GETPOST($key, $check) : $object->$key;
+		$value = request()->has($key) ? GETPOST($key, $check) : $object->$key;
 	} elseif (preg_match('/^html/', $val['type'])) {
 		$tmparray = explode(':', $val['type']);
 		if (!empty($tmparray[1])) {
@@ -100,16 +100,16 @@ foreach ($object->fields as $key => $val) {
 		} else {
 			$check = 'restricthtml';
 		}
-		$value = GETPOSTISSET($key) ? GETPOST($key, $check) : $object->$key;
+		$value = request()->has($key) ? GETPOST($key, $check) : $object->$key;
 	} elseif (in_array($val['type'], array('date', 'datetime'))) {
-		$value = GETPOSTISSET($key) ? dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), GETPOSTINT($key.'sec'), GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year')) : $object->$key;
+		$value = request()->has($key) ? dol_mktime(request()->integer($key . 'hour', 0), request()->integer($key . 'min', 0), request()->integer($key . 'sec', 0), request()->integer($key . 'month', 0), request()->integer($key . 'day', 0), request()->integer($key . 'year', 0)) : $object->$key;
 	} elseif ($val['type'] == 'price') {
-		$value = GETPOSTISSET($key) ? price2num(GETPOST($key)) : price2num($object->$key);
+		$value = request()->has($key) ? price2num(request()->input($key)) : price2num($object->$key);
 	} elseif ($key == 'lang') {
 		// @phan-suppress-next-line PhanUndeclaredProperty
-		$value = GETPOSTISSET($key) ? GETPOST($key, 'aZ09') : $object->lang;
+		$value = request()->has($key) ? request()->input($key) : $object->lang;
 	} else {
-		$value = GETPOSTISSET($key) ? GETPOST($key, 'alpha') : $object->$key;
+		$value = request()->has($key) ? request()->input($key) : $object->$key;
 	}
 	//var_dump($val.' '.$key.' '.$value);
 	if (!empty($val['noteditable'])) {

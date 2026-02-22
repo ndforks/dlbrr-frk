@@ -11,12 +11,12 @@ class ListSociete extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $searchName = GETPOST('search_nom', 'alpha');
-        $searchTown = GETPOST('search_town', 'alpha');
-        $searchZip = GETPOST('search_zip', 'alpha');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $searchName = $request->input('search_nom');
+        $searchTown = $request->input('search_town');
+        $searchZip = $request->input('search_zip');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         $query = Societe::query();
         

@@ -47,9 +47,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 /**
  * @var DoliDB $db
  */
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$datetocheckbooking = GETPOSTINT('datetocheck');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$datetocheckbooking = request()->integer('datetocheck', 0);
 $error = 0;
 
 // Security check

@@ -44,17 +44,17 @@ $langs->loadLangs(array("admin", "recruitment"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'recruitmentjobposition';
 
 $arrayofparameters = array(
@@ -69,9 +69,9 @@ $moduledir = 'recruitment';
 $myTmpObjects = array();
 $myTmpObjects['recruitmentjobposition'] = array('label' => 'RecruitmentJobPosition', 'includerefgeneration' => 1, 'includedocgeneration' => 1, 'class' => 'RecruitmentJobPosition');
 
-$tmpobjectkey = GETPOST('object', 'aZ09');
+$tmpobjectkey = request()->input('object');
 if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
-	accessforbidden('Bad value for object. Hack attempt ?');
+	abort(403);
 }
 
 
@@ -82,8 +82,8 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconstjob', 'alpha');
-	$maskvalue = GETPOST('maskjob', 'alpha');
+	$maskconst = request()->input('maskconstjob');
+	$maskvalue = request()->input('maskjob');
 
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -99,7 +99,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen' && $tmpobjectkey) {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$className = $myTmpObjects[$tmpobjectkey]['class'];
 	$tmpobject = new $className($db);
@@ -384,7 +384,7 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 

@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment_recruitmentjobposit
 $langs->loadLangs(array("recruitment", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'recruitmentjobpositioncard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'recruitmentjobpositioncard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new RecruitmentJobPosition($db);
@@ -66,11 +66,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -92,7 +92,7 @@ $upload_dir = $conf->recruitment->multidir_output[isset($object->entity) ? $obje
 $usercanclose = $permissiontoadd;
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'recruitment', $object->id, 'recruitment_recruitmentjobposition', 'recruitmentjobposition', '', 'rowid', $isdraft);
@@ -140,13 +140,13 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
-	if ($action == 'confirm_closeas' && $usercanclose && !GETPOST('cancel', 'alpha')) {
-		if (!(GETPOSTINT('status') > 0)) {
+	if ($action == 'confirm_closeas' && $usercanclose && !request()->input('cancel')) {
+		if (!(request()->integer('status', 0) > 0)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("CloseAs")), null, 'errors');
 			$action = 'closeas';
 		} else {
@@ -154,7 +154,7 @@ if (empty($reshook)) {
 			if ($object->status == $object::STATUS_VALIDATED) {
 				$db->begin();
 
-				$result = $object->cloture($user, GETPOSTINT('status'), GETPOST('note_private', 'restricthtml'));
+				$result = $object->cloture($user, request()->integer('status', 0), request()->input('note_private'));
 				if ($result < 0) {
 					setEventMessages($object->error, $object->errors, 'errors');
 					$error++;
@@ -206,7 +206,7 @@ if ($action == 'create') {
 	}
 
 	// Set some default values
-	if (!GETPOSTISSET('fk_user_recruiter')) {
+	if (!request()->has('fk_user_recruiter')) {
 		$_POST['fk_user_recruiter'] = $user->id;
 	}
 
@@ -467,7 +467,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -527,7 +527,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

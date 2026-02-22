@@ -50,35 +50,35 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 $langs->loadLangs(array("users", "companies", "agenda", "commercial", "other", "orders", "bills"));
 
 // Get Parameters
-$action 	= GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm 	= GETPOST('confirm', 'alpha');
-$cancel     = GETPOST('cancel', 'alpha');
-$toselect 	= GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'actioncommlist'; // To manage different context of search
-$optioncss 	= GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'aZ09');
+$action 	= request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm 	= request()->input('confirm');
+$cancel     = request()->input('cancel');
+$toselect 	= request()->input('toselect', []);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'actioncommlist'; // To manage different context of search
+$optioncss 	= request()->input('optioncss');
+$mode = request()->input('mode');
 if (empty($mode) && preg_match('/show_/', $action)) {
 	$mode = $action;	// For backward compatibility
 }
 
-$disabledefaultvalues = GETPOSTINT('disabledefaultvalues');
+$disabledefaultvalues = request()->integer('disabledefaultvalues', 0);
 
-$resourceid = GETPOSTINT("search_resourceid") ? GETPOSTINT("search_resourceid") : GETPOSTINT("resourceid");
-$pid = GETPOSTINT("search_projectid", 3) ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
-$search_status = (GETPOST("search_status", 'aZ09') != '') ? GETPOST("search_status", 'aZ09') : GETPOST("status", 'aZ09');
-$type = GETPOST('search_type', 'alphanohtml') ? GETPOST('search_type', 'alphanohtml') : GETPOST('type', 'alphanohtml');
-$year = GETPOSTINT("year");
-$month = GETPOSTINT("month");
-$day = GETPOSTINT("day");
+$resourceid = request()->integer('search_resourceid', 0) ? request()->integer('search_resourceid', 0) : request()->integer('resourceid', 0);
+$pid = request()->integer("search_projectid") ?: request()->integer("projectid");
+$search_status = (request()->input('search_status') != '') ? request()->input('search_status') : request()->input('status');
+$type = request()->input('search_type') ? request()->input('search_type') : request()->input('type');
+$year = request()->integer('year', 0);
+$month = request()->integer('month', 0);
+$day = request()->integer('day', 0);
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
-if (GETPOST('search_actioncode', 'array:aZ09')) {
-	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
+if (request()->input('search_actioncode')) {
+	$actioncode = request()->input('search_actioncode');
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (GETPOST("search_actioncode") == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
+	$actioncode = request()->input("search_actioncode") ?: (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
 }
 if (is_array($actioncode)) {
 	// Remove all -1 values
@@ -95,28 +95,28 @@ if (is_array($actioncode)) {
 }
 
 // Search Fields
-$search_id = GETPOST('search_id', 'alpha');
-$search_title = GETPOST('search_title', 'alpha');
-$search_note = GETPOST('search_note', 'alpha');
+$search_id = request()->integer('search_id', 0);
+$search_title = request()->input('search_title');
+$search_note = request()->input('search_note');
 
 // $dateselect is a day included inside the event range
-$dateselect = dol_mktime(0, 0, 0, GETPOSTINT('dateselectmonth'), GETPOSTINT('dateselectday'), GETPOSTINT('dateselectyear'), 'tzuserrel');
-$datestart_dtstart = dol_mktime(0, 0, 0, GETPOSTINT('datestart_dtstartmonth'), GETPOSTINT('datestart_dtstartday'), GETPOSTINT('datestart_dtstartyear'), 'tzuserrel');
-$datestart_dtend = dol_mktime(23, 59, 59, GETPOSTINT('datestart_dtendmonth'), GETPOSTINT('datestart_dtendday'), GETPOSTINT('datestart_dtendyear'), 'tzuserrel');
-$dateend_dtstart = dol_mktime(0, 0, 0, GETPOSTINT('dateend_dtstartmonth'), GETPOSTINT('dateend_dtstartday'), GETPOSTINT('dateend_dtstartyear'), 'tzuserrel');
-$dateend_dtend = dol_mktime(23, 59, 59, GETPOSTINT('dateend_dtendmonth'), GETPOSTINT('dateend_dtendday'), GETPOSTINT('dateend_dtendyear'), 'tzuserrel');
-if ($search_status == '' && !GETPOSTISSET('search_status')) {
+$dateselect = dol_mktime(0, 0, 0, request()->integer('dateselectmonth', 0), request()->integer('dateselectday', 0), request()->integer('dateselectyear', 0), 'tzuserrel');
+$datestart_dtstart = dol_mktime(0, 0, 0, request()->integer('datestart_dtstartmonth', 0), request()->integer('datestart_dtstartday', 0), request()->integer('datestart_dtstartyear', 0), 'tzuserrel');
+$datestart_dtend = dol_mktime(23, 59, 59, request()->integer('datestart_dtendmonth', 0), request()->integer('datestart_dtendday', 0), request()->integer('datestart_dtendyear', 0), 'tzuserrel');
+$dateend_dtstart = dol_mktime(0, 0, 0, request()->integer('dateend_dtstartmonth', 0), request()->integer('dateend_dtstartday', 0), request()->integer('dateend_dtstartyear', 0), 'tzuserrel');
+$dateend_dtend = dol_mktime(23, 59, 59, request()->integer('dateend_dtendmonth', 0), request()->integer('dateend_dtendday', 0), request()->integer('dateend_dtendyear', 0), 'tzuserrel');
+if ($search_status == '' && !request()->has('search_status')) {
 	$search_status = ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_STATUS') || $disabledefaultvalues) ? '' : $conf->global->AGENDA_DEFAULT_FILTER_STATUS);
 }
-if (empty($mode) && !GETPOSTISSET('mode')) {
+if (empty($mode) && !request()->has('mode')) {
 	$mode = getDolGlobalString('AGENDA_DEFAULT_VIEW', 'show_list');
 }
 
-$filter = GETPOST("search_filter", 'alpha', 3) ? GETPOST("search_filter", 'alpha', 3) : GETPOST("filter", 'alpha', 3);
-$filtert = GETPOST("search_filtert", "intcomma", 3) ? GETPOST("search_filtert", "intcomma", 3) : GETPOST("filtert", "intcomma", 3);
-$usergroup = GETPOSTINT("search_usergroup", 3) ? GETPOSTINT("search_usergroup", 3) : GETPOSTINT("usergroup", 3);
-$showbirthday = empty($conf->use_javascript_ajax) ? (GETPOSTINT("search_showbirthday") ? GETPOSTINT("search_showbirthday") : GETPOSTINT("showbirthday")) : 1;
-$search_categ_cus = GETPOST("search_categ_cus", "intcomma", 3) ? GETPOST("search_categ_cus", "intcomma", 3) : 0;
+$filter = request()->input("search_filter") ?: request()->input("filter");
+$filtert = request()->input("search_filtert") ?: request()->input("filtert");
+$usergroup = request()->integer("search_usergroup") ?: request()->integer("usergroup");
+$showbirthday = empty($conf->use_javascript_ajax) ? (request()->integer('search_showbirthday', 0) ? request()->integer('search_showbirthday', 0) : request()->integer('showbirthday', 0)) : 1;
+$search_categ_cus = request()->input("search_categ_cus") ?: 0;
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $object = new ActionComm($db);
@@ -134,11 +134,11 @@ if (empty($filtert) && !getDolGlobalString('AGENDA_ALL_CALENDARS')) {
 }
 
 // Pagination parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -157,7 +157,7 @@ if (!$sortfield) {
 }
 
 // Security check
-$socid = GETPOSTINT("search_socid") ? GETPOSTINT("search_socid") : GETPOSTINT("socid");
+$socid = request()->integer('search_socid', 0) ? request()->integer('search_socid', 0) : request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -167,7 +167,7 @@ if ($socid < 0) {
 
 $canedit = 1;
 if (!$user->hasRight('agenda', 'myactions', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('agenda', 'allactions', 'read')) {
 	$canedit = 0;
@@ -218,12 +218,12 @@ if ($user->socid && $socid) {
  *	Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$mode = 'show_list';
 	$massaction = '';
 }
 
-if (GETPOST("viewcal") || GETPOST("viewweek") || GETPOST("viewday")) {
+if (request()->input('viewcal') || request()->input('viewweek') || request()->input('viewday')) {
 	$param = '';
 	if (is_array($_POST)) {
 		foreach ($_POST as $key => $val) {
@@ -244,7 +244,7 @@ if ($reshook < 0) {
 // Selection of new fields
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	//$actioncode='';
 	$search_id = '';
 	$search_title = '';
@@ -286,7 +286,7 @@ if (empty($reshook) && !empty($massaction)) {
 		foreach ($toselect as $toselectid) {
 			$result = $object->updatePercent($toselectid, $percent);
 			if ($result < 0) {
-				dol_print_error($db);
+				abort(500);
 				break;
 			}
 		}
@@ -382,41 +382,41 @@ if ($search_title != '') {
 if ($search_note != '') {
 	$param .= '&search_note='.urlencode($search_note);
 }
-if (GETPOSTINT('datestart_dtstartday')) {
-	$param .= '&datestart_dtstartday='.GETPOSTINT('datestart_dtstartday');
+if (request()->integer('datestart_dtstartday', 0)) {
+	$param .= '&datestart_dtstartday='.request()->integer('datestart_dtstartday', 0);
 }
-if (GETPOSTINT('datestart_dtstartmonth')) {
-	$param .= '&datestart_dtstartmonth='.GETPOSTINT('datestart_dtstartmonth');
+if (request()->integer('datestart_dtstartmonth', 0)) {
+	$param .= '&datestart_dtstartmonth='.request()->integer('datestart_dtstartmonth', 0);
 }
-if (GETPOSTINT('datestart_dtstartyear')) {
-	$param .= '&datestart_dtstartyear='.GETPOSTINT('datestart_dtstartyear');
+if (request()->integer('datestart_dtstartyear', 0)) {
+	$param .= '&datestart_dtstartyear='.request()->integer('datestart_dtstartyear', 0);
 }
-if (GETPOSTINT('datestart_dtendday')) {
-	$param .= '&datestart_dtendday='.GETPOSTINT('datestart_dtendday');
+if (request()->integer('datestart_dtendday', 0)) {
+	$param .= '&datestart_dtendday='.request()->integer('datestart_dtendday', 0);
 }
-if (GETPOSTINT('datestart_dtendmonth')) {
-	$param .= '&datestart_dtendmonth='.GETPOSTINT('datestart_dtendmonth');
+if (request()->integer('datestart_dtendmonth', 0)) {
+	$param .= '&datestart_dtendmonth='.request()->integer('datestart_dtendmonth', 0);
 }
-if (GETPOSTINT('datestart_dtendyear')) {
-	$param .= '&datestart_dtendyear='.GETPOSTINT('datestart_dtendyear');
+if (request()->integer('datestart_dtendyear', 0)) {
+	$param .= '&datestart_dtendyear='.request()->integer('datestart_dtendyear', 0);
 }
-if (GETPOSTINT('dateend_dtstartday')) {
-	$param .= '&dateend_dtstartday='.GETPOSTINT('dateend_dtstartday');
+if (request()->integer('dateend_dtstartday', 0)) {
+	$param .= '&dateend_dtstartday='.request()->integer('dateend_dtstartday', 0);
 }
-if (GETPOSTINT('dateend_dtstartmonth')) {
-	$param .= '&dateend_dtstartmonth='.GETPOSTINT('dateend_dtstartmonth');
+if (request()->integer('dateend_dtstartmonth', 0)) {
+	$param .= '&dateend_dtstartmonth='.request()->integer('dateend_dtstartmonth', 0);
 }
-if (GETPOSTINT('dateend_dtstartyear')) {
-	$param .= '&dateend_dtstartyear='.GETPOSTINT('dateend_dtstartyear');
+if (request()->integer('dateend_dtstartyear', 0)) {
+	$param .= '&dateend_dtstartyear='.request()->integer('dateend_dtstartyear', 0);
 }
-if (GETPOSTINT('dateend_dtendday')) {
-	$param .= '&dateend_dtendday='.GETPOSTINT('dateend_dtendday');
+if (request()->integer('dateend_dtendday', 0)) {
+	$param .= '&dateend_dtendday='.request()->integer('dateend_dtendday', 0);
 }
-if (GETPOSTINT('dateend_dtendmonth')) {
-	$param .= '&dateend_dtendmonth='.GETPOSTINT('dateend_dtendmonth');
+if (request()->integer('dateend_dtendmonth', 0)) {
+	$param .= '&dateend_dtendmonth='.request()->integer('dateend_dtendmonth', 0);
 }
-if (GETPOSTINT('dateend_dtendyear')) {
-	$param .= '&dateend_dtendyear='.GETPOSTINT('dateend_dtendyear');
+if (request()->integer('dateend_dtendyear', 0)) {
+	$param .= '&dateend_dtendyear='.request()->integer('dateend_dtendyear', 0);
 }
 if ($optioncss != '') {
 	$param .= '&optioncss='.urlencode($optioncss);
@@ -442,7 +442,7 @@ if ($user->hasRight('agenda', 'allactions', 'delete')) {
 if (isModEnabled('category') && $user->hasRight('agenda', 'myactions', 'create')) {
 	$arrayofmassactions['preaffecttag'] = img_picto('', 'category', 'class="pictofixedwidth"').$langs->trans("AffectTag");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete','preaffecttag'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete','preaffecttag'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
@@ -651,7 +651,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 			$objforcount = $db->fetch_object($resql);
 			$nbtotalofrecords = (int) $objforcount->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$db->free($resql);
@@ -666,7 +666,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 			$objforcount2 = $db->fetch_object($resql2);
 			$nbtotalofrecords = (int) $objforcount1->nbtotalofrecords + (int) $objforcount2->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$db->free($resql1);
@@ -687,7 +687,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

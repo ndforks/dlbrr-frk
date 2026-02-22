@@ -1141,7 +1141,7 @@ class Stripe extends CommonObject
 
 						$service = 'StripeTest';
 						$servicestatus = 0;
-						if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+						if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 							$service = 'StripeLive';
 							$servicestatus = 1;
 						}

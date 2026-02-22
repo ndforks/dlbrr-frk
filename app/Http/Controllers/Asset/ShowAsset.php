@@ -12,8 +12,8 @@ class ShowAsset extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => view('asset.create', ['action' => 'create']),
@@ -26,13 +26,13 @@ class ShowAsset extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        Asset::findOrFail($id)->update(array_filter(['ref' => GETPOST('ref', 'alpha')], fn($v) => $v));
-        return redirect("/asset/card.php?id={$id}")->with('success', 'Asset updated');
+        Asset::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
+        return redirect()->route('asset.show', ['id' => $id])->with('success', 'Asset updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Asset::findOrFail($id)->delete();
-        return redirect('/asset/list.php')->with('success', 'Asset deleted');
+        return redirect()->route('asset.list')->with('success', 'Asset deleted');
     }
 }

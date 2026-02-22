@@ -52,27 +52,27 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array("accountancy", "banks", "bills", "categories", "compta", "users"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'alpha');
-$confirm = GETPOST('confirm');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$accountid = GETPOSTINT("accountid") > 0 ? GETPOSTINT("accountid") : 0;
-$label = GETPOST("label", "alpha");
-$sens = GETPOSTINT("sens");
-$amount = GETPOST("amount");
-$paymenttype = GETPOST("paymenttype", "aZ09");
-$accountancy_code = GETPOST("accountancy_code", "alpha");
-$projectid = GETPOSTINT('projectid') ? GETPOSTINT('projectid') : GETPOSTINT('fk_project');
+$accountid = request()->integer('accountid', 0) > 0 ? request()->integer('accountid', 0) : 0;
+$label = request()->input('label');
+$sens = request()->integer('sens', 0);
+$amount = request()->input('amount');
+$paymenttype = request()->input('paymenttype');
+$accountancy_code = request()->integer('accountancy_code', 0);
+$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : request()->integer('fk_project', 0);
 if (isModEnabled('accounting') && getDolGlobalString('ACCOUNTANCY_COMBO_FOR_AUX')) {
-	$subledger_account = GETPOST("subledger_account", "alpha") > 0 ? GETPOST("subledger_account", "alpha") : '';
+	$subledger_account = request()->integer('subledger_account', 0) > 0 ? request()->integer('subledger_account', 0) : '';
 } else {
-	$subledger_account = GETPOST("subledger_account", "alpha");
+	$subledger_account = request()->integer('subledger_account', 0);
 }
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -114,39 +114,39 @@ if (empty($reshook)) {
 	// Link to a project
 	if ($action == 'classin' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	if ($action == 'add' && $permissiontoadd) {
 		$error = 0;
 
-		$datep = dol_mktime(12, 0, 0, GETPOSTINT("datepmonth"), GETPOSTINT("datepday"), GETPOSTINT("datepyear"));
-		$datev = dol_mktime(12, 0, 0, GETPOSTINT("datevmonth"), GETPOSTINT("datevday"), GETPOSTINT("datevyear"));
+		$datep = dol_mktime(12, 0, 0, request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
+		$datev = dol_mktime(12, 0, 0, request()->integer('datevmonth', 0), request()->integer('datevday', 0), request()->integer('datevyear', 0));
 		if (empty($datev)) {
 			$datev = $datep;
 		}
 
 		$object->ref = ''; // TODO
-		$object->fk_account = GETPOSTINT("accountid") > 0 ? GETPOSTINT("accountid") : 0;
+		$object->fk_account = request()->integer('accountid', 0) > 0 ? request()->integer('accountid', 0) : 0;
 		$object->accountid = $object->fk_account;
 		$object->datev = $datev;
 		$object->datep = $datep;
-		$object->amount = GETPOSTFLOAT("amount");
-		$object->label = GETPOST("label", 'restricthtml');
-		$object->note_private = GETPOST("note", 'restricthtml');
+		$object->amount = (float)request()->input("amount", 0.0);
+		$object->label = request()->input('label');
+		$object->note_private = request()->input('note');
 		$object->note = $object->note_private;
-		$object->type_payment = dol_getIdFromCode($db, GETPOST('paymenttype'), 'c_paiement', 'code', 'id', 1);
-		$object->num_payment = GETPOST("num_payment", 'alpha');
-		$object->chqemetteur = GETPOST("chqemetteur", 'alpha');
-		$object->chqbank = GETPOST("chqbank", 'alpha');
+		$object->type_payment = dol_getIdFromCode($db, request()->input('paymenttype'), 'c_paiement', 'code', 'id', 1);
+		$object->num_payment = request()->input('num_payment');
+		$object->chqemetteur = request()->input('chqemetteur');
+		$object->chqbank = request()->input('chqbank');
 		$object->fk_user_author = $user->id;
-		$object->category_transaction = GETPOSTINT("category_transaction");
+		$object->category_transaction = request()->integer('category_transaction', 0);
 
-		$object->accountancy_code = (GETPOST("accountancy_code") != '-1' ? GETPOST("accountancy_code", "alpha") : "");
+		$object->accountancy_code = (request()->input('accountancy_code') != '-1' ? request()->input('accountancy_code') : "");
 		$object->subledger_account = $subledger_account;
 
-		$object->sens = GETPOSTINT('sens');
-		$object->fk_project = GETPOSTINT('fk_project');
+		$object->sens = request()->integer('sens', 0);
+		$object->fk_project = request()->integer('fk_project', 0);
 
 		if (!checkGeneralAccountAllowsAuxiliary($db, $object->accountancy_code, $object->subledger_account)) {
 			setEventMessages($langs->trans("ErrorAccountNotCentralized"). ". " . $langs->trans("RemoveSubsidiaryAccountOrAdjustTheGeneralAccount"), null, 'errors');
@@ -259,7 +259,7 @@ if (empty($reshook)) {
 
 		$result = $object->fetch($id);
 
-		$object->accountancy_code = GETPOST('accountancy_code', 'alphanohtml');
+		$object->accountancy_code = request()->input('accountancy_code');
 
 		$res = $object->update($user);
 		if ($res > 0) {
@@ -303,14 +303,14 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontoadd) {
 		unset($object->id);
 		unset($object->ref);
 
-		if (GETPOST('clone_label', 'alphanohtml')) {
-			$object->label = GETPOST('clone_label', 'alphanohtml');
+		if (request()->input('clone_label')) {
+			$object->label = request()->input('clone_label');
 		} else {
 			$object->label = $langs->trans("CopyOf").' '.$object->label;
 		}
 
-		$newdatepayment = dol_mktime(0, 0, 0, GETPOSTINT('clone_date_paymentmonth'), GETPOSTINT('clone_date_paymentday'), GETPOSTINT('clone_date_paymentyear'));
-		$newdatevalue = dol_mktime(0, 0, 0, GETPOSTINT('clone_date_valuemonth'), GETPOSTINT('clone_date_valueday'), GETPOSTINT('clone_date_valueyear'));
+		$newdatepayment = dol_mktime(0, 0, 0, request()->integer('clone_date_paymentmonth', 0), request()->integer('clone_date_paymentday', 0), request()->integer('clone_date_paymentyear', 0));
+		$newdatevalue = dol_mktime(0, 0, 0, request()->integer('clone_date_valuemonth', 0), request()->integer('clone_date_valueday', 0), request()->integer('clone_date_valueyear', 0));
 		if ($newdatepayment) {
 			$object->datep = $newdatepayment;
 		}
@@ -320,12 +320,12 @@ if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontoadd) {
 			$object->datev = $newdatepayment;
 		}
 
-		if (GETPOSTISSET("clone_sens")) {
-			$object->sens = GETPOSTINT("clone_sens");
+		if (request()->has('clone_sens')) {
+			$object->sens = request()->integer('clone_sens', 0);
 		} // else { $object->sens = $object->sens; }
 
-		if (GETPOSTISSET("clone_amount")) {
-			$object->amount = GETPOSTFLOAT("clone_amount");
+		if (request()->has('clone_amount')) {
+			$object->amount = (float)request()->input("clone_amount", 0.0);
 		} else {
 			$object->amount = (float) price2num($object->amount);
 		}
@@ -377,7 +377,7 @@ if ($id) {
 	$object = new PaymentVarious($db);
 	$result = $object->fetch($id);
 	if ($result <= 0) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 }
@@ -509,19 +509,19 @@ if ($action == 'create') {
 		print '<tr><td><label for="num_payment">'.$langs->trans('Numero');
 		print ' <em class="opacitymedium">('.$langs->trans("ChequeOrTransferNumber").')</em>';
 		print '</label></td>';
-		print '<td><input name="num_payment" class="maxwidth150onsmartphone" id="num_payment" type="text" value="'.GETPOST("num_payment").'"></td></tr>'."\n";
+		print '<td><input name="num_payment" class="maxwidth150onsmartphone" id="num_payment" type="text" value="'.request()->input('num_payment').'"></td></tr>'."\n";
 
 		// Check transmitter
-		print '<tr><td class="'.(GETPOST('paymenttype') == 'CHQ' ? 'fieldrequired ' : '').'fieldrequireddyn"><label for="fieldchqemetteur">'.$langs->trans('CheckTransmitter');
+		print '<tr><td class="'.(request()->input('paymenttype') == 'CHQ' ? 'fieldrequired ' : '').'fieldrequireddyn"><label for="fieldchqemetteur">'.$langs->trans('CheckTransmitter');
 		print ' <em class="opacitymedium">('.$langs->trans("ChequeMaker").')</em>';
 		print '</label></td>';
-		print '<td><input id="fieldchqemetteur" name="chqemetteur" size="30" type="text" value="'.GETPOST('chqemetteur', 'alphanohtml').'"></td></tr>';
+		print '<td><input id="fieldchqemetteur" name="chqemetteur" size="30" type="text" value="'.request()->input('chqemetteur').'"></td></tr>';
 
 		// Bank name
 		print '<tr><td><label for="chqbank">'.$langs->trans('Bank');
 		print ' <em class="opacitymedium">('.$langs->trans("ChequeBank").')</em>';
 		print '</label></td>';
-		print '<td><input id="chqbank" name="chqbank" size="30" type="text" value="'.GETPOST('chqbank', 'alphanohtml').'"></td></tr>';
+		print '<td><input id="chqbank" name="chqbank" size="30" type="text" value="'.request()->input('chqbank').'"></td></tr>';
 	}
 
 	// Project
@@ -545,7 +545,7 @@ if ($action == 'create') {
 	// Category
 	if (is_array($options) && count($options) && isModEnabled('category')) {
 		print '<tr><td>'.$langs->trans("RubriquesTransactions").'</td><td>';
-		print img_picto('', 'category', 'class="pictofixedwidth"').Form::selectarray('category_transaction', $options, GETPOST('category_transaction'), 1, 0, 0, '', 0, 0, 0, '', 'minwidth300', 1);
+		print img_picto('', 'category', 'class="pictofixedwidth"').Form::selectarray('category_transaction', $options, request()->input('category_transaction'), 1, 0, 0, '', 0, 0, 0, '', 'minwidth300', 1);
 		print '</td></tr>';
 	}
 

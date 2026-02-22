@@ -43,13 +43,13 @@ $langs->loadLangs(array("admin", "products", "productbatch"));
 
 // Security check
 if (!$user->admin || (!isModEnabled('productbatch'))) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'alpha');
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'product_batch';
 
 $error = 0;
@@ -62,8 +62,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMaskLot') {
-	$maskconstbatch = GETPOST('maskconstLot', 'aZ09');
-	$maskbatch = GETPOST('maskLot', 'alpha');
+	$maskconstbatch = request()->input('maskconstLot');
+	$maskbatch = request()->input('maskLot');
 
 	if ($maskconstbatch && preg_match('/_MASK$/', $maskconstbatch)) {
 		$res = dolibarr_set_const($db, $maskconstbatch, $maskbatch, 'chaine', 0, '', $conf->entity);
@@ -78,8 +78,8 @@ if ($action == 'updateMaskLot') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'updateMaskSN') {
-	$maskconstbatch = GETPOST('maskconstSN', 'aZ09');
-	$maskbatch = GETPOST('maskSN', 'alpha');
+	$maskconstbatch = request()->input('maskconstSN');
+	$maskbatch = request()->input('maskSN');
 
 	if ($maskconstbatch && preg_match('/_MASK$/', $maskconstbatch)) {
 		$res = dolibarr_set_const($db, $maskconstbatch, $maskbatch, 'chaine', 0, '', $conf->entity);
@@ -118,7 +118,7 @@ if ($action == 'updateMaskLot') {
 		}
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$product_batch = new Productlot($db);
 	$product_batch->initAsSpecimen();
@@ -416,7 +416,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<br>';

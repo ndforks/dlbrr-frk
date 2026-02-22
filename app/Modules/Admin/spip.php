@@ -47,11 +47,11 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("admin", "members", "mailmanspip"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -61,9 +61,9 @@ $error = 0;
 
 // Action mise a jour ou ajout d'une constante
 if ($action == 'update' || $action == 'add') {
-	$constnamearray = GETPOST("constname", 'array');
-	$constvaluearray = GETPOST("constvalue", 'array');
-	$constnotearray = GETPOST("constnote", 'array');
+	$constnamearray = request()->input('constname');
+	$constvaluearray = request()->input('constvalue');
+	$constnotearray = request()->input('constnote');
 
 	// Action mise a jour ou ajout d'une constante
 	if ($action == 'update' || $action == 'add') {
@@ -89,17 +89,17 @@ if ($action == 'update' || $action == 'add') {
 
 // Action activation d'un sous module du module adherent
 if ($action == 'set') {
-	$result = dolibarr_set_const($db, GETPOST("name", 'aZ09'), GETPOST("value"), '', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, request()->input('name'), request()->input('value'), '', 0, '', $conf->entity);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Action deactivation d'un sous module du module adherent
 if ($action == 'unset') {
-	$result = dolibarr_del_const($db, GETPOST("name", 'aZ09'), $conf->entity);
+	$result = dolibarr_del_const($db, request()->input('name'), $conf->entity);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

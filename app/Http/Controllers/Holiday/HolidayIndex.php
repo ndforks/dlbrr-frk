@@ -9,6 +9,6 @@ class HolidayIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/holiday/list.php');
+        return redirect()->route('holiday.list');
     }
 }

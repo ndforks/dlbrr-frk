@@ -71,7 +71,7 @@ function facture_prepare_head($object)
 				$nbStandingOrders = $obj->nb;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("banks");
 
@@ -553,7 +553,7 @@ function getNumberInvoicesPieChart($mode)
 
 			return $result;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	return '';
@@ -706,7 +706,7 @@ function getCustomerInvoiceDraftTable($maxCount = 500, $socid = 0)
 			$result .= "</table></div>";
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -844,7 +844,7 @@ function getDraftSupplierTable($maxCount = 500, $socid = 0)
 			$result .= "</table></div>";
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -885,7 +885,7 @@ function getCustomerInvoiceLatestEditTable($maxCount = 5, $socid = 0)
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$num = $db->num_rows($resql);
@@ -996,7 +996,7 @@ function getPurchaseInvoiceLatestEditTable($maxCount = 5, $socid = 0)
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 		return '';
 	}
 
@@ -1263,7 +1263,7 @@ function getCustomerInvoiceUnpaidOpenTable($maxCount = 500, $socid = 0)
 			print '</table></div><br>';
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1433,7 +1433,7 @@ function getPurchaseInvoiceUnpaidOpenTable($maxCount = 500, $socid = 0)
 			}
 			print '</table></div><br>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

@@ -42,22 +42,22 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/loan.lib.php';
 
 $langs->loadLangs(array("bills", "loan"));
 
-$action = GETPOST('action', 'aZ09');
-$confirm	= GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$confirm	= request()->input('confirm');
+$cancel = request()->input('cancel');
 
-$chid = GETPOSTINT('id');
-$datepaid = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+$chid = request()->integer('id', 0);
+$datepaid = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
 // Security check
 $socid = 0;
 if ($user->socid > 0) {
 	$socid = $user->socid;
-} elseif (GETPOSTISSET('socid')) {
-	$socid = GETPOSTINT('socid');
+} elseif (request()->has('socid')) {
+	$socid = request()->integer('socid', 0);
 }
 if (!$user->hasRight('loan', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 $loan = new Loan($db);
@@ -116,7 +116,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		exit;
 	}
 
-	if (!GETPOSTINT('paymenttype') > 0) {
+	if (!request()->integer('paymenttype', 0) > 0) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("PaymentMode")), null, 'errors');
 		$error++;
 	}
@@ -124,7 +124,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Date")), null, 'errors');
 		$error++;
 	}
-	if (isModEnabled("bank") && !GETPOSTINT('accountid') > 0) {
+	if (isModEnabled("bank") && !request()->integer('accountid', 0) > 0) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("AccountToCredit")), null, 'errors');
 		$error++;
 	}
@@ -132,15 +132,15 @@ if ($action == 'add_payment' && $permissiontoadd) {
 	if (!$error) {
 		$paymentid = 0;
 
-		$pay_amount_capital = (float) price2num(GETPOST('amount_capital'));
-		$pay_amount_insurance = (float) price2num(GETPOST('amount_insurance'));
+		$pay_amount_capital = (float) price2num(request()->input('amount_capital'));
+		$pay_amount_insurance = (float) price2num(request()->input('amount_insurance'));
 		// User can't set interest him self if schedule is set (else value in schedule can be incoherent)
 		if (!empty($line)) {
 			$pay_amount_interest = $line->amount_interest;
 		} else {
-			$pay_amount_interest = (float) price2num(GETPOST('amount_interest'));
+			$pay_amount_interest = (float) price2num(request()->input('amount_interest'));
 		}
-		$remaindertopay = (float) price2num(GETPOST('remaindertopay'));
+		$remaindertopay = (float) price2num(request()->input('remaindertopay'));
 		$amount = (float) price2num($pay_amount_capital + $pay_amount_insurance + $pay_amount_interest, 'MT');
 
 		// This term is already paid
@@ -170,11 +170,11 @@ if ($action == 'add_payment' && $permissiontoadd) {
 			$payment->amount_capital	= $pay_amount_capital;
 			$payment->amount_insurance	= $pay_amount_insurance;
 			$payment->amount_interest	= $pay_amount_interest;
-			$payment->fk_bank           = GETPOSTINT('accountid');
-			$payment->paymenttype       = GETPOSTINT('paymenttype');
-			$payment->num_payment		= GETPOST('num_payment', 'alphanohtml');
-			$payment->note_private      = GETPOST('note_private', 'restricthtml');
-			$payment->note_public       = GETPOST('note_public', 'restricthtml');
+			$payment->fk_bank           = request()->integer('accountid', 0);
+			$payment->paymenttype       = request()->integer('paymenttype', 0);
+			$payment->num_payment		= request()->input('num_payment');
+			$payment->note_private      = request()->input('note_private');
+			$payment->note_public       = request()->input('note_public');
 
 			if (!$error) {
 				$paymentid = $payment->create($user);
@@ -316,7 +316,7 @@ if ($action == 'create') {
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PaymentMode").'</td><td colspan="2">';
 	print img_picto('', 'money-bill-alt', 'class="pictofixedwidth"');
-	$form->select_types_paiements(GETPOSTISSET("paymenttype") ? GETPOST("paymenttype", 'alphanohtml') : $loan->fk_typepayment, "paymenttype");
+	$form->select_types_paiements(request()->has('paymenttype') ? request()->input('paymenttype') : $loan->fk_typepayment, "paymenttype");
 	print "</td>\n";
 	print '</tr>';
 
@@ -324,14 +324,14 @@ if ($action == 'create') {
 	print '<td class="fieldrequired">'.$langs->trans('AccountToDebit').'</td>';
 	print '<td colspan="2">';
 	print img_picto('', 'bank_account', 'class="pictofixedwidth"');
-	$form->select_comptes(GETPOSTISSET("accountid") ? GETPOSTINT("accountid") : $loan->accountid, "accountid", 0, 'courant = '.Account::TYPE_CURRENT, 1); // Show opened bank account list
+	$form->select_comptes(request()->has('accountid') ? request()->integer('accountid', 0) : $loan->accountid, "accountid", 0, 'courant = '.Account::TYPE_CURRENT, 1); // Show opened bank account list
 	print '</td></tr>';
 
 	// Number
 	print '<tr><td>'.$langs->trans('Numero');
 	print ' <em>('.$langs->trans("ChequeOrTransferNumber").')</em>';
 	print '</td>';
-	print '<td colspan="2"><input name="num_payment" type="text" value="'.GETPOST('num_payment', 'alphanohtml').'"></td>'."\n";
+	print '<td colspan="2"><input name="num_payment" type="text" value="'.request()->input('num_payment').'"></td>'."\n";
 	print "</tr>";
 
 	print '<tr>';
@@ -374,19 +374,19 @@ if ($action == 'create') {
 
 	print '<td class="right">';
 	if ($sumpaid < $loan->capital) {
-		print $langs->trans("LoanCapital").': <input type="text" size="8" name="amount_capital" value="'.(GETPOSTISSET('amount_capital') ? GETPOST('amount_capital') : $amount_capital).'">';
+		print $langs->trans("LoanCapital").': <input type="text" size="8" name="amount_capital" value="'.(request()->has('amount_capital') ? request()->input('amount_capital') : $amount_capital).'">';
 	} else {
 		print '-';
 	}
 	print '<br>';
 	if ($sumpaid < $loan->capital) {
-		print $langs->trans("Insurance").': <input type="text" size="8" name="amount_insurance" value="'.(GETPOSTISSET('amount_insurance') ? GETPOST('amount_insurance') : $amount_insurance).'">';
+		print $langs->trans("Insurance").': <input type="text" size="8" name="amount_insurance" value="'.(request()->has('amount_insurance') ? request()->input('amount_insurance') : $amount_insurance).'">';
 	} else {
 		print '-';
 	}
 	print '<br>';
 	if ($sumpaid < $loan->capital) {
-		print $langs->trans("Interest").': <input type="text" size="8" name="amount_interest" value="'.(GETPOSTISSET('amount_interest') ? GETPOST('amount_interest') : $amount_interest).'" '.(!empty($line) ? 'disabled title="'.$langs->trans('CantModifyInterestIfScheduleIsUsed').'"' : '').'>';
+		print $langs->trans("Interest").': <input type="text" size="8" name="amount_interest" value="'.(request()->has('amount_interest') ? request()->input('amount_interest') : $amount_interest).'" '.(!empty($line) ? 'disabled title="'.$langs->trans('CantModifyInterestIfScheduleIsUsed').'"' : '').'>';
 	} else {
 		print '-';
 	}

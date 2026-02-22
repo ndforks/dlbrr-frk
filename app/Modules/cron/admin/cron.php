@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/cron.lib.php';
 $langs->loadLangs(array('admin', 'cron'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$actionsave = GETPOST("save", 'alphanohtml');
+$actionsave = request()->input('save');
 
 // Save parameters
 if (!empty($actionsave)) {
@@ -54,7 +54,7 @@ if (!empty($actionsave)) {
 
 	$db->begin();
 
-	$i += dolibarr_set_const($db, 'CRON_KEY', GETPOST("CRON_KEY"), 'chaine', 0, '', 0);
+	$i += dolibarr_set_const($db, 'CRON_KEY', request()->input('CRON_KEY'), 'chaine', 0, '', 0);
 
 	if ($i >= 1) {
 		$db->commit();
@@ -105,7 +105,7 @@ if (getDolGlobalInt('CRON_DISABLE_KEY_CHANGE') > 0) {
 }
 print '<td>';
 if (getDolGlobalInt('CRON_DISABLE_KEY_CHANGE') != 1) {
-	print '<input type="text" class="flat minwidth300 widthcentpercentminusx"'.$disabled.' id="CRON_KEY" name="CRON_KEY" value="'.(GETPOST('CRON_KEY') ? GETPOST('CRON_KEY') : getDolGlobalString('CRON_KEY')).'">';
+	print '<input type="text" class="flat minwidth300 widthcentpercentminusx"'.$disabled.' id="CRON_KEY" name="CRON_KEY" value="'.(request()->input('CRON_KEY') ? request()->input('CRON_KEY') : getDolGlobalString('CRON_KEY')).'">';
 	if (getDolGlobalInt('CRON_DISABLE_KEY_CHANGE') == 0) {
 		if (!empty($conf->use_javascript_ajax)) {
 			print '&nbsp;'.img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token" class="linkobject"');
@@ -116,7 +116,7 @@ if (getDolGlobalInt('CRON_DISABLE_KEY_CHANGE') != 1) {
 	}
 } else {
 	print getDolGlobalString('CRON_KEY');
-	print '<input type="hidden" id="CRON_KEY" name="CRON_KEY" value="'.(GETPOST('CRON_KEY') ? GETPOST('CRON_KEY') : getDolGlobalString('CRON_KEY')).'">';
+	print '<input type="hidden" id="CRON_KEY" name="CRON_KEY" value="'.(request()->input('CRON_KEY') ? request()->input('CRON_KEY') : getDolGlobalString('CRON_KEY')).'">';
 }
 print '</td>';
 print '<td>&nbsp;</td>';

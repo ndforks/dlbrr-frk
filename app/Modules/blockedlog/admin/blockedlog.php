@@ -42,15 +42,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->loadLangs(array('admin', 'blockedlog', 'other'));
 
 // Get Parameters
-$action     = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action     = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$withtab    = GETPOSTINT('withtab');
-$origin     = GETPOST('origin');
+$withtab    = request()->integer('withtab', 0);
+$origin     = request()->input('origin');
 
 // Access Control
 if (!$user->admin || !isModEnabled('blockedlog')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -61,7 +61,7 @@ if (!$user->admin || !isModEnabled('blockedlog')) {
 $reg = array();
 if (preg_match('/set_(.*)/', $action, $reg)) {
 	$code = $reg[1];
-	$values = GETPOST($code);
+	$values = request()->input($code);
 	if (is_array($values)) {
 		$values = implode(',', $values);
 	}
@@ -70,7 +70,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"].($withtab ? '?withtab='.$withtab : ''));
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -80,7 +80,7 @@ if (preg_match('/del_(.*)/', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"].($withtab ? '?withtab='.$withtab : ''));
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -114,7 +114,7 @@ if (!isRegistrationDataSavedAndPushed()) {
 print load_fiche_titre($title.'<br>'.$texttop, $linkback, 'blockedlog', 0, '', '', $morehtmlcenter);
 
 if ($withtab) {
-	$head = blockedlogadmin_prepare_head(GETPOST('withtab', 'alpha'));
+	$head = blockedlogadmin_prepare_head(request()->input('withtab'));
 	print dol_get_fiche_head($head, 'technicalinfo', '', -1);
 }
 

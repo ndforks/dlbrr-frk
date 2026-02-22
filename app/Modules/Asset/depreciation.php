@@ -42,11 +42,11 @@ require_once DOL_DOCUMENT_ROOT . '/asset/class/assetdepreciationoptions.class.ph
 $langs->loadLangs(array("assets", "companies"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new Asset($db);
@@ -65,15 +65,15 @@ if ($id > 0 || !empty($ref)) {
 
 // Security check (enable the most restrictive one)
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled('asset')) {
-	accessforbidden();
+	abort(403);
 }
 if (!empty($object->not_depreciated)) {
-	accessforbidden();
+	abort(403);
 }
 
 $object->asset_depreciation_options = &$assetdepreciationoptions;

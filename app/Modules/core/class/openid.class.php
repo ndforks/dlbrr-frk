@@ -456,12 +456,12 @@ class SimpleOpenID
 	public function validateWithServer()
 	{
 		$params = array(
-			'openid.assoc_handle' => urlencode(GETPOST('openid_assoc_handle')),
-			'openid.signed' => urlencode(GETPOST('openid_signed')),
-			'openid.sig' => urlencode(GETPOST('openid_sig'))
+			'openid.assoc_handle' => urlencode(request()->input('openid_assoc_handle')),
+			'openid.signed' => urlencode(request()->input('openid_signed')),
+			'openid.sig' => urlencode(request()->input('openid_sig'))
 		);
 		// Send only required parameters to confirm validity
-		$arr_signed = explode(",", str_replace('sreg.', 'sreg_', GETPOST('openid_signed')));
+		$arr_signed = explode(",", str_replace('sreg.', 'sreg_', request()->input('openid_signed')));
 		$num = count($arr_signed);
 		for ($i = 0; $i < $num; $i++) {
 			$s = str_replace('sreg_', 'sreg.', $arr_signed[$i]);

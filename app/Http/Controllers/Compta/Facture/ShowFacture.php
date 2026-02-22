@@ -12,8 +12,8 @@ class ShowFacture extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -46,21 +46,21 @@ class ShowFacture extends Controller
         $facture = Facture::findOrFail($id);
         
         $data = [
-            'ref' => GETPOST('ref', 'alpha'),
-            'ref_client' => GETPOST('ref_client', 'alpha'),
-            'fk_soc' => GETPOSTINT('socid'),
-            'datef' => GETPOST('datef', 'alpha'),
+            'ref' => $request->input('ref'),
+            'ref_client' => $request->input('ref_client'),
+            'fk_soc' => $request->integer('socid', 0),
+            'datef' => $request->input('datef'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $facture->update($data);
         
-        return redirect("/compta/facture/card.php?id={$id}")->with('success', 'Invoice updated');
+        return redirect()->route('facture.show', ['id' => $id])->with('success', 'Invoice updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Facture::findOrFail($id)->delete();
-        return redirect('/compta/facture/list.php')->with('success', 'Invoice deleted');
+        return redirect()->route('facture.list')->with('success', 'Invoice deleted');
     }
 }

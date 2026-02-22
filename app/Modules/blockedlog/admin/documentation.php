@@ -45,17 +45,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
 $langs->loadLangs(array('admin', 'blockedlog', 'other'));
 
 // Get Parameters
-$action     = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$cancel     = GETPOST('cancel');
+$action     = request()->input('action');
+$backtopage = request()->input('backtopage');
+$cancel     = request()->input('cancel');
 
-$withtab    = GETPOSTISSET('withtab') ? GETPOSTINT('withtab') : 1;
-$origin     = GETPOST('origin');
-$mode       = GETPOST('mode');
+$withtab    = request()->has('withtab') ? request()->integer('withtab', 0) : 1;
+$origin     = request()->input('origin');
+$mode       = request()->input('mode');
 
 // Access Control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -76,7 +76,7 @@ $formcompany = new FormCompany($db);
 $block_static = new BlockedLog($db);
 $block_static->loadTrackedEvents();
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	$title = $langs->trans("ModuleSetup").' '.$langs->trans('BlockedLog');
 } else {
 	$title = $langs->trans("BrowseBlockedLog");
@@ -86,7 +86,7 @@ $help_url="EN:Module_Unalterable_Archives_-_Logs|FR:Module_Archives_-_Logs_Inalt
 
 llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-blockedlog page-admin_blockedlog');
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	$linkback = '<a href="'.dolBuildUrl($backtopage ? $backtopage : DOL_URL_ROOT.'/admin/modules.php', ['restore_lastsearch_values' => 1]).'">'.img_picto($langs->trans("BackToModuleList"), 'back', 'class="pictofixedwidth"').'<span class="hideonsmartphone">'.$langs->trans("BackToModuleList").'</span></a>';
 } else {
 	$linkback='';
@@ -103,7 +103,7 @@ if ((!isRegistrationDataSavedAndPushed() || !isModEnabled('blockedlog')) && $mod
 print load_fiche_titre($title.'<br>'.$texttop, $linkback, 'blockedlog', 0, '', '', $morehtmlcenter);
 
 if ($withtab) {
-	$head = blockedlogadmin_prepare_head(GETPOST('withtab', 'alpha'));
+	$head = blockedlogadmin_prepare_head(request()->input('withtab'));
 	print dol_get_fiche_head($head, 'documentation', '', -1);
 } else {
 	print '<br>';

@@ -50,19 +50,19 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height', '160');
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'products', 'stocks', 'bills', 'other'));
 
-$id		= GETPOSTINT('id'); // For this page, id can also be 'all'
-$ref	= GETPOST('ref', 'alpha');
-$mode = (GETPOST('mode', 'alpha') ? GETPOST('mode', 'alpha') : 'byunit');
-$search_year   = GETPOSTINT('search_year');
-$search_categ  = GETPOSTINT('search_categ');
-$notab = GETPOSTINT('notab');
-$type = GETPOST('type', 'alpha');	// Can be '' or '0' or '1'
+$id		= request()->integer('id', 0); // For this page, id can also be 'all'
+$ref	= request()->input('ref');
+$mode = (request()->input('mode') ? request()->input('mode') : 'byunit');
+$search_year   = request()->integer('search_year', 0);
+$search_categ  = request()->integer('search_categ', 0);
+$notab = request()->integer('notab', 0);
+$type = request()->input('type');	// Can be '' or '0' or '1'
 
 $error = 0;
 $mesg = '';
 $graphfiles = array();
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if (!empty($user->socid)) {
 	$socid = $user->socid;
 }
@@ -134,11 +134,11 @@ if (!($id > 0) && empty($ref) || $notab) {
 	$title = $langs->trans('ProductServiceCard');
 	$helpurl = '';
 	$shortlabel = dol_trunc($object->label, 16);
-	if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+	if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 		$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Statistics');
 		$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 	}
-	if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+	if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 		$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Statistics');
 		$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 	}
@@ -262,7 +262,7 @@ if ($result || !($id > 0)) {
 
 
 	$param = '';
-	$param .= (GETPOSTISSET('id') ? '&id='.GETPOSTINT('id') : '&id='.$object->id).(($type != '' && $type != '-1') ? '&type='.((int) $type) : '').'&search_year='.((int) $search_year).($notab ? '&notab='.$notab : '');
+	$param .= (request()->has('id') ? '&id='.request()->integer('id', 0) : '&id='.$object->id).(($type != '' && $type != '-1') ? '&type='.((int) $type) : '').'&search_year='.((int) $search_year).($notab ? '&notab='.$notab : '');
 	if ($socid > 0) {
 		$param .= '&socid='.((int) $socid);
 	}
@@ -532,7 +532,7 @@ if ($result || !($id > 0)) {
 			} else {
 				$dategenerated = ($mesg ? '<span class="error">'.$mesg.'</span>' : $langs->trans("ChartNotGenerated"));
 			}
-			$linktoregenerate = '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?'.(GETPOSTISSET('id') ? 'id='.GETPOSTINT('id') : 'id='.$object->id).(((string) $type != '' && $type != '-1') ? '&type='.((int) $type) : '').'&action=recalcul&mode='.urlencode($mode).'&search_year='.((int) $search_year).($search_categ > 0 ? '&search_categ='.((int) $search_categ) : '').'">';
+			$linktoregenerate = '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?'.(request()->has('id') ? 'id='.request()->integer('id', 0) : 'id='.$object->id).(((string) $type != '' && $type != '-1') ? '&type='.((int) $type) : '').'&action=recalcul&mode='.urlencode($mode).'&search_year='.((int) $search_year).($search_categ > 0 ? '&search_categ='.((int) $search_categ) : '').'">';
 			$linktoregenerate .= img_picto($langs->trans("ReCalculate").' ('.$dategenerated.')', 'refresh');
 			$linktoregenerate .= '</a>';
 

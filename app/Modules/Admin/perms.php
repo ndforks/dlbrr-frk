@@ -42,12 +42,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'users', 'other'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $entity = $conf->entity;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -57,14 +57,14 @@ if (!$user->admin) {
 
 if ($action == 'add') {
 	$sql = "UPDATE ".MAIN_DB_PREFIX."rights_def SET bydefault=1";
-	$sql .= " WHERE id = ".GETPOSTINT("pid");
+	$sql .= " WHERE id = ".request()->integer('pid', 0);
 	$sql .= " AND entity = ".$conf->entity;
 	$db->query($sql);
 }
 
 if ($action == 'remove') {
 	$sql = "UPDATE ".MAIN_DB_PREFIX."rights_def SET bydefault=0";
-	$sql .= " WHERE id = ".GETPOSTINT('pid');
+	$sql .= " WHERE id = ".request()->integer('pid', 0);
 	$sql .= " AND entity = ".$conf->entity;
 	$db->query($sql);
 }
@@ -294,7 +294,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 print '</table>';
 print '</div>';

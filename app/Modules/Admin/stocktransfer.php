@@ -46,16 +46,16 @@ $langs->loadLangs(array("admin", "stocks"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
 $arrayofparameters = array(
 	'STOCKTRANSFER_MYPARAM1' => array('css' => 'minwidth200', 'enabled' => 1),
@@ -73,8 +73,8 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 
 if ($action == 'updateMask') {
-	$maskconststocktransfer = GETPOST('maskconststocktransfer', 'aZ09');
-	$maskstocktransfer = GETPOST('maskStockTransfer', 'alpha');
+	$maskconststocktransfer = request()->input('maskconststocktransfer');
+	$maskstocktransfer = request()->input('maskStockTransfer');
 
 	if ($maskconststocktransfer && preg_match('/_MASK$/', $maskconststocktransfer)) {
 		$res = dolibarr_set_const($db, $maskconststocktransfer, $maskstocktransfer, 'chaine', 0, '', $conf->entity);
@@ -89,7 +89,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 	$tmpobjectkey = 'StockTransfer';
 
 	$tmpobject = new $tmpobjectkey($db);
@@ -313,7 +313,7 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '<div class="div-table-responsive">'; // You can use div-table-responsive-no-min if you don't need reserved height for your table

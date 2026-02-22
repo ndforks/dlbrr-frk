@@ -30,8 +30,8 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 /**
  * @var Conf $conf
@@ -46,7 +46,7 @@ $langs->loadLangs(array("companies", "products", "admin", "users", "other"));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $dirstandard = array();
@@ -75,21 +75,21 @@ error_reporting($err);
 if ($action == 'update' && !$cancel) {
 	$_SESSION["mainmenu"] = "home"; // The menu manager may have changed
 
-	dolibarr_set_const($db, "MAIN_MENU_STANDARD", GETPOST('MAIN_MENU_STANDARD', 'alpha'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MENU_SMARTPHONE", GETPOST('MAIN_MENU_SMARTPHONE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MENU_STANDARD", request()->input('MAIN_MENU_STANDARD'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MENU_SMARTPHONE", request()->input('MAIN_MENU_SMARTPHONE'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_MENUFRONT_STANDARD", GETPOST('MAIN_MENUFRONT_STANDARD', 'alpha'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MENUFRONT_SMARTPHONE", GETPOST('MAIN_MENUFRONT_SMARTPHONE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MENUFRONT_STANDARD", request()->input('MAIN_MENUFRONT_STANDARD'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MENUFRONT_SMARTPHONE", request()->input('MAIN_MENUFRONT_SMARTPHONE'), 'chaine', 0, '', $conf->entity);
 
 	// Define list of menu handlers to initialize
 	$listofmenuhandler = array();
-	$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', GETPOST('MAIN_MENU_STANDARD', 'alpha'))] = 1;
-	$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', GETPOST('MAIN_MENUFRONT_STANDARD', 'alpha'))] = 1;
-	if (GETPOST('MAIN_MENU_SMARTPHONE', 'alpha')) {
-		$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', GETPOST('MAIN_MENU_SMARTPHONE', 'alpha'))] = 1;
+	$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', request()->input('MAIN_MENU_STANDARD'))] = 1;
+	$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', request()->input('MAIN_MENUFRONT_STANDARD'))] = 1;
+	if (request()->input('MAIN_MENU_SMARTPHONE')) {
+		$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', request()->input('MAIN_MENU_SMARTPHONE'))] = 1;
 	}
-	if (GETPOST('MAIN_MENUFRONT_SMARTPHONE', 'alpha')) {
-		$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', GETPOST('MAIN_MENUFRONT_SMARTPHONE', 'alpha'))] = 1;
+	if (request()->input('MAIN_MENUFRONT_SMARTPHONE')) {
+		$listofmenuhandler[preg_replace('/(_backoffice|_frontoffice|_menu)?\.php/i', '', request()->input('MAIN_MENUFRONT_SMARTPHONE'))] = 1;
 	}
 
 	// Initialize menu handlers

@@ -139,7 +139,7 @@ class LinkField extends CommonField
 		}
 
 		if ($optionParams['addCreateButton'] &&                                                                                              // If we have to add a create button
-			(!GETPOSTISSET('backtopage') || strpos(GETPOST('backtopage'), $_SERVER['PHP_SELF']) === 0) &&        // To avoid to open several times the 'Plus' button (we accept only one level)
+			(!request()->has('backtopage') || strpos(request()->input('backtopage'), $_SERVER['PHP_SELF']) === 0) &&        // To avoid to open several times the 'Plus' button (we accept only one level)
 			!$fieldInfos->inputDisabled &&                                                                                            // To avoid to show the button if the field is protected by a "disabled".
 			empty($fieldInfos->otherParams['nonewbutton'])                                                                            // manually disable new button
 		) {
@@ -152,10 +152,10 @@ class LinkField extends CommonField
 				$url_path = dol_buildpath($classpath . '/' . strtolower($class) . '_card.php', 1);
 			}
 			$paramforthenewlink = '';
-			$paramforthenewlink .= (GETPOSTISSET('action') ? '&action=' . GETPOST('action', 'aZ09') : '');
-			$paramforthenewlink .= (GETPOSTISSET('id') ? '&id=' . GETPOSTINT('id') : '');
-			$paramforthenewlink .= (GETPOSTISSET('origin') ? '&origin=' . GETPOST('origin', 'aZ09') : '');
-			$paramforthenewlink .= (GETPOSTISSET('originid') ? '&originid=' . GETPOSTINT('originid') : '');
+			$paramforthenewlink .= (request()->has('action') ? '&action=' . request()->input('action') : '');
+			$paramforthenewlink .= (request()->has('id') ? '&id=' . request()->integer('id', 0) : '');
+			$paramforthenewlink .= (request()->has('origin') ? '&origin=' . request()->input('origin') : '');
+			$paramforthenewlink .= (request()->has('originid') ? '&originid=' . request()->integer('originid', 0) : '');
 			$paramforthenewlink .= '&fk_' . strtolower($class) . '=--IDFORBACKTOPAGE--';
 			// TODO Add JavaScript code to add input fields already filled into $paramforthenewlink so we won't loose them when going back to main page
 			$out .= '<a class="butActionNew" title="' . $langs->trans("New") . '" href="' . $url_path . '?action=create&backtopage=' . urlencode($_SERVER['PHP_SELF'] . $paramforthenewlink) . '"><span class="fa fa-plus-circle valignmiddle"></span></a>';
@@ -315,8 +315,8 @@ class LinkField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOSTINT($htmlName);
+		if (request()->has($htmlName)) {
+			$value = request()->integer($htmlName, 0);
 		} else {
 			$value = $defaultValue;
 		}
@@ -339,8 +339,8 @@ class LinkField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alphanohtml');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

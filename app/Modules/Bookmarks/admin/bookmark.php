@@ -39,10 +39,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 /*
  * Actions
@@ -50,7 +50,7 @@ $action = GETPOST('action', 'aZ09');
 $error = 0;
 
 if ($action == 'setvalue') {
-	$showmenu = GETPOST('BOOKMARKS_SHOW_IN_MENU', 'alpha');
+	$showmenu = request()->input('BOOKMARKS_SHOW_IN_MENU');
 	$res = dolibarr_set_const($db, "BOOKMARKS_SHOW_IN_MENU", $showmenu, 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {

@@ -40,15 +40,15 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
 // Load translation files required by the page
 $langs->load("stocks");
 
-$sref = GETPOST("sref", 'alpha');
-$snom = GETPOST("snom", 'alpha');
-$sall = trim(GETPOST('search_all', 'alphanohtml'));
+$sref = request()->input('sref');
+$snom = request()->input('snom');
+$sall = trim(request()->input('search_all'));
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -171,7 +171,7 @@ if ($result) {
 		print '<br><img src="'.$url.'">';
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

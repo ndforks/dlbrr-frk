@@ -42,21 +42,21 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("accountancy", "bills", "compta", "exports", "other"));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'aZ09');
-$fiscal_period_id = GETPOSTINT('fiscal_period_id');
-$validatemonth = GETPOSTINT('validatemonth');
-$validateyear = GETPOSTINT('validateyear');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$fiscal_period_id = request()->integer('fiscal_period_id', 0);
+$validatemonth = request()->integer('validatemonth', 0);
+$validateyear = request()->integer('validateyear', 0);
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'fiscalyear', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -139,8 +139,8 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	if (isset($current_fiscal_period)) {
 		if ($action == 'confirm_step_1' && $confirm == "yes" && $user->hasRight('accounting', 'fiscalyear', 'write')) {
-			$date_start = dol_mktime(0, 0, 0, GETPOSTINT('date_startmonth'), GETPOSTINT('date_startday'), GETPOSTINT('date_startyear'));
-			$date_end = dol_mktime(23, 59, 59, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'));
+			$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
+			$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 
 			$result = $object->validateMovementForFiscalPeriod($date_start, $date_end);
 			if ($result > 0) {
@@ -154,9 +154,9 @@ if (empty($reshook)) {
 				$action = '';
 			}
 		} elseif ($action == 'confirm_step_2' && $confirm == "yes" && $user->hasRight('accounting', 'fiscalyear', 'write')) {
-			$new_fiscal_period_id = GETPOSTINT('new_fiscal_period_id');
-			$separate_auxiliary_account = GETPOSTINT('separate_auxiliary_account');
-			$generate_bookkeeping_records = GETPOSTINT('generate_bookkeeping_records');
+			$new_fiscal_period_id = request()->integer('new_fiscal_period_id', 0);
+			$separate_auxiliary_account = request()->integer('separate_auxiliary_account', 0);
+			$generate_bookkeeping_records = request()->integer('generate_bookkeeping_records', 0);
 
 			$error = 0;
 			if ($generate_bookkeeping_records) {
@@ -181,10 +181,10 @@ if (empty($reshook)) {
 				}
 			}
 		} elseif ($action == 'confirm_step_3' && $confirm == "yes" && $user->hasRight('accounting', 'fiscalyear', 'write')) {
-			$inventory_journal_id = GETPOSTINT('inventory_journal_id');
-			$new_fiscal_period_id = GETPOSTINT('new_fiscal_period_id');
-			$date_start = dol_mktime(0, 0, 0, GETPOSTINT('date_startmonth'), GETPOSTINT('date_startday'), GETPOSTINT('date_startyear'));
-			$date_end = dol_mktime(23, 59, 59, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'));
+			$inventory_journal_id = request()->integer('inventory_journal_id', 0);
+			$new_fiscal_period_id = request()->integer('new_fiscal_period_id', 0);
+			$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
+			$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 
 			$result = $object->insertAccountingReversal($current_fiscal_period['id'], $inventory_journal_id, $new_fiscal_period_id, $date_start, $date_end);
 			if ($result < 0) {

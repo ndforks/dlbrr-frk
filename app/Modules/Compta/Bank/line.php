@@ -63,16 +63,16 @@ if (isModEnabled('salaries')) {
 }
 
 
-$id = GETPOSTINT('rowid');
-$rowid = GETPOSTINT('rowid');
-$accountoldid = GETPOSTINT('account');		// GETPOST('account') is old account id
-$accountid = GETPOSTINT('accountid');		// GETPOST('accountid') is new account id
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$orig_account = GETPOST("orig_account");
-$backtopage = GETPOST('backtopage', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
+$id = request()->integer('rowid', 0);
+$rowid = request()->integer('rowid', 0);
+$accountoldid = request()->integer('account', 0);		// request()->input('account') is old account id
+$accountid = request()->integer('accountid', 0);		// request()->input('accountid') is new account id
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$orig_account = request()->integer('orig_account', 0);
+$backtopage = request()->input('backtopage');
+$cancel = request()->input('cancel');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -87,7 +87,7 @@ $hookmanager->initHooks(array('bankline'));
 
 $result = restrictedArea($user, 'banque', $accountoldid, 'bank_account');
 if (!$user->hasRight('banque', 'lire') && !$user->hasRight('banque', 'consolidate')) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new AccountLine($db);
@@ -114,24 +114,24 @@ if ($cancel) {
 
 if ($user->hasRight('banque', 'consolidate') && $action == 'donext') {
 	$al = new AccountLine($db);
-	$al->dateo_next(GETPOSTINT("rowid"));
+	$al->dateo_next(request()->integer('rowid', 0));
 } elseif ($user->hasRight('banque', 'consolidate') && $action == 'doprev') {
 	$al = new AccountLine($db);
-	$al->dateo_previous(GETPOSTINT("rowid"));
+	$al->dateo_previous(request()->integer('rowid', 0));
 } elseif ($user->hasRight('banque', 'consolidate') && $action == 'dvnext') {
 	$al = new AccountLine($db);
-	$al->datev_next(GETPOSTINT("rowid"));
+	$al->datev_next(request()->integer('rowid', 0));
 } elseif ($user->hasRight('banque', 'consolidate') && $action == 'dvprev') {
 	$al = new AccountLine($db);
-	$al->datev_previous(GETPOSTINT("rowid"));
+	$al->datev_previous(request()->integer('rowid', 0));
 }
 
 if ($action == 'confirm_delete_categ' && $confirm == "yes" && $user->hasRight('banque', 'modifier')) {
-	$cat1 = GETPOSTINT("cat1");
+	$cat1 = request()->integer('cat1', 0);
 	if (!empty($rowid) && !empty($cat1)) {
 		$sql = "DELETE FROM ".MAIN_DB_PREFIX."category_bankline WHERE lineid = ".((int) $rowid)." AND fk_categ = ".((int) $cat1);
 		if (!$db->query($sql)) {
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
 		setEventMessages($langs->trans("MissingIds"), null, 'errors');
@@ -149,8 +149,8 @@ if ($user->hasRight('banque', 'modifier') && $action == "update") {
 	$acsource->fetch($accountoldid);
 
 	$actarget = new Account($db);
-	if (GETPOSTINT('accountid') > 0 && !$object->rappro && !$object->getVentilExportCompta()) {	// We ask to change bank account
-		$actarget->fetch(GETPOSTINT('accountid'));
+	if (request()->integer('accountid', 0) > 0 && !$object->rappro && !$object->getVentilExportCompta()) {	// We ask to change bank account
+		$actarget->fetch(request()->integer('accountid', 0));
 	} else {
 		$actarget->fetch($accountoldid);
 	}
@@ -159,7 +159,7 @@ if ($user->hasRight('banque', 'modifier') && $action == "update") {
 		setEventMessages($langs->trans("ErrorFailedToLoadBankAccount"), null, 'errors');
 		$error++;
 	}
-	if ($actarget->type == Account::TYPE_CASH && GETPOST('value', 'alpha') != 'LIQ') {
+	if ($actarget->type == Account::TYPE_CASH && request()->input('value') != 'LIQ') {
 		setEventMessages($langs->trans("ErrorCashAccountAcceptsOnlyCashMoney"), null, 'errors');
 		$error++;
 	}
@@ -167,37 +167,37 @@ if ($user->hasRight('banque', 'modifier') && $action == "update") {
 	if (!$error) {
 		$db->begin();
 
-		$amount = price2num(GETPOST('amount'));
-		$dateop = dol_mktime(12, 0, 0, GETPOSTINT("dateomonth"), GETPOSTINT("dateoday"), GETPOSTINT("dateoyear"));
-		$dateval = dol_mktime(12, 0, 0, GETPOSTINT("datevmonth"), GETPOSTINT("datevday"), GETPOSTINT("datevyear"));
+		$amount = price2num(request()->input('amount'));
+		$dateop = dol_mktime(12, 0, 0, request()->integer('dateomonth', 0), request()->integer('dateoday', 0), request()->integer('dateoyear', 0));
+		$dateval = dol_mktime(12, 0, 0, request()->integer('datevmonth', 0), request()->integer('datevday', 0), request()->integer('datevyear', 0));
 		$sql = "UPDATE ".MAIN_DB_PREFIX."bank";
 		$sql .= " SET ";
 		// Always opened
-		if (GETPOSTISSET('value')) {
-			$type = GETPOST('value');
+		if (request()->has('value')) {
+			$type = request()->input('value');
 			$sql .= " fk_type='".$db->escape(empty($type) && $object->fk_type == 'SOLD' ? 'SOLD' : $type)."',";
 		}
-		if (GETPOSTISSET('num_chq')) {
-			$sql .= " num_chq='".$db->escape(GETPOST("num_chq"))."',";
+		if (request()->has('num_chq')) {
+			$sql .= " num_chq='".$db->escape(request()->input('num_chq'))."',";
 		}
-		if (GETPOSTISSET('banque')) {
-			$sql .= " banque='".$db->escape(GETPOST("banque"))."',";
+		if (request()->has('banque')) {
+			$sql .= " banque='".$db->escape(request()->input('banque'))."',";
 		}
-		if (GETPOSTISSET('emetteur')) {
-			$sql .= " emetteur='".$db->escape(GETPOST("emetteur"))."',";
+		if (request()->has('emetteur')) {
+			$sql .= " emetteur='".$db->escape(request()->input('emetteur'))."',";
 		}
 		// Blocked when conciliated
 		if (!$object->rappro) {
-			if (GETPOSTISSET('label')) {
-				$sql .= " label = '".$db->escape(GETPOST("label"))."',";
+			if (request()->has('label')) {
+				$sql .= " label = '".$db->escape(request()->input('label'))."',";
 			}
-			if (GETPOSTISSET('amount')) {
+			if (request()->has('amount')) {
 				$sql .= " amount= '".$db->escape($amount)."',";
 			}
-			if (GETPOSTISSET('dateomonth')) {
+			if (request()->has('dateomonth')) {
 				$sql .= " dateo = '".$db->idate($dateop)."',";
 			}
-			if (GETPOSTISSET('datevmonth')) {
+			if (request()->has('datevmonth')) {
 				$sql .= " datev = '".$db->idate($dateval)."',";
 			}
 		}
@@ -210,18 +210,18 @@ if ($user->hasRight('banque', 'modifier') && $action == "update") {
 		}
 
 		if (!$error) {
-			$arrayofcategs = GETPOST('custcats', 'array');
+			$arrayofcategs = request()->input('custcats');
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."category_bankline WHERE lineid = ".((int) $rowid);
 			if (!$db->query($sql)) {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 			if (count($arrayofcategs)) {
 				foreach ($arrayofcategs as $val) {
 					$sql = "INSERT INTO ".MAIN_DB_PREFIX."category_bankline (lineid, fk_categ) VALUES (".((int) $rowid).", ".((int) $val).")";
 					if (!$db->query($sql)) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 				}
 				// $arrayselected will be loaded after in page output
@@ -238,15 +238,15 @@ if ($user->hasRight('banque', 'modifier') && $action == "update") {
 			$db->commit();
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
 // Reconcile
 if ($user->hasRight('banque', 'consolidate') && ($action == 'num_releve' || $action == 'setreconcile')) {
-	$num_rel = trim(GETPOST("num_rel"));
-	$rappro = GETPOST('reconciled') ? 1 : 0;
+	$num_rel = trim(request()->input('num_rel'));
+	$rappro = request()->input('reconciled') ? 1 : 0;
 
 	// Check parameters
 	if ($rappro && empty($num_rel)) {
@@ -362,7 +362,7 @@ if ($result) {
 
 		// Confirmations
 		if ($action == 'delete_categ') {
-			print $form->formconfirm($_SERVER['PHP_SELF']."?rowid=".urlencode((string) ($rowid))."&cat1=".urlencode((string) (GETPOSTINT("fk_categ")))."&orig_account=".urlencode((string) ($orig_account)), $langs->trans("RemoveFromRubrique"), $langs->trans("RemoveFromRubriqueConfirm"), "confirm_delete_categ", '', 'yes', 1);
+			print $form->formconfirm($_SERVER['PHP_SELF']."?rowid=".urlencode((string) ($rowid))."&cat1=".urlencode((string) (request()->integer('fk_categ', 0)))."&orig_account=".urlencode((string) ($orig_account)), $langs->trans("RemoveFromRubrique"), $langs->trans("RemoveFromRubriqueConfirm"), "confirm_delete_categ", '', 'yes', 1);
 		}
 
 		print '<form name="update" method="POST" action="'.$_SERVER['PHP_SELF'].'?rowid='.$rowid.'">';
@@ -373,7 +373,7 @@ if ($result) {
 
 		print dol_get_fiche_head($head, 'bankline', $langs->trans('LineRecord'), 0, 'accountline', 0);
 
-		$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/bankentries_list.php?restore_lastsearch_values=1'.(GETPOSTINT('account', 1) ? '&id='.GETPOSTINT('account', 1) : '').'">'.$langs->trans("BackToList").'</a>';
+		$linkback = '<a href="'.DOL_URL_ROOT.'/compta/bank/bankentries_list.php?restore_lastsearch_values=1'.(request()->integer('account', 0) ? '&id='.request()->integer('account', 0) : '').'">'.$langs->trans("BackToList").'</a>';
 
 
 		dol_banner_tab($bankline, 'rowid', $linkback);
@@ -721,7 +721,7 @@ if ($result) {
 			print '<tr><td><label for="reconciled">'.$langs->trans("BankLineConciliated").'</label></td>';
 			if ($user->hasRight('banque', 'consolidate')) {
 				print '<td>';
-				print '<input type="checkbox" id="reconciled" name="reconciled" class="flat" '.(GETPOSTISSET("reconciled") ? (GETPOST("reconciled") ? ' checked="checked"' : '') : ($objp->rappro ? ' checked="checked"' : '')).'">';
+				print '<input type="checkbox" id="reconciled" name="reconciled" class="flat" '.(request()->has('reconciled') ? (request()->input('reconciled') ? ' checked="checked"' : '') : ($objp->rappro ? ' checked="checked"' : '')).'">';
 
 				print '
 					<script type="text/javascript">
@@ -768,7 +768,7 @@ if ($result) {
 
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

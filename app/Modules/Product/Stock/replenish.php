@@ -62,21 +62,21 @@ $result = restrictedArea($user, 'produit|service');
 
 //checks if a product has been ordered
 
-$action = GETPOST('action', 'aZ09');
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$sall = trim(GETPOST('search_all', 'alphanohtml'));
-$type = GETPOSTINT('type');
-$tobuy = GETPOSTFLOAT('tobuy');
-$salert = GETPOST('salert', 'alpha');
-$includeproductswithoutdesiredqty = GETPOST('includeproductswithoutdesiredqty', 'alpha');
-$mode = GETPOST('mode', 'alpha');
-$draftorder = GETPOST('draftorder', 'alpha');
+$action = request()->input('action');
+$search_ref = request()->input('search_ref');
+$search_label = request()->input('search_label');
+$sall = trim(request()->input('search_all'));
+$type = request()->integer('type', 0);
+$tobuy = (float)request()->input('tobuy', 0.0);
+$salert = request()->input('salert');
+$includeproductswithoutdesiredqty = request()->input('includeproductswithoutdesiredqty');
+$mode = request()->input('mode');
+$draftorder = request()->input('draftorder');
 
 
-$fourn_id = GETPOSTINT('fourn_id');
-$fk_supplier = GETPOSTINT('fk_supplier');
-$fk_entrepot = GETPOSTINT('fk_entrepot');
+$fourn_id = request()->integer('fourn_id', 0);
+$fk_supplier = request()->integer('fk_supplier', 0);
+$fk_entrepot = request()->integer('fk_entrepot', 0);
 
 // List all visible warehouses
 $resWar = $db->query("SELECT rowid FROM " . MAIN_DB_PREFIX . "entrepot WHERE entity IN (" . $db->sanitize(getEntity('stock')) . ")");
@@ -97,19 +97,19 @@ if ($count == 1 && (empty($fk_entrepot) || $fk_entrepot <= 0) && getDolGlobalStr
 	$fk_entrepot = $lastWarehouseID;
 }
 //If the warehouse is set to the default selected user
-if (!GETPOSTISSET('fk_warehouse') && (empty($fk_entrepot) || $fk_entrepot <= 0) && getDolGlobalString('MAIN_DEFAULT_WAREHOUSE_USER')) {
+if (!request()->has('fk_warehouse') && (empty($fk_entrepot) || $fk_entrepot <= 0) && getDolGlobalString('MAIN_DEFAULT_WAREHOUSE_USER')) {
 	$fk_entrepot = $user->fk_warehouse;
 }
 
 $texte = '';
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 
 if (!$sortfield) {
@@ -154,7 +154,7 @@ if ($reshook < 0) {
  * Actions
  */
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$search_ref = '';
 	$search_label = '';
 	$sall = '';
@@ -168,8 +168,8 @@ if ($draftorder == 'on') {
 }
 
 // Create purchase orders
-if ($action == 'order' && GETPOST('valid') && $user->hasRight('fournisseur', 'commande', 'creer')) {
-	$linecount = GETPOSTINT('linecount');
+if ($action == 'order' && request()->input('valid') && $user->hasRight('fournisseur', 'commande', 'creer')) {
+	$linecount = request()->integer('linecount', 0);
 	$box = 0;
 	$errorQty = 0;
 	unset($_POST['linecount']);
@@ -180,12 +180,12 @@ if ($action == 'order' && GETPOST('valid') && $user->hasRight('fournisseur', 'co
 		require_once DOL_DOCUMENT_ROOT . '/fourn/class/fournisseur.product.class.php';
 		$productsupplier = new ProductFournisseur($db);
 		for ($i = 0; $i < $linecount; $i++) {
-			if (GETPOST('choose'.$i) === 'on' && GETPOSTINT('fourn'.$i) > 0) {
+			if (request()->input('choose' . $i) === 'on' && request()->integer('fourn' . $i, 0) > 0) {
 				//one line
 				$box = $i;
-				$supplierpriceid = GETPOSTINT('fourn'.$i);
+				$supplierpriceid = request()->integer('fourn' . $i, 0);
 				//get all the parameters needed to create a line
-				$qty = GETPOSTFLOAT('tobuy'.$i);
+				$qty = (float)request()->input('tobuy'.$i, 0.0);
 				$idprod = $productsupplier->get_buyprice($supplierpriceid, $qty);
 				$res = $productsupplier->fetch($idprod);
 				if ($res && $idprod > 0) {
@@ -240,7 +240,7 @@ if ($action == 'order' && GETPOST('valid') && $user->hasRight('fournisseur', 'co
 					$errorQty++;
 				} else {
 					$error = $db->lasterror();
-					dol_print_error($db);
+					abort(500);
 				}
 
 				unset($_POST['fourn' . $i]);
@@ -592,7 +592,7 @@ $sql .= $db->plimit($limit + 1, $offset);
 //print $sql;
 $resql = $db->query($sql);
 if (empty($resql)) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -687,7 +687,7 @@ print '<input type="hidden" name="action" value="order">';
 print '<input type="hidden" name="mode" value="' . $mode . '">';
 
 
-if ($search_ref || $search_label || $sall || $salert || $draftorder || GETPOST('search', 'alpha')) {
+if ($search_ref || $search_label || $sall || $salert || $draftorder || request()->input('search')) {
 	$filters = '&search_ref=' . urlencode($search_ref) . '&search_label=' . urlencode($search_label);
 	$filters .= '&sall=' . urlencode($sall);
 	$filters .= '&salert=' . urlencode($salert);
@@ -853,7 +853,7 @@ while ($i < ($limit ? min($num, $limit) : $num)) {
 	if (getDolGlobalString('STOCK_SUPPORTS_SERVICES') || $objp->fk_product_type == 0) {
 		$result = $prod->fetch($objp->rowid);
 		if ($result < 0) {
-			dol_print_error($db);
+			abort(500);
 			exit;
 		}
 

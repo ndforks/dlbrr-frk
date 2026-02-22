@@ -12,8 +12,8 @@ class ShowDon extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => view('don.create', ['action' => 'create']),
@@ -26,13 +26,13 @@ class ShowDon extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        Don::findOrFail($id)->update(array_filter(['fk_soc' => GETPOSTINT('socid')], fn($v) => $v));
-        return redirect("/don/card.php?id={$id}")->with('success', 'Donation updated');
+        Don::findOrFail($id)->update(array_filter(['fk_soc' => $request->integer('socid', 0)], fn($v) => $v));
+        return redirect()->route('don.show', ['id' => $id])->with('success', 'Donation updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Don::findOrFail($id)->delete();
-        return redirect('/don/list.php')->with('success', 'Donation deleted');
+        return redirect()->route('don.list')->with('success', 'Donation deleted');
     }
 }

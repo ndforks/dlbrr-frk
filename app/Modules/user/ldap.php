@@ -41,9 +41,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 // Load translation files required by page
 $langs->loadLangs(array('users', 'admin', 'companies', 'ldap'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ?: 'userldap'; // To manage different context of search
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ?: 'userldap'; // To manage different context of search
 
 // Security check
 $socid = 0;

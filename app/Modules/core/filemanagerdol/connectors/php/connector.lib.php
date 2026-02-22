@@ -248,7 +248,7 @@ function CreateFolder($resourceType, $currentFolder)
 	$sErrorMsg = '';
 
 	if (isset($_GET['NewFolderName'])) {
-		$sNewFolderName = GETPOST('NewFolderName');
+		$sNewFolderName = request()->input('NewFolderName');
 		$sNewFolderName = SanitizeFolderName($sNewFolderName);
 
 		if (strpos($sNewFolderName, '..') !== false) {
@@ -746,7 +746,7 @@ function IsAllowedCommand($sCommand)
  */
 function GetCurrentFolder()
 {
-	$sCurrentFolder = isset($_GET['CurrentFolder']) ? GETPOST('CurrentFolder', 'alphanohtml', 1) : '/';
+	$sCurrentFolder = isset($_GET['CurrentFolder']) ? request()->input('CurrentFolder') : '/';
 
 	// Check the current folder syntax (must begin and start with a slash).
 	if (!preg_match('|/$|', $sCurrentFolder)) {

@@ -51,52 +51,52 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("companies", "compta", "accountancy", "products"));
 
 // search & action GETPOST
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$optioncss = GETPOST('optioncss', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$optioncss = request()->input('optioncss');
 
-$toselect = GETPOST('chk_prod', 'array:int');
+$toselect = request()->input('chk_prod', []);
 '@phan-var-force string[] $toselect';
-$default_account = GETPOSTINT('default_account');
-$searchCategoryProductOperator = GETPOSTINT('search_category_product_operator');
-$searchCategoryProductList = GETPOST('search_category_product_list', 'array:int');
+$default_account = request()->integer('default_account', 0);
+$searchCategoryProductOperator = request()->integer('search_category_product_operator', 0);
+$searchCategoryProductList = request()->input('search_category_product_list');
 '@phan-var-force string[] $searchCategoryProductList';
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$search_desc = GETPOST('search_desc', 'alpha');
-$search_vat = GETPOST('search_vat', 'alpha');
-$search_current_account = GETPOST('search_current_account', 'alpha');
-$search_current_account_valid = GETPOST('search_current_account_valid', 'alpha');
+$search_ref = request()->input('search_ref');
+$search_label = request()->input('search_label');
+$search_desc = request()->input('search_desc');
+$search_vat = request()->input('search_vat');
+$search_current_account = request()->integer('search_current_account', 0);
+$search_current_account_valid = request()->integer('search_current_account_valid', 0);
 if ($search_current_account_valid == '') {
 	$search_current_account_valid = 'withoutvalidaccount';
 }
-$search_onsell = GETPOST('search_onsell', 'alpha');
-$search_onpurchase = GETPOST('search_onpurchase', 'alpha');
+$search_onsell = request()->input('search_onsell');
+$search_onpurchase = request()->input('search_onpurchase');
 
 if (!is_array($toselect)) {
 	$toselect = array();
 }
 
-$accounting_product_mode = GETPOST('accounting_product_mode', 'alpha');
-$btn_changetype = GETPOST('changetype', 'alpha');
+$accounting_product_mode = request()->integer('accounting_product_mode', 0);
+$btn_changetype = request()->input('changetype');
 
 // Show/hide child product variants
 $show_childproducts = 0;
 if (isModEnabled('variants')) {
-	$show_childproducts = GETPOST('search_show_childproducts');
+	$show_childproducts = request()->input('search_show_childproducts');
 }
 
 if (empty($accounting_product_mode)) {
 	$accounting_product_mode = 'ACCOUNTANCY_SELL';
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : getDolGlobalInt('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : getDolGlobalInt('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -141,10 +141,10 @@ if ($accounting_product_mode == 'ACCOUNTANCY_BUY') {
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontobind = $user->hasRight('accounting', 'bind', 'write');
@@ -154,11 +154,11 @@ $permissiontobind = $user->hasRight('accounting', 'bind', 'write');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -169,7 +169,7 @@ if ($reshook < 0) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 	$searchCategoryProductOperator = 0;
 	$searchCategoryProductList = array();
 	$search_ref = '';
@@ -209,7 +209,7 @@ if ($action == 'update' && $permissiontobind) {
 
 			$cpt = 0;
 			foreach ($toselect as $productid) {
-				$accounting_account_id = GETPOSTINT('codeventil_'.$productid);
+				$accounting_account_id = request()->integer('codeventil_' . $productid, 0);
 
 				$result = 0;
 				if ($accounting_account_id > 0) {
@@ -956,7 +956,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

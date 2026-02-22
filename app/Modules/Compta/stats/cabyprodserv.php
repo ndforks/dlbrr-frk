@@ -47,7 +47,7 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("products", "categories", "errors", 'accountancy'));
 
 // Security pack (data & check)
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 if ($user->socid > 0) {
 	$socid = $user->socid;
@@ -65,12 +65,12 @@ if (isModEnabled('accounting')) {
 
 // Define modecompta ('CREANCES-DETTES' or 'RECETTES-DEPENSES')
 $modecompta = getDolGlobalString('ACCOUNTING_MODE');
-if (GETPOST("modecompta")) {
-	$modecompta = GETPOST("modecompta");
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$sortfield = GETPOST("sortfield", 'aZ09comma');
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
 if (!$sortorder) {
 	$sortorder = "asc";
 }
@@ -79,31 +79,31 @@ if (!$sortfield) {
 }
 
 // Category
-$selected_cat = GETPOST('search_categ', 'intcomma');
-$selected_catsoc = GETPOST('search_categ_soc', 'intcomma');
-$selected_soc = GETPOST('search_soc', 'intcomma');
-$typent_id = GETPOST('typent_id', 'int');
+$selected_cat = request()->input('search_categ');
+$selected_catsoc = request()->input('search_categ_soc');
+$selected_soc = request()->input('search_soc');
+$typent_id = request()->integer('typent_id', 0);
 $subcat = false;
-if (GETPOST('subcat', 'alpha') === 'yes') {
+if (request()->input('subcat') === 'yes') {
 	$subcat = true;
 }
 $categorie = new Categorie($db);
 
 // product/service
-$selected_type = GETPOST('search_type', 'intcomma');
+$selected_type = request()->input('search_type');
 if ($selected_type == '') {
 	$selected_type = -1;
 }
 
 // Date range
-$year = GETPOSTINT("year");
-$month = GETPOSTINT("month");
-$date_startyear = GETPOST("date_startyear");
-$date_startmonth = GETPOST("date_startmonth");
-$date_startday = GETPOST("date_startday");
-$date_endyear = GETPOST("date_endyear");
-$date_endmonth = GETPOST("date_endmonth");
-$date_endday = GETPOST("date_endday");
+$year = request()->integer('year', 0);
+$month = request()->integer('month', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_startmonth = request()->input('date_startmonth');
+$date_startday = request()->input('date_startday');
+$date_endyear = request()->integer('date_endyear', 0);
+$date_endmonth = request()->input('date_endmonth');
+$date_endday = request()->input('date_endday');
 if (empty($year)) {
 	$year_current = dol_print_date(dol_now(), '%Y');
 	$month_current = dol_print_date(dol_now(), '%m');
@@ -113,18 +113,18 @@ if (empty($year)) {
 	$month_current = dol_print_date(dol_now(), '%m');
 	$year_start = $year;
 }
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"), 'tzserver');	// We use timezone of server so report is same from everywhere
-$date_end = dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"), 'tzserver');		// We use timezone of server so report is same from everywhere
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0), 'tzserver');	// We use timezone of server so report is same from everywhere
+$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');		// We use timezone of server so report is same from everywhere
 // Quarter
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
 		// We define date_start and date_end
-		$month_start = GETPOST("month") ? GETPOST("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		$month_start = request()->input('month') ? request()->input('month') : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
 		$year_end = $year_start;
 		$month_end = $month_start;
-		if (!GETPOST("month")) {	// If month not forced
-			if (!GETPOST('year') && $month_start > $month_current) {
+		if (!request()->input('month')) {	// If month not forced
+			if (!request()->input('year') && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
 			}
@@ -345,7 +345,7 @@ if ($modecompta == 'CREANCES-DETTES') {
 	}
 
 	// Search for tag/category ($searchCategoryProductList is an array of ID)
-	$searchCategoryProductOperator = GETPOSTINT('search_category_product_operator');
+	$searchCategoryProductOperator = request()->integer('search_category_product_operator', 0);
 	$searchCategoryProductList = array($selected_cat);
 	if ($subcat) {
 		$TListOfCats = $categorie->get_full_arbo('product', $selected_cat, 1);
@@ -383,7 +383,7 @@ if ($modecompta == 'CREANCES-DETTES') {
 	}
 
 	// Search for tag/category ($searchCategorySocieteList is an array of ID)
-	$searchCategorySocieteOperator = GETPOSTINT('search_category_societe_operator');
+	$searchCategorySocieteOperator = request()->integer('search_category_societe_operator', 0);
 	$searchCategorySocieteList = array($selected_catsoc);
 	if (!empty($searchCategorySocieteList)) {
 		$searchCategorySocieteSqlList = array();
@@ -453,7 +453,7 @@ if ($modecompta == 'CREANCES-DETTES') {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Show Array

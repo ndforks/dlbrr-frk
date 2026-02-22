@@ -45,16 +45,16 @@ $langs->loadLangs(array("admin", "stocks"));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'stock';
-$page_y = GETPOST('page_y');
+$page_y = request()->input('page_y');
 
 
 /*
@@ -81,8 +81,8 @@ if ($action == 'update' || preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$result = 1;
 	foreach ($arrayofcode as $code) {
 		$value = 1;
-		if (GETPOSTISSET($code)) {	// For the case of nojs=1
-			$value = GETPOST($code);
+		if (request()->has($code)) {	// For the case of nojs=1
+			$value = request()->input($code);
 		}
 
 		if ($value == 1) {
@@ -109,7 +109,7 @@ if ($action == 'update' || preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"].($page_y ? '?page_y='.$page_y : ''));
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -131,12 +131,12 @@ if ($action == 'update' || preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"].($page_y ? '?page_y='.$page_y : ''));
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if ($action == 'warehouse') {
-	$value = GETPOST('default_warehouse', 'alpha');
+	$value = request()->input('default_warehouse');
 	$res = dolibarr_set_const($db, "MAIN_DEFAULT_WAREHOUSE", $value, 'chaine', 0, '', $conf->entity);
 	if ($value == -1 || empty($value) && getDolGlobalString('MAIN_DEFAULT_WAREHOUSE')) {
 		$res = dolibarr_del_const($db, "MAIN_DEFAULT_WAREHOUSE", $conf->entity);
@@ -147,7 +147,7 @@ if ($action == 'warehouse') {
 }
 
 if ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$object = new Entrepot($db);
 	$object->initAsSpecimen();
@@ -639,7 +639,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

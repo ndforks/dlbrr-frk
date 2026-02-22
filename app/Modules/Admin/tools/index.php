@@ -38,7 +38,7 @@ require '../../main.inc.php';
 $langs->loadLangs(array("companies", "admin"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -49,7 +49,7 @@ if (!$user->admin) {
 $form = new Form($db);
 
 $title = $langs->trans("AdminTools");
-//if (GETPOST('leftmenu',"aZ09") == 'admintools') $title=$langs->trans("ModulesSystemTools");
+//if (request()->input('leftmenu') == 'admintools') $title=$langs->trans("ModulesSystemTools");
 
 llxHeader('', $title, '', '', 0, 0, '', '', '', 'mod-admin page-tools_index');
 

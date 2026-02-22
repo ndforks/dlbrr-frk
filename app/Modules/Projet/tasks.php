@@ -53,68 +53,68 @@ if (isModEnabled('eventorganization')) {
 
 $langs->loadLangs($langsLoad);
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-//$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'projecttasklist';
-$backtopage = GETPOST('backtopage', 'alpha');					// if not set, a default page will be used
-//$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');	// if not set, $backtopage will be used
-$optioncss  = GETPOST('optioncss', 'aZ');
-$backtopage = GETPOST('backtopage', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+//$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'projecttasklist';
+$backtopage = request()->input('backtopage');					// if not set, a default page will be used
+//$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
+$optioncss  = request()->input('optioncss');
+$backtopage = request()->input('backtopage');
+$toselect = request()->input('toselect', []);
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$taskref = GETPOST('taskref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$taskref = request()->input('taskref');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_user_id = GETPOSTINT('search_user_id');
-$search_taskref = GETPOST('search_taskref');
-$search_tasklabel = GETPOST('search_tasklabel');
-$search_taskdescription = GETPOST('search_taskdescription');
-$search_dtstartday = GETPOST('search_dtstartday');
-$search_dtstartmonth = GETPOST('search_dtstartmonth');
-$search_dtstartyear = GETPOST('search_dtstartyear');
-$search_dtendday = GETPOST('search_dtendday');
-$search_dtendmonth = GETPOST('search_dtendmonth');
-$search_dtendyear = GETPOST('search_dtendyear');
-$search_planedworkload = GETPOST('search_planedworkload');
-$search_timespend = GETPOST('search_timespend');
-$search_progresscalc = GETPOST('search_progresscalc');
-$search_progressdeclare = GETPOST('search_progressdeclare');
-$search_task_budget_amount = GETPOST('search_task_budget_amount');
-$search_task_billable = GETPOST('search_task_billable');
-$search_status = GETPOST('search_status');
+$search_user_id = request()->integer('search_user_id', 0);
+$search_taskref = request()->input('search_taskref');
+$search_tasklabel = request()->input('search_tasklabel');
+$search_taskdescription = request()->input('search_taskdescription');
+$search_dtstartday = request()->input('search_dtstartday');
+$search_dtstartmonth = request()->input('search_dtstartmonth');
+$search_dtstartyear = request()->integer('search_dtstartyear', 0);
+$search_dtendday = request()->input('search_dtendday');
+$search_dtendmonth = request()->input('search_dtendmonth');
+$search_dtendyear = request()->integer('search_dtendyear', 0);
+$search_planedworkload = request()->input('search_planedworkload');
+$search_timespend = request()->input('search_timespend');
+$search_progresscalc = request()->input('search_progresscalc');
+$search_progressdeclare = request()->input('search_progressdeclare');
+$search_task_budget_amount = request()->input('search_task_budget_amount');
+$search_task_billable = request()->input('search_task_billable');
+$search_status = request()->input('search_status');
 
-$search_date_start_startmonth = GETPOSTINT('search_date_start_startmonth');
-$search_date_start_startyear = GETPOSTINT('search_date_start_startyear');
-$search_date_start_startday = GETPOSTINT('search_date_start_startday');
+$search_date_start_startmonth = request()->integer('search_date_start_startmonth', 0);
+$search_date_start_startyear = request()->integer('search_date_start_startyear', 0);
+$search_date_start_startday = request()->integer('search_date_start_startday', 0);
 $search_date_start_start = dol_mktime(0, 0, 0, $search_date_start_startmonth, $search_date_start_startday, $search_date_start_startyear);	// Use tzserver
-$search_date_start_endmonth = GETPOSTINT('search_date_start_endmonth');
-$search_date_start_endyear = GETPOSTINT('search_date_start_endyear');
-$search_date_start_endday = GETPOSTINT('search_date_start_endday');
+$search_date_start_endmonth = request()->integer('search_date_start_endmonth', 0);
+$search_date_start_endyear = request()->integer('search_date_start_endyear', 0);
+$search_date_start_endday = request()->integer('search_date_start_endday', 0);
 $search_date_start_end = dol_mktime(23, 59, 59, $search_date_start_endmonth, $search_date_start_endday, $search_date_start_endyear);	// Use tzserver
 
-$search_date_end_startmonth = GETPOSTINT('search_date_end_startmonth');
-$search_date_end_startyear = GETPOSTINT('search_date_end_startyear');
-$search_date_end_startday = GETPOSTINT('search_date_end_startday');
+$search_date_end_startmonth = request()->integer('search_date_end_startmonth', 0);
+$search_date_end_startyear = request()->integer('search_date_end_startyear', 0);
+$search_date_end_startday = request()->integer('search_date_end_startday', 0);
 $search_date_end_start = dol_mktime(0, 0, 0, $search_date_end_startmonth, $search_date_end_startday, $search_date_end_startyear);	// Use tzserver
-$search_date_end_endmonth = GETPOSTINT('search_date_end_endmonth');
-$search_date_end_endyear = GETPOSTINT('search_date_end_endyear');
-$search_date_end_endday = GETPOSTINT('search_date_end_endday');
+$search_date_end_endmonth = request()->integer('search_date_end_endmonth', 0);
+$search_date_end_endyear = request()->integer('search_date_end_endyear', 0);
+$search_date_end_endday = request()->integer('search_date_end_endday', 0);
 $search_date_end_end = dol_mktime(23, 59, 59, $search_date_end_endmonth, $search_date_end_endday, $search_date_end_endyear);	// Use tzserver
 
 $object = new Project($db);
@@ -154,14 +154,14 @@ $result = restrictedArea($user, 'projet', $id, 'projet&project');
 
 $diroutputmassaction = $conf->project->dir_output.'/tasks/temp/massgeneration/'.$user->id;
 
-$progress = GETPOSTINT('progress');
-$budget_amount = GETPOSTFLOAT('budget_amount');
-$billable = (GETPOST('billable', 'aZ') == 'yes' ? 1 : 0);
-$label = GETPOST('label', 'alpha');
-$description = GETPOST('description', 'restricthtml');
-$planned_workloadhour = (GETPOSTISSET('planned_workloadhour') ? GETPOSTINT('planned_workloadhour') : '');
-$planned_workloadmin = (GETPOSTISSET('planned_workloadmin') ? GETPOSTINT('planned_workloadmin') : '');
-if (GETPOSTISSET('planned_workloadhour') || GETPOSTISSET('planned_workloadmin')) {
+$progress = request()->integer('progress', 0);
+$budget_amount = (float)request()->input('budget_amount', 0.0);
+$billable = (request()->input('billable') == 'yes' ? 1 : 0);
+$label = request()->input('label');
+$description = request()->input('description');
+$planned_workloadhour = (request()->has('planned_workloadhour') ? request()->integer('planned_workloadhour', 0) : '');
+$planned_workloadmin = (request()->has('planned_workloadmin') ? request()->integer('planned_workloadmin', 0) : '');
+if (request()->has('planned_workloadhour') || request()->has('planned_workloadmin')) {
 	$planned_workload = (int) $planned_workloadhour * 3600 + (int) $planned_workloadmin * 60;
 } else {
 	$planned_workload = '';
@@ -216,7 +216,7 @@ if ($cancel) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -231,7 +231,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_user_id = "";
 		$search_taskref = '';
 		$search_tasklabel = '';
@@ -344,8 +344,8 @@ if (count($morewherefilterarray) > 0) {
 
 if ($action == 'createtask' && $user->hasRight('projet', 'creer')) {
 	// If we use user timezone, we must change also view/list to use user timezone everywhere
-	$date_start = dol_mktime(GETPOSTINT('date_starthour'), GETPOSTINT('date_startmin'), 0, GETPOSTINT('date_startmonth'), GETPOSTINT('date_startday'), GETPOSTINT('date_startyear'));
-	$date_end = dol_mktime(GETPOSTINT('date_endhour'), GETPOSTINT('date_endmin'), 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'));
+	$date_start = dol_mktime(request()->integer('date_starthour', 0), request()->integer('date_startmin', 0), 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
+	$date_end = dol_mktime(request()->integer('date_endhour', 0), request()->integer('date_endmin', 0), 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 
 	if (!$cancel) {
 		if (empty($taskref)) {
@@ -357,14 +357,14 @@ if ($action == 'createtask' && $user->hasRight('projet', 'creer')) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Label")), null, 'errors');
 			$action = 'create';
 			$error++;
-		} elseif (!GETPOST('task_parent')) {
+		} elseif (!request()->input('task_parent')) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("ChildOfProjectTask")), null, 'errors');
 			$action = 'create';
 			$error++;
 		}
 
 		if (!$error) {
-			$tmparray = explode('_', GETPOST('task_parent'));
+			$tmparray = explode('_', request()->input('task_parent'));
 			$projectid = empty($tmparray[0]) ? $id : (int) $tmparray[0];
 			$task_parent = empty($tmparray[1]) ? 0 : $tmparray[1];
 
@@ -391,7 +391,7 @@ if ($action == 'createtask' && $user->hasRight('projet', 'creer')) {
 			$taskid = $task->create($user);
 
 			if ($taskid > 0) {
-				$userid = GETPOSTINT("userid");
+				$userid = request()->integer('userid', 0);
 				if ($userid == -4) {
 					if (empty($object->id)) {
 						$object->fetch($projectid);
@@ -404,7 +404,7 @@ if ($action == 'createtask' && $user->hasRight('projet', 'creer')) {
 						$result = $task->add_contact(((int) $contact["id"]), ($contact["code"] == "PROJECTLEADER" ? 'TASKEXECUTIVE' : "TASKCONTRIBUTOR"), $contact["source"]);
 					}
 				} else {
-					$result = $task->add_contact(GETPOSTINT("userid"), 'TASKEXECUTIVE', 'internal');
+					$result = $task->add_contact(request()->integer('userid', 0), 'TASKEXECUTIVE', 'internal');
 				}
 			} else {
 				if ($db->lasterrno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
@@ -490,7 +490,7 @@ if ($id > 0 || !empty($ref)) {
 	//print "userAccess=".$userAccess." userWrite=".$userWrite." userDelete=".$userDelete;
 
 
-	$tab = (GETPOSTISSET('tab') ? GETPOST('tab') : 'tasks');
+	$tab = (request()->has('tab') ? request()->input('tab') : 'tasks');
 
 	$head = project_prepare_head($object);
 	print dol_get_fiche_head($head, $tab, $langs->trans("Project"), -1, ($object->public ? 'projectpub' : 'project'));
@@ -656,25 +656,25 @@ if ($id > 0 || !empty($ref)) {
 		print '</td>';
 		print '<td>';
 		if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-			print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowOpportunity");
 			print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-			print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowTasks");
 			print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-			print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectBillTimeDescription");
 			print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 			print '<br>';
 		}
 		if (isModEnabled('eventorganization')) {
-			print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 			print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 		}
@@ -805,11 +805,11 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 	// Ref
 	print '<tr><td class="titlefieldcreate"><span class="fieldrequired">'.$langs->trans("Ref").'</span></td><td>';
 	if (empty($duplicate_code_error)) {
-		print(GETPOSTISSET("ref") ? GETPOST("ref", 'alpha') : $defaultref);
+		print(request()->has('ref') ? request()->input('ref') : $defaultref);
 	} else {
 		print $defaultref;
 	}
-	print '<input type="hidden" name="taskref" value="'.(GETPOSTISSET("ref") ? GETPOST("ref", 'alpha') : $defaultref).'">';
+	print '<input type="hidden" name="taskref" value="'.(request()->has('ref') ? request()->input('ref') : $defaultref).'">';
 	print '</td></tr>';
 
 	// Label
@@ -821,9 +821,9 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 	print '<tr><td class="fieldrequired">'.$langs->trans("ChildOfProjectTask").'</td><td>';
 	print img_picto('', 'project', 'class="pictofixedwidth"');
 	if ($projectoktoentertime) {
-		$formother->selectProjectTasks(GETPOSTINT('task_parent'), empty($projectid) ? $object->id : $projectid, 'task_parent', 0, 0, 1, 1, 0, '0,1', 'maxwidth500 widthcentpercentminusxx');
+		$formother->selectProjectTasks(request()->integer('task_parent', 0), empty($projectid) ? $object->id : $projectid, 'task_parent', 0, 0, 1, 1, 0, '0,1', 'maxwidth500 widthcentpercentminusxx');
 	} else {
-		$formother->selectProjectTasks(GETPOSTINT('task_parent'), empty($projectid) ? $object->id : $projectid, 'task_parent', 0, 0, 1, 1, 0, '', 'maxwidth500 widthcentpercentminusxx');
+		$formother->selectProjectTasks(request()->integer('task_parent', 0), empty($projectid) ? $object->id : $projectid, 'task_parent', 0, 0, 1, 1, 0, '', 'maxwidth500 widthcentpercentminusxx');
 	}
 	print '</td></tr>';
 
@@ -889,7 +889,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 
 	print '<tr><td>'.$langs->trans("Budget").'</td><td>';
 	print img_picto('', 'currency', 'class="pictofixedwidth"');
-	print '<input size="8" type="text" name="budget_amount" value="'.dol_escape_htmltag(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : '').'"></td>';
+	print '<input size="8" type="text" name="budget_amount" value="'.dol_escape_htmltag(request()->has('budget_amount') ? request()->input('budget_amount') : '').'"></td>';
 	print '</tr>';
 
 	// Other options
@@ -1237,7 +1237,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 				cleanCorruptedTree($db, 'projet_task', 'fk_task_parent');
 			}
 		} else {
-			if ($nboftaskshown < count($tasksarray) && !GETPOSTINT('search_user_id')) {
+			if ($nboftaskshown < count($tasksarray) && !request()->integer('search_user_id', 0)) {
 				include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 				cleanCorruptedTree($db, 'projet_task', 'fk_task_parent');
 			}

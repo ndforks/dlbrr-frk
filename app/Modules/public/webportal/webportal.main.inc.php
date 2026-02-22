@@ -115,14 +115,14 @@ $logged_user = new User($db);
 $anti_spam_session_key = 'dol_antispam_value';
 
 if (!defined('NOREQUIREDB') && empty($conf->webportal->enabled)) {
-	accessforbidden('Module not activated');
+	abort(403);
 }
 
 if (!defined('WEBPORTAL_NOREQUIRETRAN') || (!defined('WEBPORTAL_NOLOGIN') && !empty($context->controllerInstance->accessNeedLoggedUser))) {
 	if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined, however we need langs for error messages.
 		include_once DOL_DOCUMENT_ROOT . '/core/class/translate.class.php';
 		$langs = new Translate("", $conf);
-		$langcode = (GETPOST('lang', 'aZ09', 1) ? GETPOST('lang', 'aZ09', 1) : (empty($logged_user->conf->MAIN_LANG_DEFAULT) ? getDolGlobalString('MAIN_LANG_DEFAULT', 'auto') : $logged_user->conf->MAIN_LANG_DEFAULT));
+		$langcode = (request()->input('lang') ? request()->input('lang') : (empty($logged_user->conf->MAIN_LANG_DEFAULT) ? getDolGlobalString('MAIN_LANG_DEFAULT', 'auto') : $logged_user->conf->MAIN_LANG_DEFAULT));
 		if (defined('MAIN_LANG_DEFAULT')) {
 			$langcode = constant('MAIN_LANG_DEFAULT');
 		}
@@ -161,12 +161,12 @@ if (getDolGlobalInt('WEBPORTAL_LOGIN_BY_MODULE') && !empty($conf->modules_parts[
 			// It is not already authenticated and it requests the login / password
 			$langs->loadLangs(array("other", "help", "admin"));
 
-			$action = GETPOST('action_login', 'alphanohtml');
+			$action = request()->input('action_login');
 
 			if ($action == 'login') {
-				$login = GETPOST('login', 'alphanohtml');
-				$password = GETPOST('password', 'password');
-				// $security_code = GETPOST('security_code', 'alphanohtml');
+				$login = request()->input('login');
+				$password = request()->input('password');
+				// $security_code = request()->input('security_code');
 
 				if (empty($login)) {
 					$context->setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Login")), 'errors');

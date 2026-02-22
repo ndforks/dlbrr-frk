@@ -40,14 +40,14 @@ require_once '../lib/partnership.lib.php';
 // Translations
 $langs->loadLangs(array("admin", "partnership"));
 
-$action = GETPOST('action', 'aZ09');
-$value 	= GETPOST('value', 'alpha');
+$action = request()->input('action');
+$value 	= request()->input('value');
 
 $error = 0;
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -62,7 +62,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 if ($action == 'setting') {
 	require_once DOL_DOCUMENT_ROOT."/core/modules/modPartnership.class.php";
 
-	$modulemenu = (GETPOST('PARTNERSHIP_IS_MANAGED_FOR', 'alpha') == 'member') ? 'member' : 'thirdparty';
+	$modulemenu = (request()->input('PARTNERSHIP_IS_MANAGED_FOR') == 'member') ? 'member' : 'thirdparty';
 	$res = dolibarr_set_const($db, "PARTNERSHIP_IS_MANAGED_FOR", $modulemenu, 'chaine', 0, '', $conf->entity);
 
 	$partnership = new modPartnership($db);
@@ -73,11 +73,11 @@ if ($action == 'setting') {
 	$error += $partnership->delete_menus();
 	$error += $partnership->insert_menus();
 
-	if (GETPOSTISSET("PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL")) {
-		dolibarr_set_const($db, "PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL", GETPOSTINT("PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL')) {
+		dolibarr_set_const($db, "PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL", request()->integer('PARTNERSHIP_NBDAYS_AFTER_MEMBER_EXPIRATION_BEFORE_CANCEL', 0), 'chaine', 0, '', $conf->entity);
 	}
 
-	dolibarr_set_const($db, "PARTNERSHIP_BACKLINKS_TO_CHECK", GETPOST("PARTNERSHIP_BACKLINKS_TO_CHECK"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "PARTNERSHIP_BACKLINKS_TO_CHECK", request()->input('PARTNERSHIP_BACKLINKS_TO_CHECK'), 'chaine', 0, '', $conf->entity);
 }
 
 if ($action) {

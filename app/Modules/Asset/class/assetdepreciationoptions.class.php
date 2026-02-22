@@ -243,11 +243,11 @@ class AssetDepreciationOptions extends CommonObject
 
 				$html_name = $mode_key . '_' . $field_key;
 				if ($field_info['type'] == 'duration') {
-					if (GETPOST($html_name . 'hour') == '' && GETPOST($html_name . 'min') == '') {
+					if (request()->input($html_name . 'hour') == '' && request()->input($html_name . 'min') == '') {
 						continue; // The field was not submitted to be saved
 					}
 				} else {
-					if (!GETPOSTISSET($html_name)) {
+					if (!request()->has($html_name)) {
 						continue; // The field was not submitted to be saved
 					}
 				}
@@ -263,24 +263,24 @@ class AssetDepreciationOptions extends CommonObject
 
 				// Set value to insert
 				if (in_array($field_info['type'], array('text', 'html'))) {
-					$value = GETPOST($html_name, 'restricthtml');
+					$value = request()->input($html_name);
 				} elseif ($field_info['type'] == 'date') {
-					$value = dol_mktime(0, 0, 0, GETPOSTINT($html_name . 'month'), GETPOSTINT($html_name . 'day'), GETPOSTINT($html_name . 'year'), 'gmt'); // for date without hour, we use gmt
+					$value = dol_mktime(0, 0, 0, request()->integer($html_name . 'month', 0), request()->integer($html_name . 'day', 0), request()->integer($html_name . 'year', 0), 'gmt'); // for date without hour, we use gmt
 				} elseif ($field_info['type'] == 'datetime') {
-					$value = dol_mktime(GETPOSTINT($html_name . 'hour'), GETPOSTINT($html_name . 'min'), GETPOSTINT($html_name . 'sec'), GETPOSTINT($html_name . 'month'), GETPOSTINT($html_name . 'day'), GETPOSTINT($html_name . 'year'), 'tzuserrel');
+					$value = dol_mktime(request()->integer($html_name . 'hour', 0), request()->integer($html_name . 'min', 0), request()->integer($html_name . 'sec', 0), request()->integer($html_name . 'month', 0), request()->integer($html_name . 'day', 0), request()->integer($html_name . 'year', 0), 'tzuserrel');
 				} elseif ($field_info['type'] == 'duration') {
-					$value = 60 * 60 * GETPOSTINT($html_name . 'hour') + 60 * GETPOSTINT($html_name . 'min');
+					$value = 60 * 60 * request()->integer($html_name . 'hour', 0) + 60 * request()->integer($html_name . 'min', 0);
 				} elseif (preg_match('/^(integer|price|real|double)/', $field_info['type'])) {
-					$value = price2num(GETPOST($html_name, 'alphanohtml')); // To fix decimal separator according to lang setup
+					$value = price2num(request()->input($html_name)); // To fix decimal separator according to lang setup
 				} elseif ($field_info['type'] == 'boolean') {
-					$value = ((GETPOST($html_name) == '1' || GETPOST($html_name) == 'on') ? 1 : 0);
+					$value = ((request()->input($html_name) == '1' || request()->input($html_name) == 'on') ? 1 : 0);
 				} elseif ($field_info['type'] == 'reference') {
-					$value = GETPOST($html_name) . ',' . GETPOST($html_name . '2');
+					$value = request()->input($html_name) . ',' . request()->input($html_name . '2');
 				} else {
 					if ($field_key == 'lang') {
-						$value = GETPOST($html_name, 'aZ09') ? GETPOST($html_name, 'aZ09') : "";
+						$value = request()->input($html_name) ? request()->input($html_name) : "";
 					} else {
-						$value = GETPOST($html_name, 'alphanohtml');
+						$value = request()->input($html_name);
 					}
 				}
 				if (preg_match('/^integer:/i', $field_info['type']) && $value == '-1') {

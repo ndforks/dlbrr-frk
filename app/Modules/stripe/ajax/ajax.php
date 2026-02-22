@@ -57,19 +57,19 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$location = GETPOST('location', 'alphanohtml');
-$stripeacc = GETPOST('stripeacc', 'alphanohtml');
-$servicestatus = GETPOSTINT('servicestatus');
-$amount = GETPOSTINT('amount');
+$action = request()->input('action');
+$location = request()->input('location');
+$stripeacc = request()->input('stripeacc');
+$servicestatus = request()->integer('servicestatus', 0);
+$amount = request()->integer('amount', 0);
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden('Not allowed to use TakePOS');
+	abort(403);
 }
 
 $usestripeterminals = getDolGlobalString('STRIPE_LOCATION');
 if (! $usestripeterminals) {
-	accessforbidden('Feature to use Stripe terminals not enabled');
+	abort(403);
 }
 
 

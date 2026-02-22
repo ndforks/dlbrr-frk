@@ -43,7 +43,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
 $contact = new Contact($db);
 
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
 $result = restrictedArea($user, 'contact', $id, 'socpeople&societe');

@@ -13,7 +13,7 @@ class FactureIndex extends Controller
 
         $langs->loadLangs(['bills', 'boxes']);
 
-        $socid = GETPOSTINT('socid');
+        $socid = $request->integer('socid', 0);
         if (!empty($user->socid) && $user->socid > 0) {
             $socid = $user->socid;
         }

@@ -53,16 +53,16 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT."/product/class/product.class.php";
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
-$category = GETPOST('category', 'alphanohtml');	// Can be id of category or 'supplements'
-$action = GETPOST('action', 'aZ09');
-$term = GETPOST('term', 'alpha');
-$search_term = GETPOST('search_term', 'alpha');
-$id = GETPOSTINT('id');
-$search_start = GETPOSTINT('search_start');
-$search_limit = GETPOSTINT('search_limit');
+$category = request()->input('category');	// Can be id of category or 'supplements'
+$action = request()->input('action');
+$term = request()->input('term');
+$search_term = request()->input('search_term');
+$id = request()->integer('id', 0);
+$search_start = request()->integer('search_start', 0);
+$search_limit = request()->integer('search_limit', 0);
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array of hooks
@@ -79,15 +79,15 @@ $pricelevel = 1;	// default price level if PRODUIT_MULTIPRICES. TODO Get price l
 $thirdparty = new Societe($db);
 
 if ($action == 'getProducts' && $user->hasRight('takepos', 'run')) {
-	$tosell = GETPOSTISSET('tosell') ? GETPOSTINT('tosell') : '';
-	$limit = GETPOSTISSET('limit') ? GETPOSTINT('limit') : 0;
-	$offset = GETPOSTISSET('offset') ? GETPOSTINT('offset') : 0;
+	$tosell = request()->has('tosell') ? request()->integer('tosell', 0) : '';
+	$limit = request()->has('limit') ? request()->integer('limit', 0) : 0;
+	$offset = request()->has('offset') ? request()->integer('offset', 0) : 0;
 
 	top_httphead('application/json');
 
 	// Search
-	if (GETPOSTINT('thirdpartyid') > 0) {
-		$result = $thirdparty->fetch(GETPOSTINT('thirdpartyid'));
+	if (request()->integer('thirdpartyid', 0) > 0) {
+		$result = $thirdparty->fetch(request()->integer('thirdpartyid', 0));
 		if ($result > 0) {
 			$pricelevel = $thirdparty->price_level;
 		}
@@ -160,8 +160,8 @@ if ($action == 'getProducts' && $user->hasRight('takepos', 'run')) {
 	}
 
 	// Search
-	if (GETPOSTINT('thirdpartyid') > 0) {
-		$result = $thirdparty->fetch(GETPOSTINT('thirdpartyid'));
+	if (request()->integer('thirdpartyid', 0) > 0) {
+		$result = $thirdparty->fetch(request()->integer('thirdpartyid', 0));
 		if ($result > 0) {
 			$pricelevel = $thirdparty->price_level;
 		}

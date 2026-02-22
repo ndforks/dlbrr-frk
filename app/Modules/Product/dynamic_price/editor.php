@@ -41,12 +41,12 @@ require_once DOL_DOCUMENT_ROOT.'/product/dynamic_price/class/price_parser.class.
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'accountancy'));
 
-$id = GETPOSTINT('id');
-$eid = GETPOSTINT('eid');
-$action = GETPOST('action', 'aZ09');
-$title = GETPOST('expression_title', 'alpha');
-$expression = GETPOST('expression');
-$tab = GETPOST('tab', 'alpha');
+$id = request()->integer('id', 0);
+$eid = request()->integer('eid', 0);
+$action = request()->input('action');
+$title = request()->input('expression_title');
+$expression = request()->input('expression');
+$tab = request()->input('tab');
 $tab = (!empty($tab)) ? $tab : 'card';
 $tab = strtolower($tab);
 
@@ -178,7 +178,7 @@ print '</td></tr>';
 
 // Title input
 print '<tr><td class="fieldrequired">'.$langs->trans("Name").'</td><td>';
-print '<input class="flat" name="expression_title" size="15" value="'.(GETPOSTISSET('expression_title') ? GETPOST('expression_title') : ($price_expression->title ? $price_expression->title : '')).'">';
+print '<input class="flat" name="expression_title" size="15" value="'.(request()->has('expression_title') ? request()->input('expression_title') : ($price_expression->title ? $price_expression->title : '')).'">';
 print '</td></tr>';
 
 //Help text

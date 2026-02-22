@@ -18,9 +18,9 @@ class AutoIndexEcm extends Controller
         $langs->loadLangs(array("ecm", "companies", "other", "users", "orders", "propal", "bills", "contracts"));
         
         // Get parameters
-        $action = GETPOST('action', 'aZ09');
-        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-        $module = GETPOST('module', 'alpha');
+        $action = $request->input('action');
+        $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
+        $module = $request->input('module');
         
         // Security check
         $result = restrictedArea($user, 'ecm', 0);
@@ -44,9 +44,9 @@ class AutoIndexEcm extends Controller
         require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-        $module = GETPOST('module', 'alpha');
-        $action = GETPOST('action', 'aZ09');
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
+        $module = $request->input('module');
+        $action = $request->input('action');
         
         $ecmdir = new EcmDirectory($db);
         if ($section) {
@@ -183,7 +183,7 @@ class AutoIndexEcm extends Controller
         
         // Confirm remove file
         if ($action == 'deletefile' && empty($conf->use_javascript_ajax)) {
-            print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.$section.'&urlfile='.urlencode(GETPOST("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 1);
+            print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.$section.'&urlfile='.urlencode($request->input("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 1);
         }
         
         // Start container
@@ -295,8 +295,8 @@ class AutoIndexEcm extends Controller
         
         $ecmdir = new EcmDirectory($db);
         $ecmdir->ref = 'NOTUSEDYET';
-        $ecmdir->label = GETPOST("label");
-        $ecmdir->description = GETPOST("desc");
+        $ecmdir->label = $request->input("label");
+        $ecmdir->description = $request->input("desc");
         
         $id = $ecmdir->create($user);
         if ($id > 0) {
@@ -313,9 +313,9 @@ class AutoIndexEcm extends Controller
             accessforbidden();
         }
         
-        if (GETPOST('confirm') == 'yes') {
+        if ($request->input('confirm') == 'yes') {
             $langs->load("other");
-            $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+            $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
             
             $relativepath = '';
             if ($section) {
@@ -329,13 +329,13 @@ class AutoIndexEcm extends Controller
             }
             
             $upload_dir = $conf->ecm->dir_output.($relativepath ? '/'.$relativepath : '');
-            $file = $upload_dir."/".GETPOST('urlfile');
+            $file = $upload_dir."/".$request->input('urlfile');
             
             $ret = dol_delete_file($file);
             if ($ret) {
-                setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+                setEventMessages($langs->trans("FileWasRemoved", $request->input('urlfile')), null, 'mesgs');
             } else {
-                setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+                setEventMessages($langs->trans("ErrorFailToDeleteFile", $request->input('urlfile')), null, 'errors');
             }
             
             if ($section) {
@@ -354,8 +354,8 @@ class AutoIndexEcm extends Controller
             accessforbidden();
         }
         
-        if (GETPOST('confirm') == 'yes') {
-            $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+        if ($request->input('confirm') == 'yes') {
+            $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
             
             $ecmdir = new EcmDirectory($db);
             $ecmdir->fetch($section);

@@ -45,18 +45,18 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
-$what = GETPOST('what', 'alpha');
-$export_type = GETPOST('export_type', 'alpha');
-$file = trim(GETPOST('zipfilename_template', 'alpha'));
-$compression = GETPOST('compression', 'aZ09');
+$action = request()->input('action');
+$what = request()->input('what');
+$export_type = request()->input('export_type');
+$file = trim(request()->input('zipfilename_template'));
+$compression = request()->input('compression');
 
 $file = dol_sanitizeFileName($file, '_', 1, 1);
 $file = preg_replace('/(\.zip|\.tar|\.tgz|\.gz|\.tar\.gz|\.bz2|\.zst)$/i', '', $file);
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
@@ -68,11 +68,11 @@ if ($page < 0) {
 } elseif (empty($page)) {
 	$page = 0;
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $errormsg = '';
@@ -83,7 +83,7 @@ $errormsg = '';
  */
 
 if ($action == 'delete') {
-	$filerelative = dol_sanitizeFileName(GETPOST('urlfile', 'alpha'));
+	$filerelative = dol_sanitizeFileName(request()->input('urlfile'));
 	$filepath = $conf->admin->dir_output.'/'.$filerelative;
 	$ret = dol_delete_file($filepath, 1);
 	if ($ret) {

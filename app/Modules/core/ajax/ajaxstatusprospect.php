@@ -53,9 +53,9 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/societe/class/client.class.php';
 
-$idstatus = GETPOSTINT('id');
-$idprospect = GETPOSTINT('prospectid');
-$action = GETPOST('action', 'aZ09');
+$idstatus = request()->integer('id', 0);
+$idprospect = request()->integer('prospectid', 0);
+$action = request()->input('action');
 
 $prospectstatic = new Client($db);
 
@@ -63,7 +63,7 @@ $prospectstatic = new Client($db);
 // Security check
 if ($user->socid > 0) {
 	if ($idprospect != $user->socid) {
-		accessforbidden('Not allowed on this thirdparty');
+		abort(403);
 	}
 }
 
@@ -101,10 +101,10 @@ if ($action === "updatestatusprospect" && $permisstiontoupdate) {
 			$response = img_action('', $prospectstatic->cacheprospectstatus[$idstatus]['code'], $prospectstatic->cacheprospectstatus[$idstatus]['picto'], 'class="inline-block valignmiddle paddingright pictoprospectstatus"');
 		} else {
 			dol_syslog('Failed to update prospect via update() method', LOG_ERR);
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	echo json_encode(array('img' => $response));
 }

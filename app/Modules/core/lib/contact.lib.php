@@ -80,7 +80,7 @@ function contact_prepare_head(Contact $object)
 				$obj = $db->fetch_object($resql);
 				$nbProject = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			dol_setcache($cachekey, $nbProject, 120);	// If setting cache fails, this is not a problem, so we do not test result.
 		}
@@ -297,7 +297,7 @@ function show_contacts_projects($conf, $langs, $db, $object, $backtopage = '', $
 			}
 			$db->free($result);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		print "</table>";
 		print '</div>';

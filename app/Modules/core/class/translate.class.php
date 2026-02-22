@@ -583,7 +583,7 @@ class Translate
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -1215,7 +1215,7 @@ class Translate
 			//var_dump($this->cache_currencies);	$this->cache_currencies is now sorted onto label
 			return $num;
 		} else {
-			dol_print_error($db);
+			abort(500);
 			return -1;
 		}
 	}

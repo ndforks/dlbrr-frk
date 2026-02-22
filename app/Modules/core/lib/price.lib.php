@@ -171,7 +171,7 @@ function calcul_price_total($qty, $pu, $remise_percent_ligne, $txtva, $uselocalt
 				//var_dump($localtax1_rate.' '.$localtax2_rate.' '.$localtax1_type.' '.$localtax2_type);
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

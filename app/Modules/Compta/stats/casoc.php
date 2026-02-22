@@ -51,12 +51,12 @@ $langs->loadLangs(array('companies', 'categories', 'bills', 'compta'));
 
 // Define modecompta ('CREANCES-DETTES' or 'RECETTES-DEPENSES')
 $modecompta = getDolGlobalString('ACCOUNTING_MODE');
-if (GETPOST("modecompta")) {
-	$modecompta = GETPOST("modecompta");
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$sortfield = GETPOST("sortfield", 'aZ09comma');
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
 if (!$sortorder) {
 	$sortorder = "asc";
 }
@@ -64,15 +64,15 @@ if (!$sortfield) {
 	$sortfield = "nom";
 }
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 // Category
-$selected_cat = GETPOSTINT('search_categ');
+$selected_cat = request()->integer('search_categ', 0);
 if ($selected_cat == -1) {
 	$selected_cat = 0;
 }
 $subcat = false;
-if (GETPOST('subcat', 'alpha') === 'yes') {
+if (request()->input('subcat') === 'yes') {
 	$subcat = true;
 }
 
@@ -92,18 +92,18 @@ if (isModEnabled('accounting')) {
 }
 
 // Date range
-$year = GETPOSTINT("year");
-$month = GETPOSTINT("month");
-$search_societe = GETPOST("search_societe", 'alpha');
-$search_zip = GETPOST("search_zip", 'alpha');
-$search_town = GETPOST("search_town", 'alpha');
-$search_country = GETPOST("search_country", 'aZ09');
-$date_startyear = GETPOSTINT("date_startyear");
-$date_startmonth = GETPOSTINT("date_startmonth");
-$date_startday = GETPOSTINT("date_startday");
-$date_endyear = GETPOSTINT("date_endyear");
-$date_endmonth = GETPOSTINT("date_endmonth");
-$date_endday = GETPOSTINT("date_endday");
+$year = request()->integer('year', 0);
+$month = request()->integer('month', 0);
+$search_societe = request()->input('search_societe');
+$search_zip = request()->input('search_zip');
+$search_town = request()->input('search_town');
+$search_country = request()->input('search_country');
+$date_startyear = request()->integer('date_startyear', 0);
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
 if (empty($year)) {
 	$year_current = dol_print_date(dol_now(), '%Y');
 	$month_current = dol_print_date(dol_now(), '%m');
@@ -113,18 +113,18 @@ if (empty($year)) {
 	$month_current = dol_print_date(dol_now(), '%m');
 	$year_start = $year;
 }
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"), 'tzserver');	// We use timezone of server so report is same from everywhere
-$date_end = dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"), 'tzserver');		// We use timezone of server so report is same from everywhere
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0), 'tzserver');	// We use timezone of server so report is same from everywhere
+$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');		// We use timezone of server so report is same from everywhere
 // Quarter
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q") ? GETPOSTINT("q") : 0;
+	$q = request()->integer('q', 0) ? request()->integer('q', 0) : 0;
 	if (empty($q)) {
 		// We define date_start and date_end
-		$month_start = GETPOST("month") ? GETPOST("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		$month_start = request()->input('month') ? request()->input('month') : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
 		$year_end = $year_start;
 		$month_end = $month_start;
-		if (!GETPOST("month")) {	// If month not forced
-			if (!GETPOST('year') && $month_start > $month_current) {
+		if (!request()->input('month')) {	// If month not forced
+			if (!request()->input('year') && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
 			}
@@ -398,7 +398,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // We add the old versions of payments, not linked by table llx_paiement_facture
@@ -441,7 +441,7 @@ if ($modecompta == "RECETTES-DEPENSES") {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

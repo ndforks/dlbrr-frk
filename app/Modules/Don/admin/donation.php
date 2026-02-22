@@ -48,13 +48,13 @@ if (isModEnabled('accounting')) {
 $langs->loadLangs(array('admin', 'donations', 'accountancy', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
 $type = 'donation';
 
@@ -65,7 +65,7 @@ $type = 'donation';
 $error = 0;
 
 if ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$don = new Don($db);
 	$don->initAsSpecimen();
@@ -119,7 +119,7 @@ if ($action == 'specimen') {
 
 // Options
 if ($action == 'set_DONATION_ACCOUNTINGACCOUNT') {
-	$account = GETPOST('DONATION_ACCOUNTINGACCOUNT', 'alpha');
+	$account = request()->integer('DONATION_ACCOUNTINGACCOUNT', 0);
 
 	$res = dolibarr_set_const($db, "DONATION_ACCOUNTINGACCOUNT", $account, 'chaine', 0, '', $conf->entity);
 
@@ -137,7 +137,7 @@ if ($action == 'set_DONATION_ACCOUNTINGACCOUNT') {
 }
 
 if ($action == 'set_DONATION_MESSAGE') {
-	$freemessage = GETPOST('DONATION_MESSAGE', 'restricthtml'); // No alpha here, we want exact string
+	$freemessage = request()->input('DONATION_MESSAGE'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "DONATION_MESSAGE", $freemessage, 'chaine', 0, '', $conf->entity);
 
@@ -162,7 +162,7 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -172,7 +172,7 @@ if (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -218,7 +218,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<table class="noborder centpercent">';

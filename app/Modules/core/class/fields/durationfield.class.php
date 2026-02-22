@@ -160,9 +160,9 @@ class DurationField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName . 'hour') || GETPOSTISSET($htmlName . 'min')) {
-			$value_hours = GETPOSTINT($htmlName . "hour");
-			$value_minutes = GETPOSTINT($htmlName . "min");
+		if (request()->has($htmlName . 'hour') || request()->has($htmlName . 'min')) {
+			$value_hours = request()->integer($htmlName . "hour", 0);
+			$value_minutes = request()->integer($htmlName . "min", 0);
 			$value = $value_hours * 3600 + $value_minutes * 60;
 		} else {
 			$value = $defaultValue;

@@ -44,17 +44,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
-$what = GETPOST('what', 'alpha');
-$export_type = GETPOST('export_type', 'alpha');
-$file = dol_sanitizeFileName(GETPOST('filename_template', 'alpha'));
+$action = request()->input('action');
+$what = request()->input('what');
+$export_type = request()->input('export_type');
+$file = dol_sanitizeFileName(request()->input('filename_template'));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page == -1 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha') || (empty($toselect) && $massaction === '0')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page == -1 || request()->input('button_search') || request()->input('button_removefilter') || (empty($toselect) && $massaction === '0')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters or if we select empty mass action
 $offset = $limit * $page;
@@ -66,7 +66,7 @@ if (!$sortfield) {
 }
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $errormsg = '';
@@ -80,17 +80,17 @@ $utils = new Utils($db);
 
 if ($file && !$what) {
 	//print DOL_URL_ROOT.'/dolibarr_export.php';
-	header("Location: ".DOL_URL_ROOT.'/admin/tools/dolibarr_export.php?msg='.urlencode($langs->trans("ErrorFieldRequired", $langs->transnoentities("ExportMethod"))).(GETPOSTINT('page_y') ? '&page_y='.GETPOSTINT('page_y') : ''));
+	header("Location: ".DOL_URL_ROOT.'/admin/tools/dolibarr_export.php?msg='.urlencode($langs->trans("ErrorFieldRequired", $langs->transnoentities("ExportMethod"))).(request()->integer('page_y', 0) ? '&page_y='.request()->integer('page_y', 0) : ''));
 	exit;
 }
 
 if ($action == 'delete') {
-	$file = $conf->admin->dir_output.'/'.dol_sanitizeFileName(GETPOST('urlfile'));
+	$file = $conf->admin->dir_output.'/'.dol_sanitizeFileName(request()->input('urlfile'));
 	$ret = dol_delete_file($file, 1);
 	if ($ret) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 	} else {
-		setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+		setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 	}
 	$action = '';
 }
@@ -121,12 +121,12 @@ $outputdir  = $conf->admin->dir_output.'/backup';
 $result = dol_mkdir($outputdir);
 
 
-$lowmemorydump = (int) (GETPOSTISSET("lowmemorydump") ? GETPOSTINT("lowmemorydump") : getDolGlobalInt('MAIN_LOW_MEMORY_DUMP'));
+$lowmemorydump = (int) (request()->has('lowmemorydump') ? request()->integer('lowmemorydump', 0) : getDolGlobalInt('MAIN_LOW_MEMORY_DUMP'));
 
 
 // MYSQL
 if ($what == 'mysql') {
-	$cmddump = GETPOST("mysqldump", 'none'); // Do not sanitize here with 'alpha', will be sanitize later by dol_sanitizePathName and escapeshellarg
+	$cmddump = request()->input('mysqldump'); // Do not sanitize here with 'alpha', will be sanitize later by dol_sanitizePathName and escapeshellarg
 	$cmddump = dol_sanitizePathName($cmddump);
 	$basenamecmddump = basename(str_replace('\\', '/', $cmddump));
 
@@ -156,7 +156,7 @@ if ($what == 'mysql') {
 	}
 
 	if (!$errormsg) {
-		$result = $utils->dumpDatabase(GETPOST('compression', 'alpha'), $what, 0, $file, 0, 0, $lowmemorydump);
+		$result = $utils->dumpDatabase(request()->input('compression'), $what, 0, $file, 0, 0, $lowmemorydump);
 
 		$errormsg = $utils->error;
 		$_SESSION["commandbackuplastdone"] = $utils->result['commandbackuplastdone'];
@@ -166,7 +166,7 @@ if ($what == 'mysql') {
 
 // MYSQL NO BIN
 if ($what == 'mysqlnobin') {
-	$utils->dumpDatabase(GETPOST('compression', 'alpha'), $what, 0, $file, 0, 0, $lowmemorydump);
+	$utils->dumpDatabase(request()->input('compression'), $what, 0, $file, 0, 0, $lowmemorydump);
 
 	$errormsg = $utils->error;
 	$_SESSION["commandbackuplastdone"] = $utils->result['commandbackuplastdone'];
@@ -175,7 +175,7 @@ if ($what == 'mysqlnobin') {
 
 // POSTGRESQL
 if ($what == 'postgresql') {
-	$cmddump = GETPOST("postgresqldump", 'none'); // Do not sanitize here with 'alpha', will be sanitize later by dol_sanitizePathName and escapeshellarg
+	$cmddump = request()->input('postgresqldump'); // Do not sanitize here with 'alpha', will be sanitize later by dol_sanitizePathName and escapeshellarg
 	$cmddump = dol_sanitizePathName($cmddump);
 
 	/* Not required, the command is output on screen but not ran for pgsql
@@ -196,7 +196,7 @@ if ($what == 'postgresql') {
 	}
 
 	if (!$errormsg) {
-		$utils->dumpDatabase(GETPOST('compression', 'alpha'), $what, 0, $file, 0, 0, $lowmemorydump);
+		$utils->dumpDatabase(request()->input('compression'), $what, 0, $file, 0, 0, $lowmemorydump);
 		$errormsg = $utils->error;
 		$_SESSION["commandbackuplastdone"] = $utils->result['commandbackuplastdone'];
 		$_SESSION["commandbackuptorun"] = $utils->result['commandbackuptorun'];
@@ -241,5 +241,5 @@ top_httphead();
 $db->close();
 
 // Redirect to backup page
-header("Location: dolibarr_export.php".(GETPOSTINT('page_y') ? '?page_y='.GETPOSTINT('page_y') : ''));
+header("Location: dolibarr_export.php".(request()->integer('page_y', 0) ? '?page_y='.request()->integer('page_y', 0) : ''));
 exit();

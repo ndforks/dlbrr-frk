@@ -16,13 +16,13 @@ class PositionHrm extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
-        $confirm = GETPOST('confirm', 'alpha');
-        $cancel = GETPOST('cancel', 'alpha');
-        $fk_job = GETPOSTISSET('fk_job') ? GETPOSTINT('fk_job') : $id;
-        $fk_user = GETPOSTINT('fk_user');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
+        $confirm = $request->input('confirm');
+        $cancel = $request->input('cancel');
+        $fk_job = $request->has('fk_job') ? $request->integer('fk_job', 0) : $id;
+        $fk_user = $request->integer('fk_user', 0);
         
         require_once DOL_DOCUMENT_ROOT.'/hrm/class/position.class.php';        require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_position.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_job.lib.php';
@@ -66,8 +66,8 @@ class PositionHrm extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+        $backtopage = $request->input('backtopage');
+        $backtopageforcancel = $request->input('backtopageforcancel');
         
         return view('hrm.position_create', [
             'object' => $object,
@@ -100,8 +100,8 @@ class PositionHrm extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+        $backtopage = $request->input('backtopage');
+        $backtopageforcancel = $request->input('backtopageforcancel');
         
         return view('hrm.position_edit', [
             'object' => $object,
@@ -124,11 +124,11 @@ class PositionHrm extends Controller
         foreach ($object->fields as $key => $val) {
             if (isset($_POST[$key])) {
                 if ($key === 'fk_job') {
-                    $object->$key = GETPOSTINT($key);
+                    $object->$key = $request->integer($key, 0);
                 } elseif ($key === 'fk_user') {
-                    $object->$key = GETPOSTINT($key);
+                    $object->$key = $request->integer($key, 0);
                 } else {
-                    $object->$key = GETPOST($key, isset($val['type']) ? $val['type'] : 'alpha');
+                    $object->$key = $request->input($key);
                 }
             }
         }
@@ -210,11 +210,11 @@ class PositionHrm extends Controller
             $head = [];
         }
         
-        $limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-        $sortfield = GETPOST('sortfield', 'aZ09comma');
-        $sortorder = GETPOST('sortorder', 'aZ09comma');
-        $page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-        if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+        $limit = $request->integer('limit', 0) ? $request->integer('limit', 0) : $conf->liste_limit;
+        $sortfield = $request->input('sortfield');
+        $sortorder = $request->input('sortorder');
+        $page = $request->has('pageplusone') ? ($request->integer('pageplusone', 0) - 1) : $request->integer('page', 0);
+        if (empty($page) || $page < 0 || $request->input('button_search') || $request->input('button_removefilter')) {
             $page = 0;
         }
         $offset = $limit * $page;
@@ -247,7 +247,7 @@ class PositionHrm extends Controller
             'permissiontoread' => $permissiontoread,
             'permissiontoadd' => $permissiontoadd,
             'permissiontodelete' => $permissiontodelete,
-            'action' => GETPOST('action', 'aZ09'),
+            'action' => $request->input('action'),
         ]);
     }
 }

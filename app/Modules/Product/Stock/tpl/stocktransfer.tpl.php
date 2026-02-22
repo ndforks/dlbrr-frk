@@ -59,7 +59,7 @@ if (empty($id)) {
 	$id = $object->id;
 }
 
-$pdluoid = GETPOSTINT('pdluoid');
+$pdluoid = request()->integer('pdluoid', 0);
 
 $pdluo = new Productbatch($db);
 
@@ -93,7 +93,7 @@ if ($object->element == 'product') {
 	print '<td class="fieldrequired">'.$langs->trans("WarehouseSource").'</td>';
 	print '<td>';
 	print img_picto('', 'stock', 'class="pictofixedwidth"');
-	$selected = (GETPOST("dwid") ? GETPOSTINT("dwid") : (GETPOST('id_entrepot') ? GETPOSTINT('id_entrepot') : ($object->element == 'product' && $object->fk_default_warehouse ? $object->fk_default_warehouse : 'ifone')));
+	$selected = (request()->input('dwid') ? request()->integer('dwid', 0) : (request()->input('id_entrepot') ? request()->integer('id_entrepot', 0) : ($object->element == 'product' && $object->fk_default_warehouse ? $object->fk_default_warehouse : 'ifone')));
 	$warehousestatus = 'warehouseopen,warehouseinternal';
 	print $formproduct->selectWarehouses($selected, 'id_entrepot', $warehousestatus, 1, 0, 0, '', 0, 0, array(), 'minwidth75 maxwidth300 widthcentpercentminusx');
 	print '</td>';
@@ -103,14 +103,14 @@ if ($object->element == 'stockmouvement') {
 	print '<td class="fieldrequired">'.$langs->trans("Product").'</td>';
 	print '<td>';
 	print img_picto('', 'product', 'class="pictofixedwidth"');
-	$form->select_produits(GETPOSTINT('product_id'), 'product_id', (!getDolGlobalString('STOCK_SUPPORTS_SERVICES') ? '0' : ''), 0, 0, -1, 2, '', 0, array(), 0, 1, 0, 'maxwidth500');
+	$form->select_produits(request()->integer('product_id', 0), 'product_id', (!getDolGlobalString('STOCK_SUPPORTS_SERVICES') ? '0' : ''), 0, 0, -1, 2, '', 0, array(), 0, 1, 0, 'maxwidth500');
 	print '</td>';
 }
 
 print '<td class="fieldrequired">'.$langs->trans("WarehouseTarget").'</td><td>';
-print img_picto('', 'stock').$formproduct->selectWarehouses(GETPOST('id_entrepot_destination'), 'id_entrepot_destination', 'warehouseopen,warehouseinternal', 1, 0, 0, '', 0, 0, array(), 'minwidth75 maxwidth300 widthcentpercentminusx');
+print img_picto('', 'stock').$formproduct->selectWarehouses(request()->input('id_entrepot_destination'), 'id_entrepot_destination', 'warehouseopen,warehouseinternal', 1, 0, 0, '', 0, 0, array(), 'minwidth75 maxwidth300 widthcentpercentminusx');
 print '</td></tr>';
-print '<tr><td class="fieldrequired">'.$langs->trans("NumberOfUnit").'</td><td colspan="3"><input type="text" name="nbpiece" class="center maxwidth75" value="'.dol_escape_htmltag(GETPOST("nbpiece")).'"></td>';
+print '<tr><td class="fieldrequired">'.$langs->trans("NumberOfUnit").'</td><td colspan="3"><input type="text" name="nbpiece" class="center maxwidth75" value="'.dol_escape_htmltag(request()->input('nbpiece')).'"></td>';
 print '</tr>';
 
 // Serial / Eat-by date
@@ -123,10 +123,10 @@ if (isModEnabled('productbatch') &&
 	print '<td'.($object->element == 'stockmouvement' ? '' : ' class="fieldrequired"').'>'.$langs->trans("batch_number").'</td><td colspan="3">';
 	if ($pdluoid > 0) {
 		// If form was opened for a specific pdluoid, field is disabled
-		print '<input type="text" name="batch_number_bis" size="40" disabled="disabled" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
-		print '<input type="hidden" name="batch_number" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
+		print '<input type="text" name="batch_number_bis" size="40" disabled="disabled" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
+		print '<input type="hidden" name="batch_number" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
 	} else {
-		print img_picto('', 'barcode', 'class="pictofixedwidth"').'<input type="text" name="batch_number" class="minwidth300 widthcentpercentminusx maxwidth300" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
+		print img_picto('', 'barcode', 'class="pictofixedwidth"').'<input type="text" name="batch_number" class="minwidth300 widthcentpercentminusx maxwidth300" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
 	}
 	print '</td>';
 	print '</tr>';
@@ -146,7 +146,7 @@ if (isModEnabled('productbatch') &&
 }
 
 // Label
-$valformovementlabel = (GETPOST("label") ? GETPOST("label") : $langs->trans("MovementTransferStock", $productref));
+$valformovementlabel = (request()->input('label') ? request()->input('label') : $langs->trans("MovementTransferStock", $productref));
 print '<tr>';
 print '<td>'.$langs->trans("MovementLabel").'</td>';
 print '<td>';
@@ -154,7 +154,7 @@ print '<input type="text" name="label" class="minwidth300" value="'.dol_escape_h
 print '</td>';
 print '<td>'.$langs->trans("InventoryCode").'</td>';
 print '<td>';
-print '<input class="maxwidth100onsmartphone" name="inventorycode" id="inventorycode" value="'.(GETPOSTISSET("inventorycode") ? GETPOST("inventorycode", 'alpha') : dol_print_date(dol_now(), '%Y%m%d%H%M%S')).'">';
+print '<input class="maxwidth100onsmartphone" name="inventorycode" id="inventorycode" value="'.(request()->has('inventorycode') ? request()->input('inventorycode') : dol_print_date(dol_now(), '%Y%m%d%H%M%S')).'">';
 print '</td>';
 print '</tr>';
 

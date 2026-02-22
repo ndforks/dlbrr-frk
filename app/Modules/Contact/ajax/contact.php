@@ -53,14 +53,14 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
  * @var User $user
  */
 
-$htmlname = GETPOST('htmlname', 'aZ09');
-$outjson = (GETPOSTINT('outjson') ? GETPOSTINT('outjson') : 0);
-$action = GETPOST('action', 'aZ09');
+$htmlname = request()->input('htmlname');
+$outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
-$socid = GETPOSTINT('socid');
-$exclude = GETPOST('exclude', 'intcomma');
-$showsoc = GETPOSTINT('showsoc');
+$id = request()->integer('id', 0);
+$socid = request()->integer('socid', 0);
+$exclude = request()->input('exclude');
+$showsoc = request()->integer('showsoc', 0);
 
 $object = new Contact($db);
 if ($id > 0) {
@@ -117,7 +117,7 @@ if ($action == 'fetch' && !empty($id) && $permissiontoread) {
 	$id = (!empty($match[0]) ? $match[0] : '');		// Take first key found into GET array with matching $htmlname123
 
 	// When used from jQuery, the search term is added as GET param "term".
-	$searchkey = (($id && GETPOST($id, 'alpha')) ? GETPOST($id, 'alpha') : (($htmlname && GETPOST($htmlname, 'alpha')) ? GETPOST($htmlname, 'alpha') : ''));
+	$searchkey = (($id && request()->input($id)) ? request()->input($id) : (($htmlname && request()->input($htmlname)) ? request()->input($htmlname) : ''));
 	if (!$searchkey) {
 		return;
 	}

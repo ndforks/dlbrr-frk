@@ -145,7 +145,7 @@ if (is_resource($handle)) {
 
 							$db->free($result);
 						} else {
-							dol_print_error($db);
+							abort(500);
 						}
 						print '</tr>';
 					}
@@ -221,7 +221,7 @@ if ($result) {
 	print "</table></div><br>";
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

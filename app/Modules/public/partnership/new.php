@@ -73,19 +73,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 $errmsg = '';
 $num = 0;
 $error = 0;
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
 // Load translation files
 $langs->loadLangs(array("main", "members", "partnership", "companies", "install", "other"));
 
 // Security check
 if (!isModEnabled('partnership')) {
-	httponly_accessforbidden('Module Partnership not enabled');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('PARTNERSHIP_ENABLE_PUBLIC')) {
-	httponly_accessforbidden("Auto subscription form for public visitors has not been enabled");
+	httponly_abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -172,33 +172,33 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	$db->begin();
 
-	if (GETPOSTINT('partnershiptype') <= 0) {
+	if (request()->integer('partnershiptype', 0) <= 0) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Type"))."<br>\n";
 	}
-	if (!GETPOST('societe')) {
+	if (!request()->input('societe')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ThirdParty"))."<br>\n";
 	}
-	if (!GETPOST('lastname')) {
+	if (!request()->input('lastname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Lastname"))."<br>\n";
 	}
-	if (!GETPOST('firstname')) {
+	if (!request()->input('firstname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Firstname"))."<br>\n";
 	}
 
-	if (empty(GETPOST('email'))) {
+	if (empty(request()->input('email'))) {
 		$error++;
 		$errmsg .= $langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Email'))."<br>\n";
-	} elseif (GETPOST("email") && !isValidEmail(GETPOST("email"))) {
+	} elseif (request()->input('email') && !isValidEmail(request()->input('email'))) {
 		$langs->load('errors');
 		$error++;
-		$errmsg .= $langs->trans("ErrorBadEMail", GETPOST("email"))."<br>\n";
+		$errmsg .= $langs->trans("ErrorBadEMail", request()->input('email'))."<br>\n";
 	}
 
-	$public = GETPOSTISSET('public') ? 1 : 0;
+	$public = request()->has('public') ? 1 : 0;
 
 	if (!$error) {
 		$partnership = new Partnership($db);
@@ -211,13 +211,13 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 		}
 
 		$partnership->status                 = 0;
-		$partnership->note_private           = GETPOST('note_private');
+		$partnership->note_private           = request()->input('note_private');
 		$partnership->date_creation 		 = dol_now();
 		$partnership->date_partnership_start = dol_now();
 		$partnership->fk_user_creat          = 0;
-		$partnership->fk_type                = GETPOSTINT('partnershiptype');
-		$partnership->url                    = GETPOST('url');
-		//$partnership->typeid               = $conf->global->PARTNERSHIP_NEWFORM_FORCETYPE ? $conf->global->PARTNERSHIP_NEWFORM_FORCETYPE : GETPOST('typeid', 'int');
+		$partnership->fk_type                = request()->integer('partnershiptype', 0);
+		$partnership->url                    = request()->input('url');
+		//$partnership->typeid               = $conf->global->PARTNERSHIP_NEWFORM_FORCETYPE ? $conf->global->PARTNERSHIP_NEWFORM_FORCETYPE : request()->input('typeid');
 		$partnership->ip = getUserRemoteIP();
 
 		$nb_post_max = getDolGlobalInt("MAIN_SECURITY_MAX_POST_ON_PUBLIC_PAGES_BY_IP_ADDRESS", 200);
@@ -243,9 +243,9 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 		}
 		// test if thirdparty already exists
 		$company = new Societe($db);
-		$result = $company->fetch(0, GETPOST('societe'));
+		$result = $company->fetch(0, request()->input('societe'));
 		if ($result == 0) { // if entry with name not found, we search using the email
-			$result1 = $company->fetch(0, '', '', '', '', '', '', '', '', '', GETPOST('email'));
+			$result1 = $company->fetch(0, '', '', '', '', '', '', '', '', '', request()->input('email'));
 			if ($result1 > 0) {
 				$error++;
 				$errmsg = $langs->trans("EmailAlreadyExistsPleaseRewriteYourCompanyName");
@@ -253,15 +253,15 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 				// create thirdparty
 				$company = new Societe($db);
 
-				$company->name        = GETPOST('societe');
-				$company->address     = GETPOST('address');
-				$company->zip         = GETPOST('zipcode');
-				$company->town        = GETPOST('town');
-				$company->email       = GETPOST('email');
-				$company->url         = GETPOST('url');
-				$company->country_id  = GETPOSTINT('country_id');
-				$company->state_id    = GETPOSTINT('state_id');
-				$company->name_alias  = dolGetFirstLastname(GETPOST('firstname'), GETPOST('lastname'));
+				$company->name        = request()->input('societe');
+				$company->address     = request()->input('address');
+				$company->zip         = request()->input('zipcode');
+				$company->town        = request()->input('town');
+				$company->email       = request()->input('email');
+				$company->url         = request()->input('url');
+				$company->country_id  = request()->integer('country_id', 0);
+				$company->state_id    = request()->integer('state_id', 0);
+				$company->name_alias  = dolGetFirstLastname(request()->input('firstname'), request()->input('lastname'));
 
 				$resultat = $company->create($user);
 				if ($resultat < 0) {
@@ -278,28 +278,28 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 			$partnership->fk_soc = $company->id;
 			// update thirdparty fields
 			if (empty($company->address)) {
-				$company->address = GETPOST('address');
+				$company->address = request()->input('address');
 			}
 			if (empty($company->zip)) {
-				$company->zip = GETPOST('zipcode');
+				$company->zip = request()->input('zipcode');
 			}
 			if (empty($company->town)) {
-				$company->town = GETPOST('town');
+				$company->town = request()->input('town');
 			}
 			if (empty($company->country_id)) {
-				$company->country_id = GETPOSTINT('country_id');
+				$company->country_id = request()->integer('country_id', 0);
 			}
 			if (empty($company->email)) {
-				$company->email = GETPOST('email');
+				$company->email = request()->input('email');
 			}
 			if (empty($company->url)) {
-				$company->url = GETPOST('url');
+				$company->url = request()->input('url');
 			}
 			if (empty($company->state_id)) {
-				$company->state_id = GETPOSTINT('state_id');
+				$company->state_id = request()->integer('state_id', 0);
 			}
 			if (empty($company->name_alias)) {
-				$company->name_alias = dolGetFirstLastname(GETPOST('firstname'), GETPOST('lastname'));
+				$company->name_alias = dolGetFirstLastname(request()->input('firstname'), request()->input('lastname'));
 			}
 
 			$res = $company->update(0, $user);
@@ -422,11 +422,11 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 				if (getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE') && getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE' != '-1') {
 					if (getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE') == 'all') {
 						$urlback = DOL_MAIN_URL_ROOT.'/public/payment/newpayment.php?from=partnershipnewform&source=membersubscription&ref='.urlencode($partnership->ref);
-						if (price2num(GETPOST('amount', 'alpha'))) {
-							$urlback .= '&amount='.price2num(GETPOST('amount', 'alpha'));
+						if (price2num(request()->input('amount'))) {
+							$urlback .= '&amount='.price2num(request()->input('amount'));
 						}
-						if (GETPOST('email')) {
-							$urlback .= '&email='.urlencode(GETPOST('email'));
+						if (request()->input('email')) {
+							$urlback .= '&email='.urlencode(request()->input('email'));
 						}
 						if (getDolGlobalString('PAYMENT_SECURITY_TOKEN()) {
 							if (getDolGlobalString('PAYMENT_SECURITY_TOKEN_UNIQUE()) {
@@ -437,11 +437,11 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 						}
 					} elseif (getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE') == 'paybox') {
 						$urlback = DOL_MAIN_URL_ROOT.'/public/paybox/newpayment.php?from=partnershipnewform&source=membersubscription&ref='.urlencode($partnership->ref);
-						if (price2num(GETPOST('amount', 'alpha'))) {
-							$urlback .= '&amount='.price2num(GETPOST('amount', 'alpha'));
+						if (price2num(request()->input('amount'))) {
+							$urlback .= '&amount='.price2num(request()->input('amount'));
 						}
-						if (GETPOST('email')) {
-							$urlback .= '&email='.urlencode(GETPOST('email'));
+						if (request()->input('email')) {
+							$urlback .= '&email='.urlencode(request()->input('email'));
 						}
 						if (getDolGlobalString('PAYMENT_SECURITY_TOKEN')) {
 							if (getDolGlobalString('PAYMENT_SECURITY_TOKEN_UNIQUE')) {
@@ -452,11 +452,11 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 						}
 					} elseif (getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE') == 'paypal') {
 						$urlback = DOL_MAIN_URL_ROOT.'/public/paypal/newpayment.php?from=partnershipnewform&source=membersubscription&ref='.urlencode($partnership->ref);
-						if (price2num(GETPOST('amount', 'alpha'))) {
-							$urlback .= '&amount='.price2num(GETPOST('amount', 'alpha'));
+						if (price2num(request()->input('amount'))) {
+							$urlback .= '&amount='.price2num(request()->input('amount'));
 						}
-						if (GETPOST('email')) {
-							$urlback .= '&email='.urlencode(GETPOST('email'));
+						if (request()->input('email')) {
+							$urlback .= '&email='.urlencode(request()->input('email'));
 						}
 						if (getDolGlobalString('PAYMENT_SECURITY_TOKEN')) {
 							if (getDolGlobalString('PAYMENT_SECURITY_TOKEN_UNIQUE')) {
@@ -467,11 +467,11 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 						}
 					} elseif (getDolGlobalString('PARTNERSHIP_NEWFORM_PAYONLINE') == 'stripe') {
 						$urlback = DOL_MAIN_URL_ROOT.'/public/stripe/newpayment.php?from=partnershipnewform&source=membersubscription&ref='.$partnership->ref;
-						if (price2num(GETPOST('amount', 'alpha'))) {
-							$urlback .= '&amount='.price2num(GETPOST('amount', 'alpha'));
+						if (price2num(request()->input('amount'))) {
+							$urlback .= '&amount='.price2num(request()->input('amount'));
 						}
-						if (GETPOST('email')) {
-							$urlback .= '&email='.urlencode(GETPOST('email'));
+						if (request()->input('email')) {
+							$urlback .= '&email='.urlencode(request()->input('email'));
 						}
 						if (getDolGlobalString('PAYMENT_SECURITY_TOKEN')) {
 							if (getDolGlobalString('PAYMENT_SECURITY_TOKEN_UNIQUE')) {
@@ -598,24 +598,24 @@ if (getDolGlobalInt('PARTNERSHIP_NEWFORM_FORCETYPE')) {
 print '<table class="border" summary="form to subscribe" id="tablesubscribe">'."\n";
 if (!getDolGlobalInt('PARTNERSHIP_NEWFORM_FORCETYPE')) {
 	print '<tr class="morphy"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans('PartnershipType').' <span class="star">*</span></td><td>'."\n";
-	print $form->selectarray("partnershiptype", $listofpartnership, GETPOSTISSET('partnershiptype') ? GETPOSTINT('partnershiptype') : 'ifone', 1);
+	print $form->selectarray("partnershiptype", $listofpartnership, request()->has('partnershiptype') ? request()->integer('partnershiptype', 0) : 'ifone', 1);
 	print '</td></tr>'."\n";
 }
 // Company
 print '<tr id="trcompany" class="trcompany"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Company").' <span class="star">*</span></td><td>';
 print img_picto('', 'company', 'class="pictofixedwidth"');
-print '<input type="text" name="societe" class="minwidth150 maxwidth300 widthcentpercentminusxx" value="'.dol_escape_htmltag(GETPOST('societe')).'"></td></tr>'."\n";
+print '<input type="text" name="societe" class="minwidth150 maxwidth300 widthcentpercentminusxx" value="'.dol_escape_htmltag(request()->input('societe')).'"></td></tr>'."\n";
 // Lastname
-print '<tr><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Lastname").' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('lastname')).'"></td></tr>'."\n";
+print '<tr><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Lastname").' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('lastname')).'"></td></tr>'."\n";
 // Firstname
-print '<tr><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Firstname").' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('firstname')).'"></td></tr>'."\n";
+print '<tr><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Firstname").' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('firstname')).'"></td></tr>'."\n";
 // EMail
 print '<tr><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Email").' <span class="star">*</span></td><td>';
 //print img_picto('', 'email', 'class="pictofixedwidth"');
-print '<input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('email')).'"></td></tr>'."\n";
+print '<input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(request()->input('email')).'"></td></tr>'."\n";
 // Url
 print '<tr><td class="tdtop">'.$langs->trans("Url").' <span class="star">*</span></td><td>';
-print '<input type="text" name="url" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('url')).'">';
+print '<input type="text" name="url" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(request()->input('url')).'">';
 if (getDolGlobalString('PARTNERSHIP_BACKLINKS_TO_CHECK')) {
 	$listofkeytocheck = explode('|', getDolGlobalString('PARTNERSHIP_BACKLINKS_TO_CHECK'));
 	$i = 0;
@@ -629,17 +629,17 @@ if (getDolGlobalString('PARTNERSHIP_BACKLINKS_TO_CHECK')) {
 print '</td></tr>'."\n";
 // Address
 print '<tr><td class="tdtop">'.$langs->trans("Address").'</td><td>'."\n";
-print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('address'), 0, 1).'</textarea></td></tr>'."\n";
 // Zip / Town
 print '<tr><td>'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td><td>';
-print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
+print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
 print ' / ';
-print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 print '</td></tr>';
 // Country
 print '<tr><td>'.$langs->trans('Country').'</td><td>';
 print img_picto('', 'country', 'class="pictofixedwidth"');
-$country_id = GETPOSTINT('country_id');
+$country_id = request()->integer('country_id', 0);
 if (!$country_id && getDolGlobalString('PARTNERSHIP_NEWFORM_FORCECOUNTRYCODE')) {
 	$country_id = getCountry($conf->global->PARTNERSHIP_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 }
@@ -661,12 +661,12 @@ print '</td></tr>';
 if (!getDolGlobalString('SOCIETE_DISABLE_STATE')) {
 	print '<tr><td class="wordbreak">'.$langs->trans('State').'</td><td>';
 	if ($country_code) {
-		print $formcompany->select_state(GETPOSTINT("state_id"), $country_code);
+		print $formcompany->select_state(request()->integer('state_id', 0), $country_code);
 	}
 	print '</td></tr>';
 }
 // Logo
-//print '<tr><td>'.$langs->trans("URLPhoto").'</td><td><input type="text" name="photo" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('photo')).'"></td></tr>'."\n";
+//print '<tr><td>'.$langs->trans("URLPhoto").'</td><td><input type="text" name="photo" class="minwidth150" value="'.dol_escape_htmltag(request()->input('photo')).'"></td></tr>'."\n";
 // Other attributes
 $parameters['tdclass'] = 'titlefieldauto';
 $parameters['tpl_context'] = 'public';	// define template context to public
@@ -674,7 +674,7 @@ include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
 // Comments
 print '<tr>';
 print '<td class="tdtop wordbreak">'.$langs->trans("Comments").'</td>';
-print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('note_private', 'restricthtml'), 0, 1).'</textarea></td>';
+print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('note_private'), 0, 1).'</textarea></td>';
 print '</tr>'."\n";
 
 print "</table>\n";

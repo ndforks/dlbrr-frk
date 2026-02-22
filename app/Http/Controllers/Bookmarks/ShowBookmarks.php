@@ -14,8 +14,8 @@ class ShowBookmarks extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         if (!$user->hasRight('bookmark', 'lire')) {
             accessforbidden();
@@ -32,12 +32,12 @@ class ShowBookmarks extends Controller
     {
         global $db, $langs, $user;
         
-        $title = (string) GETPOST("title", "alpha");
-        $url = (string) GETPOST("url", "alpha");
-        $target = GETPOST("target", "alpha");
-        $userid = GETPOSTINT("userid");
-        $position = GETPOSTINT("position");
-        $backtopage = GETPOST('backtopage', 'alpha');
+        $title = (string) $request->input('title');
+        $url = (string) $request->input('url');
+        $target = $request->input('target');
+        $userid = $request->integer('userid', 0);
+        $position = $request->integer('position', 0);
+        $backtopage = $request->input('backtopage');
         
         $object = new Bookmark($db);
         
@@ -52,9 +52,9 @@ class ShowBookmarks extends Controller
             'object' => $object,
             'title' => $title,
             'url' => $url,
-            'target' => GETPOSTISSET('target') ? GETPOSTINT('target') : $defaulttarget,
-            'userid' => GETPOSTISSET('userid') ? GETPOSTINT('userid') : $user->id,
-            'position' => GETPOSTISSET("position") ? GETPOSTINT("position") : $object->position,
+            'target' => $request->has('target') ? $request->integer('target', 0) : $defaulttarget,
+            'userid' => $request->has('userid') ? $request->integer('userid', 0) : $user->id,
+            'position' => $request->has('position') ? $request->integer('position', 0) : $object->position,
             'backtopage' => $backtopage,
             'permissiontoadd' => $permissiontoadd,
         ]);
@@ -68,15 +68,15 @@ class ShowBookmarks extends Controller
             accessforbidden();
         }
         
-        $title = (string) GETPOST("title", "alpha");
-        $url = (string) GETPOST("url", "alpha");
-        $urlsource = GETPOST("urlsource", "alpha");
-        $target = GETPOST("target", "alpha");
-        $userid = GETPOSTINT("userid");
-        $position = GETPOSTINT("position");
-        $backtopage = GETPOST('backtopage', 'alpha');
+        $title = (string) $request->input('title');
+        $url = (string) $request->input('url');
+        $urlsource = $request->input('urlsource');
+        $target = $request->input('target');
+        $userid = $request->integer('userid', 0);
+        $position = $request->integer('position', 0);
+        $backtopage = $request->input('backtopage');
         
-        $cancel = GETPOST('cancel', 'alpha');
+        $cancel = $request->input('cancel');
         
         if ($cancel) {
             if (empty($backtopage)) {
@@ -139,7 +139,7 @@ class ShowBookmarks extends Controller
         $permissiontoadd = $user->hasRight('bookmark', 'creer');
         $permissiontodelete = ($user->hasRight('bookmark', 'supprimer') || ($permissiontoadd && $object->fk_user == $user->id));
         
-        $backtopage = GETPOST('backtopage', 'alpha');
+        $backtopage = $request->input('backtopage');
         
         return view('bookmarks.edit', [
             'object' => $object,
@@ -157,15 +157,15 @@ class ShowBookmarks extends Controller
             accessforbidden();
         }
         
-        $title = (string) GETPOST("title", "alpha");
-        $url = (string) GETPOST("url", "alpha");
-        $urlsource = GETPOST("urlsource", "alpha");
-        $target = GETPOST("target", "alpha");
-        $userid = GETPOSTINT("userid");
-        $position = GETPOSTINT("position");
-        $backtopage = GETPOST('backtopage', 'alpha');
+        $title = (string) $request->input('title');
+        $url = (string) $request->input('url');
+        $urlsource = $request->input('urlsource');
+        $target = $request->input('target');
+        $userid = $request->integer('userid', 0);
+        $position = $request->integer('position', 0);
+        $backtopage = $request->input('backtopage');
         
-        $cancel = GETPOST('cancel', 'alpha');
+        $cancel = $request->input('cancel');
         
         if ($cancel) {
             if (empty($backtopage)) {

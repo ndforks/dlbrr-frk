@@ -42,13 +42,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!isModEnabled('clicktodial')) {
-	accessforbidden($langs->transnoentitiesnoconv("WarningModuleNotActive", $langs->transnoentitiesnoconv("Module58Name")));
+	abort(403);));
 }
 
 
@@ -57,9 +57,9 @@ if (!isModEnabled('clicktodial')) {
  */
 
 if ($action == 'setvalue'/*  && $user->admin */) {
-	$result1 = dolibarr_set_const($db, "CLICKTODIAL_USE_TEL_LINK_ON_PHONE_NUMBERS", GETPOST("CLICKTODIAL_USE_TEL_LINK_ON_PHONE_NUMBERS"), 'chaine', 0, '', $conf->entity);
-	$result2 = dolibarr_set_const($db, "CLICKTODIAL_URL", GETPOST("CLICKTODIAL_URL"), 'chaine', 0, '', $conf->entity);
-	$result3 = dolibarr_set_const($db, "CLICKTODIAL_KEY_FOR_CIDLOOKUP", GETPOST("CLICKTODIAL_KEY_FOR_CIDLOOKUP"), 'chaine', 0, '', $conf->entity);
+	$result1 = dolibarr_set_const($db, "CLICKTODIAL_USE_TEL_LINK_ON_PHONE_NUMBERS", request()->input('CLICKTODIAL_USE_TEL_LINK_ON_PHONE_NUMBERS'), 'chaine', 0, '', $conf->entity);
+	$result2 = dolibarr_set_const($db, "CLICKTODIAL_URL", request()->input('CLICKTODIAL_URL'), 'chaine', 0, '', $conf->entity);
+	$result3 = dolibarr_set_const($db, "CLICKTODIAL_KEY_FOR_CIDLOOKUP", request()->input('CLICKTODIAL_KEY_FOR_CIDLOOKUP'), 'chaine', 0, '', $conf->entity);
 
 	if ($result1 >= 0 && $result2 >= 0 && $result3 >= 0) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -151,7 +151,7 @@ print '<span class="opacitymedium">'.$langs->trans("CIDLookupURL").'</span>';
 print '<br>'.$url;
 print '<br>';
 print '<br>';
-print '<input type="text" class="flat minwidth300" id="CLICKTODIAL_KEY_FOR_CIDLOOKUP" name="CLICKTODIAL_KEY_FOR_CIDLOOKUP" value="'.(GETPOST('CLICKTODIAL_KEY_FOR_CIDLOOKUP') ? GETPOST('CLICKTODIAL_KEY_FOR_CIDLOOKUP') : getDolGlobalString('CLICKTODIAL_KEY_FOR_CIDLOOKUP')).'">';
+print '<input type="text" class="flat minwidth300" id="CLICKTODIAL_KEY_FOR_CIDLOOKUP" name="CLICKTODIAL_KEY_FOR_CIDLOOKUP" value="'.(request()->input('CLICKTODIAL_KEY_FOR_CIDLOOKUP') ? request()->input('CLICKTODIAL_KEY_FOR_CIDLOOKUP') : getDolGlobalString('CLICKTODIAL_KEY_FOR_CIDLOOKUP')).'">';
 if (!empty($conf->use_javascript_ajax)) {
 	print '&nbsp;'.img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token" class="linkobject"');
 }
@@ -170,8 +170,8 @@ if (getDolGlobalString('CLICKTODIAL_URL')) {
 	$user->fetch_clicktodial();
 
 	$phonefortest = $mysoc->phone ?? '';
-	if (GETPOST('phonefortest')) {
-		$phonefortest = GETPOST('phonefortest');
+	if (request()->input('phonefortest')) {
+		$phonefortest = request()->input('phonefortest');
 	}
 
 	print '<form action="'.dolBuildUrl($_SERVER["PHP_SELF"]).'">';

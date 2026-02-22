@@ -45,7 +45,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 $langs->loadLangs(array("admin", "other", "website"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 '
@@ -56,36 +56,36 @@ if (!$user->admin) {
 $conf->dol_hide_leftmenu = 1; // Force hide of left menu.
 
 $error = 0;
-$website = GETPOST('website', 'alpha');
-$page = GETPOST('page', 'alpha');
-$pageid = GETPOSTINT('pageid');
-$action = GETPOST('action', 'aZ09');
+$website = request()->input('website');
+$page = request()->input('page');
+$pageid = request()->integer('pageid', 0);
+$action = request()->input('action');
 
-if (GETPOST('delete')) {
+if (request()->input('delete')) {
 	$action = 'delete';
 }
-if (GETPOST('preview')) {
+if (request()->input('preview')) {
 	$action = 'preview';
 }
-if (GETPOST('create')) {
+if (request()->input('create')) {
 	$action = 'create';
 }
-if (GETPOST('editmedia')) {
+if (request()->input('editmedia')) {
 	$action = 'editmedia';
 }
-if (GETPOST('editcss')) {
+if (request()->input('editcss')) {
 	$action = 'editcss';
 }
-if (GETPOST('editmenu')) {
+if (request()->input('editmenu')) {
 	$action = 'editmenu';
 }
-if (GETPOST('setashome')) {
+if (request()->input('setashome')) {
 	$action = 'setashome';
 }
-if (GETPOST('editmeta')) {
+if (request()->input('editmeta')) {
 	$action = 'editmeta';
 }
-if (GETPOST('editcontent')) {
+if (request()->input('editcontent')) {
 	$action = 'editcontent';
 }
 

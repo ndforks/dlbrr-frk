@@ -41,11 +41,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'companies'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$socid = GETPOSTINT('socid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$socid = request()->integer('socid', 0);
 
 $object = new Paiement($db);
 
@@ -61,7 +61,7 @@ if ($user->socid) {
 // Now check also permission on thirdparty of invoices of payments. Thirdparty were loaded by the fetch_object before based on first invoice.
 // It should be enough because all payments are done on invoices of the same thirdparty.
 if ($socid && $socid != $object->thirdparty->id) {
-	accessforbidden();
+	abort(403);
 }
 
 

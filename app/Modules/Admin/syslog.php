@@ -38,14 +38,14 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other"));
 
 $error = 0;
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $syslogModules = array();
 $activeModules = array();
@@ -100,7 +100,7 @@ if ($action == 'set') {
 	$db->begin();
 
 	$newActiveModules = array();
-	$selectedModules = (GETPOSTISSET('SYSLOG_HANDLERS') ? GETPOST('SYSLOG_HANDLERS') : array());
+	$selectedModules = (request()->has('SYSLOG_HANDLERS') ? request()->input('SYSLOG_HANDLERS') : array());
 
 	// Save options of handler
 	foreach ($syslogModules as $syslogHandler) {
@@ -112,9 +112,9 @@ if ($action == 'set') {
 				$newActiveModules[] = $syslogHandler;
 			}
 			foreach ($module->configure() as $option) {
-				if (GETPOSTISSET($option['constant'])) {
+				if (request()->has($option['constant'])) {
 					dolibarr_del_const($db, $option['constant'], -1);
-					dolibarr_set_const($db, $option['constant'], trim(GETPOST($option['constant'])), 'chaine', 0, '', 0);
+					dolibarr_set_const($db, $option['constant'], trim(request()->input($option['constant'])), 'chaine', 0, '', 0);
 				}
 			}
 		}
@@ -149,7 +149,7 @@ if ($action == 'set') {
 
 // Set level
 if ($action == 'setlevel') {
-	$level = GETPOST("level");
+	$level = request()->input('level');
 	$res = dolibarr_set_const($db, "SYSLOG_LEVEL", $level, 'chaine', 0, '', 0);
 	dol_syslog("admin/syslog: level ".$level);
 
@@ -158,7 +158,7 @@ if ($action == 'setlevel') {
 	}
 
 	if (!$error) {
-		$file_saves = GETPOST("file_saves");
+		$file_saves = request()->input('file_saves');
 		$res = dolibarr_set_const($db, "SYSLOG_FILE_SAVES", $file_saves, 'chaine', 0, '', 0);
 		dol_syslog("admin/syslog: file saves  ".$file_saves);
 
@@ -252,8 +252,8 @@ foreach ($syslogModules as $moduleName) {
 			$tmpoption = $option['constant'];
 			$value = '';
 			if (!empty($tmpoption)) {
-				if (GETPOSTISSET($tmpoption)) {
-					$value = GETPOST($tmpoption);
+				if (request()->has($tmpoption)) {
+					$value = request()->input($tmpoption);
 				} else {
 					$value = getDolGlobalString($tmpoption);
 				}

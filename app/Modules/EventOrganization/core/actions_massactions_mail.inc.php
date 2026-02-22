@@ -79,7 +79,7 @@ if (!$error && is_array($toselect) && count($toselect) > $maxformassaction) {
 	$error++;
 }
 
-if (!$error && $massaction == 'confirm_presend_attendees' && !GETPOST('sendmail')) {  // If we do not choose button send (for example when we change template or limit), we must not send email, but keep on send email form
+if (!$error && $massaction == 'confirm_presend_attendees' && !request()->input('sendmail')) {  // If we do not choose button send (for example when we change template or limit), we must not send email, but keep on send email form
 	$massaction = 'presend_attendees';
 }
 
@@ -93,7 +93,7 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 	$listofobjectid = array();
 
 	$listofobjectref = array();
-	$oneemailperrecipient = (GETPOSTINT('oneemailperrecipient') ? 1 : 0);
+	$oneemailperrecipient = (request()->integer('oneemailperrecipient', 0) ? 1 : 0);
 
 	$listofselectedid = array();
 	$listofselectedref = array();
@@ -121,13 +121,13 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 	'@phan-var-force array<string,CommonObject> $listofselectedref';
 
 	// Check mandatory parameters
-	if (GETPOST('fromtype', 'alpha') === 'user' && empty($user->email)) {
+	if (request()->input('fromtype') === 'user' && empty($user->email)) {
 		$error++;
 		setEventMessages($langs->trans("NoSenderEmailDefined"), null, 'warnings');
 		$massaction = 'presend_attendees';
 	}
 
-	$receiver = GETPOST('receiver', 'alphawithlgt');
+	$receiver = request()->input('receiver');
 	if (!is_array($receiver)) {
 		if (empty($receiver) || $receiver == '-1') {
 			$receiver = array();
@@ -135,13 +135,13 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 			$receiver = array($receiver);
 		}
 	}
-	if (!trim(GETPOST('sendto', 'alphawithlgt')) && count($receiver) == 0 && count($listofselectedid) == 0) {    // if only one recipient, receiver is mandatory
+	if (!trim(request()->input('sendto')) && count($receiver) == 0 && count($listofselectedid) == 0) {    // if only one recipient, receiver is mandatory
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Recipient")), null, 'warnings');
 		$massaction = 'presend_attendees';
 	}
 
-	if (!GETPOST('subject', 'restricthtml')) {
+	if (!request()->input('subject')) {
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MailTopic")), null, 'warnings');
 		$massaction = 'presend_attendees';
@@ -159,7 +159,7 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 			$sendto = $attendees->thirdparty->name . '<' . trim($attendees->email) . '>';
 
 			// Define $sendtocc
-			$receivercc = GETPOST('receivercc', 'alphawithlgt');
+			$receivercc = request()->input('receivercc');
 			if (!is_array($receivercc)) {
 				if ($receivercc == '-1') {
 					$receivercc = array();
@@ -168,8 +168,8 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 				}
 			}
 			$tmparray = array();
-			if (trim(GETPOST('sendtocc', 'alphawithlgt'))) {
-				$tmparray[] = trim(GETPOST('sendtocc', 'alphawithlgt'));
+			if (trim(request()->input('sendtocc'))) {
+				$tmparray[] = trim(request()->input('sendtocc'));
 			}
 			$sendtocc = implode(',', $tmparray);
 
@@ -177,7 +177,7 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 			$langs->load("commercial");
 
 			$reg = array();
-			$fromtype = GETPOST('fromtype');
+			$fromtype = request()->input('fromtype');
 			if ($fromtype === 'user') {
 				$from = $user->getFullName($langs) . ' <' . $user->email . '>';
 			} elseif ($fromtype === 'company') {
@@ -195,14 +195,14 @@ if (!$error && $massaction == 'confirm_presend_attendees') {
 					$from = '';
 				}
 			} else {
-				$from = dol_string_nospecial(GETPOST('fromname'), ' ', array(",")) . ' <' . GETPOST('frommail') . '>';
+				$from = dol_string_nospecial(request()->input('fromname'), ' ', array(",")) . ' <' . request()->input('frommail') . '>';
 			}
 
 			$replyto = $from;
-			$subject = GETPOST('subject', 'restricthtml');
-			$message = GETPOST('message', 'restricthtml');
+			$subject = request()->input('subject');
+			$message = request()->input('message');
 
-			$sendtobcc = GETPOST('sendtoccc', 'alphawithlgt');
+			$sendtobcc = request()->input('sendtoccc');
 
 			// $objecttmp is a real object or an empty object if we choose to send one email per thirdparty instead of one per object
 			// Make substitution in email content

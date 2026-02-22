@@ -57,20 +57,20 @@ $langs->load('compta');
  */
 
 //init var
-$invoice_type = GETPOSTINT('invoice_type');
-$amountPayment = GETPOST('amountPayment');
-$amounts = GETPOST('amounts'); // from text inputs : invoice amount payment (check required)
-$remains = GETPOST('remains'); // from dolibarr's object (no need to check)
-$currentInvId = GETPOST('imgClicked'); // from DOM elements : imgId (equals invoice id)
+$invoice_type = request()->integer('invoice_type', 0);
+$amountPayment = request()->input('amountPayment');
+$amounts = request()->input('amounts'); // from text inputs : invoice amount payment (check required)
+$remains = request()->input('remains'); // from dolibarr's object (no need to check)
+$currentInvId = request()->input('imgClicked'); // from DOM elements : imgId (equals invoice id)
 
 // Getting the posted keys=>values, sanitize the ones who are from text inputs
 $amountPayment = $amountPayment != '' ? (is_numeric(price2num($amountPayment)) ? price2num($amountPayment) : '') : ''; // keep void if not a valid entry
 
 // Multicurrency LRR
-$multicurrency = GETPOSTINT('multicurrency');
-$multicurrencyAmountPayment = GETPOST('multicurrency_amountPayment');
-$multicurrencyAmounts = GETPOST('multicurrency_amounts'); // from text inputs : invoice amount payment (check required)
-$multicurrencyRemains = GETPOST('multicurrency_remains'); // from dolibarr's object (no need to check)
+$multicurrency = request()->integer('multicurrency', 0);
+$multicurrencyAmountPayment = request()->input('multicurrency_amountPayment');
+$multicurrencyAmounts = request()->input('multicurrency_amounts'); // from text inputs : invoice amount payment (check required)
+$multicurrencyRemains = request()->input('multicurrency_remains'); // from dolibarr's object (no need to check)
 
 // Getting the posted keys=>values, sanitize the ones who are from text inputs
 $multicurrencyAmountPayment = $multicurrencyAmountPayment != '' ? (is_numeric(price2num($multicurrencyAmountPayment)) ? price2num($multicurrencyAmountPayment) : '') : ''; // keep void if not a valid entry

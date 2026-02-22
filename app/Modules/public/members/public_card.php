@@ -60,13 +60,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 // Security check
 if (!isModEnabled('member')) {
-	httponly_accessforbidden('Module Membership not enabled');
+	httponly_abort(403);
 }
 
 
 $langs->loadLangs(array("main", "members", "companies", "other"));
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 $object = new Adherent($db);
 $extrafields = new ExtraFields($db);
 

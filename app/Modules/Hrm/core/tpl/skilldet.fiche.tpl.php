@@ -60,7 +60,7 @@ print '<!-- BEGIN PHP TEMPLATE hrm/core/tpl/skilldet.fiche.tpl.php -->'."\n";
 
 print '<div class="tagtable border table-border tableforfield centpercent">'."\n";
 print '<div class="tagtr table-border-row">'."\n";
-$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_public);
+$editmode = (request()->input('action') == 'edit'.$note_public);
 print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
 print $form->editfieldkey("NotePublic", $note_public, $value_public, $object, $permission, $typeofdata, $moreparam, 0, 0);
 print '</div>'."\n";
@@ -71,7 +71,7 @@ print '</div>'."\n";
 if (empty($user->socid)) {
 	// Private notes (always hidden to external users)
 	print '<div class="tagtr table-border-row">'."\n";
-	$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_private);
+	$editmode = (request()->input('action') == 'edit'.$note_private);
 	print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
 	print $form->editfieldkey("NotePrivate", $note_private, $value_private, $object, $permission, $typeofdata, $moreparam, 0, 0);
 	print '</div>'."\n";

@@ -105,9 +105,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  */
 
 $error = 0;
-$websitekey = GETPOST('website', 'alpha');
-$pageid = GETPOST('page', 'alpha') ? GETPOST('page', 'alpha') : GETPOST('pageid', 'alpha');
-$pageref = GETPOST('pageref', 'alphanohtml') ? GETPOST('pageref', 'alphanohtml') : '';
+$websitekey = request()->input('website');
+$pageid = request()->integer('page', 0) ? request()->integer('page', 0) : request()->input('pageid');
+$pageref = request()->input('pageref') ? request()->input('pageref') : '';
 // If page is xx/pagename, xx is a language, we set $pageref to pagename
 $reg = array();
 if (preg_match('/^(\w\w)\/(.*)$/', $pageref, $reg)) {
@@ -173,7 +173,7 @@ if (empty($pageid)) {
 
 	$langs->load("website");
 
-	if (!GETPOSTISSET('pageref')) {
+	if (!request()->has('pageref')) {
 		print $langs->trans("PreviewOfSiteNotYetAvailable", $websitekey);
 	}
 
@@ -225,7 +225,7 @@ $refname = basename(dirname($original_file)."/");
 // Security:
 // Limit access if permissions are insufficient
 if (!$accessallowed) {
-	accessforbidden();
+	abort(403);
 }
 
 // Security:

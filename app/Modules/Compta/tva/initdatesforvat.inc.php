@@ -33,7 +33,7 @@ if (!getDolGlobalInt('SOCIETE_FISCAL_MONTH_START')) {
 }
 
 // Date range
-$year = GETPOSTINT("year");
+$year = request()->integer('year', 0);
 if (empty($year)) {
 	$year_current = $current_date['year'];
 	$year_start = $year_current;
@@ -41,15 +41,15 @@ if (empty($year)) {
 	$year_current = $year;
 	$year_start = $year;
 }
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"), 'tzserver');
-$date_end = dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"), 'tzserver');
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0), 'tzserver');
+$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');
 // Set default period if not defined
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
-		if (GETPOSTINT("month")) {
-			$date_start = dol_get_first_day($year_start, GETPOSTINT("month"), 'tzserver');
-			$date_end = dol_get_last_day($year_start, GETPOSTINT("month"), 'tzserver');
+		if (request()->integer('month', 0)) {
+			$date_start = dol_get_first_day($year_start, request()->integer('month', 0), 'tzserver');
+			$date_end = dol_get_last_day($year_start, request()->integer('month', 0), 'tzserver');
 		} else {
 			if (!getDolGlobalString('MAIN_INFO_VAT_RETURN') || getDolGlobalInt('MAIN_INFO_VAT_RETURN') == 2) { // quaterly vat, we take last past complete quarter
 				$date_start = dol_time_plus_duree(dol_get_first_day($year_start, $current_date['mon'], false), -3 - (($current_date['mon'] - $conf->global->SOCIETE_FISCAL_MONTH_START) % 3), 'm');

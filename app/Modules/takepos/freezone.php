@@ -59,15 +59,15 @@ global $mysoc;
 
 $langs->loadLangs(array("bills", "cashdesk"));
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
+$place = (request()->input('place') ? request()->input('place') : '0'); // $place is id of table for Bar or Restaurant
 
-$invoiceid = GETPOSTINT('invoiceid');
+$invoiceid = request()->integer('invoiceid', 0);
 
-$idline = GETPOSTINT('idline');
-$action = GETPOST('action', 'aZ09');
+$idline = request()->integer('idline', 0);
+$action = request()->input('action');
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 // get invoice

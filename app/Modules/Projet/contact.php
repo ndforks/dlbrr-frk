@@ -51,13 +51,13 @@ if (isModEnabled('eventorganization')) {
 
 $langs->loadLangs($langsLoad);
 
-$id     = GETPOSTINT('id');
-$ref    = GETPOST('ref', 'alpha');
-$lineid = GETPOSTINT('lineid');
-$socid  = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
+$id     = request()->integer('id', 0);
+$ref    = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$socid  = request()->integer('socid', 0);
+$action = request()->input('action');
 
-$mine   = GETPOST('mode') == 'mine' ? 1 : 0;
+$mine   = request()->input('mode') == 'mine' ? 1 : 0;
 
 $object = new Project($db);
 
@@ -93,16 +93,16 @@ if (empty($reshook)) {
 	if ($action == 'addcontact' && $permissiontoadd) {
 		$form = new Form($db);
 
-		$source = GETPOST("source", 'aZ09');
+		$source = request()->input('source');
 
 		$taskstatic = new Task($db);
 		$task_array = $taskstatic->getTasksArray(null, null, $object->id, 0, 0);
 		$nbTasks = count($task_array);
 
 		//If no task available, redirec to to add confirm
-		$type_to = (GETPOST('typecontact') ? 'typecontact='.GETPOST('typecontact') : 'type='.GETPOST('type'));
-		$personToAffect = (GETPOST('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$affect_to = (GETPOST('userid') ? 'userid='.$personToAffect : 'contactid='.$personToAffect);
+		$type_to = (request()->input('typecontact') ? 'typecontact='.request()->input('typecontact') : 'type='.request()->input('type'));
+		$personToAffect = (request()->input('userid') ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$affect_to = (request()->input('userid') ? 'userid='.$personToAffect : 'contactid='.$personToAffect);
 		$url_redirect = '?id='.$object->id.'&'.$affect_to.'&'.$type_to.'&source='.$source;
 
 		if ($personToAffect > 0 && (!getDolGlobalString('PROJECT_HIDE_TASKS') || $nbTasks > 0)) {
@@ -171,14 +171,14 @@ if (empty($reshook)) {
 
 	// Add new contact
 	if ($action == 'addcontact_confirm' && $permissiontoadd) {
-		if (GETPOST('confirm', 'alpha') == 'no') {
+		if (request()->input('confirm') == 'no') {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		}
 
-		$contactid = (GETPOST('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-		$groupid = GETPOSTINT('groupid');
+		$contactid = (request()->input('userid') ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+		$groupid = request()->integer('groupid', 0);
 		$contactarray = array();
 		$errorgroup = 0;
 		$errorgrouparray = array();
@@ -212,7 +212,7 @@ if (empty($reshook)) {
 		$result = $object->fetch($id);
 		if (!$error && $result > 0 && $id > 0) {
 			foreach ($contactarray as $key => $contactid) {
-				$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+				$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 
 				if ($result == 0) {
 					if ($groupid > 0) {
@@ -236,19 +236,19 @@ if (empty($reshook)) {
 					}
 				}
 
-				$affecttotask = GETPOST('tasksavailable', 'intcomma');
+				$affecttotask = request()->input('tasksavailable');
 				if (!empty($affecttotask)) {
 					require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 					$task_to_affect = explode(',', $affecttotask);
 					if (!empty($task_to_affect)) {
 						foreach ($task_to_affect as $task_id) {
-							if (GETPOSTISSET('person_'.$task_id) && GETPOST('person_'.$task_id, 'aZ09comma')) {
+							if (request()->has('person_' . $task_id) && request()->input('person_' . $task_id)) {
 								$tasksToAffect = new Task($db);
 								$result = $tasksToAffect->fetch((int) $task_id);
 								if ($result < 0) {
 									setEventMessages($tasksToAffect->error, null, 'errors');
 								} else {
-									$result = $tasksToAffect->add_contact($contactid, GETPOST('person_role_'.$task_id), GETPOST("source", 'aZ09'));
+									$result = $tasksToAffect->add_contact($contactid, request()->input('person_role_' . $task_id), request()->input('source'));
 									if ($result < 0) {
 										if ($tasksToAffect->error == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 											$langs->load("errors");
@@ -286,22 +286,22 @@ if (empty($reshook)) {
 	// Change contact's status
 	if ($action == 'swapstatut' && $permissiontoadd) {
 		if ($object->fetch($id)) {
-			$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+			$result = $object->swapContactStatus(request()->integer('ligne', 0));
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
 	// Delete a contact
 	if (($action == 'deleteline' || $action == 'deletecontact') && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->delete_contact(GETPOSTINT("lineid"));
+		$result = $object->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: contact.php?id=".$object->id);
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -398,25 +398,25 @@ if ($id > 0 || !empty($ref)) {
 		print '</td>';
 		print '<td>';
 		if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-			print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowOpportunity");
 			print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-			print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowTasks");
 			print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-			print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectBillTimeDescription");
 			print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 			print '<br>';
 		}
 		if (isModEnabled('eventorganization')) {
-			print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 			print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 		}

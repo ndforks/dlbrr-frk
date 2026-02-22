@@ -49,14 +49,14 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other", "orders", "stocks"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$type = GETPOST('type', 'alpha');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$type = request()->input('type');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
 $specimenthirdparty = new Societe($db);
 $specimenthirdparty->initAsSpecimen();
@@ -64,7 +64,7 @@ $specimenthirdparty->initAsSpecimen();
 $error = 0;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -75,8 +75,8 @@ if (!$user->admin) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstorder = GETPOST('maskconstorder', 'aZ09');
-	$maskvalue = GETPOST('maskorder', 'alpha');
+	$maskconstorder = request()->input('maskconstorder');
+	$maskvalue = request()->input('maskorder');
 
 	$res = 0;
 
@@ -96,7 +96,7 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'specimen') {  // For orders
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$commande = new CommandeFournisseur($db);
 	$commande->initAsSpecimen();
@@ -163,10 +163,10 @@ if ($action == 'specimen') {  // For orders
 	dolibarr_set_const($db, "COMMANDE_SUPPLIER_ADDON_NUMBER", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'addcat') {
 	$fourn = new Fournisseur($db);
-	$fourn->CreateCategory($user, GETPOST('cat', 'alphanohtml'));
+	$fourn->CreateCategory($user, request()->input('cat'));
 } elseif ($action == 'set_SUPPLIER_ORDER_OTHER') {
-	$freetext = GETPOST('SUPPLIER_ORDER_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
-	$doubleapproval = GETPOST('SUPPLIER_ORDER_3_STEPS_TO_BE_APPROVED', 'alpha');
+	$freetext = request()->input('SUPPLIER_ORDER_FREE_TEXT'); // No alpha here, we want exact string
+	$doubleapproval = request()->input('SUPPLIER_ORDER_3_STEPS_TO_BE_APPROVED');
 	$doubleapproval = price2num($doubleapproval);
 
 	$res1 = dolibarr_set_const($db, "SUPPLIER_ORDER_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
@@ -362,7 +362,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<div class="div-table-responsive-no-min">';

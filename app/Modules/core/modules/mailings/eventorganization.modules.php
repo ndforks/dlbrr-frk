@@ -92,8 +92,8 @@ class mailing_eventorganization extends MailingTargets
 		$sql .= " AND e.fk_project = p.rowid";
 		$sql .= " AND p.entity IN (".getEntity('project').")";
 		$sql .= " AND e.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing=".((int) $mailing_id).")";
-		if (GETPOSTINT('filter_eventorganization') > 0) {
-			$sql .= " AND e.fk_project = ".(GETPOSTINT('filter_eventorganization'));
+		if (request()->integer('filter_eventorganization', 0) > 0) {
+			$sql .= " AND e.fk_project = ".(request()->integer('filter_eventorganization', 0));
 		}
 		if (empty($this->evenunsubscribe)) {
 			$sql .= " AND NOT EXISTS (SELECT rowid FROM ".MAIN_DB_PREFIX."mailing_unsubscribe as mu WHERE mu.email = e.email and mu.entity = ".((int) $conf->entity).")";

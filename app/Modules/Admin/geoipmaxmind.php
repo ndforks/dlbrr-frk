@@ -41,13 +41,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "errors"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!getDolGlobalString("GEOIP_VERSION")) {
 	$conf->global->GEOIP_VERSION = '2';
@@ -61,13 +61,13 @@ if (!getDolGlobalString("GEOIP_VERSION")) {
 if ($action == 'set') {
 	$error = 0;
 
-	$res1 = dolibarr_set_const($db, "GEOIP_VERSION", GETPOST('geoipversion', 'aZ09'), 'chaine', 0, '', $conf->entity);
+	$res1 = dolibarr_set_const($db, "GEOIP_VERSION", request()->input('geoipversion'), 'chaine', 0, '', $conf->entity);
 	if (!($res1 > 0)) {
 		$error++;
 	}
 
 	if (getDolGlobalString('GEOIP_VERSION') == 'php') {
-		$gimcdf = GETPOST("GEOIPMAXMIND_COUNTRY_DATAFILE");
+		$gimcdf = request()->input('GEOIPMAXMIND_COUNTRY_DATAFILE');
 		if ($gimcdf) {
 			if (!preg_match('/\.(dat|mmdb)$/', $gimcdf)) {
 				setEventMessages($langs->trans("ErrorFileMustHaveFormat", '.dat|.mmdb'), null, 'errors');
@@ -82,7 +82,7 @@ if ($action == 'set') {
 			}
 		}
 	} else {
-		$gimcdf = GETPOST("GEOIPMAXMIND_COUNTRY_DATAFILE_EMBEDDED");
+		$gimcdf = request()->input('GEOIPMAXMIND_COUNTRY_DATAFILE_EMBEDDED');
 		if ($gimcdf && !preg_match('/\.(dat|mmdb)$/', $gimcdf)) {
 			setEventMessages($langs->trans("ErrorFileMustHaveFormat", '.dat|.mmdb'), null, 'errors');
 			$error++;
@@ -372,7 +372,7 @@ if ($geoip) {
 		}
 	}
 
-	$ip = GETPOST("iptotest");
+	$ip = request()->input('iptotest');
 	print '<br><input type="text class="width100" name="iptotest" id="iptotest" placeholder="'.dol_escape_htmltag($langs->trans("EnterAnIP")).'" value="'.$ip.'">';
 	print '<input type="submit" class="width40 button small smallpaddingimp" value=" -> ">';
 	if ($ip) {

@@ -47,15 +47,15 @@ require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 $langs->loadLangs(array("ecm", "companies", "other", "users", "orders", "propal", "bills", "contracts", "categories"));
 
 // Get parameters
-$socid      = GETPOSTINT('socid');
-$action     = GETPOST('action', 'alpha');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
-$confirm    = GETPOST('confirm', 'alpha');
+$socid      = request()->integer('socid', 0);
+$action     = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$confirm    = request()->input('confirm');
 
-$module  = GETPOST('module', 'alpha');
-$website = GETPOST('website', 'alpha');
-$pageid  = GETPOSTINT('pageid');
+$module  = request()->input('module');
+$website = request()->input('website');
+$pageid  = request()->integer('pageid', 0);
 if (empty($module)) {
 	$module = 'ecm';
 }
@@ -66,7 +66,7 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$section = $urlsection = GETPOST('section', 'alpha');
+$section = $urlsection = request()->input('section');
 if (empty($urlsection)) {
 	$urlsection = 'misc';
 }
@@ -77,10 +77,10 @@ if ($module == 'ecm') {
 	$upload_dir = $conf->medias->multidir_output[$conf->entity];
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -119,7 +119,7 @@ if ($module == 'medias') {
 }
 
 if (!$permissiontoadd) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -140,10 +140,10 @@ if ($action == 'add' && $permissiontoadd) {
 		}
 	}
 
-	$ref = (string) GETPOST("ref", 'alpha');
-	$label = dol_sanitizeFileName(GETPOST("label", 'alpha'));
-	$desc = (string) GETPOST("desc", 'alpha');
-	$catParent = GETPOST("catParent", 'alpha'); // Can be an int (with ECM) or a string (with generic filemanager)
+	$ref = (string) request()->input('ref');
+	$label = dol_sanitizeFileName(request()->input('label'));
+	$desc = (string) request()->input('desc');
+	$catParent = request()->input('catParent'); // Can be an int (with ECM) or a string (with generic filemanager)
 	if ($catParent == '-1') {
 		$catParent = 0;
 	}
@@ -246,10 +246,10 @@ if ($action == 'create') {
 
 	// Label
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td>';
-	print '<input name="label" class="minwidth100" maxlength="32" value="'.GETPOST("label", 'alpha').'" autofocus></td></tr>'."\n";
+	print '<input name="label" class="minwidth100" maxlength="32" value="'.request()->input('label').'" autofocus></td></tr>'."\n";
 
 	print '<tr><td>'.$langs->trans("AddIn").'</td><td>';
-	print $formecm->selectAllSections((GETPOST("catParent", 'alpha') ? GETPOST("catParent", 'alpha') : $ecmdir->fk_parent), 'catParent', $module);
+	print $formecm->selectAllSections((request()->input('catParent') ? request()->input('catParent') : $ecmdir->fk_parent), 'catParent', $module);
 	print '</td></tr>'."\n";
 
 	// Description

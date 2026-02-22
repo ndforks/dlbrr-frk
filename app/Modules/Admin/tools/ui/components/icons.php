@@ -29,7 +29,7 @@ require '../../../../main.inc.php';
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Includes
@@ -42,30 +42,30 @@ $langs->load('uxdocumentation');
 $documentation = new Documentation($db);
 
 // Output html head + body - Param is Title
-$documentation->docHeader('Icons', [], ['admin/tools/ui/css/doc-icons.css'], GETPOST('hidenavmenu'));
+$documentation->docHeader('Icons', [], ['admin/tools/ui/css/doc-icons.css'], request()->input('hidenavmenu'));
 
 // Set view for menu and breadcrumb
 // Menu must be set in constructor of documentation class
 $documentation->view = array('Components','Icons');
 $form = new Form($db);
 
-$mode=GETPOST('mode'); // ex : no-btn
-$displayMode = GETPOST('displayMode') == 'kanban' ?  'kanban' : 'icon-only';
+$mode=request()->input('mode'); // ex : no-btn
+$displayMode = request()->input('displayMode') == 'kanban' ?  'kanban' : 'icon-only';
 $revertDisplayMode = $displayMode == 'kanban' ? 'icon-only' : 'kanban';
 $revertDisplayName = $displayMode == 'kanban' ? $langs->trans('ViewList') : $langs->trans('ViewKanban');
 $switchDisplayLink = dol_buildpath($documentation->baseUrl . '/components/icons.php', 1) . '?displayMode=' . $revertDisplayMode;
 $switchDisplayLinkIcon = $displayMode == 'kanban' ? 'fa fa-th' : 'fa fa-th-list';
 
 // Output sidebar
-if (!GETPOST('hidenavmenu')) {
+if (!request()->input('hidenavmenu')) {
 	$documentation->showSidebar();
 }
 ?>
 
-<div class="doc-wrapper<?php print GETPOST('hidenavmenu') ? "-bis" : ""; ?>">
+<div class="doc-wrapper<?php print request()->input('hidenavmenu') ? "-bis" : ""; ?>">
 
 		<?php
-		if (!GETPOST('hidenavmenu')) {
+		if (!request()->input('hidenavmenu')) {
 			$documentation->showBreadCrumb();
 		}
 		?>

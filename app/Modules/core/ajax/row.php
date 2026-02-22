@@ -62,10 +62,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
 
 $hookmanager->initHooks(array('rowinterface'));
 
-$roworder = GETPOST('roworder', 'alpha', 3);
-$table_element_line = GETPOST('table_element_line', 'aZ09', 3);
-$fk_element = GETPOST('fk_element', 'aZ09', 3);
-$element_id = GETPOSTINT('element_id', 3);
+$roworder = request()->input('roworder');
+$table_element_line = request()->input('table_element_line');
+$fk_element = request()->input('fk_element');
+$element_id = request()->integer('element_id', 0);
 $action = 'edit';
 
 
@@ -84,8 +84,8 @@ dol_syslog("AjaxRow roworder=".$roworder." table_element_line=".$table_element_l
 print '<!-- Ajax page called with url '.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.dol_escape_htmltag($_SERVER["QUERY_STRING"]).' -->'."\n";
 
 // Registering the location of boxes
-if (GETPOST('roworder', 'alpha', 3) && GETPOST('table_element_line', 'aZ09', 3)
-	&& GETPOST('fk_element', 'aZ09', 3) && GETPOSTINT('element_id', 3)) {
+if (request()->input('roworder') && request()->input('table_element_line')
+	&& request()->input('fk_element') && request()->integer('element_id', 0)) {
 	// Make test on permission
 	$perm = 0;
 	if ($table_element_line == 'propaldet' && $user->hasRight('propal', 'creer')) {
@@ -156,8 +156,8 @@ if (GETPOST('roworder', 'alpha', 3) && GETPOST('table_element_line', 'aZ09', 3)
 		// If we are here, it is a hack attempt, so we report a warning.
 		print 'Bad permission to modify position of lines for object in table '.$table_element_line;
 		dol_syslog('Bad permission to modify position of lines for object in table='.$table_element_line.', fk_element='.$fk_element, LOG_WARNING);
-		//accessforbidden('Bad permission to modify position of lines for object in table '.$table_element_line);
-		httponly_accessforbidden('Bad permission to modify position of lines for object in table '.$table_element_line);
+		//abort(403);
+		httponly_abort(403);
 	}
 
 	$rowordertab = explode(',', $roworder);

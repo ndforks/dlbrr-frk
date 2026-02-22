@@ -60,14 +60,14 @@ $langs->loadLangs(array('compta', 'bills', 'hrm'));
 $hookmanager->initHooks(array('specialexpensesindex'));
 
 
-$year = GETPOSTINT("year");
-$search_sc_type = GETPOST('search_sc_type', 'intcomma');
-$optioncss = GETPOST('optioncss', 'alpha');
+$year = request()->integer('year', 0);
+$search_sc_type = request()->input('search_sc_type');
+$optioncss = request()->input('optioncss');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page < 0) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -93,7 +93,7 @@ $result = restrictedArea($user, 'tax', '', 'chargesociales', 'charges');
  */
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_sc_type = '';
 	//$toselect = array();
 	//$search_array_options = array();
@@ -208,7 +208,7 @@ if (is_numeric($nbtotalofrecords) && ($limit > $nbtotalofrecords || empty($limit
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 
@@ -226,7 +226,7 @@ print '<tr class="liste_titre">';
 print '<td class="liste_titre"></td>';
 print '<td class="liste_titre"></td>';
 print '<td class="liste_titre">';
-$formsocialcontrib->select_type_socialcontrib(GETPOSTISSET("search_sc_type") ? (int) $search_sc_type : 0, 'search_sc_type', 1, 0, 0, 'minwidth200 maxwidth300');
+$formsocialcontrib->select_type_socialcontrib(request()->has('search_sc_type') ? (int) $search_sc_type : 0, 'search_sc_type', 1, 0, 0, 'minwidth200 maxwidth300');
 print '</td>';
 print '<td class="liste_titre"></td>';
 print '<td class="liste_titre"></td>';
@@ -264,7 +264,7 @@ print_liste_field_titre('');
 print "</tr>\n";
 
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

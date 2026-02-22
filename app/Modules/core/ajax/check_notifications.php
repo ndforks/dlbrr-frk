@@ -48,11 +48,11 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-//$time = (int) GETPOST('time', 'int'); // Use the time parameter that is always increased by time_update, even if call is late
-$action = GETPOST('action', 'aZ09');
+//$time = (int) request()->input('time'); // Use the time parameter that is always increased by time_update, even if call is late
+$action = request()->input('action');
 
 $time = dol_now();
-$listofreminderids = GETPOST('listofreminderids', 'aZ09');
+$listofreminderids = request()->integer('listofreminderids', 0);
 
 // Security check
 // No permission check at top, but action later are all done with a test on $user->id.
@@ -64,7 +64,7 @@ $listofreminderids = GETPOST('listofreminderids', 'aZ09');
 
 if ($action == 'stopreminder') {	// Test on permission not required here. Endpoint can be called
 	dol_syslog("Clear notification for listofreminderids=".$listofreminderids);
-	$listofreminderid = GETPOST('listofreminderids', 'intcomma');
+	$listofreminderid = request()->integer('listofreminderids', 0);
 
 	// Set the reminder as done
 	$sql = 'UPDATE '.MAIN_DB_PREFIX.'actioncomm_reminder SET status = 1';
@@ -72,7 +72,7 @@ if ($action == 'stopreminder') {	// Test on permission not required here. Endpoi
 	$sql .= ' AND fk_user = '.((int) $user->id).' AND entity = '.((int) $conf->entity);
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
@@ -83,7 +83,7 @@ if ($action == 'stopreminder') {	// Test on permission not required here. Endpoi
 	$sql .= " AND fk_user = ".((int) $user->id).' AND entity = '.((int) $conf->entity);
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	exit;
@@ -103,7 +103,7 @@ $eventfound = array();
 //$eventfound[]=array('type'=>'agenda', 'id'=>1, 'tipo'=>'eee', 'location'=>'aaa');
 
 // TODO Remove use of $_SESSION['auto_check_events_not_before']. Seems not used.
-if (empty($_SESSION['auto_check_events_not_before']) || $time >= $_SESSION['auto_check_events_not_before'] || GETPOSTINT('forcechecknow')) {
+if (empty($_SESSION['auto_check_events_not_before']) || $time >= $_SESSION['auto_check_events_not_before'] || request()->integer('forcechecknow', 0)) {
 	/*$time_update = (int) $conf->global->MAIN_BROWSER_NOTIFICATION_FREQUENCY; // Always defined
 	if (!empty($_SESSION['auto_check_events_not_before']))
 	{
@@ -131,7 +131,7 @@ if (empty($_SESSION['auto_check_events_not_before']) || $time >= $_SESSION['auto
 
 
 	//dol_syslog('$_SESSION[auto_check_events_not_before]='.(empty($_SESSION['auto_check_events_not_before']) ? '' : $_SESSION['auto_check_events_not_before']));
-	dol_syslog('dolnotif_nb_test_for_page='.GETPOST('dolnotif_nb_test_for_page'));
+	dol_syslog('dolnotif_nb_test_for_page='.request()->input('dolnotif_nb_test_for_page'));
 
 	$sql = 'SELECT a.id as id_agenda, a.code, a.datep, a.label, a.location, ar.rowid as id_reminder, ar.dateremind, ar.fk_user as id_user_reminder';
 	$sql .= ' FROM '.MAIN_DB_PREFIX.'actioncomm as a';

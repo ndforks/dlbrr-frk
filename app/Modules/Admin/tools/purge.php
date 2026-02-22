@@ -42,10 +42,10 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$choice = GETPOST('choice', 'aZ09');
-$nbsecondsold = GETPOSTINT('nbsecondsold');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$choice = request()->input('choice');
+$nbsecondsold = request()->integer('nbsecondsold', 0);
 
 // Define filelog to discard it from purge
 $filelog = '';
@@ -56,7 +56,7 @@ if (isModEnabled('syslog')) {
 
 // Security
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

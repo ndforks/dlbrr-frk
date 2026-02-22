@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 $langs->loadLangs(array('admin', 'errors', 'mrp', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'bom';
 
 
@@ -65,8 +65,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstbom = GETPOST('maskconstBom', 'aZ09');
-	$maskbom = GETPOST('maskBom', 'alpha');
+	$maskconstbom = request()->input('maskconstBom');
+	$maskbom = request()->input('maskBom');
 
 	$res = 0;
 
@@ -84,7 +84,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$bom = new BOM($db);
 	$bom->initAsSpecimen();
@@ -147,19 +147,19 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "BOM_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'updateother') {
-	$draft = GETPOST("BOM_DRAFT_WATERMARK");
+	$draft = request()->input('BOM_DRAFT_WATERMARK');
 	$res = dolibarr_set_const($db, "BOM_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$bomsearch = GETPOST('activate_BOM_USE_SEARCH_TO_SELECT', 'alpha');
+	$bomsearch = request()->input('activate_BOM_USE_SEARCH_TO_SELECT');
 	$res = dolibarr_set_const($db, "BOM_USE_SEARCH_TO_SELECT", $bomsearch, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$freetext = GETPOST("BOM_FREE_TEXT", 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('BOM_FREE_TEXT'); // No alpha here, we want exact string
 	$res = dolibarr_set_const($db, "BOM_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -328,7 +328,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

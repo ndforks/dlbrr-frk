@@ -44,20 +44,20 @@ require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
 $langs->loadLangs(array("admin", "receiptprinter"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$mode = request()->input('mode');
 
-$printername = GETPOST('printername', 'alpha');
-$printerid = GETPOSTINT('printerid');
-$printertypeid = GETPOSTINT('printertypeid');
-$parameter = GETPOST('parameter', 'alpha');
+$printername = request()->input('printername');
+$printerid = request()->integer('printerid', 0);
+$printertypeid = request()->integer('printertypeid', 0);
+$parameter = request()->input('parameter');
 
-$template = GETPOST('template', 'alphanohtml');
-$templatename = GETPOST('templatename', 'alpha');
-$templateid = GETPOSTINT('templateid');
+$template = request()->input('template');
+$templatename = request()->input('templatename');
+$templateid = request()->integer('templateid', 0);
 
 $printer = new dolReceiptPrinter($db);
 $hookmanager->initHooks(array('receiptPrinter', 'globalcard'));
@@ -98,7 +98,7 @@ if ($action == 'addprinter') {
 
 	if (!$error) {
 		$db->begin();
-		$result = $printer->addPrinter($printername, $printertypeid, GETPOSTINT('printerprofileid'), $parameter);
+		$result = $printer->addPrinter($printername, $printertypeid, request()->integer('printerprofileid', 0), $parameter);
 		if ($result > 0) {
 			$error++;
 		}
@@ -133,7 +133,7 @@ if ($action == 'deleteprinter') {
 			setEventMessages($langs->trans("PrinterDeleted", $printername), null);
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	$action = '';
@@ -148,7 +148,7 @@ if ($action == 'updateprinter') {
 
 	if (!$error) {
 		$db->begin();
-		$result = $printer->updatePrinter($printername, GETPOSTINT('printertypeid'), GETPOSTINT('printerprofileid'), $parameter, $printerid);
+		$result = $printer->updatePrinter($printername, request()->integer('printertypeid', 0), request()->integer('printerprofileid', 0), $parameter, $printerid);
 		if ($result > 0) {
 			$error++;
 		}
@@ -158,7 +158,7 @@ if ($action == 'updateprinter') {
 			setEventMessages($langs->trans("PrinterUpdated", $printername), null);
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	$action = '';
@@ -245,7 +245,7 @@ if ($action == 'updatetemplate') {
 			setEventMessages($langs->trans("TemplateUpdated", $templatename), null);
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	$action = '';
@@ -270,7 +270,7 @@ if ($action == 'addtemplate') {
 			setEventMessages($langs->trans("TemplateAdded", $templatename), null);
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	$action = '';
@@ -295,7 +295,7 @@ if ($action == 'deletetemplate') {
 			setEventMessages($langs->trans("TemplateDeleted", $templatename), null);
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	$action = '';

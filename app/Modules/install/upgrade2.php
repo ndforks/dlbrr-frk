@@ -98,11 +98,11 @@ if (getDolGlobalInt('MAIN_OVERRIDE_TIME_LIMIT')) {
 }
 error_reporting($err);
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : 'auto';
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : 'auto';
 $langs->setDefaultLang($setuplang);
-$versionfrom = GETPOST("versionfrom", 'alpha', 3) ? GETPOST("versionfrom", 'alpha', 3) : (empty($argv[1]) ? '' : $argv[1]);
-$versionto = GETPOST("versionto", 'alpha', 3) ? GETPOST("versionto", 'alpha', 3) : (empty($argv[2]) ? '' : $argv[2]);
-$enablemodules = GETPOST("enablemodules", 'alpha', 3) ? GETPOST("enablemodules", 'alpha', 3) : (empty($argv[3]) ? '' : $argv[3]);
+$versionfrom = request()->input('versionfrom') ? request()->input('versionfrom') : (empty($argv[1]) ? '' : $argv[1]);
+$versionto = request()->input('versionto') ? request()->input('versionto') : (empty($argv[2]) ? '' : $argv[2]);
+$enablemodules = request()->input('enablemodules') ? request()->input('enablemodules') : (empty($argv[3]) ? '' : $argv[3]);
 
 $langs->loadLangs(array("admin", "install", "bills", "suppliers"));
 
@@ -143,10 +143,10 @@ if ((!$versionfrom || preg_match('/version/', $versionfrom)) && (!$versionto || 
 	exit;
 }
 
-pHeader('', 'step5', GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'upgrade', 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
+pHeader('', 'step5', request()->input('action') ? request()->input('action') : 'upgrade', 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
 
 
-if (!GETPOST('action', 'aZ09') || preg_match('/upgrade/i', GETPOST('action', 'aZ09'))) {
+if (!request()->input('action') || preg_match('/upgrade/i', request()->input('action'))) {
 	print '<h3><img class="valignmiddle inline-block paddingright" src="../public/theme/common/database.svg" width="20" alt="Database"> ';
 	print '<span class="inline-block valignmiddle">'.$langs->trans('DataMigration').'</span></h3>';
 
@@ -947,7 +947,7 @@ function migrate_paiements($db, $langs, $conf)
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if ($num) {
@@ -1038,7 +1038,7 @@ function migrate_paiements_orphelins_1($db, $langs, $conf)
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (count($row)) {
@@ -1147,7 +1147,7 @@ function migrate_paiements_orphelins_2($db, $langs, $conf)
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$nberr = 0;
@@ -1281,7 +1281,7 @@ function migrate_contracts_det($db, $langs, $conf)
 				if ($db->query($sql)) {
 					print $langs->trans('MigrationContractsLineCreation', $obj->cref)."<br>\n";
 				} else {
-					dol_print_error($db);
+					abort(500);
 					$nberr++;
 				}
 
@@ -1356,7 +1356,7 @@ function migrate_links_transfert($db, $langs, $conf)
 				dolibarr_install_syslog("migrate_links_transfert");
 
 				if (!$db->query($sql)) {
-					dol_print_error($db);
+					abort(500);
 					$nberr++;
 				}
 
@@ -1375,7 +1375,7 @@ function migrate_links_transfert($db, $langs, $conf)
 			print $langs->trans('MigrationBankTransfertsNothingToUpdate')."<br>\n";
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '</td></tr>';
@@ -1400,7 +1400,7 @@ function migrate_contracts_date1($db, $langs, $conf)
 	dolibarr_install_syslog("upgrade2::migrate_contracts_date1");
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 	if ($db->affected_rows($resql) > 0) {
 		print $langs->trans('MigrationContractsEmptyDatesUpdateSuccess')."<br>\n";
@@ -1412,7 +1412,7 @@ function migrate_contracts_date1($db, $langs, $conf)
 	dolibarr_install_syslog("upgrade2::migrate_contracts_date1");
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 	if ($db->affected_rows($resql) > 0) {
 		print $langs->trans('MigrationContractsEmptyCreationDatesUpdateSuccess')."<br>\n";
@@ -1468,7 +1468,7 @@ function migrate_contracts_date2($db, $langs, $conf)
 					$sql .= " WHERE rowid = ".((int) $obj->cref);
 					$resql2 = $db->query($sql);
 					if (!$resql2) {
-						dol_print_error($db);
+						abort(500);
 					}
 
 					$nbcontratsmodifie++;
@@ -1485,7 +1485,7 @@ function migrate_contracts_date2($db, $langs, $conf)
 			}
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '</td></tr>';
@@ -1510,7 +1510,7 @@ function migrate_contracts_date3($db, $langs, $conf)
 	dolibarr_install_syslog("upgrade2::migrate_contracts_date3");
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 	if ($db->affected_rows($resql) > 0) {
 		print $langs->trans('MigrationContractsIncoherentCreationDateUpdateSuccess')."<br>\n";
@@ -1541,7 +1541,7 @@ function migrate_contracts_open($db, $langs, $conf)
 	dolibarr_install_syslog("upgrade2::migrate_contracts_open");
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 	if ($db->affected_rows($resql) > 0) {
 		$i = 0;
@@ -1561,7 +1561,7 @@ function migrate_contracts_open($db, $langs, $conf)
 				$sql .= " WHERE rowid = ".((int) $obj->cref);
 				$resql2 = $db->query($sql);
 				if (!$resql2) {
-					dol_print_error($db);
+					abort(500);
 				}
 
 				$nbcontratsmodifie++;
@@ -2025,7 +2025,7 @@ function migrate_price_commande($db, $langs, $conf)
 		 $resql=$db->query($sql);
 		 if (! $resql)
 		 {
-		 dol_print_error($db);
+		 abort(500);
 		 }
 		 */
 
@@ -2118,7 +2118,7 @@ function migrate_price_commande_fournisseur($db, $langs, $conf)
 		 $resql=$db->query($sql);
 		 if (! $resql)
 		 {
-		 dol_print_error($db);
+		 abort(500);
 		 }
 		 */
 
@@ -2157,7 +2157,7 @@ function migrate_modeles($db, $langs, $conf)
 			$sql = " insert into ".MAIN_DB_PREFIX."document_model(nom,type) values('crabe','invoice')";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -2170,7 +2170,7 @@ function migrate_modeles($db, $langs, $conf)
 			$sql = " insert into ".MAIN_DB_PREFIX."document_model(nom,type) values('einstein','order')";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -2183,7 +2183,7 @@ function migrate_modeles($db, $langs, $conf)
 			$sql = " insert into ".MAIN_DB_PREFIX."document_model(nom,type) values('rouget','shipping')";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -2232,7 +2232,7 @@ function migrate_commande_expedition($db, $langs, $conf)
 
 					if (!$resql2) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2248,7 +2248,7 @@ function migrate_commande_expedition($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2308,11 +2308,11 @@ function migrate_commande_livraison($db, $langs, $conf)
 						$resql3 = $db->query($sqlu);
 						if (!$resql3) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 					} else {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2328,7 +2328,7 @@ function migrate_commande_livraison($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2400,15 +2400,15 @@ function migrate_detail_livraison($db, $langs, $conf)
 							$resql4 = $db->query($sqlu);
 							if (!$resql4) {
 								$error++;
-								dol_print_error($db);
+								abort(500);
 							}
 						} else {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 					} else {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2424,7 +2424,7 @@ function migrate_detail_livraison($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2480,7 +2480,7 @@ function migrate_stocks($db, $langs, $conf)
 				if ($resql2) {
 				} else {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				print '. ';
 				$i++;
@@ -2493,7 +2493,7 @@ function migrate_stocks($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -2544,7 +2544,7 @@ function migrate_menus($db, $langs, $conf)
 					if ($resql2) {
 					} else {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2557,7 +2557,7 @@ function migrate_menus($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2612,7 +2612,7 @@ function migrate_commande_deliveryaddress($db, $langs, $conf)
 					$resql2 = $db->query($sql);
 					if (!$resql2) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2627,7 +2627,7 @@ function migrate_commande_deliveryaddress($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2697,7 +2697,7 @@ function migrate_restore_missing_links($db, $langs, $conf)
 				$resql2 = $db->query($sql);
 				if (!$resql2) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				//print '. ';
 				$i++;
@@ -2712,7 +2712,7 @@ function migrate_restore_missing_links($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -2757,7 +2757,7 @@ function migrate_restore_missing_links($db, $langs, $conf)
 				$resql2 = $db->query($sql);
 				if (!$resql2) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				//print '. ';
 				$i++;
@@ -2772,7 +2772,7 @@ function migrate_restore_missing_links($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -2833,7 +2833,7 @@ function migrate_project_user_resp($db, $langs, $conf)
 						$resql2 = $db->query($sql2);
 						if (!$resql2) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 					}
 					print '. ';
@@ -2853,7 +2853,7 @@ function migrate_project_user_resp($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2912,7 +2912,7 @@ function migrate_project_task_actors($db, $langs, $conf)
 
 					if (!$resql2) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -2930,7 +2930,7 @@ function migrate_project_task_actors($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -2993,7 +2993,7 @@ function migrate_relationship_tables($db, $langs, $conf, $table, $fk_source, $so
 					$result = $db->query($sqlInsert);
 					if (!$result) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -3013,7 +3013,7 @@ function migrate_relationship_tables($db, $langs, $conf, $table, $fk_source, $so
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -3073,7 +3073,7 @@ function migrate_element_time($db, $langs, $conf)
 					$resql2 = $db->query($sql2);
 					if (!$resql2) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$oldtime++;
@@ -3103,20 +3103,20 @@ function migrate_element_time($db, $langs, $conf)
 						$resql = $db->query($sql);
 						if (!$resql) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 					}
 				} else {
 					print $langs->trans('AlreadyDone')."<br>\n";
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			print $langs->trans('AlreadyDone')."<br>\n";
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if ($error == 0) {
@@ -3182,7 +3182,7 @@ function migrate_customerorder_shipping($db, $langs, $conf)
 						$result = $db->query($sqlUpdate);
 						if (!$result) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 						print '. ';
 						$i++;
@@ -3194,15 +3194,15 @@ function migrate_customerorder_shipping($db, $langs, $conf)
 				if ($error == 0) {
 					$db->commit();
 				} else {
-					dol_print_error($db);
+					abort(500);
 					$db->rollback();
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -3269,12 +3269,12 @@ function migrate_shipping_delivery($db, $langs, $conf)
 						$result = $db->query($sqlUpdate);
 						if (!$result) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 						print '. ';
 					} else {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					$i++;
 				}
@@ -3292,11 +3292,11 @@ function migrate_shipping_delivery($db, $langs, $conf)
 				$sqlDrop = "ALTER TABLE ".MAIN_DB_PREFIX."livraison DROP COLUMN fk_expedition";
 				$db->query($sqlDrop);
 			} else {
-				dol_print_error($db);
+				abort(500);
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -3357,7 +3357,7 @@ function migrate_shipping_delivery2($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				print '. ';
 				$i++;
@@ -3369,11 +3369,11 @@ function migrate_shipping_delivery2($db, $langs, $conf)
 		if ($error == 0) {
 			$db->commit();
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -3428,7 +3428,7 @@ function migrate_actioncomm_element($db, $langs, $conf)
 				//$db->query($sqlDrop);
 				//print '. ';
 			} else {
-				dol_print_error($db);
+				abort(500);
 				$db->rollback();
 			}
 		} else {
@@ -3500,7 +3500,7 @@ function migrate_mode_reglement($db, $langs, $conf)
 
 						$resql = $db->query($sql);
 						if (!$resql) {
-							dol_print_error($db);
+							abort(500);
 							$error++;
 						}
 						print '. ';
@@ -3509,11 +3509,11 @@ function migrate_mode_reglement($db, $langs, $conf)
 					if (!$error) {
 						$db->commit();
 					} else {
-						dol_print_error($db);
+						abort(500);
 						$db->rollback();
 					}
 				} else {
-					dol_print_error($db);
+					abort(500);
 					$db->rollback();
 				}
 			}
@@ -3645,7 +3645,7 @@ function migrate_categorie_association($db, $langs, $conf)
 					$result = $db->query($sqlUpdate);
 					if (!$result) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					}
 					print '. ';
 					$i++;
@@ -3660,7 +3660,7 @@ function migrate_categorie_association($db, $langs, $conf)
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	} else {
@@ -3713,7 +3713,7 @@ function migrate_event_assignement($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				print '. ';
 				$i++;
@@ -3728,7 +3728,7 @@ function migrate_event_assignement($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -3779,7 +3779,7 @@ function migrate_event_assignement_contact($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 				print '. ';
 				$i++;
@@ -3794,7 +3794,7 @@ function migrate_event_assignement_contact($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -3857,7 +3857,7 @@ function migrate_reset_blocked_log($db, $langs, $conf)
 						$resqlUpdate = $db->query($sqlUpdate);
 						if (!$resqlUpdate) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						} else {
 							// Add set line
 							$object = new stdClass();
@@ -3879,7 +3879,7 @@ function migrate_reset_blocked_log($db, $langs, $conf)
 						print ' - '.$langs->trans('AlreadyInV7').'<br>';
 					}
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 
 				$i++;
@@ -3894,7 +3894,7 @@ function migrate_reset_blocked_log($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -3945,7 +3945,7 @@ function migrate_remise_entity($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 
 				print '. ';
@@ -3961,7 +3961,7 @@ function migrate_remise_entity($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -4031,12 +4031,12 @@ function migrate_remise_except_entity($db, $langs, $conf)
 						$result = $db->query($sqlUpdate);
 						if (!$result) {
 							$error++;
-							dol_print_error($db);
+							abort(500);
 						}
 					}
 				} else {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 
 				print '. ';
@@ -4052,7 +4052,7 @@ function migrate_remise_except_entity($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -4101,7 +4101,7 @@ function migrate_user_rights_entity($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 
 				print '. ';
@@ -4117,7 +4117,7 @@ function migrate_user_rights_entity($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -4166,7 +4166,7 @@ function migrate_usergroup_rights_entity($db, $langs, $conf)
 				$result = $db->query($sqlUpdate);
 				if (!$result) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 
 				print '. ';
@@ -4182,7 +4182,7 @@ function migrate_usergroup_rights_entity($db, $langs, $conf)
 			$db->rollback();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -4962,7 +4962,7 @@ function migrate_users_socialnetworks()
 
 			$resqlupd = $db->query($sqlupd);
 			if (!$resqlupd) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 		}
@@ -4972,7 +4972,7 @@ function migrate_users_socialnetworks()
 	if (!$error) {
 		$db->commit();
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 	print '<b>'.$langs->trans('MigrationFieldsSocialNetworks', 'Users')."</b><br>\n";
@@ -5054,7 +5054,7 @@ function migrate_members_socialnetworks()
 			//print $sqlupd."<br>";
 			$resqlupd = $db->query($sqlupd);
 			if (!$resqlupd) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 		}
@@ -5064,7 +5064,7 @@ function migrate_members_socialnetworks()
 	if (!$error) {
 		$db->commit();
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 	print '<b>'.$langs->trans('MigrationFieldsSocialNetworks', 'Members')."</b><br>\n";
@@ -5150,7 +5150,7 @@ function migrate_contacts_socialnetworks()
 			//print $sqlupd."<br>";
 			$resqlupd = $db->query($sqlupd);
 			if (!$resqlupd) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 		}
@@ -5160,7 +5160,7 @@ function migrate_contacts_socialnetworks()
 	if (!$error) {
 		$db->commit();
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 	print '<b>'.$langs->trans('MigrationFieldsSocialNetworks', 'Contacts')."</b><br>\n";
@@ -5241,7 +5241,7 @@ function migrate_thirdparties_socialnetworks()
 			//print $sqlupd."<br>";
 			$resqlupd = $db->query($sqlupd);
 			if (!$resqlupd) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 		}
@@ -5251,7 +5251,7 @@ function migrate_thirdparties_socialnetworks()
 	if (!$error) {
 		$db->commit();
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 	print '<b>'.$langs->trans('MigrationFieldsSocialNetworks', 'Thirdparties')."</b><br>\n";
@@ -5305,7 +5305,7 @@ function migrate_export_import_profiles($mode = 'export')
 				$resultstring .= '<tr class="trforrunsql" style=""><td class="wordbreak" colspan="4">'.$sqlupd."</td></tr>\n";
 				$resqlupd = $db->query($sqlupd);
 				if (!$resqlupd) {
-					dol_print_error($db);
+					abort(500);
 					$error++;
 				}
 			}
@@ -5316,7 +5316,7 @@ function migrate_export_import_profiles($mode = 'export')
 	if (!$error) {
 		$db->commit();
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 	print '<b>'.$langs->trans('MigrationImportOrExportProfiles', $mode)."</b><br>\n";
@@ -5364,7 +5364,7 @@ function migrate_contractdet_rank()
 			print $resultstring;
 			$resqlUpd = $db->query($sqlUpd);
 			if (!$resqlUpd) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 
@@ -5418,7 +5418,7 @@ function migrate_invoice_export_models()
 	$resql1 = $db->query($sql1);
 
 	if (! $resql1) {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 		print '</td></tr>';
 		return;
@@ -5435,7 +5435,7 @@ function migrate_invoice_export_models()
 	$resql2 = $db->query($sql2);
 
 	if (! $resql2) {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 		print '</td></tr>';
 		return;
@@ -5504,7 +5504,7 @@ function migrate_accountingbookkeeping(int $entity)
 				print $resultstring;
 				$resqlUpd = $db->query($sqlUpd);
 				if (!$resqlUpd) {
-					dol_print_error($db);
+					abort(500);
 					$error++;
 				}
 			}
@@ -5556,7 +5556,7 @@ function migrate_apiresttokens()
 		}
 	} else {
 		$error++;
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 	}
 
@@ -5585,7 +5585,7 @@ function migrate_apiresttokens()
 					$insertresult = $db->query($sqlforinsert);
 					if (!$insertresult) {
 						$error++;
-						dol_print_error($db);
+						abort(500);
 					} else {
 						$nbofmigration++;
 					}
@@ -5598,7 +5598,7 @@ function migrate_apiresttokens()
 				$db->rollback();
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		}
 	}
@@ -5638,7 +5638,7 @@ function migrate_blockedlog_add_hmac_key()
 		$result = dolibarr_set_const($db, 'BLOCKEDLOG_HMAC_KEY', $hmac_secret_key, 'chaine', 0, 'The secret key for HMAC used for blockedlog record', 0);	// Will encrypt the value using dolCrypt and store it.
 
 		if ($result < 0) {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 
 			print '</td></tr>';

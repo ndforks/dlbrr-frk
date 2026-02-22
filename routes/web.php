@@ -106,241 +106,241 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Home::class);
 
 // User Management Routes
-Route::prefix('user')->group(function () {
-    Route::get('/', UserIndex::class);
-    Route::get('/card.php', ShowUser::class);
-    Route::get('/list.php', ListUsers::class);
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/', UserIndex::class)->name('index');
+    Route::get('/{id?}', ShowUser::class)->name('show');
+    Route::get('/list', ListUsers::class)->name('list');
 });
 
 // Product/Service Routes
-Route::prefix('product')->group(function () {
-    Route::get('/', ProductIndex::class);
-    Route::get('/card.php', ShowProduct::class);
-    Route::get('/list.php', ListProduct::class);
+Route::prefix('product')->name('product.')->group(function () {
+    Route::get('/', ProductIndex::class)->name('index');
+    Route::get('/{id?}', ShowProduct::class)->name('show');
+    Route::get('/list', ListProduct::class)->name('list');
 });
 
 // Customer/Prospect Routes (Societe)
-Route::prefix('societe')->group(function () {
-    Route::get('/', SocieteIndex::class);
-    Route::get('/card.php', ShowSociete::class);
-    Route::get('/list.php', ListSociete::class);
+Route::prefix('societe')->name('societe.')->group(function () {
+    Route::get('/', SocieteIndex::class)->name('index');
+    Route::get('/{id?}', ShowSociete::class)->name('show');
+    Route::get('/list', ListSociete::class)->name('list');
 });
 
 // Contact Routes
-Route::prefix('contact')->group(function () {
-    Route::get('/', ContactIndex::class);
-    Route::get('/card.php', ShowContact::class);
-    Route::get('/list.php', ListContacts::class);
+Route::prefix('contact')->name('contact.')->group(function () {
+    Route::get('/', ContactIndex::class)->name('index');
+    Route::get('/{id?}', ShowContact::class)->name('show');
+    Route::get('/list', ListContacts::class)->name('list');
 });
 
 // Invoice Routes (Facture)
-Route::prefix('compta/facture')->group(function () {
-    Route::get('/', FactureIndex::class);
-    Route::get('/card.php', ShowFacture::class);
-    Route::get('/list.php', ListFacture::class);
+Route::prefix('compta/facture')->name('facture.')->group(function () {
+    Route::get('/', FactureIndex::class)->name('index');
+    Route::get('/{id?}', ShowFacture::class)->name('show');
+    Route::get('/list', ListFacture::class)->name('list');
 });
 
 // Order Routes (Commande)
-Route::prefix('commande')->group(function () {
-    Route::get('/', CommandeIndex::class);
-    Route::get('/card.php', ShowCommande::class);
-    Route::get('/list.php', ListCommande::class);
+Route::prefix('commande')->name('commande.')->group(function () {
+    Route::get('/', CommandeIndex::class)->name('index');
+    Route::get('/{id?}', ShowCommande::class)->name('show');
+    Route::get('/list', ListCommande::class)->name('list');
 });
 
 // Proposal Routes (Propal)
-Route::prefix('comm/propal')->group(function () {
-    Route::get('/', PropalIndex::class);
-    Route::get('/card.php', ShowPropal::class);
-    Route::get('/list.php', ListPropal::class);
+Route::prefix('comm/propal')->name('propal.')->group(function () {
+    Route::get('/', PropalIndex::class)->name('index');
+    Route::get('/{id?}', ShowPropal::class)->name('show');
+    Route::get('/list', ListPropal::class)->name('list');
 });
 
 // Project Routes
-Route::prefix('projet')->group(function () {
-    Route::get('/', ProjetIndex::class);
-    Route::get('/card.php', ShowProjet::class);
-    Route::get('/list.php', ListProjet::class);
+Route::prefix('projet')->name('projet.')->group(function () {
+    Route::get('/', ProjetIndex::class)->name('index');
+    Route::get('/{id?}', ShowProjet::class)->name('show');
+    Route::get('/list', ListProjet::class)->name('list');
 });
 
 // Ticket Routes
-Route::prefix('ticket')->group(function () {
-    Route::get('/', TicketIndex::class);
-    Route::get('/card.php', ShowTicket::class);
-    Route::get('/list.php', ListTicket::class);
+Route::prefix('ticket')->name('ticket.')->group(function () {
+    Route::get('/', TicketIndex::class)->name('index');
+    Route::get('/{id?}', ShowTicket::class)->name('show');
+    Route::get('/list', ListTicket::class)->name('list');
 });
 
 // Supplier Routes (Fourn)
-Route::prefix('fourn')->group(function () {
-    Route::get('/', FournIndex::class);
-    Route::get('/card.php', ShowFourn::class);
-    Route::prefix('commande')->group(function () {
-        Route::get('/', FournCommandeIndex::class);
-        Route::get('/card.php', FournShowCommande::class);
+Route::prefix('fourn')->name('fourn.')->group(function () {
+    Route::get('/', FournIndex::class)->name('index');
+    Route::get('/{id?}', ShowFourn::class)->name('show');
+    Route::prefix('commande')->name('commande.')->group(function () {
+        Route::get('/', FournCommandeIndex::class)->name('index');
+        Route::get('/{id?}', FournShowCommande::class)->name('show');
     });
-    Route::prefix('facture')->group(function () {
-        Route::get('/', FournFactureIndex::class);
-        Route::get('/card.php', FournShowFacture::class);
+    Route::prefix('facture')->name('facture.')->group(function () {
+        Route::get('/', FournFactureIndex::class)->name('index');
+        Route::get('/{id?}', FournShowFacture::class)->name('show');
     });
 });
 
 // Expedition/Shipping Routes
-Route::prefix('expedition')->group(function () {
-    Route::get('/', ExpeditionIndex::class);
-    Route::get('/card.php', ShowExpedition::class);
-    Route::get('/list.php', ListExpedition::class);
+Route::prefix('expedition')->name('expedition.')->group(function () {
+    Route::get('/', ExpeditionIndex::class)->name('index');
+    Route::get('/{id?}', ShowExpedition::class)->name('show');
+    Route::get('/list', ListExpedition::class)->name('list');
 });
 
 // Contract Routes
-Route::prefix('contrat')->group(function () {
-    Route::get('/', ContratIndex::class);
-    Route::get('/card.php', ShowContrat::class);
-    Route::get('/list.php', ListContrat::class);
+Route::prefix('contrat')->name('contrat.')->group(function () {
+    Route::get('/', ContratIndex::class)->name('index');
+    Route::get('/{id?}', ShowContrat::class)->name('show');
+    Route::get('/list', ListContrat::class)->name('list');
 });
 
 // Intervention Routes
-Route::prefix('fichinter')->group(function () {
-    Route::get('/', FichinterIndex::class);
-    Route::get('/card.php', ShowFichinter::class);
-    Route::get('/list.php', ListFichinter::class);
+Route::prefix('fichinter')->name('fichinter.')->group(function () {
+    Route::get('/', FichinterIndex::class)->name('index');
+    Route::get('/{id?}', ShowFichinter::class)->name('show');
+    Route::get('/list', ListFichinter::class)->name('list');
 });
 
 // Member Routes (Adherents)
-Route::prefix('adherents')->group(function () {
-    Route::get('/', AdherentsIndex::class);
-    Route::get('/card.php', ShowAdherents::class);
-    Route::get('/list.php', ListAdherents::class);
+Route::prefix('adherents')->name('adherents.')->group(function () {
+    Route::get('/', AdherentsIndex::class)->name('index');
+    Route::get('/{id?}', ShowAdherents::class)->name('show');
+    Route::get('/list', ListAdherents::class)->name('list');
 });
 
 // Donation Routes
-Route::prefix('don')->group(function () {
-    Route::get('/', DonIndex::class);
-    Route::get('/card.php', ShowDon::class);
-    Route::get('/list.php', ListDon::class);
+Route::prefix('don')->name('don.')->group(function () {
+    Route::get('/', DonIndex::class)->name('index');
+    Route::get('/{id?}', ShowDon::class)->name('show');
+    Route::get('/list', ListDon::class)->name('list');
 });
 
 // Bank Account Routes
-Route::prefix('compta/bank')->group(function () {
-    Route::get('/', BankIndex::class);
-    Route::get('/card.php', ShowBank::class);
-    Route::get('/list.php', ListBank::class);
+Route::prefix('compta/bank')->name('bank.')->group(function () {
+    Route::get('/', BankIndex::class)->name('index');
+    Route::get('/{id?}', ShowBank::class)->name('show');
+    Route::get('/list', ListBank::class)->name('list');
 });
 
 // Expense Report Routes
-Route::prefix('expensereport')->group(function () {
-    Route::get('/', ExpenseReportIndex::class);
-    Route::get('/card.php', ShowExpenseReport::class);
-    Route::get('/list.php', ListExpenseReport::class);
+Route::prefix('expensereport')->name('expensereport.')->group(function () {
+    Route::get('/', ExpenseReportIndex::class)->name('index');
+    Route::get('/{id?}', ShowExpenseReport::class)->name('show');
+    Route::get('/list', ListExpenseReport::class)->name('list');
 });
 
 // Holiday/Leave Routes
-Route::prefix('holiday')->group(function () {
-    Route::get('/', HolidayIndex::class);
-    Route::get('/card.php', ShowHoliday::class);
-    Route::get('/list.php', ListHoliday::class);
+Route::prefix('holiday')->name('holiday.')->group(function () {
+    Route::get('/', HolidayIndex::class)->name('index');
+    Route::get('/{id?}', ShowHoliday::class)->name('show');
+    Route::get('/list', ListHoliday::class)->name('list');
 });
 
 // HR Management Routes
-Route::prefix('hrm')->group(function () {
-    Route::get('/', HrmIndex::class);
-    Route::get('/employee.php', EmployeeHrm::class);
-    Route::get('/position.php', PositionHrm::class);
+Route::prefix('hrm')->name('hrm.')->group(function () {
+    Route::get('/', HrmIndex::class)->name('index');
+    Route::get('/employee', EmployeeHrm::class)->name('employee');
+    Route::get('/position', PositionHrm::class)->name('position');
 });
 
 // Asset Management Routes
-Route::prefix('asset')->group(function () {
-    Route::get('/', AssetIndex::class);
-    Route::get('/card.php', ShowAsset::class);
-    Route::get('/list.php', ListAsset::class);
+Route::prefix('asset')->name('asset.')->group(function () {
+    Route::get('/', AssetIndex::class)->name('index');
+    Route::get('/{id?}', ShowAsset::class)->name('show');
+    Route::get('/list', ListAsset::class)->name('list');
 });
 
 // BOM (Bill of Materials) Routes
-Route::prefix('bom')->group(function () {
-    Route::get('/', BomIndex::class);
-    Route::get('/card.php', ShowBom::class);
-    Route::get('/list.php', ListBom::class);
+Route::prefix('bom')->name('bom.')->group(function () {
+    Route::get('/', BomIndex::class)->name('index');
+    Route::get('/{id?}', ShowBom::class)->name('show');
+    Route::get('/list', ListBom::class)->name('list');
 });
 
 // Manufacturing Order Routes
-Route::prefix('mrp')->group(function () {
-    Route::get('/', MrpIndex::class);
-    Route::get('/mo_card.php', ShowManufacturingOrder::class);
-    Route::get('/mo_list.php', ListManufacturingOrders::class);
+Route::prefix('mrp')->name('mrp.')->group(function () {
+    Route::get('/', MrpIndex::class)->name('index');
+    Route::get('/mo/{id?}', ShowManufacturingOrder::class)->name('show');
+    Route::get('/mo/list', ListManufacturingOrders::class)->name('list');
 });
 
 // Stock/Warehouse Routes
-Route::prefix('product/stock')->group(function () {
-    Route::get('/', StockIndex::class);
-    Route::get('/card.php', ShowStock::class);
-    Route::get('/mouvement.php', MovementStock::class);
+Route::prefix('product/stock')->name('stock.')->group(function () {
+    Route::get('/', StockIndex::class)->name('index');
+    Route::get('/{id?}', ShowStock::class)->name('show');
+    Route::get('/mouvement', MovementStock::class)->name('mouvement');
 });
 
 // Category Routes
-Route::prefix('categories')->group(function () {
-    Route::get('/', CategoriesIndex::class);
-    Route::get('/card.php', ShowCategories::class);
+Route::prefix('categories')->name('categories.')->group(function () {
+    Route::get('/', CategoriesIndex::class)->name('index');
+    Route::get('/{id?}', ShowCategories::class)->name('show');
 });
 
 // Bookmarks Routes
-Route::prefix('bookmarks')->group(function () {
-    Route::get('/', BookmarksIndex::class);
-    Route::get('/card.php', ShowBookmarks::class);
+Route::prefix('bookmarks')->name('bookmarks.')->group(function () {
+    Route::get('/', BookmarksIndex::class)->name('index');
+    Route::get('/{id?}', ShowBookmarks::class)->name('show');
 });
 
 // Accounting Routes
-Route::prefix('accountancy')->group(function () {
-    Route::get('/', AccountancyIndex::class);
-    Route::get('/journal/', JournalAccountancy::class);
+Route::prefix('accountancy')->name('accountancy.')->group(function () {
+    Route::get('/', AccountancyIndex::class)->name('index');
+    Route::get('/journal', JournalAccountancy::class)->name('journal');
 });
 
 // ECM (Document Management) Routes
-Route::prefix('ecm')->group(function () {
-    Route::get('/', EcmIndex::class);
-    Route::get('/index_auto.php', AutoIndexEcm::class);
+Route::prefix('ecm')->name('ecm.')->group(function () {
+    Route::get('/', EcmIndex::class)->name('index');
+    Route::get('/auto', AutoIndexEcm::class)->name('auto');
 });
 
 // Event Organization Routes
-Route::prefix('eventorganization')->group(function () {
-    Route::get('/', EventOrganizationIndex::class);
-    Route::get('/conferenceorbooth_card.php', ShowConferenceOrBoothEventOrganization::class);
+Route::prefix('eventorganization')->name('eventorganization.')->group(function () {
+    Route::get('/', EventOrganizationIndex::class)->name('index');
+    Route::get('/conferenceorbooth/{id?}', ShowConferenceOrBoothEventOrganization::class)->name('conferenceorbooth');
 });
 
 // Booking/Calendar Routes
-Route::prefix('bookcal')->group(function () {
-    Route::get('/', BookcalIndex::class);
-    Route::get('/calendar.php', CalendarBookcal::class);
+Route::prefix('bookcal')->name('bookcal.')->group(function () {
+    Route::get('/', BookcalIndex::class)->name('index');
+    Route::get('/calendar', CalendarBookcal::class)->name('calendar');
 });
 
 // Loan Routes
-Route::prefix('loan')->group(function () {
-    Route::get('/', LoanIndex::class);
-    Route::get('/card.php', ShowLoan::class);
-    Route::get('/list.php', ListLoan::class);
+Route::prefix('loan')->name('loan.')->group(function () {
+    Route::get('/', LoanIndex::class)->name('index');
+    Route::get('/{id?}', ShowLoan::class)->name('show');
+    Route::get('/list', ListLoan::class)->name('list');
 });
 
 // Supplier Proposal Routes
-Route::prefix('supplier_proposal')->group(function () {
-    Route::get('/', SupplierProposalIndex::class);
-    Route::get('/card.php', ShowSupplierProposal::class);
-    Route::get('/list.php', ListSupplierProposal::class);
+Route::prefix('supplier_proposal')->name('supplier_proposal.')->group(function () {
+    Route::get('/', SupplierProposalIndex::class)->name('index');
+    Route::get('/{id?}', ShowSupplierProposal::class)->name('show');
+    Route::get('/list', ListSupplierProposal::class)->name('list');
 });
 
 // Variants Routes
-Route::prefix('variants')->group(function () {
-    Route::get('/', VariantsIndex::class);
-    Route::get('/card.php', ShowVariants::class);
-    Route::get('/list.php', ListVariants::class);
+Route::prefix('variants')->name('variants.')->group(function () {
+    Route::get('/', VariantsIndex::class)->name('index');
+    Route::get('/{id?}', ShowVariants::class)->name('show');
+    Route::get('/list', ListVariants::class)->name('list');
 });
 
 // Website Builder Routes
-Route::prefix('website')->group(function () {
-    Route::get('/', WebsiteIndex::class);
-    Route::get('/page.php', PageWebsite::class);
+Route::prefix('website')->name('website.')->group(function () {
+    Route::get('/', WebsiteIndex::class)->name('index');
+    Route::get('/page', PageWebsite::class)->name('page');
 });
 
 // Admin Routes
-Route::prefix('admin')->group(function () {
-    Route::get('/', AdminIndex::class);
-    Route::get('/system/', SystemAdmin::class);
-    Route::get('/modules.php', ModulesAdmin::class);
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', AdminIndex::class)->name('index');
+    Route::get('/system', SystemAdmin::class)->name('system');
+    Route::get('/modules', ModulesAdmin::class)->name('modules');
 });
 
 // API Routes

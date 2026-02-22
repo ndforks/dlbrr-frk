@@ -48,18 +48,18 @@ $langs->loadLangs(array('admin', 'members', 'users'));
 
 $extrafields = new ExtraFields($db);			// may be used by some inc.php files
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
 
-$scandir = GETPOST('scandir', 'alpha');
+$scandir = request()->input('scandir');
 $type = 'user';
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -105,7 +105,7 @@ if ($action == 'set_default') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
@@ -113,17 +113,17 @@ if ($action == 'set_default') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'sethideinactiveuser') {
 	//Set hide closed customer into combox or select
-	$status = GETPOST('status', 'alpha');
+	$status = request()->input('status');
 
 	if (dolibarr_set_const($db, "USER_HIDE_INACTIVE_IN_COMBOBOX", $status, 'chaine', 0, '', $conf->entity) > 0) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -223,7 +223,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print load_fiche_titre($langs->trans("UsersDocModules"), '', '');

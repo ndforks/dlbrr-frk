@@ -50,13 +50,13 @@ $form = new Form($db);
 $type2label = ExtraFields::getListOfTypesLabels();
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
-$attrname = GETPOST('attrname', 'alpha');
+$action = request()->input('action');
+$attrname = request()->input('attrname');
 $elementtype = 'hrm_job'; //Must be the $table_element of the class that manage extrafield
 
 // Security Check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

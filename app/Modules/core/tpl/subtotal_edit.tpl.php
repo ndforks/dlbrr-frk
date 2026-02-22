@@ -125,7 +125,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 
 	if (!$situationinvoicelinewithparent) {
 		print '<input type="text" name="line_desc" class="marginrightonly" id="line_desc" value="';
-		print GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description . '"';
+		print request()->has('product_desc') ? request()->input('product_desc') : $line->description . '"';
 		$disabled = 0;
 		if ($line_type == 'subtotal') {
 			print ' readonly="readonly"';
@@ -150,7 +150,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		print '<td colspan="' . $colspan . '" class="right"></td>';
 	} else {
 		print '<input type="text" readonly name="line_desc" id="line_desc" value="';
-		print GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description;
+		print request()->has('product_desc') ? request()->input('product_desc') : $line->description;
 		print '"></td>';
 	}
 	?>

@@ -70,7 +70,7 @@ class ActionsStripeconnect extends CommonHookActions
 	{
 		global $langs;
 
-		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 			$service = 'StripeTest';
 			dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');
 		} else {
@@ -198,7 +198,7 @@ class ActionsStripeconnect extends CommonHookActions
 			if ($object->statut > Facture::STATUS_DRAFT && $object->statut < Facture::STATUS_ABANDONED && $object->paye == 0) {
 				$stripe = new Stripe($this->db);
 				if ($resteapayer > 0) {
-					if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+					if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 						$service = 'StripeTest';
 						dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');
 					} else {

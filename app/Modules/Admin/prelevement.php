@@ -46,10 +46,10 @@ $langs->loadLangs(array("admin", "withdrawals"));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $type = 'paymentorder';
 
 $error = 0;
@@ -62,7 +62,7 @@ $error = 0;
 if ($action == "set") {
 	$db->begin();
 
-	$id = GETPOSTINT('PRELEVEMENT_ID_BANKACCOUNT');
+	$id = request()->integer('PRELEVEMENT_ID_BANKACCOUNT', 0);
 	$account = new Account($db);
 	if ($account->fetch($id) > 0) {
 		$res = dolibarr_set_const($db, "PRELEVEMENT_ID_BANKACCOUNT", $id, 'chaine', 0, '', $conf->entity);
@@ -90,29 +90,29 @@ if ($action == "set") {
 	}
 
 	/* Moved to account
-	$res = dolibarr_set_const($db, "PRELEVEMENT_ICS", GETPOST("PRELEVEMENT_ICS"), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "PRELEVEMENT_ICS", request()->input('PRELEVEMENT_ICS'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) $error++;
 	*/
-	if (GETPOST("PRELEVEMENT_USER") > 0) {
-		$res = dolibarr_set_const($db, "PRELEVEMENT_USER", GETPOST("PRELEVEMENT_USER"), 'chaine', 0, '', $conf->entity);
+	if (request()->input('PRELEVEMENT_USER') > 0) {
+		$res = dolibarr_set_const($db, "PRELEVEMENT_USER", request()->input('PRELEVEMENT_USER'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
-	if (GETPOST("PRELEVEMENT_END_TO_END") || GETPOST("PRELEVEMENT_END_TO_END") == "") {
-		$res = dolibarr_set_const($db, "PRELEVEMENT_END_TO_END", GETPOST("PRELEVEMENT_END_TO_END"), 'chaine', 0, '', $conf->entity);
+	if (request()->input('PRELEVEMENT_END_TO_END') || request()->input('PRELEVEMENT_END_TO_END') == "") {
+		$res = dolibarr_set_const($db, "PRELEVEMENT_END_TO_END", request()->input('PRELEVEMENT_END_TO_END'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
-	if (GETPOST("PRELEVEMENT_USTRD") || GETPOST("PRELEVEMENT_USTRD") == "") {
-		$res = dolibarr_set_const($db, "PRELEVEMENT_USTRD", GETPOST("PRELEVEMENT_USTRD"), 'chaine', 0, '', $conf->entity);
+	if (request()->input('PRELEVEMENT_USTRD') || request()->input('PRELEVEMENT_USTRD') == "") {
+		$res = dolibarr_set_const($db, "PRELEVEMENT_USTRD", request()->input('PRELEVEMENT_USTRD'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
 
-	$res = dolibarr_set_const($db, "PRELEVEMENT_ADDDAYS", GETPOST("PRELEVEMENT_ADDDAYS"), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "PRELEVEMENT_ADDDAYS", request()->input('PRELEVEMENT_ADDDAYS'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
@@ -128,7 +128,7 @@ if ($action == "set") {
 
 if ($action == "addnotif") {
 	$bon = new BonPrelevement($db);
-	$bon->addNotification($db, GETPOSTINT('user'), $action);
+	$bon->addNotification($db, request()->integer('user', 0), $action);
 
 	header("Location: ".$_SERVER["PHP_SELF"]);
 	exit;
@@ -136,7 +136,7 @@ if ($action == "addnotif") {
 
 if ($action == "deletenotif") {
 	$bon = new BonPrelevement($db);
-	$bon->deleteNotificationById(GETPOSTINT('notif'));
+	$bon->deleteNotificationById(request()->integer('notif', 0));
 
 	header("Location: ".$_SERVER["PHP_SELF"]);
 	exit;
@@ -262,7 +262,7 @@ if ($resql)
 }
 else
 {
-	dol_print_error($db);
+	abort(500);
 }
 
 

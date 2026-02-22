@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("admin", "eventorganization", "categories"));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$scandir = GETPOST('scan_dir', 'alpha');
+$scandir = request()->input('scan_dir');
 $type = 'myobject';
 
 $arrayofparameters = array(
@@ -67,7 +67,7 @@ $dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
 
 // Access control
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 if (empty($action)) {
@@ -171,7 +171,7 @@ if ($action == 'edit') {
 				$formcompany = new FormCompany($db);
 				print $formcompany->selectProspectCustomerType(getDolGlobalString($constname), $constname, 'customerorprospect', 'form', '', '1');
 			} elseif ($val['type'] == 'securekey') { */
-			print '<input type="text" class="flat" id="'.$constname.'" name="'.$constname.'" value="'.(GETPOST($constname, 'alpha') ? GETPOST($constname, 'alpha') : getDolGlobalString($constname)).'" size="40">';
+			print '<input type="text" class="flat" id="'.$constname.'" name="'.$constname.'" value="'.(request()->input($constname) ? request()->input($constname) : getDolGlobalString($constname)).'" size="40">';
 			if (!empty($conf->use_javascript_ajax)) {
 				print '&nbsp;'.img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token'.$constname.'" class="linkobject"');
 			}

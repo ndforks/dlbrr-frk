@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'companies'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
-$id = GETPOSTINT('id');						// Id of task
-$ref = GETPOST('ref', 'alpha');				// Ref of task
-$withproject = GETPOSTINT('withproject');
-$project_ref = GETPOST('project_ref', 'alpha');
+$id = request()->integer('id', 0);						// Id of task
+$ref = request()->input('ref');				// Ref of task
+$withproject = request()->integer('withproject', 0);
+$project_ref = request()->input('project_ref');
 
 $object = new Task($db);
 $projectstatic = new Project($db);
@@ -81,7 +81,7 @@ if (empty($reshook)) {
 	// Add new contact
 	if ($action == 'addcontact' && $user->hasRight('projet', 'creer')) {
 		$source = 'internal';
-		if (GETPOST("addsourceexternal")) {
+		if (request()->input('addsourceexternal')) {
 			$source = 'external';
 		}
 
@@ -89,11 +89,11 @@ if (empty($reshook)) {
 
 		if ($result > 0 && $id > 0) {
 			if ($source == 'internal') {
-				$idfortaskuser = ((GETPOST("userid") != 0 && GETPOST('userid') != -1) ? GETPOST("userid") : 0); // GETPOST('contactid') may val -1 to mean empty or -2 to means "everybody"
-				$typeid = GETPOST('type');
+				$idfortaskuser = ((request()->input('userid') != 0 && request()->input('userid') != -1) ? request()->input('userid') : 0); // request()->input('contactid') may val -1 to mean empty or -2 to means "everybody"
+				$typeid = request()->integer('type', 0);
 			} else {
-				$idfortaskuser = ((GETPOST("contactid") > 0) ? GETPOSTINT("contactid") : 0); // GETPOST('contactid') may val -1 to mean empty or -2 to means "everybody"
-				$typeid = GETPOST('typecontact');
+				$idfortaskuser = ((request()->input('contactid') > 0) ? request()->integer('contactid', 0) : 0); // request()->input('contactid') may val -1 to mean empty or -2 to means "everybody"
+				$typeid = request()->integer('typecontact', 0);
 			}
 			if ($idfortaskuser == -2) {
 				$result = $projectstatic->fetch($object->fk_project);
@@ -126,22 +126,22 @@ if (empty($reshook)) {
 	// bascule du statut d'un contact
 	if ($action == 'swapstatut' && $user->hasRight('projet', 'creer')) {
 		if ($object->fetch($id, $ref)) {
-			$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+			$result = $object->swapContactStatus(request()->integer('ligne', 0));
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
 	// Efface un contact
 	if ($action == 'deleteline' && $user->hasRight('projet', 'creer')) {
 		$object->fetch($id, $ref);
-		$result = $object->delete_contact(GETPOSTINT("lineid"));
+		$result = $object->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id.($withproject ? '&withproject=1' : ''));
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -243,25 +243,25 @@ if ($id > 0 || !empty($ref)) {
 				print '</td>';
 				print '<td>';
 				if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-					print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+					print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 					$htmltext = $langs->trans("ProjectFollowOpportunity");
 					print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 					print '<br>';
 				}
 				if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-					print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
+					print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
 					$htmltext = $langs->trans("ProjectFollowTasks");
 					print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 					print '<br>';
 				}
 				if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-					print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+					print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 					$htmltext = $langs->trans("ProjectBillTimeDescription");
 					print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 					print '<br>';
 				}
 				if (isModEnabled('eventorganization')) {
-					print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+					print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 					$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 					print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 				}
@@ -351,10 +351,10 @@ if ($id > 0 || !empty($ref)) {
 		print dol_get_fiche_head($head, 'task_contact', $langs->trans("Task"), -1, 'projecttask', 0, '', 'reposition');
 
 
-		$param = (GETPOST('withproject') ? '&withproject=1' : '');
-		$linkback = GETPOST('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
+		$param = (request()->input('withproject') ? '&withproject=1' : '');
+		$linkback = request()->input('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
 
-		if (!GETPOST('withproject') || empty($projectstatic->id)) {
+		if (!request()->input('withproject') || empty($projectstatic->id)) {
 			$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1);
 			$object->next_prev_filter = "fk_projet:IN:".$db->sanitize($projectsListId);
 		} else {
@@ -439,7 +439,7 @@ if ($id > 0 || !empty($ref)) {
 			} else {
 				$contactsofproject = $projectstatic->getListContactId('internal');
 			}
-			print $form->select_dolusers((GETPOSTISSET('userid') ? GETPOSTINT('userid') : $user->id), 'userid', 0, null, 0, '', $contactsofproject, '0', 0, 0, '', 1, $langs->trans("ResourceNotAssignedToProject"), 'minwidth200imp maxwidth300');
+			print $form->select_dolusers((request()->has('userid') ? request()->integer('userid', 0) : $user->id), 'userid', 0, null, 0, '', $contactsofproject, '0', 0, 0, '', 1, $langs->trans("ResourceNotAssignedToProject"), 'minwidth200imp maxwidth300');
 			print '</td>';
 			print '<td>';
 			print $formcompany->selectTypeContact($object, '', 'type', 'internal', 'position', 0, 'minwidth200imp maxwidth300', 0);
@@ -457,7 +457,7 @@ if ($id > 0 || !empty($ref)) {
 
 				print '<td>';
 				$thirdpartyofproject = $projectstatic->getListContactId('thirdparty');
-				$selectedCompany = GETPOSTISSET("newcompany") ? GETPOST("newcompany") : $projectstatic->socid;
+				$selectedCompany = request()->has('newcompany') ? request()->input('newcompany') : $projectstatic->socid;
 				$selectedCompany = $formcompany->selectCompaniesForNewContact($object, 'id', $selectedCompany, 'newcompany', $thirdpartyofproject, 0, '&withproject='.$withproject, 'minwidth200imp maxwidth300');
 				print '</td>';
 

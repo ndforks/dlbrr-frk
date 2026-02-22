@@ -47,18 +47,18 @@ require_once DOL_DOCUMENT_ROOT."/societe/class/societe.class.php";
 $langs->loadLangs(array('products', 'contracts', 'companies'));
 
 // Get parameters
-$massaction = GETPOST('massaction', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$optioncss  = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode       = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')).$mode; // To manage different context of search
+$massaction = request()->input('massaction', []);
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
+$optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')).$mode; // To manage different context of search
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -72,17 +72,17 @@ if (!$sortorder) {
 	$sortorder = "ASC";
 }
 
-$search_name = GETPOST("search_name", 'alpha');
-$search_subprice = GETPOST("search_subprice", 'alpha');
-$search_qty = GETPOST("search_qty", 'alpha');
-$search_total_ht = GETPOST("search_total_ht", 'alpha');
-$search_total_tva = GETPOST("search_total_tva", 'alpha');
-$search_total_ttc = GETPOST("search_total_ttc", 'alpha');
-$search_contract = GETPOST("search_contract", 'alpha');
-$search_service = GETPOST("search_service", 'alpha');
-$search_status = GETPOST("search_status", 'alpha');
-$search_option = GETPOST('search_option', 'alpha');
-$search_product_category = GETPOSTINT('search_product_category');
+$search_name = request()->input('search_name');
+$search_subprice = request()->input('search_subprice');
+$search_qty = request()->input('search_qty');
+$search_total_ht = request()->input('search_total_ht');
+$search_total_tva = request()->input('search_total_tva');
+$search_total_ttc = request()->input('search_total_ttc');
+$search_contract = request()->input('search_contract');
+$search_service = request()->input('search_service');
+$search_status = request()->input('search_status');
+$search_option = request()->input('search_option');
+$search_product_category = request()->integer('search_product_category', 0);
 
 // To support selection into combo list of status with detailed status '4&filter'
 $filter = '';
@@ -95,27 +95,27 @@ if ($search_status == '4&filter=expired') {
 	$filter = 'expired';
 }
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
-$opouvertureprevuemonth = GETPOST('opouvertureprevuemonth');
-$opouvertureprevueday = GETPOST('opouvertureprevueday');
-$opouvertureprevueyear = GETPOST('opouvertureprevueyear');
-$filter_opouvertureprevue = GETPOST('filter_opouvertureprevue', 'alphawithlgt');
+$opouvertureprevuemonth = request()->input('opouvertureprevuemonth');
+$opouvertureprevueday = request()->input('opouvertureprevueday');
+$opouvertureprevueyear = request()->integer('opouvertureprevueyear', 0);
+$filter_opouvertureprevue = request()->input('filter_opouvertureprevue');
 
-$op1month = GETPOSTINT('op1month');
-$op1day = GETPOSTINT('op1day');
-$op1year = GETPOSTINT('op1year');
-$filter_op1 = GETPOST('filter_op1', 'alphawithlgt');
+$op1month = request()->integer('op1month', 0);
+$op1day = request()->integer('op1day', 0);
+$op1year = request()->integer('op1year', 0);
+$filter_op1 = request()->input('filter_op1');
 
-$op2month = GETPOSTINT('op2month');
-$op2day = GETPOSTINT('op2day');
-$op2year = GETPOSTINT('op2year');
-$filter_op2 = GETPOST('filter_op2', 'alphawithlgt');
+$op2month = request()->integer('op2month', 0);
+$op2day = request()->integer('op2day', 0);
+$op2year = request()->integer('op2year', 0);
+$filter_op2 = request()->input('filter_op2');
 
-$opcloturemonth = GETPOSTINT('opcloturemonth');
-$opclotureday = GETPOSTINT('opclotureday');
-$opclotureyear = GETPOSTINT('opclotureyear');
-$filter_opcloture = GETPOST('filter_opcloture', 'alphawithlgt');
+$opcloturemonth = request()->integer('opcloturemonth', 0);
+$opclotureday = request()->integer('opclotureday', 0);
+$opclotureyear = request()->integer('opclotureyear', 0);
+$filter_opcloture = request()->input('filter_opcloture');
 
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -129,7 +129,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Security check
-$contratid = GETPOSTINT('id');
+$contratid = request()->integer('id', 0);
 if (!empty($user->socid)) {
 	$socid = $user->socid;
 }
@@ -173,11 +173,11 @@ $result = restrictedArea($user, 'contrat', 0);
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -191,7 +191,7 @@ if (empty($reshook)) {
 	// Selection of new fields
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$search_product_category = 0;
 		$search_name = "";
 		$search_subprice = "";
@@ -434,7 +434,7 @@ if ($limit) {
 dol_syslog("contrat/services_list.php", LOG_DEBUG);
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -725,7 +725,7 @@ if (!empty($arrayfields['status']['checked'])) {
 		'4&filter=expired' => $langs->trans("ServiceStatusLate"),
 		'5' => $langs->trans("ServiceStatusClosed")
 	);
-	$search_status_new = GETPOST('search_status', 'alpha');
+	$search_status_new = request()->input('search_status');
 	if ($filter == 'expired' && !preg_match('/expired/', $search_status_new)) {
 		$search_status_new .= '&filter=expired';
 	}

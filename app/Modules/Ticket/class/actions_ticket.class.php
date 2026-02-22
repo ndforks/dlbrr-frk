@@ -233,7 +233,7 @@ class ActionsTicket extends CommonHookActions
 		print '<td colspan="2">';
 		if ($user->hasRight('ticket', 'manage') && $action == 'edit_message_init') {
 			// Message
-			$msg = GETPOSTISSET('message_initial') ? GETPOST('message_initial', 'restricthtml') : $object->message;
+			$msg = request()->has('message_initial') ? request()->input('message_initial') : $object->message;
 			include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 			$uselocalbrowser = true;
 			$ckeditorenabledforticket = getDolGlobalString('FCKEDITOR_ENABLE_TICKET');
@@ -281,7 +281,7 @@ class ActionsTicket extends CommonHookActions
 			dol_print_error($this->dao->db);
 		}
 
-		$action = GETPOST('action', 'aZ09');
+		$action = request()->input('action');
 
 		print '<div class="ticketpublicarea ticketlargemargin centpercent" style="padding-top: 0">';
 		$this->viewTicketOriginalMessage($user, $action, $object);
@@ -440,7 +440,7 @@ class ActionsTicket extends CommonHookActions
 
 		// Load logs in cache
 		$ret = $object->loadCacheMsgsTicket();
-		$action = GETPOST('action');
+		$action = request()->input('action');
 
 		if (is_array($object->cache_msgs_ticket) && count($object->cache_msgs_ticket) > 0) {
 			print '<section id="cd-timeline">';

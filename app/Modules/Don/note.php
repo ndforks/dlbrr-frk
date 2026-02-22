@@ -47,10 +47,10 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'donations'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$projectid = (GETPOST('projectid') ? GETPOSTINT('projectid') : 0);
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$action = request()->input('action');
+$projectid = (request()->input('projectid') ? request()->integer('projectid', 0) : 0);
 
 $hookmanager->initHooks(array('donnote'));
 

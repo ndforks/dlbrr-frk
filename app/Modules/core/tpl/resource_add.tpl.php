@@ -71,12 +71,12 @@ $out .= $formresources->select_resource_list(0, 'fk_resource', '', 1, 1, 0, $eve
 $out .= '</div>';
 
 $out .= '<div class="divsearchfield paddingtop paddingbottom valignmiddle inline-block marginleftonly"><label for="resbusy">'.$langs->trans('Busy').'</label> ';
-//$out .= $form->selectyesno('busy', (GETPOSTISSET('busy') ? GETPOST('busy') : 1), 1);
-$out .= '<input type="checkbox" id="resbusy" name="busy" value="1"'.(GETPOSTISSET('fk_resource') ? (GETPOST('busy') ? ' checked' : '') : ' checked').'>';
+//$out .= $form->selectyesno('busy', (request()->has('busy') ? request()->input('busy') : 1), 1);
+$out .= '<input type="checkbox" id="resbusy" name="busy" value="1"'.(request()->has('fk_resource') ? (request()->input('busy') ? ' checked' : '') : ' checked').'>';
 $out .= '</div>';
 $out .= '<div class="divsearchfield paddingtop paddingbottom valignmiddle inline-block marginleftonly"><label for="resmandatory">'.$langs->trans('Mandatory').'</label> ';
-//$out .= $form->selectyesno('mandatory', (GETPOSTISSET('mandatory') ? GETPOST('mandatory') : 0), 1);
-$out .= '<input type="checkbox" id="resmandatory" name="mandatory" value="1"'.(GETPOSTISSET('fk_resource') ? (GETPOST('mandatory') ? ' checked' : '') : ' checked').'>';
+//$out .= $form->selectyesno('mandatory', (request()->has('mandatory') ? request()->input('mandatory') : 0), 1);
+$out .= '<input type="checkbox" id="resmandatory" name="mandatory" value="1"'.(request()->has('fk_resource') ? (request()->input('mandatory') ? ' checked' : '') : ' checked').'>';
 $out .= '</div>';
 
 $out .= '<div class="divsearchfield paddingtop paddingbottom valignmiddle inline-block right">';

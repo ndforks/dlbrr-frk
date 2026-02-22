@@ -48,13 +48,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
 $langs->loadLangs(array("admin", "members"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
 $oldtypetonewone = array('texte'=>'text', 'chaine'=>'string'); // old type to new ones
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $error = 0;
 
@@ -90,9 +90,9 @@ if ($action == 'updateall') {
 
 	$res = 0;
 	foreach ($constantes as $constname => $value) {
-		$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname, 'alphanohtml') : GETPOST('constvalue'));
-		$consttype = (GETPOSTISSET('consttype_'.$constname) ? GETPOST('consttype_'.$constname, 'alphanohtml') : GETPOST('consttype'));
-		$constnote = (GETPOSTISSET('constnote_'.$constname) ? GETPOST('constnote_'.$constname, 'restricthtml') : GETPOST('constnote'));
+		$constvalue = (request()->has('constvalue_' . $constname) ? request()->input('constvalue_' . $constname) : request()->input('constvalue'));
+		$consttype = (request()->has('consttype_' . $constname) ? request()->input('consttype_' . $constname) : request()->input('consttype'));
+		$constnote = (request()->has('constnote_' . $constname) ? request()->input('constnote_' . $constname) : request()->input('constnote'));
 
 		$typetouse = empty($oldtypetonewone[$consttype]) ? $consttype : $oldtypetonewone[$consttype];
 		$constvalue = preg_replace('/:member$/', '', $constvalue);
@@ -115,12 +115,12 @@ if ($action == 'updateall') {
 
 // Action to update or add a constant
 if ($action == 'update' || $action == 'add') {
-	$constlineid = GETPOSTINT('rowid');
-	$constname = GETPOST('constname', 'alpha');
+	$constlineid = request()->integer('rowid', 0);
+	$constname = request()->input('constname');
 
-	$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname, 'alphanohtml') : GETPOST('constvalue'));
-	$consttype = (GETPOSTISSET('consttype_'.$constname) ? GETPOST('consttype_'.$constname, 'alphanohtml') : GETPOST('consttype'));
-	$constnote = (GETPOSTISSET('constnote_'.$constname) ? GETPOST('constnote_'.$constname, 'restricthtml') : GETPOST('constnote'));
+	$constvalue = (request()->has('constvalue_' . $constname) ? request()->input('constvalue_' . $constname) : request()->input('constvalue'));
+	$consttype = (request()->has('consttype_' . $constname) ? request()->input('consttype_' . $constname) : request()->input('consttype'));
+	$constnote = (request()->has('constnote_' . $constname) ? request()->input('constnote_' . $constname) : request()->input('constnote'));
 
 	$typetouse = empty($oldtypetonewone[$consttype]) ? $consttype : $oldtypetonewone[$consttype];
 	$constvalue = preg_replace('/:member$/', '', $constvalue);

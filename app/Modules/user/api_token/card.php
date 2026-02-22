@@ -42,11 +42,11 @@ $langs->loadLangs(array('admin', 'users', 'errors'));
 $error = 0;
 
 // Security check
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
 
 if (empty($id) && $action != 'add' && $action != 'create') {
-	accessforbidden();
+	abort(403);
 }
 
 $socid = 0;
@@ -56,13 +56,13 @@ if ($user->socid > 0) {
 $feature2 = (($socid && $user->hasRight("user", "self", "write")) ? '' : 'user');
 
 // Retrieve needed GETPOSTS for this file
-$toselect = GETPOST('toselect', 'array');
-$tokenid = GETPOST('tokenid', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$module = GETPOST('module', 'alpha');
-$rights = GETPOSTINT('rights');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$toselect = request()->input('toselect', []);
+$tokenid = request()->integer('tokenid', 0);
+$confirm = request()->input('confirm');
+$module = request()->input('module');
+$rights = request()->integer('rights', 0);
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // SQL query to retrieve the selected token
 $sql = "SELECT oat.rowid as token_id, oat.token, oat.entity, oat.state as rights, oat.datec as date_creation, oat.tms as date_modification";
@@ -83,7 +83,7 @@ $object->loadRights();
 
 // Deny access if user not using api
 if (empty($object->api_key)) {
-	accessforbidden();
+	abort(403);
 }
 
 $form = new Form($db);
@@ -98,7 +98,7 @@ $canreaduser = ($user->admin || ($user->id == $id));
 $canedittoken = ($user->admin || (($user->id == $id) && $user->hasRight("user", "self", "write")));
 
 if (!$canreaduser) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -126,8 +126,8 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'add' && $canedittoken) {
-		$tokenstring = GETPOST('api_key', 'alphanohtml');
-		$userid = GETPOSTINT('user');
+		$tokenstring = request()->input('api_key');
+		$userid = request()->integer('user', 0);
 		$useridtoadd = !empty($userid) && $userid > 0 ? $userid : $id;
 
 		if (empty($tokenstring)) {
@@ -153,7 +153,7 @@ if (empty($reshook)) {
 			$objforcount = $db->fetch_object($resql);
 			$nbtotalofrecords = $objforcount->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$error++;
 		}
 
@@ -180,7 +180,7 @@ if (empty($reshook)) {
 		}
 
 		if ($error) {
-			dol_print_error($db);
+			abort(500);
 			$db->rollback();
 		} else {
 			$insertedtokenid = $db->last_insert_id(MAIN_DB_PREFIX."oauth_token");
@@ -200,7 +200,7 @@ if (empty($reshook)) {
 			header('Location: list.php?id='.((int) $object->id));
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -250,7 +250,7 @@ if ($action == 'create') {
 
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Token").'</td>';
 	print '<td>';
-	print '<input class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.GETPOST('api_key', 'alphanohtml').'" autocomplete="off">';
+	print '<input class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.request()->input('api_key').'" autocomplete="off">';
 	if (!empty($conf->use_javascript_ajax)) {
 		print img_picto($langs->transnoentities('Generate'), 'refresh', 'id="generate_api_key" class="linkobject paddingleft"');
 	}

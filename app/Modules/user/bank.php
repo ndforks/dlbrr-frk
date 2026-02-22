@@ -70,11 +70,11 @@ if (isModEnabled('accounting')) {
 	$langs->load('compta');
 }
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alphanohtml');
-$bankid = GETPOSTINT('bankid');
-$action = GETPOST("action", 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$bankid = request()->integer('bankid', 0);
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
 $hookmanager->initHooks(array('usercardBank', 'globalcard'));
@@ -133,7 +133,7 @@ if ($user->hasRight('holiday', 'readall') || ($user->hasRight('holiday', 'read')
 	$ok = true;
 }
 if (!$ok) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -144,24 +144,24 @@ if (!$ok) {
 if ($action == 'add' && !$cancel && $permissiontoaddbankaccount) {
 	$account->userid          = $object->id;
 
-	$account->bank            = GETPOST('bank', 'alpha');
-	$account->label           = GETPOST('label', 'alpha');
-	$account->type = GETPOSTINT('courant'); // not used
-	$account->code_banque     = GETPOST('code_banque', 'alpha');
-	$account->code_guichet    = GETPOST('code_guichet', 'alpha');
-	$account->number          = GETPOST('number', 'alpha');
-	$account->cle_rib         = GETPOST('cle_rib', 'alpha');
-	$account->bic             = GETPOST('bic', 'alpha');
-	$account->iban            = GETPOST('iban', 'alpha');
-	$account->address         = GETPOST('address', 'alpha');
+	$account->bank            = request()->input('bank');
+	$account->label           = request()->input('label');
+	$account->type = request()->integer('courant', 0); // not used
+	$account->code_banque     = request()->input('code_banque');
+	$account->code_guichet    = request()->input('code_guichet');
+	$account->number          = request()->input('number');
+	$account->cle_rib         = request()->input('cle_rib');
+	$account->bic             = request()->input('bic');
+	$account->iban            = request()->input('iban');
+	$account->address         = request()->input('address');
 
-	$account->owner_name      = GETPOST('proprio', 'alpha');
+	$account->owner_name      = request()->input('proprio');
 	$account->proprio         = $account->owner_name;
-	$account->owner_address   = GETPOST('owner_address', 'alpha');
+	$account->owner_address   = request()->input('owner_address');
 
-	$account->currency_code = trim(GETPOST("account_currency_code"));
-	$account->state_id = GETPOSTINT("account_state_id");
-	$account->country_id = GETPOSTINT("account_country_id");
+	$account->currency_code = trim(request()->input('account_currency_code'));
+	$account->state_id = request()->integer('account_state_id', 0);
+	$account->country_id = request()->integer('account_country_id', 0);
 
 	$result = $account->create($user);
 
@@ -177,23 +177,23 @@ if ($action == 'add' && !$cancel && $permissiontoaddbankaccount) {
 if ($action == 'update' && !$cancel && $permissiontoaddbankaccount) {
 	$account->userid = $object->id;
 
-	$account->bank            = GETPOST('bank', 'alpha');
-	$account->label           = GETPOST('label', 'alpha');
-	$account->type = GETPOSTINT('courant'); // not used
-	$account->code_banque     = GETPOST('code_banque', 'alpha');
-	$account->code_guichet    = GETPOST('code_guichet', 'alpha');
-	$account->number          = GETPOST('number', 'alpha');
-	$account->cle_rib         = GETPOST('cle_rib', 'alpha');
-	$account->bic             = GETPOST('bic', 'alpha');
-	$account->iban            = GETPOST('iban', 'alpha');
-	$account->address         = GETPOST('address', 'alpha');
-	$account->owner_name      = GETPOST('proprio', 'alpha');
+	$account->bank            = request()->input('bank');
+	$account->label           = request()->input('label');
+	$account->type = request()->integer('courant', 0); // not used
+	$account->code_banque     = request()->input('code_banque');
+	$account->code_guichet    = request()->input('code_guichet');
+	$account->number          = request()->input('number');
+	$account->cle_rib         = request()->input('cle_rib');
+	$account->bic             = request()->input('bic');
+	$account->iban            = request()->input('iban');
+	$account->address         = request()->input('address');
+	$account->owner_name      = request()->input('proprio');
 	$account->proprio         = $account->owner_name;
-	$account->owner_address   = GETPOST('owner_address', 'alpha');
+	$account->owner_address   = request()->input('owner_address');
 
-	$account->currency_code = trim(GETPOST("account_currency_code"));
-	$account->state_id = GETPOSTINT("account_state_id");
-	$account->country_id = GETPOSTINT("account_country_id");
+	$account->currency_code = trim(request()->input('account_currency_code'));
+	$account->state_id = request()->integer('account_state_id', 0);
+	$account->country_id = request()->integer('account_country_id', 0);
 
 	$result = $account->update($user);
 
@@ -220,7 +220,7 @@ if ($action == 'delete_confirmed' && !$cancel && $permissiontoaddbankaccount) {
 
 // update birth (pure personal information)
 if ($action == 'setbirth' && $permissiontowritehr && !$cancel) {
-	$object->birth = dol_mktime(0, 0, 0, GETPOSTINT('birthmonth'), GETPOSTINT('birthday'), GETPOSTINT('birthyear'));
+	$object->birth = dol_mktime(0, 0, 0, request()->integer('birthmonth', 0), request()->integer('birthday', 0), request()->integer('birthyear', 0));
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -229,7 +229,7 @@ if ($action == 'setbirth' && $permissiontowritehr && !$cancel) {
 
 // update personal email
 if ($action == 'setpersonal_email' && $permissiontosimpleedit && !$cancel) {
-	$object->personal_email = (string) GETPOST('personal_email', 'alphanohtml');
+	$object->personal_email = (string) request()->input('personal_email');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -238,7 +238,7 @@ if ($action == 'setpersonal_email' && $permissiontosimpleedit && !$cancel) {
 
 // update personal mobile
 if ($action == 'setpersonal_mobile' && $permissiontosimpleedit && !$cancel) {
-	$object->personal_mobile = (string) GETPOST('personal_mobile', 'alphanohtml');
+	$object->personal_mobile = (string) request()->input('personal_mobile');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -248,7 +248,7 @@ if ($action == 'setpersonal_mobile' && $permissiontosimpleedit && !$cancel) {
 // update accountancy_code_user_general
 if ($action == 'setaccountancycodeusergeneral' && $usercanadd) {
 	$result = $object->fetch($id);
-	$object->accountancy_code_user_general = GETPOST("accountancycodeusergeneral");
+	$object->accountancy_code_user_general = request()->input('accountancycodeusergeneral');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -257,7 +257,7 @@ if ($action == 'setaccountancycodeusergeneral' && $usercanadd) {
 }
 
 if ($action == 'setaccountancy_code' && $usercanadd && !$cancel) {
-	$object->accountancy_code = (string) GETPOST('accountancy_code', 'alphanohtml');
+	$object->accountancy_code = (string) request()->input('accountancy_code');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -266,7 +266,7 @@ if ($action == 'setaccountancy_code' && $usercanadd && !$cancel) {
 
 // update ref_employee
 if ($action == 'setref_employee' && $usercanadd && !$cancel) {
-	$object->ref_employee = (string) GETPOST('ref_employee', 'alphanohtml');
+	$object->ref_employee = (string) request()->input('ref_employee');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -275,7 +275,7 @@ if ($action == 'setref_employee' && $usercanadd && !$cancel) {
 
 // update national_registration_number (pure personal information)
 if ($action == 'setnational_registration_number' && $permissiontowritehr && !$cancel) {
-	$object->national_registration_number = (string) GETPOST('national_registration_number', 'alphanohtml');
+	$object->national_registration_number = (string) request()->input('national_registration_number');
 	$result = $object->update($user);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -285,7 +285,7 @@ if ($action == 'setnational_registration_number' && $permissiontowritehr && !$ca
 if (getDolGlobalString('MAIN_USE_EXPENSE_IK')) {
 	// update default_c_exp_tax_cat
 	if ($action == 'setdefault_c_exp_tax_cat' && $usercanadd) {
-		$object->default_c_exp_tax_cat = GETPOSTINT('default_c_exp_tax_cat');
+		$object->default_c_exp_tax_cat = request()->integer('default_c_exp_tax_cat', 0);
 		$result = $object->update($user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -294,7 +294,7 @@ if (getDolGlobalString('MAIN_USE_EXPENSE_IK')) {
 
 	// update default range
 	if ($action == 'setdefault_range' && $usercanadd) {
-		$object->default_range = GETPOSTINT('default_range');
+		$object->default_range = request()->integer('default_range', 0);
 		$result = $object->update($user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -335,7 +335,7 @@ if ($id && $bankid && $action == 'edit' && !$cancel && $permissiontoaddbankaccou
 	print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$object->id.'" name="formbank" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="update">';
-	print '<input type="hidden" name="id" value="'.GETPOSTINT("id").'">';
+	print '<input type="hidden" name="id" value="'.request()->integer('id', 0).'">';
 	print '<input type="hidden" name="bankid" value="'.$bankid.'">';
 }
 if ($id && $action == 'create' && !$cancel && $permissiontoaddbankaccount) {
@@ -727,7 +727,7 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 			print "</table>";
 			print "</div>";
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -783,7 +783,7 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 			print "</table>";
 			print "</div>";
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -836,7 +836,7 @@ if ($action != 'edit' && $action != 'create') {		// If not bank account yet, $ac
 			print "</table>";
 			print "</div>";
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -987,14 +987,14 @@ if ($id && ($action == 'edit' || $action == 'create') && $permissiontoaddbankacc
 		$selectedcode = $conf->currency;
 	}
 	print img_picto('', 'multicurrency', 'class="pictofixedwidth"');
-	print $form->selectCurrency((GETPOSTISSET("account_currency_code") ? GETPOST("account_currency_code") : $selectedcode), 'account_currency_code');
+	print $form->selectCurrency((request()->has('account_currency_code') ? request()->input('account_currency_code') : $selectedcode), 'account_currency_code');
 	print '</td></tr>';
 
 	// Country
 	$account->country_id = $account->country_id ? $account->country_id : $mysoc->country_id;
 	$selectedcode = $account->country_code;
-	if (GETPOSTISSET("account_country_id")) {
-		$selectedcode = GETPOST("account_country_id");
+	if (request()->has('account_country_id')) {
+		$selectedcode = request()->input('account_country_id');
 	} elseif (empty($selectedcode)) {
 		$selectedcode = $mysoc->country_code;
 	}
@@ -1012,7 +1012,7 @@ if ($id && ($action == 'edit' || $action == 'create') && $permissiontoaddbankacc
 	print '<tr><td>'.$langs->trans('State').'</td><td class="maxwidth200onsmartphone">';
 	if ($selectedcode) {
 		print img_picto('', 'state', 'class="pictofixedwidth"');
-		print $formcompany->select_state(GETPOSTISSET("account_state_id") ? GETPOST("account_state_id") : $account->state_id, $selectedcode, 'account_state_id');
+		print $formcompany->select_state(request()->has('account_state_id') ? request()->input('account_state_id') : $account->state_id, $selectedcode, 'account_state_id');
 	}
 	print '</td></tr>';
 

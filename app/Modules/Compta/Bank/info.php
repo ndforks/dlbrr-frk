@@ -43,9 +43,9 @@ $langs->loadLangs(array('banks', 'categories', 'companies'));
 
 
 // Get Parameters
-$id = GETPOSTINT("rowid");
-$accountid = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('account'));
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('rowid', 0);
+$accountid = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('account', 0));
+$ref = request()->input('ref');
 
 
 // Security check
@@ -58,7 +58,7 @@ if ($user->socid) {
 
 $result = restrictedArea($user, 'banque', $accountid, 'bank_account');
 if (!$user->hasRight('banque', 'lire') && !$user->hasRight('banque', 'consolidate')) {
-	accessforbidden();
+	abort(403);
 }
 
 

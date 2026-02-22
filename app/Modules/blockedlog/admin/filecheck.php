@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
 
 $langs->load("admin");
 
-$mode = GETPOST('mode', 'aZ09');
+$mode = request()->input('mode');
 
 if (!$user->admin && !$user->hasRight('bockedlog', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -125,7 +125,7 @@ print '<br><br>';
 $file_list = array('missing' => array(), 'updated' => array());
 
 // Local file to compare to
-$xmlshortfile = dol_sanitizeFileName(GETPOST('xmlshortfile', 'alpha') ? GETPOST('xmlshortfile', 'alpha') : 'filelist-'.DOL_VERSION.getDolGlobalString('MAIN_FILECHECK_LOCAL_SUFFIX').'.xml'.getDolGlobalString('MAIN_FILECHECK_LOCAL_EXT'));
+$xmlshortfile = dol_sanitizeFileName(request()->input('xmlshortfile') ? request()->input('xmlshortfile') : 'filelist-'.DOL_VERSION.getDolGlobalString('MAIN_FILECHECK_LOCAL_SUFFIX').'.xml'.getDolGlobalString('MAIN_FILECHECK_LOCAL_EXT'));
 
 $xmlfile = DOL_DOCUMENT_ROOT.'/install/'.$xmlshortfile;
 if (!preg_match('/\.zip$/i', $xmlfile) && dol_is_file($xmlfile.'.zip')) {
@@ -133,7 +133,7 @@ if (!preg_match('/\.zip$/i', $xmlfile) && dol_is_file($xmlfile.'.zip')) {
 }
 
 // Remote file to compare to
-$xmlremote = GETPOST('xmlremote', 'alphanohtml');
+$xmlremote = request()->input('xmlremote');
 if (empty($xmlremote) && getDolGlobalString('MAIN_FILECHECK_URL')) {
 	$xmlremote = getDolGlobalString('MAIN_FILECHECK_URL');
 }
@@ -167,7 +167,7 @@ print img_picto('', 'search', 'class="pictofixedwidth"').$langs->trans("MakeInte
 print '<div class="divsection">';
 print '<!-- for a local check target=local&xmlshortfile=... -->'."\n";
 if (dol_is_file($xmlfile)) {
-	print '<input type="radio" name="target" id="checkboxlocal" value="local"'.((!GETPOST('target') || GETPOST('target') == 'local') ? 'checked="checked"' : '').'"> <label for="checkboxlocal">'.$langs->trans("LocalSignature").'</label> = ';
+	print '<input type="radio" name="target" id="checkboxlocal" value="local"'.((!request()->input('target') || request()->input('target') == 'local') ? 'checked="checked"' : '').'"> <label for="checkboxlocal">'.$langs->trans("LocalSignature").'</label> = ';
 	print '<input name="xmlshortfile" class="flat minwidth400" value="'.dol_escape_htmltag($xmlshortfile).'" spellcheck="false">';
 	print '<br>';
 } else {
@@ -181,11 +181,11 @@ print '<br>';
 
 print '<!-- for a remote target=remote&xmlremote=... -->'."\n";
 if ($enableremotecheck) {
-	print '<input type="radio" name="target" id="checkboxremote" value="remote"'.(GETPOST('target') == 'remote' ? 'checked="checked"' : '').'> <label for="checkboxremote">'.$langs->trans("RemoteSignature").'</label> = ';
+	print '<input type="radio" name="target" id="checkboxremote" value="remote"'.(request()->input('target') == 'remote' ? 'checked="checked"' : '').'> <label for="checkboxremote">'.$langs->trans("RemoteSignature").'</label> = ';
 	print '<input name="xmlremote" class="flat minwidth500" value="'.dol_escape_htmltag($xmlremote).'" spellcheck="false"><br>';
 } else {
 	print '<input type="radio" name="target" id="checkboxremote" value="remote" disabled="disabled"> '.$langs->trans("RemoteSignature").' = '.dol_escape_htmltag($xmlremote);
-	if (!GETPOST('xmlremote')) {
+	if (!request()->input('xmlremote')) {
 		print ' <span class="warning">('.$langs->trans("FeatureAvailableOnlyOnStable").')</span>';
 	}
 	print '<br>';
@@ -204,7 +204,7 @@ print '</form>';
 print '<br>';
 print '<br>';
 
-if (GETPOST('target') == 'local') {
+if (request()->input('target') == 'local') {
 	if (dol_is_file($xmlfile)) {
 		// If file is a zip file (.../filelist-x.y.z.xml.zip), we uncompress it before
 		if (preg_match('/\.zip$/i', $xmlfile)) {
@@ -228,7 +228,7 @@ if (GETPOST('target') == 'local') {
 		$error++;
 	}
 }
-if (GETPOST('target') == 'remote') {
+if (request()->input('target') == 'remote') {
 	$xmlarray = getURLContent($xmlremote, 'GET', '', 1, array(), array('http', 'https'), 0);	// Accept http or https links on external remote server only. Same is used into api_setup.class.php.
 
 	// Return array('content'=>response,'curl_error_no'=>errno,'curl_error_msg'=>errmsg...)

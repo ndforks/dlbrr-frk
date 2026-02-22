@@ -52,19 +52,19 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 $langs->loadLangs(array('companies', 'eventorganization', 'mails', 'others', 'projects'));
 
 // Variables GET
-$id = GETPOSTINT('id');
-$ref    = GETPOST('ref', 'alpha');
-$lineid = GETPOSTINT('lineid');
-$socid  = GETPOSTINT('socid');
+$id = request()->integer('id', 0);
+$ref    = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$socid  = request()->integer('socid', 0);
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'conferenceorboothcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'conferenceorboothcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$withproject = GETPOSTINT('withproject');
+$withproject = request()->integer('withproject', 0);
 
 
 // Initialize a technical objects
@@ -84,7 +84,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'inclu
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
@@ -99,7 +99,7 @@ $upload_dir = $conf->eventorganization->multidir_output[isset($object->entity) ?
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 restrictedArea($user, 'projet', $object->fk_project, 'projet&project');
@@ -116,9 +116,9 @@ if ($reshook < 0) {
 }
 
 if ($action == 'addcontact' && $permissiontoadd) {	// Add a new contact
-	$contactid = (GETPOST('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-	$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-	$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+	$contactid = (request()->input('userid') ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+	$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+	$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 
 	if ($result >= 0) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".((int) $object->id).(!empty($withproject) ? '&withproject=1' : ''));
@@ -133,7 +133,7 @@ if ($action == 'addcontact' && $permissiontoadd) {	// Add a new contact
 	}
 } elseif ($action == 'swapstatut' && $permissiontoadd) {
 	// Toggle the status of a contact
-	$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+	$result = $object->swapContactStatus(request()->integer('ligne', 0));
 } elseif ($action == 'deletecontact' && $permissiondellink) {
 	// Deletes a contact
 	$result = $object->delete_contact($lineid);
@@ -142,7 +142,7 @@ if ($action == 'addcontact' && $permissiontoadd) {	// Add a new contact
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".((int) $object->id).(!empty($withproject) ? '&withproject=1' : ''));
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -221,25 +221,25 @@ if (!empty($withproject)) {
 		print '</td>';
 		print '<td>';
 		if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-			print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowOpportunity");
 			print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-			print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectFollowTasks");
 			print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 			print '<br>';
 		}
 		if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-			print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("ProjectBillTimeDescription");
 			print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 			print '<br>';
 		}
 		if (isModEnabled('eventorganization')) {
-			print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+			print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 			$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 			print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 		}

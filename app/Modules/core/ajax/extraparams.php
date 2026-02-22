@@ -49,10 +49,10 @@ include '../../main.inc.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id');
-$element = GETPOST('element', 'aZ09arobase');
-$htmlelement = GETPOST('htmlelement', 'alpha');
-$type = GETPOST('type', 'alpha');
+$id = request()->integer('id', 0);
+$element = request()->input('element');
+$htmlelement = request()->input('htmlelement');
+$type = request()->input('type');
 
 // Load object according to $id and $element
 $object = fetchObjectByElement($id, $element);
@@ -69,7 +69,7 @@ if ($usesublevelpermission && !$user->hasRight($module, $element)) {	// There is
 // Security check
 $result = restrictedArea($user, $object->module, $object, $object->table_element, $usesublevelpermission, 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 if (!$result) {
-	httponly_accessforbidden('Not allowed by restrictArea');
+	httponly_abort(403);
 }
 
 
@@ -82,7 +82,7 @@ top_httphead();
 print '<!-- Ajax page called with url '.dol_escape_htmltag($_SERVER["PHP_SELF"]).'?'.dol_escape_htmltag($_SERVER["QUERY_STRING"]).' -->'."\n";
 
 if (!empty($id) && !empty($element) && !empty($htmlelement) && !empty($type)) {
-	$value = GETPOST('value', 'alpha');
+	$value = request()->input('value');
 	$params = array();
 
 	dol_syslog("AjaxSetExtraParameters id=".$id." element=".$element." htmlelement=".$htmlelement." type=".$type." value=".$value, LOG_DEBUG);

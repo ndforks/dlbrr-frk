@@ -41,8 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'products', 'admin', 'mails', 'other', 'errors'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 $usersignature = $user->signature;
 // For action = test or send, we ensure that content is not html, even for signature, because this we want a test with NO html.
@@ -78,7 +78,7 @@ if (version_compare(phpversion(), '7.0', '>=')) {
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -88,25 +88,25 @@ if (!$user->admin) {
 
 if ($action == 'update' && !$cancel) {
 	// Send mode parameters
-	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE_PASSWORDRESET", GETPOST("MAIN_MAIL_SENDMODE_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTP_PORT_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTP_SERVER_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTPS_ID_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_PW_PASSWORDRESET")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTPS_PW_PASSWORDRESET", 'password'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE_PASSWORDRESET", request()->input('MAIN_MAIL_SENDMODE_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT_PASSWORDRESET", request()->input('MAIN_MAIL_SMTP_PORT_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER_PASSWORDRESET", request()->input('MAIN_MAIL_SMTP_SERVER_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID_PASSWORDRESET", request()->input('MAIN_MAIL_SMTPS_ID_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_PW_PASSWORDRESET')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW_PASSWORDRESET", request()->input('MAIN_MAIL_SMTPS_PW_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET", request()->input('MAIN_MAIL_SMTPS_AUTH_TYPE_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET", GETPOST("MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET", request()->input('MAIN_MAIL_SMTPS_OAUTH_SERVICE_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
 	}
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS_PASSWORDRESET", GETPOST("MAIN_MAIL_EMAIL_TLS_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS_PASSWORDRESET", GETPOST("MAIN_MAIL_EMAIL_STARTTLS_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_PASSWORDRESET", GETPOST("MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_PASSWORDRESET"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS_PASSWORDRESET", request()->input('MAIN_MAIL_EMAIL_TLS_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS_PASSWORDRESET", request()->input('MAIN_MAIL_EMAIL_STARTTLS_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_PASSWORDRESET", request()->input('MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
 
-	if (GETPOSTISSET("MAIN_MAIL_EMAIL_FROM_PASSWORDRESET")) {
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM_PASSWORDRESET", GETPOST("MAIN_MAIL_EMAIL_FROM_PASSWORDRESET", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_EMAIL_FROM_PASSWORDRESET')) {
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM_PASSWORDRESET", request()->input('MAIN_MAIL_EMAIL_FROM_PASSWORDRESET'), 'chaine', 0, '', $conf->entity);
 	}
 
 	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
@@ -124,10 +124,10 @@ $trackid = (($action == 'testhtml') ? "testhtml" : "test");
 $sendcontext = 'ticket'; // Force to use dedicated context of setup for ticket
 include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'test') {
+if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
 }
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'testhtml') {
+if ($action == 'presend' && request()->input('trackid') == 'testhtml') {
 	$action = 'testhtml';
 }
 
@@ -838,8 +838,8 @@ if ($action == 'edit') {
 		// Cree l'objet formulaire mail
 		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
-		$formmail->fromname = (GETPOSTISSET('fromname') ? GETPOST('fromname', 'restricthtml') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
-		$formmail->frommail = (GETPOSTISSET('frommail') ? GETPOST('frommail', 'restricthtml') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->frommail = (request()->has('frommail') ? request()->input('frommail') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
 		$formmail->trackid = (($action == 'testhtml') ? "testhtml" : "test");
 		$formmail->fromid = $user->id;
 		$formmail->fromalsorobot = 1;
@@ -847,13 +847,13 @@ if ($action == 'edit') {
 		$formmail->withsubstit = 0;
 		$formmail->withfrom = 1;
 		$formmail->witherrorsto = 1;
-		$formmail->withto = (GETPOSTISSET('sendto') ? GETPOST('sendto', 'restricthtml') : ($user->email ? $user->email : 1));
-		$formmail->withtocc = (GETPOSTISSET('sendtocc') ? GETPOST('sendtocc', 'restricthtml') : 1);
-		$formmail->withtoccc = (GETPOSTISSET('sendtoccc') ? GETPOST('sendtoccc', 'restricthtml') : 1);
-		$formmail->withtopic = (GETPOSTISSET('subject') ? GETPOST('subject') : $langs->trans("Test"));
+		$formmail->withto = (request()->has('sendto') ? request()->input('sendto') : ($user->email ? $user->email : 1));
+		$formmail->withtocc = (request()->has('sendtocc') ? request()->input('sendtocc') : 1);
+		$formmail->withtoccc = (request()->has('sendtoccc') ? request()->input('sendtoccc') : 1);
+		$formmail->withtopic = (request()->has('subject') ? request()->input('subject') : $langs->trans("Test"));
 		$formmail->withtopicreadonly = 0;
 		$formmail->withfile = 2;
-		$formmail->withbody = (GETPOSTISSET('message') ? GETPOST('message', 'restricthtml') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
+		$formmail->withbody = (request()->has('message') ? request()->input('message') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
 		$formmail->withbodyreadonly = 0;
 		$formmail->withcancel = 1;
 		$formmail->withdeliveryreceipt = 1;
@@ -868,7 +868,7 @@ if ($action == 'edit') {
 		$formmail->param["returnurl"] = $_SERVER["PHP_SELF"];
 
 		// Init list of files
-		if (GETPOST("mode", "aZ09") == 'init') {
+		if (request()->input('mode') == 'init') {
 			$formmail->clear_attached_files();
 		}
 

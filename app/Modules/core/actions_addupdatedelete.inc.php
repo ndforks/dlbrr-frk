@@ -101,11 +101,11 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 	foreach ($object->fields as $key => $val) {
 		// Ignore special cases
 		if ($object->fields[$key]['type'] == 'duration') {
-			if (GETPOST($key.'hour') == '' && GETPOST($key.'min') == '') {
+			if (request()->input($key.'hour') == '' && request()->input($key.'min') == '') {
 				continue; // The field was not submitted to be saved
 			}
 		} else {
-			if (!GETPOSTISSET($key) && !preg_match('/^chkbxlst:/', $object->fields[$key]['type'])) {
+			if (!request()->has($key) && !preg_match('/^chkbxlst:/', $object->fields[$key]['type'])) {
 				continue; // The field was not submitted to be saved
 			}
 		}
@@ -124,11 +124,11 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 		if (preg_match('/^text/', $object->fields[$key]['type'])) {
 			$tmparray = explode(':', $object->fields[$key]['type']);
 			if (!empty($tmparray[1])) {
-				$value = GETPOST($key, $tmparray[1]);
+				$value = request()->input($key);
 			} else {
-				$value = GETPOST($key, 'nohtml');
+				$value = request()->input($key);
 				if (!empty($object->fields[$key]['arrayofkeyval']) && !empty($object->fields[$key]['multiinput'])) {
-					$tmparraymultiselect = GETPOST($key.'_multiselect', 'array');
+					$tmparraymultiselect = request()->input($key.'_multiselect', []);
 					foreach ($tmparraymultiselect as $tmpvalue) {
 						$value .= (!empty($value) ? "," : "").$tmpvalue;
 					}
@@ -137,34 +137,34 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 		} elseif (preg_match('/^html/', $object->fields[$key]['type'])) {
 			$tmparray = explode(':', $object->fields[$key]['type']);
 			if (!empty($tmparray[1])) {
-				$value = GETPOST($key, $tmparray[1]);
+				$value = request()->input($key);
 			} else {
-				$value = GETPOST($key, 'restricthtml');
+				$value = request()->input($key);
 			}
 		} elseif ($object->fields[$key]['type'] == 'date') {
-			$value = dol_mktime(12, 0, 0, GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year')); // for date without hour, we use gmt
+			$value = dol_mktime(12, 0, 0, request()->integer($key.'month', 0), request()->integer($key.'day', 0), request()->integer($key.'year', 0)); // for date without hour, we use gmt
 		} elseif ($object->fields[$key]['type'] == 'datetime') {
-			$value = dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), GETPOSTINT($key.'sec'), GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'), 'tzuserrel');
+			$value = dol_mktime(request()->integer($key.'hour', 0), request()->integer($key.'min', 0), request()->integer($key.'sec', 0), request()->integer($key.'month', 0), request()->integer($key.'day', 0), request()->integer($key.'year', 0), 'tzuserrel');
 		} elseif ($object->fields[$key]['type'] == 'duration') {
-			$value = 60 * 60 * GETPOSTINT($key.'hour') + 60 * GETPOSTINT($key.'min');
+			$value = 60 * 60 * request()->integer($key.'hour', 0) + 60 * request()->integer($key.'min', 0);
 		} elseif (preg_match('/^(integer|price|real|double)/', $object->fields[$key]['type'])) {
-			$value = price2num(GETPOST($key, 'alphanohtml')); // To fix decimal separator according to lang setup
+			$value = price2num(request()->input($key)); // To fix decimal separator according to lang setup
 		} elseif ($object->fields[$key]['type'] == 'boolean') {
-			$value = ((GETPOST($key) == '1' || GETPOST($key) == 'on') ? 1 : 0);
+			$value = ((request()->input($key) == '1' || request()->input($key) == 'on') ? 1 : 0);
 		} elseif ($object->fields[$key]['type'] == 'reference') {
 			$tmparraykey = array_keys($object->param_list);
-			$value = $tmparraykey[(int) GETPOST($key)].','.GETPOST($key.'2');
+			$value = $tmparraykey[(int) request()->input($key)].','.request()->input($key.'2');
 		} elseif (preg_match('/^chkbxlst:(.*)/', $object->fields[$key]['type']) || $object->fields[$key]['type'] == 'checkbox') {
 			$value = '';
-			$values_arr = GETPOST($key, 'array');
+			$values_arr = request()->input($key, []);
 			if (!empty($values_arr)) {
 				$value = implode(',', $values_arr);
 			}
 		} else {
 			if ($key == 'lang') {
-				$value = GETPOST($key, 'aZ09') ? GETPOST($key, 'aZ09') : "";
+				$value = request()->input($key) ? request()->input($key) : "";
 			} else {
-				$value = GETPOST($key, 'alphanohtml');
+				$value = request()->input($key);
 			}
 		}
 		if (preg_match('/^integer:/i', $object->fields[$key]['type']) && $value == '-1') {
@@ -181,7 +181,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 			$object->$key = '(PROV)';
 		}
 		if ($key == 'pass_crypted') {
-			$object->pass = GETPOST("pass", "password");
+			$object->pass = request()->input('pass');
 			// TODO Manadatory for password not yet managed
 		} else {
 			if (!empty($val['notnull']) && $val['notnull'] > 0 && $object->$key == '' && !isset($val['default'])) {
@@ -202,7 +202,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 	}
 
 	// Special field
-	$model_pdf = GETPOST('model');
+	$model_pdf = request()->input('model');
 	if (!empty($model_pdf) && property_exists($object, 'model_pdf')) {
 		$object->model_pdf = $model_pdf;
 	}
@@ -222,7 +222,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 		if ($result > 0) {
 			// Creation OK
 			if (isModEnabled('category') && method_exists($object, 'setCategories')) {
-				$categories = GETPOST('categories', 'array:int');
+				$categories = request()->input('categories');
 				$object->setCategories($categories);
 			}
 
@@ -256,16 +256,16 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 	foreach ($object->fields as $key => $val) {
 		// Check if field was submitted to be edited
 		if ($object->fields[$key]['type'] == 'duration') {
-			if (!GETPOSTISSET($key.'hour') || !GETPOSTISSET($key.'min')) {
+			if (!request()->has($key.'hour') || !request()->has($key.'min')) {
 				continue; // The field was not submitted to be saved
 			}
 		} elseif ($object->fields[$key]['type'] == 'boolean') {
-			if (!GETPOSTISSET($key)) {
+			if (!request()->has($key)) {
 				$object->$key = 0; // use 0 instead null if the field is defined as not null
 				continue;
 			}
 		} else {
-			if (!GETPOSTISSET($key) && !preg_match('/^chkbxlst:/', $object->fields[$key]['type']) && $object->fields[$key]['type'] !== 'checkbox') {
+			if (!request()->has($key) && !preg_match('/^chkbxlst:/', $object->fields[$key]['type']) && $object->fields[$key]['type'] !== 'checkbox') {
 				continue; // The field was not submitted to be saved
 			}
 		}
@@ -283,11 +283,11 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		if (preg_match('/^text/', $object->fields[$key]['type'])) {
 			$tmparray = explode(':', $object->fields[$key]['type']);
 			if (!empty($tmparray[1])) {
-				$value = GETPOST($key, $tmparray[1]);
+				$value = request()->input($key);
 			} else {
-				$value = GETPOST($key, 'nohtml');
+				$value = request()->input($key);
 				if (!empty($object->fields[$key]['arrayofkeyval']) && !empty($object->fields[$key]['multiinput'])) {
-					$tmparraymultiselect = GETPOST($key.'_multiselect', 'array');
+					$tmparraymultiselect = request()->input($key.'_multiselect', []);
 					foreach ($tmparraymultiselect as $keytmp => $tmpvalue) {
 						$value .= (!empty($value) ? "," : "").$tmpvalue;
 					}
@@ -296,37 +296,37 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		} elseif (preg_match('/^html/', $object->fields[$key]['type'])) {
 			$tmparray = explode(':', $object->fields[$key]['type']);
 			if (!empty($tmparray[1])) {
-				$value = GETPOST($key, $tmparray[1]);
+				$value = request()->input($key);
 			} else {
-				$value = GETPOST($key, 'restricthtml');
+				$value = request()->input($key);
 			}
 		} elseif ($object->fields[$key]['type'] == 'date') {
-			$value = dol_mktime(12, 0, 0, GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year')); // for date without hour, we use gmt
+			$value = dol_mktime(12, 0, 0, request()->integer($key.'month', 0), request()->integer($key.'day', 0), request()->integer($key.'year', 0)); // for date without hour, we use gmt
 		} elseif ($object->fields[$key]['type'] == 'datetime') {
-			$value = dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), GETPOSTINT($key.'sec'), GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'), 'tzuserrel');
+			$value = dol_mktime(request()->integer($key.'hour', 0), request()->integer($key.'min', 0), request()->integer($key.'sec', 0), request()->integer($key.'month', 0), request()->integer($key.'day', 0), request()->integer($key.'year', 0), 'tzuserrel');
 		} elseif ($object->fields[$key]['type'] == 'duration') {
-			if (GETPOSTINT($key.'hour') != '' || GETPOSTINT($key.'min') != '') {
-				$value = 60 * 60 * GETPOSTINT($key.'hour') + 60 * GETPOSTINT($key.'min');
+			if (request()->integer($key.'hour', 0) != '' || request()->integer($key.'min', 0) != '') {
+				$value = 60 * 60 * request()->integer($key.'hour', 0) + 60 * request()->integer($key.'min', 0);
 			} else {
 				$value = '';
 			}
 		} elseif (preg_match('/^(integer|price|real|double)/', $object->fields[$key]['type'])) {
-			$value = price2num(GETPOST($key, 'alphanohtml')); // To fix decimal separator according to lang setup
+			$value = price2num(request()->input($key)); // To fix decimal separator according to lang setup
 		} elseif ($object->fields[$key]['type'] == 'boolean') {
-			$value = ((GETPOST($key, 'aZ09') == 'on' || GETPOST($key, 'aZ09') == '1') ? 1 : 0);
+			$value = ((request()->input($key) == 'on' || request()->input($key) == '1') ? 1 : 0);
 		} elseif ($object->fields[$key]['type'] == 'reference') {
-			$value = array_keys($object->param_list)[(int) GETPOST($key)].','.GETPOST($key.'2');
+			$value = array_keys($object->param_list)[(int) request()->input($key)].','.request()->input($key.'2');
 		} elseif (preg_match('/^chkbxlst:/', $object->fields[$key]['type']) || $object->fields[$key]['type'] == 'checkbox') {
 			$value = '';
-			$values_arr = GETPOST($key, 'array');
+			$values_arr = request()->input($key, []);
 			if (!empty($values_arr)) {
 				$value = implode(',', $values_arr);
 			}
 		} else {
 			if ($key == 'lang') {
-				$value = GETPOST($key, 'aZ09');
+				$value = request()->input($key);
 			} else {
-				$value = GETPOST($key, 'alphanohtml');
+				$value = request()->input($key);
 			}
 		}
 		if (preg_match('/^integer:/i', $object->fields[$key]['type']) && $value == '-1') {
@@ -339,8 +339,8 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		$object->$key = $value;
 
 		if ($key == 'pass_crypted' && property_exists($object, 'pass')) {
-			if (GETPOST("pass", "password")) {	// If not provided, we do not change it. We never erase a password with empty.
-				$object->pass = GETPOST("pass", "password");
+			if (request()->input('pass')) {	// If not provided, we do not change it. We never erase a password with empty.
+				$object->pass = request()->input('pass');
 			}
 			// TODO Manadatory for password not yet managed
 		} else {
@@ -360,7 +360,7 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		}
 
 		if (isModEnabled('category')) {
-			$categories = GETPOST('categories', 'array');
+			$categories = request()->input('categories');
 			if (method_exists($object, 'setCategories')) {
 				$object->setCategories($categories);
 			}
@@ -399,15 +399,15 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 
 // Action to update one modulebuilder field
 $reg = array();
-if (preg_match('/^set(\w+)$/', $action, $reg) && GETPOSTINT('id') > 0 && !empty($permissiontoadd)) {
-	$object->fetch(GETPOSTINT('id'));
+if (preg_match('/^set(\w+)$/', $action, $reg) && request()->integer('id', 0) > 0 && !empty($permissiontoadd)) {
+	$object->fetch(request()->integer('id', 0));
 
 	$keyforfield = $reg[1];
 	if (property_exists($object, $keyforfield)) {
 		if (!empty($object->fields[$keyforfield]) && in_array($object->fields[$keyforfield]['type'], array('date', 'datetime', 'timestamp'))) {
-			$object->$keyforfield = dol_mktime(GETPOSTINT($keyforfield.'hour'), GETPOSTINT($keyforfield.'min'), GETPOSTINT($keyforfield.'sec'), GETPOSTINT($keyforfield.'month'), GETPOSTINT($keyforfield.'day'), GETPOSTINT($keyforfield.'year'));
+			$object->$keyforfield = dol_mktime(request()->integer($keyforfield.'hour', 0), request()->integer($keyforfield.'min', 0), request()->integer($keyforfield.'sec', 0), request()->integer($keyforfield.'month', 0), request()->integer($keyforfield.'day', 0), request()->integer($keyforfield.'year', 0));
 		} else {
-			$object->$keyforfield = GETPOST($keyforfield);
+			$object->$keyforfield = request()->input($keyforfield);
 		}
 
 		$result = $object->update($user);
@@ -425,17 +425,17 @@ if (preg_match('/^set(\w+)$/', $action, $reg) && GETPOSTINT('id') > 0 && !empty(
 
 // Action to update one extrafield
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
-if ($action == "update_extras" && GETPOSTINT('id') > 0 && !empty($permissiontoeditextra)) {
-	$object->fetch(GETPOSTINT('id'));
+if ($action == "update_extras" && request()->integer('id', 0) > 0 && !empty($permissiontoeditextra)) {
+	$object->fetch(request()->integer('id', 0));
 
 	$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-	$attribute = GETPOST('attribute', 'aZ09');
+	$attribute = request()->input('attribute');
 
 	$error = 0;
 
@@ -500,7 +500,7 @@ if ($action == 'confirm_delete' && !empty($permissiontodelete)) {
 // Remove a line
 if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissiontoadd)) {
 	if (!empty($object->element) && $object->element == 'mo') {
-		$fk_movement = GETPOSTINT('fk_movement');
+		$fk_movement = request()->integer('fk_movement', 0);
 		$result = $object->deleteLine($user, $lineid, 0, $fk_movement);
 	} else {
 		$result = $object->deleteLine($user, $lineid);
@@ -510,8 +510,8 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissionto
 		// Define output language
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && is_object($object->thirdparty)) {
 			$newlang = $object->thirdparty->default_lang;
@@ -555,8 +555,8 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = !empty($object->thirdparty->default_lang) ? $object->thirdparty->default_lang : "";
@@ -592,8 +592,8 @@ if ($action == 'confirm_close' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -636,8 +636,8 @@ if ($action == 'confirm_reopen' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && is_object($object->thirdparty)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -662,7 +662,7 @@ if ($action == 'confirm_reopen' && $confirm == 'yes' && $permissiontoadd) {
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes' && !empty($permissiontoadd)) {
 	// @phan-suppress-next-line PhanPluginBothLiteralsBinaryOp
-	if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers')) {
+	if (1 == 0 && !request()->input('clone_content') && !request()->input('clone_receivers')) {
 		setEventMessages($langs->trans("NoCloneOptionsSpecified"), null, 'errors');
 	} else {
 		// We clone object to avoid to denaturate loaded object when setting some properties for clone or if createFromClone modifies the object.

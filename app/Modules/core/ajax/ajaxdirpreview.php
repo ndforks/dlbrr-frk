@@ -62,17 +62,17 @@ if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
-	$action = GETPOST('action', 'aZ09');
-	$file = urldecode(GETPOST('file', 'alpha'));
-	$section = GETPOST("section", 'alpha');
-	$module = GETPOST("module", 'alpha');
-	$urlsource = GETPOST("urlsource", 'alpha');
-	$search_doc_ref = GETPOST('search_doc_ref', 'alpha');
+	$action = request()->input('action');
+	$file = urldecode(request()->input('file'));
+	$section = request()->input('section');
+	$module = request()->input('module');
+	$urlsource = request()->input('urlsource');
+	$search_doc_ref = request()->input('search_doc_ref');
 
-	$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-	$sortfield = GETPOST("sortfield", 'aZ09comma');
-	$sortorder = GETPOST("sortorder", 'aZ09comma');
-	$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+	$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+	$sortfield = request()->input('sortfield');
+	$sortorder = request()->input('sortorder');
+	$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 	$showonrightsize = '';
 
 	if (empty($page) || $page == -1) {
@@ -123,18 +123,18 @@ if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 		}
 
 		$relativepath = $ecmdir->getRelativePath(); // Example   'mydir/'
-	} elseif (GETPOST('section_dir')) {
-		$relativepath = GETPOST('section_dir');
+	} elseif (request()->input('section_dir')) {
+		$relativepath = request()->input('section_dir');
 	}
-	//var_dump($section.'-'.GETPOST('section_dir').'-'.$relativepath);
+	//var_dump($section.'-'.request()->input('section_dir').'-'.$relativepath);
 
 	$upload_dir = $rootdirfordoc.'/'.$relativepath;
 }
 
 if (empty($url)) {	// autoset $url but it is better to have it defined before into filemanager.tpl.php (not possible when in auto tree)
-	if (!empty($module) && $module == 'medias' && !GETPOST('website')) {
+	if (!empty($module) && $module == 'medias' && !request()->input('website')) {
 		$url = DOL_URL_ROOT.'/ecm/index_medias.php';
-	} elseif (GETPOSTISSET('website')) {
+	} elseif (request()->has('website')) {
 		$url = DOL_URL_ROOT.'/website/index.php';
 	} else {
 		$url = DOL_URL_ROOT.'/ecm/index.php';
@@ -162,12 +162,12 @@ if (preg_match('/\.\./', $upload_dir) || preg_match('/[<>|]/', $upload_dir)) {
 // Check permissions
 if ($modulepart == 'ecm') {
 	if (!$user->hasRight('ecm', 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 } elseif ($modulepart == 'medias' || $modulepart == 'website') {
 	// Always allowed
 } else {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -362,18 +362,18 @@ if ($type == 'directory') {
 			  'max_file_size' => string '2097152' (length=7)
 			  'sendit' => string 'Envoyer fichier' (length=15)
 			 */
-			$relativepath = GETPOST('file', 'alpha') ? GETPOST('file', 'alpha') : GETPOST('section_dir', 'alpha');
+			$relativepath = request()->input('file') ? request()->input('file') : request()->input('section_dir');
 			if ($relativepath && $relativepath != '/') {
 				$relativepath .= '/';
 			}
 			$upload_dir = $dolibarr_main_data_root.'/'.$module.'/'.$relativepath;
-			if (GETPOSTISSET('website') || GETPOSTISSET('file_manager')) {
+			if (request()->has('website') || request()->has('file_manager')) {
 				$param .= '&file_manager=1';
-				if (!preg_match('/website=/', $param) && GETPOST('website', 'alpha')) {
-					$param .= '&website='.urlencode(GETPOST('website', 'alpha'));
+				if (!preg_match('/website=/', $param) && request()->input('website')) {
+					$param .= '&website='.urlencode(request()->input('website'));
 				}
 				if (!preg_match('/pageid=/', $param)) {
-					$param .= '&pageid='.GETPOSTINT('pageid');
+					$param .= '&pageid='.request()->integer('pageid', 0);
 				}
 				//if (!preg_match('/backtopage=/',$param)) $param.='&backtopage='.urlencode($_SERVER["PHP_SELF"].'?file_manager=1&website='.$websitekey.'&pageid='.$pageid);
 			}
@@ -465,11 +465,11 @@ if (getDolGlobalString('MAIN_ECM_DISABLE_JS')) {
 if ($useajax || $action == 'deletefile') {
 	$urlfile = '';
 	if ($action == 'deletefile') {
-		$urlfile = GETPOST('urlfile', 'alpha');
+		$urlfile = request()->input('urlfile');
 	}
 
 	if (empty($section_dir)) {
-		$section_dir = GETPOST("file", "alpha");
+		$section_dir = request()->input('file');
 	}
 	$section_id = $section;
 

@@ -367,8 +367,8 @@ if (getDolGlobalString('THEME_INFOBOX_COLOR_ON_BACKGROUND')) {
 if (!isset($conf->global->THEME_SATURATE_RATIO)) {
 	$conf->global->THEME_SATURATE_RATIO = 0.8;
 }
-if (GETPOSTISSET('THEME_SATURATE_RATIO')) {
-	$conf->global->THEME_SATURATE_RATIO = GETPOSTFLOAT('THEME_SATURATE_RATIO');
+if (request()->has('THEME_SATURATE_RATIO')) {
+	$conf->global->THEME_SATURATE_RATIO = (float)request()->input('THEME_SATURATE_RATIO', 0.0);
 }
 
 ?>

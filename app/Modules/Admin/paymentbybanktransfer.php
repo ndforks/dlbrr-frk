@@ -47,10 +47,10 @@ $langs->loadLangs(array("admin", "withdrawals"));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $type = 'paymentorder';
 
 
@@ -62,7 +62,7 @@ $error = 0;
 if ($action == "set") {
 	$db->begin();
 
-	$id = GETPOSTINT('PAYMENTBYBANKTRANSFER_ID_BANKACCOUNT');
+	$id = request()->integer('PAYMENTBYBANKTRANSFER_ID_BANKACCOUNT', 0);
 	$account = new Account($db);
 	if ($account->fetch($id) > 0) {
 		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_ID_BANKACCOUNT", $id, 'chaine', 0, '', $conf->entity);
@@ -89,30 +89,30 @@ if ($action == "set") {
 		$error++;
 	}
 	/* Moved to account
-	$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_ICS", GETPOST("PAYMENTBYBANKTRANSFER_ICS"), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_ICS", request()->input('PAYMENTBYBANKTRANSFER_ICS'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) $error++;
 	*/
 
-	if (GETPOST("PAYMENTBYBANKTRANSFER_USER") > 0) {
-		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_USER", GETPOST("PAYMENTBYBANKTRANSFER_USER"), 'chaine', 0, '', $conf->entity);
+	if (request()->input('PAYMENTBYBANKTRANSFER_USER') > 0) {
+		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_USER", request()->input('PAYMENTBYBANKTRANSFER_USER'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
 	/*
-	if (GETPOST("PAYMENTBYBANKTRANSFER_END_TO_END") || GETPOST("PAYMENTBYBANKTRANSFER_END_TO_END") == "")
+	if (request()->input('PAYMENTBYBANKTRANSFER_END_TO_END') || request()->input('PAYMENTBYBANKTRANSFER_END_TO_END') == "")
 	{
-		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_END_TO_END", GETPOST("PAYMENTBYBANKTRANSFER_END_TO_END"), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_END_TO_END", request()->input('PAYMENTBYBANKTRANSFER_END_TO_END'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) $error++;
 	}
-	if (GETPOST("PAYMENTBYBANKTRANSFER_USTRD") || GETPOST("PAYMENTBYBANKTRANSFER_USTRD") == "")
+	if (request()->input('PAYMENTBYBANKTRANSFER_USTRD') || request()->input('PAYMENTBYBANKTRANSFER_USTRD') == "")
 	{
-		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_USTRD", GETPOST("PAYMENTBYBANKTRANSFER_USTRD"), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_USTRD", request()->input('PAYMENTBYBANKTRANSFER_USTRD'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) $error++;
 	}
 	*/
-	if (GETPOST("PAYMENTBYBANKTRANSFER_ADDDAYS") !== null && GETPOST("PAYMENTBYBANKTRANSFER_ADDDAYS") !== '') {
-		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_ADDDAYS", GETPOST("PAYMENTBYBANKTRANSFER_ADDDAYS"), 'chaine', 0, '', $conf->entity);
+	if (request()->input('PAYMENTBYBANKTRANSFER_ADDDAYS') !== null && request()->input('PAYMENTBYBANKTRANSFER_ADDDAYS') !== '') {
+		$res = dolibarr_set_const($db, "PAYMENTBYBANKTRANSFER_ADDDAYS", request()->input('PAYMENTBYBANKTRANSFER_ADDDAYS'), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
@@ -129,7 +129,7 @@ if ($action == "set") {
 
 if ($action == "addnotif") {
 	$bon = new BonPrelevement($db);
-	$bon->addNotification($db, GETPOSTINT('user'), $action);
+	$bon->addNotification($db, request()->integer('user', 0), $action);
 
 	header("Location: ".$_SERVER["PHP_SELF"]);
 	exit;
@@ -137,7 +137,7 @@ if ($action == "addnotif") {
 
 if ($action == "deletenotif") {
 	$bon = new BonPrelevement($db);
-	$bon->deleteNotificationById(GETPOSTINT('notif'));
+	$bon->deleteNotificationById(request()->integer('notif', 0));
 
 	header("Location: ".$_SERVER["PHP_SELF"]);
 	exit;
@@ -249,7 +249,7 @@ if ($resql)
 }
 else
 {
-	dol_print_error($db);
+	abort(500);
 }
 
 

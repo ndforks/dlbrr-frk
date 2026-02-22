@@ -53,21 +53,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 $langs->loadLangs(array("companies", "website"));
 
 // Get parameters
-$action 	 = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';               // The action 'add', 'create', 'edit', 'update', 'view', ...
-$show_files  = GETPOSTINT('show_files');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'websitelist';  // To manage different context of search
-$backtopage  = GETPOST('backtopage', 'alpha');                                              // Go back to a dedicated page
-$optioncss   = GETPOST('optioncss', 'aZ');                                                  // Option for the css output (always '' except when 'print')
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$optioncss  = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode       = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action 	 = request()->input('action') ? request()->input('action') : 'view';               // The action 'add', 'create', 'edit', 'update', 'view', ...
+$show_files  = request()->integer('show_files', 0);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'websitelist';  // To manage different context of search
+$backtopage  = request()->input('backtopage');                                              // Go back to a dedicated page
+$optioncss   = request()->input('optioncss');                                                  // Option for the css output (always '' except when 'print')
+$toselect   = request()->input('toselect', []); // Array of ids of elements selected into a list
+$optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$id = GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
+$id = request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('socid', 0);
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -97,11 +97,11 @@ $search_array_options = $extrafields->getOptionalsFromPost($objectwebsiteaccount
 unset($objectwebsiteaccount->fields['fk_soc']); // Remove this field, we are already on the thirdparty
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 /** @var array<string[]|string> $search */
 $search = array();
 foreach ($objectwebsiteaccount->fields as $key => $val) {
-	$value = GETPOST('search_'.$key, 'alpha');
+	$value = request()->input('search_' . $key);
 	if ($value) {
 		$search[$key] = $value;
 	}
@@ -139,7 +139,7 @@ if (!($object->id > 0) && $action == 'view') {
 }
 
 // Security check
-$id = GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
+$id = request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('socid', 0);
 if ($user->socid) {
 	$id = $user->socid;
 }
@@ -162,7 +162,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
@@ -171,7 +171,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		foreach ($objectwebsiteaccount->fields as $key => $val) {
 			$search[$key] = '';
 			if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
@@ -183,8 +183,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -328,7 +328,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -363,9 +363,9 @@ foreach ($search as $key => $val) {
 			}
 		}
 	} elseif (preg_match('/(_dtstart|_dtend)$/', $key) && !empty($val)) {
-		$param .= '&search_'.$key.'month='.((int) GETPOST('search_'.$key.'month', 'int'));
-		$param .= '&search_'.$key.'day='.((int) GETPOST('search_'.$key.'day', 'int'));
-		$param .= '&search_'.$key.'year='.((int) GETPOST('search_'.$key.'year', 'int'));
+		$param .= '&search_'.$key.'month='.((int) request()->input('search_' . $key . 'month'));
+		$param .= '&search_'.$key.'day='.((int) request()->input('search_' . $key . 'day'));
+		$param .= '&search_'.$key.'year='.((int) request()->input('search_' . $key . 'year'));
 	} elseif ($search[$key] != '') {
 		$param .= '&search_'.$key.'='.urlencode($search[$key]);
 	}
@@ -445,7 +445,7 @@ $arrayofmassactions = array(
 if ($user->hasRight('mymodule', 'delete')) {
 	$arrayofmassactions['predelete'] = '<span class="fa fa-trash paddingrightonly"></span>'.$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

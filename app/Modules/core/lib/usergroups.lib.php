@@ -128,7 +128,7 @@ function user_prepare_head(User $object)
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$langs->load("mails");
@@ -466,7 +466,7 @@ function showSkins($fuser, $edit = 0, $foruserprofile = false)
 						if (!file_exists($file)) {
 							$url = dolBuildUrl(DOL_URL_ROOT . '/public/theme/common/nophoto.png');
 						}
-						print '<a href="'.$_SERVER["PHP_SELF"].($edit ? '?action=edit&token='.newToken().'&mode=template&theme=' : '?theme=').$subdir.(GETPOST('optioncss', 'alpha', 1) ? '&optioncss='.GETPOST('optioncss', 'alpha', 1) : '').($fuser ? '&id='.$fuser->id : '').'" style="font-weight: normal;" alt="'.$langs->trans("Preview").'">';
+						print '<a href="'.$_SERVER["PHP_SELF"].($edit ? '?action=edit&token='.newToken().'&mode=template&theme=' : '?theme=').$subdir.(request()->input('optioncss') ? '&optioncss='.request()->input('optioncss') : '').($fuser ? '&id='.$fuser->id : '').'" style="font-weight: normal;" alt="'.$langs->trans("Preview").'">';
 						if ($subdir == getDolGlobalString('MAIN_THEME')) {
 							$title = $langs->trans("ThemeCurrentlyActive");
 						} else {

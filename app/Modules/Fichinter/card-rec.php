@@ -61,13 +61,13 @@ if (isModEnabled('contract')) {
 $langs->loadLangs(array("interventions", "admin", "compta", "bills"));
 
 // Security check
-$id = (GETPOSTINT('fichinterid') ? GETPOSTINT('fichinterid') : GETPOSTINT('id'));
-$ref = GETPOST('ref', 'alpha');
-$date_next_execution = GETPOST('date_next_execution', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
-$socid = GETPOSTINT('socid');
+$id = (request()->integer('fichinterid', 0) ? request()->integer('fichinterid', 0) : request()->integer('id', 0));
+$ref = request()->input('ref');
+$date_next_execution = request()->input('date_next_execution');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -77,11 +77,11 @@ if ($action == "create" || $action == "add") {
 }
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -90,8 +90,8 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
 if ($sortorder == "") {
 	$sortorder = "DESC";
 }
@@ -141,26 +141,26 @@ if ($cancel) {
 
 // Create predefined intervention
 if ($action == 'add' && $permissiontoadd) {
-	if (!GETPOST('title')) {
+	if (!request()->input('title')) {
 		setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->trans("Title")), null, 'errors');
 		$action = "create";
 		$error++;
 	}
 
-	if (!GETPOST('socid')) {
+	if (!request()->input('socid')) {
 		setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->trans("Customer")), null, 'errors');
 		$action = "create";
 		$error++;
 	}
 
 	// gestion des fréquences et des échéances
-	$frequency = GETPOSTINT('frequency');
-	$rec_year = GETPOST('rec_year');
-	$rec_month = GETPOST('rec_month');
-	$rec_day = GETPOST('rec_day');
-	$rec_hour = GETPOST('rec_hour');
-	$rec_min = GETPOST('rec_min');
-	$nb_gen_max = GETPOSTINT('nb_gen_max');
+	$frequency = request()->integer('frequency', 0);
+	$rec_year = request()->integer('rec_year', 0);
+	$rec_month = request()->input('rec_month');
+	$rec_day = request()->input('rec_day');
+	$rec_hour = request()->input('rec_hour');
+	$rec_min = request()->input('rec_min');
+	$nb_gen_max = request()->integer('nb_gen_max', 0);
 	if ($frequency) {
 		if (empty($rec_year) || empty($rec_month) || empty($rec_day)) {
 			setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->trans("Date")), null, 'errors');
@@ -178,16 +178,16 @@ if ($action == 'add' && $permissiontoadd) {
 
 	if (!$error) {
 		$object->id_origin = $id;
-		$object->title = GETPOST('title', 'alpha');
-		$object->description = GETPOST('description', 'restricthtml');
-		$object->socid = GETPOSTINT('socid');
-		$object->fk_project = GETPOSTINT('projectid');
-		$object->fk_contrat = GETPOSTINT('contractid');
+		$object->title = request()->input('title');
+		$object->description = request()->input('description');
+		$object->socid = request()->integer('socid', 0);
+		$object->fk_project = request()->integer('projectid', 0);
+		$object->fk_contrat = request()->integer('contractid', 0);
 
 		$object->frequency = $frequency;
-		$object->unit_frequency = GETPOST('unit_frequency', 'alpha');
+		$object->unit_frequency = request()->input('unit_frequency');
 		$object->nb_gen_max = $nb_gen_max;
-		$object->auto_validate = GETPOSTINT('auto_validate');
+		$object->auto_validate = request()->integer('auto_validate', 0);
 
 		$object->date_when = $date_next_execution;
 
@@ -211,7 +211,7 @@ if ($action == 'add' && $permissiontoadd) {
 		$newinter->fk_project = $object->fk_project;
 		$newinter->fk_contrat = $object->fk_contrat;
 	} else {
-		$newinter->socid = GETPOSTINT("socid");
+		$newinter->socid = request()->integer('socid', 0);
 	}
 
 	$newinter->entity = $object->entity;
@@ -254,18 +254,18 @@ if ($action == 'add' && $permissiontoadd) {
 } elseif ($action == 'setfrequency' && $permissiontoadd) {
 	// Set frequency and unit frequency
 	$object->fetch($id);
-	$object->setFrequencyAndUnit(GETPOSTINT('frequency'), GETPOST('unit_frequency', 'alpha'));
+	$object->setFrequencyAndUnit(request()->integer('frequency', 0), request()->input('unit_frequency'));
 } elseif ($action == 'setdate_when' && $permissiontoadd) {
 	// Set next date of execution
 	$object->fetch($id);
-	$date = dol_mktime(GETPOSTINT('date_whenhour'), GETPOSTINT('date_whenmin'), 0, GETPOSTINT('date_whenmonth'), GETPOSTINT('date_whenday'), GETPOSTINT('date_whenyear'));
+	$date = dol_mktime(request()->integer('date_whenhour', 0), request()->integer('date_whenmin', 0), 0, request()->integer('date_whenmonth', 0), request()->integer('date_whenday', 0), request()->integer('date_whenyear', 0));
 	if (!empty($date)) {
 		$object->setNextDate($date);
 	}
 } elseif ($action == 'setnb_gen_max' && $permissiontoadd) {
 	// Set max period
 	$object->fetch($id);
-	$object->setMaxPeriod(GETPOSTINT('nb_gen_max'));
+	$object->setMaxPeriod(request()->integer('nb_gen_max', 0));
 }
 
 
@@ -335,7 +335,7 @@ if ($action == 'create') {
 
 		// Title
 		print '<tr><td class="fieldrequired">'.$langs->trans("Title").'</td><td>';
-		print '<input class="flat quatrevingtpercent" type="text" name="title" value="'.dol_escape_htmltag(GETPOST("title", "alphanohtml")).'">';
+		print '<input class="flat quatrevingtpercent" type="text" name="title" value="'.dol_escape_htmltag(request()->input('title')).'">';
 		print '</td>';
 
 		// Note
@@ -358,7 +358,7 @@ if ($action == 'create') {
 		if (isModEnabled('project')) {
 			$formproject = new FormProjets($db);
 			print "<tr><td>".$langs->trans("Project")."</td><td>";
-			$projectid = GETPOST('projectid') ? GETPOST('projectid') : $object->fk_project;
+			$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : $object->fk_project;
 
 			$numprojet = $formproject->select_projects($object->thirdparty->id, $projectid, 'projectid', 0, 0, 1, 0, 0, 0, 0, '', 0, 0, '');
 			print ' &nbsp; <a href="'.DOL_URL_ROOT.'/projet/card.php?socid='.$object->thirdparty->id;
@@ -372,7 +372,7 @@ if ($action == 'create') {
 		if (isModEnabled('contract')) {
 			$formcontract = new FormContract($db);
 			print "<tr><td>".$langs->trans("Contract")."</td><td>";
-			$contractid = GETPOST('contractid') ? GETPOST('contractid') : (!empty($object->fk_contrat) ? $object->fk_contrat : 0) ;
+			$contractid = request()->integer('contractid', 0) ? request()->integer('contractid', 0) : (!empty($object->fk_contrat) ? $object->fk_contrat : 0) ;
 			$numcontract = $formcontract->select_contract($object->thirdparty->id, $contractid, 'contracttid');
 			print "</td></tr>";
 		}
@@ -391,21 +391,21 @@ if ($action == 'create') {
 		print '<tr><td class="titlefieldcreate">';
 		print $form->textwithpicto($langs->trans("Frequency"), $langs->transnoentitiesnoconv('toolTipFrequency'));
 		print "</td><td>";
-		print '<input type="text" name="frequency" value="'.GETPOSTINT('frequency').'" size="4">&nbsp;';
-		print $form->selectarray('unit_frequency', array('d' => $langs->trans('Day'), 'm' => $langs->trans('Month'), 'y' => $langs->trans('Year')), (GETPOST('unit_frequency') ? GETPOST('unit_frequency') : 'm'));
+		print '<input type="text" name="frequency" value="'.request()->integer('frequency', 0).'" size="4">&nbsp;';
+		print $form->selectarray('unit_frequency', array('d' => $langs->trans('Day'), 'm' => $langs->trans('Month'), 'y' => $langs->trans('Year')), (request()->input('unit_frequency') ? request()->input('unit_frequency') : 'm'));
 		print "</td></tr>";
 
 		// First date of execution for cron
 		print "<tr><td>".$langs->trans('NextDateToExecution')."</td><td>";
 		if (empty($date_next_execution)) {
-			$date_next_execution = (GETPOST('rec_month') ? dol_mktime(12, 0, 0, GETPOSTINT('rec_month'), GETPOSTINT('rec_day'), GETPOSTINT('rec_year')) : -1);
+			$date_next_execution = (request()->input('rec_month') ? dol_mktime(12, 0, 0, request()->integer('rec_month', 0), request()->integer('rec_day', 0), request()->integer('rec_year', 0)) : -1);
 		}
 		print $form->selectDate($date_next_execution, 'rec_', 1, 1, 0, "add", 1, 1);
 		print "</td></tr>";
 
 		// Number max of generation
 		print "<tr><td>".$langs->trans("MaxPeriodNumber")."</td><td>";
-		print '<input type="text" name="nb_gen_max" value="'.GETPOSTINT('nb_gen_max').'" size="5">';
+		print '<input type="text" name="nb_gen_max" value="'.request()->integer('nb_gen_max', 0).'" size="5">';
 		print "</td></tr>";
 
 		print "</table>";
@@ -946,7 +946,7 @@ if ($action == 'create') {
 			print "</table>";
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }

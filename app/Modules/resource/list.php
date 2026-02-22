@@ -41,24 +41,24 @@ require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
 $langs->loadLangs(array("resource", "companies", "other"));
 
 // Get parameters
-$id				= GETPOSTINT('id');
-$action			= GETPOST('action', 'alpha');
-$massaction		= GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$confirm		= GETPOST('confirm', 'alpha');
-$toselect		= GETPOST('toselect', 'array:int');
-$contextpage	= GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'interventionlist';
+$id				= request()->integer('id', 0);
+$action			= request()->input('action');
+$massaction		= request()->input('massaction', []); // The bulk action (combo box choice into lists)
+$confirm		= request()->input('confirm');
+$toselect		= request()->input('toselect', []);
+$contextpage	= request()->input('contextpage') ? request()->input('contextpage') : 'interventionlist';
 
-$lineid			= GETPOSTINT('lineid');
-$element		= GETPOST('element', 'alpha');
-$element_id		= GETPOSTINT('element_id');
-$resource_id	= GETPOSTINT('resource_id');
+$lineid			= request()->integer('lineid', 0);
+$element		= request()->input('element');
+$element_id		= request()->integer('element_id', 0);
+$resource_id	= request()->integer('resource_id', 0);
 
-$sortorder		= GETPOST('sortorder', 'aZ09comma');
-$sortfield		= GETPOST('sortfield', 'aZ09comma');
-$optioncss		= GETPOST('optioncss', 'alpha');
+$sortorder		= request()->input('sortorder');
+$sortfield		= request()->input('sortfield');
+$optioncss		= request()->input('optioncss');
 
 // Initialize context for list
-$contextpage 	= GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'resourcelist';
+$contextpage 	= request()->input('contextpage') ? request()->input('contextpage') : 'resourcelist';
 
 // Initialize a technical objects
 $object = new Dolresource($db);
@@ -70,18 +70,18 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 if (!is_array($search_array_options)) {
 	$search_array_options = array();
 }
-$search_all          = trim(GETPOST('search_all', 'alphanohtml'));
-$search_ref			= GETPOST("search_ref", 'alpha');
-$search_type		= GETPOST("search_type", 'alpha');
-$search_address		= GETPOST("search_address", 'alpha');
-$search_zip			= GETPOST("search_zip", 'alpha');
-$search_town		= GETPOST("search_town", 'alpha');
-$search_state		= GETPOST("search_state", 'alpha');
-$search_country		= GETPOST("search_country", 'alpha');
-$search_phone		= GETPOST("search_phone", 'alpha');
-$search_email		= GETPOST("search_email", 'alpha');
-$search_max_users	= GETPOST("search_max_users", 'alpha');
-$search_url			= GETPOST("search_url", 'alpha');
+$search_all          = trim(request()->input('search_all'));
+$search_ref			= request()->input('search_ref');
+$search_type		= request()->input('search_type');
+$search_address		= request()->input('search_address');
+$search_zip			= request()->input('search_zip');
+$search_town		= request()->input('search_town');
+$search_state		= request()->input('search_state');
+$search_country		= request()->input('search_country');
+$search_phone		= request()->input('search_phone');
+$search_email		= request()->input('search_email');
+$search_max_users	= request()->input('search_max_users');
+$search_url			= request()->input('search_url');
 
 $filter = array();
 
@@ -94,12 +94,12 @@ if (empty($sortfield)) {
 	$sortfield = "t.ref";
 }
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
+$search_all = trim(request()->input('search_all'));
 
 // Load variable for pagination
-$limit	= GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit	= request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 
-$page	= GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$page	= request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -179,7 +179,7 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Do we click on purge search criteria ?
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$search_ref = "";
 	$search_type = "";
 	$search_address = "";
@@ -199,7 +199,7 @@ $permissiontoread = $user->hasRight('resource', 'read');
 $permissiontoadd = $user->hasRight('resource', 'write');
 $permissiontodelete = $user->hasRight('resource', 'delete');
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 // Mass actions
@@ -212,11 +212,11 @@ include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -344,7 +344,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -362,7 +362,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -431,7 +431,7 @@ $arrayofmassactions = array();
 if (!empty($permissiontodelete)) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

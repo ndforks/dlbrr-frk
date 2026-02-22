@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'withdrawals', 'companies'));
 
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -166,7 +166,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -267,7 +267,7 @@ if ($resql) {
 	print "</tr></table>";
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

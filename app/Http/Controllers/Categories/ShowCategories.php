@@ -15,7 +15,7 @@ class ShowCategories extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        $action = GETPOST('action', 'alpha') ?: 'view';
+        $action = $request->input('action', 'view');
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -28,19 +28,19 @@ class ShowCategories extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        $cancel = GETPOST('cancel', 'alpha');
-        $origin = GETPOST('origin', 'alpha');
-        $catorigin = GETPOSTINT('catorigin');
-        $type = GETPOST('type', 'aZ09');
-        $urlfrom = GETPOST('urlfrom', 'alpha');
-        $backtopage = GETPOST('backtopage', 'alpha');
+        $cancel = $request->input('cancel');
+        $origin = $request->input('origin');
+        $catorigin = $request->integer('catorigin', 0);
+        $type = $request->input('type');
+        $urlfrom = $request->input('urlfrom');
+        $backtopage = $request->input('backtopage');
         
-        $label = (string) GETPOST('label', 'alphanohtml');
-        $description = (string) GETPOST('description', 'restricthtml');
-        $color = preg_replace('/[^0-9a-f#]/i', '', (string) GETPOST('color', 'alphanohtml'));
-        $position = GETPOSTISSET('position') ? GETPOSTINT('position') : 1;
-        $visible = GETPOSTINT('visible');
-        $parent = GETPOSTINT('parent');
+        $label = (string) $request->input('label');
+        $description = (string) $request->input('description');
+        $color = preg_replace('/[^0-9a-f#]/i', '', (string) $request->input('color'));
+        $position = $request->has('position') ? $request->integer('position', 0) : 1;
+        $visible = $request->integer('visible', 0);
+        $parent = $request->integer('parent', 0);
         
         if (!$user->hasRight('categorie', 'lire')) {
             accessforbidden();
@@ -55,7 +55,7 @@ class ShowCategories extends Controller
         $error = 0;
         
         // Handle form submission
-        if ($request->isMethod('post') && GETPOST('action', 'alpha') == 'add' && $user->hasRight('categorie', 'creer')) {
+        if ($request->isMethod('post') && $request->input('action') == 'add' && $user->hasRight('categorie', 'creer')) {
             if ($cancel) {
                 return $this->handleCancel($urlfrom, $backtopage, $origin, $type);
             }
@@ -116,10 +116,10 @@ class ShowCategories extends Controller
             accessforbidden();
         }
         
-        $urlfrom = GETPOST('urlfrom', 'alpha');
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $type = GETPOST('type', 'aZ09');
-        $origin = GETPOST('origin', 'alpha');
+        $urlfrom = $request->input('urlfrom');
+        $backtopage = $request->input('backtopage');
+        $type = $request->input('type');
+        $origin = $request->input('origin');
         
         if ($urlfrom) {
             return redirect($urlfrom);

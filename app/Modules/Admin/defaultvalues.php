@@ -47,19 +47,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/defaultvalues.class.php';
 $langs->loadLangs(array('companies', 'products', 'admin', 'sms', 'other', 'errors'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$id = GETPOSTINT('rowid');
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optionscss', 'alphanohtml');
+$id = request()->integer('rowid', 0);
+$action = request()->input('action');
+$optioncss = request()->input('optionscss');
 
-$mode = GETPOST('mode', 'aZ09') ? GETPOST('mode', 'aZ09') : 'createform'; // 'createform', 'filters', 'sortorder', 'focus'
+$mode = request()->input('mode') ? request()->input('mode') : 'createform'; // 'createform', 'filters', 'sortorder', 'focus'
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -73,15 +73,15 @@ if (!$sortorder) {
 	$sortorder = 'ASC';
 }
 
-$defaulturl = GETPOST('defaulturl', 'alphanohtml');
-$defaultkey = GETPOST('defaultkey', 'alphanohtml');
-$defaultvalue = GETPOST('defaultvalue', 'restricthtml');
+$defaulturl = request()->input('defaulturl');
+$defaultkey = request()->input('defaultkey');
+$defaultvalue = request()->input('defaultvalue');
 
 $defaulturl = preg_replace('/^\//', '', $defaulturl);
 
-$urlpage = GETPOST('urlpage', 'alphanohtml');
-$key = GETPOST('key', 'alphanohtml');
-$value = GETPOST('value', 'restricthtml');
+$urlpage = request()->input('urlpage');
+$key = request()->input('key');
+$value = request()->input('value');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('admindefaultvalues', 'globaladmin'));
@@ -92,11 +92,11 @@ $object = new DefaultValues($db);
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && !empty($massaction) && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && !empty($massaction) && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -109,7 +109,7 @@ if ($reshook < 0) {
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$defaulturl = '';
 	$defaultkey = '';
 	$defaultvalue = '';
@@ -118,17 +118,17 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 }
 
 if ($action == 'setMAIN_ENABLE_DEFAULT_VALUES') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'MAIN_ENABLE_DEFAULT_VALUES', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'MAIN_ENABLE_DEFAULT_VALUES', 0, 'chaine', 0, '', $conf->entity);
 	}
 }
 
-if (($action == 'add' || (GETPOST('add') && $action != 'update')) || GETPOST('actionmodify')) {
+if (($action == 'add' || (request()->input('add') && $action != 'update')) || request()->input('actionmodify')) {
 	$error = 0;
 
-	if (($action == 'add' || (GETPOST('add') && $action != 'update'))) {
+	if (($action == 'add' || (request()->input('add') && $action != 'update'))) {
 		if (empty($defaulturl)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Url")), null, 'errors');
 			$error++;
@@ -138,7 +138,7 @@ if (($action == 'add' || (GETPOST('add') && $action != 'update')) || GETPOST('ac
 			$error++;
 		}
 	}
-	if (GETPOST('actionmodify')) {
+	if (request()->input('actionmodify')) {
 		if (empty($urlpage)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Url")), null, 'errors');
 			$error++;
@@ -150,7 +150,7 @@ if (($action == 'add' || (GETPOST('add') && $action != 'update')) || GETPOST('ac
 	}
 
 	if (!$error) {
-		if ($action == 'add' || (GETPOST('add') && $action != 'update')) {
+		if ($action == 'add' || (request()->input('add') && $action != 'update')) {
 			$object->type = $mode;
 			$object->user_id = 0;
 			$object->page = $defaulturl;
@@ -169,7 +169,7 @@ if (($action == 'add' || (GETPOST('add') && $action != 'update')) || GETPOST('ac
 				$defaultvalue = '';
 			}
 		}
-		if (GETPOST('actionmodify')) {
+		if (request()->input('actionmodify')) {
 			$object->id = $id;
 			$object->type = $mode;
 			$object->page = $urlpage;
@@ -379,7 +379,7 @@ if (!is_array($result) && $result < 0) {
 
 		// Page
 		print '<td>';
-		if ($action != 'edit' || GETPOSTINT('rowid') != $defaultvalue->id) {
+		if ($action != 'edit' || request()->integer('rowid', 0) != $defaultvalue->id) {
 			print $defaultvalue->page;
 		} else {
 			print '<input type="text" name="urlpage" value="'.dol_escape_htmltag($defaultvalue->page).'">';
@@ -388,7 +388,7 @@ if (!is_array($result) && $result < 0) {
 
 		// Field
 		print '<td>';
-		if ($action != 'edit' || GETPOST('rowid') != $defaultvalue->id) {
+		if ($action != 'edit' || request()->input('rowid') != $defaultvalue->id) {
 			print $defaultvalue->param;
 		} else {
 			print '<input type="text" name="key" value="'.dol_escape_htmltag($defaultvalue->param).'">';
@@ -398,7 +398,7 @@ if (!is_array($result) && $result < 0) {
 		// Value
 		if ($mode != 'focus' && $mode != 'mandatory') {
 			print '<td>';
-			if ($action != 'edit' || GETPOST('rowid') != $defaultvalue->id) {
+			if ($action != 'edit' || request()->input('rowid') != $defaultvalue->id) {
 				print dol_escape_htmltag($defaultvalue->value);
 			} else {
 				print '<input type="text" name="value" value="'.dol_escape_htmltag($defaultvalue->value).'">';
@@ -415,7 +415,7 @@ if (!is_array($result) && $result < 0) {
 
 		// Actions
 		print '<td class="center">';
-		if ($action != 'edit' || GETPOST('rowid') != $defaultvalue->id) {
+		if ($action != 'edit' || request()->input('rowid') != $defaultvalue->id) {
 			print '<a class="editfielda marginleftonly marginrightonly" href="'.$_SERVER['PHP_SELF'].'?rowid='.$defaultvalue->id.'&entity='.$defaultvalue->entity.'&mode='.$mode.'&action=edit&token='.newToken().'">'.img_edit().'</a>';
 			print '<a class="marginleftonly marginrightonly" href="'.$_SERVER['PHP_SELF'].'?rowid='.$defaultvalue->id.'&entity='.$defaultvalue->entity.'&mode='.$mode.'&action=delete&token='.newToken().'">'.img_delete().'</a>';
 		} else {

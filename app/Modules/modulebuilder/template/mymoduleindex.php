@@ -73,13 +73,13 @@ include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("mymodule@mymodule"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $now = dol_now();
 $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
 
 // Security check - Protection if external user
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if (!empty($user->socid) && $user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
@@ -89,17 +89,17 @@ if (!empty($user->socid) && $user->socid > 0) {
 //$hookmanager->initHooks(array($object->element.'index'));
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //if (!isModEnabled('mymodule')) {
-//	accessforbidden('Module not enabled');
+//	abort(403);
 //}
 //if (! $user->hasRight('mymodule', 'myobject', 'read')) {
-//	accessforbidden();
+//	abort(403);
 //}
 //restrictedArea($user, 'mymodule', 0, 'mymodule_myobject', 'myobject', '', 'rowid');
 //if (empty($user->admin)) {
-//	accessforbidden('Must be admin');
+//	abort(403);
 //}
 
 
@@ -190,7 +190,7 @@ if (isModEnabled('mymodule') && $user->hasRight('mymodule', 'read')) {
 	}
 	else
 	{
-		dol_print_error($db);
+		abort(500);
 	}
 }
 END MODULEBUILDER DRAFT MYOBJECT */

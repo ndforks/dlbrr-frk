@@ -54,7 +54,7 @@ if ($action !== 'editcomment') {
 	// Description
 	print '<td colspan="3">';
 
-	$desc = GETPOST('comment_description');
+	$desc = request()->input('comment_description');
 
 	$doleditor = new DolEditor('comment_description', $desc, '', 80, 'dolibarr_notes', 'In', false, true, true, ROWS_3, '100%');
 	print $doleditor->Create(1);

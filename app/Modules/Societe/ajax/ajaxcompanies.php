@@ -53,9 +53,9 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
  */
 
 
-$id = GETPOSTINT('socid');
+$id = request()->integer('socid', 0);
 if ($id == 0) {
-	$id = GETPOSTINT('id_fourn');
+	$id = request()->integer('id_fourn', 0);
 }
 
 $object = new Societe($db);
@@ -67,7 +67,7 @@ if ($id > 0) {
 if ($user->socid > 0) {
 	$socid = $user->socid;
 	if ($object->socid && $socid != $object->socid) {
-		accessforbidden('Not allowed to access thirdparty id '.$id.' with an external user on id '.$socid);
+		abort(403);
 	}
 }
 restrictedArea($user, 'societe', $object, '&societe');
@@ -86,12 +86,12 @@ top_httphead('application/json');
 $return_arr = array();
 
 // Define filter on text typed
-$socid = GETPOST('newcompany');
+$socid = request()->integer('newcompany', 0);
 if (!$socid) {
-	$socid = GETPOSTINT('socid');
+	$socid = request()->integer('socid', 0);
 }
 if (!$socid) {
-	$socid = GETPOSTINT('id_fourn');
+	$socid = request()->integer('id_fourn', 0);
 }
 
 // Generate list of companies
@@ -137,7 +137,7 @@ if (!$user->hasRight('societe', 'client', 'voir') && !$user->socid) {
 if ($user->socid > 0) {
 	$sql .= " AND s.rowid = ".((int) $user->socid);
 }
-//if (GETPOST("filter")) $sql.= " AND (".GETPOST("filter", "alpha").")"; // Add other filters
+//if (request()->input('filter')) $sql.= " AND (".request()->input('filter').")"; // Add other filters
 
 $limit = getDolGlobalInt('SEARCH_LIMIT_AJAX') ?: 1000;		// SEARCH_LIMIT_AJAX is a hidden option that has priority on option THIRDPARTY_LIMIT_SIZE if set.
 $sql .= $db->plimit($limit, 0);

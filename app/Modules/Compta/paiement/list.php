@@ -51,41 +51,41 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'banks', 'compta', 'companies'));
 
-$action = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'paymentlist';
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect', []);
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'paymentlist';
+$mode = request()->input('mode');
 
-$facid = GETPOST('facid', 'int');
-$socid = GETPOST('socid', 'int');
-$userid = GETPOST('userid', 'int');
+$facid = request()->integer('facid', 0);
+$socid = request()->integer('socid', 0);
+$userid = request()->integer('userid', 0);
 
-$search_ref = GETPOST("search_ref", "alpha");
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_ref = request()->input('search_ref');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_company = GETPOST("search_company", 'alpha');
-$search_paymenttype = GETPOST("search_paymenttype");
-$search_account = GETPOST("search_account", 'alpha');
-$search_payment_num = GETPOST('search_payment_num', 'alpha');
-$search_amount = GETPOST("search_amount", 'alpha'); // alpha because we must be able to search on "< x"
-$search_noteprivate = GETPOST("search_noteprivate");
-$search_status = GETPOST('search_status', 'intcomma');
-$search_sale = GETPOSTINT('search_sale');
+$search_company = request()->input('search_company');
+$search_paymenttype = request()->input('search_paymenttype');
+$search_account = request()->integer('search_account', 0);
+$search_payment_num = request()->input('search_payment_num');
+$search_amount = request()->input('search_amount'); // alpha because we must be able to search on "< x"
+$search_noteprivate = request()->input('search_noteprivate');
+$search_status = request()->input('search_status');
+$search_sale = request()->integer('search_sale', 0);
 
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
 if (empty($page) || $page == -1) {
 	$page = 0; // If $page is not defined, or '' or -1
@@ -101,7 +101,7 @@ if (!$sortfield) {
 	$sortfield = "p.ref";
 }
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
+$search_all = trim(request()->input('search_all'));
 
 $arrayofselected = !empty($arrayofselected) && is_array($arrayofselected) ? $arrayofselected : array();
 
@@ -162,11 +162,11 @@ $error = 0;
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -181,7 +181,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// All tests are required to be compatible with all browsers
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {
 		$search_ref = '';
 		$search_date_startday = '';
 		$search_date_startmonth = '';
@@ -202,8 +202,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -222,11 +222,11 @@ if (empty($reshook)) {
 			// Create the record into bank for the amount of payment $object
 			if (!$error) {
 				$label = '(CustomerInvoicePayment)';
-				if (GETPOST('type') == Facture::TYPE_CREDIT_NOTE) {
+				if (request()->input('type') == Facture::TYPE_CREDIT_NOTE) {
 					$label = '(CustomerInvoicePaymentBack)'; // Refund of a credit note
 				}
 
-				$bankaccountid = GETPOSTINT('accountid');
+				$bankaccountid = request()->integer('accountid', 0);
 				if ($bankaccountid > 0) {
 					$object->fetch($toselectid);
 
@@ -382,7 +382,7 @@ $sql .= ", ba.rowid, ba.ref, ba.label, ba.number, ba.account_number, ba.fk_accou
 $sql .= ", s.rowid, s.nom, s.email";
 
 // Overwrite for a debug use case
-if (GETPOST("orphelins", "alpha")) {
+if (request()->input('orphelins')) {
 	// Payments not linked to an invoice. Should not happen. For debug only.
 	$sql = "SELECT p.rowid, p.ref, p.datep, p.fk_bank, p.statut, p.num_paiement as num_payment, p.amount, p.note as private_note";
 	$sql .= ", c.code as paiement_code";
@@ -416,7 +416,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -435,7 +435,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	llxFooter();
 	$db->close();
 	exit;
@@ -463,7 +463,7 @@ if ($optioncss != '') {
 	$param .= '&optioncss='.urlencode($optioncss);
 }
 
-if (GETPOST("orphelins")) {
+if (request()->input('orphelins')) {
 	$param .= '&orphelins=1';
 }
 if ($search_ref) {
@@ -525,7 +525,7 @@ if (!empty($permissiontopay) && getDolGlobalString('FACTURE_PAYMENT_FIX_LINK_TO_
 if (!empty($permissiontodelete)) {
 	//$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete', 'createbankpayment'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete', 'createbankpayment'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

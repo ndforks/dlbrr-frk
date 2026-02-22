@@ -45,33 +45,33 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'donations'));
 
-$action     = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'sclist';
-$mode = GETPOST('mode', 'alpha');
+$action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
+$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'sclist';
+$mode = request()->input('mode');
 
-$paiementid				= GETPOSTINT('paiementid');
+$paiementid				= request()->integer('paiementid', 0);
 
-$search_ref = GETPOST("search_ref", "alpha");
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_ref = request()->input('search_ref');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_company = GETPOST("search_company", 'alpha');
-$search_paymenttype = GETPOST("search_paymenttype", "intcomma");
-$search_account = GETPOST("search_account", 'alpha');
-$search_payment_num = GETPOST('search_payment_num', 'alpha');
-$search_amount = GETPOST("search_amount", 'alpha');
-$search_status = GETPOST('search_status', 'intcomma');
+$search_company = request()->input('search_company');
+$search_paymenttype = request()->input('search_paymenttype');
+$search_account = request()->integer('search_account', 0);
+$search_payment_num = request()->input('search_payment_num');
+$search_amount = request()->input('search_amount');
+$search_status = request()->input('search_status');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -85,7 +85,7 @@ if (!$sortfield) {
 	$sortfield = "pd.rowid";
 }
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
+$search_all = trim(request()->input('search_all'));
 
 $object = new Don($db);
 
@@ -112,8 +112,8 @@ $arrayfields = array(
 );
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
-$optioncss = GETPOST('optioncss', 'alpha');
-$moreforfilter = GETPOST('moreforfilter', 'alpha');
+$optioncss = request()->input('optioncss');
+$moreforfilter = request()->input('moreforfilter');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('donationlist'));
@@ -139,7 +139,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// All tests are required to be compatible with all browsers
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {
 		$search_ref = '';
 		$search_date_startday = '';
 		$search_date_startmonth = '';
@@ -239,7 +239,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -259,7 +259,7 @@ if ($limit) {
 $resql = $db->query($sql);
 
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

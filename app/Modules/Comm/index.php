@@ -63,11 +63,11 @@ $hookmanager->initHooks(array('commercialindex'));
 // Load translation files required by the page
 $langs->loadLangs(array("boxes", "commercial", "contracts", "orders", "propal", "supplier_proposal"));
 
-$action = GETPOST('action', 'aZ09');
-$bid = GETPOSTINT('bid');
+$action = request()->input('action');
+$bid = request()->integer('bid', 0);
 
 // Securite access client
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if (!empty($user->socid) && $user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
@@ -82,7 +82,7 @@ $now = dol_now();
 //restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', 0);
 if (!$user->hasRight('propal', 'read') && !$user->hasRight('supplier_proposal', 'read') && !$user->hasRight('commande', 'read') && !$user->hasRight('fournisseur', 'commande', 'read')
 	&& !$user->hasRight('supplier_order', 'read') && !$user->hasRight('fichinter', 'read') && !$user->hasRight('contrat', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -243,7 +243,7 @@ if (isModEnabled("propal") && $user->hasRight("propal", "lire") && is_object($pr
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -344,7 +344,7 @@ if (isModEnabled('supplier_proposal') && $user->hasRight("supplier_proposal", "l
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -447,7 +447,7 @@ if (isModEnabled('order') && $user->hasRight('commande', 'lire') && is_object($o
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -552,7 +552,7 @@ if ((isModEnabled("fournisseur") && !getDolGlobalString('MAIN_USE_NEW_SUPPLIERMO
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -748,7 +748,7 @@ if (isModEnabled("societe") && $user->hasRight('societe', 'lire')) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -846,7 +846,7 @@ if (isModEnabled('propal') && is_object($propalstatic)) {
 		finishSimpleTable(true);
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -941,7 +941,7 @@ if (isModEnabled('order')) {
 		}
 		finishSimpleTable(true);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -1037,7 +1037,7 @@ if ((isModEnabled("supplier_order") || isModEnabled("supplier_invoice")) && $use
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -1136,7 +1136,7 @@ if (isModEnabled('contract') && $user->hasRight("contrat", "lire") && 0) { // TO
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -1261,7 +1261,7 @@ if (isModEnabled("propal") && $user->hasRight("propal", "lire")) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -1388,7 +1388,7 @@ if (isModEnabled('order') && $user->hasRight('commande', 'lire') && is_object($o
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

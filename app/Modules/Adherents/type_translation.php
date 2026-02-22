@@ -45,10 +45,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('members', 'languages'));
 
-$id = GETPOSTINT('rowid') ? GETPOSTINT('rowid') : GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$ref = GETPOST('ref', 'alphanohtml');
+$id = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$ref = request()->input('ref');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -69,10 +69,10 @@ if ($cancel == $langs->trans("Cancel")) {
 	$action = '';
 }
 
-if ($action == 'delete' && GETPOST('langtodelete', 'alpha') && $user->hasRight('adherent', 'configurer')) {
+if ($action == 'delete' && request()->input('langtodelete') && $user->hasRight('adherent', 'configurer')) {
 	$object = new AdherentType($db);
 	$object->fetch($id);
-	$result = $object->delMultiLangs(GETPOST('langtodelete', 'alpha'), $user);
+	$result = $object->delMultiLangs(request()->input('langtodelete'), $user);
 	if ($result > 0) {
 		setEventMessages($langs->trans("RecordDeleted"), null, 'mesgs');
 		header("Location: ".dolBuildUrl($_SERVER["PHP_SELF"], ['id' => $id]));
@@ -86,17 +86,17 @@ if ($action == 'vadd' && $cancel != $langs->trans("Cancel") && $user->hasRight('
 	$object->fetch($id);
 	$current_lang = $langs->getDefaultLang();
 
-	$forcelangprod = GETPOST("forcelangprod", 'aZ09');
+	$forcelangprod = request()->input('forcelangprod');
 
 	// update of object
 	if ($forcelangprod == $current_lang) {
-		$object->label = GETPOST("libelle", 'alphanohtml');
-		$object->description = dol_htmlcleanlastbr(GETPOST("desc", 'restricthtml'));
-		//$object->other = dol_htmlcleanlastbr(GETPOST("other", 'restricthtml'));
+		$object->label = request()->input('libelle');
+		$object->description = dol_htmlcleanlastbr(request()->input('desc'));
+		//$object->other = dol_htmlcleanlastbr(request()->input('other'));
 	} else {
-		$object->multilangs[$forcelangprod]["label"] = GETPOST("libelle", 'alphanohtml');
-		$object->multilangs[$forcelangprod]["description"] = dol_htmlcleanlastbr(GETPOST("desc", 'restricthtml'));
-		//$object->multilangs[$forcelangprod]["other"] = dol_htmlcleanlastbr(GETPOST("other", 'restricthtml'));
+		$object->multilangs[$forcelangprod]["label"] = request()->input('libelle');
+		$object->multilangs[$forcelangprod]["description"] = dol_htmlcleanlastbr(request()->input('desc'));
+		//$object->multilangs[$forcelangprod]["other"] = dol_htmlcleanlastbr(request()->input('other'));
 	}
 
 	// backup into database
@@ -116,13 +116,13 @@ if ($action == 'vedit' && $cancel != $langs->trans("Cancel") && $user->hasRight(
 
 	foreach ($object->multilangs as $key => $value) { // saving new values in the object
 		if ($key == $current_lang) {
-			$object->label = GETPOST("libelle-".$key, 'alphanohtml');
-			$object->description = dol_htmlcleanlastbr(GETPOST("desc-".$key, 'restricthtml'));
-			$object->other = dol_htmlcleanlastbr(GETPOST("other-".$key, 'restricthtml'));
+			$object->label = request()->input("libelle-" . $key);
+			$object->description = dol_htmlcleanlastbr(request()->input("desc-" . $key));
+			$object->other = dol_htmlcleanlastbr(request()->input("other-" . $key));
 		} else {
-			$object->multilangs[$key]["label"] = GETPOST("libelle-".$key, 'alphanohtml');
-			$object->multilangs[$key]["description"] = dol_htmlcleanlastbr(GETPOST("desc-".$key, 'restricthtml'));
-			$object->multilangs[$key]["other"] = dol_htmlcleanlastbr(GETPOST("other-".$key, 'restricthtml'));
+			$object->multilangs[$key]["label"] = request()->input("libelle-" . $key);
+			$object->multilangs[$key]["description"] = dol_htmlcleanlastbr(request()->input("desc-" . $key));
+			$object->multilangs[$key]["other"] = dol_htmlcleanlastbr(request()->input("other-" . $key));
 		}
 	}
 
@@ -138,7 +138,7 @@ if ($action == 'vedit' && $cancel != $langs->trans("Cancel") && $user->hasRight(
 if ($action == 'vdelete' && $cancel != $langs->trans("Cancel") && $user->hasRight('adherent', 'configurer')) {
 	$object = new AdherentType($db);
 	$object->fetch($id);
-	$langtodelete = GETPOST('langdel', 'alpha');
+	$langtodelete = request()->input('langdel');
 
 
 	if ($object->delMultiLangs($langtodelete, $user) > 0) {
@@ -288,7 +288,7 @@ if ($action == 'create' && $user->hasRight('adherent', 'configurer')) {
 	print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="vadd">';
-	print '<input type="hidden" name="rowid" value="'.GETPOSTINT("rowid").'">';
+	print '<input type="hidden" name="rowid" value="'.request()->integer('rowid', 0).'">';
 
 	print dol_get_fiche_head();
 
@@ -296,7 +296,7 @@ if ($action == 'create' && $user->hasRight('adherent', 'configurer')) {
 	print '<tr><td class="tdtop titlefieldcreate fieldrequired">'.$langs->trans('Language').'</td><td>';
 	print $formadmin->select_language('', 'forcelangprod', 0, $object->multilangs, 1);
 	print '</td></tr>';
-	print '<tr><td class="tdtop fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle" class="minwidth300" value="'.dol_escape_htmltag(GETPOST("libelle", 'alphanohtml')).'"></td></tr>';
+	print '<tr><td class="tdtop fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle" class="minwidth300" value="'.dol_escape_htmltag(request()->input('libelle')).'"></td></tr>';
 	print '<tr><td class="tdtop">'.$langs->trans('Description').'</td><td>';
 	$doleditor = new DolEditor('desc', '', '', 160, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), ROWS_3, '90%');
 	$doleditor->Create();

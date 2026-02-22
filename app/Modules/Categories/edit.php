@@ -43,21 +43,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->load("categories");
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alphanohtml');
-$action = (GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'edit');
-$confirm = GETPOST('confirm');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = (request()->input('action') ? request()->input('action') : 'edit');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$dol_openinpopup = request()->input('dol_openinpopup');
 
-$socid = GETPOSTINT('socid');
-$label = (string) GETPOST('label', 'alphanohtml');
-$description = (string) GETPOST('description', 'restricthtml');
-$color = preg_replace('/[^0-9a-f]/i', '', (string) GETPOST('color', 'alphanohtml'));
-$position = GETPOSTINT('position');
-$visible = GETPOSTINT('visible');
-$parent = GETPOSTINT('parent');
+$socid = request()->integer('socid', 0);
+$label = (string) request()->input('label');
+$description = (string) request()->input('description');
+$color = preg_replace('/[^0-9a-f]/i', '', (string) request()->input('color'));
+$position = request()->integer('position', 0);
+$visible = request()->integer('visible', 0);
+$parent = request()->integer('parent', 0);
 
 if ($id == "") {
 	dol_print_error(null, 'Missing parameter id');

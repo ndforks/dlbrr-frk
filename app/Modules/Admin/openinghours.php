@@ -27,8 +27,8 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'adminaccoutant'; // To manage different context of search
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'adminaccoutant'; // To manage different context of search
 
 /**
  * @var Conf $conf
@@ -42,7 +42,7 @@ $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'ad
 $langs->loadLangs(array('admin', 'companies', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -59,27 +59,27 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (($action == 'update' && !GETPOST("cancel", 'alpha'))
+if (($action == 'update' && !request()->input('cancel'))
 || ($action == 'updateedit')) {
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_MONDAY", GETPOST("monday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_MONDAY", request()->input('monday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_TUESDAY", GETPOST("tuesday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_TUESDAY", request()->input('tuesday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_WEDNESDAY", GETPOST("wednesday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_WEDNESDAY", request()->input('wednesday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_THURSDAY", GETPOST("thursday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_THURSDAY", request()->input('thursday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_FRIDAY", GETPOST("friday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_FRIDAY", request()->input('friday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_SATURDAY", GETPOST("saturday", 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_SATURDAY", request()->input('saturday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_SUNDAY", GETPOST('sunday', 'alpha'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, "MAIN_INFO_OPENINGHOURS_SUNDAY", request()->input('sunday'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
@@ -122,37 +122,37 @@ if (empty($action) || $action == 'edit' || $action == 'updateedit') {
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Monday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="monday" id="monday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_MONDAY', GETPOST("monday", 'alpha')).'"'.(getDolGlobalString('MAIN_INFO_OPENINGHOURS_MONDAY') ? '' : ' autofocus="autofocus"').'></td></tr>'."\n";
+	print '<input name="monday" id="monday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_MONDAY', request()->input('monday')).'"'.(getDolGlobalString('MAIN_INFO_OPENINGHOURS_MONDAY') ? '' : ' autofocus="autofocus"').'></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Tuesday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="tuesday" id="tuesday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_TUESDAY', GETPOST("tuesday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="tuesday" id="tuesday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_TUESDAY', request()->input('tuesday')).'"></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Wednesday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="wednesday" id="wednesday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_WEDNESDAY', GETPOST("wednesday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="wednesday" id="wednesday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_WEDNESDAY', request()->input('wednesday')).'"></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Thursday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="thursday" id="thursday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_THURSDAY', GETPOST("thursday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="thursday" id="thursday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_THURSDAY', request()->input('thursday')).'"></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Friday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="friday" id="friday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_FRIDAY', GETPOST("friday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="friday" id="friday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_FRIDAY', request()->input('friday')).'"></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Saturday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="saturday" id="saturday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_SATURDAY', GETPOST("saturday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="saturday" id="saturday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_SATURDAY', request()->input('saturday')).'"></td></tr>'."\n";
 
 	print '<tr class="oddeven"><td>';
 	print $form->textwithpicto($langs->trans("Sunday"), $langs->trans("OpeningHoursFormatDesc"));
 	print '</td><td>';
-	print '<input name="sunday" id="sunday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_SUNDAY', GETPOST("sunday", 'alpha')).'"></td></tr>'."\n";
+	print '<input name="sunday" id="sunday" class="minwidth100" value="'.getDolGlobalString('MAIN_INFO_OPENINGHOURS_SUNDAY', request()->input('sunday')).'"></td></tr>'."\n";
 
 	print '</table>';
 

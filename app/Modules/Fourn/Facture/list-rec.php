@@ -55,21 +55,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'compta', 'admin', 'other', 'suppliers'));
 
-$action     = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$show_files = GETPOSTINT('show_files');
-$confirm    = GETPOST('confirm', 'alpha');
-$cancel     = GETPOST('cancel', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'supplierinvoicestemplatelist'; // To manage different context of search
-$optioncss  = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode       = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action     = request()->input('action');
+$massaction = request()->input('massaction', []);
+$show_files = request()->integer('show_files', 0);
+$confirm    = request()->input('confirm');
+$cancel     = request()->input('cancel');
+$toselect   = request()->input('toselect', []);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierinvoicestemplatelist'; // To manage different context of search
+$optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
-$id = (GETPOSTINT('facid') ? GETPOSTINT('facid') : GETPOSTINT('id'));
-$lineid = GETPOSTINT('lineid');
-$ref = GETPOST('ref', 'alpha');
+$id = (request()->integer('facid', 0) ? request()->integer('facid', 0) : request()->integer('id', 0));
+$lineid = request()->integer('lineid', 0);
+$ref = request()->input('ref');
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -78,40 +78,40 @@ if ($action == "create" || $action == "add") {
 	$objecttype = '';
 }
 
-$search_ref = GETPOST('search_ref');
-$search_societe = GETPOST('search_societe');
-$search_montant_ht = GETPOST('search_montant_ht');
-$search_montant_vat = GETPOST('search_montant_vat');
-$search_montant_ttc = GETPOST('search_montant_ttc');
-$search_payment_mode = GETPOST('search_payment_mode');
-$search_payment_term = GETPOST('search_payment_term', 'int');
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_ref = request()->input('search_ref');
+$search_societe = request()->input('search_societe');
+$search_montant_ht = request()->input('search_montant_ht');
+$search_montant_vat = request()->input('search_montant_vat');
+$search_montant_ttc = request()->input('search_montant_ttc');
+$search_payment_mode = request()->input('search_payment_mode');
+$search_payment_term = request()->input('search_payment_term');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_date_when_startday = GETPOSTINT('search_date_when_startday');
-$search_date_when_startmonth = GETPOSTINT('search_date_when_startmonth');
-$search_date_when_startyear = GETPOSTINT('search_date_when_startyear');
-$search_date_when_endday = GETPOSTINT('search_date_when_endday');
-$search_date_when_endmonth = GETPOSTINT('search_date_when_endmonth');
-$search_date_when_endyear = GETPOSTINT('search_date_when_endyear');
+$search_date_when_startday = request()->integer('search_date_when_startday', 0);
+$search_date_when_startmonth = request()->integer('search_date_when_startmonth', 0);
+$search_date_when_startyear = request()->integer('search_date_when_startyear', 0);
+$search_date_when_endday = request()->integer('search_date_when_endday', 0);
+$search_date_when_endmonth = request()->integer('search_date_when_endmonth', 0);
+$search_date_when_endyear = request()->integer('search_date_when_endyear', 0);
 $search_date_when_start = dol_mktime(0, 0, 0, $search_date_when_startmonth, $search_date_when_startday, $search_date_when_startyear);	// Use tzserver
 $search_date_when_end = dol_mktime(23, 59, 59, $search_date_when_endmonth, $search_date_when_endday, $search_date_when_endyear);
-$search_recurring = GETPOST('search_recurring', 'intcomma');
-$search_frequency = GETPOST('search_frequency', 'alpha');
-$search_unit_frequency = GETPOST('search_unit_frequency', 'alpha');
-$search_nb_gen_done = GETPOST('search_nb_gen_done', 'alpha');
-$search_status = GETPOST('search_status', 'intcomma');
+$search_recurring = request()->input('search_recurring');
+$search_frequency = request()->input('search_frequency');
+$search_unit_frequency = request()->input('search_unit_frequency');
+$search_nb_gen_done = request()->input('search_nb_gen_done');
+$search_status = request()->input('search_status');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -193,11 +193,11 @@ $result = restrictedArea($user, 'supplier_invoicerec', $object->id, $objecttype)
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -208,7 +208,7 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	/*if (GETPOST('cancel', 'alpha')) {
+	/*if (request()->input('cancel')) {
 		$action = '';
 	}*/
 
@@ -216,7 +216,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_ref = '';
 		$search_societe = '';
 		$search_montant_ht = '';
@@ -248,8 +248,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -400,7 +400,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -423,7 +423,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

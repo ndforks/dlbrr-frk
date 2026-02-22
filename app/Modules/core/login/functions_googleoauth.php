@@ -41,32 +41,32 @@ function check_user_password_googleoauth($usertotest, $passwordtotest, $entityto
 {
 	global $conf;
 
-	dol_syslog("functions_googleoauth::check_user_password_googleoauth usertotest=".$usertotest." GETPOST('actionlogin')=".GETPOST('actionlogin'));
+	dol_syslog("functions_googleoauth::check_user_password_googleoauth usertotest=".$usertotest." request()->input('actionlogin')=".request()->input('actionlogin'));
 
 	$login = '';
 
 	// Get identity from user and redirect browser to Google OAuth Server
-	if (GETPOST('actionlogin') == 'login') {
-		if (GETPOST('beforeoauthloginredirect')) {
+	if (request()->input('actionlogin') == 'login') {
+		if (request()->input('beforeoauthloginredirect')) {
 			// We post the form on the login page by clicking on the link to login using Google.
 			dol_syslog("We post the form on the login page by clicking on the link to login using Google. We save _SESSION['datafromloginform']");
 
 			// We save data of form into a variable
 			$_SESSION['datafromloginform'] = array(
-				'entity'=>GETPOST('entity', 'int'), // avoid to return 0 if entity var not exists
-				'backtopage'=>GETPOST('backtopage'),
-				'tz'=>GETPOST('tz'),
-				'tz_string'=>GETPOST('tz_string'),
-				'dst_observed'=>GETPOST('dst_observed'),
-				'dst_first'=>GETPOST('dst_first'),
-				'dst_second'=>GETPOST('dst_second'),
-				'dol_screenwidth'=>GETPOST('screenwidth'),
-				'dol_screenheight'=>GETPOST('screenheight'),
-				'dol_hide_topmenu'=>GETPOST('dol_hide_topmenu'),
-				'dol_hide_leftmenu'=>GETPOST('dol_hide_leftmenu'),
-				'dol_optimize_smallscreen'=>GETPOST('dol_optimize_smallscreen'),
-				'dol_no_mouse_hover'=>GETPOST('dol_no_mouse_hover'),
-				'dol_use_jmobile'=>GETPOST('dol_use_jmobile')
+				'entity'=>request()->input('entity'), // avoid to return 0 if entity var not exists
+				'backtopage'=>request()->input('backtopage'),
+				'tz'=>request()->input('tz'),
+				'tz_string'=>request()->input('tz_string'),
+				'dst_observed'=>request()->input('dst_observed'),
+				'dst_first'=>request()->input('dst_first'),
+				'dst_second'=>request()->input('dst_second'),
+				'dol_screenwidth'=>request()->input('screenwidth'),
+				'dol_screenheight'=>request()->input('screenheight'),
+				'dol_hide_topmenu'=>request()->input('dol_hide_topmenu'),
+				'dol_hide_leftmenu'=>request()->input('dol_hide_leftmenu'),
+				'dol_optimize_smallscreen'=>request()->input('dol_optimize_smallscreen'),
+				'dol_no_mouse_hover'=>request()->input('dol_no_mouse_hover'),
+				'dol_use_jmobile'=>request()->input('dol_use_jmobile')
 			);
 
 			// Make the redirect to the google_authcallback.php page to start the redirect to Google OAUTH.
@@ -90,7 +90,7 @@ function check_user_password_googleoauth($usertotest, $passwordtotest, $entityto
 			exit();
 		}
 
-		if (GETPOST('afteroauthloginreturn')) {
+		if (request()->input('afteroauthloginreturn')) {
 			// We reach this code after a call of a redirect to the targeted page from the callback url page of Google OAUTH2
 			dol_syslog("We reach the code after a call of a redirect to the targeted page from the callback url page of Google OAUTH2");
 

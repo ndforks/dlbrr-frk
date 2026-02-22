@@ -55,20 +55,20 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills', 'donation', 'salaries', 'accountancy', 'loan'));
 
-$date_startday = GETPOSTINT('date_startday');
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endday = GETPOSTINT('date_endday');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endyear = GETPOSTINT('date_endyear');
-$showaccountdetail = GETPOST('showaccountdetail', 'aZ09') ? GETPOST('showaccountdetail', 'aZ09') : 'yes';
+$date_startday = request()->integer('date_startday', 0);
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$showaccountdetail = request()->integer('showaccountdetail', 0) ? request()->integer('showaccountdetail', 0) : 'yes';
 
-$search_project_ref = GETPOST('search_project_ref', 'alpha');
+$search_project_ref = request()->input('search_project_ref');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -81,7 +81,7 @@ if (!$sortorder) {
 }
 
 // Date range
-$year = GETPOSTINT('year');		// this is used for navigation previous/next. It is the last year to show in filter
+$year = request()->integer('year', 0);		// this is used for navigation previous/next. It is the last year to show in filter
 if (empty($year)) {
 	$year_current = (int) dol_print_date(dol_now(), "%Y");
 	$month_current = (int) dol_print_date(dol_now(), "%m");
@@ -96,13 +96,13 @@ $date_end = dol_mktime(23, 59, 59, $date_endmonth, $date_endday, $date_endyear, 
 
 // We define date_start and date_end
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOST("q") ? GETPOSTINT("q") : 0;
+	$q = request()->input('q') ? request()->integer('q', 0) : 0;
 	if ($q == 0) {
 		// We define date_start and date_end
 		$year_end = $year_start;
-		$month_start = GETPOST("month") ? GETPOSTINT("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		$month_start = request()->input('month') ? request()->integer('month', 0) : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
 		$month_end = "";
-		if (!GETPOST('month')) {
+		if (!request()->input('month')) {
 			if (!$year && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
@@ -148,14 +148,14 @@ $modecompta = getDolGlobalString('ACCOUNTING_MODE', 'CREANCES-DETTES');
 /*if (isModEnabled('accounting')) {
 	$modecompta = 'BOOKKEEPING';
 }*/
-if (GETPOST("modecompta", 'alpha')) {
-	$modecompta = GETPOST("modecompta", 'alpha');
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
 $AccCat = new AccountancyCategory($db);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
@@ -397,7 +397,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 		}
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if ($total_ttc == 0) {
@@ -497,7 +497,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 				echo '</tr>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$total_ht_income += $subtotal_ht;
@@ -612,7 +612,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$total_ht_outcome += $subtotal_ht;
@@ -722,7 +722,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 				echo '</tr>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$total_ht_outcome += $subtotal_ht;
@@ -826,7 +826,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 				echo '</tr>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$total_ht_outcome += $subtotal_ht;
@@ -936,7 +936,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 			echo '<td class="right">'.price($subtotal_ttc).'</td>';
 			echo '</tr>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -998,7 +998,7 @@ if (isModEnabled('invoice') && ($modecompta == 'CREANCES-DETTES' || $modecompta 
 			echo '<td class="right">'.price($subtotal_ttc).'</td>';
 			echo '</tr>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }

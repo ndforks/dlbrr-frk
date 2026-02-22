@@ -46,13 +46,13 @@ function check_user_password_openid($usertotest, $passwordtotest, $entitytotest)
 	$login = '';
 
 	// Get identity from user and redirect browser to OpenID Server
-	if (GETPOSTISSET('username')) {
+	if (request()->has('username')) {
 		$openid = new SimpleOpenID();
-		$openid->SetIdentity(GETPOST('username'));
+		$openid->SetIdentity(request()->input('username'));
 		$protocol = ($conf->file->main_force_https ? 'https://' : 'http://');
 		$openid->SetTrustRoot($protocol.$_SERVER["HTTP_HOST"]);
 		$openid->SetRequiredFields(array('email', 'fullname'));
-		$_SESSION['dol_entity'] = GETPOSTINT("entity");
+		$_SESSION['dol_entity'] = request()->integer('entity', 0);
 		//$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
 		if ($openid->sendDiscoveryRequestToGetXRDS()) {
 			$openid->SetApprovedURL($protocol.$_SERVER["HTTP_HOST"].$_SERVER["SCRIPT_NAME"]); // Send Response from OpenID server to this script
@@ -62,17 +62,17 @@ function check_user_password_openid($usertotest, $passwordtotest, $entitytotest)
 			return false;
 		}
 		return false;
-	} elseif (GETPOST('openid_mode') == 'id_res') {
+	} elseif (request()->input('openid_mode') == 'id_res') {
 		// Perform HTTP Request to OpenID server to validate key
 		$openid = new SimpleOpenID();
-		$openid->SetIdentity(GETPOST('openid_identity'));
+		$openid->SetIdentity(request()->input('openid_identity'));
 		$openid_validation_result = $openid->validateWithServer();
 		if ($openid_validation_result === true) {
 			// OK HERE KEY IS VALID
 
 			$sql = "SELECT login, entity, datestartvalidity, dateendvalidity";
 			$sql .= " FROM ".MAIN_DB_PREFIX."user";
-			$sql .= " WHERE openid = '".$db->escape(GETPOST('openid_identity'))."'";
+			$sql .= " WHERE openid = '".$db->escape(request()->input('openid_identity'))."'";
 			$sql .= " AND entity IN (0,".(!empty($_SESSION["dol_entity"]) ? ((int) $_SESSION["dol_entity"]) : 1).")";
 
 			dol_syslog("functions_openid::check_user_password_openid", LOG_DEBUG);
@@ -93,7 +93,7 @@ function check_user_password_openid($usertotest, $passwordtotest, $entitytotest)
 			//echo "INVALID AUTHORIZATION";
 			return false;
 		}
-	} elseif (GETPOST('openid_mode') == 'cancel') {
+	} elseif (request()->input('openid_mode') == 'cancel') {
 		// User Canceled your Request
 		//echo "USER CANCELED REQUEST";
 		return false;

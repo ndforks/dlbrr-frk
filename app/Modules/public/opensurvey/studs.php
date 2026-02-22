@@ -53,10 +53,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
  */
 
 // Init vars
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $numsondage = '';
-if (GETPOST('sondage')) {
-	$numsondage = GETPOST('sondage', 'alpha');
+if (request()->input('sondage')) {
+	$numsondage = request()->input('sondage');
 }
 
 $object = new Opensurveysondage($db);
@@ -69,7 +69,7 @@ $canbemodified = ((empty($object->date_fin) || dol_get_last_hour($object->date_f
 
 // Security check
 if (!isModEnabled('opensurvey')) {
-	httponly_accessforbidden('Module Opensurvey not enabled');
+	httponly_abort(403);
 }
 
 
@@ -84,13 +84,13 @@ $listofvoters = explode(',', $_SESSION["savevoter"]);
 $error = 0;
 
 // Add comment
-if (GETPOST('ajoutcomment', 'alpha')) {
+if (request()->input('ajoutcomment')) {
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
-	$comment = GETPOST("comment", 'alphanohtml');
-	$comment_user = GETPOST('commentuser', 'alphanohtml');
+	$comment = request()->input('comment');
+	$comment_user = request()->input('commentuser');
 
 	if (!$comment) {
 		$error++;
@@ -138,24 +138,24 @@ if (GETPOST('ajoutcomment', 'alpha')) {
 		$resql = $object->addComment($comment, $comment_user, $user_ip);
 
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
 // Add vote
-if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// boutonp for chrome, boutonp_x for firefox
+if (request()->input('boutonp') || request()->input('boutonp.x') || request()->input('boutonp_x')) {		// boutonp for chrome, boutonp_x for firefox
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
 	//Si le nom est bien entré
-	if (GETPOST('nom', 'alphanohtml')) {
+	if (request()->input('nom')) {
 		$nouveauchoix = '';
 		for ($i = 0; $i < $nbcolonnes; $i++) {
-			if (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '1') {
+			if (request()->has("choix".$i) && request()->input("choix".$i) == '1') {
 				$nouveauchoix .= "1";
-			} elseif (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '2') {
+			} elseif (request()->has("choix".$i) && request()->input("choix".$i) == '2') {
 				$nouveauchoix .= "2";
 			} else {
 				$nouveauchoix .= "0";
@@ -186,7 +186,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 		}
 
 
-		$nom = substr(GETPOST("nom", 'alphanohtml'), 0, 64);
+		$nom = substr(request()->input('nom'), 0, 64);
 
 		// Check if vote already exists
 		$sql = 'SELECT id_users, nom as name';
@@ -194,7 +194,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 		$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."' AND nom = '".$db->escape($nom)."' ORDER BY id_users";
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$num_rows = $db->num_rows($resql);
@@ -242,7 +242,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	} else {
@@ -257,13 +257,13 @@ $testligneamodifier = false;
 $ligneamodifier = -1;
 $modifier = -1;
 for ($i = 0; $i < $nblines; $i++) {
-	if (GETPOSTISSET('modifierligne'.$i)) {
+	if (request()->has('modifierligne'.$i)) {
 		$ligneamodifier = $i;
 		$testligneamodifier = true;
 	}
 
 	//test to see if a line is to be modified
-	if (GETPOSTISSET('validermodifier'.$i)) {
+	if (request()->has('validermodifier'.$i)) {
 		$modifier = $i;
 		$testmodifier = true;
 	}
@@ -272,9 +272,9 @@ for ($i = 0; $i < $nblines; $i++) {
 if ($testmodifier) {
 	$nouveauchoix = '';
 	for ($i = 0; $i < $nbcolonnes; $i++) {
-		if (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '1') {
+		if (request()->has("choix".$i) && request()->input("choix".$i) == '1') {
 			$nouveauchoix .= "1";
-		} elseif (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '2') {
+		} elseif (request()->has("choix".$i) && request()->input("choix".$i) == '2') {
 			$nouveauchoix .= "2";
 		} else {
 			$nouveauchoix .= "0";
@@ -282,25 +282,25 @@ if ($testmodifier) {
 	}
 
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
-	$idtomodify = GETPOST("idtomodify".$modifier);
+	$idtomodify = request()->input("idtomodify".$modifier);
 	$sql = 'UPDATE '.MAIN_DB_PREFIX."opensurvey_user_studs";
 	$sql .= " SET reponses = '".$db->escape($nouveauchoix)."'";
 	$sql .= " WHERE id_users = '".$db->escape($idtomodify)."'";
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Delete comment
-$idcomment = GETPOSTINT('deletecomment');
+$idcomment = request()->integer('deletecomment', 0);
 if ($idcomment) {
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
 	$resql = $object->deleteComment($idcomment);
@@ -491,7 +491,7 @@ $sql .= " FROM ".MAIN_DB_PREFIX."opensurvey_user_studs";
 $sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 $num = $db->num_rows($resql);
@@ -674,7 +674,7 @@ while ($compteur < $num) {
 
 	// Ask for confirmation to modify the line
 	for ($i = 0; $i < $nblines; $i++) {
-		if (GETPOSTISSET("modifierligne".$i)) {
+		if (request()->has("modifierligne".$i)) {
 			if ($compteur == $i) {
 				print '<td class="casevide">';
 				print '<input type="hidden" name="idtomodify'.$compteur.'" value="'.$obj->id_users.'">';
@@ -704,18 +704,18 @@ if ($ligneamodifier < 0 && (!isset($_SESSION['nom']))) {
 		print '<td class="vide">';
 		if (empty($listofanswers[$i]['format']) || !in_array($listofanswers[$i]['format'], array('yesno', 'foragainst'))) {
 			print '<input type="checkbox" name="choix'.$i.'" value="1"';
-			if (GETPOSTISSET('choix'.$i) && GETPOST('choix'.$i) == '1') {
+			if (request()->has('choix'.$i) && request()->input('choix'.$i) == '1') {
 				print ' checked';
 			}
 			print '>';
 		}
 		if (!empty($listofanswers[$i]['format']) && $listofanswers[$i]['format'] == 'yesno') {
 			$arraychoice = array('2' => '&nbsp;', '0' => $langs->trans("No"), '1' => $langs->trans("Yes"));
-			print $form->selectarray("choix".$i, $arraychoice, GETPOST('choix'.$i));
+			print $form->selectarray("choix".$i, $arraychoice, request()->input('choix'.$i));
 		}
 		if (!empty($listofanswers[$i]['format']) && $listofanswers[$i]['format'] == 'foragainst') {
 			$arraychoice = array('2' => '&nbsp;', '0' => $langs->trans("Against"), '1' => $langs->trans("For"));
-			print $form->selectarray("choix".$i, $arraychoice, GETPOST('choix'.$i));
+			print $form->selectarray("choix".$i, $arraychoice, request()->input('choix'.$i));
 		}
 		print '</td>'."\n";
 	}
@@ -859,9 +859,9 @@ if ($comments) {
 if ($object->allow_comments && $currentusername) {
 	print '<br><div class="addcomment"><span class="opacitymedium">'.$langs->trans("AddACommentForPoll")."</span><br>\n";
 
-	print '<textarea name="comment" rows="'.ROWS_2.'" class="quatrevingtpercent">'.dol_escape_htmltag(GETPOST('comment', 'alphanohtml'), 0, 1).'</textarea><br>'."\n";
+	print '<textarea name="comment" rows="'.ROWS_2.'" class="quatrevingtpercent">'.dol_escape_htmltag(request()->input('comment'), 0, 1).'</textarea><br>'."\n";
 	print $langs->trans("Name").': ';
-	print '<input type="text" name="commentuser" maxlength="64" value="'.dol_escape_htmltag(GETPOSTISSET('commentuser') ? GETPOST('commentuser', 'alphanohtml') : (empty($_SESSION['nom']) ? $currentusername : $_SESSION['nom'])).'"> &nbsp; '."\n";
+	print '<input type="text" name="commentuser" maxlength="64" value="'.dol_escape_htmltag(request()->has('commentuser') ? request()->input('commentuser') : (empty($_SESSION['nom']) ? $currentusername : $_SESSION['nom'])).'"> &nbsp; '."\n";
 	print '<input type="submit" class="button smallpaddingimp" name="ajoutcomment" value="'.dol_escape_htmltag($langs->trans("AddComment")).'"><br>'."\n";
 	print '</form>'."\n";
 

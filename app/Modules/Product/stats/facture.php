@@ -44,10 +44,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'products', 'supplier_proposal'));
 
-$action = GETPOST('action', 'aZ');
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -66,13 +66,13 @@ $extrafields->fetch_name_optionals_label('facture');
 
 $search_array_options = $extrafields->getOptionalsFromPost('facture', '', 'search_');
 
-$showmessage = GETPOST('showmessage');
+$showmessage = request()->input('showmessage');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -88,34 +88,34 @@ if (!$sortfield) {
 
 $option = '';
 
-$search_date_startday = GETPOSTINT('search_date_startday');
+$search_date_startday = request()->integer('search_date_startday', 0);
 if (!empty($search_date_startday)) {
 	$option .= '&search_date_startday='.$search_date_startday;
 }
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
 if (!empty($search_date_startmonth)) {
 	$option .= '&search_date_startmonth='.$search_date_startmonth;
 }
-$search_date_startyear = GETPOSTINT('search_date_startyear');
+$search_date_startyear = request()->integer('search_date_startyear', 0);
 if (!empty($search_date_startyear)) {
 	$option .= '&search_date_startyear='.$search_date_startyear;
 }
-$search_date_endday = GETPOSTINT('search_date_endday');
+$search_date_endday = request()->integer('search_date_endday', 0);
 if (!empty($search_date_endday)) {
 	$option .= '&search_date_endday='.$search_date_endday;
 }
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
 if (!empty($search_date_endmonth)) {
 	$option .= '&search_date_endmonth='.$search_date_endmonth;
 }
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 if (!empty($search_date_endyear)) {
 	$option .= '&search_date_endyear='.$search_date_endyear;
 }
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) {
 	$search_date_startday = '';
 	$search_date_startmonth = '';
 	$search_date_startyear = '';
@@ -154,11 +154,11 @@ if ($id > 0 || !empty($ref)) {
 	$title = $langs->trans('ProductServiceCard');
 	$helpurl = '';
 	$shortlabel = dol_trunc($object->label, 16);
-	if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+	if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 		$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Referers');
 		$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 	}
-	if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+	if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 		$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Referers');
 		$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 	}
@@ -399,7 +399,7 @@ if ($id > 0 || !empty($ref)) {
 				print '</div>';
 				print '</form>';
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			$db->free($result);
 		}

@@ -44,30 +44,30 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other", "agenda"));
 
 $def = array();
-$actionsave = GETPOST('save', 'alpha');
+$actionsave = request()->input('save');
 $MAIN_FICHINTER_XCAL_EXPORTKEY = getDolGlobalString('MAIN_FICHINTER_XCAL_EXPORTKEY');
 $MAIN_FICHINTER_EXPORT_PAST_DELAY = getDolGlobalString('MAIN_FICHINTER_EXPORT_PAST_DELAY', 100);
 $MAIN_FICHINTER_EXPORT_CACHE = getDolGlobalInt('MAIN_FICHINTER_EXPORT_CACHE');
 $MAIN_FICHINTER_EXPORT_FIX_TZ = getDolGlobalString('MAIN_FICHINTER_EXPORT_FIX_TZ');
 
-if (GETPOSTISSET('MAIN_FICHINTER_XCAL_EXPORTKEY')) {
-	$MAIN_FICHINTER_XCAL_EXPORTKEY = trim(GETPOST('MAIN_FICHINTER_XCAL_EXPORTKEY', 'alpha'));
+if (request()->has('MAIN_FICHINTER_XCAL_EXPORTKEY')) {
+	$MAIN_FICHINTER_XCAL_EXPORTKEY = trim(request()->input('MAIN_FICHINTER_XCAL_EXPORTKEY'));
 }
-if (GETPOSTISSET('MAIN_FICHINTER_EXPORT_PAST_DELAY')) {
-	$MAIN_FICHINTER_EXPORT_PAST_DELAY = intval(GETPOSTINT('MAIN_FICHINTER_EXPORT_PAST_DELAY'));
+if (request()->has('MAIN_FICHINTER_EXPORT_PAST_DELAY')) {
+	$MAIN_FICHINTER_EXPORT_PAST_DELAY = intval(request()->integer('MAIN_FICHINTER_EXPORT_PAST_DELAY', 0));
 }
-if (GETPOSTISSET('MAIN_FICHINTER_EXPORT_CACHE')) {
-	$MAIN_FICHINTER_EXPORT_CACHE = intval(GETPOSTINT('MAIN_FICHINTER_EXPORT_CACHE'));
+if (request()->has('MAIN_FICHINTER_EXPORT_CACHE')) {
+	$MAIN_FICHINTER_EXPORT_CACHE = intval(request()->integer('MAIN_FICHINTER_EXPORT_CACHE', 0));
 }
-if (GETPOSTISSET('MAIN_FICHINTER_EXPORT_FIX_TZ')) {
-	$MAIN_FICHINTER_EXPORT_FIX_TZ = trim(GETPOST('MAIN_FICHINTER_EXPORT_FIX_TZ', 'alpha'));
+if (request()->has('MAIN_FICHINTER_EXPORT_FIX_TZ')) {
+	$MAIN_FICHINTER_EXPORT_FIX_TZ = trim(request()->input('MAIN_FICHINTER_EXPORT_FIX_TZ'));
 }
 
 // Sauvegardes parameters

@@ -42,8 +42,8 @@ require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 // Load translation files required by the page
 $langs->load("holiday");
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 
 $childids = $user->getAllChildIds(1);
@@ -77,7 +77,7 @@ if (($id > 0) || $ref) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

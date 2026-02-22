@@ -50,15 +50,15 @@ require_once '../main.inc.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ');
-$entityid = GETPOSTINT('entity');
-$backtourl = GETPOST('backtourl');
+$action = request()->input('action');
+$entityid = request()->integer('entity', 0);
+$backtourl = request()->input('backtourl');
 if (empty($backtourl)) {
 	$backtourl = DOL_URL_ROOT;
 }
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 $langs->load("main");
@@ -67,7 +67,7 @@ $right = ($langs->trans("DIRECTION") == 'rtl' ? 'left' : 'right');
 $left = ($langs->trans("DIRECTION") == 'rtl' ? 'right' : 'left');
 
 if (!isModEnabled('multicompany')) {
-	httponly_accessforbidden('No multicompany module enabled');
+	httponly_abort(403);
 }
 
 

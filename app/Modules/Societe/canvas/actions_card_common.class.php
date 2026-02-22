@@ -118,19 +118,19 @@ abstract class ActionsCardCommon
 			$this->assign_post($action);
 		}
 
-		if (GETPOST("type") == 'f') {
+		if (request()->input('type') == 'f') {
 			$this->object->fournisseur = 1;
 		}
-		if (GETPOST("type") == 'c') {
+		if (request()->input('type') == 'c') {
 			$this->object->client = 1;
 		}
-		if (GETPOST("type") == 'p') {
+		if (request()->input('type') == 'p') {
 			$this->object->client = 2;
 		}
-		if (GETPOST("type") == 'cp') {
+		if (request()->input('type') == 'cp') {
 			$this->object->client = 3;
 		}
-		if (GETPOST("private") == 1) {
+		if (request()->input('private') == 1) {
 			$this->object->particulier = 1;
 		}
 
@@ -417,41 +417,41 @@ abstract class ActionsCardCommon
 		// phpcs:enable
 		global $langs, $mysoc;
 
-		$this->object->id = GETPOSTINT("socid");
-		$this->object->name = GETPOST("name") ? GETPOST("name") : GETPOST("nom");
-		$this->object->prefix_comm			= GETPOST("prefix_comm");
-		$this->object->client = GETPOSTINT("client");
-		$this->object->code_client			= GETPOST("code_client");
-		$this->object->fournisseur			= GETPOSTINT("fournisseur");
-		$this->object->code_fournisseur = GETPOST("code_fournisseur");
-		$this->object->address = GETPOST("address");
-		$this->object->zip = GETPOST("zipcode");
-		$this->object->town					= GETPOST("town");
-		$this->object->country_id = GETPOST("country_id") ? GETPOST("country_id") : $mysoc->country_id;
-		$this->object->state_id = GETPOSTINT("state_id");
-		$this->object->phone				= GETPOST("phone");
-		$this->object->phone_mobile			= GETPOST("phone_mobile");
-		$this->object->fax					= GETPOST("fax");
-		$this->object->email				= GETPOST("email", 'alphawithlgt');
-		$this->object->url					= GETPOST("url");
-		$this->object->capital				= (float) GETPOST("capital");
-		$this->object->idprof1				= GETPOST("idprof1");
-		$this->object->idprof2				= GETPOST("idprof2");
-		$this->object->idprof3				= GETPOST("idprof3");
-		$this->object->idprof4				= GETPOST("idprof4");
-		$this->object->typent_id = GETPOSTINT("typent_id");
-		$this->object->effectif_id = GETPOSTINT("effectif_id");
-		$this->object->barcode				= GETPOST("barcode");
-		$this->object->forme_juridique_code = GETPOSTINT("forme_juridique_code");
-		$this->object->default_lang			= GETPOST("default_lang");
-		$this->object->commercial_id		= GETPOSTINT("commercial_id");
+		$this->object->id = request()->integer('socid', 0);
+		$this->object->name = request()->input('name') ? request()->input('name') : request()->input('nom');
+		$this->object->prefix_comm			= request()->input('prefix_comm');
+		$this->object->client = request()->integer('client', 0);
+		$this->object->code_client			= request()->input('code_client');
+		$this->object->fournisseur			= request()->integer('fournisseur', 0);
+		$this->object->code_fournisseur = request()->input('code_fournisseur');
+		$this->object->address = request()->input('address');
+		$this->object->zip = request()->input('zipcode');
+		$this->object->town					= request()->input('town');
+		$this->object->country_id = request()->input('country_id') ? request()->input('country_id') : $mysoc->country_id;
+		$this->object->state_id = request()->integer('state_id', 0);
+		$this->object->phone				= request()->input('phone');
+		$this->object->phone_mobile			= request()->input('phone_mobile');
+		$this->object->fax					= request()->input('fax');
+		$this->object->email				= request()->input('email');
+		$this->object->url					= request()->input('url');
+		$this->object->capital				= (float) request()->input('capital');
+		$this->object->idprof1				= request()->input('idprof1');
+		$this->object->idprof2				= request()->input('idprof2');
+		$this->object->idprof3				= request()->input('idprof3');
+		$this->object->idprof4				= request()->input('idprof4');
+		$this->object->typent_id = request()->integer('typent_id', 0);
+		$this->object->effectif_id = request()->integer('effectif_id', 0);
+		$this->object->barcode				= request()->input('barcode');
+		$this->object->forme_juridique_code = request()->integer('forme_juridique_code', 0);
+		$this->object->default_lang			= request()->input('default_lang');
+		$this->object->commercial_id		= request()->integer('commercial_id', 0);
 
-		$this->object->tva_assuj = GETPOST("assujtva_value") ? GETPOST("assujtva_value") : 1;
-		$this->object->tva_intra = GETPOST("tva_intra");
+		$this->object->tva_assuj = request()->input('assujtva_value') ? request()->input('assujtva_value') : 1;
+		$this->object->tva_intra = request()->input('tva_intra');
 
 		//Local Taxes
-		$this->object->localtax1_assuj		= GETPOSTINT("localtax1assuj_value");
-		$this->object->localtax2_assuj		= GETPOSTINT("localtax2assuj_value");
+		$this->object->localtax1_assuj		= request()->integer('localtax1assuj_value', 0);
+		$this->object->localtax2_assuj		= request()->integer('localtax2assuj_value', 0);
 
 		// We set country_id, and country_code label of the chosen country
 		if ($this->object->country_id) {

@@ -51,11 +51,11 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
  */
 $langs->loadLangs(array("main", "bills", "cashdesk", "banks"));
 
-$action = GETPOST('action', 'aZ09');
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0);
+$action = request()->input('action');
+$place = (request()->input('place') ? request()->input('place') : 0);
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -64,8 +64,8 @@ if (!$user->hasRight('takepos', 'run')) {
  */
 
 if ($action == "split" && $user->hasRight('takepos', 'run')) {
-	$line = GETPOSTINT('line');
-	$split = GETPOSTINT('split');
+	$line = request()->integer('line', 0);
+	$split = request()->integer('split', 0);
 	$invoice = null;
 	$placeid = 0;
 	if ($split == 1) { // Split line

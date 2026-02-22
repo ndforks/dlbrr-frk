@@ -53,15 +53,15 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('other', 'companies', 'compta', 'bills'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
@@ -101,7 +101,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
 
 if ($action == 'setlib' && $permissiontoadd) {
 	$object->fetch($id);
-	$result = $object->setValueFrom('label', GETPOST('lib', 'alpha'), '', null, 'text', '', $user, 'TAX_MODIFY');
+	$result = $object->setValueFrom('label', request()->input('lib'), '', null, 'text', '', $user, 'TAX_MODIFY');
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}

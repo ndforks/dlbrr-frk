@@ -47,10 +47,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
  * @var User $user
  */
 
-$field = GETPOST('field', 'alpha', 2);
-$element = GETPOST('element', 'alpha', 2);
-$table_element = GETPOST('table_element', 'alpha', 2);
-$fk_element = GETPOST('fk_element', 'alpha', 2);
+$field = request()->input('field');
+$element = request()->input('element');
+$table_element = request()->input('table_element');
+$fk_element = request()->input('fk_element');
 $id = $fk_element;
 
 /* Example:
@@ -77,7 +77,7 @@ if (is_numeric($fk_element)) {
 }
 $object = fetchObjectByElement($id, $element, $element_ref);
 if (! is_object($object)) {
-	httponly_accessforbidden('Not allowed, bad combination of parameters for fetchObjectByElement');
+	httponly_abort(403);
 }
 
 $module = $object->module;
@@ -91,7 +91,7 @@ print 'object->id='.$object->id.' - object->module='.$object->module.' - object-
 // Security check
 $result = restrictedArea($user, $object->module, $object, $object->table_element, $usesublevelpermission, 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 if (!$result) {
-	httponly_accessforbidden('Not allowed by restrictArea');
+	httponly_abort(403);
 }
 
 
@@ -108,14 +108,14 @@ top_httphead();
 if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_element)) {
 	$field = preg_replace('/^editval_/', '', $field); 	// remove prefix "editval_"
 
-	$type = GETPOST('type', 'alpha', 2);	// type string by default
+	$type = request()->input('type');	// type string by default
 
-	$value = ($type == 'ckeditor' ? GETPOST('value', '', 2) : GETPOST('value', 'alpha', 2));
+	$value = ($type == 'ckeditor' ? request()->input('value') : request()->input('value'));
 
-	//$ext_element = GETPOST('ext_element', 'alpha', 2);
+	//$ext_element = request()->input('ext_element');
 	$ext_element = 'notused';
 
-	//$savemethod = GETPOST('savemethod', 'alpha', 2);
+	//$savemethod = request()->input('savemethod');
 	//$savemethodname = (!empty($savemethod) ? $savemethod : 'setValueFrom');
 	$savemethodname = 'setValueFrom';
 
@@ -169,7 +169,7 @@ if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_e
 		$feature = 'fournisseur';
 		$feature2 = 'facture';
 	}
-	//var_dump(GETPOST('action','aZ09'));
+	//var_dump(request()->input('action'));
 	//var_dump($newelement.'-'.$subelement."-".$feature."-".$object_id);
 	$check_access = restrictedArea($user, $feature, $object_id, '', (string) $feature2);
 	//var_dump($user->rights);
@@ -187,7 +187,7 @@ if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_e
 				$return['error'] = $langs->trans('ErrorBadValue');
 			}
 		} elseif ($type == 'datepicker') {
-			$timestamp = GETPOSTINT('timestamp', 2);
+			$timestamp = request()->integer('timestamp', 0);
 			$format = 'date';
 			$newvalue = ($timestamp / 1000);
 		}

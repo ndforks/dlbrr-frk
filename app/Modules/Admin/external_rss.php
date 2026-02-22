@@ -48,11 +48,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
 $langs->load("admin");
 
 $lastexternalrss = 0;
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -75,48 +75,48 @@ if ($result) {
 		}
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
-if ($action == 'add' || GETPOST("modify")) {
-	$external_rss_title = "external_rss_title_".GETPOSTINT("norss");
-	$external_rss_urlrss = "external_rss_urlrss_".GETPOSTINT("norss");
+if ($action == 'add' || request()->input('modify')) {
+	$external_rss_title = "external_rss_title_".request()->integer('norss', 0);
+	$external_rss_urlrss = "external_rss_urlrss_".request()->integer('norss', 0);
 
-	if (GETPOST($external_rss_urlrss, 'alpha')) {
+	if (request()->input($external_rss_urlrss)) {
 		$boxlabel = '(ExternalRSSInformations)';
-		//$external_rss_url = "external_rss_url_" . GETPOST("norss");
+		//$external_rss_url = "external_rss_url_" . request()->input('norss');
 
 		$db->begin();
 
-		if (GETPOST("modify")) {
+		if (request()->input('modify')) {
 			// Supprime boite box_external_rss de definition des boites
 			/* $sql = "UPDATE ".MAIN_DB_PREFIX."boxes_def";
 			$sql.= " SET name = '".$db->escape($boxlabel)."'";
-			$sql.= " WHERE file ='box_external_rss.php' AND note LIKE '".$db->escape(GETPOST("norss"))." %'";
+			$sql.= " WHERE file ='box_external_rss.php' AND note LIKE '".$db->escape(request()->input('norss'))." %'";
 
 			$resql=$db->query($sql);
 			if (! $resql)
 			{
-				dol_print_error($db,"sql=$sql");
+				abort(500, "sql=$sql");
 				exit;
 			}
 			*/
 		} else {
 			// Ajoute boite box_external_rss dans definition des boites
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes_def (file, note)";
-			$sql .= " VALUES ('box_external_rss.php', '".$db->escape(GETPOSTINT("norss")." (".GETPOST($external_rss_title)).")')";
+			$sql .= " VALUES ('box_external_rss.php', '".$db->escape(request()->integer('norss', 0)." (".request()->input($external_rss_title)).")')";
 			if (!$db->query($sql)) {
-				dol_print_error($db);
+				abort(500);
 				$error++;
 			}
 			//print $sql;exit;
 		}
 
-		$result1 = dolibarr_set_const($db, "EXTERNAL_RSS_TITLE_".GETPOSTINT("norss"), GETPOST($external_rss_title), 'chaine', 0, '', $conf->entity);
+		$result1 = dolibarr_set_const($db, "EXTERNAL_RSS_TITLE_".request()->integer('norss', 0), request()->input($external_rss_title), 'chaine', 0, '', $conf->entity);
 		$result2 = 0;
 		if ($result1) {
-			$consttosave = "EXTERNAL_RSS_URLRSS_".GETPOSTINT("norss");
-			$urltosave = GETPOST($external_rss_urlrss, 'alpha');
+			$consttosave = "EXTERNAL_RSS_URLRSS_".request()->integer('norss', 0);
+			$urltosave = request()->input($external_rss_urlrss);
 			$result2 = dolibarr_set_const($db, $consttosave, $urltosave, 'chaine', 0, '', $conf->entity);
 			//var_dump($result2);exit;
 		}
@@ -127,18 +127,18 @@ if ($action == 'add' || GETPOST("modify")) {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
-if (GETPOST("delete")) {
-	if (GETPOSTINT("norss")) {
+if (request()->input('delete')) {
+	if (request()->integer('norss', 0)) {
 		$db->begin();
 
 		// Supprime boite box_external_rss de definition des boites
 		$sql = "SELECT rowid FROM ".MAIN_DB_PREFIX."boxes_def";
-		$sql .= " WHERE file = 'box_external_rss.php' AND note LIKE '".$db->escape((string) GETPOSTINT("norss"))." %'";
+		$sql .= " WHERE file = 'box_external_rss.php' AND note LIKE '".$db->escape((string) request()->integer('norss', 0))." %'";
 
 		$resql = $db->query($sql);
 		if ($resql) {
@@ -173,10 +173,10 @@ if (GETPOST("delete")) {
 		}
 
 
-		$result1 = dolibarr_del_const($db, "EXTERNAL_RSS_TITLE_".GETPOSTINT("norss"), $conf->entity);
+		$result1 = dolibarr_del_const($db, "EXTERNAL_RSS_TITLE_".request()->integer('norss', 0), $conf->entity);
 		$result2 = 0;
 		if ($result1) {
-			$result2 = dolibarr_del_const($db, "EXTERNAL_RSS_URLRSS_".GETPOSTINT("norss"), $conf->entity);
+			$result2 = dolibarr_del_const($db, "EXTERNAL_RSS_URLRSS_".request()->integer('norss', 0), $conf->entity);
 		}
 
 		if ($result1 && $result2) {
@@ -185,7 +185,7 @@ if (GETPOST("delete")) {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -350,7 +350,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

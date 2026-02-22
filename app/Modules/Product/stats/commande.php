@@ -45,8 +45,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formorder.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('orders', 'products', 'companies'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -60,10 +60,10 @@ if (!empty($user->socid)) {
 $hookmanager->initHooks(array('productstatsorder'));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -76,15 +76,15 @@ if (!$sortorder) {
 if (!$sortfield) {
 	$sortfield = "c.date_commande";
 }
-$search_month = GETPOSTINT('search_month');
-$search_year = GETPOSTINT('search_year');
-if (GETPOSTISARRAY('search_status')) {
-	$search_status = implode(',', GETPOST('search_status', 'array:intcomma'));
+$search_month = request()->integer('search_month', 0);
+$search_year = request()->integer('search_year', 0);
+if (is_array(request()->input('search_status'))) {
+	$search_status = implode(',', request()->input('search_status'));
 } else {
-	$search_status = (GETPOST('search_status', 'intcomma') != '' ? GETPOST('search_status', 'intcomma') : GETPOST('statut', 'intcomma'));
+	$search_status = (request()->input('search_status') != '' ? request()->input('search_status') : request()->input('statut'));
 }
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) {
 	$search_month = '';
 	$search_year = '';
 	$search_status = '';
@@ -319,7 +319,7 @@ if ($id > 0 || !empty($ref)) {
 				print "</div>";
 				print '</form>';
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			$db->free($result);
 		}

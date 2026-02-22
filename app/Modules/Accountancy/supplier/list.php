@@ -53,42 +53,42 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("bills", "companies", "compta", "accountancy", "other", "productbatch", "products"));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:aZ09');	// Value can be 'X_Y'
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'accountancysupplierlist'; // To manage different context of search
-$optioncss = GETPOST('optioncss', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect', []);	// Value can be 'X_Y'
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'accountancysupplierlist'; // To manage different context of search
+$optioncss = request()->input('optioncss');
 
-$default_account = GETPOSTINT('default_account');
+$default_account = request()->integer('default_account', 0);
 
 // Search Getpost
-$search_lineid = GETPOST('search_lineid', 'alpha');		// Can be '> 100'
-$search_societe = GETPOST('search_societe', 'alpha');
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_ref_supplier = GETPOST('search_ref_supplier', 'alpha');
-$search_invoice = GETPOST('search_invoice', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$search_desc = GETPOST('search_desc', 'alpha');
-$search_amount = GETPOST('search_amount', 'alpha');
-$search_account = GETPOST('search_account', 'alpha');
-$search_vat = GETPOST('search_vat', 'alpha');
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_lineid = request()->integer('search_lineid', 0);		// Can be '> 100'
+$search_societe = request()->input('search_societe');
+$search_ref = request()->input('search_ref');
+$search_ref_supplier = request()->input('search_ref_supplier');
+$search_invoice = request()->input('search_invoice');
+$search_label = request()->input('search_label');
+$search_desc = request()->input('search_desc');
+$search_amount = request()->input('search_amount');
+$search_account = request()->integer('search_account', 0);
+$search_vat = request()->input('search_vat');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_country = GETPOST('search_country', 'aZ09');
-$search_tvaintra = GETPOST('search_tvaintra', 'alpha');
+$search_country = request()->input('search_country');
+$search_tvaintra = request()->input('search_tvaintra');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page < 0) {
 	$page = 0;
 }
@@ -116,13 +116,13 @@ $chartaccountcode = dol_getIdFromCode($db, getDolGlobalString('CHARTOFACCOUNTS')
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 $arrayfields = array(
@@ -155,11 +155,11 @@ $object = null;
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -174,7 +174,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$search_societe = '';
 		$search_lineid = '';
 		$search_ref = '';
@@ -219,7 +219,7 @@ if ($massaction == 'ventil' && $user->hasRight('accounting', 'bind', 'write')) {
 		foreach ($toselect as $maLigneCochee) {
 			$maLigneCourante = explode("_", $maLigneCochee);
 			$monId = $maLigneCourante[0];
-			$monCompte = GETPOSTINT('codeventil'.$monId);
+			$monCompte = request()->integer('codeventil' . $monId, 0);
 
 			if ($monCompte <= 0) {
 				$msg .= '<div><span class="error">'.$langs->trans("Lineofinvoice").' '.$monId.' - '.$langs->trans("NoAccountSelected").'</span></div>';
@@ -249,8 +249,8 @@ if ($massaction == 'ventil' && $user->hasRight('accounting', 'bind', 'write')) {
 	}
 }
 
-if (GETPOST('sortfield') == 'f.datef, f.ref, l.rowid') {
-	$value = (GETPOST('sortorder') == 'asc,asc,asc' ? 0 : 1);
+if (request()->input('sortfield') == 'f.datef, f.ref, l.rowid') {
+	$value = (request()->input('sortorder') == 'asc,asc,asc' ? 0 : 1);
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 	$res = dolibarr_set_const($db, "ACCOUNTING_LIST_SORT_VENTILATION_TODO", $value, 'yesno', 0, '', $conf->entity);
 }

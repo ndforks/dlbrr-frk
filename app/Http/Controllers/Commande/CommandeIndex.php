@@ -9,6 +9,6 @@ class CommandeIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/commande/list.php');
+        return redirect()->route('commande.list');
     }
 }

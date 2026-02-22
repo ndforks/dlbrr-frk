@@ -62,17 +62,17 @@ if (($action == 'update' || !empty($websitetemplateconf)) && !empty($arrayofpara
 
 	foreach ($arrayofparameters as $key => $val) {
 		// Modify constant only if key was posted (avoid resetting key to the null value)
-		if (GETPOSTISSET($key)) {
+		if (request()->has($key)) {
 			if (isset($val['type']) && preg_match('/category:/', $val['type'])) {
-				if (GETPOSTINT($key) == '-1') {
+				if (request()->integer($key, 0) == '-1') {
 					$val_const = '';
 				} else {
-					$val_const = GETPOSTINT($key);
+					$val_const = request()->integer($key, 0);
 				}
 			} elseif (isset($val['type']) && $val['type'] == 'html') {
-				$val_const = GETPOST($key, 'restricthtml');
+				$val_const = request()->input($key);
 			} else {
-				$val_const = GETPOST($key, 'alpha');
+				$val_const = request()->input($key);
 			}
 
 			$result = dolibarr_set_const($db, $key, $val_const, 'chaine', 0, '', $conf->entity);
@@ -98,7 +98,7 @@ if (($action == 'update' || !empty($websitetemplateconf)) && !empty($arrayofpara
 
 if ($action == 'deletefile' && $modulepart == 'doctemplates' && !empty($user->admin)) {
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	$keyforuploaddir = GETPOST('keyforuploaddir', 'aZ09');
+	$keyforuploaddir = request()->input('keyforuploaddir');
 	$listofdir = explode(',', preg_replace('/[\r\n]+/', ',', trim(getDolGlobalString($keyforuploaddir))));
 
 	foreach ($listofdir as $key => $tmpdir) {
@@ -118,10 +118,10 @@ if ($action == 'deletefile' && $modulepart == 'doctemplates' && !empty($user->ad
 		}
 	}
 
-	$filetodelete = $tmpdir.'/'.GETPOST('file');
+	$filetodelete = $tmpdir.'/'.request()->input('file');
 	$result = dol_delete_file($filetodelete);
 	if ($result > 0) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('file')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('file')), null, 'mesgs');
 	}
 }
 
@@ -153,9 +153,9 @@ if ($action == 'setModuleOptions' && !empty($user->admin)) {
 	}
 
 	// Process upload fields
-	if (GETPOST('upload', 'alpha') && GETPOST('keyforuploaddir', 'aZ09')) {
+	if (request()->input('upload') && request()->input('keyforuploaddir')) {
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		$keyforuploaddir = GETPOST('keyforuploaddir', 'aZ09');
+		$keyforuploaddir = request()->input('keyforuploaddir');
 		$listofdir = explode(',', preg_replace('/[\r\n]+/', ',', trim(getDolGlobalString($keyforuploaddir))));
 
 		foreach ($listofdir as $key => $tmpdir) {

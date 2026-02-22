@@ -84,8 +84,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php';
  * @var User $user
  */
 
-$datatoimport = GETPOST('datatoimport');
-$format = GETPOST('format');
+$datatoimport = request()->input('datatoimport');
+$format = request()->input('format');
 
 // Load translation files required by the page
 $langs->load("exports");
@@ -110,13 +110,13 @@ $fieldstarget = $objimport->array_import_fields[0];
 $valuestarget = $objimport->array_import_examplevalues[0];
 
 $attachment = true;
-if (GETPOSTISSET("attachment")) {
-	$attachment = GETPOST("attachment");
+if (request()->has('attachment')) {
+	$attachment = request()->input('attachment');
 }
 //$attachment = false;
 $contenttype = dol_mimetype($format);
-if (GETPOSTISSET("contenttype")) {
-	$contenttype = GETPOST("contenttype");
+if (request()->has('contenttype')) {
+	$contenttype = request()->input('contenttype');
 }
 //$contenttype='text/plain';
 $outputencoding = 'UTF-8';

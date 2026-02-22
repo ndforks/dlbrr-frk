@@ -46,21 +46,21 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'bills', 'companies', 'compta'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
-$type = GETPOST('type');
+$type = request()->input('type');
 if (empty($type)) {
 	$type = 'CHQ';
 }
 
 $object = new RemiseCheque($db);
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "ASC";
 }
@@ -70,21 +70,21 @@ if (!$sortfield) {
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 
 $upload_dir = $conf->bank->multidir_output[$object->entity ? $object->entity : $conf->entity]."/checkdeposits";
 
 // filter by dates from / to
-$search_date_start_day = GETPOSTINT('search_date_start_day');
-$search_date_start_month = GETPOSTINT('search_date_start_month');
-$search_date_start_year = GETPOSTINT('search_date_start_year');
-$search_date_end_day = GETPOSTINT('search_date_end_day');
-$search_date_end_month = GETPOSTINT('search_date_end_month');
-$search_date_end_year = GETPOSTINT('search_date_end_year');
+$search_date_start_day = request()->integer('search_date_start_day', 0);
+$search_date_start_month = request()->integer('search_date_start_month', 0);
+$search_date_start_year = request()->integer('search_date_start_year', 0);
+$search_date_end_day = request()->integer('search_date_end_day', 0);
+$search_date_end_month = request()->integer('search_date_end_month', 0);
+$search_date_end_year = request()->integer('search_date_end_year', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_start_month, $search_date_start_day, $search_date_start_year);
 $search_date_end = dol_mktime(23, 59, 59, $search_date_end_month, $search_date_end_day, $search_date_end_year);
-$filteraccountid = GETPOSTINT('accountid');
+$filteraccountid = request()->integer('accountid', 0);
 
 // Security check
 $fieldname = (!empty($ref) ? 'ref' : 'rowid');
@@ -109,9 +109,9 @@ $arrayofpaymentmodetomanage = explode(',', getDolGlobalString('BANK_PAYMENT_MODE
  */
 
 if ($action == 'setdate' && $user->hasRight('banque', 'cheque')) {
-	$result = $object->fetch(GETPOSTINT('id'));
+	$result = $object->fetch(request()->integer('id', 0));
 	if ($result > 0) {
-		$date = dol_mktime(0, 0, 0, GETPOSTINT('datecreate_month'), GETPOSTINT('datecreate_day'), GETPOSTINT('datecreate_year'));
+		$date = dol_mktime(0, 0, 0, request()->integer('datecreate_month', 0), request()->integer('datecreate_day', 0), request()->integer('datecreate_year', 0));
 
 		$result = $object->set_date($user, $date);
 		if ($result < 0) {
@@ -123,9 +123,9 @@ if ($action == 'setdate' && $user->hasRight('banque', 'cheque')) {
 }
 
 if ($action == 'setrefext' && $user->hasRight('banque', 'cheque')) {
-	$result = $object->fetch(GETPOSTINT('id'));
+	$result = $object->fetch(request()->integer('id', 0));
 	if ($result > 0) {
-		$ref_ext = GETPOST('ref_ext');
+		$ref_ext = request()->input('ref_ext');
 
 		$result = $object->setValueFrom('ref_ext', $ref_ext, '', null, 'text', '', $user, 'CHECKDEPOSIT_MODIFY');
 		if ($result < 0) {
@@ -137,9 +137,9 @@ if ($action == 'setrefext' && $user->hasRight('banque', 'cheque')) {
 }
 
 if ($action == 'setref' && $user->hasRight('banque', 'cheque')) {
-	$result = $object->fetch(GETPOSTINT('id'));
+	$result = $object->fetch(request()->integer('id', 0));
 	if ($result > 0) {
-		$ref = GETPOST('ref');
+		$ref = request()->input('ref');
 
 		$result = $object->set_number($user, $ref);
 		if ($result < 0) {
@@ -150,28 +150,28 @@ if ($action == 'setref' && $user->hasRight('banque', 'cheque')) {
 	}
 }
 
-if ($action == 'create' && GETPOSTINT("accountid") > 0 && $user->hasRight('banque', 'cheque')) {
-	if (GETPOSTISARRAY('toRemise')) {
+if ($action == 'create' && request()->integer('accountid', 0) > 0 && $user->hasRight('banque', 'cheque')) {
+	if (is_array(request()->input('toRemise'))) {
 		$object->type = $type;
 		$object->date_bordereau = dol_now();
-		$arrayofid = GETPOST('toRemise', 'array:int');
+		$arrayofid = request()->integer('toRemise', 0);
 
-		$result = $object->create($user, GETPOSTINT("accountid"), 0, $arrayofid);
+		$result = $object->create($user, request()->integer('accountid', 0), 0, $arrayofid);
 		if ($result > 0) {
 			if ($object->statut == 1) {     // If statut is validated, we build doc
 				$object->fetch($object->id); // To force to reload all properties in correct property name
 				// Define output language
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				//if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) $newlang=$object->client->default_lang;
 				if (!empty($newlang)) {
 					$outputlangs = new Translate("", $conf);
 					$outputlangs->setDefaultLang($newlang);
 				}
-				$result = $object->generatePdf(GETPOST("model"), $outputlangs);
+				$result = $object->generatePdf(request()->input('model'), $outputlangs);
 			}
 
 			header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id);
@@ -186,9 +186,9 @@ if ($action == 'create' && GETPOSTINT("accountid") > 0 && $user->hasRight('banqu
 	}
 }
 
-if ($action == 'remove' && $id > 0 && GETPOSTINT("lineid") > 0 && $user->hasRight('banque', 'cheque')) {
+if ($action == 'remove' && $id > 0 && request()->integer('lineid', 0) > 0 && $user->hasRight('banque', 'cheque')) {
 	$object->id = $id;
-	$result = $object->removeCheck(GETPOSTINT("lineid"));
+	$result = $object->removeCheck(request()->integer('lineid', 0));
 	if ($result === 0) {
 		header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id);
 		exit;
@@ -215,15 +215,15 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $user->hasRight('banqu
 		// Define output language
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		//if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) $newlang=$object->client->default_lang;
 		if (!empty($newlang)) {
 			$outputlangs = new Translate("", $conf);
 			$outputlangs->setDefaultLang($newlang);
 		}
-		$result = $object->generatePdf(GETPOST('model'), $outputlangs);
+		$result = $object->generatePdf(request()->input('model'), $outputlangs);
 
 		header("Location: ".$_SERVER["PHP_SELF"]."?id=".$object->id);
 		exit;
@@ -233,8 +233,8 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $user->hasRight('banqu
 }
 
 if ($action == 'confirm_reject_check' && $confirm == 'yes' && $user->hasRight('banque', 'cheque')) {
-	$reject_date = dol_mktime(0, 0, 0, GETPOSTINT('rejectdate_month'), GETPOSTINT('rejectdate_day'), GETPOSTINT('rejectdate_year'));
-	$rejected_check = GETPOSTINT('bankid');
+	$reject_date = dol_mktime(0, 0, 0, request()->integer('rejectdate_month', 0), request()->integer('rejectdate_day', 0), request()->integer('rejectdate_year', 0));
+	$rejected_check = request()->integer('bankid', 0);
 
 	$object->fetch($id);
 	$paiement_id = $object->rejectCheck($rejected_check, $reject_date);
@@ -253,19 +253,19 @@ if ($action == 'builddoc' && $user->hasRight('banque', 'cheque')) {
 	$result = $object->fetch($id);
 
 	// Save last template used to generate document
-	//if (GETPOST('model')) $object->setDocModel($user, GETPOST('model','alpha'));
+	//if (request()->input('model')) $object->setDocModel($user, request()->input('model'));
 
 	$outputlangs = $langs;
 	$newlang = '';
-	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-		$newlang = GETPOST('lang_id', 'aZ09');
+	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+		$newlang = request()->input('lang_id');
 	}
 	//if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) $newlang=$object->client->default_lang;
 	if (!empty($newlang)) {
 		$outputlangs = new Translate("", $conf);
 		$outputlangs->setDefaultLang($newlang);
 	}
-	$result = $object->generatePdf(GETPOST("model"), $outputlangs);
+	$result = $object->generatePdf(request()->input('model'), $outputlangs);
 	if ($result <= 0) {
 		dol_print_error($db, $object->error);
 		exit;
@@ -280,14 +280,14 @@ if ($action == 'builddoc' && $user->hasRight('banque', 'cheque')) {
 
 		$langs->load("other");
 
-		$filetodelete = GETPOST('file', 'alpha');
+		$filetodelete = request()->input('file');
 		$file = $upload_dir.'/'.$filetodelete;
 
 		$ret = dol_delete_file($file, 0, 0, 0, $object);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('file')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('file')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('file')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('file')), null, 'errors');
 		}
 	}
 }
@@ -297,7 +297,7 @@ if ($action == 'builddoc' && $user->hasRight('banque', 'cheque')) {
  * View
  */
 
-if (GETPOST('removefilter')) {
+if (request()->input('removefilter')) {
 	// filter by dates from / to
 	$search_date_start_day = '';
 	$search_date_start_month = '';
@@ -374,7 +374,7 @@ if ($action == 'new') {
 	 */
 	if ($action == 'reject_check') {
 		$formquestion = array(
-			array('type' => 'hidden', 'name' => 'bankid', 'value' => GETPOSTINT('lineid')),
+			array('type' => 'hidden', 'name' => 'bankid', 'value' => request()->integer('lineid', 0)),
 			array('type' => 'date', 'name' => 'rejectdate_', 'label' => $langs->trans("RejectCheckDate"), 'value' => dol_now())
 		);
 		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans("RejectCheck"), $langs->trans("ConfirmRejectCheck"), 'confirm_reject_check', $formquestion, '', 1);
@@ -805,7 +805,7 @@ if ($action == 'new') {
 
 		print "</div>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print dol_get_fiche_end();

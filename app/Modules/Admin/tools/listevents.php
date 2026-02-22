@@ -39,19 +39,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/triggers/interface_20_all_Logevents.class.
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$optioncss = GETPOST("optioncss", "aZ"); // Option for the css output (always '' except when 'print')
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "admin", "users", "other","withdrawals"));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -65,25 +65,25 @@ if (!$sortorder) {
 	$sortorder = "DESC";
 }
 
-$search_rowid = GETPOST("search_rowid", "intcomma");
-$search_code = GETPOST("search_code", "alpha");
-$search_ip   = GETPOST("search_ip", "alpha");
-$search_user = GETPOST("search_user", "alpha");
-$search_desc = GETPOST("search_desc", "alpha");
-$search_ua   = GETPOST("search_ua", "restricthtml");
-$search_prefix_session = GETPOST("search_prefix_session", "restricthtml");
-$search_entity = ($user->entity > 0 ? $user->entity : GETPOSTINT('search_entity'));		// TODO Replace with $search_entity = GETPOSTINT('search_entity') when the filter is available on screen for this page
+$search_rowid = request()->integer('search_rowid', 0);
+$search_code = request()->input('search_code');
+$search_ip   = request()->input('search_ip');
+$search_user = request()->input('search_user');
+$search_desc = request()->input('search_desc');
+$search_ua   = request()->input('search_ua');
+$search_prefix_session = request()->input('search_prefix_session');
+$search_entity = ($user->entity > 0 ? $user->entity : request()->integer('search_entity', 0));		// TODO Replace with $search_entity = request()->integer('search_entity', 0) when the filter is available on screen for this page
 
 $now = dol_now();
 $nowarray = dol_getdate($now);
 
-if (GETPOSTINT("date_startmonth") > 0) {
-	$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"), 'tzuserrel');
+if (request()->integer('date_startmonth', 0) > 0) {
+	$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0), 'tzuserrel');
 } else {
 	$date_start = '';
 }
-if (GETPOSTINT("date_endmonth") > 0) {
-	$date_end = dol_get_last_hour(dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"), 'tzuserrel'), 'tzuserrel');
+if (request()->integer('date_endmonth', 0) > 0) {
+	$date_end = dol_get_last_hour(dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzuserrel'), 'tzuserrel');
 } else {
 	$date_end = '';
 }
@@ -93,10 +93,10 @@ if ($date_start !== '' && $date_end !== '' && $date_start > $date_end) {
 	$date_end = $date_start + 86400;
 }
 
-if (!GETPOSTISSET('pageplusoneold') && !GETPOSTISSET('page') && $date_start === '') { // We define date_start and date_end
+if (!request()->has('pageplusoneold') && !request()->has('page') && $date_start === '') { // We define date_start and date_end
 	$date_start = dol_get_first_day($nowarray['year'], $nowarray['mon'], 'tzuserrel');
 }
-if (!GETPOSTISSET('pageplusoneold') && !GETPOSTISSET('page') && $date_end === '') {
+if (!request()->has('pageplusoneold') && !request()->has('page') && $date_end === '') {
 	$date_end = dol_get_last_day($nowarray['year'], $nowarray['mon'], 'tzuserrel');
 }
 
@@ -140,7 +140,7 @@ if ($user->socid > 0) {
 */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -151,7 +151,7 @@ if (!$user->admin) {
 $now = dol_now();
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$date_start = '';
 	$date_end = '';
 	$date_startday = '';
@@ -226,7 +226,7 @@ $sql .= " LEFT JOIN ".MAIN_DB_PREFIX."user as u ON u.rowid = e.fk_user";
 if ($search_entity > 0) {
 	$sql .= " WHERE e.entity = ".((int) $search_entity).")";
 } else {
-	$sql .= " WHERE e.entity IN (".getEntity('event', (GETPOSTINT('search_current_entity') ? 0 : 1)).")";
+	$sql .= " WHERE e.entity IN (".getEntity('event', (request()->integer('search_current_entity', 0) ? 0 : 1)).")";
 }
 if ($date_start !== '') {
 	$sql .= " AND e.dateevent >= '".$db->idate($date_start)."'";
@@ -566,7 +566,7 @@ if ($result) {
 	print "</form>";
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

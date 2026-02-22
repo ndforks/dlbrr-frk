@@ -42,17 +42,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills', 'donation', 'salaries'));
 
-$date_startday = GETPOSTINT('date_startday');
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endday = GETPOSTINT('date_endday');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endyear = GETPOSTINT('date_endyear');
+$date_startday = request()->integer('date_startday', 0);
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endyear = request()->integer('date_endyear', 0);
 
 $nbofyear = 4;
 
 // Date range
-$year = GETPOSTINT('year');
+$year = request()->integer('year', 0);
 if (empty($year)) {
 	$year_current = (int) dol_print_date(dol_now(), "%Y");
 	$month_current = (int) dol_print_date(dol_now(), "%m");
@@ -67,12 +67,12 @@ $date_end = dol_mktime(23, 59, 59, $date_endmonth, $date_endday, $date_endyear, 
 
 // We define date_start and date_end
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
 		// We define date_start and date_end
 		$year_end = $year_start + $nbofyear - (getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') > 1 ? 0 : 1);
-		$month_start = GETPOSTISSET("month") ? GETPOSTINT("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
-		if (!GETPOST('month')) {	// If month not forced
+		$month_start = request()->has('month') ? request()->integer('month', 0) : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		if (!request()->input('month')) {	// If month not forced
 			if (!$year && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
@@ -105,8 +105,8 @@ if (empty($date_start) || empty($date_end)) { // We define date_start and date_e
 	}
 }
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 
 $tmps = dol_getdate($date_start);
 $month_start = $tmps['mon'];
@@ -121,8 +121,8 @@ $modecompta = getDolGlobalString('ACCOUNTING_MODE');
 if (isModEnabled('accounting')) {
 	$modecompta = 'BOOKKEEPING';
 }
-if (GETPOST("modecompta", 'alpha')) {
-	$modecompta = GETPOST("modecompta", 'alpha');
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
 // Security check
@@ -324,7 +324,7 @@ if ($result) {
 	}
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // On ajoute les paiements anciennes version, non lies par paiement_facture (very old versions)
@@ -359,7 +359,7 @@ if ($modecompta == 'RECETTES-DEPENSES') {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -422,7 +422,7 @@ $now = dol_now();
 $casenow = dol_print_date($now, "%Y-%m");
 
 // Loop on each month
-$nb_mois_decalage = GETPOSTISSET('date_startmonth') ? (GETPOSTINT('date_startmonth') - 1) : (!getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') ? 0 : (getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') - 1));
+$nb_mois_decalage = request()->has('date_startmonth') ? (request()->integer('date_startmonth', 0) - 1) : (!getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') ? 0 : (getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') - 1));
 for ($mois = 1 + $nb_mois_decalage; $mois <= 12 + $nb_mois_decalage; $mois++) {
 	$mois_modulo = $mois; // ajout
 	if ($mois > 12) {
@@ -738,7 +738,7 @@ print '</div>';
  }
  else
  {
- dol_print_error($db);
+ abort(500);
  }
  */
 
@@ -787,7 +787,7 @@ print '</div>';
  }
  else
  {
- dol_print_error($db);
+ abort(500);
  }
  print "<tr class="oddeven"><td class=\"right\" colspan=\"5\"><i>Total CA previsionnel : </i></td><td class=\"right\"><i>".price($total_CA)."</i></td><td colspan=\"3\"><-- bug ici car bug sur les 2 precedents</td></tr>";
  }

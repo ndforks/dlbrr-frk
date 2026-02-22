@@ -51,16 +51,16 @@ require '../main.inc.php';
  * View
  */
 
-if (!GETPOST('transkey', 'alphanohtml') && !GETPOST('transphrase', 'alphanohtml')) {
+if (!request()->input('transkey') && !request()->input('transphrase')) {
 	print 'Sorry, it seems your internet connection is off.<br>';
 	print 'You need to be connected to network to use this software.<br>';
 } else {
 	$langs->loadLangs(array("error", "other"));
 
-	if (GETPOST('transphrase', 'alphanohtml')) {
-		print dol_escape_htmltag(GETPOST('transphrase', 'alphanohtml'));
-	} elseif (GETPOST('transkey', 'alphanohtml')) {
-		print dol_escape_htmltag($langs->trans(GETPOST('transkey', 'alphanohtml')));
+	if (request()->input('transphrase')) {
+		print dol_escape_htmltag(request()->input('transphrase'));
+	} elseif (request()->input('transkey')) {
+		print dol_escape_htmltag($langs->trans(request()->input('transkey')));
 	}
 }
 

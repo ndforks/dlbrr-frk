@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 if (empty($action)) {
 	$action = 'edit';
 }
@@ -193,14 +193,14 @@ if ($action == 'update') {
 	foreach ($modules as $module => $delays) {
 		if (isModEnabled($module)) {
 			foreach ($delays as $delay) {
-				if (GETPOST($delay['code']) != '') {
-					dolibarr_set_const($db, $delay['code'], GETPOST($delay['code']), 'chaine', 0, '', $conf->entity);
+				if (request()->input($delay['code']) != '') {
+					dolibarr_set_const($db, $delay['code'], request()->input($delay['code']), 'chaine', 0, '', $conf->entity);
 				}
 			}
 		}
 	}
-	dolibarr_set_const($db, "MAIN_DISABLE_METEO", GETPOST("MAIN_DISABLE_METEO"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_USE_METEO_WITH_PERCENTAGE", GETPOST("MAIN_USE_METEO_WITH_PERCENTAGE"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_DISABLE_METEO", request()->input('MAIN_DISABLE_METEO'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_USE_METEO_WITH_PERCENTAGE", request()->input('MAIN_USE_METEO_WITH_PERCENTAGE'), 'chaine', 0, '', $conf->entity);
 
 	// For update value with percentage
 	$plus = '';

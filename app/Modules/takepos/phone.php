@@ -59,12 +59,12 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
 
 // Decode place if it is an order from a customer phone
-$place = GETPOSTISSET("key") ? dol_decode(GETPOST('key')) : GETPOST('place', 'aZ09');
+$place = request()->has('key') ? dol_decode(request()->input('key')) : request()->input('place');
 
-$action = GETPOST('action', 'aZ09');
-$setterminal = GETPOSTINT('setterminal');
-$idproduct = GETPOSTINT('idproduct');
-$mobilepage = GETPOST('mobilepage', 'alphanohtml');	// Set when page is loaded by a js .load()
+$action = request()->input('action');
+$setterminal = request()->integer('setterminal', 0);
+$idproduct = request()->integer('idproduct', 0);
+$mobilepage = request()->input('mobilepage');	// Set when page is loaded by a js .load()
 
 if ($setterminal > 0) {
 	$_SESSION["takeposterminal"] = $setterminal;
@@ -114,8 +114,8 @@ if ($action == "productinfo" && $user->hasRight('takepos', 'run')) {
 	print "<br><b>".price($prod->price_ttc, 1, $langs, 1, -1, -1, getDolCurrency())."</b>";
 	print '<br>';
 } elseif ($action == "editline" && $user->hasRight('takepos', 'run')) {
-	$placeid = GETPOSTINT('placeid');
-	$selectedline = GETPOSTINT('selectedline');
+	$placeid = request()->integer('placeid', 0);
+	$selectedline = request()->integer('selectedline', 0);
 	$invoice = new Facture($db);
 	$invoice->fetch($placeid);
 	foreach ($invoice->lines as $line) {

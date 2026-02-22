@@ -42,48 +42,48 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('accountancy', 'admin', 'bills', 'compta', 'salaries'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$id = GETPOSTINT('id');
-$rowid = GETPOSTINT('rowid');
-$massaction = GETPOST('massaction', 'aZ09');
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'accountingaccountlist'; // To manage different context of search
-$mode = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
+$massaction = request()->input('massaction', []);
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'accountingaccountlist'; // To manage different context of search
+$mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$search_account = GETPOST('search_account', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$search_labelshort = GETPOST('search_labelshort', 'alpha');
-$search_accountparent = GETPOST('search_accountparent', 'alpha');
-$search_pcgtype = GETPOST('search_pcgtype', 'alpha');
-$search_import_key = GETPOST('search_import_key', 'alpha');
-$search_reconcilable = GETPOST("search_reconcilable", 'int');
-$search_centralized = GETPOST("search_centralized", 'int');
-$search_active = GETPOST("search_active", 'int');
-$toselect = GETPOST('toselect', 'array:int');
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$confirm = GETPOST('confirm', 'alpha');
+$search_account = request()->integer('search_account', 0);
+$search_label = request()->input('search_label');
+$search_labelshort = request()->input('search_labelshort');
+$search_accountparent = request()->integer('search_accountparent', 0);
+$search_pcgtype = request()->input('search_pcgtype');
+$search_import_key = request()->input('search_import_key');
+$search_reconcilable = request()->input('search_reconcilable');
+$search_centralized = request()->input('search_centralized');
+$search_active = request()->input('search_active');
+$toselect = request()->input('toselect', []);
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$confirm = request()->input('confirm');
 
-$chartofaccounts = GETPOSTINT('chartofaccounts');
+$chartofaccounts = request()->integer('chartofaccounts', 0);
 
 $permissiontoadd = $user->hasRight('accounting', 'chartofaccount');
 $permissiontodelete = $user->hasRight('accounting', 'chartofaccount');
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoadd) {
-	accessforbidden();
+	abort(403);
 }
 // now $permissiontoadd or $user->hasRight('accounting', 'chartofaccount') are always equal to 1
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -127,11 +127,11 @@ $hookmanager->initHooks(array('accountancyadminaccount'));
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha')) {
+if (!request()->input('confirmmassaction')) {
 	$massaction = '';
 }
 
@@ -155,7 +155,7 @@ if (empty($reshook)) {
 	}
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$search_account = "";
 		$search_label = "";
 		$search_labelshort = "";
@@ -167,8 +167,8 @@ if (empty($reshook)) {
 		$search_active = "";
 		$search_array_options = array();
 	}
-	if ((GETPOSTINT('valid_change_chart') && GETPOSTINT('chartofaccounts') > 0)	// explicit click on button 'Change and load' with js on
-		|| (GETPOSTINT('chartofaccounts') > 0 && GETPOSTINT('chartofaccounts') != getDolGlobalInt('CHARTOFACCOUNTS'))) {	// a submit of form is done and chartofaccounts combo has been modified
+	if ((request()->integer('valid_change_chart', 0) && request()->integer('chartofaccounts', 0) > 0)	// explicit click on button 'Change and load' with js on
+		|| (request()->integer('chartofaccounts', 0) > 0 && request()->integer('chartofaccounts', 0) != getDolGlobalInt('CHARTOFACCOUNTS'))) {	// a submit of form is done and chartofaccounts combo has been modified
 		$error = 0;
 
 		if ($chartofaccounts > 0 /* && $permissiontoadd */) {
@@ -183,7 +183,7 @@ if (empty($reshook)) {
 					$country_code = $obj->code;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			// Try to load sql file
@@ -220,7 +220,7 @@ if (empty($reshook)) {
 
 	if ($action == 'disable' /* && $permissiontoadd */) {
 		if ($accounting->fetch($id)) {
-			$mode = GETPOSTINT('mode');
+			$mode = request()->integer('mode', 0);
 			$result = $accounting->accountDeactivate($id, $mode);
 			if ($result < 0) {
 				setEventMessages($accounting->error, $accounting->errors, 'errors');
@@ -230,7 +230,7 @@ if (empty($reshook)) {
 		$action = 'update';
 	} elseif ($action == 'enable' /* && $permissiontoadd */) {
 		if ($accounting->fetch($id)) {
-			$mode = GETPOSTINT('mode');
+			$mode = request()->integer('mode', 0);
 			$result = $accounting->accountActivate($id, $mode);
 			if ($result < 0) {
 				setEventMessages($accounting->error, $accounting->errors, 'errors');
@@ -476,7 +476,7 @@ if ($resql) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	print "</select>";
 	print ajax_combobox("chartofaccounts");
@@ -890,7 +890,7 @@ if ($resql) {
 
 	print '</form>'."\n";
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

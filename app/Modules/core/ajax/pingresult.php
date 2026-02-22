@@ -53,9 +53,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$hash_unique_id = GETPOST('hash_unique_id', 'alpha');
-$hash_algo = GETPOST('hash_algo', 'alpha');
+$action = request()->input('action');
+$hash_unique_id = request()->integer('hash_unique_id', 0);
+$hash_algo = request()->input('hash_algo');
 
 
 // Security check

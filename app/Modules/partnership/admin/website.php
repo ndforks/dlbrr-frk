@@ -46,12 +46,12 @@ require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "partnership"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $error = 0;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -60,7 +60,7 @@ if (!$user->admin) {
  */
 
 if ($action == 'setPARTNERSHIP_ENABLE_PUBLIC') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'PARTNERSHIP_ENABLE_PUBLIC', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'PARTNERSHIP_ENABLE_PUBLIC', 0, 'chaine', 0, '', $conf->entity);
@@ -68,7 +68,7 @@ if ($action == 'setPARTNERSHIP_ENABLE_PUBLIC') {
 }
 
 if ($action == 'update') {
-	$public = GETPOST('PARTNERSHIP_ENABLE_PUBLIC');
+	$public = request()->input('PARTNERSHIP_ENABLE_PUBLIC');
 
 	$res = dolibarr_set_const($db, "PARTNERSHIP_ENABLE_PUBLIC", $public, 'chaine', 0, '', $conf->entity);
 

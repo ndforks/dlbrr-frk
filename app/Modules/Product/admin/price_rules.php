@@ -37,11 +37,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'products'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Security check
 if (!$user->admin || (!isModEnabled("product") && !isModEnabled("service"))) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -52,9 +52,9 @@ $error = 0;
  */
 
 if ($action == 'update') {
-	$var_percent = GETPOST('var_percent', 'array');
-	$var_min_percent = GETPOST('var_min_percent', 'array');
-	$fk_level = GETPOST('fk_level', 'array');
+	$var_percent = request()->input('var_percent');
+	$var_min_percent = request()->input('var_min_percent');
+	$fk_level = request()->input('fk_level');
 
 	$produit_multiprices_limit = getDolGlobalInt('PRODUIT_MULTIPRICES_LIMIT');
 	for ($i = 1; $i <= $produit_multiprices_limit; $i++) {

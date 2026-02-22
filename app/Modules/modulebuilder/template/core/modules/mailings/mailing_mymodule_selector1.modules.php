@@ -115,8 +115,8 @@ class mailing_mailing_mymodule_selector1 extends MailingTargets
 		$sql = "SELECT rowid as id, firstname, lastname, email";
 		$sql .= " FROM ".$this->db->prefix()."myobject";
 		$sql .= " WHERE email IS NOT NULL AND email <> ''";
-		if (GETPOSTISSET('filter') && GETPOST('filter', 'alphanohtml') != 'none') {
-			$sql .= " AND status = '".$this->db->escape(GETPOST('filter', 'alphanohtml'))."'";
+		if (request()->has('filter') && request()->input('filter') != 'none') {
+			$sql .= " AND status = '".$this->db->escape(request()->input('filter'))."'";
 		}
 		$sql .= " ORDER BY email";
 

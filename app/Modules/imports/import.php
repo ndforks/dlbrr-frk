@@ -142,21 +142,21 @@ $entitytolang = array(
 	'bomline'      => 'BOMLine'
 );
 
-$datatoimport		= GETPOST('datatoimport');
-$format				= GETPOST('format');
-$filetoimport		= GETPOST('filetoimport');
-$action				= GETPOST('action', 'alpha');
-$confirm			= GETPOST('confirm', 'alpha');
-$step				= (GETPOST('step') ? GETPOST('step') : 1);
-$import_name = GETPOST('import_name');
-$hexa = GETPOST('hexa');
-$importmodelid = GETPOSTINT('importmodelid');
-$excludefirstline = (GETPOST('excludefirstline') ? GETPOST('excludefirstline') : 2);
-$endatlinenb = (GETPOST('endatlinenb') ? GETPOST('endatlinenb') : '');
-$updatekeys			= (GETPOST('updatekeys', 'array') ? GETPOST('updatekeys', 'array') : array());
-$separator			= (GETPOST('separator', 'nohtml') ? GETPOST('separator', 'nohtml', 3) : '');
-$enclosure			= (GETPOST('enclosure', 'nohtml') ? GETPOST('enclosure', 'nohtml') : '"');	// We must use 'nohtml' and not 'alphanohtml' because we must accept "
-$charset            = GETPOST('charset', 'aZ09');
+$datatoimport		= request()->input('datatoimport');
+$format				= request()->input('format');
+$filetoimport		= request()->input('filetoimport');
+$action				= request()->input('action');
+$confirm			= request()->input('confirm');
+$step				= (request()->input('step') ? request()->input('step') : 1);
+$import_name = request()->input('import_name');
+$hexa = request()->input('hexa');
+$importmodelid = request()->integer('importmodelid', 0);
+$excludefirstline = (request()->input('excludefirstline') ? request()->input('excludefirstline') : 2);
+$endatlinenb = (request()->input('endatlinenb') ? request()->input('endatlinenb') : '');
+$updatekeys			= (request()->input('updatekeys') ? request()->input('updatekeys') : array());
+$separator			= (request()->input('separator') ? request()->input('separator') : '');
+$enclosure			= (request()->input('enclosure') ? request()->input('enclosure') : '"');	// We must use 'nohtml' and not 'alphanohtml' because we must accept "
+$charset            = request()->input('charset');
 $separator_used     = str_replace('\t', "\t", $separator);
 $relativepath = '';
 
@@ -194,8 +194,8 @@ if (empty($array_match_file_to_database)) {
  */
 
 if ($action == 'deleteprof' && $user->hasRight('import', 'run')) {
-	if (GETPOSTINT("id")) {
-		$objimport->fetch(GETPOSTINT("id"));
+	if (request()->integer('id', 0)) {
+		$objimport->fetch(request()->integer('id', 0));
 		$result = $objimport->delete($user);
 	}
 }
@@ -215,7 +215,7 @@ if ($action == 'add_import_model' && $user->hasRight('import', 'run')) {
 		$objimport->model_name = $import_name;
 		$objimport->datatoimport = $datatoimport;
 		$objimport->hexa = $hexa;
-		$objimport->fk_user = (GETPOST('visibility', 'aZ09') == 'all' ? 0 : $user->id);
+		$objimport->fk_user = (request()->input('visibility') == 'all' ? 0 : $user->id);
 
 		$result = $objimport->create($user);
 		if ($result >= 0) {
@@ -235,7 +235,7 @@ if ($action == 'add_import_model' && $user->hasRight('import', 'run')) {
 }
 
 if ($step == 2 && $datatoimport) {
-	if (GETPOST('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC')) {
+	if (request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC')) {
 		dol_mkdir($conf->import->dir_temp);
 		$nowyearmonth = dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 
@@ -260,12 +260,12 @@ if ($step == 2 && $datatoimport) {
 			$param .= '&endatlinenb='.urlencode($endatlinenb);
 		}
 
-		$file = $conf->import->dir_temp.'/'.GETPOST('urlfile');
+		$file = $conf->import->dir_temp.'/'.request()->input('urlfile');
 		$ret = dol_delete_file($file);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 		}
 		header('Location: '.$_SERVER["PHP_SELF"].'?step='.$step.$param);
 		exit;
@@ -299,8 +299,8 @@ if ($step == 4 && $action == 'select_model' && $user->hasRight('import', 'run'))
 if ($action == 'saveselectorder' && $user->hasRight('import', 'run')) {
 	// Enregistrement de la position des champs
 	$serialized_array_match_file_to_database = '';
-	dol_syslog("selectorder=".GETPOST('selectorder'), LOG_DEBUG);
-	$selectorder = explode(",", GETPOST('selectorder'));
+	dol_syslog("selectorder=".request()->input('selectorder'), LOG_DEBUG);
+	$selectorder = explode(",", request()->input('selectorder'));
 	$fieldtarget = $fieldstarget = $objimport->array_import_fields[0];
 	foreach ($selectorder as $key => $code) {
 		$serialized_array_match_file_to_database .= $key.'='.$code;
@@ -440,7 +440,7 @@ if ($step == 2 && $datatoimport) {
 	 * Confirm delete file
 	 */
 	if ($action == 'delete') {
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?urlfile='.urlencode(GETPOST('urlfile')).'&step=2'.$param, $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?urlfile='.urlencode(request()->input('urlfile')).'&step=2'.$param, $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 	}
 
 	print '<div class="underbanner clearboth"></div>';
@@ -699,7 +699,7 @@ if ($step == 3 && $datatoimport) {
 	}
 
 	// The separator has been defined, if it is a unique char, we check it is valid by reading the source file
-	if ($model == 'csv' && strlen($separator) == 1 && !GETPOSTISSET('separator')) {
+	if ($model == 'csv' && strlen($separator) == 1 && !request()->has('separator')) {
 		'@phan-var-force ImportCsv $obj';
 		// Count the char in first line of file.
 		$fh = fopen($conf->import->dir_temp.'/'.$filetoimport, 'r');
@@ -756,7 +756,7 @@ if ($step == 3 && $datatoimport) {
 		}
 	}
 
-	if (GETPOST('update')) {
+	if (request()->input('update')) {
 		$array_match_file_to_database = array();
 	}
 
@@ -955,7 +955,7 @@ if ($step == 3 && $datatoimport) {
 	print '<tr><td>'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart = 'import';
-	$relativepath = GETPOST('filetoimport');
+	$relativepath = request()->input('filetoimport');
 	print '<a data-ajax="false" href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($relativepath).'&step=3'.$param.'" target="_blank" rel="noopener noreferrer">';
 	print img_mime($file, '', 'pictofixedwidth');
 	print $filetoimport;
@@ -1424,7 +1424,7 @@ if ($step == 3 && $datatoimport) {
 		print '</tr>';
 
 		$nameofimportprofile = str_replace(' ', '-', $langs->trans("ImportProfile").' '.$titleofmodule.' '.dol_print_date(dol_now('gmt'), 'dayxcard'));
-		if (GETPOST('import_name')) {	// If we have submitted a form, we take value used for the update try
+		if (request()->input('import_name')) {	// If we have submitted a form, we take value used for the update try
 			$nameofimportprofile = $import_name;
 		}
 
@@ -1476,7 +1476,7 @@ if ($step == 3 && $datatoimport) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '</table>';
@@ -1611,7 +1611,7 @@ if ($step == 4 && $datatoimport) {
 	print '<tr><td>'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart = 'import';
-	$relativepath = GETPOST('filetoimport');
+	$relativepath = request()->input('filetoimport');
 	print '<a data-ajax="false" href="'.DOL_URL_ROOT.'/document.php?modulepart='.urlencode($modulepart).'&file='.urlencode($relativepath).'&step=4'.$param.'" target="_blank" rel="noopener noreferrer">';
 	print img_mime($file, '', 'pictofixedwidth');
 	print $filetoimport;
@@ -1999,7 +1999,7 @@ if ($step == 5 && $datatoimport) {
 
 	$model = $format;
 	$list = $objmodelimport->listOfAvailableImportFormat($db);
-	$importid = GETPOST("importid", 'alphanohtml');
+	$importid = request()->integer('importid', 0);
 
 
 	// Create class to use for import
@@ -2030,7 +2030,7 @@ if ($step == 5 && $datatoimport) {
 		$obj->import_close_file();
 	}
 
-	$nboflines = (GETPOSTISSET("nboflines") ? GETPOSTINT("nboflines") : dol_count_nb_of_line($conf->import->dir_temp.'/'.$filetoimport));
+	$nboflines = (request()->has('nboflines') ? request()->integer('nboflines', 0) : dol_count_nb_of_line($conf->import->dir_temp.'/'.$filetoimport));
 
 	$param = '&format='.$format.'&datatoimport='.urlencode($datatoimport).'&filetoimport='.urlencode($filetoimport).'&nboflines='.((int) $nboflines);
 	if ($excludefirstline) {
@@ -2112,7 +2112,7 @@ if ($step == 5 && $datatoimport) {
 	print '<tr><td>'.$langs->trans("FileToImport").'</td>';
 	print '<td>';
 	$modulepart = 'import';
-	$relativepath = GETPOST('filetoimport');
+	$relativepath = request()->input('filetoimport');
 	print '<a data-ajax="false" href="'.DOL_URL_ROOT.'/document.php?modulepart='.$modulepart.'&file='.urlencode($relativepath).'&step=4'.$param.'" target="_blank" rel="noopener noreferrer">';
 	print img_mime($file, '', 'pictofixedwidth');
 	print $filetoimport;

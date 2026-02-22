@@ -51,15 +51,15 @@ require_once DOL_DOCUMENT_ROOT . '/hrm/class/skillrank.class.php';
 $langs->loadLangs(array('hrm', 'other', 'products'));   // why products?
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'jobcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid   = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'jobcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Job($db);
@@ -73,11 +73,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_' . $key, 'alpha')) {
-		$search[$key] = GETPOST('search_' . $key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -95,15 +95,15 @@ $permissiontodelete = $user->hasRight('hrm', 'all', 'delete');
 $upload_dir = $conf->hrm->multidir_output[isset($object->entity) ? $object->entity : 1] . '/job';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (empty($conf->hrm->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -153,10 +153,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -180,13 +180,13 @@ if (empty($reshook)) {
 			$object->id = 0;
 			$object->ref = '';
 
-			if (GETPOST('clone_label', 'alphanohtml')) {
-				$object->label = GETPOST('clone_label', 'alphanohtml');
+			if (request()->input('clone_label')) {
+				$object->label = request()->input('clone_label');
 			} else {
 				$object->label = $langs->trans("CopyOf").' '.$object->label;
 			}
-			if (GETPOST('clone_skills_required')) {
-				$cloneSkillRequired = GETPOST('clone_skills_required');
+			if (request()->input('clone_skills_required')) {
+				$cloneSkillRequired = request()->input('clone_skills_required');
 			}
 
 			$id = $object->create($user);
@@ -394,7 +394,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '	<form name="addproduct" id="addproduct" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . (($action != 'editline') ? '' : '#line_' . GETPOSTINT('lineid')) . '" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . (($action != 'editline') ? '' : '#line_' . request()->integer('lineid', 0)) . '" method="POST">
 		<input type="hidden" name="token" value="' . newToken() . '">
 		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline') . '">
 		<input type="hidden" name="mode" value="">
@@ -412,7 +412,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		if (!empty($object->lines)) {
-			$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 1);
+			$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 1);
 		}
 
 		// Form to add new line
@@ -468,7 +468,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

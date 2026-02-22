@@ -68,13 +68,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 $langs->loadLangs(array('companies', 'other', 'ticket', 'errors'));
 
 // Get parameters
-$track_id = GETPOST('track_id', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$track_id = request()->integer('track_id', 0);
+$action = request()->input('action');
 $suffix = "";
 
 // Check access to Module(s)
 if (!isModEnabled('ticket')) {
-	httponly_accessforbidden('Module Ticket is not enabled');
+	httponly_abort(403);
 }
 
 

@@ -37,7 +37,7 @@ require_once DOL_DOCUMENT_ROOT.'/exports/class/export.class.php';
 $langs->loadLangs(array("exports", "other"));
 
 if (!$user->socid == 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $export = new Export($db);

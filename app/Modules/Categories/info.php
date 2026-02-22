@@ -40,15 +40,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
  */
 
 if (!$user->hasRight('categorie', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array('categories', 'mrp', 'sendings'));
 
 $socid = 0;
-$id = GETPOSTINT('id');
-$label = GETPOST('label', 'alpha');
+$id = request()->integer('id', 0);
+$label = request()->input('label');
 
 // Security check
 if ($user->socid) {
@@ -84,7 +84,7 @@ $title .= ' ('.$langs->trans(empty(Categorie::$MAP_TYPE_TITLE_AREA[$type]) ? ucf
 $head = categories_prepare_head($object, $type);
 print dol_get_fiche_head($head, 'info', $langs->trans($title), -1, 'category');
 
-$backtolist = (GETPOST('backtolist') ? GETPOST('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
+$backtolist = (request()->input('backtolist') ? request()->input('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
 $linkback = '<a href="'.dol_sanitizeUrl($backtolist).'">'.$langs->trans("BackToList").'</a>';
 $object->next_prev_filter = 'type:=:'.((int) $object->type);
 $object->ref = $object->label;

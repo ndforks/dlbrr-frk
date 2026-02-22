@@ -46,9 +46,9 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('sendings', 'companies', 'bills', 'orders', 'stocks', 'other', 'propal'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 $object = new Expedition($db);
 if ($id > 0 || !empty($ref)) {

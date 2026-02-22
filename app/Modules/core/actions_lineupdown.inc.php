@@ -45,13 +45,13 @@
  * @var int<0,1> $hideref
  */
 if ($action == 'up' && $permissiontoedit) {
-	$object->line_up(GETPOSTINT('rowid'));
+	$object->line_up(request()->integer('rowid', 0));
 
 	// Define output language
 	$outputlangs = $langs;
 	$newlang = '';
-	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-		$newlang = GETPOST('lang_id', 'aZ09');
+	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+		$newlang = request()->input('lang_id');
 	}
 	if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 		$newlang = $object->thirdparty->default_lang;
@@ -65,18 +65,18 @@ if ($action == 'up' && $permissiontoedit) {
 		$object->generateDocument($object->model_pdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
 	}
 
-	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'#'.GETPOST('rowid'));
+	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'#'.request()->input('rowid'));
 	exit();
 }
 
 if ($action == 'down' && $permissiontoedit) {
-	$object->line_down(GETPOSTINT('rowid'));
+	$object->line_down(request()->integer('rowid', 0));
 
 	// Define output language
 	$outputlangs = $langs;
 	$newlang = '';
-	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-		$newlang = GETPOST('lang_id', 'aZ09');
+	if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+		$newlang = request()->input('lang_id');
 	}
 	if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 		$newlang = $object->thirdparty->default_lang;
@@ -89,6 +89,6 @@ if ($action == 'down' && $permissiontoedit) {
 		$object->generateDocument($object->model_pdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
 	}
 
-	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'#'.GETPOST('rowid'));
+	header('Location: '.$_SERVER["PHP_SELF"].'?id='.$object->id.'#'.request()->input('rowid'));
 	exit();
 }

@@ -11,11 +11,11 @@ class ListCommande extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $searchRef = GETPOST('search_ref', 'alpha');
-        $searchSociete = GETPOST('search_societe', 'alpha');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $searchRef = $request->input('search_ref');
+        $searchSociete = $request->input('search_societe');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         $query = Commande::with('societe');
         

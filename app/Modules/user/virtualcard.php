@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 $langs->loadLangs(array("users", "companies", "admin", "website"));
 
 // Security check
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$dol_openinpopup = request()->input('dol_openinpopup');
 
 if (empty($id) && empty($ref)) {
 	$id = $user->id;
@@ -71,7 +71,7 @@ $result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
 
 // If user is not the user that read and has no permission to read other users, we stop
 if (($object->id != $user->id) && !$user->hasRight('user', 'user', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoedit = ((($object->id == $user->id) && $user->hasRight('user', 'self', 'creer')) || $user->hasRight('user', 'user', 'creer'));
@@ -83,13 +83,13 @@ $permissiontoedit = ((($object->id == $user->id) && $user->hasRight('user', 'sel
 
 if ($action == 'update' && $permissiontoedit) {
 	$tmparray = array();
-	$tmparray['USER_PUBLIC_MORE'] = GETPOST('USER_PUBLIC_MORE', 'alphanohtml');
+	$tmparray['USER_PUBLIC_MORE'] = request()->input('USER_PUBLIC_MORE');
 
 	dol_set_user_param($db, $conf, $object, array('USER_PUBLIC_MORE' => $tmparray['USER_PUBLIC_MORE']));
 }
 
 if ($action == 'setUSER_ENABLE_PUBLIC' && $permissiontoedit) {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		$tmparray = array('USER_ENABLE_PUBLIC' => 1);
 	} else {
 		$tmparray = array('USER_ENABLE_PUBLIC' => 0);
@@ -120,8 +120,8 @@ print '<div class="fichecenter">';
 print '<br>';
 
 $param = '&id='.((int) $object->id);
-if (GETPOSTISSET('dol_openinpopup')) {
-	$param .= '&dol_openinpopup='.urlencode(GETPOST('dol_openinpopup', 'aZ09'));
+if (request()->has('dol_openinpopup')) {
+	$param .= '&dol_openinpopup='.urlencode(request()->input('dol_openinpopup'));
 }
 
 $enabledisablehtml = $langs->trans("EnablePublicVirtualCard").' ';

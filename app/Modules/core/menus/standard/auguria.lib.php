@@ -121,7 +121,7 @@ function print_auguria_menu($db, $atarget, $type_user, &$tabMenu, &$menu, $noout
 
 			// TODO Find a generic solution
 			if (preg_match('/search_project_user=__search_project_user__/', $shorturl)) {
-				$search_project_user = GETPOSTINT('search_project_user');
+				$search_project_user = request()->integer('search_project_user', 0);
 				if ($search_project_user) {
 					$shorturl = preg_replace('/search_project_user=__search_project_user__/', 'search_project_user='.$search_project_user, $shorturl);
 				} else {
@@ -404,7 +404,7 @@ function print_left_auguria_menu($db, $menu_array_before, $menu_array_after, &$t
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$db->free($resql);
 	}
@@ -483,7 +483,7 @@ function print_left_auguria_menu($db, $menu_array_before, $menu_array_after, &$t
 				$newmenu->add('', $langs->trans("NoJournalDefined"), 2, $user->hasRight('accounting', 'comptarapport', 'lire'));
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$db->free($resql);
 	}

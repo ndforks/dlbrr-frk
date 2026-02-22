@@ -168,15 +168,15 @@ if (empty($dolibarr_nocache)) {
 	header('Cache-Control: no-cache');
 }
 
-if (GETPOST('theme', 'aZ09')) {
-	$conf->theme = GETPOST('theme', 'aZ09'); // If theme was forced on URL
+if (request()->input('theme')) {
+	$conf->theme = request()->input('theme'); // If theme was forced on URL
 }
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL
 }
 
-if (GETPOSTISSET('THEME_DARKMODEENABLED')) {
-	$conf->global->THEME_DARKMODEENABLED = GETPOSTINT('THEME_DARKMODEENABLED'); // If darkmode was forced on URL
+if (request()->has('THEME_DARKMODEENABLED')) {
+	$conf->global->THEME_DARKMODEENABLED = request()->integer('THEME_DARKMODEENABLED', 0); // If darkmode was forced on URL
 }
 
 $langs->load("main", 0, 1);
@@ -529,7 +529,7 @@ if (getDolGlobalString('THEME_DARKMODEENABLED')) {
 ?>
 
 body {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	background-color: #FFFFFF;
 <?php } ?>
 	font-size: <?php print is_numeric($fontsize) ? $fontsize.'px' : $fontsize; ?>;
@@ -2605,7 +2605,7 @@ table.tableforfield tr:not(.liste_titre)>td:first-of-type, tr.trforfield:not(.li
 	color: var(--tableforfieldcolor);
 }
 
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+<?php if (request()->input('optioncss') == 'print') { ?>
 .hideonprint { display: none !important; }
 <?php } ?>
 
@@ -2644,7 +2644,7 @@ td.showDragHandle {
 	vertical-align: top;
 }
 #id-top {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	<?php if ($colorbackhmenu1 == '255,255,255') { ?>
@@ -2661,7 +2661,7 @@ td.showDragHandle {
 #id-right {	/* This must stay id-right and not be replaced with echo $right */
 	width: 100%;
 	padding-bottom: 20px;
-<?php if (GETPOST('optioncss', 'aZ09') != 'print') { ?>
+<?php if (request()->input('optioncss') != 'print') { ?>
 	padding-<?php print $left; ?>: <?php echo $leftmenuwidth + 9; ?>px;
 	padding-top: 12px;
 <?php } ?>
@@ -2690,7 +2690,7 @@ td.showDragHandle {
 
 
 .side-nav {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+<?php if (request()->input('optioncss') == 'print') { ?>
 	display: none;
 <?php } else { ?>
 	background: var(--colorbackvmenu1);
@@ -2850,9 +2850,9 @@ div.fiche {
 <?php } ?>
 
 div.fiche {
-	margin-<?php print $left; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '38' : '6')); ?>px;
-	margin-<?php print $right; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '36' : '6')); ?>px;
-	<?php if (!empty($dol_hide_topmenu) || GETPOST('dol_openinpopup', 'aZ09')) {
+	margin-<?php print $left; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '38' : '6')); ?>px;
+	margin-<?php print $right; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '36' : '6')); ?>px;
+	<?php if (!empty($dol_hide_topmenu) || request()->input('dol_openinpopup')) {
 		print 'margin-top: 12px;';
 	} ?>
 	margin-bottom: 15px;
@@ -2953,8 +2953,8 @@ div.secondcolumn div.box {
 @media only screen and (max-width: 900px)
 {
 	div.fiche {
-		margin-<?php print $left; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : ($dol_hide_leftmenu ? '4' : '20')); ?>px;
-		margin-<?php print $right; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 8 : 16); ?>px;
+		margin-<?php print $left; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : ($dol_hide_leftmenu ? '4' : '20')); ?>px;
+		margin-<?php print $right; ?>: <?php print(request()->input('optioncss') == 'print' ? 8 : 16); ?>px;
 		<?php if (!empty($conf->dol_hide_leftmenu) && !empty($conf->dol_hide_topmenu)) {
 			print 'margin-top: 4px;';
 		} ?>
@@ -3205,7 +3205,7 @@ if (getDolGlobalInt('THEME_TOPMENU_DISABLE_IMAGE') == 1 || !empty($user->conf->M
 ?>
 
 div#tmenu_tooltip {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	background: var(--colorbackhmenu1);
@@ -3220,7 +3220,7 @@ div#tmenu_tooltip {
 }
 
 div#tmenu_tooltip {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	/* padding-<?php echo $right; ?>: <?php echo($maxwidthloginblock - 10); ?>px; */
@@ -3250,7 +3250,7 @@ div.tmenusep {
 }
 
 div.tmenudiv {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	position: relative;
@@ -3750,7 +3750,7 @@ div.login_block {
 	background: var(--colorbackvmenu1);
 	width: <?php echo $leftmenuwidth + 6; ?>px;
 	height: 68px;
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+	<?php if (request()->input('optioncss') == 'print') { ?>
 	display: none;
 	<?php } ?>
 }
@@ -3933,7 +3933,7 @@ div.vmenu, td.vmenu {
 
 .vmenu {
 	margin-<?php print $left; ?>: 4px;
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+	<?php if (request()->input('optioncss') == 'print') { ?>
 	display: none;
 	<?php } ?>
 }
@@ -8952,7 +8952,7 @@ table.jPicker {
 	*/
 
 	div#tmenu_tooltip {
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+	<?php if (request()->input('optioncss') == 'print') {  ?>
 		display:none;
 	<?php } else { ?>
 		/* padding-<?php echo $right; ?>: 78px; */

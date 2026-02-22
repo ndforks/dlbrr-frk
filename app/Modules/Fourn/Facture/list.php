@@ -62,41 +62,41 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'bills', 'companies', 'projects', 'banks'));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'supplierinvoicelist';
-$mode = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect', []);
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'supplierinvoicelist';
+$mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
-$search_label = GETPOST("search_label", "alpha");
-$search_amount_no_tax = GETPOST("search_amount_no_tax", "alpha");
-$search_amount_all_tax = GETPOST("search_amount_all_tax", "alpha");
-$search_ref = GETPOST('sf_ref') ? GETPOST('sf_ref', 'alpha') : GETPOST('search_ref', 'alpha');
-$search_refsupplier = GETPOST('search_refsupplier', 'alpha');
-$search_type = GETPOST('search_type', 'intcomma');
-$search_subtype = GETPOST('search_subtype', 'intcomma');
-$search_project = GETPOST('search_project', 'alpha');
-$search_company = GETPOST('search_company', 'alpha');
-$search_company_alias = GETPOST('search_company_alias', 'alpha');
-$search_montant_ht = GETPOST('search_montant_ht', 'alpha');
-$search_montant_vat = GETPOST('search_montant_vat', 'alpha');
-$search_montant_localtax1 = GETPOST('search_montant_localtax1', 'alpha');
-$search_montant_localtax2 = GETPOST('search_montant_localtax2', 'alpha');
-$search_montant_ttc = GETPOST('search_montant_ttc', 'alpha');
-$search_login = GETPOST('search_login', 'alpha');
-$search_multicurrency_code = GETPOST('search_multicurrency_code', 'alpha');
-$search_multicurrency_tx = GETPOST('search_multicurrency_tx', 'alpha');
-$search_multicurrency_montant_ht = GETPOST('search_multicurrency_montant_ht', 'alpha');
-$search_multicurrency_montant_vat = GETPOST('search_multicurrency_montant_vat', 'alpha');
-$search_multicurrency_montant_ttc = GETPOST('search_multicurrency_montant_ttc', 'alpha');
-$search_status = GETPOST('search_status', 'array:intcomma');
-if (empty($search_status) && GETPOSTISSET('search_status')) {
+$search_all = trim(request()->input('search_all'));
+$search_label = request()->input('search_label');
+$search_amount_no_tax = request()->input('search_amount_no_tax');
+$search_amount_all_tax = request()->input('search_amount_all_tax');
+$search_ref = request()->input('sf_ref') ? request()->input('sf_ref') : request()->input('search_ref');
+$search_refsupplier = request()->input('search_refsupplier');
+$search_type = request()->input('search_type');
+$search_subtype = request()->input('search_subtype');
+$search_project = request()->input('search_project');
+$search_company = request()->input('search_company');
+$search_company_alias = request()->input('search_company_alias');
+$search_montant_ht = request()->input('search_montant_ht');
+$search_montant_vat = request()->input('search_montant_vat');
+$search_montant_localtax1 = request()->input('search_montant_localtax1');
+$search_montant_localtax2 = request()->input('search_montant_localtax2');
+$search_montant_ttc = request()->input('search_montant_ttc');
+$search_login = request()->input('search_login');
+$search_multicurrency_code = request()->input('search_multicurrency_code');
+$search_multicurrency_tx = request()->input('search_multicurrency_tx');
+$search_multicurrency_montant_ht = request()->input('search_multicurrency_montant_ht');
+$search_multicurrency_montant_vat = request()->input('search_multicurrency_montant_vat');
+$search_multicurrency_montant_ttc = request()->input('search_multicurrency_montant_ttc');
+$search_status = request()->input('search_status');
+if (empty($search_status) && request()->has('search_status')) {
 	// The parameter exists in the URL but was not recognized as an array.
-	$search_status = GETPOST('search_status', 'intcomma');
+	$search_status = request()->input('search_status');
 	if ($search_status !== '' && $search_status !== '-1') {
 		$search_status = array($search_status);
 	} else {
@@ -105,52 +105,52 @@ if (empty($search_status) && GETPOSTISSET('search_status')) {
 } elseif (is_array($search_status) && count($search_status) == 0) {
 	$search_status = '';
 }
-$search_paymentmode = GETPOST('search_paymentmode', 'intcomma');
-$search_paymentcond = GETPOST('search_paymentcond') ? GETPOSTINT('search_paymentcond') : '';
-$search_bankaccount = GETPOST('search_bankaccount', 'intcomma');
-$search_vat_reverse_charge = GETPOST('search_vat_reverse_charge', 'alpha');
-$search_town = GETPOST('search_town', 'alpha');
-$search_zip = GETPOST('search_zip', 'alpha');
-$search_state = GETPOST("search_state");
-$search_note_private = GETPOST('search_note_private', 'alpha');
-$search_note_public = GETPOST('search_note_public', 'alpha');
-$search_country = GETPOST("search_country", 'aZ09');
-$search_type_thirdparty = GETPOST("search_type_thirdparty", 'intcomma');
-$search_user = GETPOST('search_user', 'intcomma');
-$search_sale = GETPOST('search_sale', 'intcomma');
+$search_paymentmode = request()->input('search_paymentmode');
+$search_paymentcond = request()->input('search_paymentcond') ? request()->integer('search_paymentcond', 0) : '';
+$search_bankaccount = request()->integer('search_bankaccount', 0);
+$search_vat_reverse_charge = request()->input('search_vat_reverse_charge');
+$search_town = request()->input('search_town');
+$search_zip = request()->input('search_zip');
+$search_state = request()->input('search_state');
+$search_note_private = request()->input('search_note_private');
+$search_note_public = request()->input('search_note_public');
+$search_country = request()->input('search_country');
+$search_type_thirdparty = request()->input('search_type_thirdparty');
+$search_user = request()->input('search_user');
+$search_sale = request()->input('search_sale');
 $search_date_start = GETPOSTDATE('search_date_start', '', 'tzserver');
 $search_date_end = GETPOSTDATE('search_date_end', '23:59:59', 'tzserver');
-$search_datelimit_startday = GETPOSTINT('search_datelimit_startday');
-$search_datelimit_startmonth = GETPOSTINT('search_datelimit_startmonth');
-$search_datelimit_startyear = GETPOSTINT('search_datelimit_startyear');
-$search_datelimit_endday = GETPOSTINT('search_datelimit_endday');
-$search_datelimit_endmonth = GETPOSTINT('search_datelimit_endmonth');
-$search_datelimit_endyear = GETPOSTINT('search_datelimit_endyear');
+$search_datelimit_startday = request()->integer('search_datelimit_startday', 0);
+$search_datelimit_startmonth = request()->integer('search_datelimit_startmonth', 0);
+$search_datelimit_startyear = request()->integer('search_datelimit_startyear', 0);
+$search_datelimit_endday = request()->integer('search_datelimit_endday', 0);
+$search_datelimit_endmonth = request()->integer('search_datelimit_endmonth', 0);
+$search_datelimit_endyear = request()->integer('search_datelimit_endyear', 0);
 $search_datelimit_start = dol_mktime(0, 0, 0, $search_datelimit_startmonth, $search_datelimit_startday, $search_datelimit_startyear);
 $search_datelimit_end = dol_mktime(23, 59, 59, $search_datelimit_endmonth, $search_datelimit_endday, $search_datelimit_endyear);
-$search_categ_sup = GETPOST("search_categ_sup", 'intcomma');
-$searchCategorySupplierInvoiceList = GETPOST('search_category_supplier_invoice_list', 'array:int');
+$search_categ_sup = request()->input('search_categ_sup');
+$searchCategorySupplierInvoiceList = request()->input('search_category_supplier_invoice_list');
 $searchCategorySupplierInvoiceOperator = 0;
-if (GETPOSTISSET('formfilteraction')) {
-	$searchCategorySupplierInvoiceOperator = GETPOSTINT('search_category_supplier_invoice_operator');
+if (request()->has('formfilteraction')) {
+	$searchCategorySupplierInvoiceOperator = request()->integer('search_category_supplier_invoice_operator', 0);
 } elseif (getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT')) {
 	$searchCategorySupplierInvoiceOperator = getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT');
 }
-$search_product_category = GETPOST('search_product_category', 'intcomma');
-$search_fk_fac_rec_source = GETPOST('search_fk_fac_rec_source', 'int');
+$search_product_category = request()->input('search_product_category');
+$search_fk_fac_rec_source = request()->input('search_fk_fac_rec_source');
 
-$option = GETPOST('search_option');
+$option = request()->input('search_option');
 if ($option == 'late') {
 	$search_status = '1';
 }
-$filter = GETPOST('filtre', 'alpha');
+$filter = request()->input('filtre');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -164,7 +164,7 @@ if (!$sortfield) {
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 // Security check
 if ($user->socid > 0) {
@@ -254,11 +254,11 @@ $object->fields = dol_sort_array($object->fields, 'position');
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
 if (!isModEnabled('supplier_invoice')) {
-	accessforbidden();
+	abort(403);
 }
 if ((!$user->hasRight("fournisseur", "facture", "lire") && !getDolGlobalString('MAIN_USE_NEW_SUPPLIERMOD'))
 	|| (!$user->hasRight("supplier_invoice", "lire") && getDolGlobalString('MAIN_USE_NEW_SUPPLIERMOD'))) {
-	accessforbidden();
+	abort(403);
 }
 
 // Check only if it' an internal user
@@ -275,11 +275,11 @@ $permissiontodelete = ($user->hasRight("fournisseur", "facture", "supprimer") ||
  * Actions
  */
 $error = 0;
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -294,7 +294,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha')) {		// All tests must be present to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter') || request()->input('button_removefilter.x')) {		// All tests must be present to be compatible with all browsers
 		$search_all = "";
 		$search_user = '';
 		$search_sale = '';
@@ -459,7 +459,7 @@ if (empty($reshook)) {
 							$pending += (float) $obj->amount;
 						}
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 					// Get pending request with a transfer receipt generated but not yet processed
 					$sqlPending = "SELECT SUM(pl.amount) as amount";
@@ -885,7 +885,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -904,7 +904,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -1111,7 +1111,7 @@ if (isModEnabled('paymentbybanktransfer') && $user->hasRight("paymentbybanktrans
 if (!empty($permissiontodelete)) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

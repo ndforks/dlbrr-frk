@@ -174,7 +174,7 @@ class PricecyField extends CommonField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$value = GETPOST($htmlName, 'restricthtml') . ':' . GETPOST($htmlName . "currency_id", 'restricthtml');
+		$value = request()->input($htmlName) . ':' . request()->input($htmlName . "currency_id");
 		$value = str_replace(',', '.', $value);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $value);
@@ -195,8 +195,8 @@ class PricecyField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = price2num(GETPOST($htmlName, 'alphanohtml')) . ':' . GETPOST($htmlName . "currency_id", 'alpha');
+		if (request()->has($htmlName)) {
+			$value = price2num(request()->input($htmlName)) . ':' . request()->input($htmlName . "currency_id");
 		} else {
 			$value = $defaultValue;
 		}
@@ -219,10 +219,10 @@ class PricecyField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$value = array(
-				'value' => GETPOST($htmlName, 'alphanohtml'),
-				'currency' => GETPOST($htmlName . "currency_id", 'alpha'),
+				'value' => request()->input($htmlName),
+				'currency' => request()->input($htmlName . "currency_id"),
 			);
 		} else {
 			$value = $defaultValue;

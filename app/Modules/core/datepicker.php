@@ -63,8 +63,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
  * @var User $user
  */
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 // Load translation files required by the page
@@ -82,7 +82,7 @@ $left = ($langs->trans("DIRECTION") == 'rtl' ? 'right' : 'left');
 print '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'."\n";
 print '<html>'."\n";
 print '<head>'."\n";
-if (GETPOST('mode') && GETPOST('mode') == 'test') {
+if (request()->input('mode') && request()->input('mode') == 'test') {
 	print '<script nonce="'.getNonce().'" type="text/javascript" src="'.DOL_URL_ROOT.'/core/js/lib_head.js.php"></script>'."\n";
 } else {
 	print '<title>'.$langs->trans("Calendar").'</title>';
@@ -135,7 +135,7 @@ if (isset($_GET["m"]) && isset($_GET["y"])) {
 
 // If parameters provided, we show calendar
 if ($qualified) {
-	displayBox(GETPOST("sd", 'alpha'), GETPOSTINT("m"), GETPOSTINT("y"));
+	displayBox(request()->input('sd'), request()->integer('m', 0), request()->integer('y', 0));
 } else {
 	dol_print_error(null, 'ErrorBadParameters');
 }

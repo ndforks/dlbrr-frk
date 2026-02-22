@@ -47,20 +47,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
 // Load translation files required by the page
 $langs->loadlangs(array('projects', 'companies'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-//$cancel = GETPOST('cancel');
-//$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-//$backtopage = GETPOST('backtopage', 'alpha');					// if not set, a default page will be used
-//$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');	// if not set, $backtopage will be used
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+//$cancel = request()->input('cancel');
+//$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+//$backtopage = request()->input('backtopage');					// if not set, a default page will be used
+//$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
 
-$id = GETPOSTINT('id');
-$ref = GETPOST("ref", 'alpha', 1); // task ref
-$taskref = GETPOST("taskref", 'alpha'); // task ref
-$withproject = GETPOSTINT('withproject');
-$project_ref = GETPOST('project_ref', 'alpha');
-$planned_workload = ((GETPOST('planned_workloadhour') != '' || GETPOST('planned_workloadmin') != '') ? (GETPOSTINT('planned_workloadhour') > 0 ? GETPOSTINT('planned_workloadhour') * 3600 : 0) + (GETPOSTINT('planned_workloadmin') > 0 ? GETPOSTINT('planned_workloadmin') * 60 : 0) : '');
-$mode = GETPOST('mode', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref'); // task ref
+$taskref = request()->input('taskref'); // task ref
+$withproject = request()->integer('withproject', 0);
+$project_ref = request()->input('project_ref');
+$planned_workload = ((request()->input('planned_workloadhour') != '' || request()->input('planned_workloadmin') != '') ? (request()->integer('planned_workloadhour', 0) > 0 ? request()->integer('planned_workloadhour', 0) * 3600 : 0) + (request()->integer('planned_workloadmin', 0) > 0 ? request()->integer('planned_workloadmin', 0) * 60 : 0) : '');
+$mode = request()->input('mode');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('projecttaskcard', 'globalcard'));
@@ -98,41 +98,41 @@ restrictedArea($user, 'projet', $object->fk_project, 'projet&project');
 
 $error = 0;
 
-if ($action == 'update' && !GETPOST("cancel") && $user->hasRight('projet', 'creer')) {
+if ($action == 'update' && !request()->input('cancel') && $user->hasRight('projet', 'creer')) {
 	if (empty($taskref)) {
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Ref")), null, 'errors');
 	}
-	if (!GETPOST("label")) {
+	if (!request()->input('label')) {
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Label")), null, 'errors');
 	}
 	if (!$error) {
 		$object->oldcopy = clone $object;  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-		$tmparray = explode('_', GETPOST('task_parent'));
+		$tmparray = explode('_', request()->input('task_parent'));
 		$task_parent = $tmparray[1];
 		if (empty($task_parent)) {
 			$task_parent = 0; // If task_parent is ''
 		}
 
-		$object->ref = $taskref ? $taskref : GETPOST("ref", 'alpha', 2);
-		$object->label = GETPOST("label", "alphanohtml");
+		$object->ref = $taskref ? $taskref : request()->input('ref');
+		$object->label = request()->input('label');
 		if (!getDolGlobalString('FCKEDITOR_ENABLE_SOCIETE')) {
-			$object->description = GETPOST('description', "alphanohtml");
+			$object->description = request()->input('description');
 		} else {
-			$object->description = GETPOST('description', "restricthtml");
+			$object->description = request()->input('description');
 		}
 		$object->fk_task_parent = $task_parent;
 		$object->planned_workload = $planned_workload;
-		$object->date_start = dol_mktime(GETPOSTINT('date_starthour'), GETPOSTINT('date_startmin'), 0, GETPOSTINT('date_startmonth'), GETPOSTINT('date_startday'), GETPOSTINT('date_startyear'));
-		$object->date_end = dol_mktime(GETPOSTINT('date_endhour'), GETPOSTINT('date_endmin'), 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'));
-		$object->progress = price2num(GETPOST('progress', 'alphanohtml'));
-		$object->budget_amount = (GETPOST('budget_amount') != '' ? GETPOSTFLOAT('budget_amount'): null);
-		$object->billable = (GETPOST('billable', 'aZ') == 'yes' ? 1 : 0);
-		if (GETPOST('progress') == '100') {
+		$object->date_start = dol_mktime(request()->integer('date_starthour', 0), request()->integer('date_startmin', 0), 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
+		$object->date_end = dol_mktime(request()->integer('date_endhour', 0), request()->integer('date_endmin', 0), 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
+		$object->progress = price2num(request()->input('progress'));
+		$object->budget_amount = (request()->input('budget_amount') != '' ? (float)request()->input('budget_amount', 0.0): null);
+		$object->billable = (request()->input('billable') == 'yes' ? 1 : 0);
+		if (request()->input('progress') == '100') {
 			$object->status = $object::STATUS_CLOSED;
-		} elseif (GETPOST('progress') != '0') {
+		} elseif (request()->input('progress') != '0') {
 			$object->status = $object::STATUS_ONGOING;
 		}
 
@@ -157,7 +157,7 @@ if ($action == 'update' && !GETPOST("cancel") && $user->hasRight('projet', 'cree
 }
 
 if ($action == 'confirm_merge' && $confirm == 'yes' && $user->hasRight('projet', 'creer')) {
-	$task_origin_id = GETPOSTINT('task_origin');
+	$task_origin_id = request()->integer('task_origin', 0);
 	$task_origin = new Task($db);		// The Task that we will delete
 
 	if ($task_origin_id <= 0) {
@@ -181,13 +181,13 @@ if ($action == 'confirm_merge' && $confirm == 'yes' && $user->hasRight('projet',
 }
 
 if ($action == 'confirm_clone' && $confirm == 'yes' && $user->hasRight('projet', 'creer')) {
-	//$clone_contacts = GETPOST('clone_contacts') ? 1 : 0;
-	$clone_prog = GETPOST('clone_prog') ? 1 : 0;
-	$clone_time = GETPOST('clone_time') ? 1 : 0;
-	$clone_affectation = GETPOST('clone_affectation') ? 1 : 0;
-	$clone_change_dt = GETPOST('clone_change_dt') ? 1 : 0;
-	$clone_notes = GETPOST('clone_notes') ? 1 : 0;
-	$clone_file = GETPOST('clone_file') ? 1 : 0;
+	//$clone_contacts = request()->input('clone_contacts') ? 1 : 0;
+	$clone_prog = request()->input('clone_prog') ? 1 : 0;
+	$clone_time = request()->input('clone_time') ? 1 : 0;
+	$clone_affectation = request()->input('clone_affectation') ? 1 : 0;
+	$clone_change_dt = request()->input('clone_change_dt') ? 1 : 0;
+	$clone_notes = request()->input('clone_notes') ? 1 : 0;
+	$clone_file = request()->input('clone_file') ? 1 : 0;
 	$result = $object->createFromClone($user, $object->id, $object->fk_project, $object->fk_task_parent, $clone_change_dt, $clone_affectation, $clone_time, $clone_file, $clone_notes, $clone_prog);
 	if ($result <= 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
@@ -242,14 +242,14 @@ if (!empty($project_ref) && !empty($withproject)) {
 // Build doc
 if ($action == 'builddoc' && $user->hasRight('projet', 'creer')) {
 	// Save last template used to generate document
-	if (GETPOST('model')) {
-		$object->setDocModel($user, GETPOST('model', 'alpha'));
+	if (request()->input('model')) {
+		$object->setDocModel($user, request()->input('model'));
 	}
 
 	$outputlangs = $langs;
-	if (GETPOST('lang_id', 'aZ09')) {
+	if (request()->input('lang_id')) {
 		$outputlangs = new Translate("", $conf);
-		$outputlangs->setDefaultLang(GETPOST('lang_id', 'aZ09'));
+		$outputlangs->setDefaultLang(request()->input('lang_id'));
 	}
 	$result = $object->generateDocument($object->model_pdf, $outputlangs);
 	if ($result <= 0) {
@@ -264,13 +264,13 @@ if ($action == 'remove_file' && $user->hasRight('projet', 'creer')) {
 
 	$langs->load("other");
 	$upload_dir = $conf->project->dir_output."/".dol_sanitizeFileName($projectstatic->ref)."/".dol_sanitizeFileName($object->ref);
-	$file = $upload_dir.'/'.dol_sanitizeFileName(GETPOST('file'));
+	$file = $upload_dir.'/'.dol_sanitizeFileName(request()->input('file'));
 
 	$ret = dol_delete_file($file, 1);
 	if ($ret) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('file')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('file')), null, 'mesgs');
 	} else {
-		setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('file')), null, 'errors');
+		setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('file')), null, 'errors');
 	}
 }
 
@@ -374,25 +374,25 @@ if ($id > 0 || !empty($ref)) {
 			print '</td>';
 			print '<td>';
 			if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-				print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectFollowOpportunity");
 				print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 				print '<br>';
 			}
 			if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-				print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectFollowTasks");
 				print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 				print '<br>';
 			}
 			if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-				print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectBillTimeDescription");
 				print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 				print '<br>';
 			}
 			if (isModEnabled('eventorganization')) {
-				print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 				print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 			}
@@ -491,10 +491,10 @@ if ($id > 0 || !empty($ref)) {
 
 		print dol_get_fiche_head($head, 'task_task', $langs->trans("Task"), 0, 'projecttask', 0, '', '');
 
-		$param = (GETPOST('withproject') ? '&withproject=1' : '');
-		$linkback = GETPOST('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
+		$param = (request()->input('withproject') ? '&withproject=1' : '');
+		$linkback = request()->input('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
 
-		if (!GETPOST('withproject') || empty($projectstatic->id)) {
+		if (!request()->input('withproject') || empty($projectstatic->id)) {
 			$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1);
 			$object->next_prev_filter = "fk_projet:IN:".$db->sanitize($projectsListId);
 		} else {
@@ -573,7 +573,7 @@ if ($id > 0 || !empty($ref)) {
 
 
 		print '<tr><td>'.$langs->trans("Budget").'</td>';
-		print '<td><input class="width75" type="text" name="budget_amount" value="'.dol_escape_htmltag(GETPOSTISSET('budget_amount') ? GETPOST('budget_amount') : price2num($object->budget_amount)).'"></td>';
+		print '<td><input class="width75" type="text" name="budget_amount" value="'.dol_escape_htmltag(request()->has('budget_amount') ? request()->input('budget_amount') : price2num($object->budget_amount)).'"></td>';
 		print '</tr>';
 
 		// Other options
@@ -631,14 +631,14 @@ if ($id > 0 || !empty($ref)) {
 					'value' => $formproject->selectTasks(-1, 0, 'task_origin', 24, 0, $langs->trans('SelectTask'), 0, 0, 0, 'maxwidth500 minwidth200', '', '', null, 1)
 				)
 			);
-			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id.(GETPOST('withproject') ? "&withproject=1" : ""), $langs->trans("MergeTasks"), $langs->trans("ConfirmMergeTasks"), "confirm_merge", $formquestion, 'yes', 1, 250);
+			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".$object->id.(request()->input('withproject') ? "&withproject=1" : ""), $langs->trans("MergeTasks"), $langs->trans("ConfirmMergeTasks"), "confirm_merge", $formquestion, 'yes', 1, 250);
 		}
 
 		if ($action == 'delete') {
-			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".GETPOSTINT("id").'&withproject='.$withproject, $langs->trans("DeleteATask"), $langs->trans("ConfirmDeleteATask"), "confirm_delete");
+			print $form->formconfirm($_SERVER["PHP_SELF"]."?id=".request()->integer('id', 0).'&withproject='.$withproject, $langs->trans("DeleteATask"), $langs->trans("ConfirmDeleteATask"), "confirm_delete");
 		}
 
-		if (!GETPOST('withproject') || empty($projectstatic->id)) {
+		if (!request()->input('withproject') || empty($projectstatic->id)) {
 			$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1);
 			$object->next_prev_filter = "fk_projet:IN:".$db->sanitize($projectsListId);
 		} else {

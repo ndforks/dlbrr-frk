@@ -53,17 +53,17 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array('propal', 'compta', 'other', 'bills', 'companies'));
 
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -209,7 +209,7 @@ if ($id > 0 || !empty($ref)) {
 		$param = '&id='.$object->id;
 		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } else {
 	print $langs->trans("ErrorUnknown");

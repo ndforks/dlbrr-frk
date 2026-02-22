@@ -44,8 +44,8 @@ require 'main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
 // If not defined, we select menu "home"
-$_GET['mainmenu'] = GETPOST('mainmenu', 'aZ09') ? GETPOST('mainmenu', 'aZ09') : 'home';	// Keep this ?
-$action = GETPOST('action', 'aZ09');
+$_GET['mainmenu'] = request()->input('mainmenu') ? request()->input('mainmenu') : 'home';	// Keep this ?
+$action = request()->input('action');
 
 $hookmanager->initHooks(array('index'));
 
@@ -56,12 +56,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
  * Actions
  */
 
-if (GETPOST('addbox')) {	// Add box (when submit is done from a form when ajax disabled)
+if (request()->input('addbox')) {	// Add box (when submit is done from a form when ajax disabled)
 	require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
-	$zone = GETPOSTINT('areacode');
-	$userid = GETPOSTINT('userid');
-	$boxorder = GETPOST('boxorder', 'aZ09');
-	$boxorder .= GETPOST('boxcombo', 'aZ09');
+	$zone = request()->integer('areacode', 0);
+	$userid = request()->integer('userid', 0);
+	$boxorder = request()->input('boxorder');
+	$boxorder .= request()->input('boxcombo');
 
 	$result = InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
 	if ($result > 0) {

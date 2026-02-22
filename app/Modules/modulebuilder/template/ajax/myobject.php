@@ -86,17 +86,17 @@ if (!$res) {
 dol_include_once('/mymodule/class/myobject.class.php');
 
 
-$mode = GETPOST('mode', 'aZ09');
-$objectId = GETPOSTINT('objectId');
-$field = GETPOST('field', 'aZ09');
-$value = GETPOST('value', 'aZ09');
+$mode = request()->input('mode');
+$objectId = request()->integer('objectId', 0);
+$field = request()->input('field');
+$value = request()->input('value');
 
 // @phan-suppress-next-line PhanUndeclaredClass
 $object = new MyObject($db);
 
 // Security check
 if (!$user->hasRight('mymodule', 'myobject', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 /*

@@ -39,20 +39,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
 require_once DOL_DOCUMENT_ROOT.'/cron/class/cronjob.class.php';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other", "agenda"));
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$param = GETPOST('param', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$scandir = GETPOST('scandir', 'alpha');
+$param = request()->input('param');
+$cancel = request()->input('cancel');
+$scandir = request()->input('scandir');
 $type = 'action';
 
 $form = new Form($db);
@@ -65,12 +65,12 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
-	$value = (GETPOST($code, 'alpha') ? GETPOST($code, 'alpha') : 1);
+	$value = (request()->input($code) ? request()->input($code) : 1);
 	if (dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity) > 0) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -80,20 +80,20 @@ if (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 if ($action == 'set') {
-	dolibarr_set_const($db, 'AGENDA_USE_EVENT_TYPE_DEFAULT', GETPOST('AGENDA_USE_EVENT_TYPE_DEFAULT'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_TYPE', GETPOST('AGENDA_DEFAULT_FILTER_TYPE'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_STATUS', GETPOST('AGENDA_DEFAULT_FILTER_STATUS'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_VIEW', GETPOST('AGENDA_DEFAULT_VIEW'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_OFFSET', GETPOSTINT('AGENDA_DEFAULT_REMINDER_OFFSET'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_OFFSET_UNIT', GETPOST('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_EMAIL_MODEL', GETPOSTINT('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_EVENT_TYPES', json_encode(GETPOST('AGENDA_DEFAULT_REMINDER_EVENT_TYPES')), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_USE_EVENT_TYPE_DEFAULT', request()->input('AGENDA_USE_EVENT_TYPE_DEFAULT'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_TYPE', request()->input('AGENDA_DEFAULT_FILTER_TYPE'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_STATUS', request()->input('AGENDA_DEFAULT_FILTER_STATUS'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_VIEW', request()->input('AGENDA_DEFAULT_VIEW'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_OFFSET', request()->integer('AGENDA_DEFAULT_REMINDER_OFFSET', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_OFFSET_UNIT', request()->input('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_EMAIL_MODEL', request()->integer('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_REMINDER_EVENT_TYPES', json_encode(request()->input('AGENDA_DEFAULT_REMINDER_EVENT_TYPES')), 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'specimen') {  // For orders
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$commande = new CommandeFournisseur($db);
 	$commande->initAsSpecimen();
@@ -283,8 +283,8 @@ if (getDolGlobalString('AGENDA_REMINDER_BROWSER') || getDolGlobalString('AGENDA_
 	if (!isModEnabled('cron')) {
 		print '<span class="opacitymedium">'.$langs->trans("WarningModuleNotActive", $langs->transnoentitiesnoconv("Module2300Name")).'</span>';
 	} else {
-		if (GETPOSTISSET('AGENDA_DEFAULT_REMINDER_EVENT_TYPES')) {
-			$selected = GETPOST('AGENDA_DEFAULT_REMINDER_EVENT_TYPES');
+		if (request()->has('AGENDA_DEFAULT_REMINDER_EVENT_TYPES')) {
+			$selected = request()->input('AGENDA_DEFAULT_REMINDER_EVENT_TYPES');
 		} else {
 			$selected = json_decode(getDolGlobalString('AGENDA_DEFAULT_REMINDER_EVENT_TYPES', ''));
 		}
@@ -305,8 +305,8 @@ if (getDolGlobalString('AGENDA_REMINDER_BROWSER') || getDolGlobalString('AGENDA_
 	if (!isModEnabled('cron')) {
 		print '<span class="opacitymedium">'.$langs->trans("WarningModuleNotActive", $langs->transnoentitiesnoconv("Module2300Name")).'</span>';
 	} else {
-		print '<input class="width50" type="number" name="AGENDA_DEFAULT_REMINDER_OFFSET" value="'.(GETPOSTISSET('AGENDA_DEFAULT_REMINDER_OFFSET') ? GETPOSTINT('AGENDA_DEFAULT_REMINDER_OFFSET') : getDolGlobalInt('AGENDA_DEFAULT_REMINDER_OFFSET', 30)).'"> ';
-		$selected = (GETPOSTISSET('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration') ? GETPOST('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration') : getDolGlobalString('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT', 'i'));
+		print '<input class="width50" type="number" name="AGENDA_DEFAULT_REMINDER_OFFSET" value="'.(request()->has('AGENDA_DEFAULT_REMINDER_OFFSET') ? request()->integer('AGENDA_DEFAULT_REMINDER_OFFSET', 0) : getDolGlobalInt('AGENDA_DEFAULT_REMINDER_OFFSET', 30)).'"> ';
+		$selected = (request()->has('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration') ? request()->input('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_type_duration') : getDolGlobalString('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT', 'i'));
 		print $form->selectTypeDuration('AGENDA_DEFAULT_REMINDER_OFFSET_UNIT_', $selected, array('y', 'm', 's'), 'width150 maxwidth150');
 	}
 	print '</td></tr>'."\n";
@@ -323,7 +323,7 @@ if (getDolGlobalString('AGENDA_REMINDER_EMAIL')) {
 	if (!isModEnabled('cron')) {
 		print '<span class="opacitymedium">'.$langs->trans("WarningModuleNotActive", $langs->transnoentitiesnoconv("Module2300Name")).'</span>';
 	} else {
-		$selected = (GETPOSTISSET('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail') ? GETPOST('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail') : getDolGlobalInt('AGENDA_DEFAULT_REMINDER_EMAIL_MODEL', 0));
+		$selected = (request()->has('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail') ? request()->input('AGENDA_DEFAULT_REMINDER_EMAIL_MODELmodel_mail') : getDolGlobalInt('AGENDA_DEFAULT_REMINDER_EMAIL_MODEL', 0));
 		print $form->selectModelMail('AGENDA_DEFAULT_REMINDER_EMAIL_MODEL', 'actioncomm_send', 1, 1, $selected, 'minwidth150 width300 flat onrightofpage');
 	}
 	print '</td></tr>'."\n";

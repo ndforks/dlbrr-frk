@@ -96,17 +96,17 @@ class MenuManager
 	public function loadMenu($forcemainmenu = '', $forceleftmenu = '')
 	{
 		// We save into session the main menu selected
-		if (GETPOSTISSET("mainmenu")) {
-			$_SESSION["mainmenu"] = GETPOST("mainmenu", 'aZ09');
+		if (request()->has('mainmenu')) {
+			$_SESSION["mainmenu"] = request()->input('mainmenu');
 		}
-		if (GETPOSTISSET("idmenu")) {
-			$_SESSION["idmenu"] = GETPOSTINT("idmenu");
+		if (request()->has('idmenu')) {
+			$_SESSION["idmenu"] = request()->integer('idmenu', 0);
 		}
 
 		// Read now mainmenu and leftmenu that define which menu to show
-		if (GETPOSTISSET("mainmenu")) {
+		if (request()->has('mainmenu')) {
 			// On sauve en session le menu principal choisi
-			$mainmenu = GETPOST("mainmenu", 'aZ09');
+			$mainmenu = request()->input('mainmenu');
 			$_SESSION["mainmenu"] = $mainmenu;
 			$_SESSION["leftmenuopened"] = "";
 		} else {
@@ -117,9 +117,9 @@ class MenuManager
 			$mainmenu = $forcemainmenu;
 		}
 
-		if (GETPOSTISSET("leftmenu")) {
+		if (request()->has('leftmenu')) {
 			// On sauve en session le menu principal choisi
-			$leftmenu = GETPOST("leftmenu", 'aZ09');
+			$leftmenu = request()->input('leftmenu');
 			$_SESSION["leftmenu"] = $leftmenu;
 
 			if ($_SESSION["leftmenuopened"] == $leftmenu) {	// To collapse

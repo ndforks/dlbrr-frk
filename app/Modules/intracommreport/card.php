@@ -55,17 +55,17 @@ require_once DOL_DOCUMENT_ROOT.'/intracommreport/lib/intracommreport.lib.php';
 $langs->loadLangs(array("intracommreport", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$lineid   = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid   = request()->integer('lineid', 0);
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');					// if not set, a default page will be used
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');	// if not set, $backtopage will be used
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage = request()->input('backtopage');					// if not set, a default page will be used
+$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
+$dol_openinpopup = request()->input('dol_openinpopup');
 
 // Initialize a technical objects
 $object = new IntracommReport($db);
@@ -79,11 +79,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = trim(GETPOST("search_all", 'alpha'));
+$search_all = trim(request()->input('search_all'));
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -114,15 +114,15 @@ if ($enablepermissioncheck) {
 $upload_dir = $conf->intracommreport->multidir_output[isset($object->entity) ? $object->entity : 1].'/intracommreport';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (isset($object->status) && ($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->module, $object, $object->table_element, $object->element, 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled("intracommreport")) {
-	accessforbidden("Module intracommreport not enabled");
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -169,10 +169,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -221,7 +221,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-mymodule page-card')
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden('NotEnoughPermissions', 0, 1);
+		abort(403);
 	}
 
 	print load_fiche_titre($title, '', 'object_'.$object->picto);
@@ -405,7 +405,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOST('lineid', 'int')).'" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->input('lineid')).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
 		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
 		<input type="hidden" name="mode" value="">
@@ -424,7 +424,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 		/*
 		if (!empty($object->lines)) {
-			$object->printObjectLines($action, $mysoc, null, GETPOST('lineid', 'int'), 1);
+			$object->printObjectLines($action, $mysoc, null, request()->input('lineid'), 1);
 		}
 		*/
 
@@ -525,7 +525,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -573,7 +573,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

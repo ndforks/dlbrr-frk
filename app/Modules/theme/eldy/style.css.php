@@ -162,14 +162,14 @@ if (empty($dolibarr_nocache)) {
 	header('Cache-Control: no-cache');
 }
 
-if (GETPOST('theme', 'aZ09')) {
-	$conf->theme = GETPOST('theme', 'aZ09'); // If theme was forced on URL
+if (request()->input('theme')) {
+	$conf->theme = request()->input('theme'); // If theme was forced on URL
 }
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL
 }
-if (GETPOSTISSET('THEME_DARKMODEENABLED')) {
-	$conf->global->THEME_DARKMODEENABLED = GETPOSTINT('THEME_DARKMODEENABLED'); // If darkmode was forced on URL
+if (request()->has('THEME_DARKMODEENABLED')) {
+	$conf->global->THEME_DARKMODEENABLED = request()->integer('THEME_DARKMODEENABLED', 0); // If darkmode was forced on URL
 }
 
 $langs->load("main", 0, 1);

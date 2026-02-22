@@ -59,7 +59,7 @@ if (!empty($permissioncreate) && empty($permissiontoadd)) {
 
 // Build doc
 if ($action == 'builddoc' && ($permissiontoadd || !empty($usercangeneretedoc))) {
-	if (is_numeric(GETPOST('model', 'alpha'))) {
+	if (is_numeric(request()->input('model'))) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Model")), null, 'errors');
 	} else {
 		// Reload to get all modified line records and be ready for hooks
@@ -67,23 +67,23 @@ if ($action == 'builddoc' && ($permissiontoadd || !empty($usercangeneretedoc))) 
 		$ret = $object->fetch_thirdparty();
 
 		// Save last template used to generate document
-		if (GETPOST('model', 'alpha')) {
-			$object->setDocModel($user, GETPOST('model', 'alpha'));
+		if (request()->input('model')) {
+			$object->setDocModel($user, request()->input('model'));
 		}
 
 		// Special case to force bank account
-		if (GETPOSTINT('fk_bank')) {
+		if (request()->integer('fk_bank', 0)) {
 			// this field may come from an external module
-			$object->fk_bank = GETPOSTINT('fk_bank');	// For compatibility
-			$object->fk_account = GETPOSTINT('fk_bank');
+			$object->fk_bank = request()->integer('fk_bank', 0);	// For compatibility
+			$object->fk_account = request()->integer('fk_bank', 0);
 		} elseif (!empty($object->fk_account)) {
 			$object->fk_bank = $object->fk_account;		// For compatibility
 		}
 
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && isset($object->thirdparty->default_lang)) {
 			$newlang = $object->thirdparty->default_lang; // for proposal, order, invoice, ...
@@ -133,7 +133,7 @@ if ($action == 'remove_file' && $permissiontoadd) {
 		}
 
 		$langs->load("other");
-		$filetodelete = GETPOST('file', 'alpha');
+		$filetodelete = request()->input('file');
 		$file = $upload_dir.'/'.$filetodelete;
 		$dirthumb = dirname($file).'/thumbs/'; // Path to the folder containing the thumbnail (if file is an image)
 		$ret = dol_delete_file($file, 0, 0, 0, $object);

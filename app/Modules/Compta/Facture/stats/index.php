@@ -53,25 +53,25 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'companies', 'other'));
 
-$mode = GETPOST("mode") ? GETPOST("mode") : 'customer';
+$mode = request()->input('mode') ? request()->input('mode') : 'customer';
 
 $hookmanager->initHooks(array('invoicestats', 'globalcard'));
 
 if ($mode == 'customer' && !$user->hasRight('facture', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 if ($mode == 'supplier' && !$user->hasRight('fournisseur', 'facture', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
-$object_status = GETPOST('object_status', 'intcomma');
-$typent_id = GETPOSTINT('typent_id');
-$categ_id = GETPOSTINT('categ_id');
+$object_status = request()->input('object_status');
+$typent_id = request()->integer('typent_id', 0);
+$categ_id = request()->integer('categ_id', 0);
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
-$select_categ_categ_id = GETPOST('select_categ_categ_id', 'array:int');
-$select_categ_invoice_id=GETPOST('select_categ_invoice_id', 'array:int');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
+$select_categ_categ_id = request()->integer('select_categ_categ_id', 0);
+$select_categ_invoice_id=request()->integer('select_categ_invoice_id', 0);
 // Security check
 if ($user->socid > 0) {
 	$action = '';
@@ -85,7 +85,7 @@ if ($reshook < 0) {
 }
 
 $nowyear = dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOST('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->input('year') > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 
@@ -343,7 +343,7 @@ if (isModEnabled('category')) {
 	print '<tr><td>'.$cat_label.'</td><td>';
 	$cate_arbo = $form->select_all_categories($cat_type, '', 'parent', 0, 0, 1);
 	print img_picto('', 'category', 'class="pictofixedwidth"');
-	print $form->multiselectarray('select_categ_categ_id', $cate_arbo, GETPOST('select_categ_categ_id', 'array'), 0, 0, 'widthcentpercentminusx maxwidth300');
+	print $form->multiselectarray('select_categ_categ_id', $cate_arbo, request()->input('select_categ_categ_id'), 0, 0, 'widthcentpercentminusx maxwidth300');
 	//print $formother->select_categories($cat_type, $categ_id, 'categ_id', true);
 	print '</td></tr>';
 }
@@ -364,7 +364,7 @@ if (isModEnabled('category')) {
 	print '<tr><td>'.$cat_label.'</td><td>';
 	$cate_arbo = $form->select_all_categories($cat_type, '', 'parent', 0, 0, 1);
 	print img_picto('', 'category', 'class="pictofixedwidth"');
-	print $form->multiselectarray('select_categ_invoice_id', $cate_arbo, GETPOST('select_categ_invoice_id', 'array'), 0, 0, 'widthcentpercentminusx maxwidth300');
+	print $form->multiselectarray('select_categ_invoice_id', $cate_arbo, request()->input('select_categ_invoice_id'), 0, 0, 'widthcentpercentminusx maxwidth300');
 	//print $formother->select_categories($cat_type, $categ_id, 'categ_id', true);
 	print '</td></tr>';
 }

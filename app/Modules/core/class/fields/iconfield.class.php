@@ -157,7 +157,7 @@ class IconField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$check = $key == 'lang' ? 'aZ09' : 'alphanohtml';
 			$value = GETPOST($htmlName, $check);
 		} else {
@@ -182,8 +182,8 @@ class IconField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

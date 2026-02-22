@@ -1357,7 +1357,7 @@ function createNewDictionnary($modulename, $file, $namedic, $dictionnaires = nul
 	} else {
 		$_results = $db->DDLCreateTable(MAIN_DB_PREFIX.strtolower($namedic), $columns, $primaryKey, "");
 		if ($_results < 0) {
-			dol_print_error($db);
+			abort(500);
 			$langs->load("errors");
 			setEventMessages($langs->trans("ErrorTableNotFound", $namedic), null, 'errors');
 		}

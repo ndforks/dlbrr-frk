@@ -164,7 +164,7 @@ class HtmlField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$value = GETPOST($htmlName, empty($fieldInfos->getPostCheck) ? 'restricthtml' : $fieldInfos->getPostCheck);
 		} else {
 			$value = $defaultValue;
@@ -188,8 +188,8 @@ class HtmlField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

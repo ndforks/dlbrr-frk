@@ -38,20 +38,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
 
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 $langs->loadLangs(array("main", "other"));
 
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');
 
 // users/temp/import
 $upload_dir = $conf->user->dir_temp.'/import';
 dol_mkdir($upload_dir);
 
-$file = GETPOST('file');
+$file = request()->input('file');
 
 $originalfilename = $file;
 $uid = $thiid = $pid = $erid = $salid = 0;
@@ -114,11 +114,11 @@ if ($action == 'uploadfile') {	// Test on permission not required here. Done lat
 	if (in_array($modulepart, array('fournisseur', 'invoice_supplier'))) {
 		$permlevel1 = 'facture';
 		$permlevel2 = 'read';
-		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-thiid'.(GETPOSTINT('socid') > 0 ? GETPOSTINT('socid') : 0).'-pid'.(GETPOSTINT('search_prodid') > 0 ? GETPOSTINT('search_prodid') : 0);
+		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-thiid'.(request()->integer('socid', 0) > 0 ? request()->integer('socid', 0) : 0).'-pid'.(request()->integer('search_prodid', 0) > 0 ? request()->integer('search_prodid', 0) : 0);
 	} elseif ($modulepart == 'expensereport') {
-		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-erid'.(GETPOSTINT('userexpensereportid') > 0 ? GETPOSTINT('userexpensereportid') : 0).'-pid'.(GETPOSTINT('search_prodid') > 0 ? GETPOSTINT('search_prodid') : 0);
+		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-erid'.(request()->integer('userexpensereportid', 0) > 0 ? request()->integer('userexpensereportid', 0) : 0).'-pid'.(request()->integer('search_prodid', 0) > 0 ? request()->integer('search_prodid', 0) : 0);
 	} elseif ($modulepart == 'salaries') {
-		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-salid'.(GETPOSTINT('usersalaryid') > 0 ? GETPOSTINT('usersalaryid') : 0);
+		$fileprefix = 'upload_page-'.$modulepart.'-uid'.$user->id.'-salid'.(request()->integer('usersalaryid', 0) > 0 ? request()->integer('usersalaryid', 0) : 0);
 	}
 
 	if ($permlevel2) {
@@ -159,10 +159,10 @@ $form = new Form($db);
 
 // Important: Following code is to avoid page request by browser and PHP CPU at each Dolibarr page access.
 /*
-if (empty($dolibarr_nocache) && GETPOSTINT('cache')) {
-	header('Cache-Control: max-age='.GETPOSTINT('cache').', public');
+if (empty($dolibarr_nocache) && request()->integer('cache', 0)) {
+	header('Cache-Control: max-age='.request()->integer('cache', 0).', public');
 	// For a .php, we must set an Expires to avoid to have it forced to an expired value by the web server
-	header('Expires: '.gmdate('D, d M Y H:i:s', dol_now('gmt') + GETPOSTINT('cache')).' GMT');
+	header('Expires: '.gmdate('D, d M Y H:i:s', dol_now('gmt') + request()->integer('cache', 0)).' GMT');
 	// HTTP/1.0
 	header('Pragma: token=public');
 } else {
@@ -199,14 +199,14 @@ if (isModEnabled('supplier_invoice')) {
 	<div>'.$langs->trans("SupplierInvoice").'<br><br>';
 
 	$uploadform .= img_picto('', 'company', 'class="pictofixedwidth"');
-	$uploadform .= $form->select_company(GETPOSTINT('socid'), 'socid', '(statut:=:0)', $langs->transnoentitiesnoconv("Supplier"), 0, 0, array(), 0, 'maxwidth200 disableautoopen');
+	$uploadform .= $form->select_company(request()->integer('socid', 0), 'socid', '(statut:=:0)', $langs->transnoentitiesnoconv("Supplier"), 0, 0, array(), 0, 'maxwidth200 disableautoopen');
 
 	$uploadform .= '<br>';
 
-	$prodid = GETPOSTINT('prodid');
+	$prodid = request()->integer('prodid', 0);
 	$prodtext = $langs->trans("RefOrLabel");
 
-	//$uploadform .= $form->select_produits_fournisseurs(0, $prodid, 'prodid', '', 0, 0, 1, 2, $prodtext, 0, array(), GETPOSTINT('socid'), '1', 0, 'maxwidth200 disableautoopen', 0, '', null, 1);
+	//$uploadform .= $form->select_produits_fournisseurs(0, $prodid, 'prodid', '', 0, 0, 1, 2, $prodtext, 0, array(), request()->integer('socid', 0), '1', 0, 'maxwidth200 disableautoopen', 0, '', null, 1);
 	$uploadform .= img_picto('', 'product', 'class="pictofixedwidth"');
 	$uploadform .= $form->select_produits_fournisseurs(0, $prodid, 'prodid', '', '', array(), 1, 1, 'maxwidth200 disableautoopen', $prodtext, 1);
 
@@ -227,7 +227,7 @@ if (isModEnabled('expensereport')) {
 
 	$uploadform .= img_picto('', 'user', 'class="pictofixedwidth"');
 	//$uploadform .= '<span class="disableautoopen">';
-	$uploadform .= $form->select_dolusers(GETPOSTINT('userexpensereportid') > 0 ? GETPOSTINT('userexpensereportid') : $user->id, 'userexpensereportid', $langs->transnoentitiesnoconv("User"), null, 0, 'hierarchyme', '', '', 0, 0, '', 0, '', 'maxwidth200 disableautoopen', 1);
+	$uploadform .= $form->select_dolusers(request()->integer('userexpensereportid', 0) > 0 ? request()->integer('userexpensereportid', 0) : $user->id, 'userexpensereportid', $langs->transnoentitiesnoconv("User"), null, 0, 'hierarchyme', '', '', 0, 0, '', 0, '', 'maxwidth200 disableautoopen', 1);
 	//$uploadform .= '</span>';
 
 	$uploadform .= '<br>';
@@ -249,7 +249,7 @@ if (isModEnabled('salaries')) {
 
 	$uploadform .= img_picto('', 'user', 'class="pictofixedwidth"');
 	//$uploadform .= '<span class="disableautoopen">';
-	$uploadform .= $form->select_dolusers(GETPOSTINT('usersalaryid') > 0 ? GETPOSTINT('usersalaryid') : $user->id, 'usersalaryid', $langs->transnoentitiesnoconv("Employee"), null, 0, 'hierarchyme', '', '', 0, 0, '', 0, '', 'maxwidth200 disableautoopen', 1);
+	$uploadform .= $form->select_dolusers(request()->integer('usersalaryid', 0) > 0 ? request()->integer('usersalaryid', 0) : $user->id, 'usersalaryid', $langs->transnoentitiesnoconv("Employee"), null, 0, 'hierarchyme', '', '', 0, 0, '', 0, '', 'maxwidth200 disableautoopen', 1);
 	//$uploadform .= '</span>';
 
 	$uploadform .= '<br>';

@@ -43,7 +43,7 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
  * @var Translate $langs
  */
 if (!$conf->global->TAKEPOS_QR_MENU) {
-	accessforbidden(); // If Restaurant Menu is disabled never allow NO LOGIN access
+	abort(403); // If Restaurant Menu is disabled never allow NO LOGIN access
 }
 ?>
 <!DOCTYPE html>

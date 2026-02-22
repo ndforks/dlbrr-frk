@@ -49,15 +49,15 @@ require_once DOL_DOCUMENT_ROOT . '/hrm/lib/hrm_skill.lib.php';
 $langs->loadLangs(array('hrm', 'other', 'products'));  // why products?
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'skillcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid   = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'skillcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Skill($db);
@@ -72,11 +72,11 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_' . $key, 'alpha')) {
-		$search[$key] = GETPOST('search_' . $key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -95,15 +95,15 @@ $permissiontodelete = $user->hasRight('hrm', 'all', 'delete');
 $upload_dir = $conf->hrm->multidir_output[isset($object->entity) ? $object->entity : 1] . '/skill';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (empty($conf->hrm->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 $MaxNumberSkill = getDolGlobalInt('HRM_MAXRANK', Skill::DEFAULT_MAX_RANK_PER_SKILL);
@@ -137,7 +137,7 @@ if (empty($reshook)) {
 	$triggermodname = 'HRM_SKILL_MODIFY'; // Name of trigger action code to execute when we modify record
 
 	// action update on Skilldet must be done before real update action in core/actions_addupdatedelete.inc.php
-	$skilldetArray = GETPOST("descriptionline", "array:alphanohtml");
+	$skilldetArray = request()->input('descriptionline');
 
 	if (!$error) {
 		if (is_array($skilldetArray) && count($skilldetArray) > 0) {
@@ -206,10 +206,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -372,9 +372,9 @@ if (($id || $ref) && $action == 'edit') {
 				//                  print img_picto('', $val['picto'], '', 0, 0, 0, '', 'pictofixedwidth');
 				//              }
 				//              if (in_array($val['type'], array('int', 'integer'))) {
-				//                  $value = GETPOSTISSET($key) ? GETPOST($key, 'int') : $sk->$key;
+				//                  $value = request()->has($key) ? request()->input($key) : $sk->$key;
 				//              } elseif ($val['type'] == 'double') {
-				//                  $value = GETPOSTISSET($key) ? price2num(GETPOST($key, 'alphanohtml')) : $sk->$key;
+				//                  $value = request()->has($key) ? price2num(request()->input($key)) : $sk->$key;
 				//              } elseif (preg_match('/^(text|html)/', $val['type'])) {
 				//                  $tmparray = explode(':', $val['type']);
 				//if (!empty($tmparray[1])) {
@@ -384,17 +384,17 @@ if (($id || $ref) && $action == 'edit') {
 				//}
 				$check = 'restricthtml';
 
-				$skilldetArray = GETPOST("descriptionline", "array");
+				$skilldetArray = request()->input('descriptionline');
 				if (empty($skilldetArray)) {
-					$value = GETPOSTISSET($key) ? GETPOST($key, $check) : $sk->$key;
+					$value = request()->has($key) ? GETPOST($key, $check) : $sk->$key;
 				} else {
 					$value = $skilldetArray[$sk->id];
 				}
 				//
 				//              } elseif ($val['type'] == 'price') {
-				//                  $value = GETPOSTISSET($key) ? price2num(GETPOST($key)) : price2num($sk->$key);
+				//                  $value = request()->has($key) ? price2num(request()->input($key)) : price2num($sk->$key);
 				//              } else {
-				//                  $value = GETPOSTISSET($key) ? GETPOST($key, 'alpha') : $sk->$key;
+				//                  $value = request()->has($key) ? request()->input($key) : $sk->$key;
 				//              }
 				//var_dump($val.' '.$key.' '.$value);
 				if (!empty($val['noteditable'])) {
@@ -536,24 +536,24 @@ if ($action != "create" && $action != "edit") {
 	// for other modules
 	//dol_include_once('/othermodule/class/otherobject.class.php');
 
-	$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-	$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-	$show_files = GETPOSTINT('show_files'); // Show files area generated by bulk actions ?
-	$confirm = GETPOST('confirm', 'alpha'); // Result of a confirmation
-	$cancel = GETPOST('cancel', 'alpha'); // We click on a Cancel button
-	$toselect = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-	$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'skilldetlist'; // To manage different context of search
-	$backtopage = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-	$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+	$action = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
+	$massaction = request()->input('massaction', []); // The bulk action (combo box choice into lists)
+	$show_files = request()->integer('show_files', 0); // Show files area generated by bulk actions ?
+	$confirm = request()->input('confirm'); // Result of a confirmation
+	$cancel = request()->input('cancel'); // We click on a Cancel button
+	$toselect = request()->input('toselect', []); // Array of ids of elements selected into a list
+	$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'skilldetlist'; // To manage different context of search
+	$backtopage = request()->input('backtopage'); // Go back to a dedicated page
+	$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-	$id = GETPOSTINT('id');
+	$id = request()->integer('id', 0);
 
 	// Load variable for pagination
 	$limit = 0;
-	$sortfield = GETPOST('sortfield', 'aZ09comma');
-	$sortorder = GETPOST('sortorder', 'aZ09comma');
-	$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-	if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	$sortfield = request()->input('sortfield');
+	$sortorder = request()->input('sortorder');
+	$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+	if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 		// If $page is not defined, or '' or -1 or if we click on clear filters
 		$page = 0;
 	}
@@ -576,7 +576,7 @@ if ($action != "create" && $action != "edit") {
 	}
 
 	// Initialize array of search criteria
-	$search_all = GETPOST('search_all', 'alphanohtml');
+	$search_all = request()->input('search_all');
 	$search = array();
 	foreach ($objectline->fields as $key => $val) {
 		if (GETPOST('search_' . $key, 'alpha') !== '') {

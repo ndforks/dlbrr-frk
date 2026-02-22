@@ -30,7 +30,7 @@ require '../../main.inc.php';
 
 // Security check
 if (!$user->admin && $user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 

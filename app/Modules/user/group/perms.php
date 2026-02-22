@@ -50,16 +50,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by page
 $langs->loadLangs(array('users', 'admin'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$module = GETPOST('module', 'alpha');
-$rights = GETPOSTINT('rights');
-$updatedmodulename = GETPOST('updatedmodulename', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'groupperms'; // To manage different context of search
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$module = request()->input('module');
+$rights = request()->integer('rights', 0);
+$updatedmodulename = request()->input('updatedmodulename');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'groupperms'; // To manage different context of search
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
 // Define if user can read permissions
@@ -81,7 +81,7 @@ if (!empty($user->socid) && $user->socid > 0) {
 }
 //restrictedArea($user, 'user', $id, 'usergroup', '');
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new UserGroup($db);
@@ -114,7 +114,7 @@ if (empty($reshook)) {
 				setEventMessages($editgroup->error, $editgroup->errors, 'errors');
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$user->clearrights();
@@ -139,7 +139,7 @@ if (empty($reshook)) {
 				setEventMessages($editgroup->error, $editgroup->errors, 'errors');
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$user->clearrights();
@@ -169,7 +169,7 @@ $help_url = '';
 llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-user page-group_perms');
 
 if ($object->id <= 0) {
-	accessforbidden('Group not found');
+	abort(403);
 }
 
 $head = group_prepare_head($object);
@@ -239,7 +239,7 @@ if ($result) {
 	}
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 /*
@@ -402,7 +402,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 $arrayofpermission = dol_sort_array($arrayofpermission, 'position');
@@ -432,8 +432,8 @@ foreach ($arrayofpermission as $i => $obj) {
 
 	$objMod = $modules[$obj->module];
 
-	if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-		$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+	if (request()->has('forbreakperms_' . $obj->module)) {
+		$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 	} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 		$ishidden = 1;
 	} else {
@@ -456,8 +456,8 @@ foreach ($arrayofpermission as $i => $obj) {
 		$oldmod = $obj->module;
 
 		$j++;
-		if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-			$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+		if (request()->has('forbreakperms_' . $obj->module)) {
+			$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 		} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 			$ishidden = 1;
 		} else {

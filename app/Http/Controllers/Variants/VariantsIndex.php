@@ -13,6 +13,6 @@ class VariantsIndex extends Controller
      */
     public function __invoke(): RedirectResponse
     {
-        return redirect('/variants/list.php');
+        return redirect()->route('variants.list');
     }
 }

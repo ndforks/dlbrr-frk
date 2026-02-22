@@ -227,7 +227,7 @@ function ajouter_sondage()
 	$res = $opensurveysondage->create($user);
 
 	if ($res < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	unset($_SESSION["title"]);

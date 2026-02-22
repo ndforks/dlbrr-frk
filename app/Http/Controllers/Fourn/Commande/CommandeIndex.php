@@ -15,7 +15,7 @@ class CommandeIndex extends Controller
         $hookmanager->initHooks(array('orderssuppliersindex'));
 
         $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
-        $socid = GETPOSTINT('socid');
+        $socid = $request->integer('socid', 0);
 
         if ($user->socid) {
             $socid = $user->socid;

@@ -54,17 +54,17 @@ $hookmanager->initHooks(array('situationinvoicesetup', 'globalsetup'));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$scandir = GETPOST('scan_dir', 'alpha');
+$scandir = request()->input('scan_dir');
 $type = 'invoice';
 
 $form = new Form($db);

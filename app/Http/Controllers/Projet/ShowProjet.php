@@ -12,8 +12,8 @@ class ShowProjet extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -46,21 +46,21 @@ class ShowProjet extends Controller
         $projet = Projet::findOrFail($id);
         
         $data = [
-            'ref' => GETPOST('ref', 'alpha'),
-            'title' => GETPOST('title', 'alpha'),
-            'fk_soc' => GETPOSTINT('socid'),
-            'description' => GETPOST('description', 'restricthtml'),
+            'ref' => $request->input('ref'),
+            'title' => $request->input('title'),
+            'fk_soc' => $request->integer('socid', 0),
+            'description' => $request->input('description'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $projet->update($data);
         
-        return redirect("/projet/card.php?id={$id}")->with('success', 'Project updated');
+        return redirect()->route('projet.show', ['id' => $id])->with('success', 'Project updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Projet::findOrFail($id)->delete();
-        return redirect('/projet/list.php')->with('success', 'Project deleted');
+        return redirect()->route('projet.list')->with('success', 'Project deleted');
     }
 }

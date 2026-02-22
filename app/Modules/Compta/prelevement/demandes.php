@@ -47,25 +47,25 @@ require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
 $langs->loadLangs(array('banks', 'categories', 'withdrawals', 'companies'));
 
 // Security check
-$socid = GETPOSTINT('socid');
-$status = GETPOSTINT('status');
+$socid = request()->integer('socid', 0);
+$status = request()->integer('status', 0);
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'directdebitcredittransferlist'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-$optioncss  = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'directdebitcredittransferlist'; // To manage different context of search
+$backtopage = request()->input('backtopage'); // Go back to a dedicated page
+$optioncss  = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-$type = GETPOST('type', 'aZ09');
-$sourcetype = GETPOST('sourcetype', 'aZ');
+$type = request()->input('type');
+$sourcetype = request()->input('sourcetype');
 
-$search_facture = GETPOST('search_facture', 'alpha');
-$search_societe = GETPOST('search_societe', 'alpha');
+$search_facture = request()->input('search_facture');
+$search_societe = request()->input('search_societe');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page == -1 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha') || (empty($toselect) && $massaction === '0')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page == -1 || request()->input('button_search') || request()->input('button_removefilter') || (empty($toselect) && $massaction === '0')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters or if we select empty mass action
 $offset = $limit * $page;
@@ -103,7 +103,7 @@ if ($reshook < 0) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_facture = '';
 	$search_societe = '';
 	$search_array_options = array();
@@ -233,7 +233,7 @@ if (is_numeric($nbtotalofrecords) && $limit > $nbtotalofrecords) {
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 

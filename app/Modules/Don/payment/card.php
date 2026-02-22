@@ -46,9 +46,9 @@ $langs->loadLangs(array("bills", "banks", "companies", "donations"));
 $outputlangs = $langs;
 
 // Security check
-$id = GETPOST('rowid') ? GETPOSTINT('rowid') : GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->input('rowid') ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -220,7 +220,7 @@ if ($resql) {
 	print "</table>\n";
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</div>';

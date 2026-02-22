@@ -43,17 +43,17 @@ $arrayofaifeatures = getListOfAIFeatures();
 $arrayofai = getListOfAIServices();
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$cancel = request()->input('cancel');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$functioncode = GETPOST('functioncode', 'alpha');
-$pre_prompt = GETPOST('prePrompt');
-$post_prompt = GETPOST('postPrompt');
-$blacklists = GETPOST('blacklists');
-$test = GETPOST('test');
-$key = (string) GETPOST('key', 'alpha');
+$functioncode = request()->input('functioncode');
+$pre_prompt = request()->input('prePrompt');
+$post_prompt = request()->input('postPrompt');
+$blacklists = request()->input('blacklists');
+$test = request()->input('test');
+$key = (string) request()->input('key');
 
 if (empty($action)) {
 	$action = 'edit';
@@ -64,7 +64,7 @@ $setupnotempty = 0;
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -184,7 +184,7 @@ if ($action == 'updatePrompts' && $test) {
 }
 
 // Delete entry
-if ($action == 'confirm_deleteproperty' && GETPOST('confirm') == 'yes') {
+if ($action == 'confirm_deleteproperty' && request()->input('confirm') == 'yes') {
 	if (isset($currentConfigurations[$key])) {
 		unset($currentConfigurations[$key]);
 
@@ -234,9 +234,9 @@ print load_fiche_titre($langs->trans("AIPromptForFeatures", $arrayofai[$aiservic
 
 if ($action == 'deleteproperty') {
 	$formconfirm = $form->formconfirm(
-		$_SERVER["PHP_SELF"].'?key='.urlencode(GETPOST('key', 'alpha')),
+		$_SERVER["PHP_SELF"].'?key='.urlencode(request()->input('key')),
 		$langs->trans('Delete'),
-		$langs->trans('ConfirmDeleteSetup', GETPOST('key', 'alpha')),
+		$langs->trans('ConfirmDeleteSetup', request()->input('key')),
 		'confirm_deleteproperty',
 		'',
 		0,

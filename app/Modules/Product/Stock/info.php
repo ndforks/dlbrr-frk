@@ -41,8 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/stock.lib.php';
 // Load translation files required by the page
 $langs->load("stocks");
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 // Security check
 //$result=restrictedArea($user,'stock', $id, 'entrepot&stock');

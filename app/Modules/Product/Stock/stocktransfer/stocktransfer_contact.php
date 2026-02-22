@@ -47,11 +47,11 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/stocktransfer/lib/stocktransfer_s
 // Load translation files required by the page
 $langs->loadLangs(array('facture', 'orders', 'sendings', 'companies', 'stocks'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
 
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 $object = new StockTransfer($db);
 $error = 0;
@@ -90,14 +90,14 @@ $permissiondellink = $user->hasRight('stocktransfer', 'stocktransfer', 'write');
 $upload_dir = $conf->stocktransfer->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->statut == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, 'stocktransfer', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
 //restrictedArea($user, 'stocktransfer', $object->id, '', 'stocktransfer');
 
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -107,8 +107,8 @@ if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
 
 if ($action == 'addcontact' && $user->hasRight('stocktransfer', 'stocktransfer', 'write')) {
 	if ($object->id > 0) {
-		$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$result = $object->add_contact($contactid, GETPOST("typecontact") ? GETPOST("typecontact") : GETPOST("type"), GETPOST("source"));
+		$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$result = $object->add_contact($contactid, request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'), request()->input('source'));
 	}
 
 	if ($result >= 0) {
@@ -124,7 +124,7 @@ if ($action == 'addcontact' && $user->hasRight('stocktransfer', 'stocktransfer',
 	}
 } elseif ($action == 'swapstatut' && $user->hasRight('stocktransfer', 'stocktransfer', 'write')) { // Toggle the status of a contact
 	if ($object->id > 0) {
-		$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+		$result = $object->swapContactStatus(request()->integer('ligne', 0));
 	}
 } elseif ($action == 'deletecontact' && $user->hasRight('stocktransfer', 'stocktransfer', 'write')) { // Deletes a contact
 	$result = $object->delete_contact($lineid);
@@ -133,7 +133,7 @@ if ($action == 'addcontact' && $user->hasRight('stocktransfer', 'stocktransfer',
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

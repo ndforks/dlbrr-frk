@@ -46,14 +46,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "members", "users"));
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $extrafields = new ExtraFields($db);
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
 $type = 'group';
 
@@ -94,7 +94,7 @@ if ($action == 'set_default') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
@@ -102,7 +102,7 @@ if ($action == 'set_default') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 /*
@@ -144,7 +144,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print load_fiche_titre($langs->trans("GroupsDocModules"), '', '');

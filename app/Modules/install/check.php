@@ -62,7 +62,7 @@ $allowinstall = 0;
 $allowupgrade = false;
 $checksok = 1;
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : $langs->getDefaultLang();
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : $langs->getDefaultLang();
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("install", "errors"));
@@ -514,7 +514,7 @@ if (!file_exists($conffile)) {
 		if (getDolGlobalInt("MAIN_NOT_INSTALLED")) {
 			$allowupgrade = false;
 		}
-		if (GETPOST('allowupgrade')) {
+		if (request()->input('allowupgrade')) {
 			$allowupgrade = true;
 		}
 

@@ -43,9 +43,9 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 // Load translation files required by the page
 $langs->load("companies");
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 $object = new Contact($db);
 if ($id > 0) {
@@ -55,7 +55,7 @@ if ($id > 0) {
 // Security check
 if ($user->socid > 0) {
 	if ($object->fk_soc > 0 && $object->fk_soc != $user->socid) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

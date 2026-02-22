@@ -46,10 +46,10 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'orders'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$action = request()->input('action');
 
 // Security check
 $socid = 0;
@@ -69,7 +69,7 @@ $permissionnote = $user->hasRight('commande', 'creer'); // Used by the include o
 
 $object = new Commande($db);
 if (!$object->fetch($id, $ref) > 0) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

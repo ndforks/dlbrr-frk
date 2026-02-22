@@ -44,17 +44,17 @@ $hookmanager->initHooks(array('webhooksetup', 'globalsetup'));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'myobject';
 
 
@@ -80,8 +80,8 @@ $setupnotempty = count($formSetup->items);
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskvalue = GETPOST('maskvalue', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskvalue = request()->input('maskvalue');
 
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -97,7 +97,7 @@ if ($action == 'updateMask') {
 	}
 } elseif ($action == 'setmod') {
 	// TODO Check if numbering module chosen can be activated by calling method canBeActivated
-	$tmpobjectkey = GETPOST('object', 'aZ09');
+	$tmpobjectkey = request()->input('object');
 	if (!empty($tmpobjectkey)) {
 		$constforval = 'WEBHOOK_'.strtoupper($tmpobjectkey)."_ADDON";
 		dolibarr_set_const($db, $constforval, $value, 'chaine', 0, '', $conf->entity);
@@ -108,7 +108,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'del') {
 	$ret = delDocumentModel($value, $type);
 	if ($ret > 0) {
-		$tmpobjectkey = GETPOST('object', 'aZ09');
+		$tmpobjectkey = request()->input('object');
 		if (!empty($tmpobjectkey)) {
 			$constforval = 'WEBHOOK_'.strtoupper($tmpobjectkey).'_ADDON_PDF';
 			if (getDolGlobalString($constforval) == "$value") {
@@ -118,7 +118,7 @@ if ($action == 'updateMask') {
 	}
 } elseif ($action == 'setdoc') {
 	// Set or unset default model
-	$tmpobjectkey = GETPOST('object', 'aZ09');
+	$tmpobjectkey = request()->input('object');
 	if (!empty($tmpobjectkey)) {
 		$constforval = 'WEBHOOK_'.strtoupper($tmpobjectkey).'_ADDON_PDF';
 		if (dolibarr_set_const($db, $constforval, $value, 'chaine', 0, '', $conf->entity)) {
@@ -128,7 +128,7 @@ if ($action == 'updateMask') {
 		}
 	}
 } elseif ($action == 'unsetdoc') {
-	$tmpobjectkey = GETPOST('object', 'aZ09');
+	$tmpobjectkey = request()->input('object');
 	if (!empty($tmpobjectkey)) {
 		$constforval = 'WEBHOOK_'.strtoupper($tmpobjectkey).'_ADDON_PDF';
 		dolibarr_del_const($db, $constforval, $conf->entity);

@@ -52,15 +52,15 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
-$htmlname = (string) GETPOST('htmlname', 'aZ09');
-$limit = GETPOSTINT('limit');
-$filter = GETPOST('filter', 'alpha');
-$outjson = (GETPOSTINT('outjson') ? GETPOSTINT('outjson') : 0);
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$excludeids = GETPOST('excludeids', 'intcomma');
-$showtype = GETPOSTINT('showtype');
-$showcode = GETPOSTINT('showcode');
+$htmlname = (string) request()->input('htmlname');
+$limit = request()->integer('limit', 0);
+$filter = request()->input('filter');
+$outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$excludeids = request()->integer('excludeids', 0);
+$showtype = request()->integer('showtype', 0);
+$showcode = request()->integer('showcode', 0);
 
 $object = new Societe($db);
 if ($id > 0) {
@@ -117,7 +117,7 @@ if (!empty($action) && $action == 'fetch' && !empty($id) && $user->hasRight('soc
 	$id = (!empty($match[0]) ? $match[0] : '');		// Take first key found into GET array with matching $htmlname123
 
 	// When used from jQuery, the search term is added as GET param $htmlname.
-	$searchkey = (($id && GETPOST($id, 'alpha')) ? GETPOST($id, 'alpha') : (($htmlname && GETPOST($htmlname, 'alpha')) ? (string) GETPOST($htmlname, 'alpha') : ''));
+	$searchkey = (($id && request()->input($id)) ? request()->input($id) : (($htmlname && request()->input($htmlname)) ? (string) request()->input($htmlname) : ''));
 	if (!$searchkey) {
 		return;
 	}
@@ -130,7 +130,7 @@ if (!empty($action) && $action == 'fetch' && !empty($id) && $user->hasRight('soc
 
 	// Add an AntiDOS protection
 	if (dol_strlen($filter) < getDolGlobalInt('SOCIETE_USE_SEARCH_TO_SELECT')) {
-		httponly_accessforbidden('Call the societe/ajax/company file with a too short filter', 400);
+		httponly_abort(403);
 	}
 
 	$arrayresult = $form->select_thirdparty_list('0', (string) $htmlname, $filter, 1, $showtype, 0, array(), $searchkey, $outjson, $limit, 'minwidth100', '', false, $excludeids, $showcode);

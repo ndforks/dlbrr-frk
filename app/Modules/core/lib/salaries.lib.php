@@ -53,7 +53,7 @@ function salaries_prepare_head($object)
 				$nbStandingOrders = $obj->nb;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("banks");
 		$head[$h][0] = DOL_URL_ROOT.'/salaries/virement_request.php?id='.$object->id.'&type=bank-transfer';

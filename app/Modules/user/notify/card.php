@@ -45,20 +45,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/triggers/interface_50_modNotification_Noti
 // Load translation files required by page
 $langs->loadLangs(array('companies', 'mails', 'admin', 'other', 'errors'));
 
-$id = GETPOSTINT("id");
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$actionid = GETPOSTINT('actionid');
+$action = request()->input('action');
+$actionid = request()->integer('actionid', 0);
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
@@ -94,7 +94,7 @@ $result = restrictedArea($user, 'user', '', '', 'user');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 }
 
@@ -119,10 +119,10 @@ if ($action == 'add' && $permissiontoadd) {
 
 			if (!$db->query($sql)) {
 				$error++;
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (!$error) {
@@ -136,7 +136,7 @@ if ($action == 'add' && $permissiontoadd) {
 
 // Remove a notification (edit a user)
 if ($action == 'delete' && $permissiontoadd) {
-	$sql = "DELETE FROM ".MAIN_DB_PREFIX."notify_def where rowid = ".GETPOSTINT("actid");
+	$sql = "DELETE FROM ".MAIN_DB_PREFIX."notify_def where rowid = ".request()->integer('actid', 0);
 	$db->query($sql);
 }
 
@@ -255,7 +255,7 @@ if ($result > 0) {
 	if ($resql) {
 		$num = $db->num_rows($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$newcardbutton = '';
@@ -448,7 +448,7 @@ if ($result > 0) {
 	if ($resql) {
 		$num = $db->num_rows($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$param = '&id='.$object->id;

@@ -44,7 +44,7 @@ require_once $dolibarr_main_document_root.'/core/lib/admin.lib.php';
 
 global $langs;
 
-$setuplang = GETPOST('selectlang', 'aZ09', 3) ? GETPOST('selectlang', 'aZ09', 3) : (empty($argv[1]) ? 'auto' : $argv[1]);
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (empty($argv[1]) ? 'auto' : $argv[1]);
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("admin", "install"));
@@ -92,20 +92,20 @@ $db = getDoliDBInstance($conf->db->type, $conf->db->host, $conf->db->user, $conf
 
 if ($db->ok) {
 	print '<tr><td><label for="login">'.$langs->trans("Login").' :</label></td><td>';
-	print '<input id="login" name="login" type="text" value="'.(GETPOSTISSET("login") ? GETPOST("login", 'alpha') : (isset($force_install_dolibarrlogin) ? $force_install_dolibarrlogin : '')).'"'.(@$force_install_noedit == 2 && $force_install_dolibarrlogin !== null ? ' disabled' : '').' spellcheck="false" autofocus></td></tr>';
+	print '<input id="login" name="login" type="text" value="'.(request()->has('login') ? request()->input('login') : (isset($force_install_dolibarrlogin) ? $force_install_dolibarrlogin : '')).'"'.(@$force_install_noedit == 2 && $force_install_dolibarrlogin !== null ? ' disabled' : '').' spellcheck="false" autofocus></td></tr>';
 	print '<tr><td><label for="pass">'.$langs->trans("Password").' :</label></td><td>';
 	print '<input type="password" id="pass" name="pass" autocomplete="new-password" minlength="8" value="'. (isset($force_install_dolibarrpassword) ? $force_install_dolibarrpassword : '').'"'.(@$force_install_noedit == 2 && $force_install_dolibarrpassword !== null ? ' disabled' : '').'></td></tr>';
 	print '<tr><td><label for="pass_verif">'.$langs->trans("PasswordRetype").' :</label></td><td>';
 	print '<input type="password" id="pass_verif" name="pass_verif" autocomplete="new-password" minlength="8" value="'.(isset($force_install_dolibarrpassword) ? $force_install_dolibarrpassword : '').'"'.(@$force_install_noedit == 2 && $force_install_dolibarrpassword !== null ? ' disabled' : '').'></td></tr>';
 	print '</table>';
 
-	if (GETPOSTINT("error") == 1) {
+	if (request()->integer('error', 0) == 1) {
 		print '<br>';
 		print '<div class="error">'.$langs->trans("PasswordsMismatch").'</div>';
 		$error = 0; // We show button
 	}
 
-	if (GETPOSTINT("error") == 2) {
+	if (request()->integer('error', 0) == 2) {
 		print '<br>';
 		print '<div class="error">';
 		print $langs->trans("PleaseTypePassword");
@@ -113,7 +113,7 @@ if ($db->ok) {
 		$error = 0; // We show button
 	}
 
-	if (GETPOSTINT("error") == 3) {
+	if (request()->integer('error', 0) == 3) {
 		print '<br>';
 		print '<div class="error">'.$langs->trans("PleaseTypeALogin").'</div>';
 		$error = 0; // We show button

@@ -44,16 +44,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 $langs->loadLangs(array('other', 'companies', 'contact'));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 $object = new Contact($db);
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($id);
 $objcanvas = null;
-$canvas = (!empty($object->canvas) ? $object->canvas : GETPOST("canvas"));
+$canvas = (!empty($object->canvas) ? $object->canvas : request()->input('canvas'));
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
 	$objcanvas = new Canvas($db, $action);
@@ -61,11 +61,11 @@ if (!empty($canvas)) {
 }
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }

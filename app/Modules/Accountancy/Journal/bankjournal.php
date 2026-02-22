@@ -75,17 +75,17 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 $langs->loadLangs(array("companies", "other", "compta", "banks", "bills", "donations", "loan", "accountancy", "trips", "salaries", "hrm", "members"));
 
 // Multi journal
-$id_journal = GETPOSTINT('id_journal');
+$id_journal = request()->integer('id_journal', 0);
 
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startday = GETPOSTINT('date_startday');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endday = GETPOSTINT('date_endday');
-$date_endyear = GETPOSTINT('date_endyear');
-$in_bookkeeping = GETPOST('in_bookkeeping', 'aZ09');
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$in_bookkeeping = request()->input('in_bookkeeping');
 
-$only_rappro = GETPOSTINT('only_rappro');
+$only_rappro = request()->integer('only_rappro', 0);
 if ($only_rappro == 0) {
 	//GET page for the first time, use default settings
 	$only_rappro = getDolGlobalInt('ACCOUNTING_BANK_CONCILIATED');
@@ -93,7 +93,7 @@ if ($only_rappro == 0) {
 
 $now = dol_now();
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if ($in_bookkeeping == '') {
 	$in_bookkeeping = 'notyet';
@@ -102,13 +102,13 @@ if ($in_bookkeeping == '') {
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -139,7 +139,7 @@ if (empty($date_endmonth)) {
 	$pastmonth = $dates['pastmonth'];
 }
 
-if (!GETPOSTISSET('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
+if (!request()->has('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
 	$date_start = dol_get_first_day((int) $pastmonthyear, (int) $pastmonth, false);
 	$date_end = dol_get_last_day((int) $pastmonthyear, (int) $pastmonth, false);
 }
@@ -709,7 +709,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // Write bookkeeping
@@ -1223,7 +1223,7 @@ if (empty($action) || $action == 'view') {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1240,7 +1240,7 @@ if (empty($action) || $action == 'view') {
 			print '</div>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 
@@ -1664,7 +1664,7 @@ function getSourceDocRef($val, $typerecord)
 				$ref .= ' '.$objmid->ref;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

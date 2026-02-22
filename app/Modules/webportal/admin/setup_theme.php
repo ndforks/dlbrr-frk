@@ -43,17 +43,17 @@ $langs->loadLangs(array("admin", "webportal", "website"));
 $hookmanager->initHooks(array('webportalthemesetup', 'globalsetup'));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');    // Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');    // Used by actions_setmoduleoptions.inc.php
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;

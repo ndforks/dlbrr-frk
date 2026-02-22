@@ -48,10 +48,10 @@ require_once DOL_DOCUMENT_ROOT."/ticket/class/ticket.class.php";
 
 $langs->loadLangs(array('companies', 'contracts', 'tickets'));
 
-$socid = GETPOSTINT('socid');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'alpha');
+$socid = request()->integer('socid', 0);
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 if ($id == '' && $ref == '') {
 	dol_print_error(null, 'Bad parameter');

@@ -42,10 +42,10 @@ require '../main.inc.php';
  */
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
-if (GETPOSTISSET('status')) {
+if (request()->has('status')) {
 	die(strtoupper($_SESSION['SMP_CURRENT_PAYMENT']));
 }
 
@@ -56,7 +56,7 @@ if (GETPOSTISSET('status')) {
 
 top_httphead('text/html', 1);
 
-if (GETPOST('smp-status')) {
+if (request()->input('smp-status')) {
 	print '<html lang="en">';
 	print '<head>';
 	print '<meta charset="utf-8">
@@ -70,7 +70,7 @@ if (GETPOST('smp-status')) {
 	print '</head>';
 
 	print '<body>';
-	$_SESSION['SMP_CURRENT_PAYMENT'] = GETPOST('smp-status');
+	$_SESSION['SMP_CURRENT_PAYMENT'] = request()->input('smp-status');
 
 	print '<script type="application/javascript">
                 window.onload = function() {

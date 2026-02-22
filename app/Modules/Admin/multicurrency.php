@@ -43,11 +43,11 @@ $langs->loadLangs(array('admin', 'multicurrency'));
 
 // Access control
 if (!$user->admin || !isModEnabled('multicurrency')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $multicurrency = new MultiCurrency($db);
 
@@ -59,7 +59,7 @@ $multicurrency = new MultiCurrency($db);
 $reg = array();
 if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
-	$value = GETPOST($code, 'alpha');
+	$value = request()->input($code);
 	if (dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity) > 0) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
@@ -81,8 +81,8 @@ if ($action == 'add_currency') {			// Manual insertion of a rate
 
 	$langs->loadCacheCurrencies('');
 
-	$code = GETPOST('code', 'alpha');
-	$rate = price2num(GETPOST('rate', 'alpha'));
+	$code = request()->input('code');
+	$rate = price2num(request()->input('rate'));
 	$currency = new MultiCurrency($db);
 	$currency->code = $code;
 	$currency->name = !empty($langs->cache_currencies[$code]['label']) ? $langs->cache_currencies[$code]['label'].' ('.$langs->getCurrencySymbol($code).')' : $code;
@@ -110,9 +110,9 @@ if ($action == 'add_currency') {			// Manual insertion of a rate
 } elseif ($action == 'update_currency') {	// Manual update of rate
 	$error = 0;
 
-	if (GETPOST('updatecurrency', 'alpha')) {
-		$fk_multicurrency = GETPOSTINT('fk_multicurrency');
-		$rate = price2num(GETPOST('rate', 'alpha'));
+	if (request()->input('updatecurrency')) {
+		$fk_multicurrency = request()->integer('fk_multicurrency', 0);
+		$rate = price2num(request()->input('rate'));
 		$currency = new MultiCurrency($db);
 
 		if (empty($rate)) {
@@ -127,8 +127,8 @@ if ($action == 'add_currency') {			// Manual insertion of a rate
 				}
 			}
 		}
-	} elseif (GETPOST('deletecurrency', 'alpha')) {
-		$fk_multicurrency = GETPOSTINT('fk_multicurrency');
+	} elseif (request()->input('deletecurrency')) {
+		$fk_multicurrency = request()->integer('fk_multicurrency', 0);
 		$currency = new MultiCurrency($db);
 
 		if ($currency->fetch($fk_multicurrency) > 0) {
@@ -140,12 +140,12 @@ if ($action == 'add_currency') {			// Manual insertion of a rate
 		}
 	}
 } elseif ($action == 'setapilayer') {		// Update rate from currencylayer
-	if (GETPOSTISSET('modify_apilayer')) {
+	if (request()->has('modify_apilayer')) {
 		// Save setup
-		dolibarr_set_const($db, 'MULTICURRENCY_APP_KEY', GETPOST('MULTICURRENCY_APP_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, 'MULTICURRENCY_APP_SOURCE', GETPOST('MULTICURRENCY_APP_SOURCE', 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, 'MULTICURRENCY_APP_ENDPOINT', GETPOST('MULTICURRENCY_APP_ENDPOINT', 'alpha'), 'chaine', 0, '', $conf->entity);
-		//dolibarr_set_const($db, 'MULTICURRENCY_ALTERNATE_SOURCE', GETPOST('MULTICURRENCY_ALTERNATE_SOURCE', 'alpha'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'MULTICURRENCY_APP_KEY', request()->input('MULTICURRENCY_APP_KEY'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'MULTICURRENCY_APP_SOURCE', request()->input('MULTICURRENCY_APP_SOURCE'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'MULTICURRENCY_APP_ENDPOINT', request()->input('MULTICURRENCY_APP_ENDPOINT'), 'chaine', 0, '', $conf->entity);
+		//dolibarr_set_const($db, 'MULTICURRENCY_ALTERNATE_SOURCE', request()->input('MULTICURRENCY_ALTERNATE_SOURCE'), 'chaine', 0, '', $conf->entity);
 
 		setEventMessages($langs->trans("SetupSaved"), null);
 	} else {

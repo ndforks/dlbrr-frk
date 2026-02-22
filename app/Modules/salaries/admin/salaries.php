@@ -47,10 +47,10 @@ $langs->loadLangs(array('admin', 'salaries'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Other parameters SALARIES_*
 $list = array(
@@ -65,7 +65,7 @@ if ($action == 'update') {
 	$error = 0;
 
 	foreach ($list as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -83,7 +83,7 @@ $reg = array();
 if (preg_match('/^(set|del)_?([A-Z_]+)$/', $action, $reg)) {
 	// Set boolean (on/off) constants
 	if (!dolibarr_set_const($db, $reg[2], ($reg[1] === 'set' ? '1' : '0'), 'chaine', 0, '', $conf->entity) > 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

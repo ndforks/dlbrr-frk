@@ -61,10 +61,10 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
 $langs->loadLangs(array("bills", "orders", "commercial", "cashdesk", "receiptprinter", "banks"));
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0); // $place is id of table for Bar or Restaurant or multiple sales
-$action = GETPOST('action', 'aZ09');
-$setterminal = GETPOSTINT('setterminal');
-$setcurrency = GETPOST('setcurrency', 'aZ09');
+$place = (request()->input('place') ? request()->input('place') : 0); // $place is id of table for Bar or Restaurant or multiple sales
+$action = request()->input('action');
+$setterminal = request()->integer('setterminal', 0);
+$setcurrency = request()->input('setcurrency');
 
 $hookmanager->initHooks(array('takeposfrontend'));
 if (empty($_SESSION["takeposterminal"])) {

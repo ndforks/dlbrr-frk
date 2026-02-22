@@ -13,15 +13,15 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 $encoding = '';
 
 // Parameters to download files
-$hashp = GETPOST('hashp', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
-$entity = GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity;
-$original_file = GETPOST("file", "alpha");
-$l = GETPOST('l', 'aZ09');
-$limit = GETPOSTINT('limit');
+$hashp = request()->input('hashp');
+$modulepart = request()->input('modulepart');
+$entity = request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity;
+$original_file = request()->input('file');
+$l = request()->input('l');
+$limit = request()->integer('limit', 0);
 
 // Parameters for RSS
-$rss = GETPOST('rss', 'aZ09');
+$rss = request()->input('rss');
 if ($rss) {
 	$original_file = 'blog.rss';
 }
@@ -63,7 +63,7 @@ if (preg_match('/\.(html|htm)$/i', $original_file)) {
 	$attachment = false;
 }
 if (isset($_GET["attachment"])) {
-	$attachment = (GETPOST("attachment", 'alphanohtml') ? true : false);
+	$attachment = (request()->input('attachment') ? true : false);
 }
 if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS_WEBSITE')) {
 	$attachment = false;
@@ -71,8 +71,8 @@ if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS_WEBSITE')) {
 
 // Define mime type
 $type = 'application/octet-stream';
-if (GETPOSTISSET('type')) {
-	$type = GETPOST('type', 'alpha');
+if (request()->has('type')) {
+	$type = request()->input('type');
 } else {
 	$type = dol_mimetype($original_file);
 }
@@ -81,7 +81,7 @@ if (GETPOSTISSET('type')) {
 $original_file = str_replace("../", "/", $original_file);
 
 // Cache or not
-if (GETPOST("cache", 'aZ09') || image_format_supported($original_file) >= 0) {
+if (request()->input('cache') || image_format_supported($original_file) >= 0) {
 	// Important: Following code is to avoid page request by browser and PHP CPU at
 	// each Dolibarr page access.
 	header('Cache-Control: max-age=3600, public, must-revalidate');

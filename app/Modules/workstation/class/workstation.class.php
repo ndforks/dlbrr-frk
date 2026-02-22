@@ -232,7 +232,7 @@ class Workstation extends CommonObject
 		$id = $this->createCommon($user, $notrigger);
 
 		// Usergroups
-		$groups = GETPOST('groups', 'array:int');	// FIXME We should not GETPOST but receive array as parameter
+		$groups = request()->input('groups');	// FIXME We should not GETPOST but receive array as parameter
 		if (empty($groups)) {
 			$groups = $this->usergroups; // createFromClone
 		}
@@ -247,7 +247,7 @@ class Workstation extends CommonObject
 		}
 
 		// Resources
-		$resources = GETPOST('resources', 'array:int');	// FIXME We should not GETPOST but receive array as parameter
+		$resources = request()->input('resources');	// FIXME We should not GETPOST but receive array as parameter
 		if (empty($resources)) {
 			$resources = $this->resources; // createFromClone
 		}
@@ -457,7 +457,7 @@ class Workstation extends CommonObject
 	{
 
 		// Usergroups
-		$groups = GETPOST('groups', 'array:int');
+		$groups = request()->input('groups');
 		WorkstationUserGroup::deleteAllGroupsOfWorkstation($this->id);
 		$this->usergroups = array();
 
@@ -470,7 +470,7 @@ class Workstation extends CommonObject
 		}
 
 		// Resources
-		$resources = GETPOST('resources', 'array:int');
+		$resources = request()->input('resources');
 		WorkstationResource::deleteAllResourcesOfWorkstation($this->id);
 		$this->resources = array();
 		if (!empty($resources)) {

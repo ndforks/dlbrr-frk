@@ -38,8 +38,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/fiscalyear.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "compta"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha') ? GETPOST('ref', 'alpha') : GETPOST('label', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref') ? request()->input('ref') : request()->input('label');
 
 $object = new Fiscalyear($db);
 
@@ -48,10 +48,10 @@ include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'inclu
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'fiscalyear', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 

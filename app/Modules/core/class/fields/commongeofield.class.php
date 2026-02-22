@@ -149,8 +149,8 @@ class CommonGeoField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'restricthtml');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 			if ($value != '{}') {
 				require_once DOL_DOCUMENT_ROOT . '/core/class/dolgeophp.class.php';
 				$dolgeophp = new DolGeoPHP($this->db);

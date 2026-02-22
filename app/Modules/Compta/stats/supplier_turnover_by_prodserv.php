@@ -43,13 +43,13 @@ $langs->loadLangs(array("products", "categories", "errors", 'accountancy'));
 
 // Define modecompta ('CREANCES-DETTES' or 'RECETTES-DEPENSES')
 $modecompta = getDolGlobalString('ACCOUNTING_MODE');
-if (GETPOST("modecompta")) {
-	$modecompta = GETPOST("modecompta");
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
 // Sort Order
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$sortfield = GETPOST("sortfield", 'aZ09comma');
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
 if (!$sortorder) {
 	$sortorder = "asc";
 }
@@ -58,14 +58,14 @@ if (!$sortfield) {
 }
 
 // Category
-$selected_cat = GETPOSTINT('search_categ');
-$selected_soc = GETPOSTINT('search_soc');
+$selected_cat = request()->integer('search_categ', 0);
+$selected_soc = request()->integer('search_soc', 0);
 $subcat = false;
-if (GETPOST('subcat', 'alpha') === 'yes') {
+if (request()->input('subcat') === 'yes') {
 	$subcat = true;
 }
 // product/service
-$selected_type = GETPOST('search_type', "intcomma");
+$selected_type = request()->input('search_type');
 if ($selected_type == '') {
 	$selected_type = -1;
 }
@@ -73,18 +73,18 @@ if ($selected_type == '') {
 // Hook
 $hookmanager->initHooks(array('supplierturnoverbyprodservlist'));
 
-$date_startyear = GETPOSTINT("date_startyear");
-$date_startmonth = GETPOSTINT("date_startmonth");
-$date_startday = GETPOSTINT("date_startday");
-$date_endyear = GETPOSTINT("date_endyear");
-$date_endmonth = GETPOSTINT("date_endmonth");
-$date_endday = GETPOSTINT("date_endday");
+$date_startyear = request()->integer('date_startyear', 0);
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
 
 $nbofyear = 1;
 
 // Date range
-$year = GETPOSTINT("year");
-$month = GETPOSTINT("month");
+$year = request()->integer('year', 0);
+$month = request()->integer('month', 0);
 if (empty($year)) {
 	$year_current = (int) dol_print_date(dol_now(), "%Y");
 	$month_current = (int) dol_print_date(dol_now(), "%m");
@@ -100,12 +100,12 @@ $date_end = dol_mktime(23, 59, 59, $date_endmonth, $date_endday, $date_endyear, 
 // We define date_start and date_end
 $q = 0;
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
 		// We define date_start and date_end
 		$year_end = $year_start + $nbofyear - (getDolGlobalInt('SOCIETE_FISCAL_MONTH_START') > 1 ? 0 : 1);
-		$month_start = GETPOSTISSET("month") ? GETPOSTINT("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
-		if (!GETPOST("month")) {	// If month not forced
+		$month_start = request()->has('month') ? request()->integer('month', 0) : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		if (!request()->input('month')) {	// If month not forced
 			if (!$year && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
@@ -206,7 +206,7 @@ foreach ($allparams as $key => $value) {
 }
 
 // Security pack (data & check)
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 if ($user->socid > 0) {
 	$socid = $user->socid;
@@ -377,7 +377,7 @@ if ($modecompta == 'CREANCES-DETTES') {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Show array

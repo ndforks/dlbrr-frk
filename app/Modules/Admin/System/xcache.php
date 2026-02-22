@@ -35,10 +35,10 @@ require '../../main.inc.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*

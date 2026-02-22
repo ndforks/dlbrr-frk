@@ -50,20 +50,20 @@ $langs->loadLangs(array("banks", "categories", "companies", 'withdrawals', 'bill
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Get supervariables
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -81,7 +81,7 @@ $salaryBonPl = $object->checkIfSalaryBonPrelevement();
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $type = $object->type;
@@ -209,7 +209,7 @@ if ($id > 0 || $ref) {
 
 		print dol_get_fiche_end();
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -329,7 +329,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

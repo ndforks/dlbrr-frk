@@ -45,11 +45,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->loadLangs(array("companies", "install", "users", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Security check
 if ($user->socid > 0) {
@@ -57,10 +57,10 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -87,14 +87,14 @@ if ($action == 'confirm_purge' && $confirm == 'yes' && $user->admin) {
 // Lock new sessions
 if ($action == 'confirm_lock' && $confirm == 'yes' && $user->admin) {
 	if (dolibarr_set_const($db, 'MAIN_ONLY_LOGIN_ALLOWED', $user->login, 'text', 1, 'Logon is restricted to a particular user', 0) < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Unlock new sessions
 if ($action == 'confirm_unlock' && $user->admin) {
 	if (dolibarr_del_const($db, 'MAIN_ONLY_LOGIN_ALLOWED', -1) < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -12,8 +12,8 @@ class ShowTicket extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -44,14 +44,14 @@ class ShowTicket extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         $ticket = Ticket::findOrFail($id);
-        $data = ['subject' => GETPOST('subject', 'alpha'), 'fk_soc' => GETPOSTINT('socid')];
+        $data = ['subject' => $request->input('subject'), 'fk_soc' => $request->integer('socid', 0)];
         $ticket->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
-        return redirect("/ticket/card.php?id={$id}")->with('success', 'Ticket updated');
+        return redirect()->route('ticket.show', ['id' => $id])->with('success', 'Ticket updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Ticket::findOrFail($id)->delete();
-        return redirect('/ticket/list.php')->with('success', 'Ticket deleted');
+        return redirect()->route('ticket.list')->with('success', 'Ticket deleted');
     }
 }

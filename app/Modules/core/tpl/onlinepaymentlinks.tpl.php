@@ -48,10 +48,10 @@ if (isModEnabled('order')) {
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 
 		print $langs->trans("EnterRefToBuildUrl", $langs->transnoentitiesnoconv("Order")).': ';
-		print '<input type="text class="flat" id="generate_order_ref" name="generate_order_ref" value="'.GETPOST('generate_order_ref', 'alpha').'" size="10">';
+		print '<input type="text class="flat" id="generate_order_ref" name="generate_order_ref" value="'.request()->input('generate_order_ref').'" size="10">';
 		print '<input type="submit" class="none reposition button smallpaddingimp" value="'.$langs->trans("GetSecuredUrl").'">';
-		if (GETPOST('generate_order_ref', 'alpha')) {
-			$url = getOnlinePaymentUrl(0, 'order', GETPOST('generate_order_ref', 'alpha'));
+		if (request()->input('generate_order_ref')) {
+			$url = getOnlinePaymentUrl(0, 'order', request()->input('generate_order_ref'));
 			print '<div class="urllink"><input type="text" class="wordbreak quatrevingtpercent" value="';
 			print $url;
 			print '"></div>'."\n";
@@ -70,10 +70,10 @@ if (isModEnabled('invoice')) {
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 
 		print $langs->trans("EnterRefToBuildUrl", $langs->transnoentitiesnoconv("Invoice")).': ';
-		print '<input type="text class="flat" id="generate_invoice_ref" name="generate_invoice_ref" value="'.GETPOST('generate_invoice_ref', 'alpha').'" size="10">';
+		print '<input type="text class="flat" id="generate_invoice_ref" name="generate_invoice_ref" value="'.request()->input('generate_invoice_ref').'" size="10">';
 		print '<input type="submit" class="none reposition button smallpaddingimp" value="'.$langs->trans("GetSecuredUrl").'">';
-		if (GETPOST('generate_invoice_ref', 'alpha')) {
-			$url = getOnlinePaymentUrl(0, 'invoice', GETPOST('generate_invoice_ref', 'alpha'));
+		if (request()->input('generate_invoice_ref')) {
+			$url = getOnlinePaymentUrl(0, 'invoice', request()->input('generate_invoice_ref'));
 			print '<div class="urllink"><input type="text" class="wordbreak quatrevingtpercent" value="';
 			print $url;
 			print '"></div>'."\n";
@@ -92,10 +92,10 @@ if (isModEnabled('contract')) {
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 
 		print $langs->trans("EnterRefToBuildUrl", $langs->transnoentitiesnoconv("ContractLine")).': ';
-		print '<input type="text class="flat" id="generate_contract_ref" name="generate_contract_ref" value="'.GETPOST('generate_contract_ref', 'alpha').'" size="10">';
+		print '<input type="text class="flat" id="generate_contract_ref" name="generate_contract_ref" value="'.request()->input('generate_contract_ref').'" size="10">';
 		print '<input type="submit" class="none reposition button smallpaddingimp" value="'.$langs->trans("GetSecuredUrl").'">';
-		if (GETPOST('generate_contract_ref')) {
-			$url = getOnlinePaymentUrl(0, 'contractline', GETPOST('generate_contract_ref', 'alpha'));
+		if (request()->input('generate_contract_ref')) {
+			$url = getOnlinePaymentUrl(0, 'contractline', request()->input('generate_contract_ref'));
 			print '<div class="urllink"><input type="text" class="wordbreak quatrevingtpercent" value="';
 			print $url;
 			print '"></div>'."\n";
@@ -114,10 +114,10 @@ if (isModEnabled('member')) {
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 
 		print $langs->trans("EnterRefToBuildUrl", $langs->transnoentitiesnoconv("Member")).': ';
-		print '<input type="text class="flat" id="generate_member_ref" name="generate_member_ref" value="'.GETPOST('generate_member_ref', 'alpha').'" size="10">';
+		print '<input type="text class="flat" id="generate_member_ref" name="generate_member_ref" value="'.request()->input('generate_member_ref').'" size="10">';
 		print '<input type="submit" class="none reposition button smallpaddingimp" value="'.$langs->trans("GetSecuredUrl").'">';
-		if (GETPOST('generate_member_ref')) {
-			$url = getOnlinePaymentUrl(0, 'membersubscription', GETPOST('generate_member_ref', 'alpha'));
+		if (request()->input('generate_member_ref')) {
+			$url = getOnlinePaymentUrl(0, 'membersubscription', request()->input('generate_member_ref'));
 			print '<div class="urllink"><input type="text" class="wordbreak quatrevingtpercent" value="';
 			print $url;
 			print '"></div>'."\n";
@@ -136,11 +136,11 @@ if (isModEnabled('don')) {
 		print '<input type="hidden" name="token" value="'.newToken().'">';
 
 		print $langs->trans("EnterRefToBuildUrl", $langs->transnoentitiesnoconv("Don")).': ';
-		print '<input type="text class="flat" id="generate_donation_ref" name="generate_donation_ref" value="'.GETPOST('generate_donation_ref', 'alpha').'" size="10">';
+		print '<input type="text class="flat" id="generate_donation_ref" name="generate_donation_ref" value="'.request()->input('generate_donation_ref').'" size="10">';
 		print '<input type="submit" class="none reposition button smallpaddingimp" value="'.$langs->trans("GetSecuredUrl").'">';
-		if (GETPOST('generate_donation_ref')) {
+		if (request()->input('generate_donation_ref')) {
 			print '<div class="urllink"><input type="text" class="wordbreak quatrevingtpercent" value="';
-			$url = getOnlinePaymentUrl(0, 'donation', GETPOST('generate_donation_ref', 'alpha'));
+			$url = getOnlinePaymentUrl(0, 'donation', request()->input('generate_donation_ref'));
 			print $url;
 			print '"></div>'."\n";
 		}

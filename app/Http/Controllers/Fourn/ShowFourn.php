@@ -16,9 +16,9 @@ class ShowFourn extends Controller
 
         $langs->loadLangs(array('accountancy', 'companies', 'suppliers', 'products', 'bills', 'orders', 'commercial'));
 
-        $action = GETPOST('action', 'aZ09');
-        $cancel = GETPOST('cancel', 'alpha');
-        $id = (GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id'));
+        $action = $request->input('action');
+        $cancel = $request->input('cancel');
+        $id = ($request->integer('socid', 0) ? $request->integer('socid', 0) : $request->integer('id', 0));
 
         if ($user->socid) {
             $id = $user->socid;
@@ -34,8 +34,8 @@ class ShowFourn extends Controller
         $permissiontoadd = $user->hasRight('societe', 'creer');
         $permissiontoeditextra = $permissiontoadd;
 
-        if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
-            $permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+        if ($request->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][$request->input('attribute')])) {
+            $permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][$request->input('attribute')]);
         }
 
         restrictedArea($user, 'societe', $id, '&societe', '', 'fk_soc', 'rowid', 0);
@@ -69,7 +69,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $object->accountancy_code_supplier_general = GETPOST("supplieraccountancycodegeneral");
+        $object->accountancy_code_supplier_general = $request->input("supplieraccountancycodegeneral");
         $result = $object->update($object->id, $user, 1, 0, 1);
 
         if ($result < 0) {
@@ -89,7 +89,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $object->code_compta_fournisseur = GETPOST("supplieraccountancycode");
+        $object->code_compta_fournisseur = $request->input("supplieraccountancycode");
         $result = $object->update($object->id, $user, 1, 0, 1);
 
         if ($result < 0) {
@@ -109,7 +109,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $object->tva_intra = GETPOST("tva_intra");
+        $object->tva_intra = $request->input("tva_intra");
         $result = $object->update($object->id, $user, 1, 0, 0);
 
         if ($result < 0) {
@@ -129,7 +129,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $result = $object->setPaymentTerms(GETPOSTINT('cond_reglement_supplier_id'), GETPOSTINT('cond_reglement_supplier_id_deposit_percent'));
+        $result = $object->setPaymentTerms($request->integer('cond_reglement_supplier_id', 0), $request->integer('cond_reglement_supplier_id_deposit_percent', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -148,7 +148,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_supplier_id'));
+        $result = $object->setPaymentMethods($request->integer('mode_reglement_supplier_id', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -167,7 +167,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $result = $object->setBankAccount(GETPOSTINT('fk_account'));
+        $result = $object->setBankAccount($request->integer('fk_account', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -186,7 +186,7 @@ class ShowFourn extends Controller
 
         $object = new \Fournisseur($db);
         $object->fetch($id);
-        $object->supplier_order_min_amount = price2num(GETPOST('supplier_order_min_amount', 'alpha'));
+        $object->supplier_order_min_amount = price2num($request->input('supplier_order_min_amount'));
         $result = $object->update($object->id, $user);
 
         if ($result < 0) {
@@ -211,7 +211,7 @@ class ShowFourn extends Controller
         $object->fetch($id);
         $object->oldcopy = dol_clone($object, 2);
 
-        $attribute_name = GETPOST('attribute', 'aZ09');
+        $attribute_name = $request->input('attribute');
         $ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
 
         if ($ret >= 0) {

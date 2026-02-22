@@ -62,11 +62,11 @@ dol_include_once('/webhook/lib/webhook_triggerhistory.lib.php');
 $langs->loadLangs(array("webhook@webhook", "companies", "admin"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel     = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref        = request()->input('ref');
+$action = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new TriggerHistory($db);
@@ -88,15 +88,15 @@ if ($id > 0 || !empty($ref)) {
 $permissiontoread = $permissiontoadd = $permissiontodelete = (!empty($user->admin) ? 1 : 0);
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->module, $object->id, $object->table_element, $object->element, 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled("webhook")) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 

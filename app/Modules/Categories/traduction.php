@@ -46,11 +46,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('categories', 'languages', 'mrp'));
 
-$id     = GETPOSTINT('id');
-$label  = GETPOST('label', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$langtodelete = GETPOST('langtodelete', 'alpha');
+$id     = request()->integer('id', 0);
+$label  = request()->input('label');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$langtodelete = request()->input('langtodelete');
 
 if ($id == '' && $label == '') {
 	dol_print_error(null, 'Missing parameter id');
@@ -104,9 +104,9 @@ if ($action == 'vadd' && $cancel != $langs->trans("Cancel") && $permissiontoadd)
 	$current_lang = $langs->getDefaultLang();
 
 	// check parameters
-	$forcelangprod = GETPOST('forcelangprod', 'alpha');
-	$libelle = GETPOST('libelle', 'alpha');
-	$desc = GETPOST('desc', 'restricthtml');
+	$forcelangprod = request()->input('forcelangprod');
+	$libelle = request()->input('libelle');
+	$desc = request()->input('desc');
 
 	if (empty($forcelangprod)) {
 		$error++;
@@ -153,8 +153,8 @@ if ($action == 'vedit' && $cancel != $langs->trans("Cancel") && $permissiontoadd
 	$current_lang = $langs->getDefaultLang();
 
 	foreach ($object->multilangs as $key => $value) {     // recording of new values in the object
-		$libelle = GETPOST('libelle-'.$key, 'alpha');
-		$desc = GETPOST('desc-'.$key, 'restricthtml');
+		$libelle = request()->input('libelle-' . $key);
+		$desc = request()->input('desc-' . $key);
 
 		if (empty($libelle)) {
 			$error++;
@@ -211,7 +211,7 @@ if (!empty($object->multilangs)) {
 
 print dol_get_fiche_head($head, 'translation', $langs->trans($title), -1, 'category');
 
-$backtolist = (GETPOST('backtolist') ? GETPOST('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
+$backtolist = (request()->input('backtolist') ? request()->input('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
 $linkback = '<a href="'.dol_sanitizeUrl($backtolist).'">'.$langs->trans("BackToList").'</a>';
 $object->next_prev_filter = 'type:=:'.((int) $object->type);
 $object->ref = $object->label;
@@ -285,11 +285,11 @@ if ($action == 'edit') {
 			print '<table class="border centpercent">';
 
 			// Label
-			$libelle = (GETPOST('libelle-'.$key, 'alpha') ? GETPOST('libelle-'.$key, 'alpha') : ($object->multilangs[$key]['label'] ?? ''));
+			$libelle = (request()->input('libelle-' . $key) ? request()->input('libelle-' . $key) : ($object->multilangs[$key]['label'] ?? ''));
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle-'.$key.'" size="40" value="'.$libelle.'"></td></tr>';
 
 			// Desc
-			$desc = (GETPOST('desc-'.$key) ? GETPOST('desc-'.$key) : ($object->multilangs[$key]['description'] ?? ''));
+			$desc = (request()->input('desc-' . $key) ? request()->input('desc-' . $key) : ($object->multilangs[$key]['description'] ?? ''));
 			print '<tr><td class="tdtop">'.$langs->trans('Description').'</td><td>';
 			$doleditor = new DolEditor("desc-$key", $desc, '', 160, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor') && getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_3, '90%');
 			$doleditor->Create();
@@ -346,12 +346,12 @@ if ($action == 'add' && ($user->hasRight('produit', 'creer') || $user->hasRight(
 
 	print '<table class="border centpercent">';
 	print '<tr><td class="titlefield fieldrequired">'.$langs->trans('Translation').'</td><td>';
-	print $formadmin->select_language(GETPOST('forcelangprod', 'alpha'), 'forcelangprod', 0, $object->multilangs);
+	print $formadmin->select_language(request()->input('forcelangprod'), 'forcelangprod', 0, $object->multilangs);
 	print '</td></tr>';
 	print '<tr><td class="fieldrequired">'.$langs->trans('Label').'</td>';
-	print '<td><input name="libelle" class="minwidth200 maxwidth300" value="'.GETPOST('libelle', 'alpha').'"></td></tr>';
+	print '<td><input name="libelle" class="minwidth200 maxwidth300" value="'.request()->input('libelle').'"></td></tr>';
 	print '<tr><td>'.$langs->trans('Description').'</td><td>';
-	$doleditor = new DolEditor('desc', GETPOST('desc', 'restricthtml'), '', 160, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor') && getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_3, '90%');
+	$doleditor = new DolEditor('desc', request()->input('desc'), '', 160, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor') && getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_3, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
 

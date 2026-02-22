@@ -225,7 +225,7 @@ class Form
 			if (empty($notabletag) && $perm) {
 				$ret .= '<td class="right">';
 			}
-			if ($htmlname && GETPOST('action', 'aZ09') != 'edit' . $htmlname && $perm && is_object($object)) {
+			if ($htmlname && request()->input('action') != 'edit' . $htmlname && $perm && is_object($object)) {
 				$ret .= '<a class="editfielda reposition" href="' . dolBuildUrl($_SERVER["PHP_SELF"], ['action' => 'edit' . $htmlname, $paramid => $object->id], true) . $moreparam . '">';
 				$ret .= img_edit($langs->trans('Edit'), ($notabletag ? 0 : 1));
 				$ret .= '</a>';
@@ -304,7 +304,7 @@ class Form
 			$ret .= $this->editInPlace($object, $value, $htmlname, ($perm ? 1 : 0), $typeofdata, $editvalue, $extObject, $custommsg);
 		} else {
 			if ($editaction == '') {
-				$editaction = GETPOST('action', 'aZ09');
+				$editaction = request()->input('action');
 			}
 			$editmode = ($editaction == 'edit' . $htmlname);
 			if ($editmode) {	// edit mode
@@ -879,7 +879,7 @@ class Form
 	 * Generate select HTML to choose massaction
 	 *
 	 * @param string 	$selected 		Value auto selected when at least one record is selected. Not a preselected value. Use '0' by default.
-	 * @param array<string,string> 	$arrayofaction 	array('code'=>'label', ...). The code is the key stored into the GETPOST('massaction') when submitting action.
+	 * @param array<string,string> 	$arrayofaction 	array('code'=>'label', ...). The code is the key stored into the request()->input('massaction') when submitting action.
 	 * @param int 		$alwaysvisible 	1=select button always visible
 	 * @param string 	$name 			Name for massaction
 	 * @param string 	$cssclass 		CSS class used to check for select
@@ -5895,8 +5895,8 @@ class Form
 		$cate_arbo = $this->select_all_categories($categtype, '', '', 64, 0, 3);
 
 		$arrayselected = array();
-		if (GETPOSTISARRAY($htmlname)) {
-			$arrayselected = GETPOST($htmlname, 'array:int');
+		if (is_array(request()->input($htmlname))) {
+			$arrayselected = request()->input($htmlname);
 		} elseif (is_object($object)) {
 			$c = new Categorie($this->db);
 			$cats = $c->containing($object->id, $categtype);
@@ -10629,7 +10629,7 @@ class Form
 					$htmltoenteralink .= '<table class="noborder">';
 					$htmltoenteralink .= '<tr class="liste_titre">';
 					//print '<td>' . $langs->trans("Ref") . '</td>';
-					$htmltoenteralink .= '<td class="center"><input type="text" placeholder="'.dol_escape_htmltag($langs->trans("Ref")).'" name="reftolinkto" value="' . dol_escape_htmltag(GETPOST('reftolinkto', 'alpha')) . '">&nbsp;';
+					$htmltoenteralink .= '<td class="center"><input type="text" placeholder="'.dol_escape_htmltag($langs->trans("Ref")).'" name="reftolinkto" value="' . dol_escape_htmltag(request()->input('reftolinkto')) . '">&nbsp;';
 					$htmltoenteralink .= '<input type="submit" class="button smallpaddingimp valignmiddle" value="' . $langs->trans('ToLink') . '">&nbsp;';
 					$htmltoenteralink .= '<input type="submit" class="button smallpaddingimp" name="cancel" value="' . $langs->trans('Cancel') . '"></td>';
 					$htmltoenteralink .= '</tr>';

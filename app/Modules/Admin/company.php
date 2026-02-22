@@ -50,15 +50,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'admincompany'; // To manage different context of search
-$page_y = GETPOSTINT('page_y');
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'admincompany'; // To manage different context of search
+$page_y = request()->integer('page_y', 0);
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'companies', 'bills'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -86,9 +86,9 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (($action == 'update' && !GETPOST("cancel", 'alpha'))
+if (($action == 'update' && !request()->input('cancel'))
 || ($action == 'updateedit')) {
-	$tmparray = getCountry(GETPOSTINT('country_id'), 'all', $db, $langs, 0);
+	$tmparray = getCountry(request()->integer('country_id', 0), 'all', $db, $langs, 0);
 	if (!empty($tmparray['id'])) {
 		if ($tmparray['code'] == 'FR' && $tmparray['id'] != $mysoc->country_id) {
 			// For FR, default value of option to show profid SIREN is on by default
@@ -105,7 +105,7 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 		activateModulesRequiredByCountry($mysoc->country_code);
 	}
 
-	$tmparray = getState(GETPOSTINT('state_id'), 'all', $db, 0, $langs, 0);
+	$tmparray = getState(request()->integer('state_id', 0), 'all', $db, 0, $langs, 0);
 	if (!empty($tmparray['id'])) {
 		$mysoc->state_id   = $tmparray['id'];
 		$mysoc->state_code = $tmparray['code'];
@@ -119,19 +119,19 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 
 	$db->begin();
 
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOM", GETPOST("name", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_ADDRESS", GETPOST("MAIN_INFO_SOCIETE_ADDRESS", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_TOWN", GETPOST("MAIN_INFO_SOCIETE_TOWN", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_ZIP", GETPOST("MAIN_INFO_SOCIETE_ZIP", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_REGION", GETPOST("region_code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MONNAIE", GETPOST("currency", 'aZ09'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_TEL", GETPOST("phone", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MOBILE", GETPOST("phone_mobile", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_FAX", GETPOST("fax", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MAIL", GETPOST("mail", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_WEB", GETPOST("web", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOTE", GETPOST("note", 'restricthtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_GENCOD", GETPOST("barcode", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOM", request()->input('name'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_ADDRESS", request()->input('MAIN_INFO_SOCIETE_ADDRESS'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_TOWN", request()->input('MAIN_INFO_SOCIETE_TOWN'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_ZIP", request()->input('MAIN_INFO_SOCIETE_ZIP'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_REGION", request()->input('region_code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MONNAIE", request()->input('currency'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_TEL", request()->input('phone'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MOBILE", request()->input('phone_mobile'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_FAX", request()->input('fax'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MAIL", request()->input('mail'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_WEB", request()->input('web'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_NOTE", request()->input('note'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_GENCOD", request()->input('barcode'), 'chaine', 0, '', $conf->entity);
 
 	$dirforimage = $conf->mycompany->dir_output.'/logos/';
 
@@ -221,30 +221,30 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 		/*}*/
 	}
 
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MANAGERS", GETPOST("MAIN_INFO_SOCIETE_MANAGERS", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_GDPR", GETPOST("MAIN_INFO_GDPR", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_CAPITAL", GETPOST("capital", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_FORME_JURIDIQUE", GETPOST("forme_juridique_code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SIREN", GETPOST("siren", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SIRET", GETPOST("siret", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_APE", GETPOST("ape", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_RCS", GETPOST("rcs", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID5", GETPOST("MAIN_INFO_PROFID5", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID6", GETPOST("MAIN_INFO_PROFID6", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID7", GETPOST("MAIN_INFO_PROFID7", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID8", GETPOST("MAIN_INFO_PROFID8", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID9", GETPOST("MAIN_INFO_PROFID9", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_PROFID10", GETPOST("MAIN_INFO_PROFID10", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_MANAGERS", request()->input('MAIN_INFO_SOCIETE_MANAGERS'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_GDPR", request()->input('MAIN_INFO_GDPR'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_CAPITAL", request()->input('capital'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_FORME_JURIDIQUE", request()->input('forme_juridique_code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SIREN", request()->input('siren'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SIRET", request()->input('siret'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_APE", request()->input('ape'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_RCS", request()->input('rcs'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID5", request()->input('MAIN_INFO_PROFID5'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID6", request()->input('MAIN_INFO_PROFID6'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID7", request()->input('MAIN_INFO_PROFID7'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID8", request()->input('MAIN_INFO_PROFID8'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID9", request()->input('MAIN_INFO_PROFID9'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_PROFID10", request()->input('MAIN_INFO_PROFID10'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_INFO_TVAINTRA", GETPOST("tva", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_OBJECT", GETPOST("socialobject", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_TVAINTRA", request()->input('tva'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_SOCIETE_OBJECT", request()->input('socialobject'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "SOCIETE_FISCAL_MONTH_START", GETPOSTINT("SOCIETE_FISCAL_MONTH_START"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "SOCIETE_FISCAL_MONTH_START", request()->integer('SOCIETE_FISCAL_MONTH_START', 0), 'chaine', 0, '', $conf->entity);
 
 	// Sale tax options
-	$usevat = GETPOST("optiontva", 'aZ09');
-	$uselocaltax1 = GETPOST("optionlocaltax1", 'aZ09');
-	$uselocaltax2 = GETPOST("optionlocaltax2", 'aZ09');
+	$usevat = request()->input('optiontva');
+	$uselocaltax1 = request()->input('optionlocaltax1');
+	$uselocaltax2 = request()->input('optionlocaltax2');
 	if ($uselocaltax1 == 'localtax1on' && !$usevat) {
 		setEventMessages($langs->trans("IfYouUseASecondTaxYouMustSetYouUseTheMainTax"), null, 'errors');
 		$error++;
@@ -258,36 +258,36 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 	dolibarr_set_const($db, "FACTURE_LOCAL_TAX1_OPTION", $uselocaltax1, 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, "FACTURE_LOCAL_TAX2_OPTION", $uselocaltax2, 'chaine', 0, '', $conf->entity);
 
-	if (GETPOST("optionlocaltax1") == "localtax1on") {
-		if (!GETPOSTISSET('lt1')) {
+	if (request()->input('optionlocaltax1') == "localtax1on") {
+		if (!request()->has('lt1')) {
 			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX1", 0, 'chaine', 0, '', $conf->entity);
 		} else {
-			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX1", GETPOST('lt1', 'aZ09'), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX1", request()->input('lt1'), 'chaine', 0, '', $conf->entity);
 		}
-		dolibarr_set_const($db, "MAIN_INFO_LOCALTAX_CALC1", GETPOST("clt1", 'aZ09'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_INFO_LOCALTAX_CALC1", request()->input('clt1'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOST("optionlocaltax2") == "localtax2on") {
-		if (!GETPOSTISSET('lt2')) {
+	if (request()->input('optionlocaltax2') == "localtax2on") {
+		if (!request()->has('lt2')) {
 			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX2", 0, 'chaine', 0, '', $conf->entity);
 		} else {
-			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX2", GETPOST('lt2', 'aZ09'), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, "MAIN_INFO_VALUE_LOCALTAX2", request()->input('lt2'), 'chaine', 0, '', $conf->entity);
 		}
-		dolibarr_set_const($db, "MAIN_INFO_LOCALTAX_CALC2", GETPOST("clt2", 'aZ09'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_INFO_LOCALTAX_CALC2", request()->input('clt2'), 'chaine', 0, '', $conf->entity);
 	}
 
 	// Credentials for AADE webservices, applicable only for Greece
 	if ($mysoc->country_code == 'GR') {
-		dolibarr_set_const($db, "MYDATA_AADE_USER", GETPOST("MYDATA_AADE_USER", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MYDATA_AADE_KEY", GETPOST("MYDATA_AADE_KEY", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "AADE_WEBSERVICE_USER", GETPOST("AADE_WEBSERVICE_USER", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "AADE_WEBSERVICE_KEY", GETPOST("AADE_WEBSERVICE_KEY", 'alpha'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MYDATA_AADE_USER", request()->input('MYDATA_AADE_USER'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MYDATA_AADE_KEY", request()->input('MYDATA_AADE_KEY'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "AADE_WEBSERVICE_USER", request()->input('AADE_WEBSERVICE_USER'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "AADE_WEBSERVICE_KEY", request()->input('AADE_WEBSERVICE_KEY'), 'chaine', 0, '', $conf->entity);
 	}
 
 	// Remove constant MAIN_INFO_SOCIETE_SETUP_TODO_WARNING
 	dolibarr_del_const($db, "MAIN_INFO_SOCIETE_SETUP_TODO_WARNING", $conf->entity);
 
 	if (!$error) {
-		if (GETPOST('save')) {	// To avoid to show message when we juste switch the country that resubmit the form.
+		if (request()->input('save')) {	// To avoid to show message when we juste switch the country that resubmit the form.
 			setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 		}
 		$db->commit();
@@ -302,8 +302,8 @@ if (($action == 'update' && !GETPOST("cancel", 'alpha'))
 }
 
 if ($action == 'addthumb' || $action == 'addthumbsquarred') {  // Regenerate thumbs
-	if (file_exists($conf->mycompany->dir_output.'/logos/'.GETPOST("file"))) {
-		$isimage = image_format_supported(GETPOST("file"));
+	if (file_exists($conf->mycompany->dir_output.'/logos/'.request()->input('file'))) {
+		$isimage = image_format_supported(request()->input('file'));
 
 		// Create thumbs of logo
 		if ($isimage > 0) {
@@ -318,7 +318,7 @@ if ($action == 'addthumb' || $action == 'addthumbsquarred') {  // Regenerate thu
 			//$object->addThumbs($newfile);    // We can't use addThumbs here yet because we need name of generated thumbs to add them into constants. TODO Check if need such constants. We should be able to retrieve value with get...
 
 			// Create small thumb. Used on logon for example
-			$imgThumbSmall = vignette($conf->mycompany->dir_output.'/logos/'.GETPOST("file"), $maxwidthsmall, $maxheightsmall, '_small', $quality);
+			$imgThumbSmall = vignette($conf->mycompany->dir_output.'/logos/'.request()->input('file'), $maxwidthsmall, $maxheightsmall, '_small', $quality);
 			if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbSmall, $reg)) {
 				$imgThumbSmall = $reg[1]; // Save only basename
 				dolibarr_set_const($db, $constant."_SMALL", $imgThumbSmall, 'chaine', 0, '', $conf->entity);
@@ -327,7 +327,7 @@ if ($action == 'addthumb' || $action == 'addthumbsquarred') {  // Regenerate thu
 			}
 
 			// Create mini thumbs. Used on menu or for setup page for example
-			$imgThumbMini = vignette($conf->mycompany->dir_output.'/logos/'.GETPOST("file"), $maxwidthmini, $maxheightmini, '_mini', $quality);
+			$imgThumbMini = vignette($conf->mycompany->dir_output.'/logos/'.request()->input('file'), $maxwidthmini, $maxheightmini, '_mini', $quality);
 			if (image_format_supported($imgThumbSmall) >= 0 && preg_match('/([^\\/:]+)$/i', $imgThumbMini, $reg)) {
 				$imgThumbMini = $reg[1]; // Save only basename
 				dolibarr_set_const($db, $constant."_MINI", $imgThumbMini, 'chaine', 0, '', $conf->entity);
@@ -346,8 +346,8 @@ if ($action == 'addthumb' || $action == 'addthumbsquarred') {  // Regenerate thu
 	} else {
 		$error++;
 		$langs->load("errors");
-		setEventMessages($langs->trans("ErrorFileDoesNotExists", GETPOST("file")), null, 'errors');
-		dol_syslog($langs->transnoentities("ErrorFileDoesNotExists", GETPOST("file")), LOG_WARNING);
+		setEventMessages($langs->trans("ErrorFileDoesNotExists", request()->input('file')), null, 'errors');
+		dol_syslog($langs->transnoentities("ErrorFileDoesNotExists", request()->input('file')), LOG_WARNING);
 	}
 }
 
@@ -464,7 +464,7 @@ print '<tr class="liste_titre"><th class="titlefieldcreate wordbreak" colspan="2
 
 // Company name
 print '<tr class="oddeven"><td class="fieldrequired wordbreak"><label for="name">'.$langs->trans("CompanyName").'</label></td><td>';
-print '<input name="name" id="name" maxlength="'.$mysoc->fields['nom']['length'].'" class="minwidth250" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('name') ? GETPOST('name', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_NOM'))).'"'.(getDolGlobalString('MAIN_INFO_SOCIETE_NOM') ? '' : ' autofocus="autofocus"').'></td></tr>'."\n";
+print '<input name="name" id="name" maxlength="'.$mysoc->fields['nom']['length'].'" class="minwidth250" value="'.dolPrintHTMLForAttribute((request()->has('name') ? request()->input('name') : getDolGlobalString('MAIN_INFO_SOCIETE_NOM'))).'"'.(getDolGlobalString('MAIN_INFO_SOCIETE_NOM') ? '' : ' autofocus="autofocus"').'></td></tr>'."\n";
 
 // Main currency
 print '<tr class="oddeven"><td class="fieldrequired"><label for="currency">'.$langs->trans("CompanyCurrency").'</label></td><td>';
@@ -481,14 +481,14 @@ print '</td></tr>'."\n";
 
 // Address
 print '<tr class="oddeven"><td><label for="MAIN_INFO_SOCIETE_ADDRESS">'.$langs->trans("CompanyAddress").'</label></td><td>';
-print '<textarea name="MAIN_INFO_SOCIETE_ADDRESS" id="MAIN_INFO_SOCIETE_ADDRESS" class="quatrevingtpercent" rows="'.ROWS_3.'">'.(GETPOSTISSET('MAIN_INFO_SOCIETE_ADDRESS') ? GETPOST('MAIN_INFO_SOCIETE_ADDRESS', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_ADDRESS')).'</textarea></td></tr>'."\n";
+print '<textarea name="MAIN_INFO_SOCIETE_ADDRESS" id="MAIN_INFO_SOCIETE_ADDRESS" class="quatrevingtpercent" rows="'.ROWS_3.'">'.(request()->has('MAIN_INFO_SOCIETE_ADDRESS') ? request()->input('MAIN_INFO_SOCIETE_ADDRESS') : getDolGlobalString('MAIN_INFO_SOCIETE_ADDRESS')).'</textarea></td></tr>'."\n";
 
 // Zip
 print '<tr class="oddeven"><td><label for="MAIN_INFO_SOCIETE_ZIP">'.$langs->trans("CompanyZip").'</label></td><td>';
-print '<input class="width100" name="MAIN_INFO_SOCIETE_ZIP" id="MAIN_INFO_SOCIETE_ZIP" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('MAIN_INFO_SOCIETE_ZIP') ? GETPOST('MAIN_INFO_SOCIETE_ZIP', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_ZIP'))).'"></td></tr>'."\n";
+print '<input class="width100" name="MAIN_INFO_SOCIETE_ZIP" id="MAIN_INFO_SOCIETE_ZIP" value="'.dolPrintHTMLForAttribute((request()->has('MAIN_INFO_SOCIETE_ZIP') ? request()->input('MAIN_INFO_SOCIETE_ZIP') : getDolGlobalString('MAIN_INFO_SOCIETE_ZIP'))).'"></td></tr>'."\n";
 
 print '<tr class="oddeven"><td><label for="MAIN_INFO_SOCIETE_TOWN">'.$langs->trans("CompanyTown").'</label></td><td>';
-print '<input name="MAIN_INFO_SOCIETE_TOWN" class="minwidth200" id="MAIN_INFO_SOCIETE_TOWN" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('MAIN_INFO_SOCIETE_TOWN') ? GETPOST('MAIN_INFO_SOCIETE_TOWN', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_TOWN'))).'"></td></tr>'."\n";
+print '<input name="MAIN_INFO_SOCIETE_TOWN" class="minwidth200" id="MAIN_INFO_SOCIETE_TOWN" value="'.dolPrintHTMLForAttribute((request()->has('MAIN_INFO_SOCIETE_TOWN') ? request()->input('MAIN_INFO_SOCIETE_TOWN') : getDolGlobalString('MAIN_INFO_SOCIETE_TOWN'))).'"></td></tr>'."\n";
 
 // State
 print '<tr class="oddeven"><td class="wordbreak"><label for="state_id">'.$langs->trans("State").'</label></td><td>';
@@ -504,31 +504,31 @@ print '</td></tr>'."\n";
 // Phone
 print '<tr class="oddeven"><td><label for="phone">'.$langs->trans("Phone").'</label></td><td>';
 print img_picto('', 'object_phoning', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input class="maxwidth150 widthcentpercentminusx" name="phone" id="phone" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('phone') ? GETPOST('phone', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_TEL'))).'"></td></tr>';
+print '<input class="maxwidth150 widthcentpercentminusx" name="phone" id="phone" value="'.dolPrintHTMLForAttribute((request()->has('phone') ? request()->input('phone') : getDolGlobalString('MAIN_INFO_SOCIETE_TEL'))).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Phone mobile
 print '<tr class="oddeven"><td><label for="phone">'.$langs->trans("PhoneMobile").'</label></td><td>';
 print img_picto('', 'object_phoning_mobile', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input class="maxwidth150 widthcentpercentminusx" name="phone_mobile" id="phone_mobile" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('phone_mobile') ? GETPOST('phone_mobile', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_MOBILE'))).'"></td></tr>';
+print '<input class="maxwidth150 widthcentpercentminusx" name="phone_mobile" id="phone_mobile" value="'.dolPrintHTMLForAttribute((request()->has('phone_mobile') ? request()->input('phone_mobile') : getDolGlobalString('MAIN_INFO_SOCIETE_MOBILE'))).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Fax
 print '<tr class="oddeven"><td><label for="fax">'.$langs->trans("Fax").'</label></td><td>';
 print img_picto('', 'object_phoning_fax', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input class="maxwidth150" name="fax" id="fax" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('fax') ? GETPOST('fax', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_FAX'))).'"></td></tr>';
+print '<input class="maxwidth150" name="fax" id="fax" value="'.dolPrintHTMLForAttribute((request()->has('fax') ? request()->input('fax') : getDolGlobalString('MAIN_INFO_SOCIETE_FAX'))).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Email
 print '<tr class="oddeven"><td><label for="email">'.$langs->trans("EMail").'</label></td><td>';
 print img_picto('', 'object_email', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input class="minwidth300 maxwidth500 widthcentpercentminusx" name="mail" id="email" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('mail') ? GETPOST('mail', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_MAIL'))).'"></td></tr>';
+print '<input class="minwidth300 maxwidth500 widthcentpercentminusx" name="mail" id="email" value="'.dolPrintHTMLForAttribute((request()->has('mail') ? request()->input('mail') : getDolGlobalString('MAIN_INFO_SOCIETE_MAIL'))).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Web
 print '<tr class="oddeven"><td><label for="web">'.$langs->trans("Web").'</label></td><td>';
 print img_picto('', 'globe', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input class="maxwidth300 widthcentpercentminusx" name="web" id="web" value="'.dol_escape_htmltag((GETPOSTISSET('web') ? GETPOST('web', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_WEB'))).'"></td></tr>';
+print '<input class="maxwidth300 widthcentpercentminusx" name="web" id="web" value="'.dol_escape_htmltag((request()->has('web') ? request()->input('web') : getDolGlobalString('MAIN_INFO_SOCIETE_WEB'))).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Barcode
@@ -536,7 +536,7 @@ if (isModEnabled('barcode')) {
 	print '<tr class="oddeven"><td>';
 	print '<label for="barcode">'.$langs->trans("Gencod").'</label></td><td>';
 	print '<span class="fa fa-barcode pictofixedwidth"></span>';
-	print '<input name="barcode" id="barcode" class="minwidth150 widthcentpercentminusx maxwidth300" value="'.dolPrintHTMLForAttribute(GETPOSTISSET('barcode') ? GETPOST('barcode', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_GENCOD')).'"></td></tr>';
+	print '<input name="barcode" id="barcode" class="minwidth150 widthcentpercentminusx maxwidth300" value="'.dolPrintHTMLForAttribute(request()->has('barcode') ? request()->input('barcode') : getDolGlobalString('MAIN_INFO_SOCIETE_GENCOD')).'"></td></tr>';
 	print '</td></tr>';
 }
 
@@ -572,7 +572,7 @@ print '</td></tr>';
 
 // Note
 print '<tr class="oddeven"><td class="tdtop"><label for="note">'.$langs->trans("Note").'</label></td><td>';
-print '<textarea class="flat quatrevingtpercent" name="note" id="note" rows="'.ROWS_5.'">'.(GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : getDolGlobalString('MAIN_INFO_SOCIETE_NOTE')).'</textarea></td></tr>';
+print '<textarea class="flat quatrevingtpercent" name="note" id="note" rows="'.ROWS_5.'">'.(request()->has('note') ? request()->input('note') : getDolGlobalString('MAIN_INFO_SOCIETE_NOTE')).'</textarea></td></tr>';
 print '</td></tr>';
 
 print '</table>';
@@ -591,17 +591,17 @@ $langs->load("companies");
 
 // Managing Director(s)
 print '<tr class="oddeven"><td><label for="director">'.$langs->trans("ManagingDirectors").'</label></td><td>';
-print '<input name="MAIN_INFO_SOCIETE_MANAGERS" id="directors" class="minwidth300" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('MAIN_INFO_SOCIETE_MANAGERS') ? GETPOST('MAIN_INFO_SOCIETE_MANAGERS', 'alphanohtml') : getDolGlobalString('MAIN_INFO_SOCIETE_MANAGERS'))).'"></td></tr>';
+print '<input name="MAIN_INFO_SOCIETE_MANAGERS" id="directors" class="minwidth300" value="'.dolPrintHTMLForAttribute((request()->has('MAIN_INFO_SOCIETE_MANAGERS') ? request()->input('MAIN_INFO_SOCIETE_MANAGERS') : getDolGlobalString('MAIN_INFO_SOCIETE_MANAGERS'))).'"></td></tr>';
 
 // GDPR contact
 print '<tr class="oddeven"><td>';
 print $form->textwithpicto($langs->trans("GDPRContact"), $langs->trans("GDPRContactDesc"));
 print '</td><td>';
-print '<input name="MAIN_INFO_GDPR" id="infodirector" class="minwidth300" value="'.dolPrintHTMLForAttribute((GETPOSTISSET("MAIN_INFO_GDPR") ? GETPOST("MAIN_INFO_GDPR", 'alphanohtml') : getDolGlobalString('MAIN_INFO_GDPR'))).'"></td></tr>';
+print '<input name="MAIN_INFO_GDPR" id="infodirector" class="minwidth300" value="'.dolPrintHTMLForAttribute((request()->has('MAIN_INFO_GDPR') ? request()->input('MAIN_INFO_GDPR') : getDolGlobalString('MAIN_INFO_GDPR'))).'"></td></tr>';
 
 // Capital
 print '<tr class="oddeven"><td><label for="capital">'.$langs->trans("Capital").'</label></td><td>';
-print '<input name="capital" id="capital" class="maxwidth100" value="'.dolPrintHTMLForAttribute((GETPOSTISSET('capital') ? GETPOST('capital', 'alphanohtml') : getDolGlobalString('MAIN_INFO_CAPITAL'))).'"></td></tr>';
+print '<input name="capital" id="capital" class="maxwidth100" value="'.dolPrintHTMLForAttribute((request()->has('capital') ? request()->input('capital') : getDolGlobalString('MAIN_INFO_CAPITAL'))).'"></td></tr>';
 
 // Object of the company
 print '<tr class="oddeven"><td><label for="socialobject">'.$langs->trans("CompanyObject").'</label></td><td>';

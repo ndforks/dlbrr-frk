@@ -52,15 +52,15 @@ require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_skillrank.lib.php';
 $langs->loadLangs(array('hrm', 'other', 'products'));  // why products?
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'evaluationcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'evaluationcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Evaluation($db);
@@ -74,11 +74,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -99,15 +99,15 @@ $permissiondellink = $user->hasRight('hrm', 'evaluation', 'write'); // Used by t
 $upload_dir = $conf->hrm->multidir_output[isset($object->entity) ? $object->entity : 1].'/evaluation';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = ($object->status == Evaluation::STATUS_DRAFT) ? 1 : 0;
 restrictedArea($user, $object->element, $object, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled("hrm")) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 /*
@@ -136,7 +136,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'saveSkill' && $permissiontoadd) {
-		$TNote = GETPOST('TNote', 'array');
+		$TNote = request()->input('TNote');
 		if (!empty($TNote)) {
 			foreach ($object->lines as $line) {
 				$line->rankorder = ($TNote[$line->fk_skill] == "NA" ? -1 : $TNote[$line->fk_skill]);
@@ -149,7 +149,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == "validate" && $permissiontoadd) {
-		$TNote = GETPOST('TNote', 'array');
+		$TNote = request()->input('TNote');
 		$emptyTNote = true;
 		foreach ($object->lines as $line) {
 			if (!in_array($TNote[$line->fk_skill], array("0", ""))) {
@@ -179,10 +179,10 @@ if (empty($reshook)) {
 
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -252,12 +252,12 @@ if (empty($reshook)) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$upload_dir = $conf->hrm->dir_output;
-		$file = $upload_dir.'/'.GETPOST('file');
+		$file = $upload_dir.'/'.request()->input('file');
 		$ret = dol_delete_file($file, 0, 0, 0, $object);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 		}
 	}
 }
@@ -473,7 +473,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 		print '<br>';
 
-		print '	<form name="form_save_rank" id="form_save_rank" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+		print '	<form name="form_save_rank" id="form_save_rank" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
 		<input type="hidden" name="action" value="saveSkill">
 		<input type="hidden" name="mode" value="">
@@ -494,7 +494,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 		// Lines of evaluated skills
 		// $object is Evaluation
-		$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 1);
+		$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 1);
 
 		if (empty($object->lines)) {
 			print '<tr><td colspan="4"><span class="opacitymedium">'.img_warning().' '.$langs->trans("TheJobProfileHasNoSkillsDefinedFixBefore").'</td></tr>';
@@ -692,7 +692,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -737,7 +737,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	/*if (GETPOST('modelselected')) {
+	/*if (request()->input('modelselected')) {
 		// $action = 'presend';
 	}*/ // To delete.
 

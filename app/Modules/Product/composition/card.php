@@ -48,13 +48,13 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'products', 'stocks'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$key = GETPOST('key');
-$parent = GETPOST('parent');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$key = request()->input('key');
+$parent = request()->input('parent');
 
 // Security check
 if (!empty($user->socid)) {
@@ -108,12 +108,12 @@ if (empty($reshook)) {
 	// Add subproduct to product
 	if ($action == 'add_prod' && ($user->hasRight('produit', 'creer') || $user->hasRight('service', 'creer'))) {
 		$error = 0;
-		$maxprod = GETPOSTINT("max_prod");
+		$maxprod = request()->integer('max_prod', 0);
 
 		for ($i = 0; $i < $maxprod; $i++) {
-			$qty = price2num(GETPOST("prod_qty_" . $i, 'alpha'), 'MS');
+			$qty = price2num(request()->input("prod_qty_" . $i), 'MS');
 			if ($qty > 0) {
-				if ($object->add_sousproduit($id, GETPOSTINT("prod_id_" . $i), (float) $qty, GETPOSTINT("prod_incdec_" . $i)) > 0) {
+				if ($object->add_sousproduit($id, request()->integer("prod_id_" . $i, 0), (float) $qty, request()->integer("prod_incdec_" . $i, 0)) > 0) {
 					//var_dump($i.' '.GETPOST("prod_id_".$i, 'int'), $qty, GETPOST("prod_incdec_".$i, 'int'));
 					$action = 'edit';
 				} else {
@@ -126,7 +126,7 @@ if (empty($reshook)) {
 					}
 				}
 			} else {
-				if ($object->del_sousproduit($id, GETPOSTINT("prod_id_" . $i)) > 0) {
+				if ($object->del_sousproduit($id, request()->integer("prod_id_" . $i, 0)) > 0) {
 					$action = 'edit';
 				} else {
 					$error++;
@@ -141,7 +141,7 @@ if (empty($reshook)) {
 			exit;
 		}
 	} elseif ($action === 'save_composed_product') {
-		$TProduct = GETPOST('TProduct', 'array');
+		$TProduct = request()->input('TProduct');
 		if (!empty($TProduct)) {
 			foreach ($TProduct as $id_product => $row) {
 				if ($row['qty'] > 0) {
@@ -218,11 +218,11 @@ if ($action == 'search') {
 $title = $langs->trans('ProductServiceCard');
 $help_url = '';
 $shortlabel = dol_trunc($object->label, 16);
-if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 	$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('AssociatedProducts');
 	$help_url = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos|DE:Modul_Produkte';
 }
-if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 	$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('AssociatedProducts');
 	$help_url = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios|DE:Modul_Leistungen';
 }
@@ -557,7 +557,7 @@ if ($id > 0 || !empty($ref)) {
 					print '</tr>';
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			print '</table>';
 			print '<input type="hidden" name="max_prod" value="'.$i.'">';

@@ -64,10 +64,10 @@ $permissiontoread = $user->hasRight('hrm', 'evaluation', 'read') || $user->hasRi
 $permissiontoadd = 0;
 
 if (!isModEnabled('hrm')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -128,12 +128,12 @@ print dol_get_fiche_head($head, 'compare', '', 1);
 <?php
 
 $fk_usergroup2 = 0;
-$fk_job = (int) GETPOST('fk_job');
+$fk_job = (int) request()->input('fk_job');
 if ($fk_job <= 0) {
-	$fk_usergroup2 = GETPOSTINT('fk_usergroup2');
+	$fk_usergroup2 = request()->integer('fk_usergroup2', 0);
 }
 
-$fk_usergroup1 = GETPOSTINT('fk_usergroup1');
+$fk_usergroup1 = request()->integer('fk_usergroup1', 0);
 
 ?>
 
@@ -445,7 +445,7 @@ function displayUsersListWithPicto(&$TUser, $fk_usergroup = 0, $namelist = 'list
 	if ($fk_usergroup > 0) {
 		$list = $namelist . '_excluded_id';
 
-		$excludedIdsList = GETPOST($list);
+		$excludedIdsList = request()->input($list);
 
 		$sql = "SELECT u.rowid FROM " . MAIN_DB_PREFIX . "user u
 		LEFT JOIN " . MAIN_DB_PREFIX . "usergroup_user as ugu ON (u.rowid = ugu.fk_user)
@@ -572,7 +572,7 @@ function getSkillForUsers($TUser)
 			$num++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	return $Tab;
@@ -621,7 +621,7 @@ function getSkillForJob($fk_job)
 			$num++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	return $Tab;

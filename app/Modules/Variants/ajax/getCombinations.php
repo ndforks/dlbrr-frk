@@ -48,10 +48,10 @@ require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductCombination.class.php';
 
 // Security check
 if (!isModEnabled('variants')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 if ($user->socid > 0) { // Protection if external user
-	accessforbidden();
+	abort(403);
 }
 $result = restrictedArea($user, 'variants');
 
@@ -62,7 +62,7 @@ $result = restrictedArea($user, 'variants');
 
 top_httphead('application/json');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 if (!$id) {
 	print json_encode(array(

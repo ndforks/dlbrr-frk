@@ -41,7 +41,7 @@ $langs->load("opensurvey");
 
 // Security check
 if (!$user->hasRight('opensurvey', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 $hookmanager = new HookManager($db);
@@ -63,7 +63,7 @@ if ($resql) {
 	$obj = $db->fetch_object($resql);
 	$nbsondages = $obj->nb;
 } else {
-	dol_print_error($db, '');
+	abort(500, '');
 }
 
 

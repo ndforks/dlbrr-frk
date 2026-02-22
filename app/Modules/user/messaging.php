@@ -48,28 +48,28 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'bills', 'companies', 'orders', 'propal'));
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'useragenda';
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'useragenda';
 
-if (GETPOSTISARRAY('actioncode')) {
-	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
+if (is_array(request()->input('actioncode'))) {
+	$actioncode = request()->input('actioncode', []);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	} else {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$id = GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$id = request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('id', 0);
+$ref = request()->input('ref');
+$search_rowid = request()->integer('search_rowid', 0);
+$search_agenda_label = request()->input('search_agenda_label');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -88,7 +88,7 @@ $object = new User($db);
 if ($id > 0 || !empty($ref)) {
 	$result = $object->fetch($id, $ref, '', 1);
 	if ($result <= 0) {
-		accessforbidden('User not found');
+		abort(403);
 	}
 	$object->loadRights();
 }
@@ -122,13 +122,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$actioncode = '';
 		$search_agenda_label = '';
 	}

@@ -47,15 +47,15 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array("compta", "bills", "users", "salaries", "hrm"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
-$label = GETPOST('label', 'alphanohtml');
-$projectid = (GETPOSTINT('projectid') ? GETPOSTINT('projectid') : GETPOSTINT('fk_project'));
+$label = request()->input('label');
+$projectid = (request()->integer('projectid', 0) ? request()->integer('projectid', 0) : request()->integer('fk_project', 0));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -84,7 +84,7 @@ if ($id > 0) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

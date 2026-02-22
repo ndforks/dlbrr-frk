@@ -37,7 +37,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
  * @var User $user
  */
 
-$year = GETPOSTINT('year');
+$year = request()->integer('year', 0);
 
 // Security check
 if ($user->socid) {

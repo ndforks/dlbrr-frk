@@ -411,7 +411,7 @@ function dol_dir_list_in_database($path, $filter = "", $excludefilter = null, $s
 
 		return $file_list;
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return array();
 	}
 }
@@ -2191,9 +2191,9 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $updatesessionor
 		$linkObject = new Link($db);
 		$linkObject->entity = $conf->entity;
 		$linkObject->url = $link;
-		$linkObject->objecttype = GETPOST('objecttype', 'alpha');
-		$linkObject->objectid = GETPOSTINT('objectid');
-		$linkObject->label = GETPOST('label', 'alpha');
+		$linkObject->objecttype = request()->input('objecttype');
+		$linkObject->objectid = request()->integer('objectid', 0);
+		$linkObject->label = request()->input('label');
 		$res = $linkObject->create($user);
 
 		if ($res > 0) {
@@ -3040,7 +3040,7 @@ function dol_check_secure_access_document($modulepart, $original_file, $entity, 
 				$tmpobject = new User($db);
 				$tmpobject->fetch((int) $reg[1], '', '', 1);
 				if (getDolUserInt('USER_ENABLE_PUBLIC', 0, $tmpobject)) {
-					$securekey = GETPOST('securekey', 'alpha', 1);
+					$securekey = request()->input('securekey');
 					// Security check
 					global $dolibarr_main_cookie_cryptkey, $dolibarr_main_instance_unique_id;
 					$valuetouse = $dolibarr_main_instance_unique_id ? $dolibarr_main_instance_unique_id : $dolibarr_main_cookie_cryptkey; // Use $dolibarr_main_instance_unique_id first then $dolibarr_main_cookie_cryptkey

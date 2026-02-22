@@ -40,13 +40,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 // security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "workflow", "propal", "workflow", "orders", "supplier_proposal", "receptions", "errors", 'sendings'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -55,13 +55,13 @@ $action = GETPOST('action', 'aZ09');
 
 if (preg_match('/set(.*)/', $action, $reg)) {
 	if (!dolibarr_set_const($db, $reg[1], '1', 'chaine', 0, '', $conf->entity) > 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if (preg_match('/del(.*)/', $action, $reg)) {
 	if (!dolibarr_set_const($db, $reg[1], '0', 'chaine', 0, '', $conf->entity) > 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -247,8 +247,8 @@ $workflowcodes = array_filter(
 );
 
 if ($action == 'setvarworkflow') {	// Test on permission already done
-	if (GETPOSTISSET('product_category_id')) {
-		$param_ticket_product_category = GETPOSTINT('product_category_id');
+	if (request()->has('product_category_id')) {
+		$param_ticket_product_category = request()->integer('product_category_id', 0);
 		$res = dolibarr_set_const($db, 'TICKET_PRODUCT_CATEGORY', $param_ticket_product_category, 'chaine', 0, '', $conf->entity);
 	}
 }

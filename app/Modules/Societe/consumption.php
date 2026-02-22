@@ -44,12 +44,12 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "bills", "orders", "suppliers", "propal", "interventions", "contracts", "products"));
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'thirdpartylist';
-$optioncss 	= GETPOST('optioncss', 'alpha');
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'thirdpartylist';
+$optioncss 	= request()->input('optioncss');
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -64,10 +64,10 @@ if ($socid > 0) {
 }
 
 // Sort & Order fields
-$limit 		= GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield 	= GETPOST('sortfield', 'aZ09comma');
-$sortorder 	= GETPOST('sortorder', 'aZ09comma');
-$page 		= GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit 		= request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield 	= request()->input('sortfield');
+$sortorder 	= request()->input('sortorder');
+$page 		= request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
 if (empty($page) || $page == -1) {
 	$page = 0;
@@ -83,13 +83,13 @@ if (!$sortfield) {
 }
 
 // Search fields
-$sref = GETPOST("sref");
-$sprod_fulldescr = GETPOST("sprod_fulldescr");
-$month = GETPOSTINT('month');
-$year = GETPOSTINT('year');
+$sref = request()->input('sref');
+$sprod_fulldescr = request()->input('sprod_fulldescr');
+$month = request()->integer('month', 0);
+$year = request()->integer('year', 0);
 
 // Clean up on purge search criteria ?
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$sref = '';
 	$sprod_fulldescr = '';
 	$year = '';
@@ -97,8 +97,8 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 }
 
 // Customer or supplier selected in drop box
-$thirdTypeSelect = GETPOST("third_select_id", 'aZ09');
-$type_element = GETPOST('type_element') ? GETPOST('type_element') : '';
+$thirdTypeSelect = request()->input('third_select_id');
+$type_element = request()->input('type_element') ? request()->input('type_element') : '';
 
 /*
  * Actions
@@ -128,7 +128,7 @@ $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
 llxHeader('', $title, $help_url);
 
 if (empty($socid)) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -164,7 +164,7 @@ if ($object->client) {
 	$sql = "SELECT count(*) as nb from ".MAIN_DB_PREFIX."facture where fk_soc = ".((int) $socid);
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$obj = $db->fetch_object($resql);
@@ -205,7 +205,7 @@ if ($object->fournisseur) {
 	$sql = "SELECT count(*) as nb from ".MAIN_DB_PREFIX."commande_fournisseur where fk_soc = ".((int) $socid);
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$obj = $db->fetch_object($resql);
@@ -424,10 +424,10 @@ if (!empty($sql_select)) {
 	if ($sprod_fulldescr) {
 		// We test both case description is correctly saved of was save after dol_escape_htmltag().
 		$sql .= " AND (d.description LIKE '%".$db->escape($sprod_fulldescr)."%' OR d.description LIKE '%".$db->escape(dol_escape_htmltag($sprod_fulldescr))."%'";
-		if (GETPOST('type_element') != 'fichinter') {
+		if (request()->input('type_element') != 'fichinter') {
 			$sql .= " OR p.ref LIKE '%".$db->escape($sprod_fulldescr)."%'";
 		}
-		if (GETPOST('type_element') != 'fichinter') {
+		if (request()->input('type_element') != 'fichinter') {
 			$sql .= " OR p.label LIKE '%".$db->escape($sprod_fulldescr)."%'";
 		}
 		$sql .= ")";
@@ -458,7 +458,7 @@ if (empty($elementTypeArray) && !$object->client && !$object->fournisseur) {
 }
 
 // Define type of elements
-$typeElementString = $form->selectarray("type_element", $elementTypeArray, GETPOST('type_element'), $showempty, 0, 0, '', 0, 0, $disabled, '', 'maxwidth150onsmartphone');
+$typeElementString = $form->selectarray("type_element", $elementTypeArray, request()->input('type_element'), $showempty, 0, 0, '', 0, 0, $disabled, '', 'maxwidth150onsmartphone');
 $button = '<input type="submit" class="button buttonform small" name="button_third" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
 
 $total_qty = 0;
@@ -470,7 +470,7 @@ $num = 0;
 if ($sql_select) {
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$num = $db->num_rows($resql);
@@ -625,8 +625,8 @@ if ($sql_select) {
 
 				$outputlangs = $langs;
 				$newlang = '';
-				if (empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (empty($newlang) && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (empty($newlang)) {
 					$newlang = $object->default_lang;

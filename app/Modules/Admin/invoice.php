@@ -50,15 +50,15 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 $langs->loadLangs(array('admin', 'errors', 'other', 'bills'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'invoice';
 
 $error = 0;
@@ -72,14 +72,14 @@ $reg = array();
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstinvoice = GETPOST('maskconstinvoice', 'aZ09');
-	$maskconstreplacement = GETPOST('maskconstreplacement', 'aZ09');
-	$maskconstcredit = GETPOST('maskconstcredit', 'aZ09');
-	$maskconstdeposit = GETPOST('maskconstdeposit', 'aZ09');
-	$maskinvoice = GETPOST('maskinvoice', 'alpha');
-	$maskreplacement = GETPOST('maskreplacement', 'alpha');
-	$maskcredit = GETPOST('maskcredit', 'alpha');
-	$maskdeposit = GETPOST('maskdeposit', 'alpha');
+	$maskconstinvoice = request()->input('maskconstinvoice');
+	$maskconstreplacement = request()->input('maskconstreplacement');
+	$maskconstcredit = request()->input('maskconstcredit');
+	$maskconstdeposit = request()->input('maskconstdeposit');
+	$maskinvoice = request()->input('maskinvoice');
+	$maskreplacement = request()->input('maskreplacement');
+	$maskcredit = request()->input('maskcredit');
+	$maskdeposit = request()->input('maskdeposit');
 	$res = 0;
 	if ($maskconstinvoice && preg_match('/_MASK_/', $maskconstinvoice)) {
 		$res = dolibarr_set_const($db, $maskconstinvoice, $maskinvoice, 'chaine', 0, '', $conf->entity);
@@ -104,7 +104,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$facture = new Facture($db);
 	$facture->initAsSpecimen();
@@ -167,8 +167,8 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "FACTURE_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'setribchq') {
-	$rib = GETPOST('rib', 'alpha');
-	$chq = GETPOST('chq', 'alpha');
+	$rib = request()->input('rib');
+	$chq = request()->input('chq');
 
 	$res = dolibarr_set_const($db, "FACTURE_RIB_NUMBER", $rib, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "FACTURE_CHQ_NUMBER", $chq, 'chaine', 0, '', $conf->entity);
@@ -183,7 +183,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FACTURE_DRAFT_WATERMARK') {
-	$draft = GETPOST('FACTURE_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('FACTURE_DRAFT_WATERMARK');
 
 	$res = dolibarr_set_const($db, "FACTURE_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
@@ -197,7 +197,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_INVOICE_FREE_TEXT') {
-	$freetext = GETPOST('INVOICE_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('INVOICE_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "INVOICE_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
@@ -211,7 +211,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'setforcedate') {
-	$forcedate = GETPOST('forcedate', 'alpha');
+	$forcedate = request()->input('forcedate');
 
 	$res = dolibarr_set_const($db, "FAC_FORCE_DATE_VALIDATION", $forcedate, 'chaine', 0, '', $conf->entity);
 
@@ -225,7 +225,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'setDefaultPDFModulesByType') {
-	$invoicetypemodels = GETPOST('invoicetypemodels');
+	$invoicetypemodels = request()->input('invoicetypemodels');
 
 	if (!empty($invoicetypemodels) && is_array($invoicetypemodels)) {
 		$error = 0;
@@ -244,14 +244,14 @@ if ($action == 'updateMask') {
 		}
 	}
 } elseif ($action == 'set_INVOICE_CHECK_POSTERIOR_DATE') {
-	$check_posterior_date = GETPOSTINT('INVOICE_CHECK_POSTERIOR_DATE');
+	$check_posterior_date = request()->integer('INVOICE_CHECK_POSTERIOR_DATE', 0);
 	$res = dolibarr_set_const($db, 'INVOICE_CHECK_POSTERIOR_DATE', $check_posterior_date, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 } elseif (preg_match('/set_(.*)/', $action, $reg)) {
 	$code = $reg[1];
-	$value = (GETPOST($code) ? GETPOST($code) : 1);
+	$value = (request()->input($code) ? request()->input($code) : 1);
 
 	$res = dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
@@ -519,7 +519,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<div class="div-table-responsive-no-min">';

@@ -40,7 +40,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/stock.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'stocks', 'companies'));
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
 $result = restrictedArea($user, 'stock');
@@ -59,7 +59,7 @@ if ($id > 0) {
 	$entrepot = new Entrepot($db);
 	$result = $entrepot->fetch($id);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$head = stock_prepare_head($entrepot);

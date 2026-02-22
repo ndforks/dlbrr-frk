@@ -49,18 +49,18 @@ $langs->loadLangs(array("admin", "hrm"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$scandir = GETPOST('scan_dir', 'alpha');
+$scandir = request()->input('scan_dir');
 $type = 'evaluation';
 
 $arrayofparameters = array(
@@ -84,9 +84,9 @@ $myTmpObjects = [
 	],
 ];
 
-$tmpobjectkey = GETPOST('object', 'aZ09');
+$tmpobjectkey = request()->input('object');
 if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
-	accessforbidden('Bad value for object. Hack attempt ?');
+	abort(403);
 }
 
 
@@ -97,7 +97,7 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'update') {
-	$max_rank = GETPOSTINT('HRM_MAXRANK');
+	$max_rank = request()->integer('HRM_MAXRANK', 0);
 
 	// We complete skill possible level notation if necessary
 	if (!empty($max_rank)) {
@@ -115,8 +115,8 @@ if ($action == 'update') {
 		}
 	}
 } elseif ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconstEvaluation', 'aZ09');
-	$maskvalue = GETPOST('maskEvaluation', 'alpha');
+	$maskconst = request()->input('maskconstEvaluation');
+	$maskvalue = request()->input('maskEvaluation');
 
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -131,7 +131,7 @@ if ($action == 'update') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen' && $tmpobjectkey) {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$className = $myTmpObjects[$tmpobjectkey]['class'];
 	$tmpobject = new $className($db);
@@ -373,7 +373,7 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '<div class="div-table-responsive">'; // You can use div-table-responsive-no-min if you don't need reserved height for your table
@@ -566,7 +566,7 @@ if ($action != 'editxxx') {
 				$formcompany = new FormCompany($db);
 				print $formcompany->selectProspectCustomerType(getDolGlobalString($constname), $constname);
 			} elseif ($val['type'] == 'securekey') {
-				print '<input required="required" type="text" class="flat" id="' . $constname . '" name="' . $constname . '" value="' . (GETPOST($constname, 'alpha') ? GETPOST($constname, 'alpha') : getDolGlobalString($constname)) . '" size="40">';
+				print '<input required="required" type="text" class="flat" id="' . $constname . '" name="' . $constname . '" value="' . (request()->input($constname) ? request()->input($constname) : getDolGlobalString($constname)) . '" size="40">';
 				if (!empty($conf->use_javascript_ajax)) {
 					print '&nbsp;' . img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token' . $constname . '" class="linkobject"');
 				}

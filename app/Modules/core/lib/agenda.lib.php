@@ -286,7 +286,7 @@ function show_array_actions_to_do($max = 5)
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -385,7 +385,7 @@ function show_array_last_actions_done($max = 5)
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

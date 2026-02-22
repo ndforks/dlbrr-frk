@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/holiday.lib.php';
 $langs->loadLangs(array("admin", "errors", "holiday", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'contract';
 
 if (!getDolGlobalString('HOLIDAY_ADDON')) {
@@ -68,8 +68,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconstholiday', 'aZ09');
-	$maskvalue = GETPOST('maskholiday', 'alpha');
+	$maskconst = request()->input('maskconstholiday');
+	$maskvalue = request()->input('maskholiday');
 	$res = 0;
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -85,7 +85,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') { // For contract
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$holiday = new Holiday($db);
 	$holiday->initAsSpecimen();
@@ -148,10 +148,10 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "HOLIDAY_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'set_other') {
-	$freetext = GETPOST('HOLIDAY_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('HOLIDAY_FREE_TEXT'); // No alpha here, we want exact string
 	$res1 = dolibarr_set_const($db, "HOLIDAY_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
-	$draft = GETPOST('HOLIDAY_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('HOLIDAY_DRAFT_WATERMARK');
 	$res2 = dolibarr_set_const($db, "HOLIDAY_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
 	if (!($res1 > 0) || !($res2 > 0)) {
@@ -317,7 +317,7 @@ if (getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 

@@ -24,16 +24,16 @@ class WebsiteIndex extends Controller
         $conf->dol_hide_leftmenu = 1;
 
         // Get parameters
-        $rawAction = GETPOST('action', 'aZ09');
-        $websiteid = GETPOSTINT('websiteid');
-        $websitekey = GETPOST('website', 'alpha');
-        $pageid = GETPOSTINT('pageid');
-        $pageref = GETPOST('pageref', 'alphanohtml');
-        $confirm = GETPOST('confirm', 'alpha');
+        $rawAction = $request->input('action');
+        $websiteid = $request->integer('websiteid', 0);
+        $websitekey = $request->input('website');
+        $pageid = $request->integer('pageid', 0);
+        $pageref = $request->input('pageref');
+        $confirm = $request->input('confirm');
 
         // Handle file_manager and other modes
-        $file_manager = GETPOST('file_manager', 'alpha');
-        $replacesite = GETPOST('replacesite', 'alpha');
+        $file_manager = $request->input('file_manager');
+        $replacesite = $request->input('replacesite');
         
         // Determine action based on parameters
         $action = $rawAction;
@@ -51,21 +51,21 @@ class WebsiteIndex extends Controller
         }
 
         // Override action based on POST parameters
-        if (GETPOST('deletesite', 'alpha')) $action = 'deletesite';
-        if (GETPOST('delete', 'alpha')) $action = 'delete';
-        if (GETPOST('preview', 'alpha')) $action = 'preview';
-        if (GETPOST('createsite', 'alpha')) $action = 'createsite';
-        if (GETPOST('createcontainer', 'alpha')) $action = 'createcontainer';
-        if (GETPOST('editcss', 'alpha')) $action = 'editcss';
-        if (GETPOST('editmenu', 'alpha')) $action = 'editmenu';
-        if (GETPOST('setashome', 'alpha')) $action = 'setashome';
-        if (GETPOST('editmeta', 'alpha')) $action = 'editmeta';
-        if (GETPOST('editsource', 'alpha')) $action = 'editsource';
-        if (GETPOST('editcontent', 'alpha')) $action = 'editcontent';
-        if (GETPOST('exportsite', 'alpha')) $action = 'exportsite';
-        if (GETPOST('importsite')) $action = 'importsite';
-        if (GETPOST('createfromclone', 'alpha')) $action = 'createfromclone';
-        if (GETPOST('createpagefromclone', 'alpha')) $action = 'createpagefromclone';
+        if ($request->input('deletesite')) $action = 'deletesite';
+        if ($request->input('delete')) $action = 'delete';
+        if ($request->input('preview')) $action = 'preview';
+        if ($request->input('createsite')) $action = 'createsite';
+        if ($request->input('createcontainer')) $action = 'createcontainer';
+        if ($request->input('editcss')) $action = 'editcss';
+        if ($request->input('editmenu')) $action = 'editmenu';
+        if ($request->input('setashome')) $action = 'setashome';
+        if ($request->input('editmeta')) $action = 'editmeta';
+        if ($request->input('editsource')) $action = 'editsource';
+        if ($request->input('editcontent')) $action = 'editcontent';
+        if ($request->input('exportsite')) $action = 'exportsite';
+        if ($request->input('importsite')) $action = 'importsite';
+        if ($request->input('createfromclone')) $action = 'createfromclone';
+        if ($request->input('createpagefromclone')) $action = 'createpagefromclone';
 
         // Load objects
         $object = new Website($db);

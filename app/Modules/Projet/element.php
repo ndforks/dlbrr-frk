@@ -156,20 +156,20 @@ if (isModEnabled('eventorganization')) {
 	$langs->load("eventorganization");
 }
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$datesrfc = GETPOST('datesrfc');	// deprecated
-$dateerfc = GETPOST('dateerfc');	// deprecated
-$dates = dol_mktime(0, 0, 0, GETPOSTINT('datesmonth'), GETPOSTINT('datesday'), GETPOSTINT('datesyear'));
-$datee = dol_mktime(23, 59, 59, GETPOSTINT('dateemonth'), GETPOSTINT('dateeday'), GETPOSTINT('dateeyear'));
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$datesrfc = request()->input('datesrfc');	// deprecated
+$dateerfc = request()->input('dateerfc');	// deprecated
+$dates = dol_mktime(0, 0, 0, request()->integer('datesmonth', 0), request()->integer('datesday', 0), request()->integer('datesyear', 0));
+$datee = dol_mktime(23, 59, 59, request()->integer('dateemonth', 0), request()->integer('dateeday', 0), request()->integer('dateeyear', 0));
 if (empty($dates) && !empty($datesrfc)) {	// deprecated
 	$dates = dol_stringtotime($datesrfc);
 }
 if (empty($datee) && !empty($dateerfc)) {	// deprecated
 	$datee = dol_stringtotime($dateerfc);
 }
-if (!GETPOSTISSET('datesrfc') && !GETPOSTISSET('datesday') && getDolGlobalString('PROJECT_LINKED_ELEMENT_DEFAULT_FILTER_YEAR')) {
+if (!request()->has('datesrfc') && !request()->has('datesday') && getDolGlobalString('PROJECT_LINKED_ELEMENT_DEFAULT_FILTER_YEAR')) {
 	$new = dol_now();
 	$tmp = dol_getdate($new);
 	//$datee=$now
@@ -182,7 +182,7 @@ if ($id == '' && $ref == '') {
 	exit();
 }
 
-$mine = GETPOST('mode') == 'mine' ? 1 : 0;
+$mine = request()->input('mode') == 'mine' ? 1 : 0;
 
 $object = new Project($db);
 
@@ -222,9 +222,9 @@ $permissiontoadd = $user->hasRight('projet', 'creer');
 $permissiontodelete = $user->hasRight('projet', 'supprimer');
 $permissiondellink = $user->hasRight('projet', 'creer');	// Used by the include of actions_dellink.inc.php
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
 /*
@@ -236,7 +236,7 @@ if ($action == 'update_extras' && $permissiontoeditextra) {
 	$error = 0;
 	$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-	$attribute_name = GETPOST('attribute', 'aZ09');
+	$attribute_name = request()->input('attribute');
 
 	// Fill array 'array_options' with data from update form
 	$ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
@@ -258,11 +258,11 @@ if ($action == 'update_extras' && $permissiontoeditextra) {
 }
 if (($action == 'updateundefinedwithlasthourlyrate' || $action == 'updateallwithlasthourlyrate') && $permissiontoadd) {
 	$error = 0;
-	if (!GETPOSTISSET('taskid')) {
+	if (!request()->has('taskid')) {
 		$error++;
 	}
 	if (!$error) {
-		$taskid = GETPOSTINT("taskid");
+		$taskid = request()->integer('taskid', 0);
 
 		$sql = "SELECT et.rowid as id, u.thm as thmuser";
 		$sql .= " FROM ".MAIN_DB_PREFIX."element_time as et";
@@ -300,7 +300,7 @@ if (($action == 'updateundefinedwithlasthourlyrate' || $action == 'updateallwith
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$error++;
 		}
 	}
@@ -381,25 +381,25 @@ if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES') || !getDolGlobalString('PROJ
 	print '</td>';
 	print '<td>';
 	if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-		print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+		print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($object->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 		$htmltext = $langs->trans("ProjectFollowOpportunity");
 		print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 		print '<br>';
 	}
 	if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-		print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
+		print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($object->usage_task ? ' checked="checked"' : '')).'"> ';
 		$htmltext = $langs->trans("ProjectFollowTasks");
 		print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 		print '<br>';
 	}
 	if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-		print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+		print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($object->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 		$htmltext = $langs->trans("ProjectBillTimeDescription");
 		print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 		print '<br>';
 	}
 	if (isModEnabled('eventorganization')) {
-		print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+		print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($object->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 		$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 		print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 	}
@@ -831,16 +831,16 @@ if (!empty($hookmanager->resArray)) {
 }
 
 if ($action == "addelement") {
-	$tablename = GETPOST("tablename");
-	$elementselectid = GETPOSTINT("elementselect");
+	$tablename = request()->input('tablename');
+	$elementselectid = request()->integer('elementselect', 0);
 	$result = $object->update_element($tablename, $elementselectid);
 	if ($result < 0) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 } elseif ($action == "unlink") {
-	$tablename = GETPOST("tablename", "aZ09");
-	$projectField = GETPOSTISSET('projectfield') ? GETPOST('projectfield', 'aZ09') : 'fk_projet';
-	$elementselectid = GETPOSTINT("elementselect");
+	$tablename = request()->input('tablename');
+	$projectField = request()->has('projectfield') ? request()->input('projectfield') : 'fk_projet';
+	$elementselectid = request()->integer('elementselect', 0);
 
 	$result = $object->remove_element($tablename, $elementselectid, $projectField);
 	if ($result < 0) {

@@ -39,19 +39,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('projects'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$mine = GETPOST('mode') == 'mine' ? 1 : 0;
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$withproject = GETPOSTINT('withproject');
-$project_ref = GETPOST('project_ref', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$mine = request()->input('mode') == 'mine' ? 1 : 0;
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$withproject = request()->integer('withproject', 0);
+$project_ref = request()->input('project_ref');
 
 // Security check
 $socid = 0;
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignment.
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $hookmanager->initHooks(array('projettasknote'));
@@ -75,7 +75,7 @@ if ($id > 0 || !empty($ref)) {
 
 		$object->project = clone $projectstatic;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -181,25 +181,25 @@ if ($object->id > 0) {
 			print '</td>';
 			print '<td>';
 			if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-				print '<input type="checkbox" disabled name="usage_opportunity"'.(GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_opportunity"'.(request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectFollowOpportunity");
 				print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 				print '<br>';
 			}
 			if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-				print '<input type="checkbox" disabled name="usage_task"'.(GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_task"'.(request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectFollowTasks");
 				print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 				print '<br>';
 			}
 			if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-				print '<input type="checkbox" disabled name="usage_bill_time"'.(GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_bill_time"'.(request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("ProjectBillTimeDescription");
 				print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 				print '<br>';
 			}
 			if (isModEnabled('eventorganization')) {
-				print '<input type="checkbox" disabled name="usage_organize_event"'.(GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
+				print '<input type="checkbox" disabled name="usage_organize_event"'.(request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')).'"> ';
 				$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 				print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 			}
@@ -284,10 +284,10 @@ if ($object->id > 0) {
 	print dol_get_fiche_head($head, 'task_notes', $langs->trans('Task'), -1, 'projecttask', 0, '', 'reposition');
 
 
-	$param = (GETPOST('withproject') ? '&withproject=1' : '');
-	$linkback = GETPOST('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
+	$param = (request()->input('withproject') ? '&withproject=1' : '');
+	$linkback = request()->input('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
 
-	if (!GETPOST('withproject') || empty($projectstatic->id)) {
+	if (!request()->input('withproject') || empty($projectstatic->id)) {
 		$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1);
 		$object->next_prev_filter = "fk_projet:IN:".$db->sanitize($projectsListId);
 	} else {

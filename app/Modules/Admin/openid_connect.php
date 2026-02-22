@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/openid_connect.lib.php';
 $langs->loadLangs(array("users", "admin", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 
 /*
@@ -56,63 +56,63 @@ $errors = [];
 $error = 0;
 
 if ($action == 'set') {
-	$client_id = GETPOST('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', 'alpha');
+	$client_id = request()->integer('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', $client_id, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$client_id = GETPOST('MAIN_AUTHENTICATION_OIDC_CLIENT_ID', 'alpha');
+	$client_id = request()->integer('MAIN_AUTHENTICATION_OIDC_CLIENT_ID', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_CLIENT_ID', $client_id, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$client_secret = GETPOST('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET', 'alpha');
+	$client_secret = request()->input('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET', $client_secret, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$scopes = GETPOST('MAIN_AUTHENTICATION_OIDC_SCOPES', 'alpha');
+	$scopes = request()->input('MAIN_AUTHENTICATION_OIDC_SCOPES');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_SCOPES', $scopes, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$authorize_url = GETPOST('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL', 'alpha');
+	$authorize_url = request()->input('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL', $authorize_url, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$value = GETPOST('MAIN_AUTHENTICATION_OIDC_TOKEN_URL', 'alpha');
+	$value = request()->input('MAIN_AUTHENTICATION_OIDC_TOKEN_URL');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_TOKEN_URL', $value, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$value = GETPOST('MAIN_AUTHENTICATION_OIDC_USERINFO_URL', 'alpha');
+	$value = request()->input('MAIN_AUTHENTICATION_OIDC_USERINFO_URL');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_USERINFO_URL', $value, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$logout_url = GETPOST('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL', 'alpha');
+	$logout_url = request()->input('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL');
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OIDC_LOGOUT_URL', $logout_url, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
 		$error++;
 	}
 
-	$openid_url_img = GETPOST('MAIN_AUTHENTICATION_OPENID_URL_IMG', 'alpha');
+	$openid_url_img = request()->integer('MAIN_AUTHENTICATION_OPENID_URL_IMG', 0);
 	$res = dolibarr_set_const($db, 'MAIN_AUTHENTICATION_OPENID_URL_IMG', $openid_url_img, 'chaine', 0, '', 0);
 	if (!$res > 0) {
 		$errors[] = $db->lasterror();
@@ -217,7 +217,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcLoginClaimName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcLoginClaimDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM" id="MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM') ? GETPOST('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM" id="MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM') ? request()->input('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_LOGIN_CLAIM") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_CLIENT_ID
@@ -225,7 +225,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcClientIdName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcClientIdDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_CLIENT_ID" id="MAIN_AUTHENTICATION_OIDC_CLIENT_ID" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_CLIENT_ID') ? GETPOST('MAIN_AUTHENTICATION_OIDC_CLIENT_ID', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_CLIENT_ID') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_CLIENT_ID") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_CLIENT_ID" id="MAIN_AUTHENTICATION_OIDC_CLIENT_ID" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_CLIENT_ID') ? request()->input('MAIN_AUTHENTICATION_OIDC_CLIENT_ID') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_CLIENT_ID') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_CLIENT_ID") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET
@@ -233,7 +233,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcClientSecretName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcClientSecretDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input type="password" name="MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET" id="MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET') ? GETPOST('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET") : ''))) . '">';
+	print '<input type="password" name="MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET" id="MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET') ? request()->input('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_CLIENT_SECRET") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_SCOPES
@@ -241,7 +241,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcScopesName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcScopesDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_SCOPES" id="MAIN_AUTHENTICATION_OIDC_SCOPES" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_SCOPES') ? GETPOST('MAIN_AUTHENTICATION_OIDC_SCOPES', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_SCOPES') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_SCOPES") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_SCOPES" id="MAIN_AUTHENTICATION_OIDC_SCOPES" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_SCOPES') ? request()->input('MAIN_AUTHENTICATION_OIDC_SCOPES') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_SCOPES') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_SCOPES") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL
@@ -249,7 +249,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcAuthorizeUrlName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcAuthorizeUrlDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL" id="MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL') ? GETPOST('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL" id="MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL') ? request()->input('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_AUTHORIZE_URL") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_TOKEN_URL
@@ -257,7 +257,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcTokenUrlName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcTokenUrlDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_TOKEN_URL" id="MAIN_AUTHENTICATION_OIDC_TOKEN_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_TOKEN_URL') ? GETPOST('MAIN_AUTHENTICATION_OIDC_TOKEN_URL', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_TOKEN_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_TOKEN_URL") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_TOKEN_URL" id="MAIN_AUTHENTICATION_OIDC_TOKEN_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_TOKEN_URL') ? request()->input('MAIN_AUTHENTICATION_OIDC_TOKEN_URL') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_TOKEN_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_TOKEN_URL") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_USERINFO_URL
@@ -265,7 +265,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcUserinfoUrlName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcUserinfoUrlDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_USERINFO_URL" id="MAIN_AUTHENTICATION_OIDC_USERINFO_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_USERINFO_URL') ? GETPOST('MAIN_AUTHENTICATION_OIDC_USERINFO_URL', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_USERINFO_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_USERINFO_URL") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_USERINFO_URL" id="MAIN_AUTHENTICATION_OIDC_USERINFO_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_USERINFO_URL') ? request()->input('MAIN_AUTHENTICATION_OIDC_USERINFO_URL') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_USERINFO_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_USERINFO_URL") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// MAIN_AUTHENTICATION_OIDC_LOGOUT_URL
@@ -273,7 +273,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOidcLogoutUrlName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOidcLogoutUrlDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OIDC_LOGOUT_URL" id="MAIN_AUTHENTICATION_OIDC_LOGOUT_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL') ? GETPOST('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_LOGOUT_URL") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OIDC_LOGOUT_URL" id="MAIN_AUTHENTICATION_OIDC_LOGOUT_URL" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL') ? request()->input('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL') : (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_LOGOUT_URL') ? getDolGlobalString("MAIN_AUTHENTICATION_OIDC_LOGOUT_URL") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	// REDIRECT_URL
@@ -297,7 +297,7 @@ if (getDolGlobalString('MAIN_AUTHENTICATION_OIDC_ON')) {
 	print '<td>' . $langs->trans("MainAuthenticationOpenIDUrlImgName") . '</td>' . "\n";
 	print '<td>' . $langs->trans("MainAuthenticationOpenIDUrlImgDesc") . '</td>' . "\n";
 	print '<td align="right">' . "\n";
-	print '<input name="MAIN_AUTHENTICATION_OPENID_URL_IMG" id="MAIN_AUTHENTICATION_OPENID_URL_IMG" class="minwidth400 centpercent" value="' . dol_escape_htmltag((GETPOSTISSET('MAIN_AUTHENTICATION_OPENID_URL_IMG') ? GETPOST('MAIN_AUTHENTICATION_OPENID_URL_IMG', 'nohtml') : (getDolGlobalString('MAIN_AUTHENTICATION_OPENID_URL_IMG') ? getDolGlobalString("MAIN_AUTHENTICATION_OPENID_URL_IMG") : ''))) . '">';
+	print '<input name="MAIN_AUTHENTICATION_OPENID_URL_IMG" id="MAIN_AUTHENTICATION_OPENID_URL_IMG" class="minwidth400 centpercent" value="' . dol_escape_htmltag((request()->has('MAIN_AUTHENTICATION_OPENID_URL_IMG') ? request()->input('MAIN_AUTHENTICATION_OPENID_URL_IMG') : (getDolGlobalString('MAIN_AUTHENTICATION_OPENID_URL_IMG') ? getDolGlobalString("MAIN_AUTHENTICATION_OPENID_URL_IMG") : ''))) . '">';
 	print '</td></tr>' . "\n";
 
 	print '</table>' . "\n";

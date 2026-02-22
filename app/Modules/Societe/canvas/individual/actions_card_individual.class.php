@@ -98,7 +98,7 @@ class ActionsCardIndividual extends ActionsCardCommon
 		$this->tpl['title'] = load_fiche_titre($this->getTitle($action));
 
 		if ($action == 'create' || $action == 'edit') {
-			$this->tpl['select_civility'] = $formcompany->select_civility(GETPOST('civility_id'));
+			$this->tpl['select_civility'] = $formcompany->select_civility(request()->input('civility_id'));
 		} else {
 			// Confirm delete third party
 			if ($action == 'delete' || $conf->use_javascript_ajax) {

@@ -50,10 +50,10 @@ $langs->loadLangs(array("compta", "bills", "admin", "accountancy", "salaries", "
 
 // Security check
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 $list_account_main = array(
@@ -154,7 +154,7 @@ $error = 0;
 if ($action == 'update') {
 	// Process $list_account_main
 	foreach ($list_account_main as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -167,7 +167,7 @@ if ($action == 'update') {
 			continue;
 		}
 
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -175,13 +175,13 @@ if ($action == 'update') {
 	}
 
 	$constname = 'ACCOUNTING_ACCOUNT_CUSTOMER_DEPOSIT';
-	$constvalue = GETPOSTINT($constname);
+	$constvalue = request()->integer($constname, 0);
 	if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
 	$constname = 'ACCOUNTING_ACCOUNT_SUPPLIER_DEPOSIT';
-	$constvalue = GETPOSTINT($constname);
+	$constvalue = request()->integer($constname, 0);
 	if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
@@ -195,7 +195,7 @@ if ($action == 'update') {
 }
 
 if ($action == 'setACCOUNTING_ACCOUNT_CUSTOMER_USE_AUXILIARY_ON_DEPOSIT') {
-	$setDisableAuxiliaryAccountOnCustomerDeposit = GETPOSTINT('value');
+	$setDisableAuxiliaryAccountOnCustomerDeposit = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ACCOUNT_CUSTOMER_USE_AUXILIARY_ON_DEPOSIT", $setDisableAuxiliaryAccountOnCustomerDeposit, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -209,7 +209,7 @@ if ($action == 'setACCOUNTING_ACCOUNT_CUSTOMER_USE_AUXILIARY_ON_DEPOSIT') {
 }
 
 if ($action == 'setACCOUNTING_ACCOUNT_SUPPLIER_USE_AUXILIARY_ON_DEPOSIT') {
-	$setDisableAuxiliaryAccountOnSupplierDeposit = GETPOSTINT('value');
+	$setDisableAuxiliaryAccountOnSupplierDeposit = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "ACCOUNTING_ACCOUNT_SUPPLIER_USE_AUXILIARY_ON_DEPOSIT", $setDisableAuxiliaryAccountOnSupplierDeposit, 'yesno', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;

@@ -41,8 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'products', 'admin', 'mails', 'other', 'errors'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 $usersignature = $user->signature;
 // For action = test or send, we ensure that content is not html, even for signature, because this we want a test with NO html.
@@ -80,7 +80,7 @@ if (version_compare(phpversion(), '7.0', '>=')) {
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -90,22 +90,22 @@ if (!$user->admin) {
 
 if ($action == 'update' && !$cancel) {
 	// Send mode parameters
-	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE_EMAILING", GETPOST("MAIN_MAIL_SENDMODE_EMAILING"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT_EMAILING", GETPOST("MAIN_MAIL_SMTP_PORT_EMAILING"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER_EMAILING", GETPOST("MAIN_MAIL_SMTP_SERVER_EMAILING"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID_EMAILING", GETPOST("MAIN_MAIL_SMTPS_ID_EMAILING"), 'chaine', 0, '', $conf->entity);
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_PW_EMAILING")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW_EMAILING", GETPOST("MAIN_MAIL_SMTPS_PW_EMAILING", 'password'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SENDMODE_EMAILING", request()->input('MAIN_MAIL_SENDMODE_EMAILING'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT_EMAILING", request()->input('MAIN_MAIL_SMTP_PORT_EMAILING'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER_EMAILING", request()->input('MAIN_MAIL_SMTP_SERVER_EMAILING'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID_EMAILING", request()->input('MAIN_MAIL_SMTPS_ID_EMAILING'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_PW_EMAILING')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW_EMAILING", request()->input('MAIN_MAIL_SMTPS_PW_EMAILING'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING", GETPOST("MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING", request()->input('MAIN_MAIL_SMTPS_AUTH_TYPE_EMAILING'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET("MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING")) {
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING", GETPOST("MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING')) {
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING", request()->input('MAIN_MAIL_SMTPS_OAUTH_SERVICE_EMAILING'), 'chaine', 0, '', $conf->entity);
 	}
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS_EMAILING", GETPOST("MAIN_MAIL_EMAIL_TLS_EMAILING"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS_EMAILING", GETPOST("MAIN_MAIL_EMAIL_STARTTLS_EMAILING"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_EMAILING", GETPOST("MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_EMAILING"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS_EMAILING", request()->input('MAIN_MAIL_EMAIL_TLS_EMAILING'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS_EMAILING", request()->input('MAIN_MAIL_EMAIL_STARTTLS_EMAILING'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_EMAILING", request()->input('MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_EMAILING'), 'chaine', 0, '', $conf->entity);
 
 	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
@@ -122,10 +122,10 @@ $trackid = (($action == 'testhtml') ? "testhtml" : "test");
 $sendcontext = 'emailing'; // Force to use dedicated context of setup for emailing
 include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'test') {
+if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
 }
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'testhtml') {
+if ($action == 'presend' && request()->input('trackid') == 'testhtml') {
 	$action = 'testhtml';
 }
 
@@ -788,21 +788,21 @@ if ($action == 'edit') {
 		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->trackid = (($action == 'testhtml') ? "testhtml" : "test");
-		$formmail->fromname = (GETPOSTISSET('fromname') ? GETPOST('fromname', 'restricthtml') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
-		$formmail->frommail = (GETPOSTISSET('frommail') ? GETPOST('frommail', 'restricthtml') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->frommail = (request()->has('frommail') ? request()->input('frommail') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
 		$formmail->fromid = $user->id;
 		$formmail->fromalsorobot = 1;
 		$formmail->withfromreadonly = 0;
 		$formmail->withsubstit = 0;
 		$formmail->withfrom = 1;
 		$formmail->witherrorsto = 1;
-		$formmail->withto = (GETPOSTISSET('sendto') ? GETPOST('sendto', 'restricthtml') : ($user->email ? $user->email : 1));
-		$formmail->withtocc = (GETPOSTISSET('sendtocc') ? GETPOST('sendtocc', 'restricthtml') : 1); // ! empty to keep field if empty
-		$formmail->withtoccc = (GETPOSTISSET('sendtoccc') ? GETPOST('sendtoccc', 'restricthtml') : 1); // ! empty to keep field if empty
-		$formmail->withtopic = (GETPOSTISSET('subject') ? GETPOST('subject') : $langs->trans("Test"));
+		$formmail->withto = (request()->has('sendto') ? request()->input('sendto') : ($user->email ? $user->email : 1));
+		$formmail->withtocc = (request()->has('sendtocc') ? request()->input('sendtocc') : 1); // ! empty to keep field if empty
+		$formmail->withtoccc = (request()->has('sendtoccc') ? request()->input('sendtoccc') : 1); // ! empty to keep field if empty
+		$formmail->withtopic = (request()->has('subject') ? request()->input('subject') : $langs->trans("Test"));
 		$formmail->withtopicreadonly = 0;
 		$formmail->withfile = 2;
-		$formmail->withbody = (GETPOSTISSET('message') ? GETPOST('message', 'restricthtml') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
+		$formmail->withbody = (request()->has('message') ? request()->input('message') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
 		$formmail->withbodyreadonly = 0;
 		$formmail->withcancel = 1;
 		$formmail->withdeliveryreceipt = 1;
@@ -817,7 +817,7 @@ if ($action == 'edit') {
 		$formmail->param["returnurl"] = $_SERVER["PHP_SELF"];
 
 		// Init list of files
-		if (GETPOST("mode", "aZ09") == 'init') {
+		if (request()->input('mode') == 'init') {
 			$formmail->clear_attached_files();
 		}
 

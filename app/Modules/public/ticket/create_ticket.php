@@ -79,13 +79,13 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 $langs->loadLangs(array('companies', 'other', 'mails', 'ticket'));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$msg_id = GETPOSTINT('msg_id');
-$socid = GETPOSTINT('socid');
+$id = request()->integer('id', 0);
+$msg_id = request()->integer('msg_id', 0);
+$socid = request()->integer('socid', 0);
 $suffix = "";
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 
 $backtopage = '';
@@ -104,7 +104,7 @@ if (getDolGlobalInt('TICKET_CREATE_THIRD_PARTY_WITH_CONTACT_IF_NOT_EXIST')) {
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 if (!isModEnabled('ticket')) {
-	httponly_accessforbidden('Module Ticket not enabled');
+	httponly_abort(403);
 }
 
 if (!is_object($user)) {
@@ -166,7 +166,7 @@ if (empty($reshook)) {
 		exit;
 	}
 
-	if (GETPOST('addfile', 'alpha') && !GETPOST('save', 'alpha')) {
+	if (request()->input('addfile') && !request()->input('save')) {
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		// Set tmp directory
@@ -182,7 +182,7 @@ if (empty($reshook)) {
 	}
 
 	// Remove file
-	if (GETPOST('removedfile', 'alpha') && !GETPOST('save', 'alpha')) {
+	if (request()->input('removedfile') && !request()->input('save')) {
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		// Set tmp directory
@@ -191,14 +191,14 @@ if (empty($reshook)) {
 		$upload_dir_tmp = $vardir.'/temp/'.session_id();
 
 		// TODO Delete only files that was uploaded from form
-		dol_remove_file_process(GETPOSTINT('removedfile'), 0, 0);
+		dol_remove_file_process(request()->integer('removedfile', 0), 0, 0);
 		$action = 'create_ticket';
 	}
 
-	if ($action == 'create_ticket' && GETPOST('save', 'alpha')) {	// Test on permission not required. This is a public form. Security is managed by mitigation.
+	if ($action == 'create_ticket' && request()->input('save')) {	// Test on permission not required. This is a public form. Security is managed by mitigation.
 		$error = 0;
 		$cid = -1;
-		$origin_email = GETPOST('email', 'email');
+		$origin_email = request()->input('email');
 		if (empty($origin_email)) {
 			$error++;
 			array_push($object->errors, $langs->trans("ErrorFieldRequired", $langs->transnoentities("Email")));
@@ -241,10 +241,10 @@ if (empty($reshook)) {
 			}
 
 			// check mandatory fields on contact
-			$contact_lastname = trim(GETPOST('contact_lastname', 'alphanohtml'));
-			$contact_firstname = trim(GETPOST('contact_firstname', 'alphanohtml'));
-			$company_name = trim(GETPOST('company_name', 'alphanohtml'));
-			$contact_phone = trim(GETPOST('contact_phone', 'alphanohtml'));
+			$contact_lastname = trim(request()->input('contact_lastname'));
+			$contact_firstname = trim(request()->input('contact_firstname'));
+			$company_name = trim(request()->input('company_name'));
+			$contact_phone = trim(request()->input('contact_phone'));
 			if (!($with_contact->id > 0)) {
 				// check lastname
 				if (empty($contact_lastname)) {
@@ -295,9 +295,9 @@ if (empty($reshook)) {
 		}
 
 		if (!$error) {
-			$object->type_code = GETPOST("type_code", 'aZ09');
-			$object->category_code = GETPOST("category_code", 'aZ09');
-			$object->severity_code = GETPOST("severity_code", 'aZ09');
+			$object->type_code = request()->input('type_code');
+			$object->category_code = request()->input('category_code');
+			$object->severity_code = request()->input('severity_code');
 			$object->ip = getUserRemoteIP();
 
 			$nb_post_max = getDolGlobalInt("MAIN_SECURITY_MAX_POST_ON_PUBLIC_PAGES_BY_IP_ADDRESS", 200);
@@ -327,14 +327,14 @@ if (empty($reshook)) {
 
 			$object->db->begin();
 
-			$object->subject = GETPOST("subject", "alphanohtml");
-			$object->message = GETPOST("message", "restricthtml");
+			$object->subject = request()->input('subject');
+			$object->message = request()->input('message');
 			$object->origin_email = $origin_email;
 			$object->email_from = $origin_email;
 
-			$object->type_code = GETPOST("type_code", 'aZ09');
-			$object->category_code = GETPOST("category_code", 'aZ09');
-			$object->severity_code = GETPOST("severity_code", 'aZ09');
+			$object->type_code = request()->input('type_code');
+			$object->category_code = request()->input('category_code');
+			$object->severity_code = request()->input('severity_code');
 
 			// create third-party with contact
 			$usertoassign = 0;
@@ -388,7 +388,7 @@ if (empty($reshook)) {
 			$object->ref = $object->getDefaultRef();
 
 			$object->context['disableticketemail'] = 1; // Disable emails sent by ticket trigger when creation is done from this page, emails are already sent later
-			$object->context['contactid'] = GETPOSTINT('contactid'); // Disable emails sent by ticket trigger when creation is done from this page, emails are already sent later
+			$object->context['contactid'] = request()->integer('contactid', 0); // Disable emails sent by ticket trigger when creation is done from this page, emails are already sent later
 
 			$object->context['createdfrompublicinterface'] = 1; // To make a difference between a ticket created from the public interface and a ticket directly created from dolibarr
 
@@ -457,7 +457,7 @@ if (empty($reshook)) {
 						$message .= $infos_new_ticket;
 						$message .= getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE', $langs->transnoentities('TicketMessageMailSignatureText', $mysoc->name));
 
-						$sendto = GETPOST('email', 'alpha');
+						$sendto = request()->input('email');
 
 						$from = getDolGlobalString('MAIN_INFO_SOCIETE_NOM') . ' <'.getDolGlobalString('TICKET_NOTIFICATION_EMAIL_FROM').'>';
 						$replyto = $from;

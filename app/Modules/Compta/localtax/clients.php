@@ -67,9 +67,9 @@ include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
 @phan-var-force int $year_current
 ';
 
-$local = GETPOSTINT('localTaxType');
+$local = request()->integer('localTaxType', 0);
 
-$min = price2num(GETPOST("min", "alpha"));
+$min = price2num(request()->input('min'));
 if (empty($min)) {
 	$min = 0;
 }
@@ -77,15 +77,15 @@ if (empty($min)) {
 // Define modetax (0 or 1)
 // 0=normal, 1=option vat for services is on debit, 2=option on payments for products
 $modetax = getDolGlobalInt('TAX_MODE');
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -96,7 +96,7 @@ $hookmanager->initHooks(['customerlocaltaxlist']);
 $result = restrictedArea($user, 'tax', '', '', 'charges');
 
 if (empty($local)) {
-	accessforbidden('Parameter localTaxType is missing');
+	abort(403);
 }
 
 $builddate = dol_now();
@@ -117,8 +117,8 @@ $company_static = new Societe($db);
 $morequerystring = '';
 $listofparams = array('date_startmonth', 'date_startyear', 'date_startday', 'date_endmonth', 'date_endyear', 'date_endday');
 foreach ($listofparams as $param) {
-	if (GETPOST($param) != '') {
-		$morequerystring .= ($morequerystring ? '&' : '').$param.'='.GETPOST($param);
+	if (request()->input($param) != '') {
+		$morequerystring .= ($morequerystring ? '&' : '').$param.'='.request()->input($param);
 	}
 }
 

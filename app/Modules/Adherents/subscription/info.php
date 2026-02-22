@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
 $langs->loadLangs(array("companies", "members", "bills", "users"));
 
 if (!$user->hasRight('adherent', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
-$rowid = GETPOSTINT("rowid");
+$rowid = request()->integer('rowid', 0);
 
 
 

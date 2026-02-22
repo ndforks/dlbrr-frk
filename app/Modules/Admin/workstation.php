@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/workstation/lib/workstation.lib.php';
 $langs->loadLangs(array("admin", "workstation"));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
-$value = GETPOST('value', 'alpha');
+$value = request()->input('value');
 
 $error = 0;
 
@@ -57,7 +57,7 @@ $dirmodels = array_merge(['/'], (array) $conf->modules_parts['models']);
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $type = 'workstation';
@@ -70,8 +70,8 @@ $moduledir = 'workstation';
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconstWorkstation', 'aZ09');
-	$maskorder = GETPOST('maskWorkstation', 'alpha');
+	$maskconst = request()->input('maskconstWorkstation');
+	$maskorder = request()->input('maskWorkstation');
 
 	$res = 0;
 
@@ -89,7 +89,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$tmpobject = new Workstation($db);
 	$tmpobject->initAsSpecimen();
@@ -306,7 +306,7 @@ if (getDolGlobalInt('WORKSTATION_INCLUDE_DOC_GENERATION')) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print "<table class=\"noborder\" width=\"100%\">\n";

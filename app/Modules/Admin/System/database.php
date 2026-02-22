@@ -42,10 +42,10 @@ require '../../main.inc.php';
 
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

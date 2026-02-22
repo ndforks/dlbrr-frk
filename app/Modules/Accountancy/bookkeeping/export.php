@@ -51,102 +51,102 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("accountancy", "compta"));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'bookkeepinglist';
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect', []);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'bookkeepinglist';
 
-$socid = GETPOSTINT('socid');
-$search_mvt_num = GETPOST('search_mvt_num', 'alpha');
-$search_doc_type = GETPOST("search_doc_type", 'alpha');
-$search_doc_ref = GETPOST("search_doc_ref", 'alpha');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endday = GETPOSTINT('search_date_endday');
+$socid = request()->integer('socid', 0);
+$search_mvt_num = request()->input('search_mvt_num');
+$search_doc_type = request()->input('search_doc_type');
+$search_doc_ref = request()->input('search_doc_ref');
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_doc_date = dol_mktime(0, 0, 0, GETPOSTINT('doc_datemonth'), GETPOSTINT('doc_dateday'), GETPOSTINT('doc_dateyear'));
-$search_date_creation_startyear = GETPOSTINT('search_date_creation_startyear');
-$search_date_creation_startmonth = GETPOSTINT('search_date_creation_startmonth');
-$search_date_creation_startday = GETPOSTINT('search_date_creation_startday');
-$search_date_creation_endyear = GETPOSTINT('search_date_creation_endyear');
-$search_date_creation_endmonth = GETPOSTINT('search_date_creation_endmonth');
-$search_date_creation_endday = GETPOSTINT('search_date_creation_endday');
+$search_doc_date = dol_mktime(0, 0, 0, request()->integer('doc_datemonth', 0), request()->integer('doc_dateday', 0), request()->integer('doc_dateyear', 0));
+$search_date_creation_startyear = request()->integer('search_date_creation_startyear', 0);
+$search_date_creation_startmonth = request()->integer('search_date_creation_startmonth', 0);
+$search_date_creation_startday = request()->integer('search_date_creation_startday', 0);
+$search_date_creation_endyear = request()->integer('search_date_creation_endyear', 0);
+$search_date_creation_endmonth = request()->integer('search_date_creation_endmonth', 0);
+$search_date_creation_endday = request()->integer('search_date_creation_endday', 0);
 $search_date_creation_start = dol_mktime(0, 0, 0, $search_date_creation_startmonth, $search_date_creation_startday, $search_date_creation_startyear);
 $search_date_creation_end = dol_mktime(23, 59, 59, $search_date_creation_endmonth, $search_date_creation_endday, $search_date_creation_endyear);
-$search_date_modification_startyear = GETPOSTINT('search_date_modification_startyear');
-$search_date_modification_startmonth = GETPOSTINT('search_date_modification_startmonth');
-$search_date_modification_startday = GETPOSTINT('search_date_modification_startday');
-$search_date_modification_endyear = GETPOSTINT('search_date_modification_endyear');
-$search_date_modification_endmonth = GETPOSTINT('search_date_modification_endmonth');
-$search_date_modification_endday = GETPOSTINT('search_date_modification_endday');
+$search_date_modification_startyear = request()->integer('search_date_modification_startyear', 0);
+$search_date_modification_startmonth = request()->integer('search_date_modification_startmonth', 0);
+$search_date_modification_startday = request()->integer('search_date_modification_startday', 0);
+$search_date_modification_endyear = request()->integer('search_date_modification_endyear', 0);
+$search_date_modification_endmonth = request()->integer('search_date_modification_endmonth', 0);
+$search_date_modification_endday = request()->integer('search_date_modification_endday', 0);
 $search_date_modification_start = dol_mktime(0, 0, 0, $search_date_modification_startmonth, $search_date_modification_startday, $search_date_modification_startyear);
 $search_date_modification_end = dol_mktime(23, 59, 59, $search_date_modification_endmonth, $search_date_modification_endday, $search_date_modification_endyear);
-$search_date_export_startyear = GETPOSTINT('search_date_export_startyear');
-$search_date_export_startmonth = GETPOSTINT('search_date_export_startmonth');
-$search_date_export_startday = GETPOSTINT('search_date_export_startday');
-$search_date_export_endyear = GETPOSTINT('search_date_export_endyear');
-$search_date_export_endmonth = GETPOSTINT('search_date_export_endmonth');
-$search_date_export_endday = GETPOSTINT('search_date_export_endday');
+$search_date_export_startyear = request()->integer('search_date_export_startyear', 0);
+$search_date_export_startmonth = request()->integer('search_date_export_startmonth', 0);
+$search_date_export_startday = request()->integer('search_date_export_startday', 0);
+$search_date_export_endyear = request()->integer('search_date_export_endyear', 0);
+$search_date_export_endmonth = request()->integer('search_date_export_endmonth', 0);
+$search_date_export_endday = request()->integer('search_date_export_endday', 0);
 $search_date_export_start = dol_mktime(0, 0, 0, $search_date_export_startmonth, $search_date_export_startday, $search_date_export_startyear);
 $search_date_export_end = dol_mktime(23, 59, 59, $search_date_export_endmonth, $search_date_export_endday, $search_date_export_endyear);
-$search_date_validation_startyear = GETPOSTINT('search_date_validation_startyear');
-$search_date_validation_startmonth = GETPOSTINT('search_date_validation_startmonth');
-$search_date_validation_startday = GETPOSTINT('search_date_validation_startday');
-$search_date_validation_endyear = GETPOSTINT('search_date_validation_endyear');
-$search_date_validation_endmonth = GETPOSTINT('search_date_validation_endmonth');
-$search_date_validation_endday = GETPOSTINT('search_date_validation_endday');
+$search_date_validation_startyear = request()->integer('search_date_validation_startyear', 0);
+$search_date_validation_startmonth = request()->integer('search_date_validation_startmonth', 0);
+$search_date_validation_startday = request()->integer('search_date_validation_startday', 0);
+$search_date_validation_endyear = request()->integer('search_date_validation_endyear', 0);
+$search_date_validation_endmonth = request()->integer('search_date_validation_endmonth', 0);
+$search_date_validation_endday = request()->integer('search_date_validation_endday', 0);
 $search_date_validation_start = dol_mktime(0, 0, 0, $search_date_validation_startmonth, $search_date_validation_startday, $search_date_validation_startyear);
 $search_date_validation_end = dol_mktime(23, 59, 59, $search_date_validation_endmonth, $search_date_validation_endday, $search_date_validation_endyear);
-$search_import_key = GETPOST("search_import_key", 'alpha');
+$search_import_key = request()->input('search_import_key');
 
 //var_dump($search_date_start);exit;
-if (GETPOST("button_delmvt_x") || GETPOST("button_delmvt.x") || GETPOST("button_delmvt")) {
+if (request()->input('button_delmvt_x') || request()->input('button_delmvt.x') || request()->input('button_delmvt')) {
 	$action = 'delbookkeepingyear';
 }
-if (GETPOST("button_export_file_x") || GETPOST("button_export_file.x") || GETPOST("button_export_file")) {
+if (request()->input('button_export_file_x') || request()->input('button_export_file.x') || request()->input('button_export_file')) {
 	$action = 'export_file';
 }
 
-$search_account_category = GETPOSTINT('search_account_category');
+$search_account_category = request()->integer('search_account_category', 0);
 
-$search_accountancy_code = GETPOST("search_accountancy_code", 'alpha');
-$search_accountancy_code_start = GETPOST('search_accountancy_code_start', 'alpha');
+$search_accountancy_code = request()->integer('search_accountancy_code', 0);
+$search_accountancy_code_start = request()->integer('search_accountancy_code_start', 0);
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = GETPOST('search_accountancy_code_end', 'alpha');
+$search_accountancy_code_end = request()->integer('search_accountancy_code_end', 0);
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }
 
-$search_accountancy_aux_code = GETPOST("search_accountancy_aux_code", 'alpha');
-$search_accountancy_aux_code_start = GETPOST('search_accountancy_aux_code_start', 'alpha');
+$search_accountancy_aux_code = request()->integer('search_accountancy_aux_code', 0);
+$search_accountancy_aux_code_start = request()->integer('search_accountancy_aux_code_start', 0);
 if ($search_accountancy_aux_code_start == - 1) {
 	$search_accountancy_aux_code_start = '';
 }
-$search_accountancy_aux_code_end = GETPOST('search_accountancy_aux_code_end', 'alpha');
+$search_accountancy_aux_code_end = request()->integer('search_accountancy_aux_code_end', 0);
 if ($search_accountancy_aux_code_end == - 1) {
 	$search_accountancy_aux_code_end = '';
 }
-$search_mvt_label = GETPOST('search_mvt_label', 'alpha');
-$search_direction = GETPOST('search_direction', 'alpha');
-$search_debit = GETPOST('search_debit', 'alpha');
-$search_credit = GETPOST('search_credit', 'alpha');
-$search_ledger_code = GETPOST('search_ledger_code', 'array');
-$search_lettering_code = GETPOST('search_lettering_code', 'alpha');
-$search_not_reconciled = GETPOST('search_not_reconciled', 'alpha');
+$search_mvt_label = request()->input('search_mvt_label');
+$search_direction = request()->input('search_direction');
+$search_debit = request()->input('search_debit');
+$search_credit = request()->input('search_credit');
+$search_ledger_code = request()->input('search_ledger_code', []);
+$search_lettering_code = request()->input('search_lettering_code');
+$search_not_reconciled = request()->input('search_not_reconciled');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$optioncss = GETPOST('optioncss', 'alpha');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$optioncss = request()->input('optioncss');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page < 0) {
 	$page = 0;
 }
@@ -167,8 +167,8 @@ $hookmanager->initHooks(array('bookkeepingexport'));
 $formaccounting = new FormAccounting($db);
 $form = new Form($db);
 
-if (!in_array($action, array('export_file', 'delmouv', 'delmouvconfirm')) && !GETPOSTISSET('begin') && !GETPOSTISSET('formfilteraction') && GETPOSTINT('page') == '' && !GETPOSTINT('noreset') && $user->hasRight('accounting', 'mouvements', 'export')) {
-	if (empty($search_date_start) && empty($search_date_end) && !GETPOSTISSET('restore_lastsearch_values') && !GETPOST('search_accountancy_code_start')) {
+if (!in_array($action, array('export_file', 'delmouv', 'delmouvconfirm')) && !request()->has('begin') && !request()->has('formfilteraction') && request()->integer('page', 0) == '' && !request()->integer('noreset', 0) && $user->hasRight('accounting', 'mouvements', 'export')) {
+	if (empty($search_date_start) && empty($search_date_end) && !request()->has('restore_lastsearch_values') && !request()->input('search_accountancy_code_start')) {
 		$sql = "SELECT date_start, date_end";
 		$sql .= " FROM ".MAIN_DB_PREFIX."accounting_fiscalyear ";
 		if (getDolGlobalInt('ACCOUNTANCY_FISCALYEAR_DEFAULT')) {
@@ -234,13 +234,13 @@ if (empty($listofformat[$formatexportset])) {
 $error = 0;
 
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'mouvements', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -251,11 +251,11 @@ if (!$user->hasRight('accounting', 'mouvements', 'lire')) {
 $param = '';
 $filter = array();
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha')) {
+if (!request()->input('confirmmassaction')) {
 	$massaction = '';
 }
 
@@ -268,7 +268,7 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_mvt_num = '';
 		$search_doc_type = '';
 		$search_doc_ref = '';
@@ -473,7 +473,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setreexport' && $user->hasRight('accounting', 'mouvements', 'export')) {
-		$setreexport = GETPOSTINT('value');
+		$setreexport = request()->integer('value', 0);
 		if (!dolibarr_set_const($db, "ACCOUNTING_REEXPORT", $setreexport, 'yesno', 0, '', $conf->entity)) {
 			$error++;
 		}
@@ -624,7 +624,7 @@ if ($action == 'export_fileconfirm' && $user->hasRight('accounting', 'mouvements
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$db->free($resql);
@@ -644,8 +644,8 @@ if ($action == 'export_fileconfirm' && $user->hasRight('accounting', 'mouvements
 		$error++;
 		setEventMessages($object->error, $object->errors, 'errors');
 	} else {
-		$formatexport = GETPOSTINT('formatexport');
-		$notexportlettering = GETPOST('notexportlettering', 'alpha');
+		$formatexport = request()->integer('formatexport', 0);
+		$notexportlettering = request()->input('notexportlettering');
 
 
 		if (!empty($notexportlettering)) {
@@ -657,9 +657,9 @@ if ($action == 'export_fileconfirm' && $user->hasRight('accounting', 'mouvements
 			}
 		}
 
-		$notifiedexportdate = GETPOST('notifiedexportdate', 'alpha');
-		$notifiedvalidationdate = GETPOST('notifiedvalidationdate', 'alpha');
-		$withAttachment = !empty(trim(GETPOST('notifiedexportfull', 'alphanohtml'))) ? 1 : 0;
+		$notifiedexportdate = request()->input('notifiedexportdate');
+		$notifiedvalidationdate = request()->integer('notifiedvalidationdate', 0);
+		$withAttachment = !empty(trim(request()->input('notifiedexportfull'))) ? 1 : 0;
 
 		// Output data on screen or download
 		//$result = $accountancyexport->export($object->lines, $formatexport, $withAttachment);
@@ -760,7 +760,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -778,7 +778,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

@@ -44,14 +44,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'admin', 'other'));
 
 $def = array();
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 if (!getDolGlobalString('AGENDA_EXT_NB')) {
 	$conf->global->AGENDA_EXT_NB = 5;
@@ -75,7 +75,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 	$db->begin();
 
 	$code = $reg[1];
-	$value = (GETPOST($code) ? GETPOST($code) : 1);
+	$value = (request()->input($code) ? request()->input($code) : 1);
 
 	$res = dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
@@ -115,7 +115,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 } elseif ($action == 'save') {
 	$db->begin();
 
-	$disableext = GETPOST('AGENDA_DISABLE_EXT', 'alpha');
+	$disableext = request()->input('AGENDA_DISABLE_EXT');
 	$res = dolibarr_set_const($db, 'AGENDA_DISABLE_EXT', $disableext, 'chaine', 0, '', $conf->entity);
 
 	$i = 1;
@@ -123,14 +123,14 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 
 	// Save agendas
 	while ($i <= $MAXAGENDA) {
-		$name = trim(GETPOST('AGENDA_EXT_NAME'.$i, 'alpha'));
-		$src = trim(GETPOST('AGENDA_EXT_SRC'.$i, 'alpha'));
-		$offsettz = trim(GETPOST('AGENDA_EXT_OFFSETTZ'.$i, 'alpha'));
-		$color = trim(GETPOST('AGENDA_EXT_COLOR'.$i, 'alpha'));
+		$name = trim(request()->input('AGENDA_EXT_NAME' . $i));
+		$src = trim(request()->input('AGENDA_EXT_SRC' . $i));
+		$offsettz = trim(request()->input('AGENDA_EXT_OFFSETTZ' . $i));
+		$color = trim(request()->input('AGENDA_EXT_COLOR' . $i));
 		if ($color == '-1') {
 			$color = '';
 		}
-		$enabled = trim(GETPOST('AGENDA_EXT_ENABLED'.$i, 'alpha'));
+		$enabled = trim(request()->input('AGENDA_EXT_ENABLED' . $i));
 
 		if (!empty($src) && !dol_is_url($src)) {
 			setEventMessages($langs->trans("ErrorParamMustBeAnUrl"), null, 'errors');
@@ -166,7 +166,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 
 	// Save nb of agenda
 	if (!$error) {
-		$res = dolibarr_set_const($db, 'AGENDA_EXT_NB', GETPOSTINT('AGENDA_EXT_NB'), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, 'AGENDA_EXT_NB', request()->integer('AGENDA_EXT_NB', 0), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
@@ -286,14 +286,14 @@ while ($i <= $MAXAGENDA) {
 	// Nb  @phan-suppress-next-line PhanPluginSuspiciousParamPosition
 	print '<td width="180" class="nowrap">' . $langs->trans("AgendaExtNb", $key) . "</td>";
 	// Name
-	print '<td><input type="text" class="flat hideifnotset" name="AGENDA_EXT_NAME' . $key . '" value="' . (GETPOST('AGENDA_EXT_NAME' . $key) ? GETPOST('AGENDA_EXT_NAME' . $key, 'alpha') : getDolGlobalString($name)) . '" size="28"></td>';
+	print '<td><input type="text" class="flat hideifnotset" name="AGENDA_EXT_NAME' . $key . '" value="' . (request()->input('AGENDA_EXT_NAME' . $key) ? request()->input('AGENDA_EXT_NAME' . $key) : getDolGlobalString($name)) . '" size="28"></td>';
 	// URL
-	print '<td><input type="url" class="flat hideifnotset" name="AGENDA_EXT_SRC' . $key . '" value="' . (GETPOST('AGENDA_EXT_SRC' . $key) ? GETPOST('AGENDA_EXT_SRC' . $key, 'alpha') : getDolGlobalString($src)) . '" size="60"></td>';
+	print '<td><input type="url" class="flat hideifnotset" name="AGENDA_EXT_SRC' . $key . '" value="' . (request()->input('AGENDA_EXT_SRC' . $key) ? request()->input('AGENDA_EXT_SRC' . $key) : getDolGlobalString($src)) . '" size="60"></td>';
 	// Offset TZ
-	print '<td><input type="text" class="flat hideifnotset" name="AGENDA_EXT_OFFSETTZ' . $key . '" value="' . (GETPOST('AGENDA_EXT_OFFSETTZ' . $key) ? GETPOST('AGENDA_EXT_OFFSETTZ' . $key) : getDolGlobalString($offsettz)) . '" size="2"></td>';
+	print '<td><input type="text" class="flat hideifnotset" name="AGENDA_EXT_OFFSETTZ' . $key . '" value="' . (request()->input('AGENDA_EXT_OFFSETTZ' . $key) ? request()->input('AGENDA_EXT_OFFSETTZ' . $key) : getDolGlobalString($offsettz)) . '" size="2"></td>';
 	// Color (Possible colors are limited by Google)
 	print '<td class="nowraponall right">';
-	print $formother->selectColor((GETPOST("AGENDA_EXT_COLOR" . $key) ? GETPOST("AGENDA_EXT_COLOR" . $key) : getDolGlobalString($color)), "AGENDA_EXT_COLOR" . $key, '', 1, array(), 'hideifnotset');
+	print $formother->selectColor((request()->input("AGENDA_EXT_COLOR" . $key) ? request()->input("AGENDA_EXT_COLOR" . $key) : getDolGlobalString($color)), "AGENDA_EXT_COLOR" . $key, '', 1, array(), 'hideifnotset');
 	print '</td>';
 	// Calendar active by default
 	print '<td class="nowrap right">';

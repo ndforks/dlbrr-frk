@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 $langs->loadLangs(array('admin', 'errors', 'mrp', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'mrp';
 
 
@@ -64,8 +64,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstmrp = GETPOST('maskconstMo', 'aZ09');
-	$maskmrp = GETPOST('maskMo', 'alpha');
+	$maskconstmrp = request()->input('maskconstMo');
+	$maskmrp = request()->input('maskMo');
 
 	$res = 0;
 
@@ -83,7 +83,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$mo = new Mo($db);
 	$mo->initAsSpecimen();
@@ -146,7 +146,7 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "MRP_MO_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'set_MRP_MO_DRAFT_WATERMARK') {
-	$draft = GETPOST("MRP_MO_DRAFT_WATERMARK");
+	$draft = request()->input('MRP_MO_DRAFT_WATERMARK');
 	$res = dolibarr_set_const($db, "MRP_MO_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -159,7 +159,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_MRP_MO_FREE_TEXT') {
-	$freetext = GETPOST("MRP_MO_FREE_TEXT", 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('MRP_MO_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "MRP_MO_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
@@ -323,7 +323,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

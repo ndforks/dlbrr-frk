@@ -33,11 +33,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
 
 $langs->loadLangs(array("admin", "products"));
 
-$action = GETPOST('action', 'alphanohtml');
+$action = request()->input('action');
 
 // Security check
 if (!$user->admin || !isModEnabled('variants')) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -48,19 +48,19 @@ $error = 0;
  */
 
 if ($action) {
-	$value = GETPOST('PRODUIT_ATTRIBUTES_HIDECHILD');
+	$value = request()->input('PRODUIT_ATTRIBUTES_HIDECHILD');
 
 	if (!dolibarr_set_const($db, 'PRODUIT_ATTRIBUTES_HIDECHILD', $value, 'chaine', 0, '', $conf->entity)) {
 		setEventMessages($langs->trans('CoreErrorMessage'), null, 'errors');
 		$error++;
 	}
 
-	if (!dolibarr_set_const($db, 'PRODUIT_ATTRIBUTES_SEPARATOR', GETPOST('PRODUIT_ATTRIBUTES_SEPARATOR'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'PRODUIT_ATTRIBUTES_SEPARATOR', request()->input('PRODUIT_ATTRIBUTES_SEPARATOR'), 'chaine', 0, '', $conf->entity)) {
 		setEventMessages($langs->trans('CoreErrorMessage'), null, 'errors');
 		$error++;
 	}
 
-	if (!dolibarr_set_const($db, 'VARIANT_ALLOW_STOCK_MOVEMENT_ON_VARIANT_PARENT', GETPOST('VARIANT_ALLOW_STOCK_MOVEMENT_ON_VARIANT_PARENT'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'VARIANT_ALLOW_STOCK_MOVEMENT_ON_VARIANT_PARENT', request()->input('VARIANT_ALLOW_STOCK_MOVEMENT_ON_VARIANT_PARENT'), 'chaine', 0, '', $conf->entity)) {
 		setEventMessages($langs->trans('CoreErrorMessage'), null, 'errors');
 		$error++;
 	}

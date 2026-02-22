@@ -48,16 +48,16 @@ require_once DOL_DOCUMENT_ROOT.'/mrp/lib/mrp_mo.lib.php';
 $langs->loadLangs(array("mrp", "companies", "other", "mails"));
 
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
-$id = (GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id'));
-$ref = GETPOST('ref', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$id = (request()->integer('socid', 0) ? request()->integer('socid', 0) : request()->integer('id', 0));
+$ref = request()->input('ref');
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -90,7 +90,7 @@ if ($id > 0 || !empty($ref)) {
 }
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'mrp', $object->id, 'mrp_mo', '', 'fk_soc', 'rowid', $isdraft);
@@ -201,7 +201,7 @@ if ($object->id && $upload_dir !== null) {
 
 	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
-	accessforbidden('', 0, 1);
+	abort(403);
 }
 
 // End of page

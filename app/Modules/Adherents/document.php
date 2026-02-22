@@ -48,17 +48,17 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 $langs->loadLangs(array("companies", "members", "other"));
 
 
-$id = GETPOSTISSET('id') ? GETPOSTINT('id') : GETPOSTINT('rowid');
-$ref = GETPOST('ref', 'alphanohtml');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->has('id') ? request()->integer('id', 0) : request()->integer('rowid', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -76,7 +76,7 @@ $object = new Adherent($db);
 $membert = new AdherentType($db);
 $result = $object->fetch($id, $ref);
 if ($result < 0) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 $upload_dir = $conf->adherent->dir_output."/".get_exdir(0, 0, 0, 1, $object, 'member');
@@ -202,7 +202,7 @@ if ($id > 0) {
 		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 		print "<br><br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } else {
 	$langs->load("errors");

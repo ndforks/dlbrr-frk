@@ -43,11 +43,11 @@ use OAuth\Common\Storage\DoliStorage;
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'printing', 'oauth'));
 
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST('mode', 'alpha');
-$value = GETPOST('value', 'alpha', 0, null, null, 1); // The value may be __google__docs so we force disable of replace
-$varname = GETPOST('varname', 'alpha');
-$driver = GETPOST('driver', 'alpha');
+$action = request()->input('action');
+$mode = request()->input('mode');
+$value = request()->input('value'); // The value may be __google__docs so we force disable of replace
+$varname = request()->input('varname');
+$driver = request()->input('driver');
 
 if (!empty($driver)) {
 	$langs->load($driver);
@@ -60,7 +60,7 @@ if (!$mode) {
 $OAUTH_SERVICENAME_GOOGLE = 'Google';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -91,7 +91,7 @@ if ($action == 'setconst' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null);
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 	$action = '';
 }
@@ -109,7 +109,7 @@ if ($action == 'setvalue' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null);
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 	$action = '';
 }

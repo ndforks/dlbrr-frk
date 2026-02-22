@@ -25,21 +25,21 @@ class ListSupplierProposal extends Controller
         $hookmanager->initHooks(['supplierproposallist']);
         restrictedArea($user, 'supplier_proposal');
         
-        $socid = GETPOSTINT('socid');
+        $socid = $request->integer('socid', 0);
         if (!empty($user->socid)) {
             $socid = $user->socid;
         }
         
-        $limit = GETPOSTINT('limit') ?: $conf->liste_limit;
-        $sortfield = GETPOST('sortfield', 'aZ09comma') ?: 'p.date_creation';
-        $sortorder = GETPOST('sortorder', 'aZ09comma') ?: 'DESC';
-        $page = GETPOSTINT('page') ?: 0;
+        $limit = $request->integer('limit', $conf->liste_limit);
+        $sortfield = $request->input('sortfield', 'p.date_creation');
+        $sortorder = $request->input('sortorder', 'DESC');
+        $page = $request->integer('page', 0);
         $offset = $limit * $page;
         
-        $search_ref = GETPOST('search_ref', 'alpha');
-        $search_company = GETPOST('search_company', 'alpha');
-        $search_montant_ht = GETPOST('search_montant_ht', 'alpha');
-        $search_status = GETPOST('search_status', 'intcomma');
+        $search_ref = $request->input('search_ref');
+        $search_company = $request->input('search_company');
+        $search_montant_ht = $request->input('search_montant_ht');
+        $search_status = $request->input('search_status');
         
         $sql = 'SELECT p.rowid, p.ref, p.fk_statut, p.total_ht, p.total_tva, p.total_ttc';
         $sql .= ', s.nom as socname, s.rowid as socid';

@@ -50,16 +50,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by page
 $langs->loadLangs(array('users', 'admin'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$module = GETPOST('module', 'alpha');
-$rights = GETPOSTINT('rights');
-$updatedmodulename = GETPOST('updatedmodulename', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'userperms'; // To manage different context of search
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$module = request()->input('module');
+$rights = request()->integer('rights', 0);
+$updatedmodulename = request()->input('updatedmodulename');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'userperms'; // To manage different context of search
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
 // Define if user can read permissions
@@ -81,7 +81,7 @@ if (!empty($user->socid) && $user->socid > 0) {
 $feature2 = (($socid && $user->hasRight("user", "self", "write")) ? '' : 'user');
 // A user can always read its own card if not advanced perms enabled, or if he has advanced perms, except for admin
 if ($user->id == $id && (getDolGlobalString('MAIN_USE_ADVANCED_PERMS') && !$user->hasRight("user", "self_advance", "readperms") && empty($user->admin))) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -89,7 +89,7 @@ $hookmanager->initHooks(array('usercard', 'userperms', 'globalcard'));
 
 $result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
 if ($user->id != $id && !$canreaduser) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new User($db);
@@ -281,7 +281,7 @@ if ($result) {
 		}
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -321,7 +321,7 @@ if ($result) {
 	}
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // Read the permissions of a user inherited by its groups
@@ -357,7 +357,7 @@ if ($result) {
 	}
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -544,7 +544,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -575,8 +575,8 @@ foreach ($arrayofpermission as $i => $obj) {
 
 	$objMod = $modules[$obj->module];
 
-	if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-		$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+	if (request()->has('forbreakperms_' . $obj->module)) {
+		$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 	} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 		$ishidden = 1;
 	} else {
@@ -599,8 +599,8 @@ foreach ($arrayofpermission as $i => $obj) {
 		$oldmod = $obj->module;
 
 		$j++;
-		if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-			$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+		if (request()->has('forbreakperms_' . $obj->module)) {
+			$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 		} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 			$ishidden = 1;
 		} else {

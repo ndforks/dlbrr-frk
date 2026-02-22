@@ -37,9 +37,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
  * @var User $user
  */
 
-$year = GETPOSTINT("year");
-$socid = GETPOSTINT("socid");
-$userid = GETPOSTINT("userid");
+$year = request()->integer('year', 0);
+$socid = request()->integer('socid', 0);
+$userid = request()->integer('userid', 0);
 
 // Security check
 if ($user->socid) {
@@ -59,7 +59,7 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
 $mesg = '';
 
-print load_fiche_titre($langs->trans("StatisticsOfReceptions").' '.GETPOSTINT("year"), $mesg);
+print load_fiche_titre($langs->trans("StatisticsOfReceptions").' '.request()->integer('year', 0), $mesg);
 $stats = new ReceptionStats($db, $socid, '', ($userid > 0 ? $userid : 0));
 $data = $stats->getNbByMonth($year);
 

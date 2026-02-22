@@ -186,7 +186,7 @@ class RadioField extends CommonSelectField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$value = GETPOST($htmlName, 'restricthtml');
+		$value = request()->input($htmlName);
 		$value = trim($value);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $value);
@@ -207,8 +207,8 @@ class RadioField extends CommonSelectField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alphanohtml');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}
@@ -231,8 +231,8 @@ class RadioField extends CommonSelectField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'array');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName, []);
 		} else {
 			$value = $defaultValue;
 		}

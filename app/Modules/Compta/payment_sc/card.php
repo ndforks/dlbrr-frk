@@ -50,9 +50,9 @@ if (isModEnabled("bank")) {
 $langs->loadLangs(array('bills', 'banks', 'companies'));
 
 // Security check
-$id = GETPOSTINT("id");
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -87,8 +87,8 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $user->hasRight('tax', '
 	}
 }
 
-/*if ($action == 'setdatep' && GETPOST('datepday') && $user->hasRight('tax', 'charges', 'creer')) {
-	$datepaye = dol_mktime(GETPOSTINT('datephour'), GETPOSTINT('datepmin'), GETPOSTINT('datepsec'), GETPOSTINT('datepmonth'), GETPOSTINT('datepday'), GETPOSTINT('datepyear'));
+/*if ($action == 'setdatep' && request()->input('datepday') && $user->hasRight('tax', 'charges', 'creer')) {
+	$datepaye = dol_mktime(request()->integer('datephour', 0), request()->integer('datepmin', 0), request()->integer('datepsec', 0), request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
 	$res = $object->update_date($datepaye);
 	if ($res === 0) {
 		setEventMessages($langs->trans('PaymentDateUpdateSucceeded'), null, 'mesgs');
@@ -237,7 +237,7 @@ if ($resql) {
 	print "</table>\n";
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -252,7 +252,7 @@ if (getDolGlobalString('BILL_ADD_PAYMENT_VALIDATION')) {
 	if ($user->socid == 0 && $object->statut == 0 && $action == '')
 	{
 		if ($user->hasRight('facture', 'paiement')){
-			print '<a class="butAction" href="card.php?id='.GETPOSTINT('id').'&amp;facid='.$objp->facid.'&amp;action=valide">'.$langs->trans('Valid').'</a>';
+			print '<a class="butAction" href="card.php?id='.request()->integer('id', 0).'&amp;facid='.$objp->facid.'&amp;action=valide">'.$langs->trans('Valid').'</a>';
 		}
 	}
 }

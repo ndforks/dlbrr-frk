@@ -339,7 +339,7 @@ function getCustomerProposalPieChart($socid = 0)
 		$result .=  '</div>';
 		$result .=  '<br>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	return $result;

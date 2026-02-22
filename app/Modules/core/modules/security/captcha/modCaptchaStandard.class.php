@@ -186,7 +186,7 @@ class modCaptchaStandard extends ModeleCaptcha
 	{
 		$sessionkey = 'dol_antispam_value';		// The same key than set into the /core/antispamimage.php file.
 
-		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) === strtolower(GETPOST('code', 'restricthtml')))) ? 1 : 0;
+		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) === strtolower(request()->input('code')))) ? 1 : 0;
 
 		return $ok;
 	}

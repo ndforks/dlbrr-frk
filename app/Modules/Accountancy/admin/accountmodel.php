@@ -57,11 +57,11 @@ if (isModEnabled('accounting')) {
 // Load translation files required by the page
 $langs->loadLangs(array('accountancy', 'admin', 'companies', 'compta', 'errors', 'holiday', 'hrm', 'resource'));
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
 $id = 31;
-$rowid = GETPOST('rowid', 'alpha');
-$code = GETPOST('code', 'alpha');
+$rowid = request()->integer('rowid', 0);
+$code = request()->input('code');
 
 $acts = array();
 $actl = array();
@@ -70,14 +70,14 @@ $acts[1] = "disable";
 $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"');
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
-$listoffset = GETPOST('listoffset', 'alpha');
-$listlimit = GETPOSTINT('listlimit') > 0 ? GETPOSTINT('listlimit') : 1000;
+$listoffset = request()->input('listoffset');
+$listlimit = request()->integer('listlimit', 0) > 0 ? request()->integer('listlimit', 0) : 1000;
 $active = 1;
 
-$sortfield = GETPOST("sortfield", 'aZ09comma');
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -85,17 +85,17 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = GETPOST('search_country_id', 'int');
+$search_country_id = request()->integer('search_country_id', 0);
 
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoeditchart = $user->hasRight('accounting', 'chartofaccount');
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -149,12 +149,12 @@ $tabhelp[31] = array('pcg_version' => $langs->trans("EnterAnyCode"));
  * Actions
  */
 
-if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
+if (request()->input('button_removefilter') || request()->input('button_removefilter.x') || request()->input('button_removefilter_x')) {
 	$search_country_id = '';
 }
 
 // Actions add or modify an entry into a dictionary
-if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
+if (request()->input('actionadd') || request()->input('actionmodify')) {
 	$listfield = explode(',', str_replace(' ', '', $tabfield[$id]));
 	$listfieldinsert = explode(',', $tabfieldinsert[$id]);
 	$listfieldmodify = explode(',', $tabfieldinsert[$id]);
@@ -166,7 +166,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		if ($value == 'country_id' && in_array($tablib[$id], array('Pcg_version'))) {
 			continue; // For some pages, country is not mandatory
 		}
-		if ((!GETPOSTISSET($value)) || GETPOST($value) == '') {
+		if ((!request()->has($value)) || request()->input($value) == '') {
 			$ok = 0;
 			$fieldnamekey = $listfield[$f];
 			// We take translate key of field
@@ -185,19 +185,19 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		}
 	}
 	// Other checks
-	if (GETPOSTISSET("pcg_version")) {
-		if (GETPOST("pcg_version") == '0') {
+	if (request()->has('pcg_version')) {
+		if (request()->input('pcg_version') == '0') {
 			$ok = 0;
 			setEventMessages($langs->transnoentities('ErrorCodeCantContainZero'), null, 'errors');
 		}
 	}
-	if (GETPOSTISSET("country") && GETPOST("country") == '0') {
+	if (request()->has('country') && request()->input('country') == '0') {
 		$ok = 0;
 		setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->transnoentities("Country")), null, 'errors');
 	}
 
 	// In case of 'actionadd' and with valid parameters, add the line
-	if ($ok && GETPOST('actionadd', 'alpha')) {
+	if ($ok && request()->input('actionadd')) {
 		$newid = 0;
 
 		// Add new entry
@@ -211,17 +211,17 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		$i = 0;
 		foreach ($listfieldinsert as $f => $value) {
 			if ($value == 'price' || preg_match('/^amount/i', $value) || $value == 'taux') {
-				$_POST[$listfieldvalue[$i]] = price2num(GETPOST($listfieldvalue[$i]), 'MU');
+				$_POST[$listfieldvalue[$i]] = price2num(request()->input($listfieldvalue[$i]), 'MU');
 			} elseif ($value == 'entity') {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
 			if ($i) {
 				$sql .= ",";
 			}
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -236,13 +236,13 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 			if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 
 	// In case of 'actionmodify' and with valid parameters, modify the line
-	if ($ok && GETPOST('actionmodify', 'alpha')) {
+	if ($ok && request()->input('actionmodify')) {
 		// Modify entry
 		$sql = "UPDATE ".$db->sanitize($tabname[$id])." SET ";
 		// Change field's value
@@ -250,7 +250,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		$i = 0;
 		foreach ($listfieldmodify as $field) {
 			if ($field == 'price' || preg_match('/^amount/i', $field) || $field == 'taux') {
-				$_POST[$listfieldvalue[$i]] = price2num(GETPOST($listfieldvalue[$i]), 'MU');
+				$_POST[$listfieldvalue[$i]] = price2num(request()->input($listfieldvalue[$i]), 'MU');
 			} elseif ($field == 'entity') {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
@@ -258,10 +258,10 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 				$sql .= ",";
 			}
 			$sql .= $field."=";
-			if (GETPOST($listfieldvalue[$i]) == '') {
+			if (request()->input($listfieldvalue[$i]) == '') {
 				$sql .= "null";
 			} else {
-				$sql .= "'".$db->escape(GETPOST($listfieldvalue[$i]))."'";
+				$sql .= "'".$db->escape(request()->input($listfieldvalue[$i]))."'";
 			}
 			$i++;
 		}
@@ -285,7 +285,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $permissiontoeditchart) 
 		if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 			setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -295,7 +295,7 @@ if ($action == 'activate' && $permissiontoeditchart) {
 	$sql = "UPDATE ".$db->sanitize($tabname[$id])." SET active = 1 WHERE rowid = ".((int) $rowid);
 	$result = $db->query($sql);
 	if (!$result) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -304,7 +304,7 @@ if ($action == $acts[1] && $permissiontoeditchart) {
 	$sql = "UPDATE ".$db->sanitize($tabname[$id])." SET active = 0 WHERE rowid = ".((int) $rowid);
 	$result = $db->query($sql);
 	if (!$result) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -417,10 +417,10 @@ print '<tr class="oddeven">';
 
 $obj = new stdClass();
 // If data was already input, we define them in obj to populate input fields.
-if (GETPOST('actionadd', 'alpha')) {
+if (request()->input('actionadd')) {
 	foreach ($fieldlist as $key => $val) {
-		if (GETPOST($val)) {
-			$obj->$val = GETPOST($val);
+		if (request()->input($val)) {
+			$obj->$val = request()->input($val);
 		}
 	}
 }
@@ -611,7 +611,7 @@ if ($resql) {
 		print '<tr><td colspan="6"><span class="opacitymedium">'.$langs->trans("NoRecordFound").'</span></td></tr>';
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</table>';

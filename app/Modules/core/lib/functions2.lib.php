@@ -1189,7 +1189,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 		$obj = $db->fetch_object($resql);
 		$counter = $obj->val;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Check if we must force counter to maskoffset
@@ -1251,7 +1251,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 				$ref = $obj->ref;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$numFinal = $ref;
@@ -1312,7 +1312,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 				$maskrefclient_obj = $db->fetch_object($maskrefclient_resql);
 				$maskrefclient_counter = $maskrefclient_obj->val;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (empty($maskrefclient_counter) || preg_match('/[^0-9]/i', $maskrefclient_counter)) {
@@ -1730,7 +1730,7 @@ function dol_set_user_param($db, $conf, &$user, $tab, $entity = -1)
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 		return -1;
 	}
@@ -1752,7 +1752,7 @@ function dol_set_user_param($db, $conf, &$user, $tab, $entity = -1)
 			dol_syslog("functions2.lib::dol_set_user_param", LOG_DEBUG);
 			$result = $db->query($sql);
 			if (!$result) {
-				dol_print_error($db);
+				abort(500);
 				$db->rollback();
 				return -1;
 			}
@@ -1945,7 +1945,7 @@ function getListOfModels($db, $type, $maxfilenamelength = 0, $showempty = 0)
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -1;
 	}
 	$parameters = array(
@@ -2260,7 +2260,7 @@ function cleanCorruptedTree($db, $tabletocleantree, $fieldfkparent)
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (count($listofid)) {

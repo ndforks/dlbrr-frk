@@ -59,13 +59,13 @@ if (getDolGlobalString('STRIPE_AUTO_RECORD_PAYOUT')) {
 $langs->loadLangs(array('admin', 'other', 'paypal', 'stripe'));
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($conf->stripe->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -77,93 +77,93 @@ if ($action == 'setvalue' && $user->admin) {
 	$db->begin();
 
 	if (empty($conf->stripeconnect->enabled)) {
-		$result = dolibarr_set_const($db, "STRIPE_TEST_PUBLISHABLE_KEY", GETPOST('STRIPE_TEST_PUBLISHABLE_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_TEST_PUBLISHABLE_KEY", request()->input('STRIPE_TEST_PUBLISHABLE_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_TEST_SECRET_KEY", GETPOST('STRIPE_TEST_SECRET_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_TEST_SECRET_KEY", request()->input('STRIPE_TEST_SECRET_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_TEST_WEBHOOK_ID", GETPOST('STRIPE_TEST_WEBHOOK_ID', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_TEST_WEBHOOK_ID", request()->input('STRIPE_TEST_WEBHOOK_ID'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_TEST_WEBHOOK_KEY", GETPOST('STRIPE_TEST_WEBHOOK_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_TEST_WEBHOOK_KEY", request()->input('STRIPE_TEST_WEBHOOK_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_LIVE_PUBLISHABLE_KEY", GETPOST('STRIPE_LIVE_PUBLISHABLE_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_LIVE_PUBLISHABLE_KEY", request()->input('STRIPE_LIVE_PUBLISHABLE_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_LIVE_SECRET_KEY", GETPOST('STRIPE_LIVE_SECRET_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_LIVE_SECRET_KEY", request()->input('STRIPE_LIVE_SECRET_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_LIVE_WEBHOOK_ID", GETPOST('STRIPE_LIVE_WEBHOOK_ID', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_LIVE_WEBHOOK_ID", request()->input('STRIPE_LIVE_WEBHOOK_ID'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
-		$result = dolibarr_set_const($db, "STRIPE_LIVE_WEBHOOK_KEY", GETPOST('STRIPE_LIVE_WEBHOOK_KEY', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "STRIPE_LIVE_WEBHOOK_KEY", request()->input('STRIPE_LIVE_WEBHOOK_KEY'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CREDITOR", GETPOST('ONLINE_PAYMENT_CREDITOR', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CREDITOR", request()->input('ONLINE_PAYMENT_CREDITOR'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "STRIPE_BANK_ACCOUNT_FOR_PAYMENTS", GETPOSTINT('STRIPE_BANK_ACCOUNT_FOR_PAYMENTS'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "STRIPE_BANK_ACCOUNT_FOR_PAYMENTS", request()->integer('STRIPE_BANK_ACCOUNT_FOR_PAYMENTS', 0), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "STRIPE_USER_ACCOUNT_FOR_ACTIONS", GETPOSTINT('STRIPE_USER_ACCOUNT_FOR_ACTIONS'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "STRIPE_USER_ACCOUNT_FOR_ACTIONS", request()->integer('STRIPE_USER_ACCOUNT_FOR_ACTIONS', 0), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "STRIPE_BANK_ACCOUNT_FOR_BANKTRANSFERS", GETPOSTINT('STRIPE_BANK_ACCOUNT_FOR_BANKTRANSFERS'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "STRIPE_BANK_ACCOUNT_FOR_BANKTRANSFERS", request()->integer('STRIPE_BANK_ACCOUNT_FOR_BANKTRANSFERS', 0), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	if (GETPOSTISSET('STRIPE_LOCATION')) {
-		$result = dolibarr_set_const($db, "STRIPE_LOCATION", GETPOST('STRIPE_LOCATION', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('STRIPE_LOCATION')) {
+		$result = dolibarr_set_const($db, "STRIPE_LOCATION", request()->input('STRIPE_LOCATION'), 'chaine', 0, '', $conf->entity);
 		if (!$result > 0) {
 			$error++;
 		}
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CSS_URL", GETPOST('ONLINE_PAYMENT_CSS_URL', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_CSS_URL", request()->input('ONLINE_PAYMENT_CSS_URL'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_FORM", GETPOST('ONLINE_PAYMENT_MESSAGE_FORM', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_FORM", request()->input('ONLINE_PAYMENT_MESSAGE_FORM'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_OK", GETPOST('ONLINE_PAYMENT_MESSAGE_OK', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_OK", request()->input('ONLINE_PAYMENT_MESSAGE_OK'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_KO", GETPOST('ONLINE_PAYMENT_MESSAGE_KO', 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_MESSAGE_KO", request()->input('ONLINE_PAYMENT_MESSAGE_KO'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
-	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_SENDEMAIL", GETPOST('ONLINE_PAYMENT_SENDEMAIL'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "ONLINE_PAYMENT_SENDEMAIL", request()->input('ONLINE_PAYMENT_SENDEMAIL'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
 	// Stock decrement
-	//$result = dolibarr_set_const($db, "ONLINE_PAYMENT_WAREHOUSE", (GETPOST('ONLINE_PAYMENT_WAREHOUSE', 'alpha') > 0 ? GETPOST('ONLINE_PAYMENT_WAREHOUSE', 'alpha') : ''), 'chaine', 0, '', $conf->entity);
+	//$result = dolibarr_set_const($db, "ONLINE_PAYMENT_WAREHOUSE", (request()->input('ONLINE_PAYMENT_WAREHOUSE') > 0 ? request()->input('ONLINE_PAYMENT_WAREHOUSE') : ''), 'chaine', 0, '', $conf->entity);
 	//if (! $result > 0)
 	//	$error ++;
 
 	// Payment token for URL
-	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN", GETPOST('PAYMENT_SECURITY_TOKEN', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN", request()->input('PAYMENT_SECURITY_TOKEN'), 'chaine', 0, '', $conf->entity);
 	if (!($result > 0)) {
 		$error++;
 	}
 	if (empty($conf->use_javascript_ajax)) {
-		$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN_UNIQUE", GETPOST('PAYMENT_SECURITY_TOKEN_UNIQUE', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$result = dolibarr_set_const($db, "PAYMENT_SECURITY_TOKEN_UNIQUE", request()->input('PAYMENT_SECURITY_TOKEN_UNIQUE'), 'chaine', 0, '', $conf->entity);
 		if (!($result > 0)) {
 			$error++;
 		}
@@ -174,12 +174,12 @@ if ($action == 'setvalue' && $user->admin) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if ($action == "setlive") {
-	$liveenable = GETPOSTINT('value');
+	$liveenable = request()->integer('value', 0);
 	$res = dolibarr_set_const($db, "STRIPE_LIVE", $liveenable, 'yesno', 0, '', $conf->entity);
 	if ($res > 0) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -272,8 +272,8 @@ if (empty($conf->stripeconnect->enabled)) {
 					\Stripe\Stripe::setApiKey(getDolGlobalString('STRIPE_TEST_SECRET_KEY'));
 					$endpoint = \Stripe\WebhookEndpoint::retrieve(getDolGlobalString('STRIPE_TEST_WEBHOOK_ID'));
 					$endpoint->enabled_events = $stripearrayofwebhookevents;
-					if (GETPOST('webhook', 'alpha') == getDolGlobalString('STRIPE_TEST_WEBHOOK_ID')) {
-						if (!GETPOST('status', 'alpha')) {
+					if (request()->input('webhook') == getDolGlobalString('STRIPE_TEST_WEBHOOK_ID')) {
+						if (!request()->input('status')) {
 							$endpoint->disabled = true;
 						} else {
 							$endpoint->disabled = false;
@@ -346,8 +346,8 @@ if (empty($conf->stripeconnect->enabled)) {
 					\Stripe\Stripe::setApiKey(getDolGlobalString('STRIPE_LIVE_SECRET_KEY'));
 					$endpoint = \Stripe\WebhookEndpoint::retrieve(getDolGlobalString('STRIPE_LIVE_WEBHOOK_ID'));
 					$endpoint->enabled_events = $stripearrayofwebhookevents;
-					if (GETPOST('webhook', 'alpha') == getDolGlobalString('STRIPE_LIVE_WEBHOOK_ID')) {
-						if (empty(GETPOST('status', 'alpha'))) {
+					if (request()->input('webhook') == getDolGlobalString('STRIPE_LIVE_WEBHOOK_ID')) {
+						if (empty(request()->input('status'))) {
 							$endpoint->disabled = true;
 						} else {
 							$endpoint->disabled = false;
@@ -418,7 +418,7 @@ if (getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2) {	// TODO Not used by current c
 	print $langs->trans("TERMINAL_LOCATION").'</td><td>';
 	$service = 'StripeTest';
 	$servicestatus = 0;
-	if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+	if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 		$service = 'StripeLive';
 		$servicestatus = 1;
 	}
@@ -429,7 +429,7 @@ if (getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2) {	// TODO Not used by current c
 		if (!empty($site_account)) {
 			\Stripe\Stripe::setApiKey($site_account);
 		}
-		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 			$service = 'StripeTest';
 			$servicestatus = '0';
 			dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');

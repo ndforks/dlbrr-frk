@@ -29,7 +29,7 @@ require '../../../../main.inc.php';
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Includes
@@ -38,7 +38,7 @@ require_once DOL_DOCUMENT_ROOT . '/admin/tools/ui/class/documentation.class.php'
 // Load documentation translations
 $langs->load('uxdocumentation');
 
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 if ($action == 'displayeventmessage') {
 	setEventMessages($langs->trans('DocSetEventMessageUnique'), null);

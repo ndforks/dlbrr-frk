@@ -57,10 +57,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/events.class.php';
 $langs->loadLangs(array("install", "other", "admin", "errors", "website"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-if (GETPOST('action', 'aZ09') == 'donothing') {
+if (request()->input('action') == 'donothing') {
 	exit;
 }
 
@@ -855,8 +855,8 @@ if (getDolGlobalString('MAIN_SECURITY_HASH_ALGO') != 'password_hash') {
 }
 print '<br>';
 
-$action = GETPOST('action');
-$exampletodecrypt = GETPOST('exampletodecrypt', 'password');
+$action = request()->input('action');
+$exampletodecrypt = request()->input('exampletodecrypt');
 
 print '<strong>'.$langs->trans("AlgorithmFor", $langs->transnoentitiesnoconv("SensitiveData"));
 print $form->textwithpicto('', 'reversible encryption done with dolEncrypt/dolDecrypt');
@@ -935,7 +935,7 @@ if (isModEnabled('website')) {
 			print '<span class="opacity">'.$langs->trans("NoWebsite").'</span>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	print '</div>';
 

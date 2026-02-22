@@ -49,10 +49,10 @@ $langs->loadLangs(array('banks', 'categories'));
 
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$categid = GETPOST('categid');
-$label = GETPOST("label");
+$action = request()->input('action');
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$categid = request()->integer('categid', 0);
+$label = request()->input('label');
 
 
 // Initialize a technical objects
@@ -61,7 +61,7 @@ $bankcateg = new BankCateg($db);
 
 // Security Check  Access Control
 if (!$user->hasRight('banque', 'configurer')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -70,10 +70,10 @@ if (!$user->hasRight('banque', 'configurer')) {
  * Actions
  */
 
-if (GETPOST('add')) {
+if (request()->input('add')) {
 	if ($label) {
 		$bankcateg = new BankCateg($db);
-		$bankcateg->label = GETPOST('label');
+		$bankcateg->label = request()->input('label');
 		$bankcateg->create($user);
 	}
 }
@@ -83,7 +83,7 @@ if ($categid) {
 
 	if ($bankcateg->fetch((int) $categid) > 0) {
 		//Update category
-		if (GETPOST('update') && $label) {
+		if (request()->input('update') && $label) {
 			$bankcateg->label = $label;
 			$bankcateg->update($user);
 		}
@@ -158,7 +158,7 @@ if ($result) {
 
 		print '<tr class="oddeven">';
 		print '<td>'.$objp->rowid.'</td>';
-		if (GETPOST('action', 'aZ09') == 'edit' && GETPOST("categid") == $objp->rowid) {
+		if (request()->input('action') == 'edit' && request()->input('categid') == $objp->rowid) {
 			print '<td colspan="3">';
 			print '<input type="hidden" name="categid" value="'.$objp->rowid.'">';
 			print '<input name="label" type="text" size=45 value="'.$objp->label.'">';

@@ -9,6 +9,6 @@ class AssetIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/asset/list.php');
+        return redirect()->route('asset.list');
     }
 }

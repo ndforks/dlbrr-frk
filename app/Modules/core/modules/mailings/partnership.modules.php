@@ -98,14 +98,14 @@ class mailing_partnership extends MailingTargets
 		$sql .= " AND s.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing = ".((int) $mailing_id).")";
 		$sql .= " AND p.fk_soc = s.rowid";
 		$sql .= " AND pt.rowid = p.fk_type";
-		if (GETPOSTINT('countryid') > 0) {
-			$sql .= " AND s.fk_pays = ".((int) GETPOSTINT('countryid'));
+		if (request()->integer('countryid', 0) > 0) {
+			$sql .= " AND s.fk_pays = ".((int) request()->integer('countryid', 0));
 		}
-		if (GETPOSTINT('filter') > 0) {
-			$sql .= " AND pt.rowid = ".((int) GETPOSTINT('filter'));
+		if (request()->integer('filter', 0) > 0) {
+			$sql .= " AND pt.rowid = ".((int) request()->integer('filter', 0));
 		}
-		if (GETPOSTISSET('filter_status_partnership') && GETPOSTINT('filter_status_partnership') >= 0) {
-			$sql .= " AND p.status = ".((int) GETPOSTINT('filter_status_partnership'));
+		if (request()->has('filter_status_partnership') && request()->integer('filter_status_partnership', 0) >= 0) {
+			$sql .= " AND p.status = ".((int) request()->integer('filter_status_partnership', 0));
 		}
 		if (empty($this->evenunsubscribe)) {
 			$sql .= " AND NOT EXISTS (SELECT rowid FROM ".MAIN_DB_PREFIX."mailing_unsubscribe as mu WHERE mu.email = s.email and mu.entity = ".((int) $conf->entity).")";
@@ -120,14 +120,14 @@ class mailing_partnership extends MailingTargets
 		$sql .= " AND s.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing = ".((int) $mailing_id).")";
 		$sql .= " AND p.fk_member = s.rowid";
 		$sql .= " AND pt.rowid = p.fk_type";
-		if (GETPOSTINT('countryid') > 0) {
-			$sql .= " AND s.country = ".((int) GETPOSTINT('countryid'));
+		if (request()->integer('countryid', 0) > 0) {
+			$sql .= " AND s.country = ".((int) request()->integer('countryid', 0));
 		}
-		if (GETPOSTINT('filter') > 0) {
-			$sql .= " AND pt.rowid=".((int) GETPOSTINT('filter'));
+		if (request()->integer('filter', 0) > 0) {
+			$sql .= " AND pt.rowid=".((int) request()->integer('filter', 0));
 		}
-		if (GETPOSTISSET('filter_status_partnership') && GETPOSTINT('filter_status_partnership') >= 0) {
-			$sql .= " AND p.status = ".((int) GETPOSTINT('filter_status_partnership'));
+		if (request()->has('filter_status_partnership') && request()->integer('filter_status_partnership', 0) >= 0) {
+			$sql .= " AND p.status = ".((int) request()->integer('filter_status_partnership', 0));
 		}
 		if (empty($this->evenunsubscribe)) {
 			$sql .= " AND NOT EXISTS (SELECT rowid FROM ".MAIN_DB_PREFIX."mailing_unsubscribe as mu WHERE mu.email = s.email and mu.entity = ".((int) $conf->entity).")";
@@ -272,7 +272,7 @@ class mailing_partnership extends MailingTargets
 			while ($i < $num) {
 				$obj = $this->db->fetch_object($resql);
 
-				$s .= '<option value="'.$obj->rowid.'"'.($obj->rowid == GETPOST('filter') ? "selected" : "").'>'.dol_escape_htmltag($obj->label);
+				$s .= '<option value="'.$obj->rowid.'"'.($obj->rowid == request()->input('filter') ? "selected" : "").'>'.dol_escape_htmltag($obj->label);
 				$s .= '</option>';
 				$i++;
 			}
@@ -289,10 +289,10 @@ class mailing_partnership extends MailingTargets
 
 		$dummy = $tmppartnership->getLibStatut(0);	// We call this only to have $tmppartnership->labelStatus loaded
 
-		$s .= $form->selectarray('filter_status_partnership', $tmppartnership->labelStatus, GETPOST('filter_status_partnership'), $langs->trans("Status"));
+		$s .= $form->selectarray('filter_status_partnership', $tmppartnership->labelStatus, request()->input('filter_status_partnership'), $langs->trans("Status"));
 
 		// Add filter on country
-		$s .= $form->select_country(GETPOST('countryid'), 'countryid', '', 0, 'minwidth150 maxwidth200', '', $langs->trans("Country"), 0, 0, array(), 0, 0);
+		$s .= $form->select_country(request()->input('countryid'), 'countryid', '', 0, 'minwidth150 maxwidth200', '', $langs->trans("Country"), 0, 0, array(), 0, 0);
 
 		return $s;
 	}

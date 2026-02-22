@@ -12,8 +12,8 @@ class ShowCommande extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -46,21 +46,21 @@ class ShowCommande extends Controller
         $commande = Commande::findOrFail($id);
         
         $data = [
-            'ref' => GETPOST('ref', 'alpha'),
-            'ref_client' => GETPOST('ref_client', 'alpha'),
-            'fk_soc' => GETPOSTINT('socid'),
-            'date_commande' => GETPOST('date_commande', 'alpha'),
+            'ref' => $request->input('ref'),
+            'ref_client' => $request->input('ref_client'),
+            'fk_soc' => $request->integer('socid', 0),
+            'date_commande' => $request->input('date_commande'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $commande->update($data);
         
-        return redirect("/commande/card.php?id={$id}")->with('success', 'Order updated');
+        return redirect()->route('commande.show', ['id' => $id])->with('success', 'Order updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Commande::findOrFail($id)->delete();
-        return redirect('/commande/list.php')->with('success', 'Order deleted');
+        return redirect()->route('commande.list')->with('success', 'Order deleted');
     }
 }

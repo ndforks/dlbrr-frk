@@ -39,7 +39,7 @@ include_once DOL_DOCUMENT_ROOT.'/core/modules/printing/modules_printing.php';
 $langs->load("printing");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

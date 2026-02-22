@@ -45,14 +45,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 // Load translation files required by page
 $langs->loadLangs(array('users', 'other'));
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
-$id = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('id'));
-$ref = GETPOST('ref', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'userdoc'; // To manage different context of search
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$id = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('id', 0));
+$ref = request()->input('ref');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'userdoc'; // To manage different context of search
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 '@phan-var-force int<1,max> $id';
 
@@ -90,14 +90,14 @@ $hookmanager->initHooks(array('usercard', 'userdoc', 'globalcard'));
 $result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
 
 if ($user->id != $id && !$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
@@ -220,7 +220,7 @@ if ($object->id && $upload_dir !== null) {
 	$param = '&id='.$object->id;
 	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
-	accessforbidden('', 0, 1);
+	abort(403);
 }
 
 // End of page

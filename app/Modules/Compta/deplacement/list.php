@@ -46,20 +46,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 $langs->loadLangs(array('companies', 'users', 'trips'));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 $result = restrictedArea($user, 'deplacement', '', '');
 
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_name = GETPOST('search_name', 'alpha');
-$search_company = GETPOST('search_company', 'alpha');
-// $search_amount=GETPOST('search_amount','alpha');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$search_ref = request()->input('search_ref');
+$search_name = request()->input('search_name');
+$search_company = request()->input('search_company');
+// $search_amount=request()->input('search_amount');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -73,11 +73,11 @@ if (!$sortfield) {
 	$sortfield = "d.dated";
 }
 
-$year = GETPOST("year");
-$month = GETPOST("month");
-$day = GETPOST("day");
+$year = request()->integer('year', 0);
+$month = request()->input('month');
+$day = request()->input('day');
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$search_ref = "";
 	$search_name = "";
 	$search_company = "";
@@ -236,7 +236,7 @@ if ($resql) {
 	print "</form>\n";
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

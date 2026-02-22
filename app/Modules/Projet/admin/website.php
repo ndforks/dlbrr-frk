@@ -46,14 +46,14 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "members"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $defaultoppstatus = getDolGlobalInt('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD');
 
-$visibility = GETPOST('PROJET_VISIBILITY', 'alpha');
+$visibility = request()->input('PROJET_VISIBILITY');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -64,7 +64,7 @@ $error = 0;
  */
 
 if ($action == 'setPROJECT_ENABLE_PUBLIC') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'PROJECT_ENABLE_PUBLIC', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'PROJECT_ENABLE_PUBLIC', 0, 'chaine', 0, '', $conf->entity);
@@ -72,8 +72,8 @@ if ($action == 'setPROJECT_ENABLE_PUBLIC') {
 }
 
 if ($action == 'update') {
-	$public = GETPOST('PROJECT_ENABLE_PUBLIC');
-	$defaultoppstatus = GETPOSTINT('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD');
+	$public = request()->input('PROJECT_ENABLE_PUBLIC');
+	$defaultoppstatus = request()->integer('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD', 0);
 	$res = dolibarr_set_const($db, "PROJET_VISIBILITY", $visibility, 'chaine', 0, '', $conf->entity);
 
 	$res = dolibarr_set_const($db, "PROJECT_ENABLE_PUBLIC", $public, 'chaine', 0, '', $conf->entity);
@@ -153,7 +153,7 @@ if (getDolGlobalString('PROJECT_ENABLE_PUBLIC')) {
 	print '<tr class="oddeven drag" id="trforcetype"><td>';
 	print $langs->trans("DefaultOpportunityStatus");
 	print '</td><td class="right">';
-	print $formproject->selectOpportunityStatus('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD', GETPOSTISSET('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD') ? GETPOSTINT('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD') : $defaultoppstatus, 1, 0, 0, 0, '', 0, 1);
+	print $formproject->selectOpportunityStatus('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD', request()->has('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD') ? request()->integer('PROJECT_DEFAULT_OPPORTUNITY_STATUS_FOR_ONLINE_LEAD', 0) : $defaultoppstatus, 1, 0, 0, 0, '', 0, 1);
 	print "</td></tr>\n";
 
 

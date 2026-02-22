@@ -44,24 +44,24 @@ if (isModEnabled('accounting')) {
 $langs->loadLangs(array('compta', 'salaries', 'bills', 'hrm', 'stripe'));
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 //restrictedArea($user, 'salaries', '', '', '');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$rowid = GETPOST("rowid", 'alpha');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$rowid = request()->integer('rowid', 0);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
-$optioncss = GETPOST('optioncss', 'alpha');
+$optioncss = request()->input('optioncss');
 $param = "";
 $num = 0;
 
@@ -78,7 +78,7 @@ $stripe = new Stripe($db);
 
 llxHeader('', $langs->trans("StripePayoutList"));
 
-if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 	$service = 'StripeTest';
 	$servicestatus = '0';
 	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');

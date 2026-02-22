@@ -51,23 +51,23 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 $MAXAGENDA = getDolGlobalString('AGENDA_EXT_NB', 5);
 $DELAYFORCACHE = 300;	// 300 seconds
 
-$disabledefaultvalues = GETPOSTINT('disabledefaultvalues');
+$disabledefaultvalues = request()->integer('disabledefaultvalues', 0);
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$check_holiday = GETPOSTINT('check_holiday');
-$filter = GETPOST("search_filter", 'alpha', 3) ? GETPOST("search_filter", 'alpha', 3) : GETPOST("filter", 'alpha', 3);
-$filtert = GETPOST("search_filtert", "intcomma", 3) ? GETPOST("search_filtert", "intcomma", 3) : GETPOST("filtert", "intcomma", 3);
-$usergroup = GETPOSTINT("search_usergroup", 3) ? GETPOSTINT("search_usergroup", 3) : GETPOSTINT("usergroup", 3);
+$check_holiday = request()->integer('check_holiday', 0);
+$filter = request()->input("search_filter") ?: request()->input("filter");
+$filtert = request()->input("search_filtert") ?: request()->input("filtert");
+$usergroup = request()->integer("search_usergroup") ?: request()->integer("usergroup");
 $showbirthday = getDolGlobalInt('AGENDA_ENABLE_SHOW_BIRTHDAY_PER_USER'); // disabled by default
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 if (!$sortorder) {
 	$sortorder = "ASC";
@@ -77,7 +77,7 @@ if (!$sortfield) {
 }
 
 // Security check
-$socid = GETPOSTINT("search_socid") ? GETPOSTINT("search_socid") : GETPOSTINT("socid");
+$socid = request()->integer('search_socid', 0) ? request()->integer('search_socid', 0) : request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -87,7 +87,7 @@ if ($socid < 0) {
 
 $canedit = 1;	// can read events of others
 if (!$user->hasRight('agenda', 'myactions', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('agenda', 'allactions', 'read')) {
 	$canedit = 0;
@@ -97,40 +97,40 @@ if (!$user->hasRight('agenda', 'allactions', 'read') || $filter == 'mine') {  //
 }
 
 $mode = 'show_peruser';
-$resourceid = GETPOSTINT("search_resourceid") ? GETPOSTINT("search_resourceid") : GETPOSTINT("resourceid");
-$year = GETPOSTINT("year") ? GETPOSTINT("year") : date("Y");
-$month = GETPOSTINT("month") ? GETPOSTINT("month") : date("m");
-$week = GETPOSTINT("week") ? GETPOSTINT("week") : date("W");
-$day = GETPOSTINT("day") ? GETPOSTINT("day") : date("d");
-$pid = GETPOSTISSET("search_projectid") ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
-$status = GETPOSTISSET("search_status") ? GETPOST("search_status", 'aZ09') : GETPOST("status", 'aZ09'); // status may be 0, 50, 100, 'todo', 'na' or -1
-$type = GETPOSTISSET("search_type") ? GETPOST("search_type", 'aZ09') : GETPOST("type", 'aZ09');
-$maxprint = GETPOSTISSET("maxprint") ? GETPOSTINT("maxprint") : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$search_categ_cus = GETPOSTINT("search_categ_cus", 3) ? GETPOSTINT("search_categ_cus", 3) : 0;
+$resourceid = request()->integer('search_resourceid', 0) ? request()->integer('search_resourceid', 0) : request()->integer('resourceid', 0);
+$year = request()->integer('year', 0) ? request()->integer('year', 0) : date("Y");
+$month = request()->integer('month', 0) ? request()->integer('month', 0) : date("m");
+$week = request()->integer('week', 0) ? request()->integer('week', 0) : date("W");
+$day = request()->integer('day', 0) ? request()->integer('day', 0) : date("d");
+$pid = request()->has('search_projectid') ? request()->integer('search_projectid', 0) : request()->integer('projectid', 0);
+$status = request()->has('search_status') ? request()->input('search_status') : request()->input('status'); // status may be 0, 50, 100, 'todo', 'na' or -1
+$type = request()->has('search_type') ? request()->input('search_type') : request()->input('type');
+$maxprint = request()->has('maxprint') ? request()->integer('maxprint', 0) : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$search_categ_cus = request()->integer("search_categ_cus") ?: 0;
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
-if (GETPOST('search_actioncode', 'array:aZ09')) {
-	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
+if (request()->input('search_actioncode')) {
+	$actioncode = request()->input('search_actioncode');
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (GETPOST("search_actioncode", "alpha") == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
+	$actioncode = request()->input("search_actioncode") ?: (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
 }
 
-$dateselect = dol_mktime(0, 0, 0, GETPOSTINT('dateselectmonth'), GETPOSTINT('dateselectday'), GETPOSTINT('dateselectyear'));
+$dateselect = dol_mktime(0, 0, 0, request()->integer('dateselectmonth', 0), request()->integer('dateselectday', 0), request()->integer('dateselectyear', 0));
 if ($dateselect > 0) {
-	$day = GETPOSTINT('dateselectday');
-	$month = GETPOSTINT('dateselectmonth');
-	$year = GETPOSTINT('dateselectyear');
+	$day = request()->integer('dateselectday', 0);
+	$month = request()->integer('dateselectmonth', 0);
+	$year = request()->integer('dateselectyear', 0);
 }
 
 // working hours
 $tmp = getDolGlobalString('MAIN_DEFAULT_WORKING_HOURS', '9-18');
 $tmp = str_replace(' ', '', $tmp); // FIX 7533
 $tmparray = explode('-', $tmp);
-$begin_h = GETPOSTISSET('begin_h') ? GETPOSTINT('begin_h') : ($tmparray[0] != '' ? $tmparray[0] : 9);
-$end_h   = GETPOSTISSET('end_h') ? GETPOSTINT('end_h') : ($tmparray[1] != '' ? $tmparray[1] : 18);
+$begin_h = request()->has('begin_h') ? request()->integer('begin_h', 0) : ($tmparray[0] != '' ? $tmparray[0] : 9);
+$end_h   = request()->has('end_h') ? request()->integer('end_h', 0) : ($tmparray[1] != '' ? $tmparray[1] : 18);
 if ($begin_h < 0 || $begin_h > 23) {
 	$begin_h = 9;
 }
@@ -145,8 +145,8 @@ if ($end_h <= $begin_h) {
 $tmp = getDolGlobalString('MAIN_DEFAULT_WORKING_DAYS', '1-5');
 $tmp = str_replace(' ', '', $tmp); // FIX 7533
 $tmparray = explode('-', $tmp);
-$begin_d = GETPOSTISSET('begin_d') ? GETPOSTINT('begin_d') : ($tmparray[0] != '' ? $tmparray[0] : 1);
-$end_d   = GETPOSTISSET('end_d') ? GETPOSTINT('end_d') : ($tmparray[1] != '' ? $tmparray[1] : 5);
+$begin_d = request()->has('begin_d') ? request()->integer('begin_d', 0) : ($tmparray[0] != '' ? $tmparray[0] : 1);
+$end_d   = request()->has('end_d') ? request()->integer('end_d', 0) : ($tmparray[1] != '' ? $tmparray[1] : 5);
 if ($begin_d < 1 || $begin_d > 7) {
 	$begin_d = 1;
 }
@@ -157,27 +157,27 @@ if ($end_d < $begin_d) {
 	$end_d = $begin_d + 1;
 }
 
-if ($status == '' && !GETPOSTISSET('search_status')) {
+if ($status == '' && !request()->has('search_status')) {
 	$status = ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_STATUS') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_STATUS'));
 }
 
-if (empty($mode) && !GETPOSTISSET('mode')) {
+if (empty($mode) && !request()->has('mode')) {
 	$mode = getDolGlobalString('AGENDA_DEFAULT_VIEW', 'show_peruser');
 }
 
 // View by month
-if (GETPOST('viewcal', 'alpha') && $mode != 'show_day' && $mode != 'show_week' && $mode != 'show_peruser') {
+if (request()->input('viewcal') && $mode != 'show_day' && $mode != 'show_week' && $mode != 'show_peruser') {
 	$mode = 'show_month';
 	$day = '';
 }
 // View by week
-if (GETPOST('viewweek', 'alpha') || $mode == 'show_week') {
+if (request()->input('viewweek') || $mode == 'show_week') {
 	$mode = 'show_week';
 	$week = ($week ? $week : date("W"));
 	$day = ($day ? $day : date("d"));
 }
 // View by day
-if (GETPOST('viewday', 'alpha') || $mode == 'show_day') {
+if (request()->input('viewday') || $mode == 'show_day') {
 	$mode = 'show_day';
 	$day = ($day ? $day : date("d"));
 }
@@ -332,7 +332,7 @@ if ($status == 'todo') {
 }
 
 $param = '';
-if (($actioncode && $actioncode !== '-1') || GETPOSTISSET('search_actioncode')) {
+if (($actioncode && $actioncode !== '-1') || request()->has('search_actioncode')) {
 	if (is_array($actioncode)) {
 		foreach ($actioncode as $str_action) {
 			if ($str_action != '-1') {
@@ -347,7 +347,7 @@ if ($resourceid > 0) {
 	$param .= "&search_resourceid=".urlencode((string) ($resourceid));
 }
 
-if ($status || GETPOSTISSET('status') || GETPOSTISSET('search_status')) {
+if ($status || request()->has('status') || request()->has('search_status')) {
 	$param .= "&search_status=".urlencode($status);
 }
 if ($filter) {
@@ -568,7 +568,7 @@ if (isModEnabled("bookcal")) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -990,7 +990,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 //var_dump($eventarray);
 
@@ -1066,7 +1066,7 @@ if ($showbirthday) {  // always false @phpstan-ignore-line
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -1718,7 +1718,7 @@ while ($currentdaytoshow < $lastdaytoshow) {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	//var_dump($usernamesid);
@@ -2080,7 +2080,7 @@ function show_day_events2($username, $day, $month, $year, $monthshown, $style, &
 							$cases1[$h][$event->id]['typecode'] = $event->type_code;
 							if ($event->type_code == 'HOLIDAY') {
 								$cases1[$h][$event->id]['css'] = 'peruser_holiday ';
-								if (GETPOSTINT('check_holiday')) {
+								if (request()->integer('check_holiday', 0)) {
 									$cases1[$h][$event->id]['css'] .= 'peruser_holiday_imp ';
 								}
 							} else {
@@ -2131,7 +2131,7 @@ function show_day_events2($username, $day, $month, $year, $monthshown, $style, &
 							$cases2[$h][$event->id]['typecode'] = $event->type_code;
 							if ($event->type_code == 'HOLIDAY') {
 								$cases2[$h][$event->id]['css'] = 'peruser_holiday ';
-								if (GETPOSTINT('check_holiday')) {
+								if (request()->integer('check_holiday', 0)) {
 									$cases2[$h][$event->id]['css'] .= 'peruser_holiday_imp ';
 								}
 							} else {
@@ -2182,7 +2182,7 @@ function show_day_events2($username, $day, $month, $year, $monthshown, $style, &
 							$cases3[$h][$event->id]['typecode'] = $event->type_code;
 							if ($event->type_code == 'HOLIDAY') {
 								$cases3[$h][$event->id]['css'] .= 'peruser_holiday ';
-								if (GETPOSTINT('check_holiday')) {
+								if (request()->integer('check_holiday', 0)) {
 									$cases3[$h][$event->id]['css'] .= 'peruser_holiday_imp ';
 								}
 							} else {
@@ -2233,7 +2233,7 @@ function show_day_events2($username, $day, $month, $year, $monthshown, $style, &
 							$cases4[$h][$event->id]['typecode'] = $event->type_code;
 							if ($event->type_code == 'HOLIDAY') {
 								$cases4[$h][$event->id]['css'] = 'peruser_holiday ';
-								if (GETPOSTINT('check_holiday')) {
+								if (request()->integer('check_holiday', 0)) {
 									$cases4[$h][$event->id]['css'] .= 'peruser_holiday_imp ';
 								}
 							} else {

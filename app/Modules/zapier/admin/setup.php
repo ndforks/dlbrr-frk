@@ -43,12 +43,12 @@ $langs->loadLangs(array('admin', 'zapier'));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
 $arrayofparameters = array(
 	//	'ZAPIERFORDOLIBARR_MYPARAM1'=>array('css'=>'minwidth200', 'enabled'=>1),
@@ -56,10 +56,10 @@ $arrayofparameters = array(
 );
 
 if (!isModEnabled('zapier')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 

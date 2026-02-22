@@ -95,25 +95,25 @@ if (isModEnabled('paypal')) {
 	$PAYPAL_API_SIGNATURE = getDolGlobalString('PAYPAL_API_SIGNATURE');
 	$PAYPAL_API_SANDBOX = getDolGlobalString('PAYPAL_API_SANDBOX');
 
-	$PAYPALTOKEN = GETPOST('TOKEN');
+	$PAYPALTOKEN = request()->input('TOKEN');
 	if (empty($PAYPALTOKEN)) {
-		$PAYPALTOKEN = GETPOST('token');
+		$PAYPALTOKEN = request()->input('token');
 	}
-	$PAYPALPAYERID = GETPOST('PAYERID');
+	$PAYPALPAYERID = request()->input('PAYERID');
 	if (empty($PAYPALPAYERID)) {
-		$PAYPALPAYERID = GETPOST('PayerID');
+		$PAYPALPAYERID = request()->input('PayerID');
 	}
 }
 
-$FULLTAG = GETPOST('FULLTAG');
+$FULLTAG = request()->input('FULLTAG');
 if (empty($FULLTAG)) {
-	$FULLTAG = GETPOST('fulltag');
+	$FULLTAG = request()->input('fulltag');
 }
-$source = GETPOST('s', 'alpha') ? GETPOST('s', 'alpha') : GETPOST('source', 'alpha');
-$ref = GETPOST('ref');
+$source = request()->input('s') ? request()->input('s') : request()->input('source');
+$ref = request()->input('ref');
 
-$suffix = GETPOST("suffix", 'aZ09');
-$membertypeid = GETPOSTINT("membertypeid");
+$suffix = request()->input('suffix');
+$membertypeid = request()->integer('membertypeid', 0);
 
 
 // Detect $paymentmethod
@@ -141,7 +141,7 @@ $validpaymentmethod = getValidOnlinePaymentMethods($paymentmethod);
 
 // Security check
 if (empty($validpaymentmethod)) {
-	httponly_accessforbidden('No valid payment mode');
+	httponly_abort(403);
 }
 
 // Common variables
@@ -214,7 +214,7 @@ foreach ($_SESSION as $k => $v) {
 }
 dol_syslog("session_id=".session_id()." SESSION: ".$tracesession, LOG_DEBUG, 0, '_payment');
 
-dol_syslog("paymentoksessioncode=".GETPOST('paymentoksessioncode')." SESSION['paymentoksessioncode']=".$_SESSION['paymentoksessioncode'], LOG_DEBUG, 0, '_payment');
+dol_syslog("paymentoksessioncode=".request()->input('paymentoksessioncode')." SESSION['paymentoksessioncode']=".$_SESSION['paymentoksessioncode'], LOG_DEBUG, 0, '_payment');
 
 $head = '';
 if (getDolGlobalString('ONLINE_PAYMENT_CSS_URL')) {
@@ -380,9 +380,9 @@ if (isModEnabled('stripe') && $paymentmethod === 'stripe') {
 	// TODO: Move this block to the top to ensure all session variables (e.g., TRANSACTIONID, FinalPaymentAmt, currencyCodeType, etc.) are loaded before executing checks for any payment module.
 	if (empty($TRANSACTIONID)) {
 		$TRANSACTIONID = empty($_SESSION['TRANSACTIONID']) ? '' : $_SESSION['TRANSACTIONID'];	// pi_... or ch_...
-		if (empty($TRANSACTIONID) && GETPOST('payment_intent', 'alphanohtml')) {
+		if (empty($TRANSACTIONID) && request()->input('payment_intent')) {
 			// For the case we use STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION = 2
-			$TRANSACTIONID = GETPOST('payment_intent', 'alphanohtml');
+			$TRANSACTIONID = request()->input('payment_intent');
 		}
 	}
 	$FinalPaymentAmt = empty($_SESSION["FinalPaymentAmt"]) ? '' : $_SESSION["FinalPaymentAmt"];
@@ -390,13 +390,13 @@ if (isModEnabled('stripe') && $paymentmethod === 'stripe') {
 
 	$service = 'StripeTest';
 	$servicestatus = 0;
-	if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOSTINT('forcesandbox') */) {
+	if (getDolGlobalString('STRIPE_LIVE')/* && !request()->integer('forcesandbox', 0) */) {
 		$service = 'StripeLive';
 		$servicestatus = 1;
 	}
 
 	// Check we are coming from the newpaymentpage
-	if (GETPOST('paymentoksessioncode') !== $_SESSION['paymentoksessioncode']) {
+	if (request()->input('paymentoksessioncode') !== $_SESSION['paymentoksessioncode']) {
 		$error++;
 		$errmsg = 'Attempted direct access to the paymentok page without a valid session.';
 		dol_syslog($errmsg, LOG_ERR, 0, '_payment');
@@ -514,9 +514,9 @@ if (empty($paymentType)) {	// Seems used only by Paypal
 
 if (empty($TRANSACTIONID)) {
 	$TRANSACTIONID = empty($_SESSION['TRANSACTIONID']) ? '' : $_SESSION['TRANSACTIONID'];	// pi_... or ch_...
-	if (empty($TRANSACTIONID) && GETPOST('payment_intent', 'alphanohtml')) {
+	if (empty($TRANSACTIONID) && request()->input('payment_intent')) {
 		// For the case we use STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION = 2
-		$TRANSACTIONID = GETPOST('payment_intent', 'alphanohtml');
+		$TRANSACTIONID = request()->input('payment_intent');
 	}
 }
 
@@ -620,7 +620,7 @@ if ($ispaymentok) {
 						}
 						// - If not set, we accept to have amount defined as parameter (for backward compatibility).
 						//if (empty($amount)) {
-						//	$amount = (GETPOST('amount') ? price2num(GETPOST('amount', 'alpha'), 'MT', 2) : '');
+						//	$amount = (request()->input('amount') ? price2num(request()->input('amount'), 'MT', 2) : '');
 						//}
 						// - If a min is set, we take it into account
 						$amountexpected = max(0, (float) $amountexpected, (float) getDolGlobalInt("MEMBER_MIN_AMOUNT"), (float) $minimumamount);
@@ -816,7 +816,7 @@ if ($ispaymentok) {
 
 						$service = 'StripeTest';
 						$servicestatus = 0;
-						if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+						if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 							$service = 'StripeLive';
 							$servicestatus = 1;
 						}

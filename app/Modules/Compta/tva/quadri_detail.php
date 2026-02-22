@@ -56,9 +56,9 @@ require_once DOL_DOCUMENT_ROOT . '/expensereport/class/paymentexpensereport.clas
 // Load translation files required by the page
 $langs->loadLangs(array("other", "compta", "banks", "bills", "companies", "product", "trips", "admin"));
 
-$refresh = (GETPOSTISSET('submit') || GETPOSTISSET('vat_rate_show') || GETPOSTISSET('invoice_type'));
-$invoice_type = GETPOSTISSET('invoice_type') ? GETPOST('invoice_type', 'alpha') : '';
-$vat_rate_show = GETPOSTISSET('vat_rate_show') ? GETPOST('vat_rate_show', 'alphanohtml') : -1;
+$refresh = (request()->has('submit') || request()->has('vat_rate_show') || request()->has('invoice_type'));
+$invoice_type = request()->has('invoice_type') ? request()->input('invoice_type') : '';
+$vat_rate_show = request()->has('vat_rate_show') ? request()->input('vat_rate_show') : -1;
 
 // Set $date_start_xxx and $date_end_xxx...
 include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
@@ -85,7 +85,7 @@ include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
 @phan-var-force int $year_current
 ';
 
-$min = price2num(GETPOST("min", "alpha"));
+$min = price2num(request()->input('min'));
 if (empty($min)) {
 	$min = 0;
 }
@@ -93,8 +93,8 @@ if (empty($min)) {
 // Define modetax (0 or 1)
 // 0=normal, 1=option vat for services is on debit, 2=option on payments for products
 $modetax = getDolGlobalInt('TAX_MODE');
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
@@ -103,7 +103,7 @@ if (empty($modetax)) {
 $object = new Tva($db);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -127,8 +127,8 @@ $paymentexpensereport_static = new PaymentExpenseReport($db);
 $morequerystring = '';
 $listofparams = array('date_startmonth', 'date_startyear', 'date_startday', 'date_endmonth', 'date_endyear', 'date_endday');
 foreach ($listofparams as $param) {
-	if (GETPOST($param) != '') {
-		$morequerystring .= ($morequerystring ? '&' : '') . $param . '=' . GETPOST($param);
+	if (request()->input($param) != '') {
+		$morequerystring .= ($morequerystring ? '&' : '') . $param . '=' . request()->input($param);
 	}
 }
 
@@ -221,7 +221,7 @@ if ($mysoc->tva_assuj) {
 	$vatsup .= ' (' . $langs->trans("ToGetBack") . ')';
 }
 
-$optioncss = GETPOST('optioncss', 'alpha');
+$optioncss = request()->input('optioncss');
 $periodlink = '';
 $exportlink = '';
 
@@ -474,7 +474,7 @@ if (!is_array($x_coll) || !is_array($x_paye)) {
 			print '<td class="tax_rate" colspan="' . ($span + 1) . '">';
 			print $langs->trans('Rate') . ' : ' . vatrate($rate) . '%';
 			print ' - <a class="reposition" href="' . DOL_URL_ROOT . '/compta/tva/quadri_detail.php?invoice_type=customer';
-			if ($invoice_type != 'customer' || !GETPOSTISSET('vat_rate_show') || GETPOST('vat_rate_show') != $rate) {
+			if ($invoice_type != 'customer' || !request()->has('vat_rate_show') || request()->input('vat_rate_show') != $rate) {
 				print '&amp;vat_rate_show=' . urlencode($rate);
 			}
 			print '&amp;date_startyear=' . ((int) $date_start_year) . '&amp;date_startmonth=' . ((int) $date_start_month) . '&amp;date_startday=' . ((int) $date_start_day) . '&amp;date_endyear=' . ((int) $date_end_year) . '&amp;date_endmonth=' . ((int) $date_end_month) . '&amp;date_endday=' . ((int) $date_end_day) . '">';
@@ -518,7 +518,7 @@ if (!is_array($x_coll) || !is_array($x_paye)) {
 			}
 		}
 
-		if (GETPOST('showall', 'int') == 1 || ($invoice_type == 'customer' && $vat_rate_show == $rate)) {
+		if (request()->input('showall') == 1 || ($invoice_type == 'customer' && $vat_rate_show == $rate)) {
 			if (is_array($x_both[$rate]['coll']['detail'])) {
 				foreach ($x_both[$rate]['coll']['detail'] as $index => $fields) {
 					/*$company_static->id = $fields['company_id'];
@@ -713,7 +713,7 @@ if (!is_array($x_coll) || !is_array($x_paye)) {
 			print '<td class="tax_rate" colspan="' . ($span + 1) . '">';
 			print $langs->trans('Rate') . ' : ' . vatrate($rate) . '%';
 			print ' - <a class="reposition" href="' . DOL_URL_ROOT . '/compta/tva/quadri_detail.php?invoice_type=supplier';
-			if ($invoice_type != 'supplier' || !GETPOSTISSET('vat_rate_show') || GETPOST('vat_rate_show') != $rate) {
+			if ($invoice_type != 'supplier' || !request()->has('vat_rate_show') || request()->input('vat_rate_show') != $rate) {
 				print '&amp;vat_rate_show=' . urlencode($rate);
 			}
 			print '&amp;date_startyear=' . ((int) $date_start_year) . '&amp;date_startmonth=' . ((int) $date_start_month) . '&amp;date_startday=' . ((int) $date_start_day) . '&amp;date_endyear=' . ((int) $date_end_year) . '&amp;date_endmonth=' . ((int) $date_end_month) . '&amp;date_endday=' . ((int) $date_end_day) . '">';
@@ -756,7 +756,7 @@ if (!is_array($x_coll) || !is_array($x_paye)) {
 				$x_paye_sum += $temp_vat;
 			}
 
-			if (GETPOST('showall', 'int') == 1 || ($invoice_type == 'supplier' && $vat_rate_show == $rate)) {
+			if (request()->input('showall') == 1 || ($invoice_type == 'supplier' && $vat_rate_show == $rate)) {
 				foreach ($x_both[$rate]['paye']['detail'] as $index => $fields) {
 					/*$company_static->id = $fields['company_id'];
 					$company_static->name = $fields['company_name'];

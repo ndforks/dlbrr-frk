@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$actionsave = GETPOST("save");
+$actionsave = request()->input('save');
 
 // Sauvegardes parameters
 if ($actionsave) {
@@ -53,7 +53,7 @@ if ($actionsave) {
 
 	$db->begin();
 
-	$i += dolibarr_set_const($db, 'WEBSERVICES_KEY', GETPOST("WEBSERVICES_KEY"), 'chaine', 0, '', $conf->entity);
+	$i += dolibarr_set_const($db, 'WEBSERVICES_KEY', request()->input('WEBSERVICES_KEY'), 'chaine', 0, '', $conf->entity);
 
 	if ($i >= 1) {
 		$db->commit();
@@ -93,7 +93,7 @@ print "</tr>";
 
 print '<tr class="oddeven">';
 print '<td class="fieldrequired">'.$langs->trans("KeyForWebServicesAccess").'</td>';
-print '<td><input type="text" class="flat width300" id="WEBSERVICES_KEY" name="WEBSERVICES_KEY" value="'.(GETPOST('WEBSERVICES_KEY') ? GETPOST('WEBSERVICES_KEY') : getDolGlobalString('WEBSERVICES_KEY')).'">';
+print '<td><input type="text" class="flat width300" id="WEBSERVICES_KEY" name="WEBSERVICES_KEY" value="'.(request()->input('WEBSERVICES_KEY') ? request()->input('WEBSERVICES_KEY') : getDolGlobalString('WEBSERVICES_KEY')).'">';
 if (!empty($conf->use_javascript_ajax)) {
 	print '&nbsp;'.img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token" class="linkobject"');
 }

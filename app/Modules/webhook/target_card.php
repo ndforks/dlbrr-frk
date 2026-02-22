@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
 $langs->loadLangs(array('other','admin'));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'targetcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$lineid   = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'targetcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$lineid   = request()->integer('lineid', 0);
 
 // Initialize a technical objects
 $object = new Target($db);
@@ -67,11 +67,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -90,15 +90,15 @@ $permissiontoread = $permissiontoadd = $permissiontodelete = $permissionnote = $
 $upload_dir = $conf->webhook->multidir_output[isset($object->entity) ? $object->entity : 1].'/target';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (isset($object->status) && ($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled('webhook')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -145,10 +145,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 	if ($action == 'confirm_statusmanual' && $confirm == "yes" && $permissiontoadd) {
 		$object->setStatusCommon($user, $object::STATUS_MANUAL_TRIGGER, 0, 'TARGET_REOPEN');
@@ -157,9 +157,9 @@ if (empty($reshook)) {
 		$object->setStatusCommon($user, $object::STATUS_AUTOMATIC_TRIGGER, 0, 'TARGET_REOPEN');
 	}
 	if ($action == 'testsendtourl' && $permissiontoadd) {
-		$triggercode = GETPOST("triggercode");
-		$url = GETPOST("url");
-		$jsondata = GETPOST("jsondata", "restricthtml");
+		$triggercode = request()->input('triggercode');
+		$url = request()->input('url');
+		$jsondata = request()->input('jsondata');
 		if (empty($url)) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Url")), null, 'errors');
@@ -226,7 +226,7 @@ llxHeader('', $title, $help_url, '', 0, 0, $arrayofjs, $arrayofcss, '', 'mod-web
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden('NotEnoughPermissions', 0, 1);
+		abort(403);
 	}
 
 	print load_fiche_titre($langs->trans("NewObject", $langs->transnoentitiesnoconv("Target")), '', 'object_'.$object->picto);
@@ -414,7 +414,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+		print '<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
 		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
 		<input type="hidden" name="mode" value="">
@@ -432,7 +432,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		if (!empty($object->lines)) {
-			$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 1);
+			$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 1);
 		}
 
 		// Form to add new line
@@ -549,8 +549,8 @@ if ($action == "test") {
 	print '</td><td class="valuefieldcreate">';
 	$arraytriggercodes = explode(",", $object->trigger_codes);
 	$idtriggercode = '';
-	if (in_array(GETPOST("triggercodes"), $arraytriggercodes)) {
-		$idtriggercode = array_search(GETPOST("triggercodes"), $arraytriggercodes);
+	if (in_array(request()->input('triggercodes'), $arraytriggercodes)) {
+		$idtriggercode = array_search(request()->input('triggercodes'), $arraytriggercodes);
 	}
 	print $form->selectarray("triggercode", $arraytriggercodes, $idtriggercode, 0, 0, 1);
 	print '</td></tr>';
@@ -558,7 +558,7 @@ if ($action == "test") {
 	print '<tr><td class="titlefieldcreate fieldrequired minwidth200">';
 	print $langs->trans("Url");
 	print '</td><td class="valuefieldcreate">';
-	print '<input class="flat minwidth400" name="url" value="'.(GETPOSTISSET("url") ? GETPOST("url") : $object->url).'" />';
+	print '<input class="flat minwidth400" name="url" value="'.(request()->has('url') ? request()->input('url') : $object->url).'" />';
 	print '</td></tr>';
 
 	// Json sample to send

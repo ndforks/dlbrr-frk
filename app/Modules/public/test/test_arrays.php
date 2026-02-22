@@ -43,10 +43,10 @@ if (!defined("NOLOGIN")) {
 
 // Security
 if (!empty($dolibarr_main_prod)) {
-	accessforbidden('Access forbidden when $dolibarr_main_prod is set to 1');
+	abort(403);
 }
 
-$optioncss = GETPOST('optioncss', 'alpha');
+$optioncss = request()->input('optioncss');
 
 
 /*
@@ -76,7 +76,7 @@ if (empty($usedolheader)) {
 	<!-- Includes for JQuery (Ajax library) -->
 	<link rel="stylesheet" type="text/css" href="<?php echo DOL_URL_ROOT ?>/public/includes/jquery/css/base/jquery-ui.css" />
 	<!-- <link rel="stylesheet" type="text/css" href="<?php echo DOL_URL_ROOT ?>/public/includes/jquery/plugins/datatables/media/css/jquery.dataTables.css" /> -->
-	<link rel="stylesheet" type="text/css" title="default" href="<?php echo DOL_URL_ROOT ?>/theme/eldy/style.css.php<?php echo (GETPOST("dol_use_jmobile") == 1) ? '?dol_use_jmobile=1&dol_optimize_smallscreen=1' : ''; ?>" />
+	<link rel="stylesheet" type="text/css" title="default" href="<?php echo DOL_URL_ROOT ?>/theme/eldy/style.css.php<?php echo (request()->input('dol_use_jmobile') == 1) ? '?dol_use_jmobile=1&dol_optimize_smallscreen=1' : ''; ?>" />
 	<!-- Includes JS for JQuery -->
 	<script type="text/javascript" src="<?php echo DOL_URL_ROOT ?>/public/includes/jquery/js/jquery.min.js"></script>
 	<!-- migration fixes for removed Jquery functions -->
@@ -195,10 +195,10 @@ if (!empty($conf->use_javascript_ajax)) {
 
 $nav = '';
 $nav .= '<form name="dateselect" action="'.$_SERVER["PHP_SELF"].'?mode=show_peruser'.$param.'">';
-if ($actioncode || GETPOSTISSET('actioncode')) {
+if ($actioncode || request()->has('actioncode')) {
 	$nav .= '<input type="hidden" name="actioncode" value="'.$actioncode.'">';
 }
-if ($status || GETPOSTISSET('status')) {
+if ($status || request()->has('status')) {
 	$nav .= '<input type="hidden" name="status" value="'.$status.'">';
 }
 if ($filter) {

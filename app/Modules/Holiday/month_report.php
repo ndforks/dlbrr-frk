@@ -45,21 +45,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('holiday', 'hrm'));
 
-$action      = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
-$massaction  = GETPOST('massaction', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ');
-$optioncss   = GETPOST('optioncss', 'aZ');
+$action      = request()->input('action') ? request()->input('action') : 'view';
+$massaction  = request()->input('massaction', []);
+$contextpage = request()->input('contextpage');
+$optioncss   = request()->input('optioncss');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
-$search_ref         = GETPOST('search_ref', 'alphanohtml');
-$search_employee    = GETPOST('search_employee', "intcomma");
-$search_type        = GETPOST('search_type', "intcomma");
-$search_description = GETPOST('search_description', 'alphanohtml');
+$search_ref         = request()->input('search_ref');
+$search_employee    = request()->input('search_employee');
+$search_type        = request()->input('search_type');
+$search_description = request()->input('search_description');
 
-$limit       = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield   = GETPOST('sortfield', 'aZ09comma');
-$sortorder   = GETPOST('sortorder', 'aZ09comma');
+$limit       = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield   = request()->input('sortfield');
+$sortorder   = request()->input('sortorder');
 
 if (!$sortfield) {
 	$sortfield = "cp.rowid";
@@ -68,7 +68,7 @@ if (!$sortorder) {
 	$sortorder = "ASC";
 }
 
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
@@ -81,12 +81,12 @@ $arrayofmassactions = array();
 // Security check
 if ($user->socid > 0) {	// Protection if external user
 	//$socid = $user->socid;
-	accessforbidden();
+	abort(403);
 }
 $result = restrictedArea($user, 'holiday', $id);
 
 if (!$user->hasRight('holiday', 'readall')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -94,11 +94,11 @@ if (!$user->hasRight('holiday', 'readall')) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -113,7 +113,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_ref = '';
 		$search_employee = '';
 		$search_type = '';
@@ -122,12 +122,12 @@ if (empty($reshook)) {
 		$search_array_options = array();
 	}
 
-	if (GETPOST('button_removefilter_x', 'alpha')
-		|| GETPOST('button_removefilter.x', 'alpha')
-		|| GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha')
-		|| GETPOST('button_search.x', 'alpha')
-		|| GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x')
+		|| request()->input('button_removefilter.x')
+		|| request()->input('button_removefilter')
+		|| request()->input('button_search_x')
+		|| request()->input('button_search.x')
+		|| request()->input('button_search')) {
 		$massaction = '';
 	}
 }
@@ -161,8 +161,8 @@ $help_url = 'EN:Module_Holiday';
 
 llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-holiday page-month_report');
 
-$search_month = GETPOSTINT("search_month") ? GETPOSTINT("search_month") : (int) dol_print_date(dol_now(), "%m");
-$search_year = GETPOSTINT("search_year") ? GETPOSTINT("search_year") : (int) dol_print_date(dol_now(), "%Y");
+$search_month = request()->integer('search_month', 0) ? request()->integer('search_month', 0) : (int) dol_print_date(dol_now(), "%m");
+$search_year = request()->integer('search_year', 0) ? request()->integer('search_year', 0) : (int) dol_print_date(dol_now(), "%Y");
 $year_month = sprintf("%04d", $search_year).'-'.sprintf("%02d", $search_month);
 
 $sql = "SELECT cp.rowid, cp.ref, cp.fk_user, cp.date_debut, cp.date_fin, cp.fk_type, cp.description, cp.halfday, cp.statut as status";
@@ -192,7 +192,7 @@ $sql .= $db->order($sortfield, $sortorder);
 
 $resql = $db->query($sql);
 if (empty($resql)) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

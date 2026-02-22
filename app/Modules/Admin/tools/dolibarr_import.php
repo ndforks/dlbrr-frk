@@ -45,11 +45,11 @@ require '../../main.inc.php';
 $langs->loadLangs(array("other", "admin"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$radio_dump = GETPOST('radio_dump');
-$action = GETPOST('action', 'aZ09');
+$radio_dump = request()->input('radio_dump');
+$action = request()->input('action');
 
 
 /*
@@ -182,7 +182,7 @@ if (in_array($type, array('mysql', 'mysqli'))) {
 	print '<textarea rows="1" id="restorecommand" class="centpercent" spellcheck="false">'.$langs->trans("ImportMySqlCommand", $command, ($action == 'showpass' ? $paramclear : $paramcrypted)).'</textarea><br>';
 	print ajax_autoselect('restorecommand');
 
-	if (GETPOST("action") != 'showpass' && $dolibarr_main_db_pass) {
+	if (request()->input('action') != 'showpass' && $dolibarr_main_db_pass) {
 		print '<br><a href="'.$_SERVER["PHP_SELF"].'?action=showpass&token='.newToken().'&radio_dump=mysql_options">'.$langs->trans("UnHidePassword").'</a>';
 	}
 	//else print '<br><a href="'.$_SERVER["PHP_SELF"].'?radio_dump=mysql_options">'.$langs->trans("HidePassword").'</a>';

@@ -338,18 +338,18 @@ if ($islocked) {	// Pages are locked
 	header("X-Content-Type-Options: nosniff");
 	header("X-Frame-Options: SAMEORIGIN"); // Frames allowed only if on same domain (stop some XSS attacks)
 
-	if (GETPOST('action') != 'upgrade') {
+	if (request()->input('action') != 'upgrade') {
 		print $langs->trans("YouTryInstallDisabledByFileLock").'<br>';
 	} else {
 		print $langs->trans("YouTryUpgradeDisabledByMissingFileUnLock").'<br>';
 	}
 	if (!empty($dolibarr_main_url_root)) {
-		if (GETPOST('action') != 'upgrade' && (!file_exists($conffile) || !isset($dolibarr_main_url_root))) {
+		if (request()->input('action') != 'upgrade' && (!file_exists($conffile) || !isset($dolibarr_main_url_root))) {
 			print $langs->trans("ClickOnLinkOrRemoveManualy").'<br>';
 		} else {
 			print $langs->trans("ClickOnLinkOrCreateUnlockFileManualy").'<br>';
 		}
-		print '<a href="'.$dolibarr_main_url_root.'/admin/index.php?mainmenu=home&leftmenu=setup'.(GETPOSTISSET("login") ? '&username='.urlencode(GETPOST("login")) : '').'">';
+		print '<a href="'.$dolibarr_main_url_root.'/admin/index.php?mainmenu=home&leftmenu=setup'.(request()->has('login') ? '&username='.urlencode(request()->input('login')) : '').'">';
 		print $langs->trans("ClickHereToGoToApp");
 		print '</a>';
 	} else {
@@ -406,8 +406,8 @@ foreach ($handlers as $handler) {
 
 // Define object $langs
 $langs = new Translate('..', $conf);
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09'));
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang'));
 } else {
 	$langs->setDefaultLang('auto');
 }

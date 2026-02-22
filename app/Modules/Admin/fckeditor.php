@@ -44,17 +44,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'fckeditor', 'errors'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 // Possible modes are:
 // dolibarr_details
 // dolibarr_notes
 // dolibarr_readonly
 // dolibarr_mailings
 // Full (not sure this one is used)
-$mode = GETPOST('mode') ? GETPOST('mode', 'alpha') : 'dolibarr_notes';
+$mode = request()->input('mode') ? request()->input('mode') : 'dolibarr_notes';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Constant and translation of the module description
@@ -116,17 +116,17 @@ foreach ($modules as $const => $desc) {
 	}
 }
 
-if (GETPOST('action') == 'enable_specialchar') {
+if (request()->input('action') == 'enable_specialchar') {
 	dolibarr_set_const($db, "FCKEDITOR_ENABLE_SPECIALCHAR", "1", 'chaine', 0, '', $conf->entity);
 }
-if (GETPOST('action') == 'disable_specialchar') {
+if (request()->input('action') == 'disable_specialchar') {
 	dolibarr_del_const($db, "FCKEDITOR_ENABLE_SPECIALCHAR", $conf->entity);
 }
 
-if (GETPOST('save', 'alpha')) {
+if (request()->input('save')) {
 	$error = 0;
 
-	$fckeditor_test = GETPOST('formtestfield', 'restricthtml');
+	$fckeditor_test = request()->input('formtestfield');
 	if (!empty($fckeditor_test)) {
 		$result = dolibarr_set_const($db, 'FCKEDITOR_TEST', $fckeditor_test, 'chaine', 0, '', $conf->entity);
 		if ($result <= 0) {

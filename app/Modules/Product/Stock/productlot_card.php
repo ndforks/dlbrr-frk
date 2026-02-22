@@ -48,18 +48,18 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 $langs->loadLangs(array('stocks', 'other', 'productbatch'));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'myobjectcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'myobjectcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$id = GETPOSTINT('id');
-$lineid = GETPOSTINT('lineid');
-$batch = GETPOST('batch', 'alpha');
-$productid = GETPOSTINT('productid');
-$ref = GETPOST('ref', 'alpha'); // ref is productid_batch
+$id = request()->integer('id', 0);
+$lineid = request()->integer('lineid', 0);
+$batch = request()->input('batch');
+$productid = request()->integer('productid', 0);
+$ref = request()->input('ref'); // ref is productid_batch
 
 
 $modulepart = 'product_batch';
@@ -77,11 +77,11 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -89,12 +89,12 @@ if (empty($action) && empty($id) && empty($ref)) {
 	$action = 'view';
 }
 
-$search_entity = GETPOSTINT('search_entity');
-$search_fk_product = GETPOSTINT('search_fk_product');
-$search_batch = GETPOST('search_batch', 'alpha');
-$search_fk_user_creat = GETPOSTINT('search_fk_user_creat');
-$search_fk_user_modif = GETPOSTINT('search_fk_user_modif');
-$search_import_key = GETPOSTINT('search_import_key');
+$search_entity = request()->integer('search_entity', 0);
+$search_fk_product = request()->integer('search_fk_product', 0);
+$search_batch = request()->input('search_batch');
+$search_fk_user_creat = request()->integer('search_fk_user_creat', 0);
+$search_fk_user_modif = request()->integer('search_fk_user_modif', 0);
+$search_import_key = request()->integer('search_import_key', 0);
 
 if (empty($action) && empty($id) && empty($ref)) {
 	$action = 'list';
@@ -130,16 +130,16 @@ $permissiondellink = $user->hasRight('produit', 'creer'); // Used by the include
 
 // Security check
 if (!isModEnabled('productbatch')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 $socid = 0;
 if ($user->socid > 0) { // Protection if external user
 	//$socid = $user->socid;
-	accessforbidden();
+	abort(403);
 }
 //restrictedArea($user, 'productbatch');
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -158,8 +158,8 @@ if (empty($reshook)) {
 
 	$backurlforlist = dol_buildpath('/product/stock/productlot_list.php', 1);
 
-	if ($action == 'seteatby' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('eatbymonth'), GETPOSTINT('eatbyday'), GETPOSTINT('eatbyyear'));
+	if ($action == 'seteatby' && $permissiontoadd && ! request()->input('cancel')) {
+		$newvalue = dol_mktime(12, 0, 0, request()->integer('eatbymonth', 0), request()->integer('eatbyday', 0), request()->integer('eatbyyear', 0));
 
 		// check parameters
 		$object->eatby = $newvalue;
@@ -183,8 +183,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setsellby' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('sellbymonth'), GETPOSTINT('sellbyday'), GETPOSTINT('sellbyyear'));
+	if ($action == 'setsellby' && $permissiontoadd && ! request()->input('cancel')) {
+		$newvalue = dol_mktime(12, 0, 0, request()->integer('sellbymonth', 0), request()->integer('sellbyday', 0), request()->integer('sellbyyear', 0));
 
 		// check parameters
 		$object->sellby = $newvalue;
@@ -208,8 +208,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'seteol_date' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('eol_datemonth'), GETPOSTINT('eol_dateday'), GETPOSTINT('eol_dateyear'));
+	if ($action == 'seteol_date' && $permissiontoadd && ! request()->input('cancel')) {
+		$newvalue = dol_mktime(12, 0, 0, request()->integer('eol_datemonth', 0), request()->integer('eol_dateday', 0), request()->integer('eol_dateyear', 0));
 		$result = $object->setValueFrom('eol_date', $newvalue, '', null, 'date', '', $user, 'PRODUCTLOT_MODIFY');
 		if ($result < 0) {
 			setEventMessages($object->error, null, 'errors');
@@ -219,8 +219,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setmanufacturing_date' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('manufacturing_datemonth'), GETPOSTINT('manufacturing_dateday'), GETPOSTINT('manufacturing_dateyear'));
+	if ($action == 'setmanufacturing_date' && $permissiontoadd && ! request()->input('cancel')) {
+		$newvalue = dol_mktime(12, 0, 0, request()->integer('manufacturing_datemonth', 0), request()->integer('manufacturing_dateday', 0), request()->integer('manufacturing_dateyear', 0));
 		$result = $object->setValueFrom('manufacturing_date', $newvalue, '', null, 'date', '', $user, 'PRODUCTLOT_MODIFY');
 		if ($result < 0) {
 			setEventMessages($object->error, null, 'errors');
@@ -230,8 +230,8 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'setscrapping_date' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('scrapping_datemonth'), GETPOSTINT('scrapping_dateday'), GETPOSTINT('scrapping_dateyear'));
+	if ($action == 'setscrapping_date' && $permissiontoadd && ! request()->input('cancel')) {
+		$newvalue = dol_mktime(12, 0, 0, request()->integer('scrapping_datemonth', 0), request()->integer('scrapping_dateday', 0), request()->integer('scrapping_dateyear', 0));
 		$result = $object->setValueFrom('scrapping_date', $newvalue, '', null, 'date', '', $user, 'PRODUCTLOT_MODIFY');
 		if ($result < 0) {
 			setEventMessages($object->error, null, 'errors');
@@ -241,7 +241,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	/* if ($action == 'setcommissionning_date' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
+	/* if ($action == 'setcommissionning_date' && $permissiontoadd && ! request()->input('cancel')) {
 		$newvalue = dol_mktime(12, 0, 0, GETPOSTINT('commissionning_datemonth', 'int'), GETPOSTINT('commissionning_dateday', 'int'), GETPOSTINT('commissionning_dateyear', 'int'));
 		$result = $object->setValueFrom('commissionning_date', $newvalue, '', null, 'date', '', $user, 'PRODUCTLOT_MODIFY');
 		if ($result < 0) {
@@ -252,8 +252,8 @@ if (empty($reshook)) {
 		}
 	} */
 
-	if ($action == 'setqc_frequency' && $permissiontoadd && ! GETPOST('cancel', 'alpha')) {
-		$result = $object->setValueFrom('qc_frequency', GETPOST('qc_frequency'), '', null, 'int', '', $user, 'PRODUCT_MODIFY');
+	if ($action == 'setqc_frequency' && $permissiontoadd && ! request()->input('cancel')) {
+		$result = $object->setValueFrom('qc_frequency', request()->input('qc_frequency'), '', null, 'int', '', $user, 'PRODUCT_MODIFY');
 		if ($result < 0) { // Prévoir un test de format de durée
 			setEventMessages($object->error, null, 'errors');
 			$action = 'editqc_frequency';

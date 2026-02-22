@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'companies', 'other'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('account'));
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('account', 0));
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('bankaccountdocuments', 'globalcard'));
@@ -60,11 +60,11 @@ if ($user->socid) {
 }
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -154,7 +154,7 @@ if ($id > 0 || !empty($ref)) {
 		$param = '&id='.$object->id;
 		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } else {
 	header('Location: index.php');

@@ -45,23 +45,23 @@ require_once DOL_DOCUMENT_ROOT.'/ecm/class/htmlecm.form.class.php';
 // Load translation files required by page
 $langs->loadLangs(array('ecm', 'companies', 'other'));
 
-$action     = GETPOST('action', 'alpha');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
-$confirm    = GETPOST('confirm', 'alpha');
+$action     = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$confirm    = request()->input('confirm');
 
-$module = GETPOST('module', 'alpha');
-$website = GETPOST('website', 'alpha');
-$pageid = GETPOSTINT('pageid');
+$module = request()->input('module');
+$website = request()->input('website');
+$pageid = request()->integer('pageid', 0);
 if (empty($module)) {
 	$module = 'ecm';
 }
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -75,7 +75,7 @@ if (!$sortfield) {
 	$sortfield = "name";
 }
 
-$section = GETPOST("section", 'alpha') ? GETPOST("section", 'alpha') : GETPOST("relativedir", 'alpha');
+$section = request()->input('section') ? request()->input('section') : request()->input('relativedir');
 if (!$section) {
 	dol_print_error(null, "ErrorSectionParamNotDefined");
 	exit;
@@ -115,7 +115,7 @@ if ($module == 'medias') {
 }
 
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -124,7 +124,7 @@ if (!$permissiontoread) {
  */
 
 // Upload file
-if (GETPOST("sendit") && getDolGlobalString('MAIN_UPLOAD_DOC') && $permissiontoupload) {
+if (request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC') && $permissiontoupload) {
 	if (dol_mkdir($upload_dir) >= 0) {
 		$resupload = dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $upload_dir."/".dol_unescapefile($_FILES['userfile']['name']), 0, 0, $_FILES['userfile']['error']);
 		if (is_numeric($resupload) && $resupload > 0) {
@@ -150,12 +150,12 @@ if (GETPOST("sendit") && getDolGlobalString('MAIN_UPLOAD_DOC') && $permissiontou
 // Remove file
 if ($action == 'confirm_deletefile' && $confirm == 'yes' && $permissiontoupload) {
 	$langs->load("other");
-	$file = $upload_dir."/".GETPOST('urlfile'); // Do not use urldecode here
+	$file = $upload_dir."/".request()->input('urlfile'); // Do not use urldecode here
 	$ret = dol_delete_file($file);
 	if ($ret) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 	} else {
-		setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+		setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 	}
 
 	$result = $ecmdir->changeNbOfFiles('-');
@@ -168,7 +168,7 @@ if ($action == 'confirm_deletedir' && $confirm == 'yes' && $permissiontoupload) 
 		$backtourl = DOL_URL_ROOT."/website/index.php?file_manager=1";
 	}
 
-	$deletedirrecursive = (GETPOST('deletedirrecursive', 'alpha') == 'on' ? 1 : 0);
+	$deletedirrecursive = (request()->input('deletedirrecursive') == 'on' ? 1 : 0);
 
 	if ($module == 'ecm' && $ecmdir->id > 0) {	// If manual ECM and directory is indexed into database
 		// Fetch was already done
@@ -198,7 +198,7 @@ if ($action == 'confirm_deletedir' && $confirm == 'yes' && $permissiontoupload) 
 }
 
 // Update dirname or description
-if ($action == 'update' && !GETPOST('cancel', 'alpha') && $permissiontoadd) {
+if ($action == 'update' && !request()->input('cancel') && $permissiontoadd) {
 	$error = 0;
 	$oldlabel = '';
 
@@ -207,7 +207,7 @@ if ($action == 'update' && !GETPOST('cancel', 'alpha') && $permissiontoadd) {
 		$olddir = $ecmdir->getRelativePath(0);
 		$olddir = $conf->ecm->dir_output.'/'.$olddir;
 	} else {
-		$olddir = GETPOST('section', 'alpha');
+		$olddir = request()->input('section');
 		$olddir = $conf->medias->multidir_output[$conf->entity].'/'.$relativepath;
 	}
 
@@ -215,14 +215,14 @@ if ($action == 'update' && !GETPOST('cancel', 'alpha') && $permissiontoadd) {
 		$db->begin();
 
 		// Fetch was already done
-		$ecmdir->label = dol_sanitizeFileName(GETPOST("label"));
-		$fk_parent = GETPOSTINT("catParent");
+		$ecmdir->label = dol_sanitizeFileName(request()->input('label'));
+		$fk_parent = request()->integer('catParent', 0);
 		if ($fk_parent == -1) {
 			$ecmdir->fk_parent = 0;
 		} else {
 			$ecmdir->fk_parent = $fk_parent;
 		}
-		$ecmdir->description = GETPOST("description");
+		$ecmdir->description = request()->input('description');
 		$ret = $extrafields->setOptionalsFromPost(null, $ecmdir);
 		if ($ret < 0) {
 			$error++;
@@ -266,7 +266,7 @@ if ($action == 'update' && !GETPOST('cancel', 'alpha') && $permissiontoadd) {
 			setEventMessages($ecmdir->error, $ecmdir->errors, 'errors');
 		}
 	} else {
-		$newdir = $conf->medias->multidir_output[$conf->entity].'/'.GETPOST('oldrelparentdir', 'alpha').'/'.GETPOST('label', 'alpha');
+		$newdir = $conf->medias->multidir_output[$conf->entity].'/'.request()->input('oldrelparentdir').'/'.request()->input('label');
 
 		$result = @rename($olddir, $newdir);
 		if (!$result) {
@@ -277,7 +277,7 @@ if ($action == 'update' && !GETPOST('cancel', 'alpha') && $permissiontoadd) {
 
 		if (!$error) {
 			// Set new value after renaming
-			$relativepath = GETPOST('oldrelparentdir', 'alpha').'/'.GETPOST('label', 'alpha');
+			$relativepath = request()->input('oldrelparentdir').'/'.request()->input('label');
 			$upload_dir = $conf->medias->multidir_output[$conf->entity].'/'.$relativepath;
 			$section = $relativepath;
 		}
@@ -482,7 +482,7 @@ if ($action != 'edit' && $action != 'delete' && $action != 'deletefile') {
 
 // Confirm remove file
 if ($action == 'deletefile') {
-	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.urlencode(GETPOST("section", 'alpha')).'&urlfile='.urlencode(GETPOST("urlfile")).($backtopage ? '&backtopage='.urlencode($backtopage) : ''), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile');
+	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.urlencode(request()->input('section')).'&urlfile='.urlencode(request()->input('urlfile')).($backtopage ? '&backtopage='.urlencode($backtopage) : ''), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile');
 }
 
 // Confirm remove dir
@@ -497,7 +497,7 @@ if ($action == 'delete' || $action == 'delete_dir') {
 		);
 	}
 
-	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.urlencode(GETPOST('section', 'alpha')).'&module='.$module.($backtopage ? '&backtopage='.urlencode($backtopage) : ''), $langs->trans('DeleteSection'), $langs->trans('ConfirmDeleteSection', $relativepathwithoutslash), 'confirm_deletedir', $formquestion, 1, 1);
+	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.urlencode(request()->input('section')).'&module='.$module.($backtopage ? '&backtopage='.urlencode($backtopage) : ''), $langs->trans('DeleteSection'), $langs->trans('ConfirmDeleteSection', $relativepathwithoutslash), 'confirm_deletedir', $formquestion, 1, 1);
 }
 
 

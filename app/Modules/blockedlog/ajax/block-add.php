@@ -46,18 +46,18 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id');
-$element = GETPOST('element', 'alpha');
-$action = GETPOST('action', 'aZ09');	// Can be DOC_PREVIEW or DOC_DOWNLOAD
+$id = request()->integer('id', 0);
+$element = request()->input('element');
+$action = request()->input('action');	// Can be DOC_PREVIEW or DOC_DOWNLOAD
 
 if (! in_array($action, array('DOC_PREVIEW', 'DOC_DOWNLOAD'))) {
-	accessforbidden('Bad value for action. Must be DOC_PREVIEW or DOC_DOWNLOAD');
+	abort(403);
 }
 
 if ($element === 'facture') {
 	restrictedArea($user, 'facture', $id, '', '', 'fk_soc', 'rowid', 0);
 } else {
-	accessforbidden('Bad value for element');
+	abort(403);
 }
 
 

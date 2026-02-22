@@ -47,13 +47,13 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'withdrawals', 'companies'));
 
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 
 // Get supervariables
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -62,7 +62,7 @@ $pageprev = $page - 1;
 $pagenext = $page + 1;
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -198,7 +198,7 @@ if ($result) {
 	print "</table>";
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

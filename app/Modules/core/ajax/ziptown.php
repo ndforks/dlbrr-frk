@@ -67,15 +67,15 @@ if (!getDolGlobalString('MAIN_USE_ZIPTOWN_DICTIONNARY')) {
 dol_syslog('ziptown call with MAIN_USE_ZIPTOWN_DICTIONNARY='.getDolGlobalString('MAIN_USE_ZIPTOWN_DICTIONNARY'));
 
 // Generation of list of zip-town
-if (GETPOST('zipcode') || GETPOST('town')) {
+if (request()->input('zipcode') || request()->input('town')) {
 	top_httphead('application/json');
 
 	$return_arr = array();
 	$formcompany = new FormCompany($db);
 
 	// Define filter on text typed
-	$zipcode = GETPOST('zipcode');
-	$town = GETPOST('town');
+	$zipcode = request()->input('zipcode');
+	$town = request()->input('town');
 
 	if (getDolGlobalString('MAIN_USE_ZIPTOWN_DICTIONNARY')) {   // Use zip-town table
 		$sql = "SELECT z.rowid, z.zip, z.town, z.fk_county as state_id, z.fk_pays as country_id";
@@ -147,11 +147,11 @@ if (GETPOST('zipcode') || GETPOST('town')) {
 	}
 
 	echo json_encode($return_arr);
-} elseif (GETPOSTISSET('country_codeid')) {
+} elseif (request()->has('country_codeid')) {
 	top_httphead('text/html');
 
 	$formcompany = new FormCompany($db);
-	print $formcompany->select_state(GETPOSTINT('selected', 1), GETPOSTINT('country_codeid', 1), GETPOST('htmlname', 'alpha', 1), GETPOST('morecss', 'alpha', 1));
+	print $formcompany->select_state(request()->integer('selected', 0), request()->integer('country_codeid', 0), request()->input('htmlname'), request()->input('morecss'));
 }
 
 $db->close();

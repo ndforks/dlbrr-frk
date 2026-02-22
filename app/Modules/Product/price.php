@@ -67,13 +67,13 @@ $langs->loadLangs(array('products', 'bills', 'companies', 'other'));
 $error = 0;
 $errors = array();
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$eid = GETPOSTINT('eid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$eid = request()->integer('eid', 0);
 
-$search_soc = GETPOST('search_soc');
+$search_soc = request()->input('search_soc');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -132,21 +132,21 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_soc = '';
 	}
 
 	if ($action == 'setlabelsellingprice' && $user->admin) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-		$keyforlabel = 'PRODUIT_MULTIPRICES_LABEL'.GETPOST('pricelevel');
-		dolibarr_set_const($db, $keyforlabel, GETPOST('labelsellingprice', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$keyforlabel = 'PRODUIT_MULTIPRICES_LABEL'.request()->input('pricelevel');
+		dolibarr_set_const($db, $keyforlabel, request()->input('labelsellingprice'), 'chaine', 0, '', $conf->entity);
 		$action = '';
 	}
 
 	if (($action == 'update_vat') && !$cancel && $permissiontoadd) {
-		$tva_tx_txt = GETPOST('tva_tx', 'alpha'); // tva_tx can be '8.5'  or  '8.5*'  or  '8.5 (XXX)' or '8.5* (XXX)'
+		$tva_tx_txt = request()->input('tva_tx'); // tva_tx can be '8.5'  or  '8.5*'  or  '8.5 (XXX)' or '8.5* (XXX)'
 
-		$price_label = GETPOST('price_label', 'alpha');
+		$price_label = request()->input('price_label');
 
 		// We must define tva_tx, npr and local taxes
 		$tva_tx = $tva_tx_txt;
@@ -289,12 +289,12 @@ if (empty($reshook)) {
 		$error = 0;
 		$pricestoupdate = array();
 
-		$psq = GETPOSTINT('psqflag');
+		$psq = request()->integer('psqflag', 0);
 
 		$maxpricesupplier = $object->min_recommended_price();
 
 		// Packaging
-		$packaging = getDolGlobalString('PRODUCT_USE_CUSTOMER_PACKAGING') ? price2num(GETPOST('packaging', 'alpha'), 'MS') : null;
+		$packaging = getDolGlobalString('PRODUCT_USE_CUSTOMER_PACKAGING') ? price2num(request()->input('packaging'), 'MS') : null;
 
 		if (isModEnabled('dynamicprices')) {
 			$object->fk_price_expression = empty($eid) ? 0 : $eid; //0 discards expression
@@ -314,18 +314,18 @@ if (empty($reshook)) {
 		// Multiprices
 		if (!$error && (getDolGlobalString('PRODUIT_MULTIPRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_BY_QTY_MULTIPRICES')
 			|| ($action == 'update_level_price' && getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES')))) {	// Test on permission already done
-			$newprice = GETPOST('price', 'array');
-			$newprice_min = GETPOST('price_min', 'array');
-			$newpricebase = GETPOST('multiprices_base_type', 'array');
-			$newvattx = GETPOST('tva_tx', 'array');
-			$newvatnpr = GETPOST('tva_npr', 'array');
-			$newlocaltax1_tx = GETPOST('localtax1_tx', 'array');
-			$newlocaltax1_type = GETPOST('localtax1_type', 'array');
-			$newlocaltax2_tx = GETPOST('localtax2_tx', 'array');
-			$newlocaltax2_type = GETPOST('localtax2_type', 'array');
+			$newprice = request()->input('price');
+			$newprice_min = request()->input('price_min');
+			$newpricebase = request()->input('multiprices_base_type');
+			$newvattx = request()->input('tva_tx');
+			$newvatnpr = request()->input('tva_npr');
+			$newlocaltax1_tx = request()->input('localtax1_tx');
+			$newlocaltax1_type = request()->input('localtax1_type');
+			$newlocaltax2_tx = request()->input('localtax2_tx');
+			$newlocaltax2_type = request()->input('localtax2_type');
 
 			//Shall we generate prices using price rules?
-			$object->price_autogen = (int) (GETPOST('usePriceRules') == 'on');
+			$object->price_autogen = (int) (request()->input('usePriceRules') == 'on');
 
 			$produit_multiprices_limit = getDolGlobalInt('PRODUIT_MULTIPRICES_LIMIT');
 			for ($i = 1; $i <= $produit_multiprices_limit; $i++) {
@@ -413,11 +413,11 @@ if (empty($reshook)) {
 				}
 			}
 		} elseif (!$error) {
-			$newprice = price2num(GETPOST('price', 'alpha'), '', 2);
-			$newprice_min = price2num(GETPOST('price_min', 'alpha'), '', 2);
-			$newpricebase = GETPOST('price_base_type', 'alpha');
-			$tva_tx_txt = GETPOST('tva_tx', 'alpha'); // tva_tx can be '8.5'  or  '8.5*'  or  '8.5 (XXX)' or '8.5* (XXX)'
-			$price_label = GETPOST('price_label', 'alpha');
+			$newprice = price2num(request()->input('price'), '', 2);
+			$newprice_min = price2num(request()->input('price_min'), '', 2);
+			$newpricebase = request()->input('price_base_type');
+			$tva_tx_txt = request()->input('tva_tx'); // tva_tx can be '8.5'  or  '8.5*'  or  '8.5 (XXX)' or '8.5* (XXX)'
+			$price_label = request()->input('price_label');
 
 			$tva_tx = $tva_tx_txt;
 			$vatratecode = '';
@@ -547,7 +547,7 @@ if (empty($reshook)) {
 					}
 					if (!empty($lineid->rowid)) {
 						foreach ($price_extralabels as $code => $label) {
-							$code_array = GETPOST($code, 'array');
+							$code_array = request()->input($code, []);
 							$object->array_options['options_'.$code] = $code_array[$key];
 						}
 						// We need to force table to update product_price and not product extrafields
@@ -582,7 +582,7 @@ if (empty($reshook)) {
 
 
 	if ($action == 'delete' && $user->hasRight('produit', 'supprimer')) {
-		$result = $object->log_price_delete($user, GETPOSTINT('lineid'));
+		$result = $object->log_price_delete($user, request()->integer('lineid', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -591,7 +591,7 @@ if (empty($reshook)) {
 	// Set Price by quantity
 	if ($action == 'activate_price_by_qty' && $permissiontoadd) {
 		// Activating product price by quantity add a new price line with price_by_qty set to 1
-		$level = GETPOSTINT('level');
+		$level = request()->integer('level', 0);
 		$basePrice = ($object->price_base_type == 'HT') ? $object->price : $object->price_ttc;
 		$basePriceMin = ($object->price_base_type == 'HT') ? $object->price_min : $object->price_min_ttc;
 		$ret = $object->updatePrice($basePrice, $object->price_base_type, $user, $object->tva_tx, $basePriceMin, $level, $object->tva_npr, 1);
@@ -603,7 +603,7 @@ if (empty($reshook)) {
 	// Unset Price by quantity
 	if ($action == 'disable_price_by_qty' && $permissiontoadd) {
 		// Disabling product price by quantity add a new price line with price_by_qty set to 0
-		$level = GETPOSTINT('level');
+		$level = request()->integer('level', 0);
 		$basePrice = ($object->price_base_type == 'HT') ? $object->price : $object->price_ttc;
 		$basePriceMin = ($object->price_base_type == 'HT') ? $object->price_min : $object->price_min_ttc;
 		$ret = $object->updatePrice($basePrice, $object->price_base_type, $user, $object->tva_tx, $basePriceMin, $level, $object->tva_npr, 0);
@@ -614,18 +614,18 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'edit_price_by_qty') { // Test on permission not required
-		$rowid = GETPOSTINT('rowid');
+		$rowid = request()->integer('rowid', 0);
 	}
 
 	// Add or update price by quantity
 	if ($action == 'update_price_by_qty' && $permissiontoadd) {
 		// Récupération des variables
-		$rowid = GETPOSTINT('rowid');
-		$priceid = GETPOSTINT('priceid');
-		$newprice = price2num(GETPOST("price"), 'MU', 2);
-		// $newminprice=price2num(GETPOST("price_min"),'MU'); // TODO : Add min price management
-		$quantity = price2num(GETPOST('quantity'), 'MS', 2);
-		$remise_percent = price2num(GETPOST('remise_percent'), '', 2);
+		$rowid = request()->integer('rowid', 0);
+		$priceid = request()->integer('priceid', 0);
+		$newprice = price2num(request()->input('price'), 'MU', 2);
+		// $newminprice=price2num(request()->input('price_min'),'MU'); // TODO : Add min price management
+		$quantity = price2num(request()->input('quantity'), 'MS', 2);
+		$remise_percent = price2num(request()->input('remise_percent'), '', 2);
 		$remise = 0; // TODO : allow discount by amount when available on documents
 
 		if (empty($quantity)) {
@@ -657,7 +657,7 @@ if (empty($reshook)) {
 
 				$result = $db->query($sql);
 				if (!$result) {
-					dol_print_error($db);
+					abort(500);
 				}
 			} else {
 				$sql = "INSERT INTO ".MAIN_DB_PREFIX."product_price_by_qty (fk_product_price,price,unitprice,quantity,remise_percent,remise) values (";
@@ -668,7 +668,7 @@ if (empty($reshook)) {
 					if ($db->lasterrno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 						setEventMessages($langs->trans("DuplicateRecord"), null, 'errors');
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 				}
 			}
@@ -676,7 +676,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'delete_price_by_qty' && $permissiontoadd) {
-		$rowid = GETPOSTINT('rowid');
+		$rowid = request()->integer('rowid', 0);
 		if (!empty($rowid)) {
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."product_price_by_qty";
 			$sql .= " WHERE rowid = ".((int) $rowid);
@@ -688,7 +688,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'delete_all_price_by_qty' && $permissiontoadd) {
-		$priceid = GETPOSTINT('priceid');
+		$priceid = request()->integer('priceid', 0);
 		if (!empty($rowid)) {
 			$sql = "DELETE FROM ".MAIN_DB_PREFIX."product_price_by_qty";
 			$sql .= " WHERE fk_product_price = ".((int) $priceid);
@@ -707,24 +707,24 @@ if (empty($reshook)) {
 	if ($action == 'add_customer_price_confirm' && !$cancel && $prodcustprice !== null && ($user->hasRight('produit', 'creer') || $user->hasRight('service', 'creer'))) {
 		$maxpricesupplier = $object->min_recommended_price();
 
-		$update_child_soc = GETPOSTINT('updatechildprice');
+		$update_child_soc = request()->integer('updatechildprice', 0);
 
 		// add price by customer
-		$prodcustprice->fk_soc = GETPOSTINT('socid');
-		$prodcustprice->ref_customer = GETPOST('ref_customer', 'alpha');
+		$prodcustprice->fk_soc = request()->integer('socid', 0);
+		$prodcustprice->ref_customer = request()->input('ref_customer');
 		$prodcustprice->fk_product = $object->id;
-		$prodcustprice->price = price2num(GETPOST("price"), 'MU');
-		$prodcustprice->price_min = price2num(GETPOST("price_min"), 'MU');
-		$prodcustprice->price_base_type = GETPOST("price_base_type", 'alpha');
-		$prodcustprice->price_label = GETPOST("price_label", 'alpha');
-		$prodcustprice->discount_percent = price2num(GETPOST("discount_percent"));
-		$prodcustprice->date_begin = dol_mktime(0, 0, 0, GETPOSTINT('date_beginmonth'), GETPOSTINT('date_beginday'), GETPOSTINT('date_beginyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
-		$prodcustprice->date_end = dol_mktime(0, 0, 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
+		$prodcustprice->price = price2num(request()->input('price'), 'MU');
+		$prodcustprice->price_min = price2num(request()->input('price_min'), 'MU');
+		$prodcustprice->price_base_type = request()->input('price_base_type');
+		$prodcustprice->price_label = request()->input('price_label');
+		$prodcustprice->discount_percent = price2num(request()->input('discount_percent'));
+		$prodcustprice->date_begin = dol_mktime(0, 0, 0, request()->integer('date_beginmonth', 0), request()->integer('date_beginday', 0), request()->integer('date_beginyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
+		$prodcustprice->date_end = dol_mktime(0, 0, 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
 
 		$extralabels = $extrafields->fetch_name_optionals_label("product_customer_price");
 		$extrafield_values = $extrafields->getOptionalsFromPost("product_customer_price");
 
-		$tva_tx_txt = GETPOST("tva_tx", 'alpha');
+		$tva_tx_txt = request()->input('tva_tx');
 
 		$tva_tx = $tva_tx_txt;
 		$vatratecode = '';
@@ -841,7 +841,7 @@ if (empty($reshook)) {
 
 	if ($action == 'delete_customer_price' && $prodcustprice !== null && ($user->hasRight('produit', 'supprimer') || $user->hasRight('service', 'supprimer'))) {
 		// Delete price by customer
-		$prodcustprice->id = GETPOSTINT('lineid');
+		$prodcustprice->id = request()->integer('lineid', 0);
 		$result = $prodcustprice->delete($user);
 
 		if ($result > 0) {
@@ -863,24 +863,24 @@ if (empty($reshook)) {
 	if ($action == 'update_customer_price_confirm' && !$cancel && $prodcustprice !== null && ($user->hasRight('produit', 'creer') || $user->hasRight('service', 'creer'))) {
 		$maxpricesupplier = $object->min_recommended_price();
 
-		$update_child_soc = GETPOSTINT('updatechildprice');
+		$update_child_soc = request()->integer('updatechildprice', 0);
 
-		$prodcustprice->fetch(GETPOSTINT('lineid'));
+		$prodcustprice->fetch(request()->integer('lineid', 0));
 
 		// update price by customer
-		$prodcustprice->ref_customer = GETPOST('ref_customer', 'alpha');
-		$prodcustprice->price = price2num(GETPOST("price"), 'MU');
-		$prodcustprice->price_min = price2num(GETPOST("price_min"), 'MU');
-		$prodcustprice->price_base_type = GETPOST("price_base_type", 'alpha');
-		$prodcustprice->price_label = GETPOST("price_label", 'alpha');
-		$prodcustprice->discount_percent = price2num(GETPOST("discount_percent"));
-		$prodcustprice->date_begin = dol_mktime(0, 0, 0, GETPOSTINT('date_beginmonth'), GETPOSTINT('date_beginday'), GETPOSTINT('date_beginyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
-		$prodcustprice->date_end = dol_mktime(0, 0, 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
+		$prodcustprice->ref_customer = request()->input('ref_customer');
+		$prodcustprice->price = price2num(request()->input('price'), 'MU');
+		$prodcustprice->price_min = price2num(request()->input('price_min'), 'MU');
+		$prodcustprice->price_base_type = request()->input('price_base_type');
+		$prodcustprice->price_label = request()->input('price_label');
+		$prodcustprice->discount_percent = price2num(request()->input('discount_percent'));
+		$prodcustprice->date_begin = dol_mktime(0, 0, 0, request()->integer('date_beginmonth', 0), request()->integer('date_beginday', 0), request()->integer('date_beginyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
+		$prodcustprice->date_end = dol_mktime(0, 0, 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
 
 		$extralabels = $extrafields->fetch_name_optionals_label("product_customer_price");
 		$extrafield_values = $extrafields->getOptionalsFromPost("product_customer_price");
 
-		$tva_tx_txt = GETPOST("tva_tx");
+		$tva_tx_txt = request()->input('tva_tx');
 
 		$tva_tx = $tva_tx_txt;
 		$vatratecode = '';
@@ -1003,11 +1003,11 @@ if (!empty($id) || !empty($ref)) {
 $title = $langs->trans('ProductServiceCard');
 $helpurl = '';
 $shortlabel = dol_trunc($object->label, 16);
-if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 	$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('SellingPrices');
 	$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 }
-if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 	$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('SellingPrices');
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
@@ -1678,7 +1678,7 @@ if (($action == 'edit_price' || $action == 'edit_level_price') && $object->getRi
 			foreach ($price_expression->list_price_expression() as $entry) {
 				$price_expression_list[$entry->id] = $entry->title;
 			}
-			$price_expression_preselection = GETPOST('eid') ? GETPOST('eid') : ($object->fk_price_expression ? $object->fk_price_expression : '0');
+			$price_expression_preselection = request()->input('eid') ? request()->input('eid') : ($object->fk_price_expression ? $object->fk_price_expression : '0');
 			print $form->selectarray('eid', $price_expression_list, $price_expression_preselection);
 			print '&nbsp; <a id="expression_editor" class="classlink">'.$langs->trans("PriceExpressionEditor").'</a>';
 			print '</td></tr>';
@@ -1913,7 +1913,7 @@ if (($action == 'edit_price' || $action == 'edit_level_price') && $object->getRi
 								$langs->load($extrafields->attributes["product_price"]['langfile'][$key]);
 							}
 
-							$extravalue = GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : $obj->{$key};
+							$extravalue = request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : $obj->{$key};
 							print '<td align="center"><input name="'.$key.'['.$i.']" size="10" value="'.$extravalue.'"></td>';
 						}
 					}
@@ -1934,7 +1934,7 @@ if (($action == 'edit_price' || $action == 'edit_level_price') && $object->getRi
 									$langs->load($extrafields->attributes["product_price"]['langfile'][$key]);
 								}
 
-								$extravalue = (GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : $obj->{$key} ?? '');
+								$extravalue = (request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : $obj->{$key} ?? '');
 								print '<td align="center"><input name="'.$key.'['.$i.']" size="10" value="'.$extravalue.'"></td>';
 							}
 						}
@@ -1962,10 +1962,10 @@ if (($action == 'edit_price' || $action == 'edit_level_price') && $object->getRi
 if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT_CUSTOMER_PRICES_AND_MULTIPRICES')) {
 	$prodcustprice = new ProductCustomerPrice($db);
 
-	$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-	$sortfield = GETPOST('sortfield', 'aZ09comma');
-	$sortorder = GETPOST('sortorder', 'aZ09comma');
-	$page = (GETPOSTINT("page") ? GETPOSTINT("page") : 0);
+	$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+	$sortfield = request()->input('sortfield');
+	$sortorder = request()->input('sortorder');
+	$page = (request()->integer('page', 0) ? request()->integer('page', 0) : 0);
 	if (empty($page) || $page == -1) {
 		$page = 0;
 	}     // If $page is not defined, or '' or -1
@@ -2005,7 +2005,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 		print '<td class="fieldrequired">'.$langs->trans('ThirdParty').'</td>';
 		print '<td>';
 		$filter = '(s.client:IN:1,2,3)';
-		print img_picto('', 'company').$form->select_company(GETPOSTINT('socid'), 'socid', $filter, 'SelectThirdParty', 0, 0, array(), 0, 'minwidth300');
+		print img_picto('', 'company').$form->select_company(request()->integer('socid', 0), 'socid', $filter, 'SelectThirdParty', 0, 0, array(), 0, 'minwidth300');
 		print '</td>';
 		print '</tr>';
 
@@ -2014,13 +2014,13 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 		print '<td><input name="ref_customer" size="12"></td></tr>';
 
 		// Applied Prices From
-		$date_begin = dol_mktime(0, 0, 0, GETPOSTINT('date_beginmonth'), GETPOSTINT('date_beginday'), GETPOSTINT('date_beginyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
+		$date_begin = dol_mktime(0, 0, 0, request()->integer('date_beginmonth', 0), request()->integer('date_beginday', 0), request()->integer('date_beginyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server;
 		print '<tr><td>'.$langs->trans("AppliedPricesFrom").'</td><td>';
 		print $form->selectDate(!empty($date_begin) ? $date_begin : dol_now(), "date_begin", 0, 0, 1, "date_begin");
 		print '</td></tr>';
 
 		// Applied Prices To
-		$date_end = dol_mktime(0, 0, 0, GETPOSTINT('date_endmonth'), GETPOSTINT('date_endday'), GETPOSTINT('date_endyear'), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
+		$date_end = dol_mktime(0, 0, 0, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
 		print '<tr><td>'.$langs->trans("AppliedPricesTo").'</td><td>';
 		print $form->selectDate($date_end, "date_end", 0, 0, 1, "date_end");
 		print '</td></tr>';
@@ -2074,7 +2074,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 		print '</tr>';
 
 		// Discount
-		$discount_percent = price2num(GETPOST("discount_percent"));
+		$discount_percent = price2num(request()->input('discount_percent'));
 		print '<tr><td>'.$langs->trans("Discount").'</td><td>';
 		print '<input name="discount_percent" size="10" value="'.price($discount_percent).'">';
 		print '</td></tr>';
@@ -2097,7 +2097,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 						} else {
 							print $langs->trans($value);
 						}
-						print '</td><td>'.$extrafields->showInputField($key, GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_customer_price').'</td></tr>';
+						print '</td><td>'.$extrafields->showInputField($key, request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_customer_price').'</td></tr>';
 					}
 				}
 			}
@@ -2126,7 +2126,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 		print '<!-- edit_customer_price -->';
 		print load_fiche_titre($langs->trans('PriceByCustomer'));
 
-		$result = $prodcustprice->fetch(GETPOSTINT('lineid'));
+		$result = $prodcustprice->fetch(request()->integer('lineid', 0));
 		if ($result < 0) {
 			setEventMessages($prodcustprice->error, $prodcustprice->errors, 'errors');
 		}
@@ -2231,7 +2231,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 						} else {
 							print $langs->trans($value);
 						}
-						print '</td><td>'.$extrafields->showInputField($key, GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_customer_price').'</td></tr>';
+						print '</td><td>'.$extrafields->showInputField($key, request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : '', '', '', '', '', 0, 'product_customer_price').'</td></tr>';
 					}
 				}
 			} else {
@@ -2257,7 +2257,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 							} else {
 								print $langs->trans($value);
 							}
-							print '</td><td>'.$extrafields->showInputField($key, GETPOSTISSET('options_'.$key) ? $extrafield_values['options_'.$key] : $obj->{$key}, '', '', '', '', 0, 'product_customer_price');
+							print '</td><td>'.$extrafields->showInputField($key, request()->has('options_' . $key) ? $extrafield_values['options_'.$key] : $obj->{$key}, '', '', '', '', 0, 'product_customer_price');
 
 							print '</td></tr>';
 						}
@@ -2283,7 +2283,7 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 		print '<!-- list of all log of prices per customer -->'."\n";
 
 		$sortfield = 't.datec';
-		$filter = array('t.fk_product' => (string) $object->id, 't.fk_soc' => (string) GETPOSTINT('socid'));
+		$filter = array('t.fk_product' => (string) $object->id, 't.fk_soc' => (string) request()->integer('socid', 0));
 
 		// Count total nb of records
 		$nbtotalofrecords = '';
@@ -2296,10 +2296,10 @@ if (getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || getDolGlobalString('PRODUIT
 			setEventMessages($prodcustprice->error, $prodcustprice->errors, 'errors');
 		}
 
-		$option = '&socid='.GETPOSTINT('socid').'&id='.$object->id;
+		$option = '&socid='.request()->integer('socid', 0).'&id='.$object->id;
 
 		$staticsoc = new Societe($db);
-		$staticsoc->fetch(GETPOSTINT('socid'));
+		$staticsoc->fetch(request()->integer('socid', 0));
 
 		$title = $langs->trans('PriceByCustomerLog');
 		$title .= ' - '.$staticsoc->getNomUrl(1);
@@ -3000,7 +3000,7 @@ if ((!getDolGlobalString('PRODUIT_CUSTOMER_PRICES') || $action == 'showlog_defau
 
 		print '</div>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

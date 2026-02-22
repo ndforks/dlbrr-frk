@@ -42,17 +42,17 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/projectstats.class.php';
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width');
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
-$search_opp_status = GETPOST("search_opp_status", 'alpha');
+$search_opp_status = request()->input('search_opp_status');
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 // Security check
 if ($user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
 }
 $nowyear = dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOSTINT('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->integer('year', 0) > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 
@@ -61,7 +61,7 @@ $langs->loadLangs(array('companies', 'projects'));
 
 // Security check
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 

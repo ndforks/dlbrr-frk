@@ -55,10 +55,10 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport_ik.class.php'
 // Load translation files required by the page
 $langs->loadlangs(array('errors', 'trips'));
 
-$fk_expense = GETPOSTINT('fk_expense');
-$fk_c_exp_tax_cat = GETPOSTINT('fk_c_exp_tax_cat');
-$vatrate = GETPOSTINT('vatrate');
-$qty = GETPOSTINT('qty');
+$fk_expense = request()->integer('fk_expense', 0);
+$fk_c_exp_tax_cat = request()->integer('fk_c_exp_tax_cat', 0);
+$vatrate = request()->integer('vatrate', 0);
+$qty = request()->integer('qty', 0);
 
 // Security check
 $result = restrictedArea($user, 'expensereport', $fk_expense, 'expensereport');

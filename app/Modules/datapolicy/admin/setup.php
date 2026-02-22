@@ -49,8 +49,8 @@ if (!$langs instanceof Translate) {
 $langs->loadLangs(array('admin', 'companies', 'members', 'cron', 'datapolicy', 'recruitment'));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
 if (empty($action)) {
 	$action = 'edit';
@@ -89,10 +89,10 @@ $valTab = array(
 
 // Security
 if (!isModEnabled("datapolicy")) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 /*
@@ -109,8 +109,8 @@ if ($action == 'update') {
 			// Iterate through defined actions ('anonymize', 'delete') for the entity.
 			foreach ($val['config_keys'] as $actionType => $constKey) {
 				// Save the constant only if its value was submitted in the form.
-				if (GETPOSTISSET($constKey)) {
-					$val_const = GETPOST($constKey, 'alpha');
+				if (request()->has($constKey)) {
+					$val_const = request()->input($constKey);
 					if (dolibarr_set_const($db, $constKey, $val_const, 'chaine', 0, '', $conf->entity) >= 0) {
 						$nbdone++;
 					} else {
@@ -233,7 +233,7 @@ foreach ($arrayofparameters as $title => $tab) {
 			print $form->textwithpicto('', $htmltooltip, 1, 'help', 'valignmidde', 1, 3, $val['config_keys']['anonymize']);
 
 			print ' &nbsp; ';
-			if ($action == 'count' && GETPOST('group') == $logicalKey) {
+			if ($action == 'count' && request()->input('group') == $logicalKey) {
 				print '<span class="opacitymedium valignmiddle">'.$langs->trans("QualifiedNumber").' : </span>';
 
 				$estimatednumber = 0;
@@ -245,7 +245,7 @@ foreach ($arrayofparameters as $title => $tab) {
 							$estimatednumber = $obj->nb;
 						}
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 				} else {
 					print 'Error, bad definition of the array of data policies profiles';
@@ -281,7 +281,7 @@ foreach ($arrayofparameters as $title => $tab) {
 			print $form->textwithpicto('', $htmltooltip, 1, 'help', 'valignmidde', 1, 3, $val['config_keys']['delete']);
 
 			print ' &nbsp; ';
-			if ($action == 'countdelete' && GETPOST('group') == $logicalKey) {
+			if ($action == 'countdelete' && request()->input('group') == $logicalKey) {
 				print '<span class="opacitymedium valignmiddle">'.$langs->trans("QualifiedNumber").' : </span>';
 
 				$estimatednumber = 0;
@@ -293,7 +293,7 @@ foreach ($arrayofparameters as $title => $tab) {
 							$estimatednumber = $obj->nb;
 						}
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 				} else {
 					print 'Error, bad definition of the array of data policies profiles';

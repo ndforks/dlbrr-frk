@@ -55,10 +55,10 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$htmlname = GETPOST('htmlname', 'aZ09');
-$socid = GETPOSTINT('socid');
-$mode = GETPOST('mode', 'aZ09');
-$discard_closed = GETPOSTINT('discardclosed');
+$htmlname = request()->input('htmlname');
+$socid = request()->integer('socid', 0);
+$mode = request()->input('mode');
+$discard_closed = request()->integer('discardclosed', 0);
 
 // Security check
 restrictedArea($user, 'projet', 0, 'projet&project');
@@ -76,7 +76,7 @@ if (empty($mode) || $mode != 'gettasks') {
 	top_httphead('application/json');
 
 	// When used from jQuery, the search term is added as GET param "term".
-	$searchkey = (GETPOSTISSET($htmlname) ? GETPOST($htmlname, 'aZ09') : '');
+	$searchkey = (request()->has($htmlname) ? request()->input($htmlname) : '');
 
 	$formproject = new FormProjets($db);
 	$arrayresult = $formproject->select_projects_list($socid, 0, '', 0, 0, 1, $discard_closed, 0, 0, 1, $searchkey);
@@ -94,7 +94,7 @@ if ($mode == 'gettasks') {
 	top_httphead();
 
 	$formproject = new FormProjets($db);
-	$formproject->selectTasks((!empty($socid) ? $socid : -1), 0, 'taskid', 24, 1, '1', 1, 0, 0, 'maxwidth500', (string) GETPOSTINT('projectid'), '');
+	$formproject->selectTasks((!empty($socid) ? $socid : -1), 0, 'taskid', 24, 1, '1', 1, 0, 0, 'maxwidth500', (string) request()->integer('projectid', 0), '');
 
 	$db->close();
 

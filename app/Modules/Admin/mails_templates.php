@@ -66,22 +66,22 @@ if (isModEnabled('eventorganization')) {
 
 $langs->loadLangs($langsArray);
 
-$toselect = GETPOST('toselect', 'array:int');
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha'); // Result of a confirmation
-$mode = GETPOST('mode', 'aZ09');
-$optioncss = GETPOST('optioncss', 'alpha');
-$backtopage = GETPOST('backtopage');
-$contextpage = GETPOST('contextpage', 'aZ09');
+$toselect = request()->input('toselect', []);
+$action = request()->input('action') ? request()->input('action') : 'view';
+$massaction = request()->input('massaction', []);
+$confirm = request()->input('confirm'); // Result of a confirmation
+$mode = request()->input('mode');
+$optioncss = request()->input('optioncss');
+$backtopage = request()->input('backtopage');
+$contextpage = request()->input('contextpage');
 
-$rowid = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('rowid'));
-$search_label = GETPOST('search_label', 'alphanohtml'); // Must allow value like 'Abc Def' or '(MyTemplateName)'
-$search_type_template = GETPOST('search_type_template', 'alpha');
-$search_lang = GETPOST('search_lang', 'alpha');
-$search_fk_user = GETPOST('search_fk_user', 'intcomma');
-$search_topic = GETPOST('search_topic', 'alpha');
-$search_module = GETPOST('search_module', 'alpha');
+$rowid = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('rowid', 0));
+$search_label = request()->input('search_label'); // Must allow value like 'Abc Def' or '(MyTemplateName)'
+$search_type_template = request()->input('search_type_template');
+$search_lang = request()->input('search_lang');
+$search_fk_user = request()->input('search_fk_user');
+$search_topic = request()->input('search_topic');
+$search_module = request()->input('search_module');
 
 $acts = array();
 $actl = array();
@@ -90,13 +90,13 @@ $acts[1] = "disable";
 $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"');
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
-$listoffset = GETPOST('listoffset', 'alpha');
-$listlimit = GETPOST('listlimit', 'alpha') > 0 ? GETPOST('listlimit', 'alpha') : 1000;
+$listoffset = request()->input('listoffset');
+$listlimit = request()->input('listlimit') > 0 ? request()->input('listlimit') : 1000;
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -296,7 +296,7 @@ $acceptlocallinktomedia = (acceptLocalLinktoMedia() > 0 ? 1 : 0);
 
 // Security
 if (!empty($user->socid)) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = 1;
@@ -316,7 +316,7 @@ if ($rowid > 0) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha') || GETPOST('actioncancel', 'alpha')) {
+if (request()->input('cancel') || request()->input('actioncancel')) {
 	$action = 'list';
 	$massaction = '';
 
@@ -325,7 +325,7 @@ if (GETPOST('cancel', 'alpha') || GETPOST('actioncancel', 'alpha')) {
 		exit(1);
 	}
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -341,7 +341,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {
 		// All tests are required to be compatible with all browsers
 		$search_label = '';
 		$search_type_template = '';
@@ -354,7 +354,7 @@ if (empty($reshook)) {
 	}
 
 	// Actions add or modify an email template
-	if ((GETPOST('actionadd', 'alpha') && $permissiontoadd) || (GETPOST('actionmodify', 'alpha') && $permissiontoedit)) {
+	if ((request()->input('actionadd') && $permissiontoadd) || (request()->input('actionmodify') && $permissiontoedit)) {
 		$listfield = explode(',', str_replace(' ', '', $tabfield[25]));
 		$listfieldinsert = explode(',', $tabfieldinsert[25]);
 		$listfieldmodify = explode(',', $tabfieldvalue[25]);
@@ -369,11 +369,11 @@ if (empty($reshook)) {
 			}
 
 			// Rename some POST variables into a generic name
-			if (GETPOST('actionmodify', 'alpha') && $value == 'topic') {
-				$_POST['topic'] = GETPOST('topic-'.$rowid);
+			if (request()->input('actionmodify') && $value == 'topic') {
+				$_POST['topic'] = request()->input('topic-'.$rowid);
 			}
 
-			if ((!GETPOSTISSET($value) || GETPOST($value) == '' || GETPOST($value) == '-1') && $value != 'lang' && $value != 'fk_user' && $value != 'position') {
+			if ((!request()->has($value) || request()->input($value) == '' || request()->input($value) == '-1') && $value != 'lang' && $value != 'fk_user' && $value != 'position') {
 				$ok = 0;
 				$fieldnamekey = $listfield[$f];
 				// We take translate key of field
@@ -408,7 +408,7 @@ if (empty($reshook)) {
 		}
 
 		// If previous test is ok action is add, we add the line
-		if ($ok && GETPOST('actionadd')) {
+		if ($ok && request()->input('actionadd')) {
 			// Add new entry
 			$sql = "INSERT INTO ".$tabname[25]." (";
 			// List of fields
@@ -451,22 +451,22 @@ if (empty($reshook)) {
 				}
 				if ($keycode == 'datec') {
 					$sql .= "'".$db->idate($now)."'";
-				} elseif (GETPOST($keycode) == '' && $keycode != 'langcode') {
+				} elseif (request()->input($keycode) == '' && $keycode != 'langcode') {
 					$sql .= "null"; // langcode must be '' if not defined so the unique key that include lang will work
-				} elseif (GETPOST($keycode) == '0' && $keycode == 'langcode') {
+				} elseif (request()->input($keycode) == '0' && $keycode == 'langcode') {
 					$sql .= "''"; // langcode must be '' if not defined so the unique key that include lang will work
 				} elseif ($keycode == 'fk_user') {
 					if (!$user->admin) {	// A non admin user can only edit its own template
 						$sql .= " ".((int) $user->id);
 					} else {
-						$sql .= " ".(GETPOSTINT($keycode));
+						$sql .= " ".(request()->integer($keycode, 0));
 					}
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfiles', 'defaultfortype', 'private', 'position', 'entity'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 				$i++;
 			}
@@ -486,17 +486,17 @@ if (empty($reshook)) {
 				if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 					setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 				$action = 'create';
 			}
 		}
 
 		// We modify the line
-		if ($ok && GETPOST('actionmodify')) {
+		if ($ok && request()->input('actionmodify')) {
 			$rowidcol = "rowid";
 
-			if (GETPOSTINT('fk_user') <= 0 && GETPOST('private')) {
+			if (request()->integer('fk_user', 0) <= 0 && request()->input('private')) {
 				setEventMessages($langs->trans("AnOwnerMustBeSetIfEmailTemplateIsPrivate"), null, 'errors');
 				$error++;
 				$action = 'edit';
@@ -525,19 +525,19 @@ if (empty($reshook)) {
 
 					// Rename some POST variables into a generic name
 					if ($field == 'topic') {
-						$_POST['topic'] = GETPOST('topic-'.$rowid);
+						$_POST['topic'] = request()->input('topic-'.$rowid);
 					}
 					if ($field == 'joinfiles') {
-						$_POST['joinfiles'] = GETPOST('joinfiles-'.$rowid);
+						$_POST['joinfiles'] = request()->input('joinfiles-'.$rowid);
 					}
 					if ($field == 'content') {
-						$_POST['content'] = GETPOST('content-'.$rowid, 'restricthtml');
+						$_POST['content'] = request()->input('content-'.$rowid, 'restricthtml');
 					}
 					if ($field == 'content_lines') {
-						$_POST['content_lines'] = GETPOST('content_lines-'.$rowid, 'restricthtml');
+						$_POST['content_lines'] = request()->input('content_lines-'.$rowid, 'restricthtml');
 					}
 					if ($field == 'email_from') {
-						$_POST['email_from'] = GETPOST('email_from-'.$rowid, 'restricthtml');
+						$_POST['email_from'] = request()->input('email_from-'.$rowid, 'restricthtml');
 					}
 
 					if ($i) {
@@ -545,24 +545,24 @@ if (empty($reshook)) {
 					}
 					$sql .= $field." = ";
 
-					if ((GETPOST($keycode) == '' && in_array($keycode, array('langcode'))) || (!in_array($keycode, array('langcode', 'position', 'private', 'defaultfortype')) && !GETPOST($keycode))) {
+					if ((request()->input($keycode) == '' && in_array($keycode, array('langcode'))) || (!in_array($keycode, array('langcode', 'position', 'private', 'defaultfortype')) && !request()->input($keycode))) {
 						$sql .= "null"; // langcode,... must be '' if not defined so the unique key that include lang will work
-					} elseif ($keycode == 'langcode' && (GETPOST($keycode) == '0' || GETPOST($keycode) == '-1')) {
+					} elseif ($keycode == 'langcode' && (request()->input($keycode) == '0' || request()->input($keycode) == '-1')) {
 						$sql .= "''"; // langcode must be '' if not defined so the unique key that include lang will work
 					} elseif ($keycode == 'fk_user') {
 						if (!$user->admin) {	// A non admin user can only edit its own template
 							$sql .= ((int) $user->id);
 						} else {
-							$sql .= (GETPOSTINT($keycode) > 0 ? GETPOSTINT($keycode) : "null");
+							$sql .= (request()->integer($keycode, 0) > 0 ? request()->integer($keycode, 0) : "null");
 						}
 					} elseif ($keycode == 'content') {
-						$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+						$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 					} elseif ($keycode == 'position') {
-						$sql .= (GETPOSTINT($keycode) > 0 ? GETPOSTINT($keycode) : 1);
+						$sql .= (request()->integer($keycode, 0) > 0 ? request()->integer($keycode, 0) : 1);
 					} elseif (in_array($keycode, array('joinfiles', 'defaultfortype', 'private'))) {
-						$sql .= GETPOSTINT($keycode);
+						$sql .= request()->integer($keycode, 0);
 					} else {
-						$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+						$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 					}
 					$i++;
 				}
@@ -602,7 +602,7 @@ if (empty($reshook)) {
 			if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -615,7 +615,7 @@ if (empty($reshook)) {
 
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -627,7 +627,7 @@ if (empty($reshook)) {
 
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -766,22 +766,22 @@ $fieldlist = explode(',', $tabfield[25]);
 if ($action == 'create') {
 	// If data was already input, we define them in obj to populate input fields.
 	$obj = new stdClass();
-	$obj->label = GETPOST('label');
-	$obj->lang = GETPOST('lang');
-	$obj->type_template = GETPOST('type_template');
-	$obj->fk_user = GETPOSTINT('fk_user');
-	$obj->private = GETPOSTINT('private');
-	$obj->position = GETPOST('position');
-	$obj->topic = GETPOST('topic');
-	$obj->joinfiles = GETPOST('joinfiles');
-	$obj->defaultfortype = GETPOST('defaultfortype') ? 1 : 0;
-	$obj->content = GETPOST('content', 'restricthtml');
+	$obj->label = request()->input('label');
+	$obj->lang = request()->input('lang');
+	$obj->type_template = request()->input('type_template');
+	$obj->fk_user = request()->integer('fk_user', 0);
+	$obj->private = request()->integer('private', 0);
+	$obj->position = request()->input('position');
+	$obj->topic = request()->input('topic');
+	$obj->joinfiles = request()->input('joinfiles');
+	$obj->defaultfortype = request()->input('defaultfortype') ? 1 : 0;
+	$obj->content = request()->input('content');
 
 	// Form to add a new line
 	print '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" id="create_c_email_template">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="add">';
-	print '<input type="hidden" name="from" value="'.dol_escape_htmltag(GETPOST('from', 'alpha')).'">';
+	print '<input type="hidden" name="from" value="'.dol_escape_htmltag(request()->input('from')).'">';
 	print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
 
 	print '<div class="div-table-responsive-no-min">';
@@ -947,7 +947,7 @@ if ($action == 'create') {
 dol_syslog("htdocs/admin/dict", LOG_DEBUG);
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -955,7 +955,7 @@ $num = $db->num_rows($resql);
 
 print '<form action="'.$_SERVER['PHP_SELF'].'" method="POST" id="list_of_c_email_templates">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="from" value="'.dol_escape_htmltag(GETPOST('from', 'alpha')).'">';
+print '<input type="hidden" name="from" value="'.dol_escape_htmltag(request()->input('from')).'">';
 
 print '<div class="div-table-responsive-no-min">';
 print '<table class="noborder centpercent" id="table_list_of_c_email_templates">';
@@ -989,8 +989,8 @@ if ($sortorder) {
 if ($sortfield) {
 	$paramwithsearch .= '&sortfield='.urlencode($sortfield);
 }
-if (GETPOST('from', 'alpha')) {
-	$paramwithsearch .= '&from='.urlencode(GETPOST('from', 'alpha'));
+if (request()->input('from')) {
+	$paramwithsearch .= '&from='.urlencode(request()->input('from'));
 }
 
 // There is several pages
@@ -1505,7 +1505,7 @@ function fieldList($fieldlist, $obj = null, $tabname = '', $context = '')
 		} elseif ($value == 'fk_user') {
 			print '<td>';
 			if ($user->admin && $context != 'preview') {
-				print $form->select_dolusers(GETPOSTISSET('fk_user') ? GETPOSTINT('fk_user') : (empty($obj->$value) ? '' : $obj->$value), 'fk_user', $langs->trans("Owner"), array(), 0, ($user->admin ? '' : 'hierarchyme'), array(), '0', 0, 0, '', 0, '', 'minwidth75 maxwidth100');
+				print $form->select_dolusers(request()->has('fk_user') ? request()->integer('fk_user', 0) : (empty($obj->$value) ? '' : $obj->$value), 'fk_user', $langs->trans("Owner"), array(), 0, ($user->admin ? '' : 'hierarchyme'), array(), '0', 0, 0, '', 0, '', 'minwidth75 maxwidth100');
 			} else {
 				if ($context == 'add') {	// I am not admin and we show the add form
 					print $user->getNomUrl(-1); // Me
@@ -1528,7 +1528,7 @@ function fieldList($fieldlist, $obj = null, $tabname = '', $context = '')
 		} elseif ($value == 'lang') {
 			print '<td>';
 			if (getDolGlobalInt('MAIN_MULTILANGS') && $context != 'preview') {
-				$selectedlang = GETPOSTISSET('langcode') ? GETPOST('langcode', 'aZ09') : $langs->defaultlang;
+				$selectedlang = request()->has('langcode') ? request()->input('langcode') : $langs->defaultlang;
 				if ($context == 'edit') {
 					$selectedlang = $obj->lang;
 				}
@@ -1597,7 +1597,7 @@ function fieldList($fieldlist, $obj = null, $tabname = '', $context = '')
 			if (in_array($value, array('defaultfortype', 'private')) && $context != 'preview') {
 				if (empty($user->admin)) {
 					// @phan-suppress-next-line PhanPluginSuspiciousParamPosition
-					print $form->selectyesno($value, GETPOSTISSET($value) ? GETPOSTINT($value) : (($context != 'add' && isset($obj->$value)) ? $obj->$value : '1'), 1, false, 0, 1);
+					print $form->selectyesno($value, request()->has($value) ? request()->integer($value, 0) : (($context != 'add' && isset($obj->$value)) ? $obj->$value : '1'), 1, false, 0, 1);
 				} else {
 					// @phan-suppress-next-line PhanPluginSuspiciousParamPosition
 					print $form->selectyesno($value, (isset($obj->$value) ? $obj->$value : ''), 1, false, 0, 1);

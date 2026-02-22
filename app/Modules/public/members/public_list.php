@@ -57,7 +57,7 @@ require '../../main.inc.php';
 
 // Security check
 if (!isModEnabled('member')) {
-	httponly_accessforbidden('Module Membership not enabled');
+	httponly_abort(403);
 }
 
 $langs->loadLangs(array("main", "members", "companies", "other"));
@@ -99,10 +99,10 @@ function llxFooterVierge()  // @phan-suppress-current-line PhanRedefineFunction
 }
 
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -110,8 +110,8 @@ $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$filter = GETPOST('filter');
-$statut = GETPOST('statut');
+$filter = request()->input('filter');
+$statut = request()->input('statut');
 
 if (!$sortorder) {
 	$sortorder = "ASC";
@@ -126,7 +126,7 @@ if (!$sortfield) {
  */
 
 if (!getDolGlobalString('MEMBER_PUBLIC_ENABLED')) {
-	httponly_accessforbidden('Public access of list of members is not enabled. See setup of module membership to enable it.');
+	httponly_abort(403);
 }
 
 $form = new Form($db);
@@ -161,7 +161,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -216,7 +216,7 @@ if ($result) {
 	}
 	print "</table>";
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

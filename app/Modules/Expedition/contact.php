@@ -49,9 +49,9 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('orders', 'sendings', 'companies'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 $typeobject = null;
 $object = new Expedition($db);
@@ -97,9 +97,9 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	if ($action == 'addcontact' && $user->hasRight('expedition', 'creer')) {
 		if ($result > 0 && $id > 0) {
-			$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-			$typeid    = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-			$result    = $objectsrc->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+			$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+			$typeid    = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+			$result    = $objectsrc->add_contact($contactid, $typeid, request()->input('source'));
 		}
 
 		if ($result >= 0) {
@@ -117,16 +117,16 @@ if (empty($reshook)) {
 		}
 	} elseif ($action == 'swapstatut' && $user->hasRight('expedition', 'creer')) {
 		// bascule du statut d'un contact
-		$result = $objectsrc->swapContactStatus(GETPOSTINT('ligne'));
+		$result = $objectsrc->swapContactStatus(request()->integer('ligne', 0));
 	} elseif ($action == 'deletecontact' && $user->hasRight('expedition', 'creer')) {
 		// Efface un contact
-		$result = $objectsrc->delete_contact(GETPOSTINT("lineid"));
+		$result = $objectsrc->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }

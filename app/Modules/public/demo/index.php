@@ -47,16 +47,16 @@ require_once '../../core/lib/functions2.lib.php';
  */
 $langs->loadLangs(array("main", "install", "other"));
 
-$conf->dol_hide_topmenu = GETPOSTINT('dol_hide_topmenu');
-$conf->dol_hide_leftmenu = GETPOSTINT('dol_hide_leftmenu');
-$conf->dol_optimize_smallscreen = GETPOSTINT('dol_optimize_smallscreen');
-$conf->dol_no_mouse_hover = GETPOSTINT('dol_no_mouse_hover');
-$conf->dol_use_jmobile = GETPOSTINT('dol_use_jmobile');
+$conf->dol_hide_topmenu = request()->integer('dol_hide_topmenu', 0);
+$conf->dol_hide_leftmenu = request()->integer('dol_hide_leftmenu', 0);
+$conf->dol_optimize_smallscreen = request()->integer('dol_optimize_smallscreen', 0);
+$conf->dol_no_mouse_hover = request()->integer('dol_no_mouse_hover', 0);
+$conf->dol_use_jmobile = request()->integer('dol_use_jmobile', 0);
 
 // Security check
 global $dolibarr_main_demo;
 if (empty($dolibarr_main_demo)) {
-	httponly_accessforbidden('Parameter dolibarr_main_demo must be defined in conf file with value "default login,default pass" to enable the demo entry page');
+	httponly_abort(403);
 }
 
 // Initialize a technical object to manage hooks of the page.
@@ -212,13 +212,13 @@ asort($orders);
  * Actions
  */
 
-if (GETPOST('action', 'aZ09') == 'gotodemo') {     // Action run when we click on "Start" after selection modules
-	//print 'ee'.GETPOST("demochoice");
+if (request()->input('action') == 'gotodemo') {     // Action run when we click on "Start" after selection modules
+	//print 'ee'.request()->input('demochoice');
 	$disablestring = '';
 	// If we disable modules using a profile choice
-	if (GETPOST("demochoice")) {
+	if (request()->input('demochoice')) {
 		foreach ($demoprofiles as $profilearray) {
-			if ($profilearray['key'] == GETPOST("demochoice")) {
+			if ($profilearray['key'] == request()->input('demochoice')) {
 				$disablestring = $profilearray['disablemodules'];
 				break;
 			}
@@ -227,7 +227,7 @@ if (GETPOST('action', 'aZ09') == 'gotodemo') {     // Action run when we click o
 	// If we disable modules using personalized list
 	foreach ($modules as $val) {
 		$modulekeyname = strtolower($val->name);
-		if (!GETPOST($modulekeyname) && empty($val->always_enabled) && !in_array($modulekeyname, $alwayscheckedmodules)) {
+		if (!request()->input($modulekeyname) && empty($val->always_enabled) && !in_array($modulekeyname, $alwayscheckedmodules)) {
 			$disablestring .= $modulekeyname.',';
 			if ($modulekeyname == 'propale') {
 				$disablestring .= 'propal,';
@@ -237,8 +237,8 @@ if (GETPOST('action', 'aZ09') == 'gotodemo') {     // Action run when we click o
 
 	// Do redirect to login page
 	if ($disablestring) {
-		if (GETPOST('urlfrom')) {
-			$url .= (preg_match('/\?/', $url) ? '&amp;' : '?').'urlfrom='.urlencode(GETPOST('urlfrom', 'alpha'));
+		if (request()->input('urlfrom')) {
+			$url .= (preg_match('/\?/', $url) ? '&amp;' : '?').'urlfrom='.urlencode(request()->input('urlfrom'));
 		}
 		$url .= (preg_match('/\?/', $url) ? '&amp;' : '?').'disablemodules='.$disablestring;
 

@@ -49,31 +49,31 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 // Load translation files required by the page
 $langs->load("members");
 
-$rowid = GETPOSTINT('rowid');
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$rowid = request()->integer('rowid', 0);
+$action = request()->input('action');
+$massaction = request()->input('massaction', []);
+$cancel = request()->input('cancel');
+$toselect = request()->input('toselect', []);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage = request()->input('backtopage');
+$mode = request()->input('mode');
 
-$sall = GETPOST("sall", "alpha");
-$filter = GETPOST("filter", 'alpha');
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_lastname = GETPOST('search_lastname', 'alpha');
-$search_login = GETPOST('search_login', 'alpha');
-$search_email = GETPOST('search_email', 'alpha');
-$type = GETPOST('type', 'intcomma');
-$status = GETPOST('status', 'alpha');
-$optioncss = GETPOST('optioncss', 'alpha');
+$sall = request()->input('sall');
+$filter = request()->input('filter');
+$search_ref = request()->input('search_ref');
+$search_lastname = request()->input('search_lastname');
+$search_login = request()->input('search_login');
+$search_email = request()->input('search_email');
+$type = request()->input('type');
+$status = request()->input('status');
+$optioncss = request()->input('optioncss');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -87,19 +87,19 @@ if (!$sortfield) {
 	$sortfield = "d.lastname";
 }
 
-$label = GETPOST("label", "alpha");
-$morphy = GETPOST("morphy", "alpha");
-$status = GETPOST("status", "intcomma");
-$subscription = GETPOSTINT("subscription");
-$caneditamount = GETPOSTINT("caneditamount");
-$minimumamount = GETPOST('minimumamount', 'alpha');
-$amount = GETPOST('amount', 'alpha');
-$amountformuladescription = GETPOST("amountformuladescription", 'restricthtml');
-$duration_value = GETPOSTINT('duration_value');
-$duration_unit = GETPOST('duration_unit', 'alpha');
-$vote = GETPOSTINT("vote");
-$comment = GETPOST("comment", 'restricthtml');
-$mail_valid = GETPOST("mail_valid", 'restricthtml');
+$label = request()->input('label');
+$morphy = request()->input('morphy');
+$status = request()->input('status');
+$subscription = request()->integer('subscription', 0);
+$caneditamount = request()->integer('caneditamount', 0);
+$minimumamount = request()->input('minimumamount');
+$amount = request()->input('amount');
+$amountformuladescription = request()->input('amountformuladescription');
+$duration_value = request()->integer('duration_value', 0);
+$duration_unit = request()->input('duration_unit');
+$vote = request()->integer('vote', 0);
+$comment = request()->input('comment');
+$mail_valid = request()->integer('mail_valid', 0);
 
 // Initialize a technical object
 $object = new AdherentType($db);
@@ -143,7 +143,7 @@ $error = 0;
 // Selection of new fields
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_ref = "";
 	$search_lastname = "";
 	$search_login = "";
@@ -152,11 +152,11 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 	$sall = "";
 }
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -559,7 +559,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 
 		print '</form>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -591,7 +591,7 @@ if ($action == 'create') {
 		"mor" => $langs->trans("Moral"),
 	];
 	print '<tr><td><span>'.$langs->trans("MembersNature").'</span></td><td>';
-	print $form->selectarray("morphy", $morphys, GETPOSTISSET("morphy") ? GETPOST("morphy", 'aZ09') : 'morphy', 0, 0, 0, '', 0, 0, 0, '', 'minwidth300');
+	print $form->selectarray("morphy", $morphys, request()->has('morphy') ? request()->input('morphy') : 'morphy', 0, 0, 0, '', 0, 0, 0, '', 'minwidth300');
 	print "</td></tr>";
 
 	print '<tr><td>'.$form->textwithpicto($langs->trans("SubscriptionRequired"), $langs->trans("SubscriptionRequiredDesc")).'</td><td>';
@@ -599,39 +599,39 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	print '<tr><td>'.$form->textwithpicto($langs->trans("CanEditAmountShort"), $langs->transnoentities("CanEditAmount")).'</td><td>';
-	print $form->selectyesno("caneditamount", GETPOSTISSET('caneditamount') ? GETPOST('caneditamount') : 0, 1);
+	print $form->selectyesno("caneditamount", request()->has('caneditamount') ? request()->input('caneditamount') : 0, 1);
 	print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("MinimumAmountShort").'</td><td>';
-	print '<input name="minimumamount" size="5" value="'.(GETPOSTISSET('minimumamount') ? GETPOST('minimumamount') : price($minimumamount)).'">';
+	print '<input name="minimumamount" size="5" value="'.(request()->has('minimumamount') ? request()->input('minimumamount') : price($minimumamount)).'">';
 	print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("RecommendedAmount").'</td><td>';
-	print '<input name="amount" size="5" value="'.(GETPOSTISSET('amount') ? GETPOST('amount') : '').'">';
+	print '<input name="amount" size="5" value="'.(request()->has('amount') ? request()->input('amount') : '').'">';
 	print '</td></tr>';
 
 	print '<tr><td class="tdtop">'.$langs->trans("AmountFormulaDescription").'</td><td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('amountformuladescription', (GETPOSTISSET('amountformuladescription') ? GETPOST('amountformuladescription', 'restricthtml') : $object->amountformuladescription), '', 100, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
+	$doleditor = new DolEditor('amountformuladescription', (request()->has('amountformuladescription') ? request()->input('amountformuladescription') : $object->amountformuladescription), '', 100, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 
 	print '<tr><td>'.$langs->trans("VoteAllowed").'</td><td>';
-	print $form->selectyesno("vote", GETPOSTISSET("vote") ? GETPOST('vote', 'aZ09') : 1, 1);
+	print $form->selectyesno("vote", request()->has('vote') ? request()->input('vote') : 1, 1);
 	print '</td></tr>';
 
 	print '<tr><td>'.$langs->trans("Duration").'</td><td colspan="3">';
 	print '<input name="duration_value" size="5" value="'. ($duration_value ? $duration_value : 1) .'"> ';
-	print $formproduct->selectMeasuringUnits("duration_unit", "time", GETPOSTISSET("duration_unit") ? GETPOST('duration_unit', 'aZ09') : 'y', 0, 1);
+	print $formproduct->selectMeasuringUnits("duration_unit", "time", request()->has('duration_unit') ? request()->input('duration_unit') : 'y', 0, 1);
 	print '</td></tr>';
 
 	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('comment', (GETPOSTISSET('comment') ? GETPOST('comment', 'restricthtml') : $object->note_public), '', 200, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
+	$doleditor = new DolEditor('comment', (request()->has('comment') ? request()->input('comment') : $object->note_public), '', 200, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 
 	print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('mail_valid', GETPOSTISSET('mail_valid') ? GETPOST('mail_valid') : $object->mail_valid, '', 250, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
+	$doleditor = new DolEditor('mail_valid', request()->has('mail_valid') ? request()->input('mail_valid') : $object->mail_valid, '', 250, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
 
@@ -803,8 +803,8 @@ if ($rowid > 0) {
 			$sql .= natural_search('d.statut', $status, 2);
 		}
 		if ($action == 'search') {
-			if (GETPOST('search', 'alpha')) {
-				$sql .= natural_search(array("d.firstname", "d.lastname"), GETPOST('search', 'alpha'));
+			if (request()->input('search')) {
+				$sql .= natural_search(array("d.firstname", "d.lastname"), request()->input('search'));
 			}
 		}
 		if (!empty($search_ref)) {
@@ -837,7 +837,7 @@ if ($rowid > 0) {
 				$objforcount = $db->fetch_object($resql);
 				$nbtotalofrecords = $objforcount->nbtotalofrecords;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -1097,7 +1097,7 @@ if ($rowid > 0) {
 			print '</div>';
 			print '</form>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1136,7 +1136,7 @@ if ($rowid > 0) {
 		$morphys["phy"] = $langs->trans("Physical");
 		$morphys["mor"] = $langs->trans("Moral");
 		print '<tr><td><span>'.$langs->trans("MembersNature").'</span></td><td>';
-		print $form->selectarray("morphy", $morphys, GETPOSTISSET("morphy") ? GETPOST("morphy", 'aZ09') : $object->morphy);
+		print $form->selectarray("morphy", $morphys, request()->has('morphy') ? request()->input('morphy') : $object->morphy);
 		print "</td></tr>";
 
 		print '<tr><td>'.$langs->trans("SubscriptionRequired").'</td><td>';

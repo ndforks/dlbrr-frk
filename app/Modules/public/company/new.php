@@ -71,8 +71,8 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/public.lib.php';
  * @var User $user
  */
 // Init vars
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
 $errmsg = '';
 $num = 0;
@@ -83,11 +83,11 @@ $langs->loadLangs(array("main", "members", "companies", "install", "other", "err
 
 // Security check
 if (!isModEnabled('societe')) {
-	httponly_accessforbidden('Module Thirdparty not enabled');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('SOCIETE_ENABLE_PUBLIC')) {
-	httponly_accessforbidden("Online form for contact for public visitors has not been enabled (option SOCIETE_ENABLE_PUBLIC)");
+	httponly_abort(403);");
 }
 
 
@@ -177,7 +177,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	$db->begin();
 
-	if (!GETPOST('name')) {
+	if (!request()->input('name')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Company")), null, 'errors');
 		$error++;
 	}
@@ -185,7 +185,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 	// Check Captcha code if is enabled
 	if (getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_THIRDPARTY')) {
 		$sessionkey = 'dol_antispam_value';
-		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(GETPOST('code'))));
+		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(request()->input('code'))));
 		if (!$ok) {
 			$error++;
 			$errmsg .= $langs->trans("ErrorBadValueForCode") . "<br>\n";
@@ -196,17 +196,17 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 	if (!$error) {
 		$societe = new Societe($db);
 
-		$societe->name = GETPOST('name', 'alphanohtml');
-		$societe->client = GETPOSTINT('client') ? GETPOSTINT('client') : $societe->client;
-		$societe->address = GETPOST('address', 'alphanohtml');
-		$societe->country_id = GETPOSTINT('country_id');
-		$societe->phone = GETPOST('phone', 'alpha');
-		$societe->fax = GETPOST('fax', 'alpha');
-		$societe->email = trim(GETPOST('email', 'email'));
+		$societe->name = request()->input('name');
+		$societe->client = request()->integer('client', 0) ? request()->integer('client', 0) : $societe->client;
+		$societe->address = request()->input('address');
+		$societe->country_id = request()->integer('country_id', 0);
+		$societe->phone = request()->input('phone');
+		$societe->fax = request()->input('fax');
+		$societe->email = trim(request()->input('email'));
 		$societe->client = 2 ; // our client is a prospect
 		$societe->code_client = '-1';
-		$societe->name_alias = GETPOST('name_alias', 'alphanohtml');
-		$societe->note_private = GETPOST('note_private', 'alphanohtml');
+		$societe->name_alias = request()->input('name_alias');
+		$societe->note_private = request()->input('note_private');
 		$societe->ip = getUserRemoteIP();
 
 		// Fill array 'array_options' with data from add form
@@ -367,9 +367,9 @@ print '<input type="text" class="minwidth300" maxlength="128" name="name" id="na
 //
 
 // Name and lastname
-print '<tr><td class="classfortooltip" title="' . dol_escape_htmltag($messagemandatory) . '">' . $langs->trans("Firstname") . ' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="' . dol_escape_htmltag(GETPOST('firstname')) . '"></td></tr>' . "\n";
+print '<tr><td class="classfortooltip" title="' . dol_escape_htmltag($messagemandatory) . '">' . $langs->trans("Firstname") . ' <span class="star">*</span></td><td><input type="text" name="firstname" class="minwidth150" value="' . dol_escape_htmltag(request()->input('firstname')) . '"></td></tr>' . "\n";
 
-print '<tr><td class="classfortooltip" title="' . dol_escape_htmltag($messagemandatory) . '">' . $langs->trans("Lastname") . ' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="' . dol_escape_htmltag(GETPOST('lastname')) . '"></td></tr>' . "\n";
+print '<tr><td class="classfortooltip" title="' . dol_escape_htmltag($messagemandatory) . '">' . $langs->trans("Lastname") . ' <span class="star">*</span></td><td><input type="text" name="lastname" class="minwidth150" value="' . dol_escape_htmltag(request()->input('lastname')) . '"></td></tr>' . "\n";
 
 // Address
 print '<tr><td class="tdtop">';
@@ -385,7 +385,7 @@ print '</td></tr>';
 // Country
 print '<tr><td>' . $form->editfieldkey('Country', 'selectcountry_id', '', $object, 0) . '</td><td class="maxwidthonsmartphone">';
 print img_picto('', 'country', 'class="pictofixedwidth"');
-print $form->select_country((GETPOSTISSET('country_id') ? GETPOST('country_id') : $object->country_id), 'country_id', '', 0, 'minwidth300 maxwidth500 widthcentpercentminusx');
+print $form->select_country((request()->has('country_id') ? request()->input('country_id') : $object->country_id), 'country_id', '', 0, 'minwidth300 maxwidth500 widthcentpercentminusx');
 if ($user->admin) {
 	print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 }
@@ -393,12 +393,12 @@ print '</td></tr>';
 
 // Phone / Fax
 print '<tr><td>' . $form->editfieldkey('Phone', 'phone', '', $object, 0) . '</td>';
-print '<td>' . img_picto('', 'object_phoning', 'class="pictofixedwidth"') . ' <input type="text" name="phone" id="phone" class="maxwidth200 widthcentpercentminusx" value="' . (GETPOSTISSET('phone') ? GETPOST('phone', 'alpha') : $object->phone) . '"></td>';
+print '<td>' . img_picto('', 'object_phoning', 'class="pictofixedwidth"') . ' <input type="text" name="phone" id="phone" class="maxwidth200 widthcentpercentminusx" value="' . (request()->has('phone') ? request()->input('phone') : $object->phone) . '"></td>';
 print '</tr>';
 
 print '<tr>';
 print '<td>' . $form->editfieldkey('Fax', 'fax', '', $object, 0) . '</td>';
-print '<td>' . img_picto('', 'object_phoning_fax', 'class="pictofixedwidth"') . ' <input type="text" name="fax" id="fax" class="maxwidth200 widthcentpercentminusx" value="' . (GETPOSTISSET('fax') ? GETPOST('fax', 'alpha') : $object->fax) . '"></td>';
+print '<td>' . img_picto('', 'object_phoning_fax', 'class="pictofixedwidth"') . ' <input type="text" name="fax" id="fax" class="maxwidth200 widthcentpercentminusx" value="' . (request()->has('fax') ? request()->input('fax') : $object->fax) . '"></td>';
 print '</tr>';
 
 // Email / Web
@@ -409,7 +409,7 @@ if (isModEnabled('mailing') && getDolGlobalString('THIRDPARTY_SUGGEST_ALSO_ADDRE
 		print '</tr><tr>';
 	}
 	print '<td class="individualline noemail">' . $form->editfieldkey($langs->trans('No_Email') . ' (' . $langs->trans('Contact') . ')', 'contact_no_email', '', $object, 0) . '</td>';
-	print '<td class="individualline" ' . (($conf->browser->layout == 'phone') /* || !isModEnabled('mailing') */ ? ' colspan="3"' : '') . '>' . $form->selectyesno('contact_no_email', (GETPOSTISSET("contact_no_email") ? GETPOST("contact_no_email", 'alpha') : (empty($object->no_email) ? 0 : 1)), 1, false, 1) . '</td>';
+	print '<td class="individualline" ' . (($conf->browser->layout == 'phone') /* || !isModEnabled('mailing') */ ? ' colspan="3"' : '') . '>' . $form->selectyesno('contact_no_email', (request()->has('contact_no_email') ? request()->input('contact_no_email') : (empty($object->no_email) ? 0 : 1)), 1, false, 1) . '</td>';
 }
 print '</tr>';
 
@@ -420,7 +420,7 @@ print '<td>' . img_picto('', 'globe', 'class="pictofixedwidth"') . ' <input type
 // Comments
 print '<tr>';
 print '<td class="tdtop">' . $langs->trans("Comments") . '</td>';
-print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="' . ROWS_3 . '">' . dol_escape_htmltag(GETPOST('note_private', 'restricthtml'), 0, 1) . '</textarea></td>';
+print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="' . ROWS_3 . '">' . dol_escape_htmltag(request()->input('note_private'), 0, 1) . '</textarea></td>';
 print '</tr>' . "\n";
 
 

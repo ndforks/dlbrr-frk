@@ -15,7 +15,7 @@ class AccountancyIndex extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager, $mysoc;
         
-        $action = GETPOST('action', 'alpha') ?: 'view';
+        $action = $request->input('action', 'view');
         
         return match($action) {
             'addbox' => $this->addBox($request),
@@ -27,17 +27,17 @@ class AccountancyIndex extends Controller
     {
         global $db, $langs;
         
-        $zone = GETPOSTINT('areacode');
-        $userid = GETPOSTINT('userid');
-        $boxorder = GETPOST('boxorder', 'aZ09');
-        $boxorder .= GETPOST('boxcombo', 'aZ09');
+        $zone = $request->integer('areacode', 0);
+        $userid = $request->integer('userid', 0);
+        $boxorder = $request->input('boxorder');
+        $boxorder .= $request->input('boxcombo');
         
         $result = InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
         if ($result > 0) {
             setEventMessages($langs->trans("BoxAdded"), null);
         }
         
-        return redirect('/accountancy/');
+        return redirect()->route('accountancy.index');
     }
     
     private function show(Request $request): View
@@ -73,7 +73,7 @@ class AccountancyIndex extends Controller
         $boxlist .= "\n";
         $boxlist .= '</div>';
         
-        $helpisexpanded = GETPOSTINT('showtuto');
+        $helpisexpanded = $request->integer('showtuto', 0);
         $step = 0;
         
         $pcgversion = '';

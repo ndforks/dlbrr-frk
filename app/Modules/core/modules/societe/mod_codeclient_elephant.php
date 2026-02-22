@@ -129,8 +129,8 @@ class mod_codeclient_elephant extends ModeleThirdPartyCode
 		$datedb = getDolGlobalString('COMPANY_ELEPHANT_DATE_START');
 		// After save, default dolibarr store data like displayed : 20/05/2024 and we need a timestamp -> override data
 		if (!empty($datedb)) {
-			if (!is_numeric($datedb) && GETPOSTISSET('value3')) {
-				if (GETPOST('value4') == 1) {
+			if (!is_numeric($datedb) && request()->has('value3')) {
+				if (request()->input('value4') == 1) {
 					$dateinput = GETPOSTDATE('value3');
 					$res = dolibarr_set_const($this->db, 'COMPANY_ELEPHANT_DATE_START', $dateinput, 'chaine', 0, '', $conf->entity);
 					$res = dolibarr_set_const($this->db, 'COMPANY_ELEPHANT_DATE_START_ENABLE', 1, 'chaine', 0, '', $conf->entity);

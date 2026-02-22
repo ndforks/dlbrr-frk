@@ -48,10 +48,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 $langs->loadLangs(array("admin", "errors"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -62,32 +62,32 @@ if ($action == 'setvalue' /* && $user->admin */) {
 	$error = 0;
 	$db->begin();
 
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_DN', GETPOST("group", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_DN', request()->input('group'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_OBJECT_CLASS', GETPOST("objectclass", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_OBJECT_CLASS', request()->input('objectclass'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_FILTER', GETPOST("filter"), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_FILTER', request()->input('filter'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_FULLNAME', GETPOST("fieldfullname", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_FULLNAME', request()->input('fieldfullname'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	//if (! dolibarr_set_const($db, 'LDAP_GROUP_FIELD_NAME',GETPOST("fieldname", 'alphanohtml'),'chaine',0,'',$conf->entity)) $error++;
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_DESCRIPTION', GETPOST("fielddescription", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	//if (! dolibarr_set_const($db, 'LDAP_GROUP_FIELD_NAME',request()->input('fieldname'),'chaine',0,'',$conf->entity)) $error++;
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_DESCRIPTION', request()->input('fielddescription'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_GROUPMEMBERS', GETPOST("fieldgroupmembers", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_GROUPMEMBERS', request()->input('fieldgroupmembers'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
-	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_GROUPID', GETPOST("fieldgroupid", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+	if (!dolibarr_set_const($db, 'LDAP_GROUP_FIELD_GROUPID', request()->input('fieldgroupid'), 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
 	// This one must be after the others
 	$valkey = '';
-	$key = GETPOST("key");
+	$key = request()->input('key');
 	if ($key) {
 		$valkey = getDolGlobalString($key);
 	}
@@ -100,7 +100,7 @@ if ($action == 'setvalue' /* && $user->admin */) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -48,8 +48,8 @@ foreach ($dirmenus as $dirmenu) {
 	$dirsmartphone[] = $dirmenu.'smartphone';
 }
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 //$menu_handler_top = getDolGlobalString('MAIN_MENU_STANDARD');
 $menu_handler_top = 'all';
@@ -58,17 +58,17 @@ $menu_handler_top = preg_replace('/(_frontoffice\.php|_menu\.php)/i', '', $menu_
 
 $menu_handler = $menu_handler_top;
 
-if (GETPOST("handler_origine")) {
-	$menu_handler = GETPOST("handler_origine");
+if (request()->input('handler_origine')) {
+	$menu_handler = request()->input('handler_origine');
 }
-if (GETPOST("menu_handler")) {
-	$menu_handler = GETPOST("menu_handler");
+if (request()->input('menu_handler')) {
+	$menu_handler = request()->input('menu_handler');
 }
 
 $menu_handler_to_search = preg_replace('/(_backoffice|_frontoffice|_menu)?(\.php)?/i', '', $menu_handler);
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -83,7 +83,7 @@ if ($action == 'up') {
 	// Get current position
 	$sql = "SELECT m.rowid, m.position, m.type, m.fk_menu";
 	$sql .= " FROM ".MAIN_DB_PREFIX."menu as m";
-	$sql .= " WHERE m.rowid = ".GETPOSTINT("menuId");
+	$sql .= " WHERE m.rowid = ".request()->integer('menuId', 0);
 	dol_syslog("admin/menus/index.php ".$sql);
 	$result = $db->query($sql);
 	$num = $db->num_rows($result);
@@ -100,7 +100,7 @@ if ($action == 'up') {
 	// Menu before
 	$sql = "SELECT m.rowid, m.position";
 	$sql .= " FROM ".MAIN_DB_PREFIX."menu as m";
-	$sql .= " WHERE (m.position < ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid < ".GETPOSTINT("menuId")."))";
+	$sql .= " WHERE (m.position < ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid < ".request()->integer('menuId', 0)."))";
 	$sql .= " AND m.menu_handler='".$db->escape($menu_handler_to_search)."'";
 	$sql .= " AND m.entity = ".$conf->entity;
 	$sql .= " AND m.type = '".$db->escape($current['type'])."'";
@@ -134,7 +134,7 @@ if ($action == 'up') {
 	// Get current position
 	$sql = "SELECT m.rowid, m.position, m.type, m.fk_menu";
 	$sql .= " FROM ".MAIN_DB_PREFIX."menu as m";
-	$sql .= " WHERE m.rowid = ".GETPOSTINT("menuId");
+	$sql .= " WHERE m.rowid = ".request()->integer('menuId', 0);
 	dol_syslog("admin/menus/index.php ".$sql);
 	$result = $db->query($sql);
 	$num = $db->num_rows($result);
@@ -151,7 +151,7 @@ if ($action == 'up') {
 	// Menu after
 	$sql = "SELECT m.rowid, m.position";
 	$sql .= " FROM ".MAIN_DB_PREFIX."menu as m";
-	$sql .= " WHERE (m.position > ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid > ".GETPOSTINT("menuId")."))";
+	$sql .= " WHERE (m.position > ".($current['order'])." OR (m.position = ".($current['order'])." AND rowid > ".request()->integer('menuId', 0)."))";
 	$sql .= " AND m.menu_handler='".$db->escape($menu_handler_to_search)."'";
 	$sql .= " AND m.entity = ".$conf->entity;
 	$sql .= " AND m.type = '".$db->escape($current['type'])."'";
@@ -182,7 +182,7 @@ if ($action == 'up') {
 	$db->begin();
 
 	$sql = "DELETE FROM ".MAIN_DB_PREFIX."menu";
-	$sql .= " WHERE rowid = ".GETPOSTINT('menuId');
+	$sql .= " WHERE rowid = ".request()->integer('menuId', 0);
 	$resql = $db->query($sql);
 	if ($resql) {
 		$db->commit();
@@ -240,11 +240,11 @@ print "<br>\n";
 if ($action == 'delete') {
 	$sql = "SELECT m.titre as title";
 	$sql .= " FROM ".MAIN_DB_PREFIX."menu as m";
-	$sql .= " WHERE m.rowid = ".GETPOSTINT('menuId');
+	$sql .= " WHERE m.rowid = ".request()->integer('menuId', 0);
 	$result = $db->query($sql);
 	$obj = $db->fetch_object($result);
 
-	print $form->formconfirm("index.php?menu_handler=".$menu_handler."&menuId=".GETPOSTINT('menuId'), $langs->transnoentitiesnoconv("DeleteMenu"), $langs->transnoentitiesnoconv("ConfirmDeleteMenu", $obj->title), "confirm_delete");
+	print $form->formconfirm("index.php?menu_handler=".$menu_handler."&menuId=".request()->integer('menuId', 0), $langs->transnoentitiesnoconv("DeleteMenu"), $langs->transnoentitiesnoconv("ConfirmDeleteMenu", $obj->title), "confirm_delete");
 }
 
 $newcardbutton = '';

@@ -57,13 +57,13 @@ require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
 
 $langs->loadLangs(array("bills", "banks", "cashdesk", "blockedlog"));
 
-$id = GETPOSTINT('id');
-$summaryonly = GETPOSTINT('summaryonly');		// May be used for ticket Z
+$id = request()->integer('id', 0);
+$summaryonly = request()->integer('summaryonly', 0);		// May be used for ticket Z
 
 $object = new CashControl($db);
 $object->fetch($id);
 
-//$limit = GETPOST('limit')?GETPOST('limit', 'int'):$conf->liste_limit;
+//$limit = request()->input('limit')?request()->input('limit'):$conf->liste_limit;
 $sortorder = 'ASC';
 $sortfield = 'b.datev,b.dateo,b.rowid';
 
@@ -87,10 +87,10 @@ $terminalid = $object->posnumber;
 // Security check
 if ($user->socid > 0) {	// Protection if external user
 	//$socid = $user->socid;
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('cashdesk', 'run') && !$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -474,7 +474,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</div>';

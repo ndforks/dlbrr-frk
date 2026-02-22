@@ -57,19 +57,19 @@ include_once '../../../main.inc.php'; // Load $user and permissions
  * @var DoliDB $db
  */
 
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$email = GETPOST('email', 'custom', 0, FILTER_VALIDATE_EMAIL);
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$email = request()->input('email');
 
 
 if (!isModEnabled('ticket')) {
-	httponly_accessforbidden('Module Ticket not enabled');
+	httponly_abort(403);
 }
 
 // Option TICKET_CREATE_THIRD_PARTY_WITH_CONTACT_IF_NOT_EXIST must be set.
 // Warning: this option is not secured so has been disabled from setup.
 if (!getDolGlobalString('TICKET_CREATE_THIRD_PARTY_WITH_CONTACT_IF_NOT_EXIST')) {
-	httponly_accessforbidden('Option TICKET_CREATE_THIRD_PARTY_WITH_CONTACT_IF_NOT_EXIST of module ticket is not enabled');
+	httponly_abort(403);
 }
 
 

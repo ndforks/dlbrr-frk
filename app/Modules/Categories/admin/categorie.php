@@ -37,13 +37,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("categories", "admin"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 /*
  *	Actions

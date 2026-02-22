@@ -78,7 +78,7 @@ include_once 'inc.php';
 
 $err = 0;
 
-$setuplang = GETPOST("selectlang", 'alpha', 3) ? GETPOST("selectlang", 'alpha', 3) : (GETPOST('lang', 'alpha', 1) ? GETPOST('lang', 'alpha', 1) : 'auto');
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (request()->input('lang') ? request()->input('lang') : 'auto');
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("install", "errors", "admin"));
@@ -188,7 +188,7 @@ if (!empty($force_install_message)) {
 		<td class="label"><label for="main_dir"><b><?php print $langs->trans("WebPagesDirectory"); ?></b></label></td>
 <?php
 if (empty($dolibarr_main_document_root)) {
-	$dolibarr_main_document_root = GETPOSTISSET('main_dir') ? GETPOST('main_dir') : detect_dolibarr_main_document_root();
+	$dolibarr_main_document_root = request()->has('main_dir') ? request()->input('main_dir') : detect_dolibarr_main_document_root();
 }
 ?>
 		<td class="label">
@@ -221,7 +221,7 @@ if (!empty($force_install_noedit)) {
 			$dolibarr_main_data_root = @$force_install_main_data_root;
 		}
 		if (empty($dolibarr_main_data_root)) {
-			$dolibarr_main_data_root = GETPOSTISSET('main_data_dir') ? GETPOST('main_data_dir') : detect_dolibarr_main_data_root($dolibarr_main_document_root);
+			$dolibarr_main_data_root = request()->has('main_data_dir') ? request()->input('main_data_dir') : detect_dolibarr_main_data_root($dolibarr_main_document_root);
 		}
 		?>
 		<td class="label">
@@ -250,7 +250,7 @@ if (!empty($force_install_noedit)) {
 	<!-- Root URL $dolibarr_main_url_root -->
 	<?php
 	if (empty($dolibarr_main_url_root)) {
-		$dolibarr_main_url_root = GETPOSTISSET('main_url') ? GETPOST('main_url') : detect_dolibarr_main_url_root();
+		$dolibarr_main_url_root = request()->has('main_url') ? request()->input('main_url') : detect_dolibarr_main_url_root();
 		$dolibarr_main_url_root = trim($dolibarr_main_url_root);
 	}
 	?>
@@ -603,7 +603,7 @@ if (!empty($force_install_noedit)) {
 				   id="db_user_root"
 				   name="db_user_root"
 				   class="needroot"
-				   value="<?php print (!empty($force_install_databaserootlogin)) ? $force_install_databaserootlogin : (GETPOSTISSET('db_user_root') ? GETPOST('db_user_root') : (isset($db_user_root) ? $db_user_root : '')); ?>"
+				   value="<?php print (!empty($force_install_databaserootlogin)) ? $force_install_databaserootlogin : (request()->has('db_user_root') ? request()->input('db_user_root') : (isset($db_user_root) ? $db_user_root : '')); ?>"
 				<?php if ($force_install_noedit > 0 && !empty($force_install_databaserootlogin)) {
 					print ' disabled';
 				} ?>

@@ -50,15 +50,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/propal.lib.php';
 $langs->loadLangs(array("admin", "other", "errors", "propal"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'propal';
 
 
@@ -70,8 +70,8 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 $error = 0;
 if ($action == 'updateMask') {
-	$maskconstpropal = GETPOST('maskconstpropal', 'aZ09');
-	$maskpropal = GETPOST('maskpropal', 'alpha');
+	$maskconstpropal = request()->input('maskconstpropal');
+	$maskpropal = request()->input('maskpropal');
 
 	$res = 0;
 
@@ -89,7 +89,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$propal = new Propal($db);
 	$propal->initAsSpecimen();
@@ -125,8 +125,8 @@ if ($action == 'updateMask') {
 		dol_syslog($langs->trans("ErrorModuleNotFound"), LOG_ERR);
 	}
 } elseif ($action == 'setribchq') {
-	$rib = GETPOST('rib', 'alpha');
-	$chq = GETPOST('chq', 'alpha');
+	$rib = request()->input('rib');
+	$chq = request()->input('chq');
 
 	$res = dolibarr_set_const($db, "FACTURE_RIB_NUMBER", $rib, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "FACTURE_CHQ_NUMBER", $chq, 'chaine', 0, '', $conf->entity);
@@ -141,22 +141,22 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'update') {
-	if (GETPOSTISSET('PROPALE_VALIDITY_DURATION')) {
-		$value = GETPOST('PROPALE_VALIDITY_DURATION');
+	if (request()->has('PROPALE_VALIDITY_DURATION')) {
+		$value = request()->input('PROPALE_VALIDITY_DURATION');
 		$res = dolibarr_set_const($db, "PROPALE_VALIDITY_DURATION", $value, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
-	if (GETPOSTISSET('PROPALE_DRAFT_WATERMARK')) {
-		$draft = GETPOST('PROPALE_DRAFT_WATERMARK', 'alpha');
+	if (request()->has('PROPALE_DRAFT_WATERMARK')) {
+		$draft = request()->input('PROPALE_DRAFT_WATERMARK');
 		$res = dolibarr_set_const($db, "PROPALE_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
-	if (GETPOSTISSET('PROPOSAL_FREE_TEXT')) {
-		$freetext = GETPOST('PROPOSAL_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	if (request()->has('PROPOSAL_FREE_TEXT')) {
+		$freetext = request()->input('PROPOSAL_FREE_TEXT'); // No alpha here, we want exact string
 		$res = dolibarr_set_const($db, "PROPOSAL_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
@@ -207,7 +207,7 @@ if ($action == 'updateMask') {
 	dolibarr_set_const($db, "PROPALE_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif (preg_match('/set_(.*)/', $action, $reg)) {
 	$code = $reg[1];
-	$value = (GETPOST($code) ? GETPOST($code) : 1);
+	$value = (request()->input($code) ? request()->input($code) : 1);
 
 	$res = dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
@@ -387,7 +387,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

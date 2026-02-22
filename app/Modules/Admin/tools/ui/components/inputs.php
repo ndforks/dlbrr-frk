@@ -29,7 +29,7 @@ require '../../../../main.inc.php';
  */
 
 // Protection if external user
-if ($user->socid > 0) : accessforbidden();
+if ($user->socid > 0) : abort(403);
 endif;
 
 // Includes
@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 // Load documentation translations
 $langs->load('uxdocumentation');
 
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 //
 $documentation = new Documentation($db);
@@ -183,7 +183,7 @@ $documentation->showSidebar(); ?>
 				<?php
 				$values = ['1' => 'value 1', '2' => 'value 2', '3' => 'value 3'];
 				$form = new Form($db);
-				print $form->multiselectarray('categories', $values, GETPOST('categories', 'array'), 0, 0, 'minwidth200', 0, 0);
+				print $form->multiselectarray('categories', $values, request()->input('categories'), 0, 0, 'minwidth200', 0, 0);
 				?>
 			</div>
 			<?php
@@ -276,7 +276,7 @@ $documentation->showSidebar(); ?>
 			<p class="documentation-text"><?php echo $langs->trans('DocEditorInputsDescription'); ?></p>
 			<div class="documentation-example">
 				<?php
-				$doleditor = new DolEditor('desc', GETPOST('desc', 'restricthtml'), '', 160, 'dolibarr_details', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_DETAILS'), ROWS_4, '90%');
+				$doleditor = new DolEditor('desc', request()->input('desc'), '', 160, 'dolibarr_details', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_DETAILS'), ROWS_4, '90%');
 				$doleditor->Create();
 				?>
 			</div>

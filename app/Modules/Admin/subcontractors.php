@@ -38,14 +38,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'adminsubcontractors'; // To manage different context of search
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'adminsubcontractors'; // To manage different context of search
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'companies'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new stdClass();
@@ -61,36 +61,36 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (($action == 'update' && !GETPOST("cancel", 'alpha')) || ($action == 'updateedit')) {
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_NAME", GETPOST("nom", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_ADDRESS", GETPOST("address", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_TOWN", GETPOST("town", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_ZIP", GETPOST("zipcode", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_STATE", GETPOSTINT("state_id"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_REGION", GETPOST("region_code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_COUNTRY", GETPOSTINT('country_id'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_PHONE", GETPOST("phone", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	//dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_FAX", GETPOST("fax", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_MAIL", GETPOST("mail", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_WEB", GETPOST("web", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_IDPROF1", GETPOST("idprof1", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_CODE", GETPOST("code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_NOTE", GETPOST("note", 'restricthtml'), 'chaine', 0, '', $conf->entity);
+if (($action == 'update' && !request()->input('cancel')) || ($action == 'updateedit')) {
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_NAME", request()->input('nom'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_ADDRESS", request()->input('address'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_TOWN", request()->input('town'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_ZIP", request()->input('zipcode'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_STATE", request()->integer('state_id', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_REGION", request()->input('region_code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_COUNTRY", request()->integer('country_id', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_PHONE", request()->input('phone'), 'chaine', 0, '', $conf->entity);
+	//dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_FAX", request()->input('fax'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_MAIL", request()->input('mail'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_WEB", request()->input('web'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_IDPROF1", request()->input('idprof1'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_CODE", request()->input('code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ACCOUNTANT_NOTE", request()->input('note'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_NAME", GETPOST("itprovider_nom", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_ADDRESS", GETPOST("itprovider_address", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_TOWN", GETPOST("itprovider_town", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_ZIP", GETPOST("itprovider_zipcode", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_STATE", GETPOSTINT("itprovider_state_id"), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_REGION", GETPOST("itprovider_region_code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_COUNTRY", GETPOSTINT('itprovider_country_id'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_PHONE", GETPOST("itprovider_phone", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	//dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_FAX", GETPOST("itprovider_fax", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_MAIL", GETPOST("itprovider_mail", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_WEB", GETPOST("itprovider_web", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_IDPROF1", GETPOST("itprovider_idprof1", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_CODE", GETPOST("itprovider_code", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_NOTE", GETPOST("itprovider_note", 'restricthtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_NAME", request()->input('itprovider_nom'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_ADDRESS", request()->input('itprovider_address'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_TOWN", request()->input('itprovider_town'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_ZIP", request()->input('itprovider_zipcode'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_STATE", request()->integer('itprovider_state_id', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_REGION", request()->input('itprovider_region_code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_COUNTRY", request()->integer('itprovider_country_id', 0), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_PHONE", request()->input('itprovider_phone'), 'chaine', 0, '', $conf->entity);
+	//dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_FAX", request()->input('itprovider_fax'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_MAIL", request()->input('itprovider_mail'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_WEB", request()->input('itprovider_web'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_IDPROF1", request()->input('itprovider_idprof1'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_CODE", request()->input('itprovider_code'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_ITPROVIDER_NOTE", request()->input('itprovider_note'), 'chaine', 0, '', $conf->entity);
 
 	if ($action != 'updateedit') {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -152,72 +152,72 @@ print '<tr class="liste_titre"><th class="titlefieldcreate wordbreak">'.$langs->
 
 // Name of Accountant Company
 print '<tr class="oddeven"><td><label for="name">'.$langs->trans("CompanyName").'</label></td><td>';
-print '<input name="nom" id="name" class="minwidth200" value="'.dol_escape_htmltag(GETPOSTISSET('nom') ? GETPOST('nom', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_NAME')).'"'.(!getDolGlobalString('MAIN_INFO_ACCOUNTANT_NAME') ? ' autofocus="autofocus"' : '').'></td></tr>'."\n";
+print '<input name="nom" id="name" class="minwidth200" value="'.dol_escape_htmltag(request()->has('nom') ? request()->input('nom') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_NAME')).'"'.(!getDolGlobalString('MAIN_INFO_ACCOUNTANT_NAME') ? ' autofocus="autofocus"' : '').'></td></tr>'."\n";
 
 // Address
 print '<tr class="oddeven"><td><label for="address">'.$langs->trans("CompanyAddress").'</label></td><td>';
 print '<textarea name="address" id="address" class="quatrevingtpercent" rows="'.ROWS_2.'">';
-print dolPrintText(GETPOSTISSET('address') ? GETPOST('address', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_ADDRESS'));
+print dolPrintText(request()->has('address') ? request()->input('address') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_ADDRESS'));
 print '</textarea></td></tr>'."\n";
 
 // ZIP
 print '<tr class="oddeven"><td><label for="zipcode">'.$langs->trans("CompanyZip").'</label></td><td>';
-print '<input class="width100" name="zipcode" id="zipcode" value="'.dol_escape_htmltag(GETPOSTISSET('zipcode') ? GETPOST('zipcode', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_ZIP')).'"></td></tr>'."\n";
+print '<input class="width100" name="zipcode" id="zipcode" value="'.dol_escape_htmltag(request()->has('zipcode') ? request()->input('zipcode') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_ZIP')).'"></td></tr>'."\n";
 
 // Town/City
 print '<tr class="oddeven"><td><label for="town">'.$langs->trans("CompanyTown").'</label></td><td>';
-print '<input name="town" class="minwidth100" id="town" value="'.dol_escape_htmltag(GETPOSTISSET('town') ? GETPOST('town', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_TOWN')).'"></td></tr>'."\n";
+print '<input name="town" class="minwidth100" id="town" value="'.dol_escape_htmltag(request()->has('town') ? request()->input('town') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_TOWN')).'"></td></tr>'."\n";
 
 // Country
 print '<tr class="oddeven"><td><label for="selectcountry_id">'.$langs->trans("Country").'</label></td><td class="maxwidthonsmartphone">';
 print img_picto('', 'globe-americas', 'class="pictofixedwidth"');
-print $form->select_country((GETPOSTISSET('country_id') ? GETPOSTINT('country_id') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_COUNTRY')), 'country_id');
+print $form->select_country((request()->has('country_id') ? request()->integer('country_id', 0) : getDolGlobalString('MAIN_INFO_ACCOUNTANT_COUNTRY')), 'country_id');
 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 print '</td></tr>'."\n";
 
 // State
 print '<tr class="oddeven"><td><label for="state_id">'.$langs->trans("State").'</label></td><td class="maxwidthonsmartphone">';
 print img_picto('', 'state', 'class="pictofixedwidth"');
-print $formcompany->select_state((GETPOSTISSET('state_id') ? GETPOSTINT('state_id') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_STATE')), (GETPOSTISSET('country_id') ? GETPOSTINT('country_id') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_COUNTRY')), 'state_id');
+print $formcompany->select_state((request()->has('state_id') ? request()->integer('state_id', 0) : getDolGlobalString('MAIN_INFO_ACCOUNTANT_STATE')), (request()->has('country_id') ? request()->integer('country_id', 0) : getDolGlobalString('MAIN_INFO_ACCOUNTANT_COUNTRY')), 'state_id');
 print '</td></tr>'."\n";
 
 // Telephone
 print '<tr class="oddeven"><td><label for="phone">'.$langs->trans("Phone").'</label></td><td>';
 print img_picto('', 'object_phoning', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="phone" id="phone" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('phone') ? GETPOST('phone', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_PHONE')).'"></td></tr>';
+print '<input name="phone" id="phone" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('phone') ? request()->input('phone') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_PHONE')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Fax
 /*
 print '<tr class="oddeven"><td><label for="fax">'.$langs->trans("Fax").'</label></td><td>';
 print img_picto('', 'object_phoning_fax', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="fax" id="fax" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('fax') ? GETPOST('fax', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_FAX')).'"></td></tr>';
+print '<input name="fax" id="fax" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('fax') ? request()->input('fax') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_FAX')).'"></td></tr>';
 print '</td></tr>'."\n";
 */
 
 // eMail
 print '<tr class="oddeven"><td><label for="email">'.$langs->trans("EMail").'</label></td><td>';
 print img_picto('', 'object_email', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="mail" id="email" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('mail') ? GETPOST('mail', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_MAIL')).'"></td></tr>';
+print '<input name="mail" id="email" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('mail') ? request()->input('mail') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_MAIL')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Web
 print '<tr class="oddeven"><td><label for="web">'.$langs->trans("Web").'</label></td><td>';
 print img_picto('', 'globe', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="web" id="web" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('web') ? GETPOST('web', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_WEB')).'"></td></tr>';
+print '<input name="web" id="web" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('web') ? request()->input('web') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_WEB')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Id prof
 print '<tr class="oddeven"><td><label for="idprof1">'.$langs->transcountry("ProfId1", $mysoc->country_code).'</label></td><td>';
-print '<input name="idprof1" id="idprof1" class="minwidth100" value="'.dol_escape_htmltag(GETPOSTISSET('idprof1') ? GETPOST('idprof1', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_IDPROF1')).'"></td></tr>'."\n";
+print '<input name="idprof1" id="idprof1" class="minwidth100" value="'.dol_escape_htmltag(request()->has('idprof1') ? request()->input('idprof1') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_IDPROF1')).'"></td></tr>'."\n";
 
 // Code
 print '<tr class="oddeven"><td><label for="code">'.$langs->trans("AccountantFileNumber").'</label></td><td>';
-print '<input name="code" id="code" class="minwidth100" value="'.dol_escape_htmltag(GETPOSTISSET('code') ? GETPOST('code', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_CODE')).'"></td></tr>'."\n";
+print '<input name="code" id="code" class="minwidth100" value="'.dol_escape_htmltag(request()->has('code') ? request()->input('code') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_CODE')).'"></td></tr>'."\n";
 
 // Note
 print '<tr class="oddeven"><td class="tdtop"><label for="note">'.$langs->trans("Note").'</label></td><td>';
-print '<textarea class="flat quatrevingtpercent" name="note" id="note" rows="'.ROWS_2.'">'.(GETPOSTISSET('note') ? GETPOST('note', 'restricthtml') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_NOTE')).'</textarea></td></tr>';
+print '<textarea class="flat quatrevingtpercent" name="note" id="note" rows="'.ROWS_2.'">'.(request()->has('note') ? request()->input('note') : getDolGlobalString('MAIN_INFO_ACCOUNTANT_NOTE')).'</textarea></td></tr>';
 print '</td></tr>';
 
 print '</table>';
@@ -236,72 +236,72 @@ print '<tr class="liste_titre"><th class="titlefieldcreate wordbreak">'.$langs->
 
 // Name of Accountant Company
 print '<tr class="oddeven"><td><label for="name">'.$langs->trans("CompanyName").'</label></td><td>';
-print '<input name="itprovider_nom" id="itprovider_name" class="minwidth200" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_nom') ? GETPOST('itprovider_nom', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_NAME')).'"'.(!getDolGlobalString('MAIN_INFO_ITPROVIDER_NAME') ? ' autofocus="autofocus"' : '').'></td></tr>'."\n";
+print '<input name="itprovider_nom" id="itprovider_name" class="minwidth200" value="'.dol_escape_htmltag(request()->has('itprovider_nom') ? request()->input('itprovider_nom') : getDolGlobalString('MAIN_INFO_ITPROVIDER_NAME')).'"'.(!getDolGlobalString('MAIN_INFO_ITPROVIDER_NAME') ? ' autofocus="autofocus"' : '').'></td></tr>'."\n";
 
 // Address
 print '<tr class="oddeven"><td><label for="address">'.$langs->trans("CompanyAddress").'</label></td><td>';
 print '<textarea name="itprovider_address" id="itprovider_address" class="quatrevingtpercent" rows="'.ROWS_2.'">';
-print dolPrintText(GETPOSTISSET('itprovider_address') ? GETPOST('itprovider_address', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_ADDRESS'));
+print dolPrintText(request()->has('itprovider_address') ? request()->input('itprovider_address') : getDolGlobalString('MAIN_INFO_ITPROVIDER_ADDRESS'));
 print '</textarea></td></tr>'."\n";
 
 // ZIP
 print '<tr class="oddeven"><td><label for="zipcode">'.$langs->trans("CompanyZip").'</label></td><td>';
-print '<input class="width100" name="itprovider_zipcode" id="itprovider_zipcode" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_zipcode') ? GETPOST('itprovider_zipcode', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_ZIP')).'"></td></tr>'."\n";
+print '<input class="width100" name="itprovider_zipcode" id="itprovider_zipcode" value="'.dol_escape_htmltag(request()->has('itprovider_zipcode') ? request()->input('itprovider_zipcode') : getDolGlobalString('MAIN_INFO_ITPROVIDER_ZIP')).'"></td></tr>'."\n";
 
 // Town/City
 print '<tr class="oddeven"><td><label for="itprovider_town">'.$langs->trans("CompanyTown").'</label></td><td>';
-print '<input name="itprovider_town" class="minwidth100" id="itprovider_town" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_town') ? GETPOST('itprovider_town', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_TOWN')).'"></td></tr>'."\n";
+print '<input name="itprovider_town" class="minwidth100" id="itprovider_town" value="'.dol_escape_htmltag(request()->has('itprovider_town') ? request()->input('itprovider_town') : getDolGlobalString('MAIN_INFO_ITPROVIDER_TOWN')).'"></td></tr>'."\n";
 
 // Country
 print '<tr class="oddeven"><td><label for="selectitprovider_country_id">'.$langs->trans("Country").'</label></td><td class="maxwidthonsmartphone">';
 print img_picto('', 'globe-americas', 'class="pictofixedwidth"');
-print $form->select_country((GETPOSTISSET('itprovider_country_id') ? GETPOSTINT('itprovider_country_id') : getDolGlobalString('MAIN_INFO_ITPROVIDER_COUNTRY')), 'itprovider_country_id');
+print $form->select_country((request()->has('itprovider_country_id') ? request()->integer('itprovider_country_id', 0) : getDolGlobalString('MAIN_INFO_ITPROVIDER_COUNTRY')), 'itprovider_country_id');
 print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 print '</td></tr>'."\n";
 
 // State
 print '<tr class="oddeven"><td><label for="itprovider_state_id">'.$langs->trans("State").'</label></td><td class="maxwidthonsmartphone">';
 print img_picto('', 'state', 'class="pictofixedwidth"');
-print $formcompany->select_state((GETPOSTISSET('itprovider_state_id') ? GETPOSTINT('itprovider_state_id') : getDolGlobalString('MAIN_INFO_ITPROVIDER_STATE')), (GETPOSTISSET('itprovider_country_id') ? GETPOSTINT('itprovider_country_id') : getDolGlobalString('MAIN_INFO_ITPROVIDER_COUNTRY')), 'itprovider_state_id');
+print $formcompany->select_state((request()->has('itprovider_state_id') ? request()->integer('itprovider_state_id', 0) : getDolGlobalString('MAIN_INFO_ITPROVIDER_STATE')), (request()->has('itprovider_country_id') ? request()->integer('itprovider_country_id', 0) : getDolGlobalString('MAIN_INFO_ITPROVIDER_COUNTRY')), 'itprovider_state_id');
 print '</td></tr>'."\n";
 
 // Telephone
 print '<tr class="oddeven"><td><label for="itprovider_phone">'.$langs->trans("Phone").'</label></td><td>';
 print img_picto('', 'object_phoning', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="itprovider_phone" id="itprovider_phone" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_phone') ? GETPOST('itprovider_phone', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_PHONE')).'"></td></tr>';
+print '<input name="itprovider_phone" id="itprovider_phone" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('itprovider_phone') ? request()->input('itprovider_phone') : getDolGlobalString('MAIN_INFO_ITPROVIDER_PHONE')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Fax
 /*
 print '<tr class="oddeven"><td><label for="itprovider_fax">'.$langs->trans("Fax").'</label></td><td>';
 print img_picto('', 'object_phoning_fax', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="itprovider_fax" id="itprovider_fax" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_fax') ? GETPOST('itprovider_fax', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_FAX')).'"></td></tr>';
+print '<input name="itprovider_fax" id="itprovider_fax" class="maxwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('itprovider_fax') ? request()->input('itprovider_fax') : getDolGlobalString('MAIN_INFO_ITPROVIDER_FAX')).'"></td></tr>';
 print '</td></tr>'."\n";
 */
 
 // eMail
 print '<tr class="oddeven"><td><label for="itprovider_email">'.$langs->trans("EMail").'</label></td><td>';
 print img_picto('', 'object_email', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="itprovider_mail" id="itprovider_email" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_mail') ? GETPOST('itprovider_mail', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_MAIL')).'"></td></tr>';
+print '<input name="itprovider_mail" id="itprovider_email" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('itprovider_mail') ? request()->input('itprovider_mail') : getDolGlobalString('MAIN_INFO_ITPROVIDER_MAIL')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Web
 print '<tr class="oddeven"><td><label for="itprovider_web">'.$langs->trans("Web").'</label></td><td>';
 print img_picto('', 'globe', '', 0, 0, 0, '', 'pictofixedwidth');
-print '<input name="itprovider_web" id="itprovider_web" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_web') ? GETPOST('itprovider_web', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_WEB')).'"></td></tr>';
+print '<input name="itprovider_web" id="itprovider_web" class="maxwidth300 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->has('itprovider_web') ? request()->input('itprovider_web') : getDolGlobalString('MAIN_INFO_ITPROVIDER_WEB')).'"></td></tr>';
 print '</td></tr>'."\n";
 
 // Code
 print '<tr class="oddeven"><td><label for="itprovider_idprof1">'.$langs->transcountry("ProfId1", $mysoc->country_code).'</label></td><td>';
-print '<input name="itprovider_idprof1" id="itprovider_idprof1" class="minwidth100" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_idprof1') ? GETPOST('itprovider_idprof1', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_IDPROF1')).'"></td></tr>'."\n";
+print '<input name="itprovider_idprof1" id="itprovider_idprof1" class="minwidth100" value="'.dol_escape_htmltag(request()->has('itprovider_idprof1') ? request()->input('itprovider_idprof1') : getDolGlobalString('MAIN_INFO_ITPROVIDER_IDPROF1')).'"></td></tr>'."\n";
 
 // Code
 print '<tr class="oddeven"><td><label for="itprovider_code">'.$langs->trans("AccountantFileNumber").'</label></td><td>';
-print '<input name="itprovider_code" id="itprovider_code" class="minwidth100" value="'.dol_escape_htmltag(GETPOSTISSET('itprovider_code') ? GETPOST('itprovider_code', 'alphanohtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_CODE')).'"></td></tr>'."\n";
+print '<input name="itprovider_code" id="itprovider_code" class="minwidth100" value="'.dol_escape_htmltag(request()->has('itprovider_code') ? request()->input('itprovider_code') : getDolGlobalString('MAIN_INFO_ITPROVIDER_CODE')).'"></td></tr>'."\n";
 
 // Note
 print '<tr class="oddeven"><td class="tdtop"><label for="itprovider_note">'.$langs->trans("Note").'</label></td><td>';
-print '<textarea class="flat quatrevingtpercent" name="itprovider_note" id="itprovider_note" rows="'.ROWS_2.'">'.(GETPOSTISSET('itprovider_note') ? GETPOST('itprovider_note', 'restricthtml') : getDolGlobalString('MAIN_INFO_ITPROVIDER_NOTE')).'</textarea></td></tr>';
+print '<textarea class="flat quatrevingtpercent" name="itprovider_note" id="itprovider_note" rows="'.ROWS_2.'">'.(request()->has('itprovider_note') ? request()->input('itprovider_note') : getDolGlobalString('MAIN_INFO_ITPROVIDER_NOTE')).'</textarea></td></tr>';
 print '</td></tr>';
 
 print '</table>';

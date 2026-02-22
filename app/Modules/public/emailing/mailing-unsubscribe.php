@@ -63,11 +63,11 @@ global $user, $conf, $db, $langs;
 
 $langs->loadLangs(array("main", "mails"));
 
-$mtid = GETPOST('mtid');
-$email = GETPOST('email');
-$tag = GETPOST('tag');	// To retrieve the emailing, and recipient
-$unsuscrib = GETPOST('unsuscrib');
-$securitykey = GETPOST('securitykey');
+$mtid = request()->integer('mtid', 0);
+$email = request()->input('email');
+$tag = request()->input('tag');	// To retrieve the emailing, and recipient
+$unsuscrib = request()->input('unsuscrib');
+$securitykey = request()->input('securitykey');
 
 
 /*
@@ -104,7 +104,7 @@ $sql .= " WHERE mc.fk_mailing = m.rowid AND mc.tag = '".$db->escape($tag)."'";
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 }
 
 $obj = $db->fetch_object($resql);
@@ -140,7 +140,7 @@ $sql = "UPDATE ".MAIN_DB_PREFIX."mailing_cibles SET statut=".((int) $statut)." W
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 }
 
 /*

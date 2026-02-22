@@ -604,13 +604,13 @@ class Facture extends CommonInvoice
 			// Fields coming from GUI.
 			// @TODO Value of template should be used as default value on the form on the GUI, and we should here always use the value from GUI
 			// set by posted page with $object->xxx = ... and this section should be removed.
-			$this->fk_project        = GETPOSTINT('projectid') > 0 ? GETPOSTINT('projectid') : $_facrec->fk_project;
-			$this->note_public       = GETPOSTISSET('note_public') ? GETPOST('note_public', 'restricthtml') : $_facrec->note_public;
-			$this->note_private      = GETPOSTISSET('note_private') ? GETPOST('note_private', 'restricthtml') : $_facrec->note_private;
-			$this->model_pdf = GETPOSTISSET('model') ? GETPOST('model', 'alpha') : $_facrec->model_pdf;
-			$this->cond_reglement_id = GETPOSTINT('cond_reglement_id') > 0 ? GETPOSTINT('cond_reglement_id') : $_facrec->cond_reglement_id;
-			$this->mode_reglement_id = GETPOSTINT('mode_reglement_id') > 0 ? GETPOSTINT('mode_reglement_id') : $_facrec->mode_reglement_id;
-			$this->fk_account        = GETPOST('fk_account') > 0 ? GETPOSTINT('fk_account') : $_facrec->fk_account;
+			$this->fk_project        = request()->integer('projectid', 0) > 0 ? request()->integer('projectid', 0) : $_facrec->fk_project;
+			$this->note_public       = request()->has('note_public') ? request()->input('note_public') : $_facrec->note_public;
+			$this->note_private      = request()->has('note_private') ? request()->input('note_private') : $_facrec->note_private;
+			$this->model_pdf = request()->has('model') ? request()->input('model') : $_facrec->model_pdf;
+			$this->cond_reglement_id = request()->integer('cond_reglement_id', 0) > 0 ? request()->integer('cond_reglement_id', 0) : $_facrec->cond_reglement_id;
+			$this->mode_reglement_id = request()->integer('mode_reglement_id', 0) > 0 ? request()->integer('mode_reglement_id', 0) : $_facrec->mode_reglement_id;
+			$this->fk_account        = request()->input('fk_account') > 0 ? request()->integer('fk_account', 0) : $_facrec->fk_account;
 
 			// Set here to have this defined for substitution into notes, should be recalculated after adding lines to get same result
 			$this->total_ht          = $_facrec->total_ht;
@@ -5425,7 +5425,7 @@ class Facture extends CommonInvoice
 		}
 
 		if (getDolGlobalInt('LIST_OF_QUALIFIED_INVOICES_LIMIT_DEFINED') > 0) {
-			$sql .= " ORDER BY CASE WHEN f.rowid = ".((int) GETPOST('fac_avoir'))." THEN 0 ELSE 1 END, f.ref";
+			$sql .= " ORDER BY CASE WHEN f.rowid = ".((int) request()->input('fac_avoir'))." THEN 0 ELSE 1 END, f.ref";
 			$sql .= " DESC";
 			$sql .= $this->db->plimit(getDolGlobalInt('LIST_OF_QUALIFIED_INVOICES_LIMIT_DEFINED'));
 		} else {
@@ -5618,7 +5618,7 @@ class Facture extends CommonInvoice
 
 		if (empty($option) || $option != 'nolines') {
 			// Lines
-			$nbp = min(1000, GETPOSTINT('nblines') ? GETPOSTINT('nblines') : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
+			$nbp = min(1000, request()->integer('nblines', 0) ? request()->integer('nblines', 0) : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
 			$xnbp = 0;
 			while ($xnbp < $nbp) {
 				$line = new FactureLigne($this->db);
@@ -5770,7 +5770,7 @@ class Facture extends CommonInvoice
 	/**
 	 *  Create a document onto disk according to template module.
 	 *
-	 *	@param	string		$modele			Generator to use. Caller must set it to obj->model_pdf or GETPOST('model','alpha') for example.
+	 *	@param	string		$modele			Generator to use. Caller must set it to obj->model_pdf or request()->input('model') for example.
 	 *	@param	Translate	$outputlangs	Object lang to use for translation
 	 *  @param  int<0,1>			$hidedetails    Hide details of lines
 	 *  @param  int<0,1>	$hidedesc       Hide description

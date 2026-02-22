@@ -64,18 +64,18 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'tax|salaries', '', '', 'charges|');
 
-$mode = GETPOST("mode", 'alpha');
-$year = GETPOSTINT("year");
-$filtre = GETPOST("filtre", 'alpha');
+$mode = request()->input('mode');
+$year = request()->integer('year', 0);
+$filtre = request()->input('filtre');
 if (!$year) {
 	$year = date("Y", time());
 }
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -289,7 +289,7 @@ if (isModEnabled('tax') && $user->hasRight('tax', 'charges', 'lire')) {
 
 		print "</tr>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	print '</table>';
 }
@@ -430,7 +430,7 @@ if (isModEnabled('tax') && $user->hasRight('tax', 'charges', 'lire')) {
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -521,7 +521,7 @@ while ($j < $numlt) {
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$j++;

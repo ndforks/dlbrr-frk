@@ -44,7 +44,7 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "cashdesk", "commercial"));
@@ -55,16 +55,16 @@ $langs->loadLangs(array("admin", "cashdesk", "commercial"));
  */
 $error = 0;
 
-if (GETPOST('action', 'alpha') == 'set') {
+if (request()->input('action') == 'set') {
 	$db->begin();
 
-	$res = dolibarr_set_const($db, "TAKEPOS_HEADER", GETPOST('TAKEPOS_HEADER', 'restricthtml'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_FOOTER", GETPOST('TAKEPOS_FOOTER', 'restricthtml'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_RECEIPT_NAME", GETPOST('TAKEPOS_RECEIPT_NAME', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_PRINT_SERVER", GETPOST('TAKEPOS_PRINT_SERVER', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, 'TAKEPOS_PRINT_WITHOUT_DETAILS_LABEL_DEFAULT', GETPOST('TAKEPOS_PRINT_WITHOUT_DETAILS_LABEL_DEFAULT', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_HEADER", request()->input('TAKEPOS_HEADER'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_FOOTER", request()->input('TAKEPOS_FOOTER'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_RECEIPT_NAME", request()->input('TAKEPOS_RECEIPT_NAME'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_PRINT_SERVER", request()->input('TAKEPOS_PRINT_SERVER'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, 'TAKEPOS_PRINT_WITHOUT_DETAILS_LABEL_DEFAULT', request()->input('TAKEPOS_PRINT_WITHOUT_DETAILS_LABEL_DEFAULT'), 'chaine', 0, '', $conf->entity);
 
-	dol_syslog("admin/cashdesk: level ".GETPOST('level', 'alpha'));
+	dol_syslog("admin/cashdesk: level ".request()->input('level'));
 
 	if (!($res > 0)) {
 		$error++;
@@ -77,8 +77,8 @@ if (GETPOST('action', 'alpha') == 'set') {
 		$db->rollback();
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
-} elseif (GETPOST('action', 'alpha') == 'setmethod') {
-	dolibarr_set_const($db, "TAKEPOS_PRINT_METHOD", GETPOST('value', 'alpha'), 'chaine', 0, '', $conf->entity);
+} elseif (request()->input('action') == 'setmethod') {
+	dolibarr_set_const($db, "TAKEPOS_PRINT_METHOD", request()->input('value'), 'chaine', 0, '', $conf->entity);
 	// TakePOS connector require ReceiptPrinter module
 	if (getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector" && !isModEnabled('receiptprinter')) {
 		activateModule("modReceiptPrinter", 1, 0);

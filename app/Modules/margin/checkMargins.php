@@ -42,18 +42,18 @@ require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'products', 'margins'));
 
-$action     = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'margindetail'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$optioncss  = GETPOST('optioncss', 'alpha');
+$action     = request()->input('action');
+$massaction = request()->input('massaction', []);
+$toselect   = request()->input('toselect', []);
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'margindetail'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$optioncss  = request()->input('optioncss');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -69,10 +69,10 @@ if (!$sortfield) {
 
 $startdate = $enddate = '';
 
-$startdate = dol_mktime(0, 0, 0, GETPOSTINT('startdatemonth'), GETPOSTINT('startdateday'), GETPOSTINT('startdateyear'));
-$enddate = dol_mktime(23, 59, 59, GETPOSTINT('enddatemonth'), GETPOSTINT('enddateday'), GETPOSTINT('enddateyear'));
+$startdate = dol_mktime(0, 0, 0, request()->integer('startdatemonth', 0), request()->integer('startdateday', 0), request()->integer('startdateyear', 0));
+$enddate = dol_mktime(23, 59, 59, request()->integer('enddatemonth', 0), request()->integer('enddateday', 0), request()->integer('enddateyear', 0));
 
-$search_ref = GETPOST('search_ref', 'alpha');
+$search_ref = request()->input('search_ref');
 
 $hookmanager->initHooks(array('checkmarginlist'));
 
@@ -80,9 +80,9 @@ $hookmanager->initHooks(array('checkmarginlist'));
 $result = restrictedArea($user, 'margins');
 
 // Both test are required to be compatible with all browsers
-if (GETPOST("button_search_x") || GETPOST("button_search")) {
+if (request()->input('button_search_x') || request()->input('button_search')) {
 	$action = 'search';
-} elseif (GETPOST("button_updatemagins_x") || GETPOST("button_updatemagins")) {
+} elseif (request()->input('button_updatemagins_x') || request()->input('button_updatemagins')) {
 	$action = 'update';
 }
 
@@ -93,11 +93,11 @@ $permissiontocreate = $user->hasRight('facture', 'creer');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -134,7 +134,7 @@ if (empty($reshook)) {
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_ref = '';
 		$search_array_options = array();
 	}
@@ -181,10 +181,10 @@ if ($search_ref != '') {
 	$param .= '&search_ref='.urlencode($search_ref);
 }
 if (!empty($startdate)) {
-	$param .= '&startdatemonth='.GETPOSTINT('startdatemonth').'&startdateday='.GETPOSTINT('startdateday').'&startdateyear='.GETPOSTINT('startdateyear');
+	$param .= '&startdatemonth='.request()->integer('startdatemonth', 0).'&startdateday='.request()->integer('startdateday', 0).'&startdateyear='.request()->integer('startdateyear', 0);
 }
 if (!empty($enddate)) {
-	$param .= '&enddatemonth='.GETPOSTINT('enddatemonth').'&enddateday='.GETPOSTINT('enddateday').'&enddateyear='.GETPOSTINT('enddateyear');
+	$param .= '&enddatemonth='.request()->integer('enddatemonth', 0).'&enddateday='.request()->integer('enddateday', 0).'&enddateyear='.request()->integer('enddateyear', 0);
 }
 if ($optioncss != '') {
 	$param .= '&optioncss='.$optioncss;
@@ -395,7 +395,7 @@ if ($result) {
 
 	print "</div>";
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
