@@ -1,66 +1,53 @@
 {{-- Blade version of template --}}
-<?php
-<?php
-/* Copyright (C) 2010-2011	Regis Houssin <regis.houssin@inodbox.com>
- * Copyright (C) 2013		Juanjo Menent <jmenent@2byte.es>
- * Copyright (C) 2014       Marcos García <marcosgdf@gmail.com>
- * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
- * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
+{{--
 /**
- * @var ?Conf $conf
- * @var User $user
+ * Template to show objects linked to member subscriptions
+ *
+ * Variables expected:
+ * - $linkedObjectBlock: array of Subscription objects
+ * - $object: CommonObject (parent object)
+ * - $noMoreLinkedObjectBlockAfter: int
+ * - $showImportButton: int
+ * - $langs: Translate
+ * - $user: User
  */
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+--}}
 
-echo "<!-- BEGIN PHP TEMPLATE adherents/tpl/linkedobjectblock.tpl.php -->\n";
+<!-- BEGIN BLADE TEMPLATE LINKEDOBJECTBLOCK -->
 
-global $user;
+@php
+    $langs->load("members");
+    $total = 0;
+@endphp
 
-$langs = $GLOBALS['langs'];
-'@phan-var-force Translate $langs';
-/**
- * @var Translate $langs
- * @var CommonObject $object
- */
-$linkedObjectBlock = $GLOBALS['linkedObjectBlock'];
-'@phan-var-force Subscription[] $linkedObjectBlock';
-/** @var Subscription[] $linkedObjectBlock */
-$langs->load("members");
+@foreach($linkedObjectBlock as $key => $objectlink)
+    <tr class="oddeven hover:bg-gray-50 dark:hover:bg-gray-700">
+        <td class="px-4 py-2">
+            {{ $langs->trans('Subscription') }}
+        </td>
+        <td class="px-4 py-2 whitespace-nowrap">
+            {!! $objectlink->getNomUrl(1) !!}
+        </td>
+        <td class="px-4 py-2 text-center"></td>
+        <td class="px-4 py-2 text-center">
+            {{ dol_print_date($objectlink->dateh, 'day') }}
+        </td>
+        <td class="px-4 py-2 text-right">
+            @if($user->hasRight('adherent', 'lire'))
+                @php
+                    $total += $objectlink->amount;
+                @endphp
+                {{ price($objectlink->amount) }}
+            @endif
+        </td>
+        <td class="px-4 py-2 text-right"></td>
+        <td class="px-4 py-2 text-right">
+            <a class="reposition text-red-600 hover:text-red-800 dark:text-red-400" 
+               href="{{ dolBuildUrl($_SERVER['PHP_SELF'], ['id' => $object->id, 'action' => 'dellink', 'dellinkid' => $key], true) }}">
+                {!! img_picto($langs->transnoentitiesnoconv('RemoveLink'), 'unlink') !!}
+            </a>
+        </td>
+    </tr>
+@endforeach
 
-$total = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	echo '<tr class="oddeven">';
-	echo '<td>'.$langs->trans("Subscription").'</td>';
-	echo '<td class="nowraponall">'.$objectlink->getNomUrl(1).'</td>';
-	echo '<td class="center"></td>';
-	echo '<td class="center">'.dol_print_date($objectlink->dateh, 'day').'</td>';
-	echo '<td class="right">';
-	if ($user->hasRight('adherent', 'lire')) {
-		$total += $objectlink->amount;
-		echo price($objectlink->amount);
-	}
-	echo '</td>';
-	echo '<td class="right"></td>';
-	echo '<td class="right"><a class="reposition" href="'.dolBuildUrl($_SERVER["PHP_SELF"], ['id' => $object->id, 'action' => 'dellink', 'dellinkid' => $key], true).'">'.img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink').'</a></td>';
-	echo '</tr>';
-}
-
-echo "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->

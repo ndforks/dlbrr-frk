@@ -1,102 +1,89 @@
 {{-- Blade version of template --}}
-<?php
-<?php
-/* Copyright (C) 2010-2011	Regis Houssin <regis.houssin@inodbox.com>
- * Copyright (C) 2013		Juanjo Menent <jmenent@2byte.es>
- * Copyright (C) 2014       Marcos García <marcosgdf@gmail.com>
- * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
- * Copyright (C) 2025       Frédéric France         <frederic.france@free.fr>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
+{{--
 /**
- *  \file		htdocs/commande/tpl/linkedobjectblock.tpl.php
- *  \ingroup	commande
- *  \brief		Template to show objects linked to orders
- */
-
-/**
- * @var Translate $langs
- * @var Conf $conf
- * @var DoliDB $db
- * @var User $user
+ * Template to show objects linked to customer orders
  *
- * @var CommonObject $object
- * @var int $noMoreLinkedObjectBlockAfter
- * @var int $showImportButton
- * @var Commande[] $linkedObjectBlock
+ * Variables expected:
+ * - $linkedObjectBlock: array of Commande objects
+ * - $object: CommonObject (parent object)
+ * - $noMoreLinkedObjectBlockAfter: int
+ * - $showImportButton: int
+ * - $langs: Translate
+ * - $user: User
  */
+--}}
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+<!-- BEGIN BLADE TEMPLATE LINKEDOBJECTBLOCK -->
 
-print "<!-- BEGIN PHP TEMPLATE commande/tpl/linkedobjectblock.tpl.php -->\n";
+@php
+    $langs->load("orders");
+    $linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-// Load translation files required by the page
-$langs->load("orders");
+@foreach($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $trclass = 'oddeven hover:bg-gray-50 dark:hover:bg-gray-700';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total border-t-2 border-gray-300 dark:border-gray-600';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="px-4 py-2 max-w-[100px] overflow-hidden text-ellipsis">
+            {{ $langs->trans('CustomerOrder') }}
+            @if(!empty($showImportButton) && getDolGlobalString('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES'))
+                <a class="objectlinked_importbtn" 
+                   href="{{ $objectlink->getNomUrl(0, '', 0, 1) }}&amp;action=selectlines&amp;token={{ newToken() }}" 
+                   data-element="{{ $objectlink->element }}" 
+                   data-id="{{ $objectlink->id }}">
+                    <i class="fa fa-indent"></i>
+                </a>
+            @endif
+        </td>
+        <td class="px-4 py-2 max-w-[150px] overflow-hidden text-ellipsis">
+            {!! $objectlink->getNomUrl(1) !!}
+        </td>
+        <td class="px-4 py-2 max-w-[150px] overflow-hidden text-ellipsis">
+            {{ $objectlink->ref_client }}
+        </td>
+        <td class="px-4 py-2 text-center">
+            {{ dol_print_date($objectlink->date, 'day') }}
+        </td>
+        <td class="px-4 py-2 text-right">
+            @if($user->hasRight('commande', 'lire'))
+                @php
+                    $total += $objectlink->total_ht;
+                @endphp
+                {{ price($objectlink->total_ht) }}
+            @endif
+        </td>
+        <td class="px-4 py-2 text-right">
+            {!! $objectlink->getLibStatut(3) !!}
+        </td>
+        <td class="px-4 py-2 text-right">
+            @if($object->element != 'shipping')
+                <a class="reposition text-red-600 hover:text-red-800 dark:text-red-400" 
+                   href="{{ dolBuildUrl($_SERVER['PHP_SELF'], ['id' => $object->id, 'action' => 'dellink', 'dellinkid' => $key], true) }}">
+                    {!! img_picto($langs->transnoentitiesnoconv('RemoveLink'), 'unlink') !!}
+                </a>
+            @endif
+        </td>
+    </tr>
+@endforeach
 
-$linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
-'@phan-var-force Commande[] $linkedObjectBlock';  // Repeat because type lost after dol_sort_array)
-/** @var Commande[] $linkedObjectBlock */
+@if(count($linkedObjectBlock) > 1)
+    <tr class="liste_total {{ empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '' }} bg-gray-100 dark:bg-gray-700 font-semibold">
+        <td class="px-4 py-2">{{ $langs->trans('Total') }}</td>
+        <td class="px-4 py-2"></td>
+        <td class="px-4 py-2 text-center"></td>
+        <td class="px-4 py-2 text-center"></td>
+        <td class="px-4 py-2 text-right">{{ price($total) }}</td>
+        <td class="px-4 py-2 text-right"></td>
+        <td class="px-4 py-2 text-right"></td>
+    </tr>
+@endif
 
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
-
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	}
-	echo '<tr class="'.$trclass.'" >';
-	echo '<td class="linkedcol-element tdoverflowmax100">'.$langs->trans("CustomerOrder");
-	if (!empty($showImportButton) && getDolGlobalString('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES')) {
-		print '<a class="objectlinked_importbtn" href="'.$objectlink->getNomUrl(0, '', 0, 1).'&amp;action=selectlines&amp;token='.newToken().'" data-element="'.$objectlink->element.'" data-id="'.$objectlink->id.'"> <i class="fa fa-indent"></i> </a>';
-	}
-	echo '</td>';
-	echo '<td class="linkedcol-name tdoverflowmax150" >'.$objectlink->getNomUrl(1).'</td>';
-	echo '<td class="linkedcol-ref tdoverflowmax150">'.$objectlink->ref_client.'</td>';
-	echo '<td class="linkedcol-date center">'.dol_print_date($objectlink->date, 'day').'</td>';
-	echo '<td class="linkedcol-amount right">';
-	if ($user->hasRight('commande', 'lire')) {
-		$total += $objectlink->total_ht;
-		echo price($objectlink->total_ht);
-	}
-	echo '</td>';
-	echo '<td class="linkedcol-statut right">'.$objectlink->getLibStatut(3).'</td>';
-	echo '<td class="linkedcol-action right">';
-	// For now, shipments must stay linked to order, so link is not deletable
-	if ($object->element != 'shipping') {
-		echo '<a class="reposition" href="'.dolBuildUrl($_SERVER["PHP_SELF"], ['id' => $object->id, 'action' => 'dellink', 'dellinkid' => $key], true).'">'.img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink').'</a>';
-	}
-	echo '</td>';
-	echo "</tr>\n";
-}
-if (count($linkedObjectBlock) > 1) {
-	echo '<tr class="liste_total '.(empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '').'">';
-	echo '<td>'.$langs->trans("Total").'</td>';
-	echo '<td></td>';
-	echo '<td class="center"></td>';
-	echo '<td class="center"></td>';
-	echo '<td class="right">'.price($total).'</td>';
-	echo '<td class="right"></td>';
-	echo '<td class="right"></td>';
-	echo "</tr>\n";
-}
-
-echo "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->

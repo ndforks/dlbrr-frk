@@ -1,100 +1,87 @@
 {{-- Blade version of template --}}
-<?php
-<?php
-/* Copyright (C) 2010-2011  Regis Houssin           <regis.houssin@inodbox.com>
- * Copyright (C) 2014       Marcos García           <marcosgdf@gmail.com>
- * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
- * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
+{{--
 /**
- *  \file		htdocs/fourn/commande/linkedobjectblock.tpl.php
- *  \ingroup	fourn
- *  \brief		Template to show objects linked to purchase orders
- */
-
-/**
- * @var Translate $langs
- * @var Conf $conf
- * @var DoliDB $db
- * @var User $user
+ * Template to show objects linked to purchase orders
  *
- * @var CommonObject $object
- * @var int $noMoreLinkedObjectBlockAfter
- * @var int $showImportButton
- * @var CommandeFournisseur[] $linkedObjectBlock
+ * Variables expected:
+ * - $linkedObjectBlock: array of CommandeFournisseur objects
+ * - $object: CommonObject (parent object)
+ * - $noMoreLinkedObjectBlockAfter: int
+ * - $showImportButton: int
+ * - $langs: Translate
+ * - $user: User
  */
-'@phan-var-force CommandeFournisseur[] $linkedObjectBlock';
+--}}
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+<!-- BEGIN BLADE TEMPLATE LINKEDOBJECTBLOCK -->
 
+@php
+    $langs->load("orders");
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-print "<!-- BEGIN PHP TEMPLATE fourn/commande/tpl/linkedobjectblock.tpl.php -->\n";
+@foreach($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $objectlink->fetch_thirdparty();
+        
+        $refSupplierWithThirdparty = $objectlink->ref_supplier ? dolPrintHTML($objectlink->ref_supplier) . '<br>' : '';
+        $refSupplierWithThirdparty = '<span class="small">' . $refSupplierWithThirdparty;
+        $refSupplierWithThirdparty .= $objectlink->thirdparty->getNomUrl(1);
+        $refSupplierWithThirdparty .= '</span>';
+        
+        $trclass = 'oddeven hover:bg-gray-50 dark:hover:bg-gray-700';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total border-t-2 border-gray-300 dark:border-gray-600';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="px-4 py-2 max-w-[125px] overflow-hidden text-ellipsis" 
+            title="{{ dolPrintHTMLForAttribute($langs->trans('SupplierOrder')) }}">
+            {{ dolPrintHTML($langs->trans('SupplierOrder')) }}
+        </td>
+        <td class="px-4 py-2">
+            {!! $objectlink->getNomUrl(1) !!}
+        </td>
+        <td class="px-4 py-2 text-left max-w-[125px] overflow-hidden text-ellipsis" 
+            title="{{ dolPrintHTMLForAttribute($objectlink->ref_supplier) }}">
+            {!! $refSupplierWithThirdparty !!}
+        </td>
+        <td class="px-4 py-2 text-center">
+            {{ dol_print_date($objectlink->date, 'day') }}
+        </td>
+        <td class="px-4 py-2 text-right">
+            @if($user->hasRight('fournisseur', 'commande', 'lire'))
+                @php
+                    $total += $objectlink->total_ht;
+                @endphp
+                {{ price($objectlink->total_ht) }}
+            @endif
+        </td>
+        <td class="px-4 py-2 text-right">
+            {!! $objectlink->getLibStatut(3) !!}
+        </td>
+        <td class="px-4 py-2 text-right">
+            <a class="reposition text-red-600 hover:text-red-800 dark:text-red-400" 
+               href="{{ $_SERVER['PHP_SELF'] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">
+                {!! img_picto($langs->transnoentitiesnoconv('RemoveLink'), 'unlink') !!}
+            </a>
+        </td>
+    </tr>
+@endforeach
 
-$langs->load("orders");
+@if(count($linkedObjectBlock) > 1)
+    <tr class="liste_total {{ empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '' }} bg-gray-100 dark:bg-gray-700 font-semibold">
+        <td class="px-4 py-2">{{ $langs->trans('Total') }}</td>
+        <td class="px-4 py-2"></td>
+        <td class="px-4 py-2 text-center"></td>
+        <td class="px-4 py-2 text-center"></td>
+        <td class="px-4 py-2 text-right">{{ price($total) }}</td>
+        <td class="px-4 py-2 text-right"></td>
+        <td class="px-4 py-2 text-right"></td>
+    </tr>
+@endif
 
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	/** @var CommandeFournisseur $objectlink */
-	'@phan-var-force CommandeFournisseur $objectlink';
-	$ilink++;
-	$refSupplierWithThirdparty = $objectlink->ref_supplier ? dolPrintHTML($objectlink->ref_supplier) . '<br>' : '';
-
-	$objectlink->fetch_thirdparty();
-
-	$refSupplierWithThirdparty = '<span class="small">'.$refSupplierWithThirdparty;
-	$refSupplierWithThirdparty .= $objectlink->thirdparty->getNomUrl(1);
-	$refSupplierWithThirdparty .= '</small>';
-
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	} ?>
-	<tr class="<?php echo $trclass; ?>">
-		<td class="tdoverflowmax125" title="<?php echo dolPrintHTMLForAttribute($langs->trans("SupplierOrder")); ?>"><?php echo dolPrintHTML($langs->trans("SupplierOrder")); ?></td>
-		<td><?php print $objectlink->getNomUrl(1); ?></td>
-		<td class="left linkedcol-ref tdoverflowmax125 nopaddingtopimp nopaddingbottomimp" title="<?php echo dolPrintHTMLForAttributeUrl($objectlink->ref_supplier); ?>"><?php echo $refSupplierWithThirdparty ?></td>
-		<td class="center"><?php echo dol_print_date($objectlink->date, 'day'); ?></td>
-		<td class="right"><?php
-		if ($user->hasRight("fournisseur", "commande", "lire")) {
-			$total += $objectlink->total_ht;
-			echo price($objectlink->total_ht);
-		} ?></td>
-		<td class="right"><?php echo $objectlink->getLibStatut(3); ?></td>
-		<td class="right"><a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a></td>
-	</tr>
-	<?php
-}
-if (count($linkedObjectBlock) > 1) {
-	?>
-	<tr class="liste_total <?php echo(empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : ''); ?>">
-		<td><?php echo $langs->trans("Total"); ?></td>
-		<td></td>
-		<td class="center"></td>
-		<td class="center"></td>
-		<td class="right"><?php echo price($total); ?></td>
-		<td class="right"></td>
-		<td class="right"></td>
-	</tr>
-	<?php
-}
-
-print "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->
