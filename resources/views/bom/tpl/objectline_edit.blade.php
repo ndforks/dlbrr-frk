@@ -1,15 +1,13 @@
-{{-- Blade version of template --}}
-<?php
-<?php
-/* Copyright (C) 2010-2012	Regis Houssin		    <regis.houssin@inodbox.com>
- * Copyright (C) 2010-2012	Laurent Destailleur	    <eldy@users.sourceforge.net>
- * Copyright (C) 2012		Christophe Battarel	    <christophe.battarel@altairis.fr>
+{{--
+/* Copyright (C) 2010-2012Regis Houssin    <regis.houssin@inodbox.com>
+ * Copyright (C) 2010-2012Laurent Destailleur    <eldy@users.sourceforge.net>
+ * Copyright (C) 2012Christophe Battarel    <christophe.battarel@altairis.fr>
  * Copyright (C) 2012       Cédric Salvador         <csalvador@gpcsolutions.fr>
  * Copyright (C) 2012-2014  Raphaël Doursenaud      <rdoursenaud@gpcsolutions.fr>
- * Copyright (C) 2013		Florian Henry		    <florian.henry@open-concept.pro>
+ * Copyright (C) 2013Florian Henry    <florian.henry@open-concept.pro>
  * Copyright (C) 2018-2025  Frédéric France         <frederic.france@free.fr>
- * Copyright (C) 2024		Vincent Maury		    <vmaury@timgroup.fr>
- * Copyright (C) 2024-2025	MDW						<mdeweerd@users.noreply.github.com>
+ * Copyright (C) 2024Vincent Maury    <vmaury@timgroup.fr>
+ * Copyright (C) 2024-2025MDW<mdeweerd@users.noreply.github.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,51 +32,22 @@
  * $senderissupplier (0 by default, 1 for supplier invoices/orders)
  * $inputalsopricewithtax (0 by default, 1 to also show column with unit price including tax)
  */
+--}}
 
+@php
 require_once DOL_DOCUMENT_ROOT."/product/class/html.formproduct.class.php";
-/**
- * @var BOMLine $line
- * @var CommonObject $this
- * @var CommonObject $object
- * @var ExtraFields $extrafields
- * @var HookManager $hookmanager
- * @var Societe $buyer
- * @var Societe $seller
- * @var Translate $langs
- *
- * @var string $action
- * @var int $i
- * @var bool $var
- */
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-'
-@phan-var-force CommonObject $this
-@phan-var-force CommonObject $object
-@phan-var-force int $i
-@phan-var-force bool $var
-@phan-var-force BOMLine $line
-@phan-var-force Societe $buyer
-@phan-var-force Societe $seller
-';
 
 global $forceall, $filtertype;
 
 if (empty($forceall)) {
-	$forceall = 0;
+$forceall = 0;
 }
 
 if (empty($filtertype)) {
-	$filtertype = 0;
+$filtertype = 0;
 }
 
 $formproduct = new FormProduct($object->db);
-
 
 // Define colspan for the button 'Add'
 $colspan = 3; // Columns: total ht + col edit + col delete
@@ -86,119 +55,109 @@ $colspan = 3; // Columns: total ht + col edit + col delete
 // Lines for extrafield
 $objectline = new BOMLine($this->db);
 
-print "<!-- BEGIN PHP TEMPLATE bom/tpl/objectline_edit.tpl.php -->\n";
-
 $coldisplay = 0;
-print '<tr class="oddeven tredited">';
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">'.($i + 1).'</td>';
-	$coldisplay++;
-}
+@endphp
 
+<!-- BEGIN BLADE TEMPLATE bom/tpl/objectline_edit -->
+<tr class="oddeven tredited bg-blue-50 dark:bg-blue-900/20">
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+@php $coldisplay++; @endphp
+<td class="linecolnum center">{{ $i + 1 }}</td>
+@endif
+
+@php
 $coldisplay++;
-?>
-	<td>
-	<div id="line_<?php echo $line->id; ?>"></div>
-
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="product_id" name="productid" value="<?php echo(!empty($line->fk_product) ? $line->fk_product : 0); ?>" />
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
-
-<?php
-// Predefined product/service
+$tmpproduct = new Product($object->db);
 if ($line->fk_product > 0) {
-	$tmpproduct = new Product($object->db);
-	$tmpproduct->fetch($line->fk_product);
-	print $tmpproduct->getNomUrl(1);
+$tmpproduct->fetch($line->fk_product);
 }
+@endphp
 
-if (is_object($hookmanager)) {
-	$parameters = array('line' => $line, 'var' => $var, 'seller' => $seller, 'buyer' => $buyer);
-	$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
-}
+<td>
+<div id="line_{{ $line->id }}"></div>
 
-//Line extrafield
-if (is_object($objectline) && !empty($extrafields)) {
-	$temps = $line->showOptionals($extrafields, 'edit', array('class' => 'tredited'), '', '', '1', 'line');
-	if (!empty($temps)) {
-		print '<div style="padding-top: 10px" id="extrafield_lines_area_edit" name="extrafield_lines_area_edit">';
-		print $temps;
-		print '</div>';
-	}
-}
+<input type="hidden" name="lineid" value="{{ $line->id }}">
+<input type="hidden" id="product_type" name="type" value="{{ $line->product_type }}">
+<input type="hidden" id="product_id" name="productid" value="{{ !empty($line->fk_product) ? $line->fk_product : 0 }}" />
+<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
 
-print '</td>';
+@if($line->fk_product > 0)
+{!! $tmpproduct->getNomUrl(1) !!}
+@endif
 
-/*if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier')	// We must have same test in printObjectLines
-{
-	$coldisplay++;
-?>
-	<td class="right"><input id="fourn_ref" name="fourn_ref" class="flat minwidth75" value="<?php echo ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); ?>"></td>
-<?php
-*/
+@if(is_object($hookmanager ?? null))
+@php
+$parameters = array('line' => $line, 'var' => $var, 'seller' => $seller, 'buyer' => $buyer);
+$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
+@endphp
+@endif
 
-$coldisplay++;
+@if(is_object($objectline) && !empty($extrafields))
+@php
+$temps = $line->showOptionals($extrafields, 'edit', array('class' => 'tredited'), '', '', '1', 'line');
+@endphp
+@if(!empty($temps))
+<div style="padding-top: 10px" id="extrafield_lines_area_edit" name="extrafield_lines_area_edit">
+{!! $temps !!}
+</div>
+@endif
+@endif
+</td>
 
-print '<td class="nobottom linecolqty right">';
-if (((int) $line->info_bits & 2) != 2) {
-	// I comment this because it shows info even when not required
-	// for example always visible on invoice but must be visible only if stock module on and stock decrease option is on invoice validation and status is not validated
-	// must also not be output for most entities (proposal, intervention, ...)
-	//if($line->qty > $line->stock) print img_picto($langs->trans("StockTooLow"),"warning", 'style="vertical-align: bottom;"')." ";
-	print '<input size="3" type="text" class="flat right" name="qty" id="qty" value="'.$line->qty.'">';
-}
-print '</td>';
+@php $coldisplay++; @endphp
+<td class="nobottom linecolqty right">
+@if(((int) $line->info_bits & 2) != 2)
+<input size="3" type="text" class="flat right w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" name="qty" id="qty" value="{{ $line->qty }}">
+@endif
+</td>
 
-if ($filtertype != 1) { // Product
-	if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
-		$coldisplay++;
-		print '<td class="nobottom nowrap linecolunit">';
-		print  $formproduct->selectMeasuringUnits("fk_unit", '', (($line->fk_unit) ? $line->fk_unit : ''), 0, 0);
-		print '</td>';
-	}
-} else { // Service
-	$coldisplay++;
-	print '<td class="nobottom nowrap linecolunit">';
-	print  $formproduct->selectMeasuringUnits("fk_unit", "time", ($line->fk_unit) ? $line->fk_unit : '', 0, 0);
-	print '</td>';
-}
-if ($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES')) { // Product or stock support for Services is active
-	// Qty frozen
-	$coldisplay++;
-	print '<td class="nobottom linecolqtyfrozen right"><input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"' . (GETPOSTISSET("qty_frozen") ? (GETPOSTINT('qty_frozen') ? ' checked="checked"' : '') : ($line->qty_frozen ? ' checked="checked"' : '')) . '>';
-	print '</td>';
+@if($filtertype != 1)
+@if(getDolGlobalInt('PRODUCT_USE_UNITS'))
+@php $coldisplay++; @endphp
+<td class="nobottom nowrap linecolunit">
+{!! $formproduct->selectMeasuringUnits("fk_unit", '', ($line->fk_unit) ? $line->fk_unit : '', 0, 0) !!}
+</td>
+@endif
+@else
+@php $coldisplay++; @endphp
+<td class="nobottom nowrap linecolunit">
+{!! $formproduct->selectMeasuringUnits("fk_unit", "time", ($line->fk_unit) ? $line->fk_unit : '', 0, 0) !!}
+</td>
+@endif
 
-	// Disable stock change
-	$coldisplay++;
-	print '<td class="nobottom linecoldisablestockchange right"><input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"' . (GETPOSTISSET('disablestockchange') ? (GETPOSTINT("disable_stock_change") ? ' checked="checked"' : '') : ($line->disable_stock_change ? ' checked="checked"' : '')) . '">';
-	print '</td>';
+@if($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES'))
+@php $coldisplay++; @endphp
+<td class="nobottom linecolqtyfrozen right">
+<input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"{{ GETPOSTISSET("qty_frozen") ? (GETPOSTINT('qty_frozen') ? ' checked="checked"' : '') : ($line->qty_frozen ? ' checked="checked"' : '') }}>
+</td>
 
-	// Efficiency
-	$coldisplay++;
-	print '<td class="nobottom nowrap linecollost right">';
-	print '<input type="text" size="2" name="efficiency" id="efficiency" class="flat right" value="' . $line->efficiency . '"></td>';
-}
+@php $coldisplay++; @endphp
+<td class="nobottom linecoldisablestockchange right">
+<input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"{{ GETPOSTISSET('disablestockchange') ? (GETPOSTINT("disable_stock_change") ? ' checked="checked"' : '') : ($line->disable_stock_change ? ' checked="checked"' : '') }}>
+</td>
 
-// Service and workstations are active
-if ($filtertype == 1 && isModEnabled('workstation')) {
-	$coldisplay++;
-	print '<td class="nobottom nowrap linecolworkstation">';
-	print $formproduct->selectWorkstations($line->fk_default_workstation, 'idworkstations', 1);
-	print '</td>';
-}
-// Cost
-$coldisplay++;
-print '<td class="nobottom nowrap linecolcostprice right">';
-print '</td>';
+@php $coldisplay++; @endphp
+<td class="nobottom nowrap linecollost right">
+<input type="text" size="2" name="efficiency" id="efficiency" class="flat right w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ $line->efficiency }}">
+</td>
+@endif
 
-$coldisplay += $colspan;
-print '<td class="nobottom linecoledit center valignmiddle" colspan="'.$colspan.'">';
-$coldisplay += $colspan;
-print '<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-save" id="savelinebutton" name="save" value="'.$langs->trans("Save").'">';
-print '<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="'.$langs->trans("Cancel").'">';
-print '</td>';
-print '</tr>';
+@if($filtertype == 1 && isModEnabled('workstation'))
+@php $coldisplay++; @endphp
+<td class="nobottom nowrap linecolworkstation">
+{!! $formproduct->selectWorkstations($line->fk_default_workstation, 'idworkstations', 1) !!}
+</td>
+@endif
 
-print "<!-- END PHP TEMPLATE objectline_edit.tpl.php -->\n";
+@php $coldisplay++; @endphp
+<td class="nobottom nowrap linecolcostprice right">
+</td>
+
+@php $coldisplay += $colspan; @endphp
+<td class="nobottom linecoledit center valignmiddle" colspan="{{ $colspan }}">
+<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-save bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="savelinebutton" name="save" value="{{ $langs->trans("Save") }}">
+<input type="submit" class="reposition button buttongen margintoponly marginbottomonly button-cancel bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
+</td>
+</tr>
+
+<!-- END BLADE TEMPLATE objectline_edit -->

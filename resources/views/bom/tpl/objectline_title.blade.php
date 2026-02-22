@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -35,96 +33,68 @@
  *
  * $type, $text, $description, $line
  */
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var Form $form
- * @var Translate $langs
- *
- * @var string $action
- */
+--}}
 
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-'@phan-var-force CommonObject $this
- @phan-var-force CommonObject $object';
-
+@php
 global $filtertype;
 if (empty($filtertype)) {
 	$filtertype = 0;
 }
+@endphp
 
-print "<!-- BEGIN PHP TEMPLATE bom/tpl/objectline_title.tpl.php -->\n";
+<!-- BEGIN BLADE TEMPLATE bom/tpl/objectline_title -->
 
+<thead>
+	<tr class="liste_titre nodrag nodrop bg-gray-100 dark:bg-gray-800">
+		@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+			<td class="linecolnum center">&nbsp;</td>
+		@endif
 
-// Title line
-print "<thead>\n";
+		<td class="linecoldescription bomline font-semibold">
+			{{ $langs->trans('Description') }}
+			@if(getDolGlobalString('BOM_SUB_BOM') && $filtertype != 1)
+				 &nbsp; <a id="show_all" href="#">{!! img_picto('', 'folder-open', 'class="paddingright"') !!}{{ $langs->trans("ExpandAll") }}</a>&nbsp;&nbsp;
+				<a id="hide_all" href="#">{!! img_picto('', 'folder', 'class="paddingright"') !!}{{ $langs->trans("UndoExpandAll") }}</a>&nbsp;
+			@endif
+		</td>
 
-print '<tr class="liste_titre nodrag nodrop">';
+		<td class="linecolqty width100 right font-semibold">{!! $form->textwithpicto($langs->trans('Qty'), ($filtertype != 1) ? $langs->trans("QtyRequiredIfNoLoss") : '') !!}</td>
 
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<td class="linecolnum center">&nbsp;</td>';
-}
+		@if($filtertype != 1)
+			@if(getDolGlobalInt('PRODUCT_USE_UNITS'))
+				<td class="linecoluseunit"></td>
+			@endif
+		@else
+			<td class="linecolunit"></td>
+		@endif
 
-// Product or sub-bom
-print '<td class="linecoldescription bomline">'.$langs->trans('Description');
-if (getDolGlobalString('BOM_SUB_BOM') && $filtertype != 1) {
-	print ' &nbsp; <a id="show_all" href="#">'.img_picto('', 'folder-open', 'class="paddingright"').$langs->trans("ExpandAll").'</a>&nbsp;&nbsp;';
-	print '<a id="hide_all" href="#">'.img_picto('', 'folder', 'class="paddingright"').$langs->trans("UndoExpandAll").'</a>&nbsp;';
-}
-print '</td>';
+		@if($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES'))
+			<td class="linecolqtyfrozen right font-semibold">{!! $form->textwithpicto($langs->trans('QtyFrozen'), $langs->trans("QuantityConsumedInvariable")) !!}</td>
+			<td class="linecoldisablestockchange right font-semibold">{!! $form->textwithpicto($langs->trans('DisableStockChange'), $langs->trans('DisableStockChangeHelp')) !!}</td>
+			<td class="linecolefficiency right font-semibold">{!! $form->textwithpicto($langs->trans('ManufacturingEfficiency'), $langs->trans('ValueOfMeansLoss')) !!}</td>
+		@endif
 
-// Qty
-print '<td class="linecolqty width100 right">'.$form->textwithpicto($langs->trans('Qty'), ($filtertype != 1) ? $langs->trans("QtyRequiredIfNoLoss") : '').'</td>';
+		@if($filtertype == 1 && isModEnabled('workstation'))
+			@if(isModEnabled('workstation'))
+				<td class="linecolworkstation font-semibold">{!! img_picto('', 'workstation', 'class="pictofixedwidth"') !!}{!! $form->textwithpicto($langs->trans('DefaultWorkstation'), '') !!}</td>
+			@endif
+		@endif
 
-if ($filtertype != 1) { // Product
-	if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
-		print '<td class="linecoluseunit"></td>';
-	}
-} else { // Service
-	print '<td class="linecolunit"></td>';
-}
-if ($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES')) { // Product or stock support for Services is active
-	// Qty frozen
-	print '<td class="linecolqtyfrozen right">' . $form->textwithpicto($langs->trans('QtyFrozen'), $langs->trans("QuantityConsumedInvariable")) . '</td>';
+		<td class="linecolcost right font-semibold">{!! $form->textwithpicto($langs->trans("TotalCost"), $langs->trans("BOMTotalCost")) !!}</td>
 
-	// Disable stock change
-	print '<td class="linecoldisablestockchange right">' . $form->textwithpicto($langs->trans('DisableStockChange'), $langs->trans('DisableStockChangeHelp')) . '</td>';
+		<td class="linecoledit" style="width: 10px"></td>
 
-	// Efficiency
-	print '<td class="linecolefficiency right">' . $form->textwithpicto($langs->trans('ManufacturingEfficiency'), $langs->trans('ValueOfMeansLoss')) . '</td>';
-}
+		<td class="linecoldelete" style="width: 10px"></td>
 
-// Service and workstations are active
-if ($filtertype == 1 && isModEnabled('workstation')) {
-	// Workstation
-	if (isModEnabled('workstation')) {
-		print '<td class="linecolworkstation">' .img_picto('', 'workstation', 'class="pictofixedwidth"').  $form->textwithpicto($langs->trans('DefaultWorkstation'), '') . '</td>';
-	}
-}
+		<td class="linecolmove" style="width: 10px"></td>
 
-// Cost
-print '<td class="linecolcost right">'.$form->textwithpicto($langs->trans("TotalCost"), $langs->trans("BOMTotalCost")).'</td>';
+		@if($action == 'selectlines')
+			<td class="linecolcheckall center">
+				<input type="checkbox" class="linecheckboxtoggle" />
+				<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>
+			</td>
+		@endif
+	</tr>
+</thead>
 
-print '<td class="linecoledit" style="width: 10px"></td>'; // No width to allow autodim
-
-print '<td class="linecoldelete" style="width: 10px"></td>';
-
-print '<td class="linecolmove" style="width: 10px"></td>';
-
-if ($action == 'selectlines') {
-	print '<td class="linecolcheckall center">';
-	print '<input type="checkbox" class="linecheckboxtoggle" />';
-	print '<script>$(document).ready(function() {$(".linecheckboxtoggle").click(function() {var checkBoxes = $(".linecheckbox");checkBoxes.prop("checked", this.checked);})});</script>';
-	print '</td>';
-}
-
-print "</tr>\n";
-print "</thead>\n";
-
-print "<!-- END PHP TEMPLATE objectline_title.tpl.php -->\n";
+<!-- END BLADE TEMPLATE objectline_title -->

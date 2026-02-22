@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2022   Open-Dsi		<support@open-dsi.fr>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
@@ -29,73 +27,50 @@
  * $inputalsopricewithtax (0 by default, 1 to also show column with unit price including tax)
  * $canchangeproduct (0 by default, 1 to allow to change the product if it is a predefined product)
  */
+--}}
 
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var CommonObjectLine $line
- * @var Conf $conf
- * @var HookManager $hookmanager
- * @var Translate $langs
- * @var User $user
- *
- * @var string $action
- * @var int $i
- * @var int $num
- */
-
-'
-@phan-var-force string $action
-@phan-var-force int $i
-@phan-var-force int $num
-';
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
+@php
 // Define colspan for the button 'Add'
 $colspan = 3; // Column: col edit + col delete + move button
-
-print "<!-- BEGIN PHP TEMPLATE productattributevalueline_edit.tpl.php -->\n";
-
 $coldisplay = 0;
-?>
-<tr class="oddeven tredited">
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-		<td class="linecolnum center"><?php $coldisplay++; ?><?php echo($i + 1); ?></td>
-<?php }
+@endphp
 
-$coldisplay++;
-?>
+<!-- BEGIN BLADE TEMPLATE productattributevalueline_edit -->
+<tr class="oddeven tredited bg-blue-50 dark:bg-blue-900/20">
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		@php $coldisplay++; @endphp
+		<td class="linecolnum center">{{ $i + 1 }}</td>
+	@endif
+
+	@php $coldisplay++; @endphp
 	<td class="nobottom linecolref">
-		<div id="line_<?php echo $line->id; ?>"></div>
-		<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
+		<div id="line_{{ $line->id }}"></div>
+		<input type="hidden" name="lineid" value="{{ $line->id }}">
 
-		<?php $coldisplay++; ?>
-		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(GETPOSTISSET("line_ref") ? GETPOST("line_ref", 'alpha', 2) : $line->ref); ?>">
-		<?php
-		if (is_object($hookmanager)) {
+		@php $coldisplay++; @endphp
+		<input type="text" name="line_ref" id="line_ref" class="flat w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ GETPOSTISSET("line_ref") ? GETPOST("line_ref", 'alpha', 2) : $line->ref }}">
+		@if(is_object($hookmanager ?? null))
+			@php
 			$parameters = array('line' => $line);
 			$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $object, $action);
 			if (!empty($hookmanager->resPrint)) {
 				print $hookmanager->resPrint;
 			}
-		}
-		?>
+			@endphp
+		@endif
 	</td>
 
-	<td class="nobottom linecolvalue"><?php $coldisplay++; ?>
-		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(GETPOSTISSET("line_value") ? GETPOST("line_value", 'alpha', 2) : $line->value); ?>">
+	@php $coldisplay++; @endphp
+	<td class="nobottom linecolvalue">
+		<input type="text" name="line_value" id="line_value" class="flat w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ GETPOSTISSET("line_value") ? GETPOST("line_value", 'alpha', 2) : $line->value }}">
 	</td>
 
 	<!-- colspan for this td because it replace td for buttons+... -->
-	<td class="center valignmiddle" colspan="<?php echo $colspan; ?>"><?php $coldisplay += $colspan; ?>
-		<input type="submit" class="button buttongen marginbottomonly button-save" id="savelinebutton marginbottomonly" name="save" value="<?php echo $langs->trans("Save"); ?>"><br>
-		<input type="submit" class="button buttongen marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="<?php echo $langs->trans("Cancel"); ?>">
+	@php $coldisplay += $colspan; @endphp
+	<td class="center valignmiddle" colspan="{{ $colspan }}">
+		<input type="submit" class="button buttongen marginbottomonly button-save bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="savelinebutton marginbottomonly" name="save" value="{{ $langs->trans("Save") }}"><br>
+		<input type="submit" class="button buttongen marginbottomonly button-cancel bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded cursor-pointer transition-colors" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
 	</td>
 </tr>
 
-<!-- END PHP TEMPLATE productattributevalueline_edit.tpl.php -->
+<!-- END BLADE TEMPLATE productattributevalueline_edit -->

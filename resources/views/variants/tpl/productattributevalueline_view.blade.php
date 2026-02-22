@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2022   Open-Dsi		<support@open-dsi.fr>
  * Copyright (C) 2024       Frédéric France             <frederic.france@free.fr>
  * Copyright (C) 2024		MDW							<mdeweerd@users.noreply.github.com>
@@ -33,93 +31,75 @@
  *
  * $text, $description, $line
  */
+--}}
 
-/**
- * @var CommonObject $this
- * @var CommonObject $object
- * @var CommonObjectLine $line
- * @var Conf $conf
- * @var User $user
- *
- * @var string $action
- * @var int $i
- * @var int $num
- */
-
-// Protection to avoid direct call of template
-if (empty($object) || !is_object($object)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-'@phan-var-force CommonObject $this
- @phan-var-force CommonObject $object
- @phan-var-force int $num';
-
-// add html5 elements
+@php
 $domData  = ' data-element="'.$line->element.'"';
 $domData .= ' data-id="'.$line->id.'"';
-
 $coldisplay = 0;
-?>
-<!-- BEGIN PHP TEMPLATE productattributevalueline_view.tpl.php -->
-<tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-	<td class="linecolnum center"><span class="opacitymedium"><?php $coldisplay++; ?><?php print($i + 1); ?></span></td>
-<?php } ?>
-	<td class="linecolref nowrap"><?php $coldisplay++; ?><div id="line_<?php print $line->id; ?>"></div>
-		<?php print $line->ref ?>
+@endphp
+
+<!-- BEGIN BLADE TEMPLATE productattributevalueline_view -->
+<tr id="row-{{ $line->id }}" class="drag drop oddeven hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" {!! $domData !!}>
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		@php $coldisplay++; @endphp
+		<td class="linecolnum center"><span class="opacitymedium">{{ $i + 1 }}</span></td>
+	@endif
+	
+	@php $coldisplay++; @endphp
+	<td class="linecolref nowrap">
+		<div id="line_{{ $line->id }}"></div>
+		{!! $line->ref !!}
 	</td>
 
-	<td class="linecolvalue nowrap"><?php $coldisplay++;
-	print $line->value ?></td>
-<?php
-if ($user->hasRight('variants', 'write') && $action != 'selectlines') {
-	print '<td class="linecoledit center width25">';
-	$coldisplay++;
-	if (empty($disableedit)) { ?>
-		<a class="editfielda reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=editline&token='.newToken().'&lineid='.$line->id.'#line_'.$line->id; ?>">
-		<?php print img_edit(); ?>
-		</a>
-	<?php }
-	print '</td>';
+	@php $coldisplay++; @endphp
+	<td class="linecolvalue nowrap">{!! $line->value !!}</td>
+	
+	@if($user->hasRight('variants', 'write') && $action != 'selectlines')
+		@php $coldisplay++; @endphp
+		<td class="linecoledit center width25">
+			@if(empty($disableedit))
+				<a class="editfielda reposition hover:text-blue-600 transition-colors" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $this->id }}&action=editline&token={{ newToken() }}&lineid={{ $line->id }}#line_{{ $line->id }}">
+					{!! img_edit() !!}
+				</a>
+			@endif
+		</td>
 
-	print '<td class="linecoldelete center width25">';
-	$coldisplay++;
-	if (empty($disableremove)) { // For situation invoice, deletion is not possible if there is a parent company.
-		print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?id='.$this->id.'&action=ask_deleteline&token='.newToken().'&lineid='.$line->id.'">';
-		print img_delete();
-		print '</a>';
-	}
-	print '</td>';
+		@php $coldisplay++; @endphp
+		<td class="linecoldelete center width25">
+			@if(empty($disableremove))
+				<a class="reposition hover:text-red-600 transition-colors" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $this->id }}&action=ask_deleteline&token={{ newToken() }}&lineid={{ $line->id }}">
+					{!! img_delete() !!}
+				</a>
+			@endif
+		</td>
 
-	if ($num > 1 && $conf->browser->layout != 'phone' && empty($disablemove)) {
-		print '<td class="linecolmove tdlineupdown center width25">';
-		$coldisplay++;
-		if ($i > 0) { ?>
-			<a class="lineupdown reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=up&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_up('default', 0, 'imgupforline'); ?>
-			</a>
-		<?php }
-		if ($i < $num - 1) { ?>
-			<a class="lineupdown reposition" href="<?php print $_SERVER["PHP_SELF"].'?id='.$this->id.'&action=down&token='.newToken().'&rowid='.$line->id; ?>">
-			<?php print img_down('default', 0, 'imgdownforline'); ?>
-			</a>
-		<?php }
-		print '</td>';
-	} else {
-		print '<td '.(($conf->browser->layout != 'phone' && empty($disablemove)) ? ' class="linecolmove tdlineupdown center"' : ' class="linecolmove center"').'></td>';
-		$coldisplay++;
-	}
-} else {
-	print '<td colspan="3"></td>';
-	$coldisplay += 3;
-}
+		@php $coldisplay++; @endphp
+		@if($num > 1 && $conf->browser->layout != 'phone' && empty($disablemove))
+			<td class="linecolmove tdlineupdown center width25">
+				@if($i > 0)
+					<a class="lineupdown reposition hover:text-blue-600 transition-colors" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $this->id }}&action=up&token={{ newToken() }}&rowid={{ $line->id }}">
+						{!! img_up('default', 0, 'imgupforline') !!}
+					</a>
+				@endif
+				@if($i < $num - 1)
+					<a class="lineupdown reposition hover:text-blue-600 transition-colors" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $this->id }}&action=down&token={{ newToken() }}&rowid={{ $line->id }}">
+						{!! img_down('default', 0, 'imgdownforline') !!}
+					</a>
+				@endif
+			</td>
+		@else
+			<td class="{{ ($conf->browser->layout != 'phone' && empty($disablemove)) ? 'linecolmove tdlineupdown center' : 'linecolmove center' }}"></td>
+		@endif
+	@else
+		<td colspan="3"></td>
+		@php $coldisplay += 3; @endphp
+	@endif
 
-if ($action == 'selectlines') { ?>
-	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>"></td>
-<?php }
-
-print "</tr>\n";
-
-print "<!-- END PHP TEMPLATE productattributevalueline_view.tpl.php -->\n";
+	@if($action == 'selectlines')
+		<td class="linecolcheck center">
+			<input type="checkbox" class="linecheckbox" name="line_checkbox[{{ $i + 1 }}]" value="{{ $line->id }}">
+		</td>
+	@endif
+</tr>
+<!-- END BLADE TEMPLATE productattributevalueline_view -->
