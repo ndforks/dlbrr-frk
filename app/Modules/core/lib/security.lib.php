@@ -714,7 +714,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 	// Check write permission from module (we need to know write permission to create but also to delete drafts record or to upload files)
 	$createok = 1;
 	$nbko = 0;
-	$wemustcheckpermissionforcreate = (request()->input('sendit') || request()->input('linkit') || in_array(request()->input('action'), array('create', 'update', 'set', 'upload', 'add_element_resource', 'confirm_deletebank', 'confirm_delete_linked_resource')) || GETPOST('roworder', 'alpha', 2));
+	$wemustcheckpermissionforcreate = (request()->input('sendit') || request()->input('linkit') || in_array(request()->input('action'), array('create', 'update', 'set', 'upload', 'add_element_resource', 'confirm_deletebank', 'confirm_delete_linked_resource')) || request()->input('roworder'));
 	$wemustcheckpermissionfordeletedraft = ((request()->input('action') == 'confirm_delete' && request()->input('confirm') == 'yes') || request()->input('action') == 'delete');
 
 	if ($wemustcheckpermissionforcreate || $wemustcheckpermissionfordeletedraft) {
