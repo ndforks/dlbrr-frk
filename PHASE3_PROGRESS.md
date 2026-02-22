@@ -178,8 +178,10 @@ Phase 3 of the Laravel refactoring is now underway. This phase focuses on conver
 - ✅ Facture: added controller feature test with coverage attribute
 - ✅ Projet: added controller feature test with coverage attribute
 - ✅ Contact: added CoversClass attribute and route alignment
+- ✅ Contact model unit test
 - ✅ Facture model unit test
 - ✅ Projet model unit test
+- ✅ Societe model unit test
 - ☐ Service layer coverage (none defined yet for these modules)
 
 ### Code Quality
