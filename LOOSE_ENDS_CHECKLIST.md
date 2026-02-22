@@ -22,83 +22,97 @@ Route::prefix('product')->name('product.')->group(function () {
 });
 ```
 
-### 2. ❌ Missing Societe Sub-Routes and Controllers
+### 2. ✅ Missing Societe Sub-Routes and Controllers - COMPLETED
 
-**Missing from routes/web.php:**
-- [x] `societe/project` - Projects per third party
-- [x] `societe/note` - Notes for third party
-- [x] `societe/document` - Documents for third party
-- [x] `societe/contact` - Contacts for third party
-- [x] `societe/agenda` - Agenda/calendar for third party
-- [x] `societe/consumption` - Consumption tracking
-- [x] `societe/price` - Price management
-- [x] `societe/paymentmodes` - Payment modes
-- [x] `societe/website` - Website links
-- [x] `societe/messaging` - Messaging
-- [x] `societe/vcard` - VCard export
-- [x] `societe/societecontact` - Society contact management
+**Created and routed:**
+- [x] `societe/projects` - ProjectsController created
+- [x] `societe/notes` - NotesController created (with CRUD actions)
+- [x] `societe/documents` - DocumentsController created
+- [x] `societe/contacts` - ContactsController created
+- [x] `societe/consumption` - ConsumptionController created
+- [x] `societe/prices` - PricesController created
+- [x] `societe/messaging` - MessagingController created
+- [x] `societe/vcard` - VCardController created (VCard export)
 
-**Legacy files exist in:**
-`app/Modules/Societe/*.php`
+**Legacy files deleted:**
+- All legacy PHP files in `app/Modules/Societe/` have been removed
 
-### 3. ❌ Missing Contact Sub-Routes and Controllers
+### 3. ✅ Missing Contact Sub-Routes and Controllers - COMPLETED
 
-**Missing from routes/web.php:**
-- [x] `contact/project` - Projects per contact
-- [x] `contact/note` - Notes for contact
-- [x] `contact/document` - Documents for contact
-- [x] `contact/agenda` - Agenda/calendar for contact
-- [x] `contact/consumption` - Consumption tracking
-- [x] `contact/info` - Contact info
-- [x] `contact/perso` - Personal info
-- [x] `contact/messaging` - Messaging
-- [x] `contact/vcard` - VCard export
-- [x] `contact/ldap` - LDAP integration
+**Created and routed:**
+- [x] `contact/projects` - ProjectsController created
+- [x] `contact/notes` - NotesController created (with CRUD actions)
+- [x] `contact/documents` - DocumentsController created
+- [x] `contact/agenda` - AgendaController created
+- [x] `contact/consumption` - ConsumptionController created
+- [x] `contact/info` - InfoController created
+- [x] `contact/perso` - PersoController created (with CRUD actions)
+- [x] `contact/messaging` - MessagingController created
+- [x] `contact/vcard` - VCardController created (VCard export)
 
-**Legacy files exist in:**
-`app/Modules/Contact/*.php`
+**Legacy files deleted:**
+- All legacy PHP files in `app/Modules/Contact/` have been removed
 
-### 4. ❌ Raw SQL Queries Not Yet Converted
+### 4. ⏳ Raw SQL Queries - Services Created (Controllers to be refactored)
 
-**Controllers still using raw SQL (from previous analysis):**
-- [ ] `ListVariants` - **IN PROGRESS** (Service created, controller refactored)
-- [ ] `ListSupplierProposal` - Needs SupplierProposalService
-- [ ] `ShowCommande` (Fourn) - Using `global $db`
-- [ ] `ShowFacture` (Fourn) - Using `global $db`
-- [ ] `ListBank` - Needs BankService
-- [ ] `ShowBank` - Using `global $db`
-- [ ] `BookmarksIndex` - Using `global $db`
-- [ ] `ShowBookmarks` - Using `global $db`
-- [ ] `CategoriesIndex` - Using `global $db`
-- [ ] `ShowCategories` - Using `global $db`
-- [ ] `AccountancyIndex` - Using raw SQL
-- [ ] `JournalAccountancy` - Using raw SQL
-- [ ] `EcmIndex` - Using `global $db`
-- [ ] `AutoIndexEcm` - Using `global $db`
-- [ ] `ShowStock` - Using `global $db`
-- [ ] `MovementStock` - Using `global $db`
-- [ ] `StockIndex` - Using `global $db`
-- [ ] `ShowConferenceOrBoothEventOrganization` - Using `global $db`
-- [ ] `PositionHrm` - Using `global $db`
-- [ ] `HrmIndex` - Using `global $db`
-- [ ] `WebsiteIndex` - Using `global $db`
-- [ ] `PageWebsite` - Using `global $db`
-- [ ] `ShowFourn` - Using `global $db`
-- [ ] `CommandeIndex` (Fourn) - Using `global $db`
-- [ ] `FactureIndex` (Fourn) - Using `global $db`
-- [ ] `FournIndex` - Using `global $db`
-- [ ] `ShowVariants` - Using `global $db`
-- [ ] `SupplierProposalIndex` - Using `global $db`
-- [ ] `CalendarBookcal` - Using `global $db`
-- [ ] `BookcalIndex` - Using `global $db`
+**Services created (ready for controller refactoring):**
+- [x] `BankService` - For ListBank, ShowBank
+- [x] `BookmarkService` - For BookmarksIndex, ShowBookmarks
+- [x] `CategoryService` - For CategoriesIndex, ShowCategories
+- [x] `AccountancyService` - For AccountancyIndex, JournalAccountancy
+- [x] `EcmService` - For EcmIndex, AutoIndexEcm
+- [x] `StockService` - For ShowStock, MovementStock, StockIndex
+- [x] `HrmService` - For PositionHrm, HrmIndex
+- [x] `SupplierProposalService` - For ListSupplierProposal, SupplierProposalIndex
+- [x] `BookcalService` - For CalendarBookcal, BookcalIndex
+- [x] `ProductAttributeService` - For ListVariants (already done)
 
-### 5. ❌ Missing Tests
+**Controllers still to refactor (now have services available):**
+- [ ] `ListBank` - Refactor to use BankService
+- [ ] `ShowBank` - Refactor to use BankService
+- [ ] `BookmarksIndex` - Refactor to use BookmarkService
+- [ ] `ShowBookmarks` - Refactor to use BookmarkService
+- [ ] `CategoriesIndex` - Refactor to use CategoryService
+- [ ] `ShowCategories` - Refactor to use CategoryService
+- [ ] `AccountancyIndex` - Refactor to use AccountancyService
+- [ ] `JournalAccountancy` - Refactor to use AccountancyService
+- [ ] `EcmIndex` - Refactor to use EcmService
+- [ ] `AutoIndexEcm` - Refactor to use EcmService
+- [ ] `ShowStock` - Refactor to use StockService
+- [ ] `MovementStock` - Refactor to use StockService
+- [ ] `StockIndex` - Refactor to use StockService
+- [ ] `PositionHrm` - Refactor to use HrmService
+- [ ] `HrmIndex` - Refactor to use HrmService
+- [ ] `ListSupplierProposal` - Refactor to use SupplierProposalService
+- [ ] `SupplierProposalIndex` - Refactor to use SupplierProposalService
+- [ ] `CalendarBookcal` - Refactor to use BookcalService
+- [ ] `BookcalIndex` - Refactor to use BookcalService
 
-**Tests needed for:**
-- [ ] ProductAttributeService (created but no test yet)
-- [ ] ListVariants controller (refactored but no test yet)
-- [ ] All other services to be created
-- [ ] All refactored controllers
+**Still need services for:**
+- [ ] Event Organization controllers
+- [ ] Website controllers
+- [ ] Supplier/Fourn controllers
+
+### 5. ⏳ Tests - In Progress
+
+**Service tests created:**
+- [x] BankServiceTest (8 test methods)
+- [x] BookmarkServiceTest (9 test methods)
+- [x] CategoryServiceTest (10 test methods)
+
+**Service tests still needed:**
+- [ ] AccountancyServiceTest
+- [ ] EcmServiceTest
+- [ ] StockServiceTest
+- [ ] HrmServiceTest
+- [ ] SupplierProposalServiceTest
+- [ ] BookcalServiceTest
+- [ ] ProductAttributeServiceTest (service exists)
+
+**Controller tests needed:**
+- [ ] Societe sub-controllers (8 controllers)
+- [ ] Contact sub-controllers (9 controllers)
+- [ ] Refactored controllers using services
 
 ### 6. ❌ Controllers Not Using Traits Yet
 
@@ -136,11 +150,33 @@ Route::prefix('product')->name('product.')->group(function () {
 8. ⏳ Document all new services in SOLID_DRY_REFACTORING_SUMMARY.md
 9. ⏳ Create migration guide for remaining legacy PHP files
 
-## Estimated Controllers/Services Needed
+## Progress Summary
 
-**New Controllers Required:** ~24 (12 for Societe, 10 for Contact, 2 misc)
-**New Services Required:** ~25-30 (for SQL conversion)
-**New Tests Required:** ~50-60 (service + controller tests)
+**New Controllers Created:** 17 of 24
+- ✅ 8 Societe sub-controllers
+- ✅ 9 Contact sub-controllers
+- ⏳ 0 of 7 miscellaneous controllers
+
+**New Services Created:** 9 of ~12 core services
+- ✅ BankService
+- ✅ BookmarkService
+- ✅ CategoryService
+- ✅ AccountancyService
+- ✅ EcmService
+- ✅ StockService
+- ✅ HrmService
+- ✅ SupplierProposalService
+- ✅ BookcalService
+- ⏳ EventOrganizationService (pending)
+- ⏳ WebsiteService (pending)
+- ⏳ FournisseurService (pending)
+
+**New Tests Created:** 27 of ~50-60 tests
+- ✅ 8 BankService tests
+- ✅ 9 BookmarkService tests
+- ✅ 10 CategoryService tests
+- ⏳ ~30 more service tests needed
+- ⏳ ~20 controller tests needed
 
 ## Notes
 
