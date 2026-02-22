@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Bookmarks;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Bookmarks\Classes\Bookmark;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -18,11 +20,7 @@ class BookmarksIndex extends Controller
         
         if (!$user->hasRight('bookmark', 'lire')) {
             accessforbidden();
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/bookmarks/class/bookmark.class.php';
-        
-        return match($action) {
+        }        return match($action) {
             'delete' => $this->delete($request, $id),
             default => $this->index($request),
         };
@@ -62,8 +60,8 @@ class BookmarksIndex extends Controller
             $sortorder = 'ASC';
         }
         
-        $object = new \Bookmark($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Bookmark($db);
+        $extrafields = new ExtraFields($db);
         $arrayfields = array();
         $hookmanager->initHooks(array('bookmarklist'));
         
@@ -183,7 +181,7 @@ class BookmarksIndex extends Controller
             accessforbidden();
         }
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         $object->fetch($id);
         
         $res = $object->delete($user);

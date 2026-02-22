@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Ecm;
+use App\Modules\Ecm\Classes\EcmDirectory;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -43,14 +44,11 @@ class AutoIndexEcm extends Controller
         require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
         $module = GETPOST('module', 'alpha');
         $action = GETPOST('action', 'aZ09');
         
-        $ecmdir = new \EcmDirectory($db);
+        $ecmdir = new EcmDirectory($db);
         if ($section) {
             $result = $ecmdir->fetch($section);
             if (!($result > 0)) {
@@ -291,15 +289,11 @@ class AutoIndexEcm extends Controller
     
     private function add(Request $request): RedirectResponse
     {
-        global $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'setup')) {
+        global $db, $user, $langs;        if (!$user->hasRight('ecm', 'setup')) {
             accessforbidden();
         }
         
-        $ecmdir = new \EcmDirectory($db);
+        $ecmdir = new EcmDirectory($db);
         $ecmdir->ref = 'NOTUSEDYET';
         $ecmdir->label = GETPOST("label");
         $ecmdir->description = GETPOST("desc");
@@ -315,11 +309,7 @@ class AutoIndexEcm extends Controller
     
     private function deleteFile(Request $request): RedirectResponse
     {
-        global $conf, $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'upload')) {
+        global $conf, $db, $user, $langs;        if (!$user->hasRight('ecm', 'upload')) {
             accessforbidden();
         }
         
@@ -329,7 +319,7 @@ class AutoIndexEcm extends Controller
             
             $relativepath = '';
             if ($section) {
-                $ecmdir = new \EcmDirectory($db);
+                $ecmdir = new EcmDirectory($db);
                 $result = $ecmdir->fetch($section);
                 if (!($result > 0)) {
                     dol_print_error($db, $ecmdir->error);
@@ -360,18 +350,14 @@ class AutoIndexEcm extends Controller
     
     private function deleteSection(Request $request): RedirectResponse
     {
-        global $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'setup')) {
+        global $db, $user, $langs;        if (!$user->hasRight('ecm', 'setup')) {
             accessforbidden();
         }
         
         if (GETPOST('confirm') == 'yes') {
             $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
             
-            $ecmdir = new \EcmDirectory($db);
+            $ecmdir = new EcmDirectory($db);
             $ecmdir->fetch($section);
             $result = $ecmdir->delete($user);
             
@@ -384,16 +370,12 @@ class AutoIndexEcm extends Controller
     
     private function refreshManual(Request $request): RedirectResponse
     {
-        global $conf, $db, $user;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'read')) {
+        global $conf, $db, $user;        if (!$user->hasRight('ecm', 'read')) {
             accessforbidden();
         }
         
-        $ecmdirstatic = new \EcmDirectory($db);
-        $ecmdirtmp = new \EcmDirectory($db);
+        $ecmdirstatic = new EcmDirectory($db);
+        $ecmdirtmp = new EcmDirectory($db);
         
         clearstatcache();
         

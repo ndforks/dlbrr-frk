@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Variants;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Variants\Classes\ProductAttribute;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,10 +18,7 @@ class ListVariants extends Controller
     {
         global $conf, $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductAttribute.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $langs->loadLangs(['products', 'other']);
+        require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductAttribute.class.php';        $langs->loadLangs(['products', 'other']);
         
         if (!isModEnabled('variants')) {
             accessforbidden('Module not enabled');
@@ -31,8 +30,8 @@ class ListVariants extends Controller
         $hookmanager->initHooks(['productattributelist']);
         restrictedArea($user, 'variants');
         
-        $object = new \ProductAttribute($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new ProductAttribute($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $limit = GETPOSTINT('limit') ?: $conf->liste_limit;

@@ -14,10 +14,7 @@ class SupplierProposalIndex extends Controller
      */
     public function __invoke(Request $request): View
     {
-        global $conf, $db, $langs, $user, $hookmanager;
-        
-        require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+        global $conf, $db, $langs, $user, $hookmanager;        require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
         
         $langs->loadLangs(['supplier_proposal', 'companies']);
         

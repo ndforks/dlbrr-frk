@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\EventOrganization;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Projet\Classes\Project;
+use App\Modules\EventOrganization\Classes\ConferenceOrBooth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -31,11 +34,8 @@ class ShowConferenceOrBoothEventOrganization extends Controller
         }
         
         // Load object
-        require_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorbooth.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-        
-        $object = new \ConferenceOrBooth($db);
-        $projectstatic = new \Project($db);
+        require_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorbooth.class.php';        $object = new ConferenceOrBooth($db);
+        $projectstatic = new Project($db);
         
         if ($id > 0 || !empty($ref)) {
             $result = $object->fetch($id, $ref);
@@ -145,7 +145,7 @@ class ShowConferenceOrBoothEventOrganization extends Controller
         }
         
         // Set extrafields
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
         

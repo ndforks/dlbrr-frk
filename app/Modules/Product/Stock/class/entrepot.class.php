@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace App\Modules\Product\Stock\Classes;
+
 /**
  *  \file       htdocs/product/stock/class/entrepot.class.php
  *  \ingroup    stock
@@ -33,7 +35,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
 /**
  *  Class to manage warehouses
  */
-class Entrepot extends CommonObject
+class Entrepot extends \CommonObject
 {
 	/**
 	 * @var string ID to identify managed object

@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Hrm;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Hrm\Classes\Job;
+use App\Modules\Hrm\Classes\Position;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -21,9 +24,7 @@ class PositionHrm extends Controller
         $fk_job = GETPOSTISSET('fk_job') ? GETPOSTINT('fk_job') : $id;
         $fk_user = GETPOSTINT('fk_user');
         
-        require_once DOL_DOCUMENT_ROOT.'/hrm/class/position.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/hrm/class/job.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_position.lib.php';
+        require_once DOL_DOCUMENT_ROOT.'/hrm/class/position.class.php';        require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_position.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_job.lib.php';
         
         $langs->loadLangs(array("hrm", "other", 'products'));
@@ -60,8 +61,8 @@ class PositionHrm extends Controller
             accessforbidden('NotEnoughPermissions', 0, 1);
         }
         
-        $object = new \Position($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Position($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
@@ -86,7 +87,7 @@ class PositionHrm extends Controller
         
         $permissiontoadd = $user->hasRight('hrm', 'all', 'write');
         
-        $object = new \Position($db);
+        $object = new Position($db);
         
         if ($id > 0 || !empty($ref)) {
             $result = $object->fetch($id, $ref);
@@ -95,7 +96,7 @@ class PositionHrm extends Controller
             }
         }
         
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
@@ -117,7 +118,7 @@ class PositionHrm extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \Position($db);
+        $object = new Position($db);
         $object->fetch($id);
         
         foreach ($object->fields as $key => $val) {
@@ -162,7 +163,7 @@ class PositionHrm extends Controller
             accessforbidden();
         }
         
-        $object = new \Position($db);
+        $object = new Position($db);
         $object->fetch($id);
         
         $result = $object->delete($user);
@@ -188,9 +189,9 @@ class PositionHrm extends Controller
             accessforbidden();
         }
         
-        $job = new \Job($db);
-        $objectposition = new \Position($db);
-        $extrafields = new \ExtraFields($db);
+        $job = new Job($db);
+        $objectposition = new Position($db);
+        $extrafields = new ExtraFields($db);
         
         if ($fk_job > 0) {
             $job->fetch($fk_job);

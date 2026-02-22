@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Accountancy;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Core\Classes\InfoBox;
+use App\Modules\Core\Classes\FormOther;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -25,14 +27,12 @@ class AccountancyIndex extends Controller
     {
         global $db, $langs;
         
-        require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
-        
         $zone = GETPOSTINT('areacode');
         $userid = GETPOSTINT('userid');
         $boxorder = GETPOST('boxorder', 'aZ09');
         $boxorder .= GETPOST('boxcombo', 'aZ09');
         
-        $result = \InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
+        $result = InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
         if ($result > 0) {
             setEventMessages($langs->trans("BoxAdded"), null);
         }
@@ -60,9 +60,7 @@ class AccountancyIndex extends Controller
         
         $pcgver = getDolGlobalInt('CHARTOFACCOUNTS');
         
-        require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-        
-        $resultboxes = \FormOther::getBoxesArea($user, "27");
+        $resultboxes = FormOther::getBoxesArea($user, "27");
         
         $boxlist = '';
         $boxlist .= '<div class="twocolumns">';

@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Variants\Classes;
 /**
  *	\file       htdocs/variants/class/ProductAttribute.class.php
  *	\ingroup    variants

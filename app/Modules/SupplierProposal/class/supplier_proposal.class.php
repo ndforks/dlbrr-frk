@@ -32,6 +32,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\SupplierProposal\Classes;
 /**
  *	\file       htdocs/supplier_proposal/class/supplier_proposal.class.php
  *	\brief      File of class to manage supplier proposals

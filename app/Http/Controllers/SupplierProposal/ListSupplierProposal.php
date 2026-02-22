@@ -16,10 +16,7 @@ class ListSupplierProposal extends Controller
     {
         global $conf, $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-        
-        $langs->loadLangs(['companies', 'propal', 'supplier_proposal', 'compta', 'bills', 'orders']);
+        require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';        $langs->loadLangs(['companies', 'propal', 'supplier_proposal', 'compta', 'bills', 'orders']);
         
         if (!isModEnabled('supplier_proposal')) {
             accessforbidden('Module not enabled');

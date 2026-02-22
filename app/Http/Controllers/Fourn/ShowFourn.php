@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Fourn;
+use App\Modules\Core\Classes\ExtraFields;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +28,7 @@ class ShowFourn extends Controller
         restrictedArea($user, 'societe&fournisseur', $id, '&societe', '', 'rowid');
 
         $object = new \Fournisseur($db);
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $permissiontoadd = $user->hasRight('societe', 'creer');
@@ -204,7 +205,7 @@ class ShowFourn extends Controller
         }
 
         $object = new \Fournisseur($db);
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $object->fetch($id);
@@ -228,7 +229,7 @@ class ShowFourn extends Controller
         global $db, $user, $conf, $langs;
 
         $object = new \Fournisseur($db);
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         if ($id > 0) {

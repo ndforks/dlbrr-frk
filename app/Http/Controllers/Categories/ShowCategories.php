@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Categories;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Categories\Classes\Categorie;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -44,11 +46,8 @@ class ShowCategories extends Controller
             accessforbidden();
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $object = new \Categorie($db);
-        $extrafields = new \ExtraFields($db);
+        require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';        $object = new Categorie($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $hookmanager->initHooks(array('categorycard'));

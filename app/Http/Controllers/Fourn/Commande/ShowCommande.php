@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Fourn\Commande;
+use App\Modules\Core\Classes\ExtraFields;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +33,7 @@ class ShowCommande extends Controller
         $hookmanager->initHooks(array('ordersuppliercard', 'globalcard'));
 
         $object = new \CommandeFournisseur($db);
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         if ($id > 0 || !empty($ref)) {
@@ -193,7 +194,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $object->oldcopy = dol_clone($object, 2);
@@ -214,7 +215,7 @@ class ShowCommande extends Controller
     {
         global $db, $conf, $langs;
 
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $data = [

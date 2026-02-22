@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Bookmarks;
+use App\Modules\Bookmarks\Classes\Bookmark;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -18,11 +19,7 @@ class ShowBookmarks extends Controller
         
         if (!$user->hasRight('bookmark', 'lire')) {
             accessforbidden();
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/bookmarks/class/bookmark.class.php';
-        
-        return match($action) {
+        }        return match($action) {
             'create' => $this->create($request),
             'add', 'addproduct' => $this->add($request),
             'edit' => $this->edit($request, $id),
@@ -42,7 +39,7 @@ class ShowBookmarks extends Controller
         $position = GETPOSTINT("position");
         $backtopage = GETPOST('backtopage', 'alpha');
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         
         $permissiontoadd = $user->hasRight('bookmark', 'creer');
         
@@ -88,7 +85,7 @@ class ShowBookmarks extends Controller
             return redirect($backtopage);
         }
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         
         if (!empty($userid)) {
             $object->fk_user = $userid;
@@ -136,7 +133,7 @@ class ShowBookmarks extends Controller
     {
         global $db, $langs, $user;
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         $object->fetch($id);
         
         $permissiontoadd = $user->hasRight('bookmark', 'creer');
@@ -177,7 +174,7 @@ class ShowBookmarks extends Controller
             return redirect($backtopage);
         }
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         $object->fetch($id);
         
         if (!empty($userid)) {
@@ -226,7 +223,7 @@ class ShowBookmarks extends Controller
     {
         global $db, $langs, $user;
         
-        $object = new \Bookmark($db);
+        $object = new Bookmark($db);
         $object->fetch($id);
         
         $permissiontoread = $user->hasRight('bookmark', 'lire');

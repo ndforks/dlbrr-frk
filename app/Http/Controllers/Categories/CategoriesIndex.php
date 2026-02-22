@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Categories;
+use App\Modules\Categories\Classes\Categorie;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,11 +15,7 @@ class CategoriesIndex extends Controller
         
         if (!$user->hasRight('categorie', 'read')) {
             accessforbidden();
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-        
-        $categstatic = new \Categorie($db);
+        }        $categstatic = new Categorie($db);
         
         // Get number of tags per category type
         $countobjects = [];

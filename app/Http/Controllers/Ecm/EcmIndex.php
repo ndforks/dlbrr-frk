@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Ecm;
+use App\Modules\Ecm\Classes\EcmDirectory;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -50,15 +51,11 @@ class EcmIndex extends Controller
     
     private function uploadFile(Request $request): RedirectResponse
     {
-        global $conf, $db, $langs, $user;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+        global $conf, $db, $langs, $user;        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
         $section_dir = GETPOST('section_dir', 'alpha');
         $overwritefile = GETPOSTINT('overwritefile');
         
-        $ecmdir = new \EcmDirectory($db);
+        $ecmdir = new EcmDirectory($db);
         
         // Define relativepath and upload_dir
         if ($section > 0) {
@@ -108,12 +105,9 @@ class EcmIndex extends Controller
         require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
         
-        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-        
-        $ecmdir = new \EcmDirectory($db);
+        $ecmdir = new EcmDirectory($db);
         if ($section > 0) {
             $result = $ecmdir->fetch($section);
             if (!($result > 0)) {
@@ -153,15 +147,11 @@ class EcmIndex extends Controller
     
     private function add(Request $request): RedirectResponse
     {
-        global $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'setup')) {
+        global $db, $user, $langs;        if (!$user->hasRight('ecm', 'setup')) {
             accessforbidden();
         }
         
-        $ecmdir = new \EcmDirectory($db);
+        $ecmdir = new EcmDirectory($db);
         $ecmdir->ref = 'NOTUSEDYET';
         $ecmdir->label = GETPOST("label");
         $ecmdir->description = GETPOST("desc");
@@ -177,11 +167,7 @@ class EcmIndex extends Controller
     
     private function deleteFile(Request $request): RedirectResponse
     {
-        global $conf, $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'upload')) {
+        global $conf, $db, $user, $langs;        if (!$user->hasRight('ecm', 'upload')) {
             accessforbidden();
         }
         
@@ -190,7 +176,7 @@ class EcmIndex extends Controller
             $section_dir = GETPOST('section_dir', 'alpha');
             
             $relativepath = '';
-            $ecmdir = new \EcmDirectory($db);
+            $ecmdir = new EcmDirectory($db);
             
             if ($section > 0) {
                 $ecmdir->fetch($section);
@@ -220,18 +206,14 @@ class EcmIndex extends Controller
     
     private function deleteSection(Request $request): RedirectResponse
     {
-        global $db, $user, $langs;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'setup')) {
+        global $db, $user, $langs;        if (!$user->hasRight('ecm', 'setup')) {
             accessforbidden();
         }
         
         if (GETPOST('confirm', 'alpha') == 'yes') {
             $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
             
-            $ecmdir = new \EcmDirectory($db);
+            $ecmdir = new EcmDirectory($db);
             $ecmdir->fetch($section);
             $result = $ecmdir->delete($user);
             
@@ -244,16 +226,12 @@ class EcmIndex extends Controller
     
     private function refreshManual(Request $request): RedirectResponse
     {
-        global $conf, $db, $user;
-        
-        require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
-        
-        if (!$user->hasRight('ecm', 'read')) {
+        global $conf, $db, $user;        if (!$user->hasRight('ecm', 'read')) {
             accessforbidden();
         }
         
-        $ecmdirstatic = new \EcmDirectory($db);
-        $ecmdirtmp = new \EcmDirectory($db);
+        $ecmdirstatic = new EcmDirectory($db);
+        $ecmdirtmp = new EcmDirectory($db);
         
         clearstatcache();
         

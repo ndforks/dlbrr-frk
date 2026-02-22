@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Product\Stock;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Product\Stock\Classes\Entrepot;
+use App\Modules\Core\Classes\ExtraFields;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -32,14 +34,12 @@ class ShowStock extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
         $langs->loadLangs(['products', 'stocks', 'companies', 'categories']);
         $hookmanager->initHooks(['warehousecard', 'stocklist', 'globalcard']);
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($id > 0 || !empty($ref)) {
@@ -62,15 +62,13 @@ class ShowStock extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
         $langs->loadLangs(['products', 'stocks', 'companies', 'categories']);
         $hookmanager->initHooks(['warehousecard', 'globalcard']);
         restrictedArea($user, 'stock', 0, 'entrepot&stock');
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         return view('stock.create', [
@@ -84,14 +82,12 @@ class ShowStock extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
         $langs->loadLangs(['products', 'stocks', 'companies', 'categories']);
         $hookmanager->initHooks(['warehousecard', 'globalcard']);
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($id > 0) {
@@ -115,11 +111,9 @@ class ShowStock extends Controller
             return redirect('/product/stock/list.php')->with('error', 'Permission denied');
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $object->ref = GETPOST('ref', 'alpha');
@@ -178,11 +172,9 @@ class ShowStock extends Controller
             return redirect("/product/stock/card.php?id={$id}");
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($object->fetch($id)) {
@@ -225,11 +217,9 @@ class ShowStock extends Controller
     {
         global $db, $user;
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
         
-        $object = new \Entrepot($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Entrepot($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $object->fetch($id);
@@ -263,9 +253,8 @@ class ShowStock extends Controller
             return redirect("/product/stock/card.php?id={$id}");
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
         
-        $object = new \Entrepot($db);
+        $object = new Entrepot($db);
         $object->fetch($id);
         $result = $object->delete($user);
         

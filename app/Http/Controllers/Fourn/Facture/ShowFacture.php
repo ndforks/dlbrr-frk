@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Fourn\Facture;
+use App\Modules\Core\Classes\ExtraFields;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +29,7 @@ class ShowFacture extends Controller
         $hookmanager->initHooks(array('invoicesuppliercard', 'globalcard'));
 
         $object = new \FactureFournisseur($db);
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         if ($id > 0 || !empty($ref)) {
@@ -263,7 +264,7 @@ class ShowFacture extends Controller
             accessforbidden();
         }
 
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $object->oldcopy = dol_clone($object, 2);
@@ -284,7 +285,7 @@ class ShowFacture extends Controller
     {
         global $db, $conf, $langs;
 
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $data = [

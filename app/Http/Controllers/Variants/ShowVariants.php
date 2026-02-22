@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Variants;
+use App\Modules\Variants\Classes\ProductAttribute;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -15,14 +16,7 @@ class ShowVariants extends Controller
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
-        global $conf, $db, $langs, $user, $hookmanager, $mysoc;
-        
-        require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductAttribute.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductAttributeValue.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/variants/lib/variants.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $langs->loadLangs(['products']);
+        global $conf, $db, $langs, $user, $hookmanager, $mysoc;        require_once DOL_DOCUMENT_ROOT.'/variants/lib/variants.lib.php';        $langs->loadLangs(['products']);
         
         if (!isModEnabled('variants')) {
             accessforbidden('Module not enabled');
@@ -54,7 +48,7 @@ class ShowVariants extends Controller
     {
         global $db, $user;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $permissiontoread = $user->hasRight('variants', 'read');
@@ -74,7 +68,7 @@ class ShowVariants extends Controller
         global $db, $user, $langs;
         
         if ($request->method() === 'POST' && GETPOST('add')) {
-            $object = new \ProductAttribute($db);
+            $object = new ProductAttribute($db);
             $object->ref = GETPOST('ref', 'alphanohtml');
             $object->label = GETPOST('label', 'alphanohtml');
             
@@ -93,7 +87,7 @@ class ShowVariants extends Controller
     {
         global $db;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         return view('variants.edit', ['object' => $object]);
@@ -103,7 +97,7 @@ class ShowVariants extends Controller
     {
         global $db, $user;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $object->ref = GETPOST('ref', 'alpha');
@@ -124,7 +118,7 @@ class ShowVariants extends Controller
         
         $confirm = GETPOST('confirm', 'alpha');
         if ($confirm === 'yes') {
-            $object = new \ProductAttribute($db);
+            $object = new ProductAttribute($db);
             $object->fetch($id);
             $result = $object->delete($user);
             
@@ -141,7 +135,7 @@ class ShowVariants extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $line_ref = GETPOST('line_ref', 'alpha');
@@ -161,7 +155,7 @@ class ShowVariants extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $lineid = GETPOSTINT('lineid');
@@ -182,7 +176,7 @@ class ShowVariants extends Controller
     {
         global $db, $user;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $rowid = GETPOSTINT('rowid');
@@ -195,7 +189,7 @@ class ShowVariants extends Controller
     {
         global $db, $user;
         
-        $object = new \ProductAttribute($db);
+        $object = new ProductAttribute($db);
         $object->fetch($id);
         
         $rowid = GETPOSTINT('rowid');

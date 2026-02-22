@@ -26,6 +26,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Bank\Classes;
 /**
  *	\file       htdocs/compta/bank/class/account.class.php
  *	\ingroup    bank

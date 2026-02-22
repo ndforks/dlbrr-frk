@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\SupplierProposal;
+use App\Modules\SupplierProposal\Classes\SupplierProposal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -17,9 +18,7 @@ class ShowSupplierProposal extends Controller
     {
         global $conf, $db, $langs, $user, $hookmanager, $mysoc;
         
-        require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/lib/supplier_proposal.lib.php';
+        require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';        require_once DOL_DOCUMENT_ROOT.'/core/lib/supplier_proposal.lib.php';
         
         $langs->loadLangs(['companies', 'supplier_proposal', 'compta', 'bills', 'propal', 'orders', 'products']);
         
@@ -54,7 +53,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $object = new \SupplierProposal($db);
+        $object = new SupplierProposal($db);
         if ($id > 0 || !empty($ref)) {
             $result = $object->fetch($id, $ref);
             if ($result > 0) {
@@ -90,7 +89,7 @@ class ShowSupplierProposal extends Controller
         }
         
         if ($request->method() === 'POST' && GETPOST('add')) {
-            $object = new \SupplierProposal($db);
+            $object = new SupplierProposal($db);
             $object->ref = GETPOST('ref', 'alpha');
             $object->socid = GETPOSTINT('socid');
             $object->date = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
@@ -113,7 +112,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $object = new \SupplierProposal($db);
+        $object = new SupplierProposal($db);
         $object->fetch($id, $ref);
         $object->fetch_thirdparty();
         
@@ -126,7 +125,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $object = new \SupplierProposal($db);
+        $object = new SupplierProposal($db);
         $object->fetch($id);
         
         $object->ref = GETPOST('ref', 'alpha');
@@ -148,7 +147,7 @@ class ShowSupplierProposal extends Controller
         
         $confirm = GETPOST('confirm', 'alpha');
         if ($confirm === 'yes') {
-            $object = new \SupplierProposal($db);
+            $object = new SupplierProposal($db);
             $object->fetch($id);
             
             $result = $object->delete($user);
@@ -167,7 +166,7 @@ class ShowSupplierProposal extends Controller
         
         $confirm = GETPOST('confirm', 'alpha');
         if ($confirm === 'yes') {
-            $object = new \SupplierProposal($db);
+            $object = new SupplierProposal($db);
             $object->fetch($id);
             
             $result = $object->valid($user);
@@ -184,7 +183,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $object = new \SupplierProposal($db);
+        $object = new SupplierProposal($db);
         $object->fetch($id);
         
         $result = $object->cloture($user, GETPOSTINT('statut'), GETPOST('note', 'restricthtml'));
@@ -200,7 +199,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $object = new \SupplierProposal($db);
+        $object = new SupplierProposal($db);
         $object->fetch($id);
         
         $result = $object->setDraft($user);

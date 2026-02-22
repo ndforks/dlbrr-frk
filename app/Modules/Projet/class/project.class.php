@@ -26,6 +26,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Projet\Classes;
 /**
  * 		\file       htdocs/projet/class/project.class.php
  * 		\ingroup    projet

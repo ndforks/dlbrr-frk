@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Compta\Bank;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Compta\Bank\Classes\Account;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -33,14 +35,11 @@ class ShowBank extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
+        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
         $hookmanager->initHooks(['bankcard', 'globalcard']);
         
-        $object = new \Account($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Account($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($id > 0 || !empty($ref)) {
@@ -65,15 +64,12 @@ class ShowBank extends Controller
     {
         global $db, $langs, $user, $hookmanager;
         
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
+        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
         $hookmanager->initHooks(['bankcard', 'globalcard']);
         restrictedArea($user, 'banque', 0, 'bank_account&bank_account');
         
-        $object = new \Account($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Account($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         return view('bank.create', [
@@ -91,14 +87,11 @@ class ShowBank extends Controller
             return redirect("/compta/bank/card.php?id={$id}")->with('error', 'Permission denied');
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-        
-        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
+        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';        $langs->loadLangs(['banks', 'bills', 'categories', 'companies', 'compta', 'withdrawals']);
         $hookmanager->initHooks(['bankcard', 'globalcard']);
         
-        $object = new \Account($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Account($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($id > 0) {
@@ -122,13 +115,10 @@ class ShowBank extends Controller
             return redirect('/compta/bank/list.php')->with('error', 'Permission denied');
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';        $db->begin();
         
-        $db->begin();
-        
-        $object = new \Account($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Account($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $object->ref = dol_string_nospecial(trim(GETPOST('ref', 'alpha')));
@@ -229,13 +219,10 @@ class ShowBank extends Controller
             return redirect("/compta/bank/card.php?id={$id}");
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';        $db->begin();
         
-        $db->begin();
-        
-        $object = new \Account($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Account($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($object->fetch($id)) {
@@ -311,11 +298,7 @@ class ShowBank extends Controller
         $confirm = GETPOST('confirm');
         if ($confirm !== 'yes') {
             return redirect("/compta/bank/card.php?id={$id}");
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        
-        $object = new \Account($db);
+        }        $object = new Account($db);
         $object->fetch($id);
         $result = $object->delete($user);
         
@@ -334,11 +317,7 @@ class ShowBank extends Controller
         
         if (!$user->hasRight('banque', 'configurer')) {
             return redirect("/compta/bank/card.php?id={$id}")->with('error', 'Permission denied');
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        
-        $object = new \Account($db);
+        }        $object = new Account($db);
         $object->fetch($id);
         $object->setStatut($object::STATUS_CLOSED, null, '', 'BANKACCOUNT_MODIFY');
         
@@ -351,11 +330,7 @@ class ShowBank extends Controller
         
         if (!$user->hasRight('banque', 'configurer')) {
             return redirect("/compta/bank/card.php?id={$id}")->with('error', 'Permission denied');
-        }
-        
-        require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-        
-        $object = new \Account($db);
+        }        $object = new Account($db);
         $object->fetch($id);
         $object->setStatut($object::STATUS_OPEN, null, '', 'BANKACCOUNT_MODIFY');
         

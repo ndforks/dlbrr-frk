@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Bookcal;
+use App\Modules\Core\Classes\ExtraFields;
+use App\Modules\Bookcal\Classes\Calendar;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
@@ -17,10 +19,7 @@ class CalendarBookcal extends Controller
         $id = GETPOSTINT('id');
         $ref = GETPOST('ref', 'alpha');
         $confirm = GETPOST('confirm', 'alpha');
-        $cancel = GETPOST('cancel', 'alpha');
-        
-        require_once DOL_DOCUMENT_ROOT.'/bookcal/class/calendar.class.php';
-        require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_calendar.lib.php';
+        $cancel = GETPOST('cancel', 'alpha');        require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_calendar.lib.php';
         
         $langs->loadLangs(array("agenda", "other"));
         
@@ -53,8 +52,8 @@ class CalendarBookcal extends Controller
             accessforbidden('NotEnoughPermissions', 0, 1);
         }
         
-        $object = new \Calendar($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Calendar($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
@@ -79,7 +78,7 @@ class CalendarBookcal extends Controller
         
         $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         
         if ($id > 0 || !empty($ref)) {
             $result = $object->fetch($id, $ref);
@@ -88,7 +87,7 @@ class CalendarBookcal extends Controller
             }
         }
         
-        $extrafields = new \ExtraFields($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         $form = new \Form($db);
@@ -110,7 +109,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         foreach ($object->fields as $key => $val) {
@@ -149,7 +148,7 @@ class CalendarBookcal extends Controller
             accessforbidden();
         }
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $result = $object->delete($user);
@@ -167,7 +166,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $result = $object->validate($user);
@@ -185,7 +184,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $result = $object->setDraft($user);
@@ -203,7 +202,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $result = $object->createFromClone($user, $id);
@@ -227,7 +226,7 @@ class CalendarBookcal extends Controller
             accessforbidden();
         }
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, 'BOOKCAL_MYOBJECT_MODIFY');
@@ -245,7 +244,7 @@ class CalendarBookcal extends Controller
             accessforbidden();
         }
         
-        $object = new \Calendar($db);
+        $object = new Calendar($db);
         $object->fetch($id);
         
         $object->setProject(GETPOSTINT('projectid'));
@@ -265,8 +264,8 @@ class CalendarBookcal extends Controller
             accessforbidden();
         }
         
-        $object = new \Calendar($db);
-        $extrafields = new \ExtraFields($db);
+        $object = new Calendar($db);
+        $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($id > 0 || !empty($ref)) {
