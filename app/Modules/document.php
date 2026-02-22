@@ -140,12 +140,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 
 $encoding = '';
-$action = GETPOST('action', 'aZ09');
-$original_file = GETPOST('file', 'alphanohtml');
-$hashp = GETPOST('hashp', 'aZ09');
-$modulepart = GETPOST('modulepart', 'alpha');
-$urlsource = GETPOST('urlsource', 'alpha');
-$entity = GETPOSTISSET('entity') ? GETPOSTINT('entity') : $conf->entity;
+$action = request()->input('action');
+$original_file = request()->input('file');
+$hashp = request()->input('hashp');
+$modulepart = request()->input('modulepart');
+$urlsource = request()->input('urlsource');
+$entity = request()->has('entity') ? request()->integer('entity', 0) : $conf->entity;
 
 // Security check
 if (empty($modulepart) && empty($hashp)) {
@@ -186,7 +186,7 @@ if (in_array($modulepart, array('facture_paiement', 'unpaid'))) {
 // If we have a hash public (hashp), we guess the original_file.
 $ecmfile = '';
 if (!empty($hashp)) {
-	if (GETPOST('type', 'alpha')=='link') {
+	if (request()->input('type')=='link') {
 		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
 		$link = new Link($db);
 		$result = $link->fetch(0, $hashp);
@@ -247,7 +247,7 @@ if (preg_match('/\.(html|htm)$/i', $original_file)) {
 	$attachment = false;
 }
 if (isset($_GET["attachment"])) {
-	$attachment = GETPOST("attachment", 'alpha') ? true : false;
+	$attachment = request()->input("attachment") ? true : false;
 }
 if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS')) {
 	$attachment = false;
@@ -255,8 +255,8 @@ if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS')) {
 
 // Define mime type
 $type = 'application/octet-stream'; // By default
-if (GETPOST('type', 'alpha')) {
-	$type = GETPOST('type', 'alpha');
+if (request()->input('type')) {
+	$type = request()->input('type');
 } else {
 	$type = dol_mimetype($original_file);
 }
