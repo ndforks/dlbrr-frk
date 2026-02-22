@@ -370,10 +370,10 @@ if (empty($reshook)) {
 
 			// Rename some POST variables into a generic name
 			if (request()->input('actionmodify') && $value == 'topic') {
-				$_POST['topic'] = GETPOST('topic-'.$rowid);
+				$_POST['topic'] = request()->input('topic-'.$rowid);
 			}
 
-			if ((!GETPOSTISSET($value) || GETPOST($value) == '' || GETPOST($value) == '-1') && $value != 'lang' && $value != 'fk_user' && $value != 'position') {
+			if ((!request()->has($value) || request()->input($value) == '' || request()->input($value) == '-1') && $value != 'lang' && $value != 'fk_user' && $value != 'position') {
 				$ok = 0;
 				$fieldnamekey = $listfield[$f];
 				// We take translate key of field
@@ -451,22 +451,22 @@ if (empty($reshook)) {
 				}
 				if ($keycode == 'datec') {
 					$sql .= "'".$db->idate($now)."'";
-				} elseif (GETPOST($keycode) == '' && $keycode != 'langcode') {
+				} elseif (request()->input($keycode) == '' && $keycode != 'langcode') {
 					$sql .= "null"; // langcode must be '' if not defined so the unique key that include lang will work
-				} elseif (GETPOST($keycode) == '0' && $keycode == 'langcode') {
+				} elseif (request()->input($keycode) == '0' && $keycode == 'langcode') {
 					$sql .= "''"; // langcode must be '' if not defined so the unique key that include lang will work
 				} elseif ($keycode == 'fk_user') {
 					if (!$user->admin) {	// A non admin user can only edit its own template
 						$sql .= " ".((int) $user->id);
 					} else {
-						$sql .= " ".(GETPOSTINT($keycode));
+						$sql .= " ".(request()->integer($keycode, 0));
 					}
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfiles', 'defaultfortype', 'private', 'position', 'entity'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 				$i++;
 			}
@@ -525,19 +525,19 @@ if (empty($reshook)) {
 
 					// Rename some POST variables into a generic name
 					if ($field == 'topic') {
-						$_POST['topic'] = GETPOST('topic-'.$rowid);
+						$_POST['topic'] = request()->input('topic-'.$rowid);
 					}
 					if ($field == 'joinfiles') {
-						$_POST['joinfiles'] = GETPOST('joinfiles-'.$rowid);
+						$_POST['joinfiles'] = request()->input('joinfiles-'.$rowid);
 					}
 					if ($field == 'content') {
-						$_POST['content'] = GETPOST('content-'.$rowid, 'restricthtml');
+						$_POST['content'] = request()->input('content-'.$rowid, 'restricthtml');
 					}
 					if ($field == 'content_lines') {
-						$_POST['content_lines'] = GETPOST('content_lines-'.$rowid, 'restricthtml');
+						$_POST['content_lines'] = request()->input('content_lines-'.$rowid, 'restricthtml');
 					}
 					if ($field == 'email_from') {
-						$_POST['email_from'] = GETPOST('email_from-'.$rowid, 'restricthtml');
+						$_POST['email_from'] = request()->input('email_from-'.$rowid, 'restricthtml');
 					}
 
 					if ($i) {
@@ -545,24 +545,24 @@ if (empty($reshook)) {
 					}
 					$sql .= $field." = ";
 
-					if ((GETPOST($keycode) == '' && in_array($keycode, array('langcode'))) || (!in_array($keycode, array('langcode', 'position', 'private', 'defaultfortype')) && !GETPOST($keycode))) {
+					if ((request()->input($keycode) == '' && in_array($keycode, array('langcode'))) || (!in_array($keycode, array('langcode', 'position', 'private', 'defaultfortype')) && !request()->input($keycode))) {
 						$sql .= "null"; // langcode,... must be '' if not defined so the unique key that include lang will work
-					} elseif ($keycode == 'langcode' && (GETPOST($keycode) == '0' || GETPOST($keycode) == '-1')) {
+					} elseif ($keycode == 'langcode' && (request()->input($keycode) == '0' || request()->input($keycode) == '-1')) {
 						$sql .= "''"; // langcode must be '' if not defined so the unique key that include lang will work
 					} elseif ($keycode == 'fk_user') {
 						if (!$user->admin) {	// A non admin user can only edit its own template
 							$sql .= ((int) $user->id);
 						} else {
-							$sql .= (GETPOSTINT($keycode) > 0 ? GETPOSTINT($keycode) : "null");
+							$sql .= (request()->integer($keycode, 0) > 0 ? request()->integer($keycode, 0) : "null");
 						}
 					} elseif ($keycode == 'content') {
-						$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+						$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 					} elseif ($keycode == 'position') {
-						$sql .= (GETPOSTINT($keycode) > 0 ? GETPOSTINT($keycode) : 1);
+						$sql .= (request()->integer($keycode, 0) > 0 ? request()->integer($keycode, 0) : 1);
 					} elseif (in_array($keycode, array('joinfiles', 'defaultfortype', 'private'))) {
-						$sql .= GETPOSTINT($keycode);
+						$sql .= request()->integer($keycode, 0);
 					} else {
-						$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+						$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 					}
 					$i++;
 				}
@@ -1597,7 +1597,7 @@ function fieldList($fieldlist, $obj = null, $tabname = '', $context = '')
 			if (in_array($value, array('defaultfortype', 'private')) && $context != 'preview') {
 				if (empty($user->admin)) {
 					// @phan-suppress-next-line PhanPluginSuspiciousParamPosition
-					print $form->selectyesno($value, GETPOSTISSET($value) ? GETPOSTINT($value) : (($context != 'add' && isset($obj->$value)) ? $obj->$value : '1'), 1, false, 0, 1);
+					print $form->selectyesno($value, request()->has($value) ? request()->integer($value, 0) : (($context != 'add' && isset($obj->$value)) ? $obj->$value : '1'), 1, false, 0, 1);
 				} else {
 					// @phan-suppress-next-line PhanPluginSuspiciousParamPosition
 					print $form->selectyesno($value, (isset($obj->$value) ? $obj->$value : ''), 1, false, 0, 1);

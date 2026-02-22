@@ -153,9 +153,9 @@ if (request()->input('boutonp') || request()->input('boutonp.x') || request()->i
 	if (request()->input('nom')) {
 		$nouveauchoix = '';
 		for ($i = 0; $i < $nbcolonnes; $i++) {
-			if (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '1') {
+			if (request()->has("choix".$i) && request()->input("choix".$i) == '1') {
 				$nouveauchoix .= "1";
-			} elseif (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '2') {
+			} elseif (request()->has("choix".$i) && request()->input("choix".$i) == '2') {
 				$nouveauchoix .= "2";
 			} else {
 				$nouveauchoix .= "0";
@@ -257,13 +257,13 @@ $testligneamodifier = false;
 $ligneamodifier = -1;
 $modifier = -1;
 for ($i = 0; $i < $nblines; $i++) {
-	if (GETPOSTISSET('modifierligne'.$i)) {
+	if (request()->has('modifierligne'.$i)) {
 		$ligneamodifier = $i;
 		$testligneamodifier = true;
 	}
 
 	//test to see if a line is to be modified
-	if (GETPOSTISSET('validermodifier'.$i)) {
+	if (request()->has('validermodifier'.$i)) {
 		$modifier = $i;
 		$testmodifier = true;
 	}
@@ -272,9 +272,9 @@ for ($i = 0; $i < $nblines; $i++) {
 if ($testmodifier) {
 	$nouveauchoix = '';
 	for ($i = 0; $i < $nbcolonnes; $i++) {
-		if (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '1') {
+		if (request()->has("choix".$i) && request()->input("choix".$i) == '1') {
 			$nouveauchoix .= "1";
-		} elseif (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '2') {
+		} elseif (request()->has("choix".$i) && request()->input("choix".$i) == '2') {
 			$nouveauchoix .= "2";
 		} else {
 			$nouveauchoix .= "0";
@@ -285,7 +285,7 @@ if ($testmodifier) {
 		httponly_abort(403);
 	}
 
-	$idtomodify = GETPOST("idtomodify".$modifier);
+	$idtomodify = request()->input("idtomodify".$modifier);
 	$sql = 'UPDATE '.MAIN_DB_PREFIX."opensurvey_user_studs";
 	$sql .= " SET reponses = '".$db->escape($nouveauchoix)."'";
 	$sql .= " WHERE id_users = '".$db->escape($idtomodify)."'";
@@ -674,7 +674,7 @@ while ($compteur < $num) {
 
 	// Ask for confirmation to modify the line
 	for ($i = 0; $i < $nblines; $i++) {
-		if (GETPOSTISSET("modifierligne".$i)) {
+		if (request()->has("modifierligne".$i)) {
 			if ($compteur == $i) {
 				print '<td class="casevide">';
 				print '<input type="hidden" name="idtomodify'.$compteur.'" value="'.$obj->id_users.'">';
@@ -704,18 +704,18 @@ if ($ligneamodifier < 0 && (!isset($_SESSION['nom']))) {
 		print '<td class="vide">';
 		if (empty($listofanswers[$i]['format']) || !in_array($listofanswers[$i]['format'], array('yesno', 'foragainst'))) {
 			print '<input type="checkbox" name="choix'.$i.'" value="1"';
-			if (GETPOSTISSET('choix'.$i) && GETPOST('choix'.$i) == '1') {
+			if (request()->has('choix'.$i) && request()->input('choix'.$i) == '1') {
 				print ' checked';
 			}
 			print '>';
 		}
 		if (!empty($listofanswers[$i]['format']) && $listofanswers[$i]['format'] == 'yesno') {
 			$arraychoice = array('2' => '&nbsp;', '0' => $langs->trans("No"), '1' => $langs->trans("Yes"));
-			print $form->selectarray("choix".$i, $arraychoice, GETPOST('choix'.$i));
+			print $form->selectarray("choix".$i, $arraychoice, request()->input('choix'.$i));
 		}
 		if (!empty($listofanswers[$i]['format']) && $listofanswers[$i]['format'] == 'foragainst') {
 			$arraychoice = array('2' => '&nbsp;', '0' => $langs->trans("Against"), '1' => $langs->trans("For"));
-			print $form->selectarray("choix".$i, $arraychoice, GETPOST('choix'.$i));
+			print $form->selectarray("choix".$i, $arraychoice, request()->input('choix'.$i));
 		}
 		print '</td>'."\n";
 	}

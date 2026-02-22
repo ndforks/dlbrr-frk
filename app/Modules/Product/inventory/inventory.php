@@ -99,8 +99,8 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha')) {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_'.$key, 'alpha')) {
+		$search[$key] = request()->input('search_'.$key, 'alpha');
 	}
 }
 
@@ -318,27 +318,27 @@ if (empty($reshook)) {
 				$result = 0;
 				$resultupdate = 0;
 
-				if (GETPOST("id_".$lineid, 'alpha') != '') {		// If a value was set ('0' or something else)
-					$qtytoupdate = (float) price2num(GETPOST("id_".$lineid, 'alpha'), 'MS');
+				if (request()->input("id_".$lineid, 'alpha') != '') {		// If a value was set ('0' or something else)
+					$qtytoupdate = (float) price2num(request()->input("id_".$lineid, 'alpha'), 'MS');
 					$result = $inventoryline->fetch($lineid);
 					if ($qtytoupdate < 0) {
 						$result = -1;
 						setEventMessages($langs->trans("FieldCannotBeNegative", $langs->transnoentitiesnoconv("RealQty")), null, 'errors');
 					}
 					if ($result > 0) {
-						$inventoryline->qty_stock = (float) price2num(GETPOST('stock_qty_'.$lineid, 'alpha'), 'MS');	// The new value that was set in as hidden field
+						$inventoryline->qty_stock = (float) price2num(request()->input('stock_qty_'.$lineid, 'alpha'), 'MS');	// The new value that was set in as hidden field
 						$inventoryline->qty_view = $qtytoupdate;	// The new value we want
-						$inventoryline->pmp_real = price2num(GETPOST('realpmp_'.$lineid, 'alpha'), 'MS');
-						$inventoryline->pmp_expected = price2num(GETPOST('expectedpmp_'.$lineid, 'alpha'), 'MS');
+						$inventoryline->pmp_real = price2num(request()->input('realpmp_'.$lineid, 'alpha'), 'MS');
+						$inventoryline->pmp_expected = price2num(request()->input('expectedpmp_'.$lineid, 'alpha'), 'MS');
 						$resultupdate = $inventoryline->update($user);
 					}
-				} elseif (GETPOSTISSET('id_' . $lineid)) {
+				} elseif (request()->has('id_' . $lineid)) {
 					// Delete record
 					$result = $inventoryline->fetch($lineid);
 					if ($result > 0) {
 						$inventoryline->qty_view = null;			// The new value we want
-						$inventoryline->pmp_real = price2num(GETPOST('realpmp_'.$lineid, 'alpha'), 'MS');
-						$inventoryline->pmp_expected = price2num(GETPOST('expectedpmp_'.$lineid, 'alpha'), 'MS');
+						$inventoryline->pmp_real = price2num(request()->input('realpmp_'.$lineid, 'alpha'), 'MS');
+						$inventoryline->pmp_expected = price2num(request()->input('expectedpmp_'.$lineid, 'alpha'), 'MS');
 						$resultupdate = $inventoryline->update($user);
 					}
 				}
@@ -1135,7 +1135,7 @@ if ($resql) {
 
 		// Real quantity
 		if ($object->status == $object::STATUS_DRAFT || $object->status == $object::STATUS_VALIDATED) {
-			$qty_view = GETPOST("id_".$obj->rowid) && price2num(GETPOST("id_".$obj->rowid), 'MS') >= 0 ? GETPOST("id_".$obj->rowid) : $obj->qty_view;
+			$qty_view = request()->input("id_".$obj->rowid) && price2num(request()->input("id_".$obj->rowid), 'MS') >= 0 ? request()->input("id_".$obj->rowid) : $obj->qty_view;
 
 			//if (!$hasinput && $qty_view !== null && $obj->qty_stock != $qty_view) {
 			if ($qty_view != '') {
@@ -1195,7 +1195,7 @@ if ($resql) {
 			if ($permissiontoupdatestock) {
 				print '<a class="reposition" href="'.DOL_URL_ROOT.'/product/inventory/inventory.php?id='.$object->id.'&lineid='.$obj->rowid.'&action=deleteline&page='.$page.$paramwithsearch.'&token='.newToken().'">'.img_delete().'</a>';
 			}
-			$qty_tmp = price2num(GETPOST("id_".$obj->rowid."_input_tmp"), 'MS') >= 0 ? GETPOST("id_".$obj->rowid."_input_tmp") : $qty_view;
+			$qty_tmp = price2num(request()->input("id_".$obj->rowid."_input_tmp"), 'MS') >= 0 ? request()->input("id_".$obj->rowid."_input_tmp") : $qty_view;
 			print '<input type="hidden" class="maxwidth50 right realqty" name="id_'.$obj->rowid.'_input_tmp" id="id_'.$obj->rowid.'_input_tmp" value="'.$qty_tmp.'">';
 			print '</td>';
 		} else {

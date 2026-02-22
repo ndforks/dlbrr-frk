@@ -838,7 +838,7 @@ if (empty($reshook)) {
 			if ($value == 'sortorder') {
 				continue; // For a column name 'sortorder', we use the field name 'position'
 			}
-			if ((!GETPOSTISSET($value) || GETPOST($value) == '')
+			if ((!request()->has($value) || request()->input($value) == '')
 				&& (
 					!in_array($value, array('decalage', 'module', 'accountancy_code', 'accountancy_code_sell', 'accountancy_code_buy', 'tracking', 'picto', 'deposit_percent'))  // Fields that are not mandatory
 					&& ($id != DICT_TVA || ($value != 'code' && $value != 'note')) // Field code and note is not mandatory for dictionary table 10
@@ -997,9 +997,9 @@ if (empty($reshook)) {
 				}
 
 				if ($value == 'price' || preg_match('/^amount/i', $value)) {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 'MU');
+					$_POST[$keycode] = price2num(request()->input($keycode), 'MU');
 				} elseif ($value == 'taux' || $value == 'localtax1') {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
+					$_POST[$keycode] = price2num(request()->input($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
 				} elseif ($value == 'entity') {
 					$_POST[$keycode] = (int) getEntity($tablename, 0);
 				}
@@ -1010,14 +1010,14 @@ if (empty($reshook)) {
 
 				if ($keycode == 'sortorder') {		// For column name 'sortorder', we use the field name 'position'
 					$sql .= request()->integer('position', 0);
-				} elseif (GETPOST($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
+				} elseif (request()->input($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
 					$sql .= "null"; // For vat, we want/accept code = ''
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfile', 'private', 'pos', 'position', 'scale', 'use_default'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 
 				$i++;
@@ -1066,9 +1066,9 @@ if (empty($reshook)) {
 				}
 
 				if ($field == 'price' || preg_match('/^amount/i', $field)) {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 'MU');
+					$_POST[$keycode] = price2num(request()->input($keycode), 'MU');
 				} elseif ($field == 'taux' || $field == 'localtax1') {
-					$_POST[$keycode] = price2num(GETPOST($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
+					$_POST[$keycode] = price2num(request()->input($keycode), 8);	// Note that localtax2 can be a list of rates separated by coma like X:Y:Z
 				} elseif ($field == 'entity') {
 					$_POST[$keycode] = (int) getEntity($tablename, 0);
 				}
@@ -1079,14 +1079,14 @@ if (empty($reshook)) {
 				$sql .= $field."=";
 				if ($keycode == 'sortorder') {		// For column name 'sortorder', we use the field name 'position'
 					$sql .= request()->integer('position', 0);
-				} elseif (GETPOST($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
+				} elseif (request()->input($keycode) == '' && !($keycode == 'code' && $id == DICT_TVA)) {
 					$sql .= "null"; // For vat, we want/accept code = ''
 				} elseif ($keycode == 'content') {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'restricthtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'restricthtml'))."'";
 				} elseif (in_array($keycode, array('joinfile', 'private', 'pos', 'position', 'scale', 'use_default'))) {
-					$sql .= GETPOSTINT($keycode);
+					$sql .= request()->integer($keycode, 0);
 				} else {
-					$sql .= "'".$db->escape(GETPOST($keycode, 'alphanohtml'))."'";
+					$sql .= "'".$db->escape(request()->input($keycode, 'alphanohtml'))."'";
 				}
 
 				$i++;
@@ -1869,8 +1869,8 @@ if ($id > 0) {
 				// If data was already input, we define them in obj to populate input fields.
 				if (request()->input('actionadd')) {
 					foreach ($fieldlist as $key => $val) {
-						if (GETPOST($val) != '') {
-							$obj->$val = GETPOST($val);
+						if (request()->input($val) != '') {
+							$obj->$val = request()->input($val);
 						}
 					}
 				}
