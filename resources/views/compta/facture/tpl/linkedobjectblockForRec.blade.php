@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2010-2011	Regis Houssin <regis.houssin@inodbox.com>
  * Copyright (C) 2013		Juanjo Menent <jmenent@2byte.es>
  * Copyright (C) 2014       Marcos García <marcosgdf@gmail.com>
@@ -19,68 +18,66 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
+--}}
+@php
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
 	exit(1);
 }
 
-
-print "<!-- BEGIN PHP TEMPLATE compta/facture/tpl/linkedobjectblockForRec.tpl.php -->\n";
-
-
 global $user;
 global $noMoreLinkedObjectBlockAfter;
 
 $langs = $GLOBALS['langs'];
-'@phan-var-force Translate $langs';
-/**
- * @var CommonObject $object
- * @var Translate $langs
- */
 $linkedObjectBlock = $GLOBALS['linkedObjectBlock'];
-'@phan-var-force FactureRec[] $linkedObjectBlock';
-/** @var FactureRec[] $linkedObjectBlock */
 
 $langs->load("bills");
 
 $total = 0;
 $ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
+@endphp
 
+<!-- BEGIN BLADE TEMPLATE compta/facture/tpl/linkedobjectblockForRec.blade.php -->
+
+@foreach ($linkedObjectBlock as $key => $objectlink)
+	@php
+	$ilink++;
 	$trclass = 'oddeven';
 	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
 		$trclass .= ' liste_sub_total';
-	} ?>
-<tr class="<?php echo $trclass; ?>" >
-	<td class="linkedcol-element tdoverflowmax100"><?php echo $langs->trans("RepeatableInvoice"); ?></td>
-	<td class="linkedcol-name tdoverflowmax150"><?php echo $objectlink->getNomUrl(1); ?></td>
-	<td class="linkedcol-ref" align="center"></td>
-	<td class="linkedcol-date" align="center"><?php echo dol_print_date($objectlink->date_when, 'day'); ?></td>
-	<td class="linkedcol-amount right"><?php
-	if ($user->hasRight('facture', 'lire')) {
-		$total += $objectlink->total_ht;
-		echo price($objectlink->total_ht);
-	} ?></td>
-	<td class="linkedcol-statut right"><?php echo $objectlink->getLibStatut(3); ?></td>
-	<td class="linkedcol-action right"><a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a></td>
-</tr>
-	<?php
-}
-if (count($linkedObjectBlock) > 1) {
-	?>
-	<tr class="liste_total <?php echo(empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : ''); ?>">
-		<td><?php echo $langs->trans("Total"); ?></td>
+	}
+	@endphp
+	<tr class="{{ $trclass }}">
+		<td class="linkedcol-element tdoverflowmax100">{{ $langs->trans("RepeatableInvoice") }}</td>
+		<td class="linkedcol-name tdoverflowmax150">{!! $objectlink->getNomUrl(1) !!}</td>
+		<td class="linkedcol-ref" align="center"></td>
+		<td class="linkedcol-date" align="center">{{ dol_print_date($objectlink->date_when, 'day') }}</td>
+		<td class="linkedcol-amount right">
+			@if ($user->hasRight('facture', 'lire'))
+				@php $total += $objectlink->total_ht; @endphp
+				{{ price($objectlink->total_ht) }}
+			@endif
+		</td>
+		<td class="linkedcol-statut right">{!! $objectlink->getLibStatut(3) !!}</td>
+		<td class="linkedcol-action right">
+			<a class="reposition" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">
+				{!! img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink') !!}
+			</a>
+		</td>
+	</tr>
+@endforeach
+
+@if (count($linkedObjectBlock) > 1)
+	<tr class="liste_total {{ empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '' }}">
+		<td>{{ $langs->trans("Total") }}</td>
 		<td></td>
 		<td align="center"></td>
 		<td align="center"></td>
-		<td class="right"><?php echo price($total); ?></td>
+		<td class="right">{{ price($total) }}</td>
 		<td class="right"></td>
 		<td class="right"></td>
 	</tr>
-	<?php
-}
+@endif
 
-print "<!-- END PHP TEMPLATE -->\n";
+<!-- END BLADE TEMPLATE -->
