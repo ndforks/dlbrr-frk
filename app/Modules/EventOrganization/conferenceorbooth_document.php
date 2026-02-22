@@ -28,11 +28,11 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorbooth.class.php';
@@ -99,7 +99,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $upload_dir = $conf->eventorganization->multidir_output[isset($object->entity) ? $object->entity : 1];
 if ($id > 0 || !empty($ref)) {
@@ -131,7 +131,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-include_once DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 
 /*
@@ -277,7 +277,7 @@ if (!empty($withproject)) {
 	$cols = 2;
 	$objectconf = $object;
 	$object = $projectstatic;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 	$object = $objectconf;
 
 	print '</table>';
@@ -458,7 +458,7 @@ if ($object->id) {
 	//$relativepathwithnofile='conferenceorbooth/' . dol_sanitizeFileName($object->id).'/';
 	$relativepathwithnofile = 'conferenceorbooth/'.dol_sanitizeFileName($object->ref).'/';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 } else {
 	abort(403);
 }

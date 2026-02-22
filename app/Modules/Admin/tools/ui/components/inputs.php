@@ -34,7 +34,7 @@ endif;
 
 // Includes
 dol_include_once('admin/tools/ui/class/documentation.class.php');
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 // Load documentation translations
 $langs->load('uxdocumentation');

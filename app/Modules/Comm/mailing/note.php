@@ -26,7 +26,7 @@
 require '../../main.inc.php';
 
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/emailing.lib.php';
 
 /**
  * @var Conf $conf
@@ -55,7 +55,7 @@ $hookmanager->initHooks(array('mailingnote', 'globalcard')); // Note that conf->
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 if ($id > 0 || !empty($ref)) {
 	$upload_dir = $conf->mailing->multidir_output[$object->entity ?? $conf->entity]."/".$object->id;
 }
@@ -79,7 +79,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 }
 
 
@@ -102,7 +102,7 @@ if ($id > 0 || !empty($ref)) {
 
 	// Object card
 	// ------------------------------------------------------------
-	$linkback = '<a href="'.dol_buildpath('/knowledgemanagement/knowledgerecord_list.php', 1).'?restore_lastsearch_values=1'.(!empty($socid) ? '&socid='.$socid : '').'">'.$langs->trans("BackToList").'</a>';
+	$linkback = '<a href="'.dol_buildpath('/Knowledgemanagement/knowledgerecord_list.php', 1).'?restore_lastsearch_values=1'.(!empty($socid) ? '&socid='.$socid : '').'">'.$langs->trans("BackToList").'</a>';
 
 	$morehtmlref = '<div class="refidno">';
 	$morehtmlref .= $form->editfieldval("", 'title', $object->title, $object, $user->hasRight('mailing', 'creer'), 'string', '', null, null, '', 1);
@@ -155,7 +155,7 @@ if ($id > 0 || !empty($ref)) {
 
 
 	$cssclass = "titlefield";
-	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/notes.tpl.php';
 
 	print '</div>';
 

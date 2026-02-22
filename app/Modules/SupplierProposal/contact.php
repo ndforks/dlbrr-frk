@@ -32,8 +32,8 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/supplier_proposal.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/supplier_proposal.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class.php';
@@ -191,7 +191,7 @@ if ($id > 0 || !empty($ref)) {
 		print dol_get_fiche_end();
 
 		// Contacts lines
-		include DOL_DOCUMENT_ROOT.'/core/tpl/contacts.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/contacts.tpl.php';
 	} else {
 		// Contact not found
 		print "ErrorRecordNotFound";

@@ -31,7 +31,7 @@
 require '../main.inc.php';
 
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/evaluation.class.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm_evaluation.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/job.class.php';
@@ -63,7 +63,7 @@ $hookmanager->initHooks(array('evaluationcontact', 'globalcard')); // Note that 
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 
 // Permissions
 $permission = $user->hasRight('hrm', 'evaluation', 'write');

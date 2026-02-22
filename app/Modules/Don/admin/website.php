@@ -38,10 +38,10 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/donation.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/donation.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
 
 // Load translation files required by the page

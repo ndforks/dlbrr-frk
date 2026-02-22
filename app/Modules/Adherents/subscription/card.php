@@ -33,7 +33,7 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
@@ -80,11 +80,11 @@ if ($cancel) {
 	$action = '';
 }
 
-//include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+//include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 
-include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
 
-//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
+//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
 
 
 if ($user->hasRight('adherent', 'cotisation', 'creer') && $action == 'update' && !$cancel) {

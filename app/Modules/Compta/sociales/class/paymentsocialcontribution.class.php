@@ -27,7 +27,7 @@ namespace App\Modules\Compta\Sociales\Classes;
  *		\brief      File of class to manage payment of social contributions
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
 
 

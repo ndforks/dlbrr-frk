@@ -40,11 +40,11 @@ require '../../main.inc.php';
 '
 @phan-var-force string $dolibarr_main_document_root_alt
 ';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("install", "other", "admin"));

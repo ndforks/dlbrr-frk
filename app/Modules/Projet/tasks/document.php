@@ -38,10 +38,10 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'other'));
@@ -133,7 +133,7 @@ if (empty($reshook)) {
 		$upload_dir = $conf->project->multidir_output[$projectstatic->entity].'/'.dol_sanitizeFileName($projectstatic->ref).'/'.dol_sanitizeFileName($object->ref);
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 }
 
 
@@ -362,7 +362,7 @@ if ($object->id > 0 && $upload_dir !== null) {
 	$permissiontoadd = $user->hasRight('projet', 'creer');
 	$permtoedit = $user->hasRight('projet', 'creer');
 	$relativepathwithnofile = dol_sanitizeFileName($projectstatic->ref).'/'.dol_sanitizeFileName($object->ref).'/';
-	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 } else {
 	header('Location: index.php');
 	exit;

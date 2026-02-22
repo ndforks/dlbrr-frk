@@ -33,7 +33,7 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 if (empty($user->admin)) {
 	abort(403);
@@ -94,7 +94,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 }
 
 // Load list of modules

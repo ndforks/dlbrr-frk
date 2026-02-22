@@ -29,12 +29,12 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/project/modules_project.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 /**
@@ -85,7 +85,7 @@ if ($id > 0 || !empty($ref)) {
 }
 
 // include comment actions
-include DOL_DOCUMENT_ROOT.'/core/actions_comments.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_comments.inc.php';
 
 /*
  * View
@@ -207,7 +207,7 @@ print dol_get_fiche_end();
 print '<br>';
 
 // Include comment tpl view
-include DOL_DOCUMENT_ROOT.'/core/tpl/bloc_comment.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/bloc_comment.tpl.php';
 
 // End of page
 llxFooter();

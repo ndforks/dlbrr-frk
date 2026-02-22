@@ -34,8 +34,8 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 
 // Load translation files required by the page
 $langs->load("admin");

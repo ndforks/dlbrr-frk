@@ -392,7 +392,7 @@ class EcmDirectory extends CommonObject
 	public function delete($user, $mode = 'all', $deletedirrecursive = 0)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -763,7 +763,7 @@ class EcmDirectory extends CommonObject
 	public function refreshcachenboffile($all = 0)
 	{
 		global $conf;
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$dir = $conf->ecm->dir_output.'/'.$this->getRelativePath();
 		$filelist = dol_dir_list($dir, 'files', 0, '', '(\.meta|_preview.*\.png)$');
@@ -809,7 +809,7 @@ class EcmDirectory extends CommonObject
 		// phpcs:enable
 		global $langs, $conf;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/interfaces.class.php';
 		$interface = new Interfaces($this->db);
 		$result = $interface->run_triggers($triggerName, $this, $user, $langs, $conf);
 		if ($result < 0) {

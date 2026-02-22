@@ -35,10 +35,10 @@ require '../main.inc.php';
  * @var User $user
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ecm.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/treeview.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
 // Load translation files required by the page
@@ -132,11 +132,11 @@ if ($sortfield) {
 if ($sortorder) {
 	$backtopage .= '&sortorder='.urlencode($sortorder);
 }
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';	// This manage 'sendit', 'confirm_deletefile', 'renamefile' action when submitting new file.
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';	// This manage 'sendit', 'confirm_deletefile', 'renamefile' action when submitting new file.
 
 $backtopage = $savbacktopage;
 
-if ($action == 'renamefile') {	// Test on permission not required here. Must be after include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php'; If action were renamefile, we set it to 'file_manager'
+if ($action == 'renamefile') {	// Test on permission not required here. Must be after include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php'; If action were renamefile, we set it to 'file_manager'
 	$action = 'file_manager';
 }
 
@@ -313,7 +313,7 @@ $module = 'medias';
 if (empty($url)) {
 	$url = DOL_URL_ROOT.'/ecm/index_medias.php'; // Must be an url without param
 }
-include DOL_DOCUMENT_ROOT.'/core/tpl/filemanager.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/filemanager.tpl.php';
 
 // End of page
 print dol_get_fiche_end();

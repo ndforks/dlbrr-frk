@@ -37,11 +37,11 @@ require '../../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'products', 'supplier_proposal', 'productbatch'));
@@ -208,7 +208,7 @@ if ($id > 0 || !empty($ref)) {
 		//      }
 		//
 		//      // Other attributes
-		//      include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		//      include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		print '<br>';
 

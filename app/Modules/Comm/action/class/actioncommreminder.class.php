@@ -26,7 +26,7 @@ namespace App\Modules\Comm\Action\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**

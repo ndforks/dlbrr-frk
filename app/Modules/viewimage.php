@@ -152,7 +152,7 @@ function llxFooter($comment = '', $zone = 'private', $disabledoutputofmessages =
 }
 
 require 'main.inc.php'; // Load $user and permissions
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 /**
  * @var Conf $conf
@@ -215,7 +215,7 @@ if ($cachestring) {
 // If we have a hash public (hashp), we guess the original_file.
 if (!empty($hashp)) {
 	include_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$ecmfile = new EcmFiles($db);
 	$result = $ecmfile->fetch(0, '', '', '', $hashp);
 	if ($result > 0) {
@@ -432,7 +432,7 @@ if ($modulepart == 'barcode') {
 
 	if (!dol_is_file($fullpath_original_file) && !request()->integer("noalt", 0)) {
 		// This test is to replace error images with a nice "notfound image" when image is not available (for example when thumbs not yet generated).
-		$fullpath_original_file = DOL_DOCUMENT_ROOT.'/public/theme/common/nophoto.png';
+		$fullpath_original_file = DOL_DOCUMENT_ROOT.'/Public/theme/common/nophoto.png';
 		/*$error='Error: File '.$_GET["file"].' does not exists or filesystems permissions are not allowed';
 		print $error;
 		exit;*/

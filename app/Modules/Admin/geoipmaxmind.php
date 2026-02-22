@@ -33,11 +33,11 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/dolgeoip.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/dolgeoip.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 // Security check
 if (!$user->admin) {

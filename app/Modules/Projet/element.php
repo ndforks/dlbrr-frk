@@ -46,11 +46,11 @@ require '../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/timespent.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/timespent.class.php';
 
 if (isModEnabled('agenda')) {
 	require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
@@ -97,7 +97,7 @@ if (isModEnabled('propal')) {
 	require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 }
 if (isModEnabled('salaries')) {
-	require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 }
 if (isModEnabled('stock')) {
 	require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
@@ -186,7 +186,7 @@ $mine = request()->input('mode') == 'mine' ? 1 : 0;
 
 $object = new Project($db);
 
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 if (getDolGlobalString('PROJECT_ALLOW_COMMENT_ON_PROJECT') && method_exists($object, 'fetchComments') && empty($object->comments)) {
 	$object->fetchComments();
 }
@@ -464,7 +464,7 @@ print '</td></tr>';
 
 // Other attributes
 $cols = 2;
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 print '</table>';
 
@@ -1943,7 +1943,7 @@ foreach ($listofreferent as $key => $value) {
 
 // Enhance with select2
 if ($conf->use_javascript_ajax) {
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 	$comboenhancement = ajax_combobox('.elementselect');
 
 	print $comboenhancement;

@@ -42,9 +42,9 @@ require '../main.inc.php';
  * @var User $user
  */
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/categories.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("categories", "compta", "mrp"));
@@ -157,7 +157,7 @@ if ($id > 0 && $removeelem > 0 && $action == 'unlink') {	// Test on permission n
 		$result = $tmpobject->fetch($removeelem);
 		$elementtype = 'project';
 	} elseif ($type == Categorie::TYPE_USER && $user->hasRight('user', 'user', 'creer')) {
-		require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$tmpobject = new User($db);
 		$result = $tmpobject->fetch($removeelem);
 		$elementtype = 'user';
@@ -255,7 +255,7 @@ if ($elemid && $action == 'addintocategory') {	// Test on permission not require
 		$newobject = new Contact($db);
 		$elementtype = 'contact';
 	} elseif ($type == Categorie::TYPE_USER && $user->hasRight('user', 'user', 'creer')) {
-		require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$newobject = new User($db);
 		$elementtype = 'user';
 	} elseif ($type == Categorie::TYPE_ACCOUNT && $user->hasRight('banque', 'configurer')) {
@@ -377,7 +377,7 @@ print $object->position ? $object->position : '';
 print '</td></tr>';
 
 // Other attributes
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 print '</table>';
 print '</div>';
@@ -468,7 +468,7 @@ if (is_numeric($cats) && $cats < 0) {
 			require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 		}
 		if ($type == Categorie::TYPE_USER) {
-			require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		}
 	}
 
@@ -524,7 +524,7 @@ if (is_numeric($cats) && $cats < 0) {
 
 	$nbofentries = (count($data) - 1);
 	if ($nbofentries > 0) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/treeview.lib.php';
 		print '<tr class="pair">';
 		print '<td colspan="3">';
 
@@ -1145,7 +1145,7 @@ if ($type == Categorie::TYPE_PROJECT) {
 // List of users
 if ($type == Categorie::TYPE_USER) {
 	if ($user->hasRight("user", "user", "read")) {
-		require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$showclassifyform = $user->hasRight("user", "user", "creer");
 
 		$users = $object->getObjectsInCateg($type, 0, 0, 0, 'lastname');

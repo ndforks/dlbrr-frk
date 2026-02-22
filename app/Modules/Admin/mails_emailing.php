@@ -27,8 +27,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 /**
  * @var Conf $conf
@@ -120,7 +120,7 @@ $paramname = 'id';
 $mode = 'emailfortest';
 $trackid = (($action == 'testhtml') ? "testhtml" : "test");
 $sendcontext = 'emailing'; // Force to use dedicated context of setup for emailing
-include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
@@ -759,7 +759,7 @@ if ($action == 'edit') {
 		print '<div id="formmailaftertstconnect" name="formmailaftertstconnect"></div>';
 		print load_fiche_titre($langs->trans("DoTestServerAvailability"));
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mail = new CMailFile('', '', '', '', array(), array(), array(), '', '', 0, 0, '', '', '', $trackid, $sendcontext);
 
 		$result = $mail->check_server_port((string) $server, (int) $port);
@@ -785,7 +785,7 @@ if ($action == 'edit') {
 		print dol_get_fiche_head(array(), '', '', -1);
 
 		// Cree l'objet formulaire mail
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->trackid = (($action == 'testhtml') ? "testhtml" : "test");
 		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));

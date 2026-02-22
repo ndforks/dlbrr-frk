@@ -147,7 +147,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_printing.inc.php';
 
 	// Action to move up and down lines of object
-	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';
 
 	// Action to build doc
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';

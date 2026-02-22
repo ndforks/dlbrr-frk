@@ -26,16 +26,16 @@
 
 // Load Dolibarr environment
 require '../../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/stocktransfer/class/stocktransfer.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/stocktransfer/class/stocktransferline.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/stocktransfer/lib/stocktransfer_stocktransfer.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/stocktransfer/modules_stocktransfer.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/stocktransfer/modules_stocktransfer.php';
 
 /**
  * @var Conf $conf
@@ -98,7 +98,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 
 $permissiontoread = $user->hasRight('stocktransfer', 'stocktransfer', 'read');
@@ -147,22 +147,22 @@ if (empty($reshook)) {
 	$triggermodname = 'STOCKTRANSFER_STOCKTRANSFER_MODIFY'; // Name of trigger action code to execute when we modify record
 
 	// Actions cancel, add, update, update_extras, confirm_validate, confirm_delete, confirm_deleteline, confirm_clone, confirm_close, confirm_setdraft, confirm_reopen
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	// On remet cette lecture de permission ici car nécessaire d'avoir le nouveau statut de l'objet après toute action exécutée dessus (après incrémentation par example, le bouton supprimer doit disparaître)
 	$permissiontodelete = $user->rights->stocktransfer->stocktransfer->delete || ($permissiontoadd && isset($object->status) && $object->status == $object::STATUS_DRAFT);
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Action to move up and down lines of object
-	include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';
 
 	// Action to build doc
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
 		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
@@ -403,7 +403,7 @@ if (empty($reshook)) {
 	$triggersendname = 'STOCKTRANSFER_SENTBYMAIL';
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_STOCKTRANSFER_TO';
 	$trackid = 'stocktransfer'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 }
 
 
@@ -468,7 +468,7 @@ if ($action == 'create') {
 	print '<table class="border centpercent tableforfieldcreate">'."\n";
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_add.tpl.php';
 
 	if (isModEnabled('incoterm')) {
 		$soc = new Societe($db);
@@ -485,14 +485,14 @@ if ($action == 'create') {
 	print '<tr><td>'.$langs->trans('DefaultModel').'</td>';
 	print '<td>';
 	print img_picto('', 'pdf', 'class="pictofixedwidth"');
-	include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/modules/commande/modules_commande.php';
 	$liste = ModelePDFStockTransfer::liste_modeles($db);
 	$preselected = getDolGlobalString('STOCKTRANSFER_ADDON_PDF');
 	print $form->selectarray('model', $liste, $preselected, 0, 0, 0, '', 0, 0, 0, '', 'maxwidth200 widthcentpercentminusx', 1);
 	print "</td></tr>";
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print '</table>'."\n";
 
@@ -659,7 +659,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	$object->fields['fk_soc']['visible'] = 0; // Already available in banner
 	$object->fields['fk_project']['visible'] = 0; // Already available in banner
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	// Incoterms
 	if (isModEnabled('incoterm')) {
@@ -689,7 +689,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	echo '</tr>';
 
 	// Other attributes. Fields from hook formObjectOptions and Extrafields.
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';
@@ -720,7 +720,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 		if (!empty($conf->use_javascript_ajax) && $object->status == 0) {
 			$fk_element = $object->id;
-			include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 		}
 
 		/*
@@ -1121,7 +1121,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		$morehtmlcenter = dolGetButtonTitle($langs->trans('SeeAll'), '', 'fa fa-bars imgforviewmode', dol_buildpath('/mymodule/myobject_agenda.php', 1).'?id='.$object->id);
 
 		// List of actions on element
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, 'stocktransfer', 0, 1, '', $MAXEVENT, '');
 
@@ -1139,7 +1139,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	$diroutput = $conf->stocktransfer->dir_output;
 	$trackid = 'stocktransfer'.$object->id;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 }
 
 // End of page

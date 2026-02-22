@@ -25,11 +25,11 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/asset.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/asset.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/asset/class/asset.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 /**
  * @var Conf $conf
@@ -86,7 +86,7 @@ $hookmanager->initHooks(array('assetagenda', 'globalcard')); // Note that conf->
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 if ($id > 0 || !empty($ref)) {
 	$upload_dir = $conf->asset->multidir_output[$object->entity ?? $conf->entity]."/".$object->id;
 }

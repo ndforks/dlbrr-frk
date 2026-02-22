@@ -328,7 +328,7 @@ class FactureFournisseurLigneRec extends CommonInvoiceLine
 
 		$error = 0;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		$sql = 'UPDATE ' . MAIN_DB_PREFIX . 'facture_fourn_det_rec SET';
 		$sql .= ' fk_facture_fourn = ' . (int) $this->fk_facture_fourn;

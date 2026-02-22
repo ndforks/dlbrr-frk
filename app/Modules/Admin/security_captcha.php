@@ -34,9 +34,9 @@ require '../main.inc.php';
  * @var User $user
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("users", "admin", "other"));

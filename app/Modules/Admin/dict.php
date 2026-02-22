@@ -38,15 +38,15 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/socialnetwork.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/socialnetwork.lib.php';
 
 // constants for IDs of core dictionaries
 const DICT_FORME_JURIDIQUE = 1;

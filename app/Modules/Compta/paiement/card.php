@@ -40,13 +40,13 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 if (isModEnabled("bank")) {
 	require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 }
 if (isModEnabled('margin')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmargin.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmargin.class.php';
 }
 
 // Load translation files required by the page
@@ -68,7 +68,7 @@ $object = new Paiement($db);
 $hookmanager->initHooks(array('paymentcard', 'globalcard'));
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $result = restrictedArea($user, $object->element, $object->id, 'paiement');	// This also test permission on read invoice
 
@@ -87,7 +87,7 @@ $stripeacc = null;
 
 // Init Stripe objects
 if (isModEnabled('stripe')) {
-	require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 	$service = 'StripeTest';
 	$servicestatus = 0;
@@ -477,7 +477,7 @@ if (!empty($object->ext_payment_id)) {
 
 // Other attributes
 $cols = 2;
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 // Other attributes
 $parameters = array();

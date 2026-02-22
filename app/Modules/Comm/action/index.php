@@ -43,9 +43,9 @@ require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 
 $MAXAGENDA = getDolGlobalString('AGENDA_EXT_NB', 5);
@@ -183,7 +183,7 @@ if ($user->socid && $socid) {
 	$result = restrictedArea($user, 'societe', $socid);
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/redirect_if_setup_not_complete.inc.php';
 
 
 /*
@@ -1603,7 +1603,7 @@ $theme_datacolor = array(
 );
 
 // Define theme_datacolor array
-$color_file = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/theme_vars.inc.php";
+$color_file = DOL_DOCUMENT_ROOT."/Theme/".$conf->theme."/theme_vars.inc.php";
 if (is_readable($color_file)) {
 	global $theme_datacolor;
 	include $color_file;
@@ -2096,7 +2096,7 @@ function show_day_events($db, $day, $month, $year, $monthshown, $style, &$eventa
 						if (isset($theme_datacolor[$colorindex])) {
 							$color = sprintf("%02x%02x%02x", $theme_datacolor[$colorindex][0], $theme_datacolor[$colorindex][1], $theme_datacolor[$colorindex][2]);
 						} elseif (getDolGlobalString('THEME_ELDY_BACKBODY')) {
-							require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+							require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 							$color = colorArrayToHex(colorStringToArray(getDolGlobalString('THEME_ELDY_BACKBODY'), array()), '');
 						} else {
 							$color = "ffffff";
@@ -2343,7 +2343,7 @@ function show_day_events($db, $day, $month, $year, $monthshown, $style, &$eventa
 								}
 							}
 							if (!empty($event->fk_element) && $event->fk_element > 0 && !empty($event->elementtype) && getDolGlobalString('AGENDA_SHOW_LINKED_OBJECT')) {
-								include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+								include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 								if ($linerelatedto) {
 									$linerelatedto .= '<br>';
 								}

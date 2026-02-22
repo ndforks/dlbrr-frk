@@ -27,9 +27,9 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
@@ -118,7 +118,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
 //if ($user->socid > 0) abort(403);
@@ -193,7 +193,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 // Do we click on purge search criteria ?
 if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
@@ -230,22 +230,22 @@ if (empty($reshook)) {
 	$triggermodname = 'MO_MODIFY'; // Name of trigger action code to execute when we modify record
 
 	// Actions cancel, add, update, delete or clone
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Actions to send emails
 	$triggersendname = 'MO_SENTBYMAIL';
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_MO_TO';
 	$trackid = 'mo'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 	// Action to move up and down lines of object
-	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
+	//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
 		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
@@ -371,10 +371,10 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	$keyforbreak = 'fk_warehouse';
 	unset($object->fields['fk_project']);
 	unset($object->fields['fk_soc']);
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';
@@ -485,7 +485,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		$sql .= natural_search('m.type_mouvement', $search_type_mouvement, 2);
 	}
 	// Add where from extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 	// Add where from hooks
 	$parameters = array();
 	$reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters); // Note that $action and $objectlist may have been modified by hook
@@ -545,7 +545,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	// Add $param from extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 	// List of mass actions available
 	$arrayofmassactions = array(
@@ -721,7 +721,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 	// Fields from hook
 	$parameters = array('arrayfields' => $arrayfields);
@@ -823,7 +823,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	// Extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 
 	// Hook fields
 	$parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);

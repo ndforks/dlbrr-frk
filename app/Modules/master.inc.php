@@ -71,8 +71,8 @@ require_once 'filefunc.inc.php';
 @phan-var-force ?string $dolibarr_main_limit_users
 @phan-var-force ?string $dolibarr_main_url_root_alt
 ';
-require_once DOL_DOCUMENT_ROOT.'/core/class/conf.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/conf.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 
 
 if (!function_exists('is_countable')) {
@@ -198,10 +198,10 @@ if (!empty($dolibarr_main_document_root_alt)) {
 
 // Load the main includes of common libraries
 if (!defined('NOREQUIREUSER')) {
-	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php'; // Need 500ko memory
+	require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php'; // Need 500ko memory
 }
 if (!defined('NOREQUIRETRAN')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/translate.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/translate.class.php';
 }
 if (!defined('NOREQUIRESOC')) {
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';

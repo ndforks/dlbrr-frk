@@ -39,16 +39,16 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 /**
  * @var Conf $conf
@@ -243,7 +243,7 @@ $arrayfields = array(
 	'f.fk_statut' => array('label' => "Status", 'checked' => '1', 'position' => 1000),
 );
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 $subtypearray = $object->getArrayOfInvoiceSubtypes(0);
 if (empty($subtypearray)) {
@@ -291,7 +291,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter') || request()->input('button_removefilter.x')) {		// All tests must be present to be compatible with all browsers
@@ -356,7 +356,7 @@ if (empty($reshook)) {
 
 	$uploaddir = $conf->fournisseur->facture->dir_output;
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 
 	if ($massaction == 'banktransfertrequest') {
 		$langs->load("withdrawals");
@@ -855,7 +855,7 @@ if ($search_user > 0) {
 	$sql .= " AND ec.fk_c_type_contact = tc.rowid AND tc.element='invoice_supplier' AND tc.source='internal' AND ec.element_id = f.rowid AND ec.fk_socpeople = ".((int) $search_user);
 }
 // Add where from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 // Add where from hooks
 $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -1088,7 +1088,7 @@ if ($search_fk_fac_rec_source) {
 }
 
 // Add $param from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 // Add $param from hooks
 $parameters = array('param' => &$param);
 $reshook = $hookmanager->executeHooks('printFieldListSearchParam', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -1152,7 +1152,7 @@ $topicmail = "SendBillRef";
 $modelmail = "invoice_supplier_send";
 $objecttmp = new FactureFournisseur($db);
 $trackid = 'sinv'.$object->id;
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 if ($search_all) {
 	$setupstring = '';
@@ -1167,7 +1167,7 @@ if ($search_all) {
 // If the user can view prospects other than his'
 $moreforfilter = '';
 if (isModEnabled('category') && $user->hasRight('categorie', 'read')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcategory.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcategory.class.php';
 	$formcategory = new FormCategory($db);
 	$moreforfilter .= $formcategory->getFilterBox(Categorie::TYPE_SUPPLIER_INVOICE, $searchCategorySupplierInvoiceList, 'minwidth300', $searchCategorySupplierInvoiceOperator ? $searchCategorySupplierInvoiceOperator : 0);
 }
@@ -1447,7 +1447,7 @@ if (!empty($arrayfields['multicurrency_rtp']['checked'])) {
 	print '</td>';
 }
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 // Fields from hook
 $parameters = array('arrayfields' => $arrayfields);
@@ -1649,7 +1649,7 @@ if (!empty($arrayfields['multicurrency_rtp']['checked'])) {
 	$totalarray['nbfield']++;
 }
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 // Hook fields
 $parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder, 'totalarray' => &$totalarray);
 $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -2104,8 +2104,8 @@ while ($i < $imaxinloop) {
 
 		// Number of attached documents (may slow your application on large lists)
 		if (!empty($arrayfields['f.nb_docs']['checked'])) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-			require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 			$upload_dir = $conf->fournisseur->facture->dir_output.'/'.get_exdir($facturestatic->id, 2, 0, 0, $facturestatic, 'invoice_supplier').$facturestatic->ref;
 			$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 			$nbLinks = Link::count($db, $facturestatic->element, $facturestatic->id);
@@ -2208,7 +2208,7 @@ while ($i < $imaxinloop) {
 
 
 		// Extra fields
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 		// Fields from hook
 		$parameters = array('arrayfields' => $arrayfields, 'object' => $object, 'obj' => $obj, 'i' => $i, 'totalarray' => &$totalarray);
 		$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -2283,7 +2283,7 @@ while ($i < $imaxinloop) {
 }
 
 // Show total line
-include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 // If no record found
 if ($num == 0) {
@@ -2313,7 +2313,7 @@ if (in_array('builddoc', array_keys($arrayofmassactions)) && ($nbtotalofrecords 
 		$hidegeneratedfilelistifempty = 0;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	$formfile = new FormFile($db);
 
 	// Show list of available documents

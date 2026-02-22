@@ -117,7 +117,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -316,7 +316,7 @@ $topicmail = "Information";
 $modelmail = "product";
 $objecttmp = new Product($db);
 $trackid = 'prod'.$productstatic->id;
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 $htmlofselectarray = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN'));  // This also change content of $arrayfields with user setup
@@ -490,7 +490,7 @@ while ($i < $imaxinloop) {
 }
 
 // Show total line
-include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 // If no record found
 if ($num == 0) {

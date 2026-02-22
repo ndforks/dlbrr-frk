@@ -27,17 +27,17 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/advthirdparties.modules.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmailing.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/emailing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/advthirdparties.modules.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/advtargetemailing.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/html.formadvtargetemailing.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 /**
  * @var Conf $conf
@@ -607,7 +607,7 @@ if ($object->fetch($id) >= 0) {
 	print '</td></tr>';
 
 	// Other attributes. Fields from hook formObjectOptions and Extrafields.
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';

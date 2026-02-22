@@ -37,10 +37,10 @@ require '../main.inc.php';
  * @var User $user
  */
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/donation.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/donation.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 if (isModEnabled('project')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
 
@@ -79,7 +79,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 }
 
 if ($action == 'classin' && $permissiontoadd) {
@@ -144,7 +144,7 @@ if ($id > 0 || !empty($ref)) {
 	print '<div class="underbanner clearboth"></div>';
 
 	$cssclass = "titlefield";
-	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/notes.tpl.php';
 
 	print dol_get_fiche_end();
 }

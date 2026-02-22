@@ -37,12 +37,12 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width', '380');
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height', '160');

@@ -28,12 +28,12 @@ namespace App\Modules\Bom\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/bom/class/bomline.class.php';
 
 if (isModEnabled('workstation')) {
-	require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstation.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Workstation/class/workstation.class.php';
 }
 
 
@@ -614,7 +614,7 @@ class BOM extends CommonObject
 		dol_syslog(get_class($this).$logtext, LOG_DEBUG);
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 			if (empty($qty)) {
@@ -722,7 +722,7 @@ class BOM extends CommonObject
 		dol_syslog(get_class($this).$logtext, LOG_DEBUG);
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 			if (empty($qty)) {
@@ -926,7 +926,7 @@ class BOM extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -1353,8 +1353,8 @@ class BOM extends CommonObject
 	public function is_photo_available($sdir)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$sdir .= '/'.get_exdir(0, 0, 0, 0, $this, 'bom');
 
@@ -1463,7 +1463,7 @@ class BOM extends CommonObject
 					}
 				} else {
 					// Convert qty of line into hours
-					require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 					$measuringUnits = new CUnits($this->db);
 					$measuringUnits->fetch($line->fk_unit);
 

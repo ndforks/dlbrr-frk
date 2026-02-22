@@ -33,10 +33,10 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/images.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/bank.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/images.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/html.formfile.class.php";
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 // Load translation files required by the page
@@ -139,7 +139,7 @@ if (!empty($numref)) {
 	$upload_dir = $conf->bank->dir_output."/".$id."/statement/".dol_sanitizeFileName($numref);
 }
 $backtopage = $_SERVER['PHP_SELF']."?account=".urlencode((string) ($id))."&num=".urlencode((string) ($numref));
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 
 /*
@@ -197,7 +197,7 @@ if ($id > 0 || !empty($ref)) {
 		$param = '&id='.$object->id.'&num='.urlencode($numref);
 		$moreparam = '&num='.urlencode($numref);
 		$relativepathwithnofile = $id."/statement/".dol_sanitizeFileName($numref)."/";
-		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 	} else {
 		abort(500);
 	}

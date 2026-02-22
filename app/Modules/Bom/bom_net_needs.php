@@ -25,8 +25,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/bom/class/bom.class.php';
 require_once DOL_DOCUMENT_ROOT.'/bom/lib/bom.lib.php';
 
@@ -81,7 +81,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 if ($object->id > 0) {
 	$object->calculateCosts();
 }
@@ -188,7 +188,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	// Common attributes
 	$keyforbreak = 'duration';	// used into tpl
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	// Manufacturing cost
 	print '<tr><td>'.$form->textwithpicto($langs->trans("ManufacturingCost"), $langs->trans("BOMTotalCost")).'</td><td><span class="amount">';
@@ -210,7 +210,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	print '<tr><td>'.$langs->trans("ManufacturingGeneratedValue").'</td><td>'.price($manufacturedvalued).'</td></tr>';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';
@@ -329,7 +329,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 				print '<td>';
 				$useunit = (($prod->type == Product::TYPE_PRODUCT && getDolGlobalInt('PRODUCT_USE_UNITS')) || (($prod->type == Product::TYPE_SERVICE) && ($elem['fk_unit'])));
 				if ($useunit) {
-					require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 					$unit = new CUnits($db);
 					$unit->fetch((int) $elem['fk_unit']);
 					print(isset($unit->label) ? "&nbsp;".$langs->trans(ucwords((string) $unit->label))."&nbsp;" : '');

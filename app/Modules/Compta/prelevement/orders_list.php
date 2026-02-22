@@ -173,7 +173,7 @@ if ($type == 'bank-transfer') {
 } else {
 	$uploaddir = $conf->prelevement->dir_output;
 }
-include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 
 
 /*
@@ -322,7 +322,7 @@ if ($usercancreate) {
 
 print_barre_liste($title, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'generic', 0, $newcardbutton, '', $limit, 0, 0, 1);
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 
 $moreforfilter = '';

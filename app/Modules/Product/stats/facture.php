@@ -28,10 +28,10 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 /**
  * @var Conf $conf
@@ -254,7 +254,7 @@ if ($id > 0 || !empty($ref)) {
 			}
 			// Add where from extra fields
 			$extrafieldsobjectkey = 'facture';
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 			// Add where from hooks
 			$parameters = array();
 			$reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -295,7 +295,7 @@ if ($id > 0 || !empty($ref)) {
 				}
 
 				// Add $param from extra fields
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 				// Add $param from hooks
 				$parameters = array('param' => &$param);
 				$reshook = $hookmanager->executeHooks('printFieldListSearchParam', $parameters, $object, $action); // Note that $action and $object may have been modified by hook

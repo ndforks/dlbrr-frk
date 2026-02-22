@@ -27,9 +27,9 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fichinter.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 /**
  * @var Conf $conf
@@ -87,7 +87,7 @@ $hookmanager->initHooks(array('myobjectagenda', 'globalcard')); // Note that con
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 
 $permissiontoread = $user->hasRight("fichinter", "lire");
 $permissiontoadd = $user->hasRight("fichinter", "creer");
@@ -242,7 +242,7 @@ if ($object->id > 0) {
 		}
 
 		// Try to know count of actioncomm from cache
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_fichinter_'.$object->id;
 		$nbEvent = dol_getcache($cachekey);
 

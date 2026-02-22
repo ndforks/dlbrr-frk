@@ -33,7 +33,7 @@ namespace App\Modules\Projet\Classes;
  * 		\ingroup    projet
  * 		\brief      File of class to manage projects
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 /**
  *	Class to manage projects
@@ -688,7 +688,7 @@ class Project extends CommonObject
 						$olddir = $conf->project->dir_output."/".dol_sanitizeFileName($this->oldcopy->ref);
 						$newdir = $conf->project->dir_output."/".dol_sanitizeFileName($this->ref);
 						if (file_exists($olddir)) {
-							include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 							$res = @rename($olddir, $newdir);
 							if (!$res) {
 								$langs->load("errors");
@@ -981,7 +981,7 @@ class Project extends CommonObject
 	public function delete($user, $notrigger = 0)
 	{
 		global $langs, $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -1884,7 +1884,7 @@ class Project extends CommonObject
 
 			//Duplicate file
 			if ($clone_project_file) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				$clone_project_dir = $conf->project->dir_output."/".dol_sanitizeFileName($defaultref);
 				$ori_project_dir = $conf->project->dir_output."/".dol_sanitizeFileName($orign_project_ref);
@@ -2721,7 +2721,7 @@ class Project extends CommonObject
 
 				$reportContent .= '</table>';
 
-				require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 
 				// PREPARE EMAIL
 				$errormesg = '';

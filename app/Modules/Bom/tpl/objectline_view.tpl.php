@@ -57,7 +57,7 @@
 @phan-var-force CommonObject $object
 ';
 
-require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstation.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Workstation/class/workstation.class.php';
 
 // Protection to avoid direct call of template
 if (empty($object) || !is_object($object)) {
@@ -165,7 +165,7 @@ if ($filtertype != 1) { // Product
 	$coldisplay++;
 
 	if (!empty($line->fk_unit)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 		$unit = new CUnits($this->db);
 		$unit->fetch($line->fk_unit);
 		print(isset($unit->label) ? "&nbsp;".$langs->trans(ucwords((string) $unit->label))."&nbsp;" : '');

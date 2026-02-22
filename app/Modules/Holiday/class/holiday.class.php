@@ -29,7 +29,7 @@ namespace App\Modules\Holiday\Classes;
  *    \ingroup    holiday
  *    \brief      Class file of the module paid holiday.
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -767,7 +767,7 @@ class Holiday extends CommonObject
 	public function validate($user = null, $notrigger = 0)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		$error = 0;
 
 

@@ -30,9 +30,9 @@ namespace App\Modules\Accountancy\Classes;
  */
 
 // Class
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/fiscalyear.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/fiscalyear.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
 
@@ -2375,7 +2375,7 @@ class BookKeeping extends CommonObject
 		// phpcs:enable
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		$pcgver = getDolGlobalInt('CHARTOFACCOUNTS');
 

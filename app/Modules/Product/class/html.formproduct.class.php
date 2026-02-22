@@ -320,7 +320,7 @@ class FormProduct
 		$nbofwarehouses = count($this->cache_warehouses);
 
 		if ($conf->use_javascript_ajax && !$forcecombo) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$comboenhancement = ajax_combobox($htmlname, $events);
 			$out .= $comboenhancement;
 		}
@@ -443,7 +443,7 @@ class FormProduct
 		$nbofworkstations = count($this->cache_workstations);
 
 		if ($conf->use_javascript_ajax && !$forcecombo) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$comboenhancement = ajax_combobox($htmlname, $events);
 			$out .= $comboenhancement;
 		}
@@ -584,7 +584,7 @@ class FormProduct
 		$placeholderID = ($mode == 2 ? '99999999' : '-1'); // we don't want ajaxcombobox replace clearing option in mode 2
 
 		// TODO Use a cache
-		require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 		$measuringUnits = new CUnits($db);
 
 		$filter = array();
@@ -661,7 +661,7 @@ class FormProduct
 		$return = '';
 
 		// TODO Use a cache
-		require_once DOL_DOCUMENT_ROOT.'/core/class/cproductnature.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/cproductnature.class.php';
 		$productNature = new CProductNature($db);
 
 		$filter = array();
@@ -752,7 +752,7 @@ class FormProduct
 		$nboflot = $this->loadLotStock($productIdArray);
 
 		if ($conf->use_javascript_ajax && !$forcecombo) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$comboenhancement = ajax_combobox($htmlname, $events);
 			$out .= $comboenhancement;
 		}

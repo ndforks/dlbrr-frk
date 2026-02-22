@@ -27,9 +27,9 @@ namespace App\Modules\Don\Classes;
  *  \brief      File of class to manage donations statistics
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  *	Class to manage donations statistics

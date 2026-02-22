@@ -27,9 +27,9 @@ namespace App\Modules\Fichinter\Classes;
  *       \ingroup    fichinter
  *       \brief      File of class to manage intervention statistics
  */
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 
 /**

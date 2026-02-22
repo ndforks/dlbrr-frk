@@ -28,9 +28,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/report.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/tax.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/report.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/tax.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  * @var Conf $conf

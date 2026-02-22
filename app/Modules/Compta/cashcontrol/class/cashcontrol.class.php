@@ -353,7 +353,7 @@ class CashControl extends CommonObject
 	 */
 	public function valid(User $user, $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -420,7 +420,7 @@ class CashControl extends CommonObject
 	 */
 	public function close(User $user, $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

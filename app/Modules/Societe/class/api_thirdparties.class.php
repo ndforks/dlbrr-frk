@@ -62,7 +62,7 @@ class Thirdparties extends DolibarrApi
 		require_once DOL_DOCUMENT_ROOT.'/societe/class/societeaccount.class.php';
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 		require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
 
 		$this->company = new Societe($this->db);
 
@@ -1331,7 +1331,7 @@ class Thirdparties extends DolibarrApi
 		if (!$result) {
 			throw new RestException(404, 'Thirdparty not found');
 		}
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 		$discount = new DiscountAbsolute($this->db);
 		$res = $discount->fetch($discountid);
 		if (!($res > 0)) {

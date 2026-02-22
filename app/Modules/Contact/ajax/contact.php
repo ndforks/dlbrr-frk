@@ -102,7 +102,7 @@ if ($action == 'fetch' && !empty($id) && $permissiontoread) {
 
 	echo json_encode($outjson);
 } elseif ($permissiontoread) {		// $action can be 'getContacts'
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 	if (empty($htmlname)) {
 		return 'Error value for parameter htmlname';

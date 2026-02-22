@@ -30,10 +30,10 @@ if (! defined('CSRFCHECK_WITH_TOKEN')) {
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 /**
  * @var Conf $conf
@@ -138,7 +138,7 @@ $result = dol_mkdir($outputdir);
 $utils = new Utils($db);
 
 if ($export_type == 'externalmodule' && !empty($what)) {
-	$fulldirtocompress = DOL_DOCUMENT_ROOT.'/custom/'.dol_sanitizeFileName($what);
+	$fulldirtocompress = DOL_DOCUMENT_ROOT.'/Custom/'.dol_sanitizeFileName($what);
 } else {
 	$fulldirtocompress = DOL_DATA_ROOT;
 }

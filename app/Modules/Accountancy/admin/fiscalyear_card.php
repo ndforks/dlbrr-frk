@@ -32,8 +32,8 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fiscalyear.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/fiscalyear.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fiscalyear.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/fiscalyear.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "compta"));
@@ -57,7 +57,7 @@ $object = new Fiscalyear($db);
 $extrafields = new ExtraFields($db);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // List of status
 /*
@@ -239,10 +239,10 @@ if ($action == 'create') {
 	*/
 
 	// Common attributes
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_add.tpl.php';
 
 	// Other attributes
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print '</table>'."\n";
 
@@ -303,10 +303,10 @@ if (($id || $ref) && $action == 'edit') {
 	print '</td></tr>';
 
 	// Common attributes
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_edit.tpl.php';
 
 	// Other attributes
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 	print '</table>';
 

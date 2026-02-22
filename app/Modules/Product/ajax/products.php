@@ -303,7 +303,7 @@ if ($action == 'fetch' && !empty($id)) {
 
 	echo json_encode($outjson);
 } else {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 	$langs->loadLangs(array("main", "products"));
 

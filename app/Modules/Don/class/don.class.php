@@ -32,8 +32,8 @@ namespace App\Modules\Don\Classes;
  *		\brief      File of class to manage donations
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
 
 
 /**
@@ -597,7 +597,7 @@ class Don extends CommonObject
 	 */
 	public function delete($user, $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -1127,7 +1127,7 @@ class Don extends CommonObject
 				$outputlangs->charset_output = $sav_charset_output;
 
 				// we delete preview files
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 				dol_delete_preview($object);
 				return 1;
 			} else {

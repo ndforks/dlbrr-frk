@@ -38,12 +38,12 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/dynamic_price/class/price_expression.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/dynamic_price/class/price_parser.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var Conf $conf
@@ -137,7 +137,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setlabelsellingprice' && $user->admin) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 		$keyforlabel = 'PRODUIT_MULTIPRICES_LABEL'.request()->input('pricelevel');
 		dolibarr_set_const($db, $keyforlabel, request()->input('labelsellingprice'), 'chaine', 0, '', $conf->entity);
 		$action = '';

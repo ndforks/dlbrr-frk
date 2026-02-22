@@ -136,8 +136,8 @@ require 'main.inc.php'; // Load $user and permissions
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 $encoding = '';
 $action = request()->input('action');
@@ -187,7 +187,7 @@ if (in_array($modulepart, array('facture_paiement', 'unpaid'))) {
 $ecmfile = '';
 if (!empty($hashp)) {
 	if (request()->input('type')=='link') {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$link = new Link($db);
 		$result = $link->fetch(0, $hashp);
 		if ($result > 0 && !empty($link->url)) {

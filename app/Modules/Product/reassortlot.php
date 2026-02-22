@@ -34,7 +34,7 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
@@ -134,7 +134,7 @@ $search[$key.'_dtend'] = dol_mktime(23, 59, 59, request()->integer('search_' . $
 $canvas = request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/canvas.class.php';
 	$objcanvas = new Canvas($db, $action);
 	$objcanvas->getCanvas('product', 'list', $canvas);
 }
@@ -187,7 +187,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -229,7 +229,7 @@ if (empty($reshook)) {
 	/*$objectclass = 'MyObject';
 	$objectlabel = 'MyObject';
 	$uploaddir = $conf->mymodule->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 	*/
 }
 

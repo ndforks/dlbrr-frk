@@ -37,10 +37,10 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/defaultvalues.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/defaultvalues.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 
 if (!$user->admin) {
@@ -68,7 +68,7 @@ $type = 'action';
 $error = 0;
 $errors = array();
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 $reg = array();
 if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {

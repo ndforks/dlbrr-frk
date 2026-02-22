@@ -37,7 +37,7 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_data_root
  */
-include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 
 $langs->load("admin");
@@ -75,7 +75,7 @@ if ($action == 'purge' && !preg_match('/^confirm/i', $choice) && ($choice != 'al
 		error_reporting($err);
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 	$utils = new Utils($db);
 
 	$result = $utils->purgeFiles($choice, $nbsecondsold);

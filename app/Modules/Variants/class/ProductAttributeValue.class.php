@@ -20,7 +20,7 @@
 
 
 namespace App\Modules\Variants\Classes;
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 /**
  * Class ProductAttributeValue
  * Used to represent a product attribute value

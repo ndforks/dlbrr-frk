@@ -29,12 +29,12 @@ namespace App\Modules\Ticket\Classes;
  */
 
 require_once DOL_DOCUMENT_ROOT.'/ticket/class/ticket.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonhookactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonhookactions.class.php';
 
 // TODO Only the last method emailElementlist is a hook method. Other must be moved into standard ticket.class.php
 
@@ -234,7 +234,7 @@ class ActionsTicket extends CommonHookActions
 		if ($user->hasRight('ticket', 'manage') && $action == 'edit_message_init') {
 			// Message
 			$msg = request()->has('message_initial') ? request()->input('message_initial') : $object->message;
-			include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 			$uselocalbrowser = true;
 			$ckeditorenabledforticket = getDolGlobalString('FCKEDITOR_ENABLE_TICKET');
 			if (!$ckeditorenabledforticket) {

@@ -27,10 +27,10 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/bookcal/class/calendar.class.php';
 require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_calendar.lib.php';
 
@@ -80,7 +80,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $upload_dir = null;
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 
 if ($id > 0 || !empty($ref)) {
 	$upload_dir = $conf->bookcal->multidir_output[$object->entity ? $object->entity : $conf->entity]."/calendar/".get_exdir(0, 0, 0, 1, $object);
@@ -114,7 +114,7 @@ if (!$permissiontoread) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 
 /*
@@ -174,7 +174,7 @@ if ($object->id && $upload_dir !== null) {
 	//$relativepathwithnofile='calendar/' . dol_sanitizeFileName($object->id).'/';
 	$relativepathwithnofile = 'calendar/'.dol_sanitizeFileName($object->ref).'/';
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 } else {
 	abort(403);
 }

@@ -1041,11 +1041,11 @@ class MouvementStock extends CommonObject
 				$origin = new Mo($this->db);
 				break;
 			case 'user':
-				require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 				$origin = new User($this->db);
 				break;
 			case 'reception':
-				require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
 				$origin = new Reception($this->db);
 				break;
 			case 'inventory':

@@ -27,9 +27,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/events.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/interface_20_all_Logevents.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/events.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/interface_20_all_Logevents.class.php';
 
 /**
  * @var Conf $conf

@@ -31,9 +31,9 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fourn.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
 
@@ -72,7 +72,7 @@ if (!$user->admin) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconstorder = request()->input('maskconstorder');
@@ -173,7 +173,7 @@ if ($action == 'specimen') {  // For orders
 	$res2 = dolibarr_set_const($db, "SUPPLIER_ORDER_3_STEPS_TO_BE_APPROVED", $doubleapproval, 'chaine', 0, '', $conf->entity);
 
 	// TODO We add/delete permission here until permission can have a condition on a global var
-	include_once DOL_DOCUMENT_ROOT.'/core/modules/modFournisseur.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/modules/modFournisseur.class.php';
 	$newmodule = new modFournisseur($db);
 
 	if ($conf->global->SUPPLIER_ORDER_3_STEPS_TO_BE_APPROVED) {
@@ -505,7 +505,7 @@ $variablename = 'SUPPLIER_ORDER_FREE_TEXT';
 if (!getDolGlobalString('PDF_ALLOW_HTML_FOR_FREE_TEXT')) {
 	print '<textarea name="'.$variablename.'" class="flat" cols="120">'.getDolGlobalString($variablename).'</textarea>';
 } else {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor($variablename, getDolGlobalString($variablename), '', 80, 'dolibarr_notes');
 	print $doleditor->Create();
 }

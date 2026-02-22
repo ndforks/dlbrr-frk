@@ -7,8 +7,11 @@ use App\Http\Controllers\Adherents\ShowAdherents;
 use App\Http\Controllers\Admin\AdminIndex;
 use App\Http\Controllers\Admin\ModulesAdmin;
 use App\Http\Controllers\Admin\SystemAdmin;
+use App\Http\Controllers\Asterisk\WrapperController as AsteriskWrapper;
 use App\Http\Controllers\Asset\ListAsset;
 use App\Http\Controllers\Asset\ShowAsset;
+use App\Http\Controllers\Barcode\CodeInitController;
+use App\Http\Controllers\Barcode\PrintSheetController;
 use App\Http\Controllers\Bom\ListBom;
 use App\Http\Controllers\Bom\ShowBom;
 use App\Http\Controllers\Bookcal\BookcalIndex;
@@ -17,6 +20,7 @@ use App\Http\Controllers\Bookmarks\BookmarksIndex;
 use App\Http\Controllers\Bookmarks\ShowBookmarks;
 use App\Http\Controllers\Categories\CategoriesIndex;
 use App\Http\Controllers\Categories\ShowCategories;
+use App\Http\Controllers\Collab\CollabController;
 use App\Http\Controllers\Comm\Propal\ListPropal;
 use App\Http\Controllers\Comm\Propal\ShowPropal;
 use App\Http\Controllers\Commande\ListCommande;
@@ -38,8 +42,16 @@ use App\Http\Controllers\Contact\ShowContact;
 use App\Http\Controllers\Contact\VCardController as ContactVCard;
 use App\Http\Controllers\Contrat\ListContrat;
 use App\Http\Controllers\Contrat\ShowContrat;
+use App\Http\Controllers\Cron\CronCardController;
+use App\Http\Controllers\Cron\CronInfoController;
+use App\Http\Controllers\Cron\CronListController;
+use App\Http\Controllers\Delivery\DeliveryCardController;
 use App\Http\Controllers\Don\ListDon;
 use App\Http\Controllers\Don\ShowDon;
+use App\Http\Controllers\Exports\ExportWizardController;
+use App\Http\Controllers\Imports\EmptyExampleController;
+use App\Http\Controllers\Imports\ImportWizardController;
+use App\Http\Controllers\Imports\IndexController as ImportsIndex;
 use App\Http\Controllers\Ecm\AutoIndexEcm;
 use App\Http\Controllers\Ecm\EcmIndex;
 use App\Http\Controllers\EventOrganization\EventOrganizationIndex;
@@ -97,6 +109,23 @@ use Illuminate\Support\Facades\Route;
 
 // Home route - redirect to Dolibarr index
 Route::get('/', Home::class);
+
+// Asterisk click-to-dial wrapper
+Route::get('/asterisk/wrapper', AsteriskWrapper::class)->name('asterisk.wrapper');
+
+// Barcode mass initialization
+Route::match(['get', 'post'], '/barcode/codeinit', CodeInitController::class)->name('barcode.codeinit');
+
+// Barcode printsheet
+Route::match(['get', 'post'], '/barcode/printsheet', PrintSheetController::class)->name('barcode.printsheet');
+
+// Collab - Collaborative document editing
+Route::match(['get', 'post'], '/collab', CollabController::class)->name('collab.index');
+
+// Cron jobs management
+Route::match(['get', 'post'], '/cron/list', CronListController::class)->name('cron.list');
+Route::match(['get', 'post'], '/cron/card', CronCardController::class)->name('cron.card');
+Route::get('/cron/info', CronInfoController::class)->name('cron.info');
 
 // User Management Routes
 Route::prefix('user')->name('user.')->group(function () {
@@ -333,6 +362,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('api')->group(function () {
     Route::any('/{path?}', fn ($path = '') => redirect('/htdocs/api/index.php/'.$path))
         ->where('path', '.*');
+});
+
+// Delivery Routes
+Route::prefix('delivery')->name('delivery.')->group(function () {
+    Route::match(['GET', 'POST'], '/card', DeliveryCardController::class)->name('card');
+});
+
+// Import Routes
+Route::prefix('imports')->name('imports.')->group(function () {
+    Route::get('/', ImportsIndex::class)->name('index');
+    Route::match(['GET', 'POST'], '/import', ImportWizardController::class)->name('wizard');
+    Route::get('/emptyexample', EmptyExampleController::class)->name('example');
+});
+
+// Export Routes
+Route::prefix('exports')->name('exports.')->group(function () {
+    Route::match(['GET', 'POST'], '/export', ExportWizardController::class)->name('wizard');
 });
 
 // Fallback route to handle all other Dolibarr requests

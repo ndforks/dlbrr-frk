@@ -26,13 +26,13 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/lib/partnership.lib.php';
 
 /**
  * @var Conf $conf
@@ -84,7 +84,7 @@ foreach ($object->fields as $key => $val) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $permissiontoread = $user->hasRight('partnership', 'read');
 $permissiontoadd = $user->hasRight('partnership', 'write'); // Used by the include of actions_addupdatedelete.inc.php and actions_lineupdown.inc.php
@@ -132,10 +132,10 @@ $date_end = dol_mktime(0, 0, 0, request()->integer('date_partnership_endmonth', 
 if (empty($reshook)) {
 	$error = 0;
 
-	$backtopage = dol_buildpath('/partnership/partnership.php', 1).'?rowid='.($id > 0 ? $id : '__ID__');
+	$backtopage = dol_buildpath('/Partnership/partnership.php', 1).'?rowid='.($id > 0 ? $id : '__ID__');
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 }
 
 $object->fields['fk_member']['visible'] = 0;
@@ -258,7 +258,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		//$keyforbreak='fieldkeytoswitchonsecondcolumn';	// We change column just before this field
 		//unset($object->fields['fk_project']);				// Hide field already shown in banner
 		//unset($object->fields['fk_member']);					// Hide field already shown in banner
-		include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 		// End of subscription date
 		$fadherent = new Adherent($db);

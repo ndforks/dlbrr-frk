@@ -31,10 +31,10 @@ namespace App\Modules\Projet\Classes;
  *      \brief      This file is a CRUD class file for Task (Create/Read/Update/Delete)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/timespent.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/timespent.class.php';
 
 
 /**
@@ -766,7 +766,7 @@ class Task extends CommonObjectLine
 				$olddir = $conf->project->dir_output.'/'.dol_sanitizeFileName($project->ref).'/'.dol_sanitizeFileName($this->oldcopy->ref);
 				$newdir = $conf->project->dir_output.'/'.dol_sanitizeFileName($project->ref).'/'.dol_sanitizeFileName($this->ref);
 				if (file_exists($olddir)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					$res = dol_move_dir($olddir, $newdir);
 					if (!$res) {
 						$langs->load("errors");
@@ -801,7 +801,7 @@ class Task extends CommonObjectLine
 	public function delete($user, $notrigger = 0)
 	{
 		global $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -894,7 +894,7 @@ class Task extends CommonObjectLine
 				$dir = $conf->project->dir_output."/".dol_sanitizeFileName($projectstatic->ref).'/'.dol_sanitizeFileName((string) $this->id);
 				dol_syslog(get_class($this)."::delete dir=".$dir, LOG_DEBUG);
 				if (file_exists($dir)) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					$res = @dol_delete_dir_recursive($dir);
 					if (!$res) {
 						$this->error = 'ErrorFailToDeleteDir';
@@ -1269,7 +1269,7 @@ class Task extends CommonObjectLine
 		$extrafieldsobjectkey = 'projet_task';
 		$extrafieldsobjectprefix = 'efpt.';
 		global $db, $conf; // needed for extrafields_list_search_sql.tpl
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 
 		// Add where from hooks
 		$parameters = array();
@@ -1643,7 +1643,7 @@ class Task extends CommonObjectLine
 		}
 
 		if (getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 			$restrictBefore = dol_time_plus_duree(dol_now(), - getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS'), 'm');
 
 			if ($this->timespent_date < $restrictBefore) {
@@ -2094,7 +2094,7 @@ class Task extends CommonObjectLine
 		}
 
 		if (getDolGlobalString('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 			$restrictBefore = dol_time_plus_duree(dol_now(), - $conf->global->PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS, 'm');
 
 			if ($this->timespent_date < $restrictBefore) {
@@ -2229,7 +2229,7 @@ class Task extends CommonObjectLine
 		$error = 0;
 
 		if (getDolGlobalString('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 			$restrictBefore = dol_time_plus_duree(dol_now(), - $conf->global->PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS, 'm');
 
 			if ($this->timespent_date < $restrictBefore) {
@@ -2331,8 +2331,8 @@ class Task extends CommonObjectLine
 
 		$defaultref = '';
 		$obj = !getDolGlobalString('PROJECT_TASK_ADDON') ? 'mod_task_simple' : $conf->global->PROJECT_TASK_ADDON;
-		if (getDolGlobalString('PROJECT_TASK_ADDON') && is_readable(DOL_DOCUMENT_ROOT."/core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').".php")) {
-			require_once DOL_DOCUMENT_ROOT."/core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').'.php';
+		if (getDolGlobalString('PROJECT_TASK_ADDON') && is_readable(DOL_DOCUMENT_ROOT."/Core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').".php")) {
+			require_once DOL_DOCUMENT_ROOT."/Core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').'.php';
 			$modTask = new $obj();
 			'@phan-var-force ModeleNumRefTask $modTask';
 			$defaultref = $modTask->getNextValue(null, $clone_task);
@@ -2415,7 +2415,7 @@ class Task extends CommonObjectLine
 
 			//Duplicate file
 			if ($clone_file) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				//retrieve project origin ref to know folder to copy
 				$projectstatic = new Project($this->db);

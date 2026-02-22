@@ -229,7 +229,7 @@ class StockMovements extends DolibarrApi
 			$type = 3;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$dluo = empty($eatBy) ? '' : dol_stringtotime($eatBy);
 		$dlc = empty($sellBy) ? '' : dol_stringtotime($sellBy);
 		$dateMvt = empty($datem) ? '' : dol_stringtotime($datem);

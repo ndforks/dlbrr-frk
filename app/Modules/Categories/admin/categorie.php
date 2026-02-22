@@ -26,7 +26,7 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/categories.lib.php';
 
 /**
  * @var Conf $conf

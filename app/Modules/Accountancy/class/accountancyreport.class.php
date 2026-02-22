@@ -25,7 +25,7 @@ namespace App\Modules\Accountancy\Classes;
  */
 
 // Class
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 /**
  * Class to manage reports for accounting categories

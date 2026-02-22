@@ -28,7 +28,7 @@ namespace App\Modules\Comm\Mailing\Classes;
  *	\brief      File of class to manage emailings module
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing_targets.class.php';
 
 /**
@@ -546,7 +546,7 @@ class Mailing extends CommonObject
 		if (!$error) {
 			// Clone recipient targets
 			if (!empty($option2)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 
 				$mailing_target = new MailingTargets($this->db);
 

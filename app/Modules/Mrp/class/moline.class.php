@@ -27,7 +27,7 @@ namespace App\Modules\Mrp\Classes;
  * \brief       This file is a CRUD class file for Mo lines (Create/Read/Update/Delete)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  * Class MoLine. You can also remove this and generate a CRUD class for lines objects.

@@ -39,9 +39,9 @@ namespace App\Modules\Expedition\Classes;
  *  \brief      File of class managing the shipments
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT."/expedition/class/expeditionligne.class.php";
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
 if (isModEnabled("propal")) {
 	require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 }
@@ -49,8 +49,8 @@ if (isModEnabled('order')) {
 	require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 }
 require_once DOL_DOCUMENT_ROOT.'/expedition/class/expeditionlinebatch.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonsignedobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonsignedobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 /**
  *	Class to manage shipments
@@ -989,7 +989,7 @@ class Expedition extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		dol_syslog(get_class($this)."::valid");
 
@@ -1155,7 +1155,7 @@ class Expedition extends CommonObject
 		if (getDolGlobalInt('MAIN_SUBMODULE_DELIVERY')) {
 			if ($this->status == self::STATUS_VALIDATED || $this->status == self::STATUS_CLOSED) {
 				// Expedition validated
-				include_once DOL_DOCUMENT_ROOT.'/delivery/class/delivery.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Delivery/class/delivery.class.php';
 				$delivery = new Delivery($this->db);
 				$result = $delivery->create_from_sending($user, $this->id);
 				if ($result <= 0) {
@@ -1693,7 +1693,7 @@ class Expedition extends CommonObject
 	{
 		global $conf, $langs, $user;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 		$this->error = '';
@@ -1898,7 +1898,7 @@ class Expedition extends CommonObject
 			global $user;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 		$this->error = '';
@@ -2132,7 +2132,7 @@ class Expedition extends CommonObject
 		dol_syslog(get_class($this)."::fetch_lines", LOG_DEBUG);
 		$resql = $this->db->query($sql);
 		if ($resql) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			$num = $this->db->num_rows($resql);
 			$i = 0;

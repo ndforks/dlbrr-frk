@@ -164,7 +164,7 @@ if (empty($reshook)) {
 		$noback = 0;
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	if (!$error) {
 		if (is_array($skilldetArray) && count($skilldetArray) > 0) {
@@ -200,7 +200,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_printing.inc.php';
 
 	// Action to move up and down lines of object
-	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';
 
 	// Action to build doc
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';
@@ -266,7 +266,7 @@ if ($action == 'create') {
 	include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_add.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 
 	// SKILLDET ADD
@@ -320,7 +320,7 @@ if (($id || $ref) && $action == 'edit') {
 	include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_edit.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 	print '</table>';
 
@@ -479,7 +479,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	include DOL_DOCUMENT_ROOT . '/core/tpl/commonfields_view.tpl.php';
 
 	// Other attributes. Fields from hook formObjectOptions and Extrafields.
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 
 	print '</table>';
@@ -673,7 +673,7 @@ if ($action != "create" && $action != "edit") {
 	$modelmail = "skilldet";
 	$objecttmp = new Skilldet($db);
 	$trackid = 'xxxx' . $object->id;
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 	if ($search_all) {
 		foreach ($fieldstosearchall as $key => $val) {

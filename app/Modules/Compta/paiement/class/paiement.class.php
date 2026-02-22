@@ -36,8 +36,8 @@ namespace App\Modules\Compta\Paiement\Classes;
  *	\ingroup    invoice
  *	\brief      File of class to manage payments of customers invoices
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 
 
 /**

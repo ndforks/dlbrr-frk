@@ -44,9 +44,9 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/dynamic_price/class/price_expression.class.php';
@@ -834,7 +834,7 @@ if ($id > 0 || $ref) {
 			// Product description of the supplier
 			if (getDolGlobalString('PRODUIT_FOURN_TEXTS')) {
 				//WYSIWYG Editor
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 				print '<tr>';
 				print '<td>'.$langs->trans('ProductSupplierDescription').'</td>';
@@ -1005,7 +1005,7 @@ if ($id > 0 || $ref) {
 			}
 
 			// Selection of new fields
-			include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 			$varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 			$selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')); // This also change content of $arrayfields

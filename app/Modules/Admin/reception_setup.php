@@ -25,10 +25,10 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/reception.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/reception.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
 
 /**
  * @var Conf $conf
@@ -74,7 +74,7 @@ if (!getDolGlobalString('RECEPTION_ADDON_NUMBER')) {
  */
 $error = 0;
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconst = request()->input('maskconstreception');

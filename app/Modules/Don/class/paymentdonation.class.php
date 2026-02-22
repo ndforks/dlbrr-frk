@@ -25,7 +25,7 @@ namespace App\Modules\Don\Classes;
  *  \brief      File of class to manage payment of donations
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**

@@ -33,7 +33,7 @@ namespace App\Modules\Fichinter\Classes;
  *  \brief      File for class to manage recurring interventions
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 
@@ -497,7 +497,7 @@ class FichinterRec extends Fichinter
 	{
 		global $mysoc;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Check parameters
 		if ($type < 0) {

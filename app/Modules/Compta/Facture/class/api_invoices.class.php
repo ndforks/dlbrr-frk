@@ -179,7 +179,7 @@ class Invoices extends DolibarrApi
 		$this->invoice->fetchObjectLinked();
 
 		// Add online_payment_url, copied from order
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 		$this->invoice->online_payment_url = getOnlinePaymentUrl(0, 'invoice', (string) $this->invoice->ref);
 
 		return $this->_cleanObjectDatas($this->invoice);
@@ -310,7 +310,7 @@ class Invoices extends DolibarrApi
 					}
 
 					// Add online_payment_url, copied from order
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 					$invoice_static->online_payment_url = getOnlinePaymentUrl(0, 'invoice', (string) $invoice_static->ref);
 
 					$obj_ret[] = $this->_filterObjectProperties($this->_cleanObjectDatas($invoice_static), $properties);
@@ -1182,7 +1182,7 @@ class Invoices extends DolibarrApi
 		// }
 
 		// copy from order
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 		$this->invoice->online_payment_url = getOnlinePaymentUrl(0, 'invoice', (string) $this->invoice->ref);
 
 		return $this->_cleanObjectDatas($this->invoice);
@@ -1299,7 +1299,7 @@ class Invoices extends DolibarrApi
 	 */
 	public function getDiscount($id)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		if (!DolibarrApiAccess::$user->hasRight('facture', 'lire')) {
 			throw new RestException(403);
@@ -1342,7 +1342,7 @@ class Invoices extends DolibarrApi
 	 */
 	public function markAsCreditAvailable($id)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		if (!DolibarrApiAccess::$user->hasRight('facture', 'creer')) {
 			throw new RestException(403);
@@ -1583,7 +1583,7 @@ class Invoices extends DolibarrApi
 	 */
 	public function useCreditNote($id, $discountid)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		if (!DolibarrApiAccess::$user->hasRight('facture', 'creer')) {
 			throw new RestException(403);

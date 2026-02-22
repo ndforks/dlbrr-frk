@@ -24,7 +24,7 @@ namespace App\Modules\Loan\Classes;
  *  \ingroup    loan
  *  \brief      Class for loan module
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**

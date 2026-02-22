@@ -29,9 +29,9 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/class/html.formcategory.class.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/ticket.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/html.formcategory.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/ticket.lib.php";
 require_once DOL_DOCUMENT_ROOT."/ticket/class/ticket.class.php";
 
 /**
@@ -78,7 +78,7 @@ $statuslist = array(
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if (request()->has('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION')) {	// only for no js case
 	$param_disable_email = request()->input('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION');
@@ -195,7 +195,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 } elseif ($action == 'setvar') {
-	include_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
+	include_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
 
 	$notification_email = request()->input('TICKET_NOTIFICATION_EMAIL_FROM');
 	$notification_email_description = "Email of user allowed to send ticket replies from Dolibarr";
@@ -710,7 +710,7 @@ print $formcategory->textwithpicto('', $langs->trans("TicketEmailNotificationToH
 print '</td>';
 print '</tr>';
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 $formmail = new FormMail($db);
 
 $formmail->fetchAllEMailTemplate('ticket_send', $user, null, -1); // We set lang=null to get in priority record with no lang
@@ -770,7 +770,7 @@ print '</tr>';
 $mail_intro = getDolGlobalString('TICKET_MESSAGE_MAIL_INTRO', '');
 print '<tr class="oddeven"><td>'.$langs->trans("TicketMessageMailIntro");
 print '</td><td>';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 $doleditor = new DolEditor('TICKET_MESSAGE_MAIL_INTRO', $mail_intro, '100%', 90, 'dolibarr_mailings', '', false, true, getDolGlobalInt('FCKEDITOR_ENABLE_MAIL'), ROWS_2, '70');
 $doleditor->Create();
 print '</td>';
@@ -782,7 +782,7 @@ print '</td></tr>';
 $mail_signature = getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE');
 print '<tr class="oddeven"><td>'.$langs->trans("TicketMessageMailFooter").'</label>';
 print '</td><td>';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 $doleditor = new DolEditor('TICKET_MESSAGE_MAIL_SIGNATURE', $mail_signature, '100%', 90, 'dolibarr_mailings', '', false, true, getDolGlobalInt('FCKEDITOR_ENABLE_MAIL'), ROWS_2, '70');
 $doleditor->Create();
 print '</td>';

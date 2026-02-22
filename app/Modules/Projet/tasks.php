@@ -28,10 +28,10 @@
 require "../main.inc.php";
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 if (isModEnabled('category')) {
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
@@ -121,7 +121,7 @@ $object = new Project($db);
 $taskstatic = new Task($db);
 $extrafields = new ExtraFields($db);
 
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 if (getDolGlobalString('PROJECT_ALLOW_COMMENT_ON_PROJECT') && method_exists($object, 'fetchComments') && empty($object->comments)) {
 	$object->fetchComments();
 }
@@ -193,7 +193,7 @@ if ($object->usage_bill_time) {
 // Extra fields
 $extrafieldsobjectkey = $taskstatic->table_element;
 $extrafieldsobjectprefix = 'efpt.';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
@@ -228,7 +228,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -274,7 +274,7 @@ if (empty($reshook)) {
 	$permissiontoread = $user->hasRight('projet', 'lire');
 	$permissiontodelete = $user->hasRight('projet', 'supprimer');
 	$uploaddir = $conf->project->dir_output.'/tasks';
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 }
 
 $morewherefilterarray = array();
@@ -602,7 +602,7 @@ if ($id > 0 || !empty($ref)) {
 		$param .= '&optioncss='.urlencode($optioncss);
 	}
 	// Add $param from extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 	$arrayofmassactions = array();
 	if ($user->hasRight('projet', 'creer')) {
@@ -713,7 +713,7 @@ if ($id > 0 || !empty($ref)) {
 
 	// Other attributes
 	$cols = 2;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 
@@ -791,8 +791,8 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 
 	$defaultref = '';
 	$classnamemodtask = getDolGlobalString('PROJECT_TASK_ADDON', 'mod_task_simple');
-	if (getDolGlobalString('PROJECT_TASK_ADDON') && is_readable(DOL_DOCUMENT_ROOT."/core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').".php")) {
-		require_once DOL_DOCUMENT_ROOT."/core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').'.php';
+	if (getDolGlobalString('PROJECT_TASK_ADDON') && is_readable(DOL_DOCUMENT_ROOT."/Core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').".php")) {
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/project/task/" . getDolGlobalString('PROJECT_TASK_ADDON').'.php';
 		$modTask = new $classnamemodtask();
 		'@phan-var-force ModeleNumRefTask $modTask';
 		$defaultref = $modTask->getNextValue($object->thirdparty, $object);
@@ -877,7 +877,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 	print '<td>';
 
 	// WYSIWYG editor
-	include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$nbrows = 0;
 	if (getDolGlobalString('MAIN_INPUT_DESC_HEIGHT')) {
 		$nbrows = getDolGlobalString('MAIN_INPUT_DESC_HEIGHT');
@@ -948,7 +948,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 
 	$objecttmp = new Task($db);
 	$trackid = 'task'.$taskstatic->id;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 	// Get list of tasks in tasksarray and taskarrayfiltered
 	// We need all tasks (even not limited to a user because a task to user can have a parent that is not affected to him).
@@ -966,7 +966,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 	//var_dump($tasksrole);
 
 	if (!empty($conf->use_javascript_ajax)) {
-		include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 	}
 
 	// Filter on assigned users
@@ -1114,7 +1114,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 		print '</td>';
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 	// Fields from hook
 	$parameters = array('arrayfields' => $arrayfields);
@@ -1196,7 +1196,7 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 
 	// Extra fields
 	$disablesortlink = 1;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 	// Hook fields
 	$parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);
 	$reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters); // Note that $action and $object may have been modified by hook
@@ -1233,12 +1233,12 @@ if ($action == 'create' && $user->hasRight('projet', 'creer') && (empty($object-
 	if ($user->hasRight('projet', 'all', 'lire')) {	// We make test to clean only if user has permission to see all (test may report false positive otherwise)
 		if ($search_user_id == $user->id) {
 			if ($nboftaskshown < count($tasksrole)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 				cleanCorruptedTree($db, 'projet_task', 'fk_task_parent');
 			}
 		} else {
 			if ($nboftaskshown < count($tasksarray) && !request()->integer('search_user_id', 0)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 				cleanCorruptedTree($db, 'projet_task', 'fk_task_parent');
 			}
 		}

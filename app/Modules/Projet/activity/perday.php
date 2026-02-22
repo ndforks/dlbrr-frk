@@ -37,11 +37,11 @@ require "../../main.inc.php";
  */
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 
 // Load translation files required by the page
@@ -148,7 +148,7 @@ $arrayfields['timeconsumed'] = array('label' => 'TimeConsumed', 'checked' => '1'
 // Extra fields
 $extrafieldsobjectkey = $object->table_element;
 $extrafieldsobjectprefix = 'efpt.';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 $arrayfields = dol_sort_array($arrayfields, 'position');
 
@@ -196,7 +196,7 @@ if (request()->input('submitdateselect')) {
 	$action = '';
 }
 
-include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 if ($action == 'addtime' && $user->hasRight('projet', 'lire') && request()->input('assigntask') && request()->input('formfilteraction') != 'listafterchangingselectedfields') {
 	$action = 'assigntask';
@@ -396,13 +396,13 @@ $sql = &$morewherefilter;
 $extrafieldsobjectprefix='efp.';
 $search_options_pattern='search_options_';
 $extrafieldsobjectkey='projet';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 */
 $search_array_options = $search_array_options_task;
 $extrafieldsobjectprefix = 'efpt.';
 $search_options_pattern = 'search_task_options_';
 $extrafieldsobjectkey = 'projet_task';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 
 $tasksarray = $taskstatic->getTasksArray(null, null, ($project->id ? $project->id : 0), $socid, 0, $search_project_ref, (string) $onlyopenedproject, $morewherefilter, ($search_usertoprocessid ? $search_usertoprocessid : 0), 0, $extrafields); // We want to see all task of opened project i am allowed to see and that match filter, not only my tasks. Later only mine will be editable later.
 
@@ -428,12 +428,12 @@ $param .= ($search_task_label ? '&search_task_label='.urlencode($search_task_lab
 /*
 $search_array_options = $search_array_options_project;
 $search_options_pattern='search_options_';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 */
 
 $search_array_options = $search_array_options_task;
 $search_options_pattern = 'search_task_options_';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 // Show navigation bar
 $nav = '<a class="inline-block valignmiddle" href="?year='.$prev_year."&month=".$prev_month."&day=".$prev_day.$param.'">'.img_previous($langs->trans("Previous"))."</a>\n";
@@ -582,7 +582,7 @@ print '<td class="liste_titre"><input type="text" size="4" name="search_task_lab
 $search_options_pattern = 'search_task_options_';
 $extrafieldsobjectkey = 'projet_task';
 $extrafieldsobjectprefix = 'efpt.';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 if (!empty($arrayfields['t.planned_workload']['checked'])) {
 	print '<td class="liste_titre"></td>';
 }
@@ -614,7 +614,7 @@ print '<th>'.$langs->trans("Task").'</th>';
 // TASK fields
 $extrafieldsobjectkey = 'projet_task';
 $extrafieldsobjectprefix = 'efpt.';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 if (!empty($arrayfields['t.planned_workload']['checked'])) {
 	print '<th class="leftborder plannedworkload minwidth75 maxwidth100 right" title="'.dol_escape_htmltag($langs->trans("PlannedWorkload")).'">'.$form->textwithpicto($langs->trans("PlannedWorkloadShort"), $langs->trans("PlannedWorkload")).'</th>';
 }

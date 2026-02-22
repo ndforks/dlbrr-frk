@@ -44,14 +44,14 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture-rec.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 if (isModEnabled('project')) {
 	include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/invoice.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'companies', 'compta', 'admin', 'other', 'products', 'banks'));
@@ -193,7 +193,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	// include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	// include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 	if ($cancel) {
 		/*var_dump($cancel);var_dump($backtopage);var_dump($backtopageforcancel);exit;*/
 		if (!empty($backtopageforcancel)) {
@@ -207,20 +207,20 @@ if (empty($reshook)) {
 	}
 
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Set note
-	include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php'; // Must be 'include', not 'include_once'
 
 	// Mass actions
 	/*$objectclass='MyObject';
 	$objectlabel='MyObject';
 	$uploaddir = $conf->mymodule->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';*/
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';*/
 
 	// Create predefined invoice
 	if ($action == 'add' && $usercancreate) {
@@ -1392,7 +1392,7 @@ if ($action == 'create') {
 
 		// Model pdf
 		print "<tr><td>".$langs->trans('Model')."</td><td>";
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 		$list = ModelePDFFactures::liste_modeles($db);
 		print img_picto('', 'generic', 'class="pictofixedwidth"');
 		// @phan-suppress-next-line PhanPluginSuspiciousParamOrder
@@ -1751,7 +1751,7 @@ if ($action == 'create') {
 		print '</td></tr>';
 
 		// Extrafields
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		// Model pdf
 		print '<tr><td class="nowrap">';
@@ -1764,7 +1764,7 @@ if ($action == 'create') {
 		print '</tr></table>';
 		print '</td><td>';
 		if ($action == 'editmodelpdf') {
-			include_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 			$list = array();
 			$models = ModelePDFFactures::liste_modeles($db);
 			foreach ($models as $k => $model) {
@@ -1795,7 +1795,7 @@ if ($action == 'create') {
 
 		print '<table class="border tableforfield centpercent">';
 
-		include DOL_DOCUMENT_ROOT.'/core/tpl/object_currency_amount.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/object_currency_amount.tpl.php';
 
 		$sign = 1;
 		if (getDolGlobalString('INVOICE_POSITIVE_CREDIT_NOTE_SCREEN') && $object->type == $object::TYPE_CREDIT_NOTE) {
@@ -2129,7 +2129,7 @@ if ($action == 'create') {
 
 		if (!empty($conf->use_javascript_ajax) && $object->statut == 0) {
 			if (isModEnabled('subtotals')) {
-				include DOL_DOCUMENT_ROOT.'/core/tpl/subtotal_ajaxrow.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/subtotal_ajaxrow.tpl.php';
 			} else {
 				include DOL_DOCUMENT_ROOT . '/core/tpl/ajaxrow.tpl.php';
 			}
@@ -2259,7 +2259,7 @@ if ($action == 'create') {
 		$morehtmlcenter = '';
 
 		// List of actions on element
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 		$formactions = new FormActions($db);
 		$morehtmlcenter = '';
 		$somethingshown = $formactions->showactions($object, $object->element, (is_object($object->thirdparty) ? $object->thirdparty->id : 0), 1, '', $MAXEVENT, '', $morehtmlcenter);

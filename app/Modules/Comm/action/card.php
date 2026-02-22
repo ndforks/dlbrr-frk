@@ -40,13 +40,13 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncommreminder.class.php';
@@ -54,7 +54,7 @@ require_once DOL_DOCUMENT_ROOT.'/comm/action/class/cactioncomm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(["companies", "other", "commercial", "bills", "orders", "agenda", "mails"]);
@@ -1331,7 +1331,7 @@ if (empty($reshook) && request()->input('actionmove') == 'mupdate' && $usercancr
 $upload_dir = $conf->agenda->dir_output.'/'.dol_sanitizeFileName($object->ref);
 $permissiontoadd = ($user->hasRight('agenda', 'allactions', 'create') || (($object->authorid == $user->id || $object->userownerid == $user->id) && $user->hasRight('agenda', 'myactions', 'read')));
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 }
 
 
@@ -1846,7 +1846,7 @@ if ($action == 'create') {
 
 	// Object linked
 	if (!empty($origin) && !empty($originid)) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$hasPermissionOnLinkedObject = 0;
 
@@ -1882,7 +1882,7 @@ if ($action == 'create') {
 
 	// Description
 	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('note', (request()->has('note') ? request()->input('note') : $object->note_private), '', 200, 'dolibarr_notes', 'In', true, true, isModEnabled('fckeditor'), ROWS_4, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
@@ -2377,7 +2377,7 @@ if ($id > 0 && $action != 'create') {
 
 		// Object linked
 		if ($object->fk_project || (!empty($object->elementid) && !empty($object->elementtype))) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			print '<tr>';
 			print '<td>'.$langs->trans("LinkedObject").'</td>';
 
@@ -2453,7 +2453,7 @@ if ($id > 0 && $action != 'create') {
 		// Description
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
 		// Wysiwyg editor
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$doleditor = new DolEditor('note', $object->note_private, '', 200, 'dolibarr_notes', 'In', true, true, isModEnabled('fckeditor'), ROWS_4, '90%');
 		$doleditor->Create();
 		print '</td></tr>';
@@ -2875,7 +2875,7 @@ if ($id > 0 && $action != 'create') {
 		// Object linked (if link is for thirdparty, contact, project it is a recording error. We should not have links in link table
 		// for such objects because there is already a dedicated field into table llx_actioncomm.
 		if (!empty($object->elementid) && !empty($object->elementtype) && !in_array($object->elementtype, array('societe', 'contact', 'project'))) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			print '<tr><td>'.$langs->trans("LinkedObject").'</td>';
 			$link = dolGetElementUrl($object->elementid, $object->elementtype, ($object->elementtype == 'user' ? -1 : 1));
 			print '<td>';
@@ -2907,7 +2907,7 @@ if ($id > 0 && $action != 'create') {
 		print '</td></tr>';
 
 		// Other attributes
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		// Reminders
 		if ($enablereminders) {

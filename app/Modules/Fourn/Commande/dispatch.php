@@ -33,9 +33,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_order/modules_commandefournisseur.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_order/modules_commandefournisseur.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fourn.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
@@ -664,7 +664,7 @@ if ($id > 0 || !empty($ref)) {
 		if (empty($conf->reception->enabled)) {
 			print '<form method="POST" action="dispatch.php?id='.$object->id.'">';
 		} else {
-			print '<form method="post" action="'.dol_buildpath('/reception/card.php', 1).'?originid='.$object->id.'&origin=supplierorder">';
+			print '<form method="post" action="'.dol_buildpath('/Reception/card.php', 1).'?originid='.$object->id.'&origin=supplierorder">';
 		}
 
 		print '<input type="hidden" name="token" value="'.newToken().'">';

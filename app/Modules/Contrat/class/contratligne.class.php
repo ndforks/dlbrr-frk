@@ -36,9 +36,9 @@ namespace App\Modules\Contrat\Classes;
  *	\brief      File of class to manage contract lines
  */
 
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobjectline.class.php";
-require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobjectline.class.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
 
 /**
  *	Class to manage lines of contracts

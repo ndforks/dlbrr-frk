@@ -25,9 +25,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/inventory/class/inventory.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/inventory/lib/inventory.lib.php';
 
@@ -87,7 +87,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
 //if ($user->socid > 0) abort(403);
@@ -139,19 +139,19 @@ if (empty($reshook)) {
 	$triggermodname = 'STOCK_INVENTORY_MODIFY'; // Name of trigger action code to execute when we modify record
 
 	// Actions cancel, add, update, update_extras, confirm_validate, confirm_delete, confirm_deleteline, confirm_clone, confirm_close, confirm_setdraft, confirm_reopen
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Action to move up and down lines of object
-	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';
 
 	// Action to build doc
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 
 	/*if ($action == 'set_thirdparty' && $permissiontoadd)
 	{
@@ -165,7 +165,7 @@ if (empty($reshook)) {
 	$triggersendname = 'INVENTORY_SENTBYMAIL';
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_INVENTORY_TO';
 	$trackid = 'stockinv'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 	if (!$error && $savaction == 'confirm_validate' && $action == '' && $object->id > 0) {
 		// Switch to the tab inventory
@@ -212,10 +212,10 @@ if ($action == 'create') {
 	print '<table class="border centpercent tableforfieldcreate">'."\n";
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_add.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	//print '<tr><td class="titlefield fieldname_invcode">'.$langs->trans("InventoryCode").'</td><td>INV'.$object->id.'</td></tr>';
 
@@ -250,10 +250,10 @@ if (($id || $ref) && $action == 'edit') {
 	print '<table class="border centpercent tableforfieldedit">'."\n";
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_edit.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 	print '</table>';
 
@@ -372,10 +372,10 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	print '<table class="border centpercent tableforfield">'."\n";
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	// Other attributes. Fields from hook formObjectOptions and Extrafields.
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';
@@ -483,7 +483,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		$morehtmlcenter = '';
 
 		// List of actions on element
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 		$formactions = new FormActions($db);
 		$somethingshown = $formactions->showactions($object, $object->element, 0, 1, '', $MAXEVENT, '', $morehtmlcenter);
 
@@ -502,7 +502,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	$diroutput = $conf->product->dir_output.'/inventory';
 	$trackid = 'stockinv'.$object->id;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 }
 
 // End of page

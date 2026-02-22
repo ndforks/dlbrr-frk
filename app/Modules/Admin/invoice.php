@@ -41,9 +41,9 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/invoice.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 // Load translation files required by the page
@@ -69,7 +69,7 @@ $reg = array();
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconstinvoice = request()->input('maskconstinvoice');
@@ -837,7 +837,7 @@ $variablename = 'INVOICE_FREE_TEXT';
 if (!getDolGlobalString('PDF_ALLOW_HTML_FOR_FREE_TEXT')) {
 	print '<textarea name="'.$variablename.'" class="flat" cols="120">'.getDolGlobalString($variablename).'</textarea>';
 } else {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor($variablename, getDolGlobalString($variablename), '', 80, 'dolibarr_notes');
 	print $doleditor->Create();
 }

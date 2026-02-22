@@ -27,7 +27,7 @@
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinterstats.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 
 /**
  * @var Conf $conf

@@ -27,10 +27,10 @@
 require '../main.inc.php';
 
 // Class
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/resource.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/html.formresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/resource.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/html.formresource.class.php';
 
 /**
  * @var Conf $conf

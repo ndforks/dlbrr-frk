@@ -2456,7 +2456,7 @@ class BonPrelevement extends CommonObject
 
 			// Structured data for Belgium
 			if (getDolGlobalString('INVOICE_PAYMENT_ENABLE_STRUCTURED_COMMUNICATION') && $mysoc->country_code == 'BE') {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/functions_be.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions_be.lib.php';
 
 				$invoicestatic = new Facture($this->db);
 				$invoicestatic->fetch($row_idfac);

@@ -31,9 +31,9 @@ namespace App\Modules\Comm\Action\Classes;
  *       \brief      File of class to manage agenda events (actions)
  */
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/cactioncomm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CSMSFile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncommreminder.class.php';
 
 
@@ -1419,7 +1419,7 @@ class ActionComm extends CommonObject
 
 		// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($this->db);
 		}
 		$hookmanager->initHooks(array('agendadao'));
@@ -1775,7 +1775,7 @@ class ActionComm extends CommonObject
 		if (isModEnabled('category') && !$nofetch) {
 			require_once DOL_DOCUMENT_ROOT . '/categories/class/categorie.class.php';
 			if (empty($form)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 				$form = new Form($this->db);
 			}
 			$tmpcategstring = $form->showCategories($this->id, Categorie::TYPE_ACTIONCOMM, 1);
@@ -2093,9 +2093,9 @@ class ActionComm extends CommonObject
 		// phpcs:enable
 		global $conf, $langs, $dolibarr_main_url_root, $mysoc;
 
-		require_once DOL_DOCUMENT_ROOT."/core/lib/xcal.lib.php";
-		require_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
-		require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/lib/xcal.lib.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
 
 		dol_syslog(get_class($this)."::build_exportfile Build export file format=".$format.", type=".$type.", cachedelay=".$cachedelay.", filename=".$filename.", filters size=".count($filters), LOG_DEBUG);
 
@@ -2129,7 +2129,7 @@ class ActionComm extends CommonObject
 
 		if ($cachedelay) {
 			$nowgmt = dol_now();
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			if (dol_filemtime($outputfile) > ($nowgmt - $cachedelay)) {
 				dol_syslog(get_class($this)."::build_exportfile file ".$outputfile." is not older than now - cachedelay (".$nowgmt." - ".$cachedelay."). Build is canceled");
 				$buildfile = false;
@@ -2768,7 +2768,7 @@ class ActionComm extends CommonObject
 		$resql = $this->db->query($sql);
 
 		if ($resql) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($this->db);
 			$to = null;  // Ensure 'to' is defined for static analysis
 
@@ -2946,7 +2946,7 @@ class ActionComm extends CommonObject
 		$resql = $this->db->query($sql);
 
 		if ($resql) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($this->db);
 			$to = null;  // Ensure 'to' is defined for static analysis
 

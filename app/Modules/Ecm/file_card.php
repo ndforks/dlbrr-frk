@@ -25,12 +25,12 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ecm.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var Conf $conf
@@ -186,7 +186,7 @@ if ($action == 'update' && $permissiontoadd) {
 
 	if (!$error) {
 		if ($shareenabled) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$object->share = getRandomPassword(true);
 		} else {
 			$object->share = '';

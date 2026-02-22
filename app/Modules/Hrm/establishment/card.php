@@ -24,10 +24,10 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/hrm.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/hrm.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/establishment.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 
 /**
  * @var Conf $conf
@@ -61,7 +61,7 @@ foreach ($tmpstatus2label as $key => $val) {
 $object = new Establishment($db);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 
 $permissiontoread = $user->admin;
 $permissiontoadd = $user->admin; // Used by the include of actions_addupdatedelete.inc.php

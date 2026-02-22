@@ -28,8 +28,8 @@
 require "../main.inc.php";
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/workstation/lib/workstation.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Workstation/lib/workstation.lib.php';
 
 /**
  * @var Conf $conf
@@ -67,7 +67,7 @@ $moduledir = 'workstation';
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconst = request()->input('maskconstWorkstation');

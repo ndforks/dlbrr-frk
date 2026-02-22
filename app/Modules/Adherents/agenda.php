@@ -40,8 +40,8 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'members'));
@@ -146,7 +146,7 @@ $form = new Form($db);
 
 
 if ($object->id > 0) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 
 	$langs->load("companies");
@@ -235,7 +235,7 @@ if ($object->id > 0) {
 		}
 
 		// Try to know count of actioncomm from cache
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_member_'.$object->id;
 		$nbEvent = dol_getcache($cachekey);
 

@@ -1401,7 +1401,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 		}
 		/*
 		 // Add $param from extra fields
-		 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 		 */
 		if ($projectid) {
 			$param .= '&projectid=' . urlencode((string) ($projectid));
@@ -2043,7 +2043,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 		/*
 		 // Extra fields
-		 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 		 */
 		// Fields from hook
 		$parameters = array('arrayfields' => $arrayfields);
@@ -2133,7 +2133,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 		}
 		/*
 		 // Extra fields
-		 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 		 */
 		// Hook fields
 		$parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);
@@ -2557,7 +2557,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 			/*
 			 // Extra fields
-			 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+			 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 			 */
 
 			// Fields from hook
@@ -2774,7 +2774,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 				/*
 				 // Extra fields
-				 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+				 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 				 */
 
 				// Fields from hook
@@ -2949,7 +2949,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 				/*
 				 // Extra fields
-				 include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+				 include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 				 */
 
 				// Fields from hook
@@ -2970,7 +2970,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 		}
 
 		// Show total line
-		//include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 		if (isset($totalarray['totaldurationfield']) || isset($totalarray['totalvaluefield'])) {
 			print '<tr class="liste_total">';
 			$i = 0;

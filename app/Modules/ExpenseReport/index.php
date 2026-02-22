@@ -168,7 +168,7 @@ if (count($dataseries) > ($KEEPNFIRST + 1)) {
 if ($conf->use_javascript_ajax) {
 	print '<tr><td class="center" colspan="4">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 	$dolgraph = new DolGraph();
 	$dolgraph->SetData($dataseries);
 	$dolgraph->setHeight(350);

@@ -239,7 +239,7 @@ if (!empty($object->id)) {
 	// print load_fiche_titre($langs->trans("ActionsOnOrder"), '', '');
 
 	// List of actions on element
-	/*include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+	/*include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 	$formactions=new FormActions($db);
 	$somethingshown = $formactions->showactions($object,'project',0);*/
 

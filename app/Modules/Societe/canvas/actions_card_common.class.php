@@ -337,7 +337,7 @@ abstract class ActionsCardCommon
 			$this->tpl['typent'] = $arr[$this->object->typent_code];
 
 			if (getDolGlobalInt('MAIN_MULTILANGS')) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 				//$s=picto_from_langcode($this->default_lang);
 				//print ($s?$s.' ':'');
 				$langs->load("languages");

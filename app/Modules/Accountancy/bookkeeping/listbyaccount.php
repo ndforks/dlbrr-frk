@@ -30,15 +30,15 @@
 // Load Dolibarr environment
 require '../../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/lettering.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  * @var Conf $conf
@@ -272,7 +272,7 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_doc_date = '';
@@ -495,7 +495,7 @@ if (empty($reshook)) {
 	$uploaddir = $conf->societe->dir_output;
 
 	global $error;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 
 	if (!$error && $action == 'deletebookkeepingwriting' && $confirm == "yes" && $user->hasRight('accounting', 'mouvements', 'supprimer')) {
 		$db->begin();
@@ -967,7 +967,7 @@ if ($massaction == 'preunletteringauto') {
 	print $form->formconfirm($_SERVER["PHP_SELF"], $langs->trans("ConfirmMassReturnAccountBookkeepingWriting"), $langs->trans("ConfirmMassReturnAccountBookkeepingWritingQuestion", count($toselect)), "returnaccountbookkeepingwriting", $formquestion, '', 0, 200, 500, 1);
 }
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 $selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')); // This also change content of $arrayfields
@@ -1689,7 +1689,7 @@ if (!empty($totalarray['val']['totalbalance'])) {
 
 // Show total line
 $trforbreaknobg = 1;	// used in list_print_total.tpl.php
-include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 // If no record found
 if ($num == 0) {

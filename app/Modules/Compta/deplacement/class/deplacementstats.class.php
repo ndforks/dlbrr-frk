@@ -25,7 +25,7 @@ namespace App\Modules\Compta\Deplacement\Classes;
  *       \ingroup    invoices
  *       \brief      File for class managaging the statistics of travel and expense notes
  */
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT.'/compta/deplacement/class/deplacement.class.php';
 
 /**

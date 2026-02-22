@@ -28,7 +28,7 @@ namespace App\Modules\Compta\Paiement\Cheque\Classes;
  *	\ingroup    compta
  *	\brief      File with class to manage cheque delivery receipts
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 
@@ -616,7 +616,7 @@ class RemiseCheque extends CommonObject
 
 		dol_syslog("RemiseCheque::generatePdf model=".$model." id=".$this->id, LOG_DEBUG);
 
-		$dir = DOL_DOCUMENT_ROOT."/core/modules/cheque/doc/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/modules/cheque/doc/";
 
 		// Charge le modele
 		$file = "pdf_".$model.".class.php";

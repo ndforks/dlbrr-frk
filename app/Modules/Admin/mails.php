@@ -36,9 +36,9 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "products", "admin", "mails", "other", "errors"));
@@ -150,7 +150,7 @@ $paramname = 'id';
 $mode = 'emailfortest';
 $trackid = ($action == 'send' ? request()->input('trackid') : $action);
 $sendcontext = 'standard';
-include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
@@ -957,7 +957,7 @@ if ($action == 'edit') {
 	} else {
 		$id = (int) preg_replace('/senderprofile_/', '', getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE'));
 		if ($id > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/emailsenderprofile.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/emailsenderprofile.class.php';
 			$emailsenderprofile = new EmailSenderProfile($db);
 			$emailsenderprofile->fetch($id);
 			print $emailsenderprofile->label.' '.dol_escape_htmltag('<'.$emailsenderprofile->email.'>');
@@ -1164,7 +1164,7 @@ if ($action == 'edit') {
 		print '<div id="formmailaftertstconnect" name="formmailaftertstconnect"></div>';
 		print load_fiche_titre($langs->trans("DoTestServerAvailability"));
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mail = new CMailFile('', '', '', '', array(), array(), array(), '', '', 0, 0, '', '', '', $trackid, $sendcontext);
 		$result = $mail->check_server_port($server, $port);
 		if ($result) {
@@ -1189,7 +1189,7 @@ if ($action == 'edit') {
 		print dol_get_fiche_head(array(), '', '', -1);
 
 		// Create form object
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->trackid = (($action == 'testhtml') ? "testhtml" : "test");
 		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));

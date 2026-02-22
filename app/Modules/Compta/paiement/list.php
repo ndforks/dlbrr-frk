@@ -44,8 +44,8 @@ require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 
 // Load translation files required by the page
@@ -140,7 +140,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 if (!$user->hasRight('societe', 'client', 'voir')) {
 	$search_sale = $user->id;
@@ -178,7 +178,7 @@ if ($reshook < 0) {
 
 
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// All tests are required to be compatible with all browsers
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {
@@ -213,7 +213,7 @@ if (empty($reshook)) {
 	$uploaddir = $conf->invoice->dir_output.'/payments';
 
 	global $error;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 
 	if ($action === 'createbankpayment' && $permissiontopay && $confirm == 'yes') {
 		$db->begin();
@@ -369,7 +369,7 @@ if ($search_all) {
 	$sql .= natural_search(array_keys($fieldstosearchall), $search_all);
 }
 // Add where from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 
 // Add where from hooks
 $parameters = array();
@@ -506,7 +506,7 @@ if ($search_noteprivate) {
 	$param .= '&search_noteprivate='.urlencode($search_noteprivate);
 }
 // Add $param from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 // Add $param from hooks
 $parameters = array('param' => &$param);
 $reshook = $hookmanager->executeHooks('printFieldListSearchParam', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -718,7 +718,7 @@ if (!empty($arrayfields['p.statut']['checked'])) {
 }
 
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 // Fields from hook
 $parameters = array('arrayfields' => $arrayfields);
@@ -804,7 +804,7 @@ if (!empty($arrayfields['p.statut']['checked'])) {
 	$totalarray['nbfield']++;
 }
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 // Hook fields
 $parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);
 $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters); // Note that $action and $object may have been modified by hook
@@ -1040,7 +1040,7 @@ while ($i < $imaxinloop) {
 		}
 
 		// Extra fields
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 
 		// Status
 		if (!empty($arrayfields['p.statut']['checked'])) {
@@ -1081,7 +1081,7 @@ while ($i < $imaxinloop) {
 }
 
 // Show total line
-include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 // If no record found
 if ($num == 0) {

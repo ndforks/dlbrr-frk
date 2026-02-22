@@ -30,7 +30,7 @@ namespace App\Modules\ExpenseReport\Classes;
  *       \ingroup    expensereport
  *       \brief      File to manage Expense Report lines
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport_rule.class.php';
 
 /**

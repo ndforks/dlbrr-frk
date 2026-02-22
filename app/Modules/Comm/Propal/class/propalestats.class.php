@@ -28,10 +28,10 @@ namespace App\Modules\Comm\Propal\Classes;
  *	\brief      File of class to manage proposals statistics
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 include_once DOL_DOCUMENT_ROOT.'/supplier_proposal/class/supplier_proposal.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 
 /**

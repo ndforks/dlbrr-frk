@@ -27,8 +27,8 @@ namespace App\Modules\Product\Stock\Stocktransfer\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
 
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
@@ -592,7 +592,7 @@ class StockTransfer extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -821,7 +821,7 @@ class StockTransfer extends CommonObject
 			}
 		} else {
 			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				list($class, $module) = explode('@', $this->picto);
 				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);

@@ -64,7 +64,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 //restrictedArea($user, 'bom', $id);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 if ($id > 0 || !empty($ref)) {
 	$upload_dir = (!empty($conf->bom->multidir_output[$object->entity ?? $conf->entity]) ? $conf->bom->multidir_output[$object->entity ?? $conf->entity] : $conf->bom->dir_output)."/".$object->id;
 }
@@ -88,7 +88,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 if (empty($reshook)) {
-	include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 }
 
 
@@ -128,7 +128,7 @@ if ($id > 0 || !empty($ref)) {
 
 
 	$cssclass = "titlefield";
-	include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/notes.tpl.php';
 
 	print '</div>';
 

@@ -32,7 +32,7 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
@@ -90,7 +90,7 @@ if (request()->has('catid')) {
 $canvas = request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/canvas.class.php';
 	$objcanvas = new Canvas($db, $action);
 	$objcanvas->getCanvas('product', 'list', $canvas);
 }

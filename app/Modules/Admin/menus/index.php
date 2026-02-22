@@ -34,8 +34,8 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/treeview.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("other", "admin"));

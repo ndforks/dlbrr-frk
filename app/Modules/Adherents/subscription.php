@@ -39,12 +39,12 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
@@ -369,7 +369,7 @@ if (empty($reshook) && $user->hasRight('adherent', 'cotisation', 'creer') && $ac
 					$msg = '';
 
 					// Send subscription email
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 					$formmail = new FormMail($db);
 					// Set output language
 					$outputlangs = new Translate('', $conf);
@@ -464,7 +464,7 @@ if ($optioncss != '') {
 	$param .= '&optioncss='.urlencode($optioncss);
 }
 // Add $param from extra fields
-//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+//include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 
 if (! ($object->id > 0)) {
@@ -594,7 +594,7 @@ print '<tr><td class="titlefieldmiddle">'.$langs->trans("DateOfBirth").'</td><td
 
 // Default language
 if (getDolGlobalInt('MAIN_MULTILANGS')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 	print '<tr><td>'.$langs->trans("DefaultLang").'</td><td>';
 	//$s=picto_from_langcode($object->default_lang);
 	//print ($s?$s.' ':'');
@@ -611,7 +611,7 @@ print '<tr><td>'.$form->textwithpicto($langs->trans("MembershipPublic"), $langs-
 
 // Other attributes
 $cols = 2;
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 // Third party Dolibarr
 if (isModEnabled('societe')) {
@@ -825,14 +825,14 @@ if ($action != 'addsubscription' && $action != 'create_thirdparty') {
 if (($action != 'addsubscription' && $action != 'create_thirdparty')) {
 	// Show online payment link
 	// The list can be complete by the hook 'doValidatePayment' executed inside getValidOnlinePaymentMethods()
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 	$validpaymentmethod = getValidOnlinePaymentMethods('');
 	$useonlinepayment = count($validpaymentmethod);
 
 	if ($useonlinepayment) {
 		print '<br>';
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 		print showOnlinePaymentUrl('membersubscription', $object->ref);
 		print '<br>';
 	}
@@ -1161,7 +1161,7 @@ if (($action == 'addsubscription' || $action == 'create_thirdparty') && $user->h
 		$msg = '';
 
 		// Send subscription email
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		// Set output language
 		$outputlangs = new Translate('', $conf);

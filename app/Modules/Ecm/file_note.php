@@ -29,8 +29,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ecm.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
 
@@ -129,7 +129,7 @@ if (!$permissiontoread) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 
 
 /*
@@ -188,7 +188,7 @@ print '<div class="underbanner clearboth"></div>';
 
 $cssclass = "titlefield";
 $moreparam = '&amp;section='.$section.'&amp;urlfile='.$urlfile;
-include DOL_DOCUMENT_ROOT.'/core/tpl/notes.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/notes.tpl.php';
 
 print '</div>';
 

@@ -27,7 +27,7 @@ namespace App\Modules\Asset\Classes;
  * \brief	This file is a CRUD class file for Asset (Create/Read/Update/Delete)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 /**
  * Class for Asset
@@ -1492,7 +1492,7 @@ class Asset extends CommonObject
 			}
 		} else {
 			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				list($class, $module) = explode('@', $this->picto);
 				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);
@@ -1713,7 +1713,7 @@ class Asset extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

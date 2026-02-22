@@ -26,7 +26,7 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/asset.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/asset.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/asset/class/asset.class.php';
 
 /**
@@ -56,7 +56,7 @@ $hookmanager->initHooks(array('assetdisposal', 'globalcard')); // Note that conf
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 if ($id > 0 || !empty($ref)) {
 	$upload_dir = $conf->asset->multidir_output[$object->entity ?? $conf->entity]."/".$object->id;
 }
@@ -127,7 +127,7 @@ if ($id > 0 || !empty($ref)) {
 	foreach ($object->fields as $field_key => $field_info) {
 		$object->fields[$field_key]['visible'] = in_array($field_key, $show_fields) ? 1 : 0;
 	}
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';

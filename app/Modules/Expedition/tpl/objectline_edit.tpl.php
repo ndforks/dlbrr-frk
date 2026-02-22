@@ -140,7 +140,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	$unit_type = false;
 	// limit unit select to unit type
 	if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 		$cUnit = new CUnits($line->db);
 		if ($cUnit->fetch($line->fk_unit) > 0) {
 			if (!empty($cUnit->unit_type)) {

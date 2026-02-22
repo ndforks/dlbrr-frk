@@ -32,13 +32,13 @@ namespace App\Modules\Compta\Facture\Classes;
  *	\brief      File of class to manage recurring invoices
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commoninvoice.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commoninvoice.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/factureligne.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 
 /**
@@ -995,7 +995,7 @@ class FactureRec extends CommonInvoice
 		$facid = $this->id;
 
 		dol_syslog(get_class($this)."::addline facid=$facid,desc=$desc,pu_ht=$pu_ht,qty=$qty,txtva=$txtva,txlocaltax1=$txlocaltax1,txlocaltax2=$txlocaltax2,fk_product=$fk_product,remise_percent=$remise_percent,info_bits=$info_bits,fk_remise_except=$fk_remise_except,price_base_type=$price_base_type,pu_ttc=$pu_ttc,type=$type,fk_unit=$fk_unit,pu_ht_devise=$pu_ht_devise,date_start_fill=$date_start_fill,date_end_fill=$date_end_fill,pa_ht=$pa_ht", LOG_DEBUG);
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Check parameters
 		if ($type < 0) {
@@ -1201,7 +1201,7 @@ class FactureRec extends CommonInvoice
 		$facid = $this->id;
 
 		dol_syslog(get_class($this)."::updateline facid=".$facid." rowid=$rowid, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, fk_product=$fk_product, remise_percent=$remise_percent, info_bits=$info_bits, fk_remise_except=$fk_remise_except, price_base_type=$price_base_type, pu_ttc=$pu_ttc, type=$type, fk_unit=$fk_unit, pu_ht_devise=$pu_ht_devise", LOG_DEBUG);
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Clean parameters
 		if (empty($remise_percent)) {
@@ -2734,7 +2734,7 @@ class FactureLigneRec extends CommonInvoiceLine
 			$this->fk_parent_line = 0;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."facturedet_rec SET";
 		$sql .= " fk_facture = ".((int) $this->fk_facture);

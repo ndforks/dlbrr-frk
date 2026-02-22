@@ -40,11 +40,11 @@ namespace App\Modules\Fourn\Classes;
  *	\brief      File of class to manage suppliers orders
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonorder.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonorder.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.orderline.class.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 if (isModEnabled('productbatch')) {
 	require_once DOL_DOCUMENT_ROOT.'/product/class/productbatch.class.php';
 }
@@ -796,7 +796,7 @@ class CommandeFournisseur extends CommonOrder
 	public function valid($user, $idwarehouse = 0, $notrigger = 0)
 	{
 		global $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -1294,7 +1294,7 @@ class CommandeFournisseur extends CommonOrder
 	{
 		global $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -2034,10 +2034,10 @@ class CommandeFournisseur extends CommonOrder
 		global $langs, $mysoc;
 
 		dol_syslog(get_class($this)."::addline $desc, $pu_ht, $qty, $txtva, $txlocaltax1, $txlocaltax2, $fk_product, $fk_prod_fourn_price, $ref_supplier, $remise_percent, $price_base_type, $pu_ttc, $type, $info_bits, $notrigger, $date_start, $date_end, $fk_unit, $pu_ht_devise, $origin, $origin_id");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 			if (empty($qty)) {
@@ -2470,7 +2470,7 @@ class CommandeFournisseur extends CommonOrder
 	public function delete(User $user, $notrigger = 0)
 	{
 		global $langs, $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -3115,7 +3115,7 @@ class CommandeFournisseur extends CommonOrder
 	{
 		global $mysoc, $conf, $langs;
 		dol_syslog(get_class($this)."::updateline $rowid, $desc, $pu, $qty, $remise_percent, $txtva, $price_base_type, $info_bits, $type, $fk_unit");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		$error = 0;
 

@@ -28,13 +28,13 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmailing.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/emailing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 
 
 /**
@@ -487,7 +487,7 @@ if ($object->fetch($id) >= 0) {
 	print '</td></tr>';
 
 	// Other attributes. Fields from hook formObjectOptions and Extrafields.
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 	print '</div>';
@@ -895,7 +895,7 @@ if ($object->fetch($id) >= 0) {
 
 		if ($num) {
 			include_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-			include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 			include_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 			include_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 			include_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorboothattendee.class.php';

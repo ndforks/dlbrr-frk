@@ -28,20 +28,20 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsocialcontrib.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsocialcontrib.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/chargesociales.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/sociales/class/paymentsocialcontribution.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/tax.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/tax.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 if (isModEnabled('project')) {
 	include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 }
 
 /**
@@ -335,7 +335,7 @@ if (empty($reshook)) {
 	}
 
 	// Actions to build doc
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 }
 
 
@@ -884,7 +884,7 @@ if ($id > 0) {
 			 $morehtmlcenter = dolGetButtonTitle($langs->trans('SeeAll'), '', 'fa fa-bars imgforviewmode', dol_buildpath('/mymodule/myobject_agenda.php', 1).'?id='.$object->id);
 
 			 // List of actions on element
-			 include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+			 include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 			 $formactions = new FormActions($db);
 			 $somethingshown = $formactions->showactions($object, $object->element.'@'.$object->module, (is_object($object->thirdparty) ? $object->thirdparty->id : 0), 1, '', $MAXEVENT, '', $morehtmlcenter);
 			 */
@@ -903,7 +903,7 @@ if ($id > 0) {
 		$diroutput = $conf->tax->dir_output;
 		$trackid = 'sc'.$object->id;
 
-		include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 	} else {
 		/* Social contribution not found */
 		dol_print_error(null, $object->error);

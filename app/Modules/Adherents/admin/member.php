@@ -44,8 +44,8 @@ require '../../main.inc.php';
  *
  * @var array<string,array{name:string,paper-size:string|array{0:float,1:float},orientation:string,metric:string,marginLeft:float,marginTop:float,NX:int,NY:int,SpaceX:float,SpaceY:float,width:float,height:float,font-size:int,custom_x:float,custom_y:float}> $_Avery_Labels
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
 // Load translation files required by the page
@@ -74,7 +74,7 @@ $error = 0;
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconst = request()->input('maskconst');
@@ -746,7 +746,7 @@ print "</tr>\n";
 // Format of cards page
 print '<tr class="oddeven"><td>'.$langs->trans("DescADHERENT_CARD_TYPE").'</td><td>';
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php'; // List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php'; // List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
 $arrayoflabels = array();
 foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];
@@ -810,7 +810,7 @@ print "</tr>\n";
 // Format of labels page
 print '<tr class="oddeven"><td>'.$langs->trans("DescADHERENT_ETIQUETTE_TYPE").'</td><td>';
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php'; // List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php'; // List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
 $arrayoflabels = array();
 foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];

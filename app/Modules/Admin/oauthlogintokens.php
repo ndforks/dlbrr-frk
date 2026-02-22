@@ -26,9 +26,9 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/oauth.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 use OAuth\Common\Storage\DoliStorage;
 use OAuth\Common\Consumer\Credentials;
@@ -538,7 +538,7 @@ if ($mode == 'test' && $user->admin) {
 	print '<div class="div-table-responsive-no-min">';
 	print '<table class="noborder centpercent">';
 	if (!empty($driver)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/modules/printing/'.$driver.'.modules.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/modules/printing/'.$driver.'.modules.php';
 		$classname = 'printing_'.$driver;
 		$langs->load($driver);
 		$printer = new $classname($db);

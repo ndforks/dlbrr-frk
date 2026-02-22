@@ -39,14 +39,14 @@ namespace App\Modules\Fourn\Classes;
  *  \brief      File of class to manage suppliers invoices
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commoninvoice.class.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commoninvoice.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.ligne.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 if (isModEnabled('accounting')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
 }
 
@@ -1369,8 +1369,8 @@ class FactureFournisseur extends CommonInvoice
 		// phpcs:enable
 		global $conf, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$this->db->begin();
 
@@ -1411,7 +1411,7 @@ class FactureFournisseur extends CommonInvoice
 				$srcinvoice = new FactureFournisseur($this->db);
 				$srcinvoice->fetch($remise->fk_invoice_supplier_source);
 				$totalcostpriceofinvoice = 0;
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmargin.class.php'; // TODO Move this into commonobject
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmargin.class.php'; // TODO Move this into commonobject
 				$formmargin = new FormMargin($this->db);
 				$arraytmp = $formmargin->getMarginInfosArray($srcinvoice, false);
 				$facligne->pa_ht = $arraytmp['pa_total'];
@@ -1547,7 +1547,7 @@ class FactureFournisseur extends CommonInvoice
 
 			// We remove directory
 			if ($conf->fournisseur->facture->dir_output) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				$ref = dol_sanitizeFileName($this->ref);
 				$dir = $conf->fournisseur->facture->dir_output.'/'.get_exdir($this->id, 2, 0, 0, $this, 'invoice_supplier').$ref;
@@ -1813,7 +1813,7 @@ class FactureFournisseur extends CommonInvoice
 	{
 		global $mysoc, $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$now = dol_now();
 
@@ -2127,7 +2127,7 @@ class FactureFournisseur extends CommonInvoice
 		global $langs, $mysoc;
 
 		dol_syslog(get_class($this)."::addline $desc,$pu,$qty,$txtva,$fk_product,$remise_percent,$date_start,$date_end,$fk_code_ventilation,$info_bits,$price_base_type,$type,$fk_unit,fk_remise_except=$fk_remise_except", LOG_DEBUG);
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		if ($this->status == self::STATUS_DRAFT) {
 			// Clean parameters
@@ -2395,7 +2395,7 @@ class FactureFournisseur extends CommonInvoice
 		global $mysoc, $langs;
 
 		dol_syslog(get_class($this)."::updateline $id,$desc,$pu,$vatrate,$qty,$idproduct,$price_base_type,$info_bits,$type,$remise_percent,$notrigger,$date_start,$date_end,$fk_unit,$pu_devise,$ref_supplier", LOG_DEBUG);
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		$pu = price2num($pu);
 		$qty = price2num($qty);
@@ -3519,9 +3519,9 @@ class FactureFournisseur extends CommonInvoice
 			return 0;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$formmail = new FormMail($this->db);
 
 		$now = dol_now();

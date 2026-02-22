@@ -26,7 +26,7 @@ namespace App\Modules\Compta\Bank\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -885,7 +885,7 @@ class PaymentVarious extends CommonObject
 	 */
 	public function lengthAccountg($account)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		/*
 		if (isModEnabled('accounting')) {
@@ -904,7 +904,7 @@ class PaymentVarious extends CommonObject
 	 */
 	public function lengthAccounta($account)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		return length_accounta($account);
 	}
