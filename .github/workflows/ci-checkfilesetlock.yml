@@ -2,7 +2,8 @@
 # This is a basic workflow to check the lock on major version (to lock some files on certified versions)
 name: Check fileset lock
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
 
 concurrency:
   group: check-${{ github.workflow }}-${{ github.ref }}
