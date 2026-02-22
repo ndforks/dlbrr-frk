@@ -75,8 +75,8 @@ class ShowVariants extends Controller
         
         if ($request->method() === 'POST' && GETPOST('add')) {
             $object = new \ProductAttribute($db);
-            $object->ref = GETPOST('ref', 'alpha');
-            $object->label = GETPOST('label', 'alpha');
+            $object->ref = GETPOST('ref', 'alphanohtml');
+            $object->label = GETPOST('label', 'alphanohtml');
             
             $result = $object->create($user);
             if ($result > 0) {
