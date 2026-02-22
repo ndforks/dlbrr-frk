@@ -547,8 +547,8 @@ if (empty($reshook)) {
 			$ret = $object->fetch_thirdparty();
 
 			// Clean parameters
-			$date_start = dol_mktime(GETPOSTINT('date_start' . $predef . 'hour'), GETPOSTINT('date_start' . $predef . 'min'), GETPOSTINT('date_start' . $predef . 'sec'), GETPOSTINT('date_start' . $predef . 'month'), GETPOSTINT('date_start' . $predef . 'day'), GETPOSTINT('date_start' . $predef . 'year'));
-			$date_end = dol_mktime(GETPOSTINT('date_end' . $predef . 'hour'), GETPOSTINT('date_end' . $predef . 'min'), GETPOSTINT('date_end' . $predef . 'sec'), GETPOSTINT('date_end' . $predef . 'month'), GETPOSTINT('date_end' . $predef . 'day'), GETPOSTINT('date_end' . $predef . 'year'));
+			$date_start = dol_mktime(request()->integer('date_start' . $predef . 'hour', 0), request()->integer('date_start' . $predef . 'min', 0), request()->integer('date_start' . $predef . 'sec', 0), request()->integer('date_start' . $predef . 'month', 0), request()->integer('date_start' . $predef . 'day', 0), request()->integer('date_start' . $predef . 'year', 0));
+			$date_end = dol_mktime(request()->integer('date_end' . $predef . 'hour', 0), request()->integer('date_end' . $predef . 'min', 0), request()->integer('date_end' . $predef . 'sec', 0), request()->integer('date_end' . $predef . 'month', 0), request()->integer('date_end' . $predef . 'day', 0), request()->integer('date_end' . $predef . 'year', 0));
 			$price_base_type = (request()->input('price_base_type') ? request()->input('price_base_type') : 'HT');
 
 			// Define special_code for special lines

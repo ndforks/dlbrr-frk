@@ -309,7 +309,7 @@ if (request()->has('ajoutercolonne') && $object->format == "D") {
 
 // Delete line
 for ($i = 0; $i < $nblines; $i++) {
-	if (request()->input("effaceligne" . $i) || GETPOST("effaceligne".$i."_x") || GETPOST("effaceligne".$i.".x")) {	// effacelignei for chrome, effacelignei_x for firefox
+	if (request()->input("effaceligne" . $i) || request()->input("effaceligne" . $i . "_x") || request()->input("effaceligne" . $i . ".x")) {	// effacelignei for chrome, effacelignei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
 			abort(403);
@@ -343,7 +343,7 @@ for ($i = 0; $i < $nblines; $i++) {
 
 // Delete column
 for ($i = 0; $i < $nbcolonnes; $i++) {
-	if ((request()->input("effacecolonne" . $i) || GETPOST("effacecolonne".$i."_x") || GETPOST("effacecolonne".$i.".x"))
+	if ((request()->input("effacecolonne" . $i) || request()->input("effacecolonne" . $i . "_x") || request()->input("effacecolonne" . $i . ".x"))
 		&& $nbcolonnes > 1) {	// effacecolonnei for chrome, effacecolonnei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {

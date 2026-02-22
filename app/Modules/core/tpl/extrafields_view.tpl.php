@@ -286,7 +286,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 					$datenotinstring = $db->jdate($datenotinstring);
 				}
 				//print 'x'.$object->array_options['options_' . $tmpkeyextra].'-'.$datenotinstring.' - '.dol_print_date($datenotinstring, 'dayhour');
-				$value = request()->has("options_" . $tmpkeyextra) ? dol_mktime(12, 0, 0, GETPOSTINT("options_".$tmpkeyextra."month"), GETPOSTINT("options_".$tmpkeyextra."day"), GETPOSTINT("options_".$tmpkeyextra."year")) : $datenotinstring;
+				$value = request()->has("options_" . $tmpkeyextra) ? dol_mktime(12, 0, 0, request()->integer("options_" . $tmpkeyextra . "month", 0), request()->integer("options_" . $tmpkeyextra . "day", 0), request()->integer("options_" . $tmpkeyextra . "year", 0)) : $datenotinstring;
 			}
 			if (in_array($extrafields->attributes[$object->table_element]['type'][$tmpkeyextra], array('datetime'))) {
 				$datenotinstring = empty($object->array_options['options_'.$tmpkeyextra]) ? '' : $object->array_options['options_'.$tmpkeyextra];
@@ -295,7 +295,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 					$datenotinstring = $db->jdate($datenotinstring);
 				}
 				//print 'x'.$object->array_options['options_' . $tmpkeyextra].'-'.$datenotinstring.' - '.dol_print_date($datenotinstring, 'dayhour');
-				$value = request()->has("options_" . $tmpkeyextra) ? dol_mktime(GETPOSTINT("options_".$tmpkeyextra."hour"), GETPOSTINT("options_".$tmpkeyextra."min"), GETPOSTINT("options_".$tmpkeyextra."sec"), GETPOSTINT("options_".$tmpkeyextra."month"), GETPOSTINT("options_".$tmpkeyextra."day"), GETPOSTINT("options_".$tmpkeyextra."year"), 'tzuserrel') : $datenotinstring;
+				$value = request()->has("options_" . $tmpkeyextra) ? dol_mktime(request()->integer("options_" . $tmpkeyextra . "hour", 0), request()->integer("options_" . $tmpkeyextra . "min", 0), request()->integer("options_" . $tmpkeyextra . "sec", 0), request()->integer("options_" . $tmpkeyextra . "month", 0), request()->integer("options_" . $tmpkeyextra . "day", 0), request()->integer("options_" . $tmpkeyextra . "year", 0), 'tzuserrel') : $datenotinstring;
 			}
 
 			// TODO Improve element and rights detection

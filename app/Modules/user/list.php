@@ -102,8 +102,8 @@ foreach ($object->fields as $key => $val) {
 		$search[$key] = request()->input('search_' . $key);
 	}
 	if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
-		$search[$key.'_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtstartmonth'), GETPOSTINT('search_'.$key.'_dtstartday'), GETPOSTINT('search_'.$key.'_dtstartyear'));
-		$search[$key.'_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_'.$key.'_dtendmonth'), GETPOSTINT('search_'.$key.'_dtendday'), GETPOSTINT('search_'.$key.'_dtendyear'));
+		$search[$key.'_dtstart'] = dol_mktime(0, 0, 0, request()->integer('search_' . $key . '_dtstartmonth', 0), request()->integer('search_' . $key . '_dtstartday', 0), request()->integer('search_' . $key . '_dtstartyear', 0));
+		$search[$key.'_dtend'] = dol_mktime(23, 59, 59, request()->integer('search_' . $key . '_dtendmonth', 0), request()->integer('search_' . $key . '_dtendday', 0), request()->integer('search_' . $key . '_dtendyear', 0));
 	}
 }
 

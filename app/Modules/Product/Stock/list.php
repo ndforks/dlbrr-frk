@@ -447,9 +447,9 @@ foreach ($search as $key => $val) {
 			}
 		}
 	} elseif (preg_match('/(_dtstart|_dtend)$/', $key) && !empty($val)) {
-		$param .= '&search_'.$key.'month='.(GETPOSTINT('search_'.$key.'month'));
-		$param .= '&search_'.$key.'day='.(GETPOSTINT('search_'.$key.'day'));
-		$param .= '&search_'.$key.'year='.(GETPOSTINT('search_'.$key.'year'));
+		$param .= '&search_'.$key.'month='.(request()->integer('search_' . $key . 'month', 0));
+		$param .= '&search_'.$key.'day='.(request()->integer('search_' . $key . 'day', 0));
+		$param .= '&search_'.$key.'year='.(request()->integer('search_' . $key . 'year', 0));
 	} elseif ($search[$key] != '') {
 		$param .= '&search_'.$key.'='.urlencode($search[$key]);
 	}
