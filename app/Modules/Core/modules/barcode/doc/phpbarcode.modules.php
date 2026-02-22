@@ -26,8 +26,8 @@ namespace App\Modules\Core\Modules\Barcode\Doc;
  *	\brief      File with class to generate barcode images using php internal lib barcode generator
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/barcode/modules_barcode.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/barcode.lib.php'; // This is to include def like $genbarcode_loc and $font_loc
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/barcode/modules_barcode.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/barcode.lib.php'; // This is to include def like $genbarcode_loc and $font_loc
 
 
 /**

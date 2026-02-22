@@ -168,7 +168,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_printing.inc.php';
 
 	// Action to move up and down lines of object
-	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php';
 
 	// Action to build doc
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';
@@ -375,7 +375,7 @@ function displayPositionCard(&$object)
 //	$morehtmlright = dolGetButtonTitle($langs->trans('SeeAll'), '', 'fa fa-bars imgforviewmode', DOL_URL_ROOT.'/societe/agenda.php?socid='.$object->id);
 //
 //	// List of actions on element
-//	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+//	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 //	$formactions = new FormActions($db);
 //	$somethingshown = $formactions->showactions($object, '', $object->id, 1, '', $MAXEVENT, '', $morehtmlright); // Show all action for thirdparty
 //

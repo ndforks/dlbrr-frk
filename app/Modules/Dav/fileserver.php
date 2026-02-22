@@ -47,10 +47,10 @@ if (!defined('NOCSRFCHECK')) {
 }
 
 require "../main.inc.php";
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/dav/dav.class.php';
-require_once DOL_DOCUMENT_ROOT.'/dav/dav.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Dav/dav.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Dav/dav.lib.php';
 
 require_once DOL_DOCUMENT_ROOT.'/includes/sabre/autoload.php';
 //require_once DOL_DOCUMENT_ROOT.'/includes/autoload.php';

@@ -1305,7 +1305,7 @@ if ($action == 'create') {
 		print '</tr>';
 
 		// Extrafields
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		// Model pdf
 		print '<tr><td class="nowrap">';
@@ -1350,7 +1350,7 @@ if ($action == 'create') {
 
 		print '<table class="border centpercent tableforfield">';
 
-		include DOL_DOCUMENT_ROOT.'/core/tpl/object_currency_amount.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/object_currency_amount.tpl.php';
 
 		// Amount (excl. tax)
 		print '<tr><td>' . $langs->trans('AmountHT') . '</td>';

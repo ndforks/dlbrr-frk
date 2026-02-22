@@ -24,7 +24,7 @@ namespace App\Modules\Blockedlog\Classes;
  * \brief   Hooks for module blockedlog
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonhookactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonhookactions.class.php';
 
 /**
  * Class ActionsBlockedlog

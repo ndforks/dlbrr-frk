@@ -75,7 +75,7 @@ class GoogleAPI
 		$urladdress = "https://maps.google.com/maps/geo?q=".urlencode($address)."&output=xml&key=".urlencode($this->key);
 
 		// Retrieve the URL contents
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		$pagearray = getURLContent($urladdress, 'GET');
 		$page = $pagearray['content'];
 

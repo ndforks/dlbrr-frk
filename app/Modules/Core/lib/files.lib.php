@@ -1393,7 +1393,7 @@ function dolCheckVirus($src_file, $dest_file = '')
 
 	if (getDolGlobalString('MAIN_ANTIVIRUS_UPLOAD_ON')) {
 		if (!class_exists('AntiVir')) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/antivir.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/antivir.class.php';
 		}
 		$antivir = new AntiVir($db);
 		$result = $antivir->dol_avscan_file($src_file);
@@ -2109,7 +2109,7 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $updatesessionor
 				$resupload = dol_move_uploaded_file($TFile['tmp_name'][$i], $destfull, $allowoverwrite, 0, $TFile['error'][$i], 0, $keyforsourcefile, $upload_dir, $mode);
 
 				if (is_numeric($resupload) && $resupload > 0) {   // $resupload can be 'ErrorFileAlreadyExists', 'ErrorFileIsInfectedWithAVirus...'
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 					$tmparraysize = getDefaultImageSizes();
 					$maxwidthsmall = $tmparraysize['maxwidthsmall'];
@@ -2135,7 +2135,7 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $updatesessionor
 
 					// Update session
 					if (empty($updatesessionordb)) {
-						include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 						$formmail = new FormMail($db);
 						$formmail->trackid = $trackid;
 						$formmail->add_attached_files($destfull, $destfile, $TFile['type'][$i]);
@@ -2187,7 +2187,7 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $updatesessionor
 			setEventMessages($langs->trans("ErrorFailedToCreateDir", $upload_dir), null, 'errors');
 		}
 	} elseif ($link) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$linkObject = new Link($db);
 		$linkObject->entity = $conf->entity;
 		$linkObject->url = $link;
@@ -2256,7 +2256,7 @@ function dol_remove_file_process($filenb, $donotupdatesession = 0, $donotdeletef
 				setEventMessages($langs->trans("FileWasRemoved", $filetodelete), null, 'mesgs');
 			}
 			if (empty($donotupdatesession)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 				$formmail = new FormMail($db);
 				$formmail->trackid = $trackid;
 				$formmail->remove_attached_files($keytodelete);
@@ -2330,7 +2330,7 @@ function addFileIntoDatabaseIndex($dir, $file, $fullpathorig = '', $mode = 'uplo
 		}
 
 		if ($setsharekey) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$ecmfile->share = getRandomPassword(true);
 		}
 
@@ -2728,7 +2728,7 @@ function dol_uncompress($inputfile, $outputdir)
 
 		return array('error' => 'ErrNoZipEngine');
 	} elseif (in_array($fileinfo["extension"], array('gz', 'bz2', 'zst'))) {
-		include_once DOL_DOCUMENT_ROOT."/core/class/utils.class.php";
+		include_once DOL_DOCUMENT_ROOT."/Core/class/utils.class.php";
 		$utils = new Utils($db);
 
 		dol_mkdir(dol_sanitizePathName($outputdir));
@@ -2988,7 +2988,7 @@ function dol_check_secure_access_document($modulepart, $original_file, $entity, 
 	if ($modulepart == 'common') {
 		// Wrapping for some images
 		$accessallowed = 1;
-		$original_file = DOL_DOCUMENT_ROOT.'/public/theme/common/'.$original_file;
+		$original_file = DOL_DOCUMENT_ROOT.'/Public/theme/common/'.$original_file;
 	} elseif ($modulepart == 'medias' && !empty($dolibarr_main_data_root)) {
 		/* the medias directory is by default a public directory accessible online for everybody, so test on permission per entity has no sense
 		if (isModEnabled('multicompany') && (empty($entity) || empty($conf->medias->multidir_output[$entity]))) {
@@ -4090,7 +4090,7 @@ function dolDocToText($filetoprocess, $useFullTextIndexation = 'pdftotext', $opt
 	// TODO Develop a native PHP parser using sample code in https://github.com/adeel/php-pdf-parser or https://github.com/smalot/pdfparser
 	// Use the method pdftotext to generate a HTML
 	if (preg_match('/pdftotext/i', $useFullTextIndexation)) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 		$utils = new Utils($db);
 		$outputfile = $conf->admin->dir_temp.'/tmppdftotext.'.$user->id.'.out'; // File used with popen method
 
@@ -4127,7 +4127,7 @@ function dolDocToText($filetoprocess, $useFullTextIndexation = 'pdftotext', $opt
 
 	// Use the method docling to generate a .md (https://ds4sd.github.io/docling/)
 	if (preg_match('/docling/i', $useFullTextIndexation)) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 		$utils = new Utils($db);
 		$outputfile = $conf->admin->dir_temp.'/tmpdocling.'.$user->id.'.out'; // File used with popen method
 

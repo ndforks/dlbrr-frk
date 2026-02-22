@@ -26,7 +26,7 @@ namespace App\Modules\ExpenseReport\Classes;
  *	\brief      File of class to manage expense ik
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 /**
  *	Class to manage inventories
@@ -250,7 +250,7 @@ class ExpenseReportRule extends CommonObject
 	 */
 	public function getGroupLabel()
 	{
-		include_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
 
 		if ($this->fk_usergroup > 0) {
 			$group = new UserGroup($this->db);
@@ -272,7 +272,7 @@ class ExpenseReportRule extends CommonObject
 	 */
 	public function getUserName()
 	{
-		include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 		if ($this->fk_user > 0) {
 			$u = new User($this->db);

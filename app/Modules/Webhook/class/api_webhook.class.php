@@ -50,7 +50,7 @@ class Webhook extends DolibarrApi
 		global $db;
 		$this->db = $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/webhook/class/target.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Webhook/class/target.class.php';
 
 		$this->target = new Target($this->db);
 	}

@@ -344,7 +344,7 @@ function FileUpload($resourceType, $currentFolder, $sCommand, $CKEcallback = '')
 			$sErrorNumber = '204';
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 		//var_dump($sFileName); var_dump(image_format_supported($sFileName));exit;
 		$imgsupported = image_format_supported($sFileName);
 		$isImageValid = ($imgsupported >= 0);
@@ -366,7 +366,7 @@ function FileUpload($resourceType, $currentFolder, $sCommand, $CKEcallback = '')
 						$sFileName = RemoveExtension($sOriginalFileName).'('.$iCounter.').'.$sExtension;
 						$sErrorNumber = '201';
 					} else {
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 						dol_move_uploaded_file($oFile['tmp_name'], $sFilePath, 0, 0);
 
 						if (is_file($sFilePath)) {

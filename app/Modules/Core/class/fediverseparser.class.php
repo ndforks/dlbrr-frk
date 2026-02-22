@@ -24,9 +24,9 @@ namespace App\Modules\Core\Classes;
  *      \brief      Class to parse Fediverse (Mastodon, etc.) posts
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/socialnetworkmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/socialnetworkmanager.class.php';
 /**
  * 	Class to parse Fediverse files
  */

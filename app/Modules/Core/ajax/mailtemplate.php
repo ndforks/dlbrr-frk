@@ -49,10 +49,10 @@ require_once '../../main.inc.php';
  * @var string $dolibarr_main_url_root
  */
 require_once '../lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 
 $langs->load("mails");
 
@@ -71,7 +71,7 @@ top_httphead();
 
 // TODO Replace with ID of template
 if (request()->has('template')) {
-	$templatefile = DOL_DOCUMENT_ROOT.'/install/doctemplates/maillayout/'.dol_sanitizeFileName(request()->input('template')).'.html';
+	$templatefile = DOL_DOCUMENT_ROOT.'/Install/doctemplates/maillayout/'.dol_sanitizeFileName(request()->input('template')).'.html';
 
 	$content = file_get_contents($templatefile);
 

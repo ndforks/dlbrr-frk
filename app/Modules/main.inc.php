@@ -160,7 +160,7 @@ require_once 'master.inc.php';
 ';
 
 // Uncomment this and set session.save_handler = user to use local session storing
-// include DOL_DOCUMENT_ROOT.'/core/lib/phpsessionindb.inc.php
+// include DOL_DOCUMENT_ROOT.'/Core/lib/phpsessionindb.inc.php
 
 // If software has been locked. Only login getDolGlobalString('MAIN_ONLY_LOGIN_ALLOWED') is allowed.
 if (getDolGlobalString('MAIN_ONLY_LOGIN_ALLOWED')) {
@@ -198,7 +198,7 @@ register_shutdown_function('dol_shutdown');
 // Load debugbar
 if (isModEnabled('debugbar') && !request()->input('dol_use_jmobile') && empty($_SESSION['dol_use_jmobile'])) {
 	global $debugbar;
-	include_once DOL_DOCUMENT_ROOT.'/debugbar/class/DebugBar.php';
+	include_once DOL_DOCUMENT_ROOT.'/Debugbar/class/DebugBar.php';
 	$debugbar = new DolibarrDebugBar();
 	$renderer = $debugbar->getJavascriptRenderer();
 	if (!getDolGlobalString('MAIN_HTML_HEADER')) {
@@ -289,10 +289,10 @@ if (!defined('NOLOGIN') && !defined('NOIPCHECK') && !empty($dolibarr_main_restri
 
 // Loading of additional presentation includes
 if (!defined('NOREQUIREHTML')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php'; // Need 660ko memory (800ko in 2.2)
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php'; // Need 660ko memory (800ko in 2.2)
 }
 if (!defined('NOREQUIREAJAX')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php'; // Need 22ko memory
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php'; // Need 22ko memory
 }
 
 // If install or upgrade process not done or not completely finished, we call the install page.
@@ -311,7 +311,7 @@ if (!getDolGlobalString('MAIN_VERSION_LAST_UPGRADE') && getDolGlobalString('MAIN
 }
 if ($checkifupgraderequired) {
 	$versiontocompare = getDolGlobalString('MAIN_VERSION_LAST_UPGRADE', getDolGlobalString('MAIN_VERSION_LAST_INSTALL'));
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 	$dolibarrversionlastupgrade = preg_split('/[.-]/', $versiontocompare);
 	$dolibarrversionprogram = preg_split('/[.-]/', DOL_VERSION);
 	$rescomp = versioncompare($dolibarrversionprogram, $dolibarrversionlastupgrade);
@@ -530,7 +530,7 @@ if (!defined('NOLOGIN')) {
 
 	if (!isset($_SESSION["dol_login"])) {
 		// It is not already authenticated and it requests the login / password
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 		$dol_dst_observed = request()->integer("dst_observed", 0);
 		$dol_dst_first = request()->integer("dst_first", 0);
@@ -583,7 +583,7 @@ if (!defined('NOLOGIN')) {
 			$ok = false;
 
 			// Use the captcha handler to validate
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 
 			// List of directories where we can find captcha handlers
@@ -689,7 +689,7 @@ if (!defined('NOLOGIN')) {
 		}
 
 		if (!is_object($langs)) { // This can occurs when calling page with NOREQUIRETRAN defined, however we need langs for error messages.
-			include_once DOL_DOCUMENT_ROOT.'/core/class/translate.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/translate.class.php';
 			$langs = new Translate("", $conf);
 			$langcode = (request()->input('lang') ? request()->input('lang') : getDolGlobalString('MAIN_LANG_DEFAULT', 'auto'));
 			if (defined('MAIN_LANG_DEFAULT')) {
@@ -746,7 +746,7 @@ if (!defined('NOLOGIN')) {
 				$dol_dst_first = empty($_POST["dst_first"]) ? (empty($_SESSION["dst_first"]) ? '' : $_SESSION["dst_first"]) : $_POST["dst_first"];
 				$dol_dst_second = empty($_POST["dst_second"]) ? (empty($_SESSION["dst_second"]) ? '' : $_SESSION["dst_second"]) : $_POST["dst_second"];
 				if ($dol_dst_first && $dol_dst_second) {
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 					$datenow = dol_now();
 					$datefirst = dol_stringtotime($dol_dst_first);
 					$datesecond = dol_stringtotime($dol_dst_second);
@@ -1382,7 +1382,7 @@ if (!defined('NOREQUIREMENU')) {
 		if (!class_exists('MenuManager')) {	// If failed to include, we try with standard eldy_menu.php
 			dol_syslog("You define a menu manager '".$file_menu."' that can not be loaded.", LOG_WARNING);
 			$file_menu = 'eldy_menu.php';
-			include_once DOL_DOCUMENT_ROOT."/core/menus/standard/".$file_menu;
+			include_once DOL_DOCUMENT_ROOT."/Core/menus/standard/".$file_menu;
 		}
 	}
 	// @phan-suppress-next-line PhanRedefinedClassReference
@@ -1550,7 +1550,7 @@ function top_httphead($contenttype = 'text/html', $forcenocache = 0)
 		$contentsecuritypolicy = getDolGlobalString('MAIN_SECURITY_FORCECSPRO');
 
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($db);
 		}
 		$hookmanager->initHooks(array("main"));
@@ -1590,7 +1590,7 @@ function top_httphead($contenttype = 'text/html', $forcenocache = 0)
 		$contentsecuritypolicy = getDolGlobalString('MAIN_SECURITY_FORCECSP');
 
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($db);
 		}
 		$hookmanager->initHooks(array("main"));
@@ -1687,7 +1687,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 	//print '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">'."\n";
 	if (empty($disablehead)) {
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($db);
 		}
 		$hookmanager->initHooks(array("main"));
@@ -1781,7 +1781,7 @@ function top_htmlhead($head, $title = '', $disablejs = 0, $disablehead = 0, $arr
 		}
 		// Refresh value of MAIN_IHM_PARAMS_REV before forging the parameter line.
 		if (request()->input('dol_resetcache')) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 			dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 		}
 
@@ -2134,7 +2134,7 @@ function top_menu($head, $title = '', $target = '', $disablejs = 0, $disablehead
 	 */
 	if ((empty($conf->dol_hide_topmenu) || request()->integer('dol_invisible_topmenu', 0)) && (!defined('NOREQUIREMENU') || !constant('NOREQUIREMENU'))) {
 		if (!isset($form) || !is_object($form)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 			$form = new Form($db);
 		}
 
@@ -3027,7 +3027,7 @@ function top_menu_search()
 
 	$usedbyinclude = 1;
 	$arrayresult = array();
-	include DOL_DOCUMENT_ROOT.'/core/ajax/selectsearchbox.php'; // This sets $arrayresult
+	include DOL_DOCUMENT_ROOT.'/Core/ajax/selectsearchbox.php'; // This sets $arrayresult
 
 	$searchInput = '<input type="search" name="search_all" title="'.dol_escape_htmltag($conf->browser->stringforfirstkey.' s').'" id="top-global-search-input" class="dropdown-search-input search_component_input" placeholder="'.$langs->trans('Search').'" autocomplete="off">';
 
@@ -3207,7 +3207,7 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
 
 			$usedbyinclude = 1;
 			$arrayresult = array();
-			include DOL_DOCUMENT_ROOT.'/core/ajax/selectsearchbox.php'; // This make initHooks('searchform') then set $arrayresult
+			include DOL_DOCUMENT_ROOT.'/Core/ajax/selectsearchbox.php'; // This make initHooks('searchform') then set $arrayresult
 
 			if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_USE_OLD_SEARCH_FORM')) {
 				//$textsearch = $langs->trans("Search");
@@ -3340,7 +3340,7 @@ function left_menu($menu_array_before, $helppagename = '', $notused = '', $menu_
 
 			// Link to bugtrack
 			if (getDolGlobalString('MAIN_BUGTRACK_ENABLELINK')) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 				if (getDolGlobalString('MAIN_BUGTRACK_ENABLELINK') == 'github') {
 					$bugbaseurl = 'https://github.com/Dolibarr/dolibarr/issues/new?labels=Bug';
@@ -3765,7 +3765,7 @@ if (!function_exists("llxFooter")) {
 		$forceping = request()->integer('forceping', 0);
 
 		if (($_SERVER["PHP_SELF"] == DOL_URL_ROOT.'/index.php') || $forceping) {
-			require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 			$hash_unique_id_ping = getHashUniqueIdOfRegistration('sha256');
 			$constanttosavelastko = 'MAIN_LAST_PING_KO_DATE';
@@ -3780,7 +3780,7 @@ if (!function_exists("llxFooter")) {
 					print "\n<!-- NO JS CODE TO ENABLE the anonymous Ping. It is an alpha version -->\n";
 				} elseif (empty($_COOKIE['DOLINSTALLNOPING_'.$hash_unique_id_ping]) || $forceping) {	// Cookie is set when we uncheck the checkbox in the installation wizard.
 					// Output code for ping
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 					$arrayofmoredata = array(
 						'action' => 'dolibarrping',
@@ -3792,7 +3792,7 @@ if (!function_exists("llxFooter")) {
 				} else {
 					$now = dol_now();
 					print "\n<!-- NO JS CODE TO ENABLE the anonymous Ping. It was disabled -->\n";
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 					dolibarr_set_const($db, $constanttosavefirstok, dol_print_date($now, 'dayhourlog', 'gmt'), 'chaine', 0, '', $conf->entity);
 					dolibarr_set_const($db, $constanttosavefirstokid, 'disabled', 'chaine', 0, '', $conf->entity);
 				}
@@ -3806,7 +3806,7 @@ if (!function_exists("llxFooter")) {
 		$forceregistration = request()->integer('forceregistration', 0);
 
 		if (isModEnabled('blockedlog') && (($_SERVER["PHP_SELF"] == DOL_URL_ROOT.'/index.php') || $forceregistration)) {
-			require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 			if (!isALNEQualifiedVersion()) {
 				print "\n<!-- NO JS CODE TO ENABLE the registration. Not a LNE qualified version -->\n";
@@ -3826,7 +3826,7 @@ if (!function_exists("llxFooter")) {
 						print "\n<!-- NO JS CODE TO ENABLE the registration. It is an alpha or beta version -->\n";
 					} elseif (empty($_COOKIE['DOLINSTALLNOPING_'.$hash_unique_id_registration]) || $forceregistration) {	// Cookie is set when we uncheck the checkbox in the installation wizard.
 						// Output code for ping
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 						$arrayofdata = array(
 							'action' => 'dolibarrregistration',
@@ -3855,7 +3855,7 @@ if (!function_exists("llxFooter")) {
 					} else {
 						$now = dol_now();
 						print "\n<!-- NO JS CODE TO ENABLE the registration. It was disabled -->\n";
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 						dolibarr_set_const($db, $constanttosavefirstok, dol_print_date($now, 'dayhourlog', 'gmt'), 'chaine', 0, '', $conf->entity);
 						dolibarr_set_const($db, $constanttosavefirstokid, 'disabled', 'chaine', 0, '', $conf->entity);
 					}
@@ -3870,14 +3870,14 @@ if (!function_exists("llxFooter")) {
 		$forcepushcounter = request()->integer('forcepushcounter', 0);
 
 		if (isModEnabled('blockedlog') && ($_SERVER["PHP_SELF"] == DOL_URL_ROOT.'/index.php') && $forcepushcounter) {
-			include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 			if (!isALNEQualifiedVersion()) {
 				print "\n<!-- NO CALL TO API TO PUSH COUNTER. Not a LNE qualified version -->\n";
 			} elseif (!isRegistrationDataSaved()) {
 				print "\n<!-- NO CALL TO API TO PUSH COUNTER. Registration data not saved -->\n";
 			} else {
 				// Get last ID and hash into $tmpresult
-				include_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 				$tmpblockedlog = new BlockedLog($db);
 				$tmpresult = $tmpblockedlog->getPreviousHash(0, 0);
 

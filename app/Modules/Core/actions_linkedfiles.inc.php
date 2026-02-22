@@ -65,7 +65,7 @@ $error = 0;
 // Submit file/link
 if (request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empty($permissiontoadd)) {
 	if (!empty($_FILES) && is_array($_FILES['userfile'])) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		if (is_array($_FILES['userfile']['tmp_name'])) {	// When form has a input type="file" field with name="userfile[]"
 			$userfiles = $_FILES['userfile']['tmp_name'];
@@ -187,7 +187,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 			setEventMessages($langs->trans("ErrorFailToDeleteFile", $urlfile), null, 'errors');
 		}
 	} elseif ($linkid) {	// delete of external link
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$link = new Link($db);
 		$link->fetch($linkid);
 		$res = $link->delete($user);
@@ -215,7 +215,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 		}
 	}
 } elseif ($action == 'confirm_updateline' && request()->input('save') && request()->input('link') && !empty($permissiontoadd)) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 
 	$link = new Link($db);
 	$f = $link->fetch(request()->integer('linkid', 0));
@@ -228,7 +228,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 
 		$shareenabled = request()->input('shareenabled');
 		if ($shareenabled) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$link->share = getRandomPassword(true);
 		} else {
 			$link->share = '';
@@ -350,7 +350,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 		if ($result > 0) {
 			if ($shareenabled) {
 				if (empty($ecmfile->share)) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 					$ecmfile->share = getRandomPassword(true);
 				}
 			} else {

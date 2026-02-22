@@ -45,7 +45,7 @@ if (!defined('NOBROWSERNOTIF')) {
 	define('NOBROWSERNOTIF', '1');
 }
 include '../../main.inc.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 /**
  * @var Conf $conf

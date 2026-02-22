@@ -46,11 +46,11 @@ if (!defined("NOSESSION")) {
 
 require '../main.inc.php';
 require_once NUSOAP_PATH.'/nusoap.php'; // Include SOAP
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var DoliDB $db

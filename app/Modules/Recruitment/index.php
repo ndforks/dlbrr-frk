@@ -27,9 +27,9 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/recruitment/class/recruitmentjobposition.class.php';
-require_once DOL_DOCUMENT_ROOT.'/recruitment/class/recruitmentcandidature.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/class/recruitmentjobposition.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/class/recruitmentcandidature.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 /**
  * @var Conf $conf
@@ -106,7 +106,7 @@ if ($conf->use_javascript_ajax) {
 	 * @var string $badgeStatus8
 	 * @var string $badgeStatus9
 	 */
-	include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 	if ($resql) {
 		$num = $db->num_rows($resql);
 		$i = 0;
@@ -156,7 +156,7 @@ if ($conf->use_javascript_ajax) {
 		}
 		print '<tr><td class="center" colspan="2">';
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 		$dolgraph = new DolGraph();
 		$dolgraph->SetData($dataseries);
 		$dolgraph->SetDataColor(array_values($colorseries));
@@ -236,7 +236,7 @@ if ($conf->use_javascript_ajax) {
 		}
 		print '<tr><td class="center" colspan="2">';
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 		$dolgraph = new DolGraph();
 		$dolgraph->SetData($dataseries);
 		$dolgraph->SetDataColor(array_values($colorseries));

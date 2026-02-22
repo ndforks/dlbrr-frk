@@ -25,7 +25,7 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 
 /**
  * @var Conf $conf
@@ -90,7 +90,7 @@ if ($action == 'send' && !$cancel) {
 	$errors_to  = request()->input('errorstosms');
 
 	// Create form object
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formsms.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsms.class.php';
 	$formsms = new FormSms($db);
 
 	if (!empty($formsms->error)) {
@@ -118,7 +118,7 @@ if ($action == 'send' && !$cancel) {
 		complete_substitutions_array($substitutionarrayfortest, $langs);
 		$body = make_substitutions($body, $substitutionarrayfortest);
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CSMSFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CSMSFile.class.php';
 		try {
 			$smsfile = new CSMSFile($sendto, $smsfrom, $body, $deliveryreceipt, $deferred, $priority, $class); // This define OvhSms->login, pass, session and account
 		} catch (Exception $e) {
@@ -273,7 +273,7 @@ if ($action == 'edit') {
 		print load_fiche_titre($langs->trans("DoTestSend"));
 
 		// Cree l'objet formulaire mail
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formsms.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsms.class.php';
 		$formsms = new FormSms($db);
 		$formsms->fromtype = 'user';
 		$formsms->fromid = $user->id;

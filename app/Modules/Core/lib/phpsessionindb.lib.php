@@ -27,7 +27,7 @@
 // The $conf is already defined from conf.php file.
 // To use it set
 // - create table ll_session from the llx_session-disabled.sql file
-// - uncomment the include DOL_DOCUMENT_ROOT.'/core/lib/phpsessionindb.inc.php into main.inc.php
+// - uncomment the include DOL_DOCUMENT_ROOT.'/Core/lib/phpsessionindb.inc.php into main.inc.php
 // - in your PHP.ini, set:  session.save_handler = user
 // The session_set_save_handler() at end of this file will replace default session management.
 

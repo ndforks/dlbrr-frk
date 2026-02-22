@@ -30,10 +30,10 @@ define("NOLOGIN", 1); // This means this output page does not require to be logg
 // Load Dolibarr environment
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 if (isModEnabled('ldap')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
 }
 
 /**
@@ -221,10 +221,10 @@ if (!empty($conf->modules_parts['tpl'])) {	// Using this feature slow down appli
 			break;
 		}
 	}
-} elseif (file_exists(DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/passwordforgotten.tpl.php")) {
-	$template_dir = DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/tpl/";
+} elseif (file_exists(DOL_DOCUMENT_ROOT."/Theme/".$conf->theme."/tpl/passwordforgotten.tpl.php")) {
+	$template_dir = DOL_DOCUMENT_ROOT."/Theme/".$conf->theme."/tpl/";
 } else {
-	$template_dir = DOL_DOCUMENT_ROOT."/core/tpl/";
+	$template_dir = DOL_DOCUMENT_ROOT."/Core/tpl/";
 }
 
 if (!$username) {
@@ -242,9 +242,9 @@ if (!empty($mysoc->logo_small) && is_readable($conf->mycompany->dir_output.'/log
 } elseif (!empty($mysoc->logo_small) && is_readable($conf->mycompany->dir_output.'/logos/'.$mysoc->logo)) {
 	$urllogo = DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/'.$mysoc->logo);
 	$width = 128;
-} elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/img/dolibarr_logo.svg')) {
+} elseif (is_readable(DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/img/dolibarr_logo.svg')) {
 	$urllogo = DOL_URL_ROOT.'/theme/'.$conf->theme.'/img/dolibarr_logo.svg';
-} elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo.svg')) {
+} elseif (is_readable(DOL_DOCUMENT_ROOT.'/Theme/dolibarr_logo.svg')) {
 	$urllogo = DOL_URL_ROOT.'/theme/dolibarr_logo.svg';
 }
 

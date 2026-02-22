@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules;
  *  \brief      Description and activation file for the module Zapier
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module Zapier
@@ -263,7 +263,7 @@ class modZapier extends DolibarrModules
 		}
 
 		// Create extrafields
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		//include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		//$extrafields = new ExtraFields($this->db);
 		//$result1=$extrafields->addExtraField('myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'zapier@zapier', '$conf->zapier->enabled');
 		//$result2=$extrafields->addExtraField('myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'zapier@zapier', '$conf->zapier->enabled');

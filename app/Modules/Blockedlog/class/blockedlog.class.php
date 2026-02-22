@@ -21,7 +21,7 @@
  * See https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54
  */
 
-include_once DOL_DOCUMENT_ROOT.'/blockedlog/versioncert.inc.php';
+include_once DOL_DOCUMENT_ROOT.'/Blockedlog/versioncert.inc.php';
 
 
 /**
@@ -1300,7 +1300,7 @@ class BlockedLog
 			$this->user_fullname = '(Anonymous)';
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 
 		$this->db->begin();
 
@@ -1418,7 +1418,7 @@ class BlockedLog
 				$this->db->commit();
 
 				// Call remote API service to record the last counter
-				include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 				try {
 					$resultcall = callApiToPushCounter((int) $this->id, $this->signature, 0, (int) $previousid, $previoushash);
 				} catch (Exception $e) {
@@ -1800,9 +1800,9 @@ class BlockedLog
 		global $db, $conf;
 
 		if (!getDolGlobalString('BLOCKEDLOG_ENTITY_FINGERPRINT')) { // creation of a unique fingerprint
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 			//$fingerprint = dol_hash(print_r($mysoc, true).getRandomPassword(true), '5');
 			$fingerprint = bin2hex(random_bytes(32)); // 64 char hex
@@ -1828,7 +1828,7 @@ class BlockedLog
 	 */
 	public function alreadyUsed($ignoresystem = 0)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 		return isBlockedLogUsed($ignoresystem);
 	}
 
@@ -1842,7 +1842,7 @@ class BlockedLog
 	{
 		global $dolibarr_main_force_https;
 
-		include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 		$isqualified = isALNEQualifiedVersion(0, 1);
 
@@ -1863,7 +1863,7 @@ class BlockedLog
 	{
 		global $mysoc;
 
-		include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 		$isqualified = isALNEQualifiedVersion();
 

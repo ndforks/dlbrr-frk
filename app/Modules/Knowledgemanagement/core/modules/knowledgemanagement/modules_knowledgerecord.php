@@ -31,7 +31,7 @@ namespace App\Modules\Knowledgemanagement\Core\Modules\Knowledgemanagement;
  *  \brief			File that contains parent class for knowledgerecords document models and parent class for knowledgerecords numbering models
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php'; // required for use by classes that inherit
 
 
@@ -56,7 +56,7 @@ abstract class ModelePDFKnowledgeRecord extends CommonDocGenerator
 		$type = 'knowledgerecord';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

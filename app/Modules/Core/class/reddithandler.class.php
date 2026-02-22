@@ -25,7 +25,7 @@ namespace App\Modules\Core\Classes;
  *      \brief      Class to manage each socialNetwork (Reddit, etc.)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/socialnetworkmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/socialnetworkmanager.class.php';
 
 /**
  * Class for handler Reddit

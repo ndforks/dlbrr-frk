@@ -234,7 +234,7 @@ if (!request()->input('action') || preg_match('/upgrade/i', request()->input('ac
 	// We init log handler for install
 	$handlers = array('mod_syslog_file');
 	foreach ($handlers as $handler) {
-		$file = DOL_DOCUMENT_ROOT.'/core/modules/syslog/'.$handler.'.php';
+		$file = DOL_DOCUMENT_ROOT.'/Core/modules/syslog/'.$handler.'.php';
 		if (!file_exists($file)) {
 			throw new Exception('Missing log handler file '.$handler.'.php');
 		}
@@ -254,7 +254,7 @@ if (!request()->input('action') || preg_match('/upgrade/i', request()->input('ac
 	$listofentities = array(1);
 
 	// Create the global $hookmanager object
-	include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 	$hookmanager = new HookManager($db);
 	$hookmanager->initHooks(array('upgrade2'));
 
@@ -807,7 +807,7 @@ if (!request()->input('action') || preg_match('/upgrade/i', request()->input('ac
 
 
 		// Copy directory medias
-		$srcroot = DOL_DOCUMENT_ROOT.'/install/medias';
+		$srcroot = DOL_DOCUMENT_ROOT.'/Install/medias';
 		$destroot = DOL_DATA_ROOT.'/medias';
 		dolCopyDir($srcroot, $destroot, '0', 0);
 
@@ -2150,7 +2150,7 @@ function migrate_modeles($db, $langs, $conf)
 	dolibarr_install_syslog("upgrade2::migrate_modeles");
 
 	if (isModEnabled('invoice')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 		$modellist = ModelePDFFactures::liste_modeles($db);
 		if (count($modellist) == 0) {
 			// Aucun model par default.
@@ -2163,7 +2163,7 @@ function migrate_modeles($db, $langs, $conf)
 	}
 
 	if (isModEnabled('order')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/commande/modules_commande.php';
 		$modellist = ModelePDFCommandes::liste_modeles($db);
 		if (count($modellist) == 0) {
 			// Aucun model par default.
@@ -2176,7 +2176,7 @@ function migrate_modeles($db, $langs, $conf)
 	}
 
 	if (isModEnabled("shipping")) {
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/expedition/modules_expedition.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/expedition/modules_expedition.php';
 		$modellist = ModelePdfExpedition::liste_modeles($db);
 		if (count($modellist) == 0) {
 			// Aucun model par default.
@@ -3815,7 +3815,7 @@ function migrate_reset_blocked_log($db, $langs, $conf)
 {
 	global $user;
 
-	require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 
 	print '<tr><td colspan="4">';
 
@@ -4336,8 +4336,8 @@ function migrate_delete_old_dir($db, $langs, $conf)
 
 	// List of files to delete
 	$filetodeletearray = array(
-		DOL_DOCUMENT_ROOT.'/core/modules/facture/terre',
-		DOL_DOCUMENT_ROOT.'/core/modules/facture/mercure',
+		DOL_DOCUMENT_ROOT.'/Core/modules/facture/terre',
+		DOL_DOCUMENT_ROOT.'/Core/modules/facture/mercure',
 	);
 
 	// On linux, we can also removed old directory with a different case than new directory.
@@ -4382,7 +4382,7 @@ function migrate_reload_modules($db, $langs, $conf, $listofmodule = array(), $fo
 	}
 
 	if (!is_object($user)) {
-		include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$user = new User($db);	// To avoid error during migration
 	}
 
@@ -4433,7 +4433,7 @@ function migrate_reload_modules($db, $langs, $conf, $listofmodule = array(), $fo
 
 			$val = $reloadactionformodules[$moduletoreload];
 			$classformodule = $val['class'];
-			$res = @include_once DOL_DOCUMENT_ROOT.'/core/modules/'.$classformodule.'.class.php';
+			$res = @include_once DOL_DOCUMENT_ROOT.'/Core/modules/'.$classformodule.'.class.php';
 			if ($res) {
 				$mod = new $classformodule($db);
 				if (!empty($val['remove'])) {
@@ -4459,7 +4459,7 @@ function migrate_reload_modules($db, $langs, $conf, $listofmodule = array(), $fo
 
 				dolibarr_install_syslog("upgrade2::migrate_reload_modules Reactivate module ".$moduletoreloadshort." with mode ".$reloadmode." (generic code)", LOG_NOTICE);
 
-				$res = @include_once DOL_DOCUMENT_ROOT.'/core/modules/mod'.$moduletoreloadshort.'.class.php';
+				$res = @include_once DOL_DOCUMENT_ROOT.'/Core/modules/mod'.$moduletoreloadshort.'.class.php';
 				if ($res) {
 					$classname = 'mod'.$moduletoreloadshort;
 					$mod = new $classname($db);
@@ -4469,7 +4469,7 @@ function migrate_reload_modules($db, $langs, $conf, $listofmodule = array(), $fo
 					$mod->delete_menus(); // We must delete to be sure it is inserted with new values
 					$mod->init($reloadmode);
 				} else {
-					dolibarr_install_syslog('Failed to include '.DOL_DOCUMENT_ROOT.'/core/modules/mod'.$moduletoreloadshort.'.class.php', LOG_ERR);
+					dolibarr_install_syslog('Failed to include '.DOL_DOCUMENT_ROOT.'/Core/modules/mod'.$moduletoreloadshort.'.class.php', LOG_ERR);
 
 					$res = @dol_include_once(strtolower($moduletoreloadshort).'/core/modules/mod'.$moduletoreloadshort.'.class.php');
 					if ($res) {
@@ -4533,7 +4533,7 @@ function migrate_reload_menu($db, $langs, $conf)
 		print '<b>'.$langs->trans('Upgrade').'</b>: '.$langs->trans('MenuHandler')." ".$key."<br>\n";
 
 		// Load sql ini_menu_handler.sql file
-		$dir = DOL_DOCUMENT_ROOT."/core/menus/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/menus/";
 		$file = 'init_menu_'.$key.'.sql';
 		if (file_exists($dir.$file)) {
 			$result = run_sql($dir.$file, 1, 0, 1, $key);
@@ -4555,7 +4555,7 @@ function migrate_productlot_path()
 	global $conf, $db, $langs, $user;
 
 	if (!is_object($user)) {
-		include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$user = new User($db);	// To avoid error during migration
 	}
 
@@ -4620,7 +4620,7 @@ function migrate_user_photospath()
 
 	print '<b>'.$langs->trans('MigrationUserPhotoPath')."</b><br>\n";
 
-	include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 	$fuser = new User($db);
 	if (!is_object($user)) {
 		$user = $fuser; // To avoid error during migration
@@ -4709,7 +4709,7 @@ function migrate_user_photospath2()
 
 	print '<b>'.$langs->trans('MigrationUserPhotoPath')."</b><br>\n";
 
-	include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 	$fuser = new User($db);
 	if (!is_object($user)) {
 		$user = $fuser; // To avoid error during migration
@@ -5621,8 +5621,8 @@ function migrate_blockedlog_add_hmac_key()
 {
 	global $conf, $db, $langs;
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 	print '<tr class="trforrunsql"><td colspan="4">';
 	print '<b>'.$langs->trans('InitAHMACKeyForBlockedLog')."</b>:\n";

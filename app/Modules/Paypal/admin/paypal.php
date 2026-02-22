@@ -27,10 +27,10 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypal.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 $servicename = 'PayPal';
 
@@ -393,7 +393,7 @@ print '<br><br>';
 
 $token = '';
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/onlinepaymentlinks.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/onlinepaymentlinks.tpl.php';
 
 // End of page
 llxFooter();

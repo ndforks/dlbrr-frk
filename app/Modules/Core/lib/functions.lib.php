@@ -49,7 +49,7 @@
  *					This file contains all frequently used functions.
  */
 
-//include_once DOL_DOCUMENT_ROOT.'/core/lib/json.lib.php';
+//include_once DOL_DOCUMENT_ROOT.'/Core/lib/json.lib.php';
 
 // Function for better PHP x compatibility
 if (!function_exists('utf8_encode')) {
@@ -4318,7 +4318,7 @@ function dol_now($mode = 'gmt')
 		$tzsecond = getServerTimeZoneInt('now'); // Contains tz+dayling saving time
 		$ret = (int) (dol_now('gmt') + ($tzsecond * 3600));
 		// } elseif ($mode == 'tzref') {// Time for now with parent company timezone is added
-		// 	require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		// 	require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		// 	$tzsecond=getParentCompanyTimeZoneInt();    // Contains tz+dayling saving time
 		// 	$ret=dol_now('gmt')+($tzsecond*3600);
 	} elseif ($mode == 'tzuser' || $mode == 'tzuserrel') {
@@ -4463,8 +4463,8 @@ function dol_print_email($email, $contactid = 0, $socid = 0, $addlink = 0, $max 
 		$newemail .= '</a>';
 
 		if ($showinvalid) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$emailonly = CMailFile::getValidAddress($email, 2);
 			if (!isValidEmail($emailonly)) {
 				$langs->load("errors");
@@ -4498,8 +4498,8 @@ function dol_print_email($email, $contactid = 0, $socid = 0, $addlink = 0, $max 
 		$newemail = ($withpicto ? img_picto($langs->trans("EMail") . ' : ' . $email, (is_numeric($withpicto) ? 'email' : $withpicto), 'class="paddingrightonly"') : '') . $newemail;
 
 		if ($showinvalid) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$emailonly = CMailFile::getValidAddress($email, 2);
 			if (!isValidEmail($emailonly)) {
 				$langs->load("errors");

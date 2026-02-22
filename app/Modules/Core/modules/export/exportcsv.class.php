@@ -24,7 +24,7 @@ namespace App\Modules\Core\Modules\Export;
  *		\brief      File of class to build exports with CSV format
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/export/modules_export.php';
 
 // avoid timeout for big export
 set_time_limit(0);
@@ -214,7 +214,7 @@ class ExportCsv extends ModeleExports
 			}
 
 			// Clean data and add encloser if required (depending on value of USE_STRICT_CSV_RULES)
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$newvalue = csvClean($newvalue, getDolGlobalString('EXPORT_CSV_FORCE_CHARSET'), $this->separator);
 
 			fwrite($this->handle, $newvalue.$this->separator);
@@ -273,7 +273,7 @@ class ExportCsv extends ModeleExports
 			}
 
 			// Clean data and add encloser if required (depending on value of USE_STRICT_CSV_RULES)
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$newvalue = csvClean($newvalue, $outputlangs->charset_output, $this->separator);
 
 			if (preg_match('/^Select:/i', $typefield) && $typefield = substr($typefield, 7)) {

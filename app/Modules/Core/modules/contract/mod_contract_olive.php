@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules\Contract;
  *  \brief      File of class to manage contract numbering rules Olive
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/contract/modules_contract.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/contract/modules_contract.php';
 
 
 /**

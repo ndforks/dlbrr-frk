@@ -27,11 +27,11 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/lib/partnership.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
 
 /**
  * @var Conf $conf

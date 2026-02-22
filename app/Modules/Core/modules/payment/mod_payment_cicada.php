@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Payment;
  * \brief      File containing class for numbering module Cicada
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/payment/modules_payment.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/payment/modules_payment.php';
 
 /**
  *	Class to manage customer payment numbering rules Cicada

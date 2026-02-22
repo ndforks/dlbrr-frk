@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Facture;
  *	\ingroup    invoice
  *	\brief      File containing class for numbering module Mars
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 
 /**
  * 	Class to manage invoice numbering rules Mars

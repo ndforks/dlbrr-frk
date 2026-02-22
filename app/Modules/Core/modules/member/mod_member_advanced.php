@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Member;
  *	\brief      File with class to manage the numbering module Advanced for member references
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/member/modules_member.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/member/modules_member.class.php';
 
 
 /**

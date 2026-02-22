@@ -27,7 +27,7 @@ namespace App\Modules\Accountancy\Classes;
  */
 
 // Class
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 /**
  * Class to manage categories of an accounting account
@@ -524,7 +524,7 @@ class AccountancyCategory // extends CommonObject
 		global $conf;
 		$error = 0;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		$sql = "SELECT aa.rowid, aa.account_number";
 		$sql .= " FROM ".$this->db->prefix()."accounting_account as aa";

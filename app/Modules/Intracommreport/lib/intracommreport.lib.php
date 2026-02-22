@@ -40,13 +40,13 @@ function intracommreportAdminPrepareHead()
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/intracommreport/admin/intracommreport.php", 1);
+	$head[$h][0] = dol_buildpath("/Intracommreport/admin/intracommreport.php", 1);
 	$head[$h][1] = $langs->trans("Settings");
 	$head[$h][2] = 'settings';
 	$h++;
 
 	/*
-	$head[$h][0] = dol_buildpath("/intracommreport/admin/intracommreport_extrafields.php", 1);
+	$head[$h][0] = dol_buildpath("/Intracommreport/admin/intracommreport_extrafields.php", 1);
 	$head[$h][1] = $langs->trans("ExtraFields");
 	$nbExtrafields = is_countable($extrafields->attributes['intracommreport']['label']) ? count($extrafields->attributes['intracommreport']['label']) : 0;
 	if ($nbExtrafields > 0) {
@@ -92,13 +92,13 @@ function intracommreportPrepareHead($object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/intracommreport/card.php", 1).'?id='.$object->id;
+	$head[$h][0] = dol_buildpath("/Intracommreport/card.php", 1).'?id='.$object->id;
 	$head[$h][1] = $langs->trans("IntraCommReport");
 	$head[$h][2] = 'card';
 	$h++;
 
 	if ($showtabofpagecontact) {
-		$head[$h][0] = dol_buildpath("/intracommreport/contact.php", 1).'?id='.$object->id;
+		$head[$h][0] = dol_buildpath("/Intracommreport/contact.php", 1).'?id='.$object->id;
 		$head[$h][1] = $langs->trans("Contacts");
 		$head[$h][2] = 'contact';
 		$h++;
@@ -113,7 +113,7 @@ function intracommreportPrepareHead($object)
 			if (!empty($object->note_public)) {
 				$nbNote++;
 			}
-			$head[$h][0] = dol_buildpath('/intracommreport/note.php', 1).'?id='.$object->id;
+			$head[$h][0] = dol_buildpath('/Intracommreport/note.php', 1).'?id='.$object->id;
 			$head[$h][1] = $langs->trans('Notes');
 			if ($nbNote > 0) {
 				$head[$h][1] .= (!getDolGlobalInt('MAIN_OPTIMIZEFORTEXTBROWSER') ? '<span class="badge marginleftonlyshort">'.$nbNote.'</span>' : '');
@@ -124,8 +124,8 @@ function intracommreportPrepareHead($object)
 	}
 
 	if ($showtabofpagedocument) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$upload_dir = $conf->mymodule->dir_output."/intracommreport/".dol_sanitizeFileName($object->ref);
 		$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 		$nbLinks = Link::count($db, $object->element, $object->id);

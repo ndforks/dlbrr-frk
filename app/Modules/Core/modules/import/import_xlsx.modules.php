@@ -129,7 +129,7 @@ class ImportXlsx extends ModeleImports
 		$this->version = '1.0'; // Driver version
 		$this->phpmin = array(7, 1); // Minimum version of PHP required by module
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 		if (versioncompare($this->phpmin, versionphparray()) > 0) {
 			dol_syslog("Module need a higher PHP version");
 			$this->error = "Module need a higher PHP version";

@@ -27,13 +27,13 @@
 use Luracast\Restler\RestException;
 
 require_once DOL_DOCUMENT_ROOT.'/main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/api/class/api.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cstate.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cregion.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/ccountry.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Api/class/api.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cstate.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cregion.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/ccountry.class.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/establishment.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  * API class for dictionaries
@@ -2857,8 +2857,8 @@ class Setup extends DolibarrApi
 			throw new RestException(403, 'Error API open to admin users only or to the users with logins defined into constant API_LOGINS_ALLOWED_FOR_INTEGRITY_CHECK');
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 		$langs->load("admin");
 
@@ -2871,7 +2871,7 @@ class Setup extends DolibarrApi
 		// Local file to compare to
 		$xmlshortfile = dol_sanitizeFileName('filelist-'.DOL_VERSION.getDolGlobalString('MAIN_FILECHECK_LOCAL_SUFFIX').'.xml'.getDolGlobalString('MAIN_FILECHECK_LOCAL_EXT'));
 
-		$xmlfile = DOL_DOCUMENT_ROOT.'/install/'.$xmlshortfile;
+		$xmlfile = DOL_DOCUMENT_ROOT.'/Install/'.$xmlshortfile;
 		if (!preg_match('/\.zip$/i', $xmlfile) && dol_is_file($xmlfile.'.zip')) {
 			$xmlfile .= '.zip';
 		}

@@ -748,7 +748,7 @@ class AccountingJournal extends CommonObject
 
 		require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 		require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		$langs->loadLangs(array('bills'));
 
@@ -1057,7 +1057,7 @@ class AccountingJournal extends CommonObject
 
 		require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 		require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		$langs->loadLangs(array('suppliers'));
 

@@ -29,15 +29,15 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/sendings.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/order.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/sendings.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 }
 if (isModEnabled('stock')) {
 	require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
@@ -83,7 +83,7 @@ $extrafields = new ExtraFields($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 
 // Security check
 if ($user->socid) {
@@ -229,7 +229,7 @@ if (empty($reshook)) {
 		exit();
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 }
 
 
@@ -350,7 +350,7 @@ if ($order_id > 0 || !empty($ref)) {
 		$discount_type = 0;
 		$backtopage = urlencode($_SERVER["PHP_SELF"].'?id='.$object->id);
 		$cannotApplyDiscount = 1;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/object_discounts.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/object_discounts.tpl.php';
 		print '</td></tr>';
 
 		// Date
@@ -544,7 +544,7 @@ if ($order_id > 0 || !empty($ref)) {
 
 		// Other attributes
 		$cols = 2;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
 

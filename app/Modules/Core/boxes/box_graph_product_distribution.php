@@ -24,8 +24,8 @@ namespace App\Modules\Core\Boxes;
  *	\ingroup    invoices
  *	\brief      Box to show graph of invoices per month
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 
 /**
  * Class to manage the box to show last invoices

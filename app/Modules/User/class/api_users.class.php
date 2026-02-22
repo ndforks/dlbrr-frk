@@ -23,9 +23,9 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
 
 
 /**

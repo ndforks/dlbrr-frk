@@ -56,12 +56,12 @@ if (is_numeric($entity)) {
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 if (isModEnabled('paypal')) {
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypalfunctions.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypal.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypalfunctions.lib.php';
 }
 
 /**
@@ -246,7 +246,7 @@ if (!empty($_SESSION['ipaddress'])) {      // To avoid to make action twice
 
 		$ishtml = dol_textishtml($content); // May contain urls
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($topic, $sendto, $from, $content, array(), array(), array(), '', '', 0, $ishtml ? 1 : 0);
 
 		$result = $mailfile->sendfile();
@@ -332,7 +332,7 @@ if (empty($doactionsthenredirect)) {
 	$type = request()->input('s');
 	$ref = request()->input('ref');
 	$tag = request()->input('tag');
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 	if ($type || $tag) {
 		$urlsubscription = getOnlinePaymentUrl(0, ($type ? $type : 'free'), $ref, $FinalPaymentAmt, $tag);
 

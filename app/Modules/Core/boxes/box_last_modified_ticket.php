@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *     \ingroup     ticket
  *     \brief       This box shows latest modified tickets
  */
-require_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+require_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box to show last modified tickets

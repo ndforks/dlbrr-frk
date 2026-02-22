@@ -24,7 +24,7 @@ namespace App\Modules\Core\Classes;
  *	\ingroup    link
  *	\brief      File for link class
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -181,7 +181,7 @@ class Link extends CommonObject
 	public function update(User $user, $call_trigger = 1)
 	{
 		global $langs, $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$langs->load("errors");
 		$error = 0;

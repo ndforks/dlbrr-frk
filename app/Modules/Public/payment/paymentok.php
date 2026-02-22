@@ -67,12 +67,12 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 if (isModEnabled('paypal')) {
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypalfunctions.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypal.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypalfunctions.lib.php';
 }
 
 // Hook to be used by external payment modules (ie Payzen, ...)
@@ -406,7 +406,7 @@ if (isModEnabled('stripe') && $paymentmethod === 'stripe') {
 	if (!$error && $TRANSACTIONID) {
 		// Stripe payment verification via Stripe API
 		try {
-			include_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 			$stripe = new Stripe($db);
 			$stripeacc = $stripe->getStripeAccount($service);
 
@@ -825,7 +825,7 @@ if ($ispaymentok) {
 						$thirdparty = new Societe($db);
 						$thirdparty->fetch($thirdparty_id);
 
-						include_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';	// This also set $stripearrayofkeysbyenv
+						include_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';	// This also set $stripearrayofkeysbyenv
 						$stripe = new Stripe($db);
 						//$stripeacc = $stripe->getStripeAccount($service);		Already defined previously
 
@@ -939,7 +939,7 @@ if ($ispaymentok) {
 						$msg = '';
 
 						// Send subscription email
-						include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 						$formmail = new FormMail($db);
 						// Load traductions files required by page
 						$outputlangs->loadLangs(array("main", "members"));
@@ -1604,8 +1604,8 @@ if ($ispaymentok) {
 						if ($resultthirdparty < 0) {
 							setEventMessages($thirdparty->error, $thirdparty->errors, "errors");
 						} else {
-							require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-							include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+							require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 							$formmail = new FormMail($db);
 							// Set output language
 							$outputlangs = new Translate('', $conf);
@@ -1841,8 +1841,8 @@ if ($ispaymentok) {
 										// TODO Move the send of email out of the db transaction
 
 										// Sending mail
-										require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-										include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+										require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+										include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 										$formmail = new FormMail($db);
 										// Set output language
 										$outputlangs = new Translate('', $conf);
@@ -2232,7 +2232,7 @@ if ($ispaymentok) {
 		$ishtml = dol_textishtml($content); // May contain urls
 		$trackid = '';
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($topic, $sendto, $from, $content, array(), array(), array(), '', '', 0, $ishtml ? 1 : 0, '', '', $trackid, '', 'standard');
 
 		$result = $mailfile->sendfile();
@@ -2293,7 +2293,7 @@ if ($ispaymentok) {
 		$ishtml = dol_textishtml($content); // May contain urls
 		$trackid = '';
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($topic, $sendto, $from, $content, array(), array(), array(), '', '', 0, $ishtml ? 1 : 0, '', '', $trackid, '', 'standard');
 
 		$result = $mailfile->sendfile();

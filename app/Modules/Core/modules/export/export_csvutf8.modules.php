@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Export;
  *		\brief      File of class to build exports with CSV format
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/export/exportcsv.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/export/exportcsv.class.php';
 
 // avoid timeout for big export
 set_time_limit(0);

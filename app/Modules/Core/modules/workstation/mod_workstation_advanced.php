@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules\Workstation;
  * \brief      File containing class for advanced numbering model of Workstation
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/workstation/modules_workstation.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/workstation/modules_workstation.php';
 
 
 /**
@@ -140,7 +140,7 @@ class mod_workstation_advanced extends ModeleNumRefWorkstation
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('WORKSTATION_WORKSTATION_ADVANCED_MASK');

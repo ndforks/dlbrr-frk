@@ -66,7 +66,7 @@ function fichinter_prepare_head($object)
 
 	// Tab to link resources
 	if (isModEnabled('resource')) {
-		require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
 		$objectres = new Dolresource($db);
 		$linked_resources = $objectres->getElementResources('fichinter', $object->id);
 		$nbResource = (is_array($linked_resources) ? count($linked_resources) : 0);
@@ -108,8 +108,8 @@ function fichinter_prepare_head($object)
 		$h++;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = $conf->ficheinter->dir_output."/".dol_sanitizeFileName($object->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
@@ -126,7 +126,7 @@ function fichinter_prepare_head($object)
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of thirdparty count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_fichinter_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {

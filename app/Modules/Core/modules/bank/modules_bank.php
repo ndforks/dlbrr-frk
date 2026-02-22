@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Bank;
  *      \brief      File that contain parent class for bank models
  *                  and parent class for bank numbering models
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 
 
 /**
@@ -48,7 +48,7 @@ abstract class ModeleBankAccountDoc extends CommonDocGenerator
 		$type = 'bankaccount';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

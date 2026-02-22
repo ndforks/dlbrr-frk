@@ -26,10 +26,10 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/class/opensurveysondage.class.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/class/opensurveysondage.class.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/lib/opensurvey.lib.php";
 
 /**
  * @var Conf $conf
@@ -612,7 +612,7 @@ if (request()->input('ajoutsujet')) {
 		print '<input type="submit" class="button button-cancel" name="cancel" value="'.dol_escape_htmltag($langs->trans("Cancel")).'">';
 		print '<br><br>'."\n";
 	} else {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 		$formother = new FormOther($db);
 		// Adding a date with a time slot

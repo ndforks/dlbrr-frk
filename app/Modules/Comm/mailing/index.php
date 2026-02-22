@@ -29,7 +29,7 @@
 // Load Dolibarr environment
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 /**
  * @var Conf $conf
@@ -98,7 +98,7 @@ print "</table></div></form><br>\n";
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre"><td colspan="2">'.$langs->trans("TargetsStatistics").'</td></tr>';
 
-$dir = DOL_DOCUMENT_ROOT."/core/modules/mailings";
+$dir = DOL_DOCUMENT_ROOT."/Core/modules/mailings";
 $handle = opendir($dir);
 
 if (is_resource($handle)) {

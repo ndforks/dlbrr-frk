@@ -26,9 +26,9 @@ namespace App\Modules\Ai\Classes;
  * \brief   Class files with common methods for Ai
  */
 
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-require_once DOL_DOCUMENT_ROOT."/ai/lib/ai.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Ai/lib/ai.lib.php";
 
 
 /**

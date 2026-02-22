@@ -40,8 +40,8 @@ namespace App\Modules\Product\Classes;
  *    \ingroup    product
  *    \brief      File of class to manage the predefined products or services
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/productbatch.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
@@ -1820,7 +1820,7 @@ class Product extends CommonObject
 	public function delete(User $user, $notrigger = 0)
 	{
 		global $conf;
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -2938,7 +2938,7 @@ class Product extends CommonObject
 	 */
 	public function fetch($id = 0, $ref = '', $ref_ext = '', $barcode = '', $ignore_expression = 0, $ignore_price_load = 0, $ignore_lang_load = 0)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		global $conf;
 
@@ -5866,7 +5866,7 @@ class Product extends CommonObject
 
 				if (isModEnabled('accounting')) {
 					if ($this->status && isset($this->accountancy_code_sell)) {
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 						$selllabel = '<br>';
 						$selllabel .= '<br><b>'.$langs->trans('ProductAccountancySellCode').':</b> '.length_accountg($this->accountancy_code_sell);
 						$selllabel .= '<br><b>'.$langs->trans('ProductAccountancySellIntraCode').':</b> '.length_accountg($this->accountancy_code_sell_intra);
@@ -5874,7 +5874,7 @@ class Product extends CommonObject
 						$datas['accountancysell'] = $selllabel;
 					}
 					if ($this->status_buy && isset($this->accountancy_code_buy)) {
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 						$buylabel = '';
 						if (empty($this->status)) {
 							$buylabel .= '<br>';
@@ -5914,7 +5914,7 @@ class Product extends CommonObject
 	{
 		global $langs, $hookmanager;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 
 		$result = '';
 
@@ -6642,7 +6642,7 @@ class Product extends CommonObject
 	public function add_photo($sdir, $file)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$result = 0;
 
@@ -6686,8 +6686,8 @@ class Product extends CommonObject
 	public function is_photo_available($sdir)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$dir = $sdir;
 		if (getDolGlobalInt('PRODUCT_USE_OLD_PATH_FOR_PHOTO')) {
@@ -6725,8 +6725,8 @@ class Product extends CommonObject
 	public function liste_photos($dir, $nbmax = 0)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$nbphoto = 0;
 		$tabobj = array();
@@ -6785,8 +6785,8 @@ class Product extends CommonObject
 	public function delete_photo($file)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$dir = dirname($file).'/'; // Chemin du dossier contenant l'image d'origine
 		$dirthumb = $dir.'/thumbs/'; // Chemin du dossier contenant la vignette

@@ -34,11 +34,11 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 if (getDolGlobalString('PRODUIT_PDF_MERGE_PROPAL')) {
 	require_once DOL_DOCUMENT_ROOT.'/product/class/propalmergepdfproduct.class.php';
 }
@@ -156,7 +156,7 @@ if (empty($reshook)) {
 	}
 
 	// Action submit/delete file/link
-	include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 }
 
 if ($action == 'filemerge' && $permissiontoadd) {
@@ -277,7 +277,7 @@ if ($object->id > 0 && $upload_dir !== null) {
 	print dol_get_fiche_end();
 
 	/* To move into tpl
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 
 	$formmail = new FormMail($db);
 	$formmail->withaiprompt = 'text';
@@ -293,14 +293,14 @@ if ($object->id > 0 && $upload_dir !== null) {
 	print '<table class="border centpercent">';
 
 	// Fill $out
-	require DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+	require DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 	print $out;
 	print '</table>';
 	*/
 
 	$param = '&id='.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 
 
 	// Merge propal PDF document PDF files

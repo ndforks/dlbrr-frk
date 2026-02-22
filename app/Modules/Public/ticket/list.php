@@ -49,12 +49,12 @@ if (is_numeric($entity)) {
 // Load Dolibarr environment
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/ticket/class/actions_ticket.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formticket.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ticket.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formticket.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ticket.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 
 /**
  * @var Conf $conf
@@ -278,7 +278,7 @@ if ($action == "view_ticketlist") {
 		}
 
 		// Extra fields
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 		if (!empty($search_subject)) {
 			$filter['t.subject'] = $search_subject;
@@ -319,7 +319,7 @@ if ($action == "view_ticketlist") {
 			$param .= '&search_fk_statut=openall';
 		}
 
-		require DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+		require DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 		$sortfield = request()->input('sortfield');
 		$sortorder = request()->input('sortorder');
@@ -509,7 +509,7 @@ if ($action == "view_ticketlist") {
 				}
 
 				// Extra fields
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 				// Fields from hook
 				$parameters = array('arrayfields' => $arrayfields);
@@ -571,7 +571,7 @@ if ($action == "view_ticketlist") {
 				}
 
 				// Extra fields
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 
 				// Hook fields
 				$parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);

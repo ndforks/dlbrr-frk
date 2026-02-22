@@ -41,11 +41,11 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // Load translation files required by page
 $langs->loadLangs(array('users', 'admin'));
@@ -280,7 +280,7 @@ unset($object->fields['color']);
 
 // Common attributes
 $keyforbreak = '';
-include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 print '<td>';
@@ -288,7 +288,7 @@ print $formother->showColor($object->color, '');
 print '</td></tr>';
 
 // Other attributes
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 print '</table>';
 

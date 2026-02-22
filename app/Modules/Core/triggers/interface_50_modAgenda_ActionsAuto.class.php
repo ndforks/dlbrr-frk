@@ -33,7 +33,7 @@ namespace App\Modules\Core\Triggers;
  *  \brief      Trigger file for agenda module
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 
 /**
@@ -1685,7 +1685,7 @@ class InterfaceActionsAuto extends DolibarrTriggers
 					// @phan-suppress-next-line PhanUndeclaredProperty
 					$destfile = $destdir.'/'.$object->attachedfiles['names'][$key];
 					if (dol_mkdir($destdir) >= 0) {
-						require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+						require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 						dol_copy($srcfile, $destfile);
 					}
 				}

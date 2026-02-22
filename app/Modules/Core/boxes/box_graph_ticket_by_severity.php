@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *     \ingroup     ticket
  *     \brief       This box shows open tickets by severity
  */
-require_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+require_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box
@@ -160,7 +160,7 @@ class box_graph_ticket_by_severity extends ModeleBoxes
 			$stringtoprint = '';
 			$stringtoprint .= '<div class="div-table-responsive-no-min ">';
 			if (!empty($dataseries) && count($dataseries) > 0) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 				$px1 = new DolGraph();
 				$mesg = $px1->isGraphKo();
 				$totalnb = 0;

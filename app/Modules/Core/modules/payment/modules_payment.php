@@ -19,7 +19,7 @@
 
 
 namespace App\Modules\Core\Modules\Payment;
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 /**
  * Payment numbering references mother class

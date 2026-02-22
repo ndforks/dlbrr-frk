@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    ai
  *  \brief      Description and activation file for module Ai
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module Ai
@@ -286,15 +286,15 @@ class modAi extends DolibarrModules
 		$this->export_icon[$r]='availabilities@ai';
 		// Define $this->export_fields_array, $this->export_TypeFields_array and $this->export_entities_array
 		$keyforclass = 'Availabilities'; $keyforclassfile='/ai/class/availabilities.class.php'; $keyforelement='availabilities@ai';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		//$this->export_fields_array[$r]['t.fieldtoadd']='FieldToAdd'; $this->export_TypeFields_array[$r]['t.fieldtoadd']='Text';
 		//unset($this->export_fields_array[$r]['t.fieldtoremove']);
 		//$keyforclass = 'AvailabilitiesLine'; $keyforclassfile='/ai/class/availabilities.class.php'; $keyforelement='availabilitiesline@ai'; $keyforalias='tl';
-		//include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforselect='availabilities'; $keyforaliasextra='extra'; $keyforelement='availabilities@ai';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$keyforselect='availabilitiesline'; $keyforaliasextra='extraline'; $keyforelement='availabilitiesline@ai';
-		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('availabilitiesline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -319,10 +319,10 @@ class modAi extends DolibarrModules
 		$this->import_tables_creator_array[$r] = array('t' => 'fk_user_author'); // Fields to store import user id
 		$import_sample = array();
 		$keyforclass = 'Availabilities'; $keyforclassfile='/ai/class/availabilities.class.php'; $keyforelement='availabilities@ai';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinimport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinimport.inc.php';
 		$import_extrafield_sample = array();
 		$keyforselect='availabilities'; $keyforaliasextra='extra'; $keyforelement='availabilities@ai';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinimport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinimport.inc.php';
 		$this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-'.MAIN_DB_PREFIX.'ai_availabilities');
 		$this->import_regex_array[$r] = array();
 		$this->import_examplevalues_array[$r] = array_merge($import_sample, $import_extrafield_sample);

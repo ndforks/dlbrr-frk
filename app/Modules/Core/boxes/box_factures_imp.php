@@ -28,7 +28,7 @@ namespace App\Modules\Core\Boxes;
  *	\brief      Widget to show remain to get on sale invoices
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 

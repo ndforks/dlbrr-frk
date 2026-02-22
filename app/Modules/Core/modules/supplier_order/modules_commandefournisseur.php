@@ -33,8 +33,8 @@ namespace App\Modules\Core\Modules\Supplier_order;
  *      \brief      File that contains parent class for supplier orders models
  *                  and parent class for supplier orders numbering models
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php'; // required for use by classes that inherit
 
 
@@ -120,7 +120,7 @@ abstract class ModelePDFSuppliersOrders extends CommonDocGenerator
 		$type = 'order_supplier';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

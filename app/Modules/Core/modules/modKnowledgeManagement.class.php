@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    knowledgemanagement
  *  \brief      Description and activation file for module KnowledgeManagement
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module KnowledgeManagement
@@ -374,15 +374,15 @@ class modKnowledgeManagement extends DolibarrModules
 		$this->export_icon[$r]='knowledgerecord@knowledgemanagement';
 		// Define $this->export_fields_array, $this->export_TypeFields_array and $this->export_entities_array
 		$keyforclass = 'KnowledgeRecord'; $keyforclassfile='/knowledgemanagement/class/knowledgerecord.class.php'; $keyforelement='knowledgerecord@knowledgemanagement';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		//$this->export_fields_array[$r]['t.fieldtoadd']='FieldToAdd'; $this->export_TypeFields_array[$r]['t.fieldtoadd']='Text';
 		//unset($this->export_fields_array[$r]['t.fieldtoremove']);
 		//$keyforclass = 'KnowledgeRecordLine'; $keyforclassfile='/knowledgemanagement/class/knowledgerecord.class.php'; $keyforelement='knowledgerecordline@knowledgemanagement'; $keyforalias='tl';
-		//include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforselect='knowledgerecord'; $keyforaliasextra='extra'; $keyforelement='knowledgerecord@knowledgemanagement';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$keyforselect='knowledgerecordline'; $keyforaliasextra='extraline'; $keyforelement='knowledgerecordline@knowledgemanagement';
-		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('knowledgerecordline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -404,9 +404,9 @@ class modKnowledgeManagement extends DolibarrModules
 		 $this->export_label[$r]='KnowledgeRecordLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
 		 $this->export_icon[$r]='knowledgerecord@knowledgemanagement';
 		 $keyforclass = 'KnowledgeRecord'; $keyforclassfile='/knowledgemanagement/class/knowledgerecord.class.php'; $keyforelement='knowledgerecord@knowledgemanagement';
-		 include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		 $keyforselect='knowledgerecord'; $keyforaliasextra='extra'; $keyforelement='knowledgerecord@knowledgemanagement';
-		 include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		 //$this->export_dependencies_array[$r]=array('mysubobject'=>'ts.rowid', 't.myfield'=>array('t.myfield2','t.myfield3')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		 $this->export_sql_start[$r]='SELECT DISTINCT ';
 		 $this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'knowledgerecord as t';
@@ -434,7 +434,7 @@ class modKnowledgeManagement extends DolibarrModules
 		}
 
 		// Create extrafields during init
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		//include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		//$extrafields = new ExtraFields($this->db);
 		//$result1=$extrafields->addExtraField('knowledgemanagement_myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'knowledgemanagement@knowledgemanagement', '$conf->knowledgemanagement->enabled');
 		//$result2=$extrafields->addExtraField('knowledgemanagement_myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'knowledgemanagement@knowledgemanagement', '$conf->knowledgemanagement->enabled');
@@ -454,12 +454,12 @@ class modKnowledgeManagement extends DolibarrModules
 
 		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 			if ($myTmpObjectArray['includerefgeneration']) {
-				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/knowledgemanagement/template_knowledgerecords.odt';
+				$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/knowledgemanagement/template_knowledgerecords.odt';
 				$dirodt = DOL_DATA_ROOT.'/doctemplates/knowledgemanagement';
 				$dest = $dirodt.'/template_knowledgerecords.odt';
 
 				if (file_exists($src) && !file_exists($dest)) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					dol_mkdir($dirodt);
 					$result = dol_copy($src, $dest, '0', 0);
 					if ($result < 0) {

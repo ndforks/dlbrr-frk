@@ -33,10 +33,10 @@ namespace App\Modules\Core\Modules\Hrm\Doc;
  *	\brief      File of class to generate evaluation report from standard model
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/hrm/modules_evaluation.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/hrm/modules_evaluation.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  *	Class to generate Evaluation Pdf based on standard model
@@ -218,7 +218,7 @@ class pdf_standard_evaluation extends ModelePDFEvaluation
 			if (file_exists($dir)) {
 				// Add pdfgeneration hook
 				if (!is_object($hookmanager)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 					$hookmanager = new HookManager($this->db);
 				}
 				$hookmanager->initHooks(array('pdfgeneration'));

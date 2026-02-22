@@ -24,7 +24,7 @@ namespace App\Modules\Core\Triggers;
  * \brief   File for Zappier Triggers.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 
 /**

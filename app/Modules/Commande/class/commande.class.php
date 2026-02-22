@@ -38,13 +38,13 @@ namespace App\Modules\Commande\Classes;
  *  \brief      class for orders
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonorder.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonorder.class.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/orderline.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 
 /**
@@ -516,7 +516,7 @@ class Commande extends CommonOrder
 	{
 		global $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -1606,7 +1606,7 @@ class Commande extends CommonOrder
 		dol_syslog(get_class($this).$logtext, LOG_DEBUG);
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 
@@ -2144,8 +2144,8 @@ class Commande extends CommonOrder
 		// phpcs:enable
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$this->db->begin();
 
@@ -3142,7 +3142,7 @@ class Commande extends CommonOrder
 		global $mysoc, $langs, $user;
 
 		dol_syslog(get_class($this)."::updateline id=$rowid, desc=$desc, pu=$pu, qty=$qty, remise_percent=$remise_percent, txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, price_base_type=$price_base_type, info_bits=$info_bits, date_start=$date_start, date_end=$date_end, type=$type, fk_parent_line=$fk_parent_line, pa_ht=$pa_ht, special_code=$special_code, ref_ext=$ref_ext");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		if ($this->status == Commande::STATUS_DRAFT) {
 			// Clean parameters
@@ -3487,7 +3487,7 @@ class Commande extends CommonOrder
 	public function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

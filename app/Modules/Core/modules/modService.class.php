@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules;
  *	\ingroup    service
  *	\brief      Description and activation file for the module Service
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -198,7 +198,7 @@ class modService extends DolibarrModules
 		$keyforselect = 'product';
 		$keyforelement = 'product';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		if (isModEnabled("supplier_order") || isModEnabled("supplier_invoice")) {
 			$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('s.nom' => 'Supplier', 'pf.ref_fourn' => 'SupplierRef', 'pf.quantity' => 'QtyMin', 'pf.remise_percent' => 'DiscountQtyMin', 'pf.unitprice' => 'BuyingPrice', 'pf.delivery_time_days' => 'NbDaysToDelivery'));
 		}
@@ -428,7 +428,7 @@ class modService extends DolibarrModules
 				$keyforselect = 'product';
 				$keyforelement = 'product';
 				$keyforaliasextra = 'extra';
-				include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+				include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 				$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('p2.rowid' => "Id", 'p2.ref' => "Ref", 'p2.label' => "Label", 'p2.description' => "Description"));
 				$this->export_entities_array[$r] = array_merge($this->export_entities_array[$r], array('p2.rowid' => "subproduct", 'p2.ref' => "subproduct", 'p2.label' => "subproduct", 'p2.description' => "subproduct"));
 				$this->export_sql_start[$r] = 'SELECT DISTINCT ';

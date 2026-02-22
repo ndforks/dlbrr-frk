@@ -40,13 +40,13 @@ namespace App\Modules\SupplierProposal\Classes;
  */
 
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 /**
  *	Class to manage price ask supplier
  */
@@ -370,8 +370,8 @@ class SupplierProposal extends CommonObject
 		// phpcs:enable
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$this->db->begin();
 
@@ -463,7 +463,7 @@ class SupplierProposal extends CommonObject
 		global $mysoc, $langs;
 
 		dol_syslog(get_class($this)."::addline supplier_proposalid=$this->id, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, fk_product=$fk_product, remise_except=$remise_percent, price_base_type=$price_base_type, pu_ttc=$pu_ttc, info_bits=$info_bits, type=$type");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Clean parameters
 		if (empty($remise_percent)) {
@@ -747,7 +747,7 @@ class SupplierProposal extends CommonObject
 		global $mysoc;
 
 		dol_syslog(get_class($this)."::updateLine $rowid, $pu, $qty, $remise_percent, $txtva, $desc, $price_base_type, $info_bits");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Clean parameters
 		$remise_percent = price2num($remise_percent);
@@ -1222,7 +1222,7 @@ class SupplierProposal extends CommonObject
 		$this->status = 0;
 		$this->statut = 0;
 
-		if (!getDolGlobalString('SUPPLIER_PROPOSAL_ADDON') || !is_readable(DOL_DOCUMENT_ROOT."/core/modules/supplier_proposal/" . getDolGlobalString('SUPPLIER_PROPOSAL_ADDON').".php")) {
+		if (!getDolGlobalString('SUPPLIER_PROPOSAL_ADDON') || !is_readable(DOL_DOCUMENT_ROOT."/Core/modules/supplier_proposal/" . getDolGlobalString('SUPPLIER_PROPOSAL_ADDON').".php")) {
 			$this->error = 'ErrorSetupNotComplete';
 			return -1;
 		}
@@ -1233,7 +1233,7 @@ class SupplierProposal extends CommonObject
 		$this->date = $now;
 
 		// Set ref
-		require_once DOL_DOCUMENT_ROOT."/core/modules/supplier_proposal/" . getDolGlobalString('SUPPLIER_PROPOSAL_ADDON').'.php';
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/supplier_proposal/" . getDolGlobalString('SUPPLIER_PROPOSAL_ADDON').'.php';
 		$obj = getDolGlobalString('SUPPLIER_PROPOSAL_ADDON');
 		$modSupplierProposal = new $obj();
 		'@phan-var-force ModeleNumRefSupplierProposal $modSupplierProposal';
@@ -1482,7 +1482,7 @@ class SupplierProposal extends CommonObject
 	 */
 	public function valid($user, $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		global $conf, $langs;
 
@@ -1947,7 +1947,7 @@ class SupplierProposal extends CommonObject
 		);
 		if (isModEnabled("multicurrency")) {
 			if (!empty($product->multicurrency_code)) {
-				include_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 				$multicurrency = new MultiCurrency($this->db); //need to fetch because empty fk_multicurrency and rate
 				$multicurrency->fetch(0, $product->multicurrency_code);
 				if (!empty($multicurrency->id)) {
@@ -2122,7 +2122,7 @@ class SupplierProposal extends CommonObject
 	public function delete($user, $notrigger = 0)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

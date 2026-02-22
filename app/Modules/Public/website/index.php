@@ -97,7 +97,7 @@ function llxFooter($comment = '', $zone = 'private', $disabledoutputofmessages =
 }
 
 require '../../master.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 /**
  * @var Conf $conf
  * @var DoliDB $db
@@ -130,7 +130,7 @@ if (empty($pageid)) {
 			// Return header 404
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
 
-			include DOL_DOCUMENT_ROOT.'/public/error-404.php';
+			include DOL_DOCUMENT_ROOT.'/Public/error-404.php';
 			exit;
 		}
 	}
@@ -177,7 +177,7 @@ if (empty($pageid)) {
 		print $langs->trans("PreviewOfSiteNotYetAvailable", $websitekey);
 	}
 
-	include DOL_DOCUMENT_ROOT.'/public/error-404.php';
+	include DOL_DOCUMENT_ROOT.'/Public/error-404.php';
 	exit;
 }
 if (empty($pageref)) {
@@ -254,7 +254,7 @@ if (!file_exists($original_file_osencoded)) {
 	$langs->load("website");
 	print $langs->trans("RequestedPageHasNoContentYet", $pageid);
 
-	include DOL_DOCUMENT_ROOT.'/public/error-404.php';
+	include DOL_DOCUMENT_ROOT.'/Public/error-404.php';
 	exit;
 }
 

@@ -32,12 +32,12 @@
 
 //load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/socialnetwork.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/modSocialNetworks.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/fediverseparser.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/boxes/box_fediverse.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/socialnetwork.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/modSocialNetworks.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/infobox.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/fediverseparser.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/boxes/box_fediverse.php';
 
 /**
  * @var Conf $conf

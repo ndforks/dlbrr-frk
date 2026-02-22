@@ -32,10 +32,10 @@ namespace App\Modules\Core\Modules\Delivery\Doc;
  *	\brief      File of class to manage receiving receipts with template Typhon
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/modules_delivery.php';
-require_once DOL_DOCUMENT_ROOT.'/delivery/class/delivery.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/modules_delivery.php';
+require_once DOL_DOCUMENT_ROOT.'/Delivery/class/delivery.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
 
 
 /**
@@ -201,7 +201,7 @@ class pdf_typhon extends ModelePDFDeliveryOrder
 			if (file_exists($dir)) {
 				// Add pdfgeneration hook
 				if (!is_object($hookmanager)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 					$hookmanager = new HookManager($this->db);
 				}
 				$hookmanager->initHooks(array('pdfgeneration'));
@@ -577,7 +577,7 @@ class pdf_typhon extends ModelePDFDeliveryOrder
 
 				// Add pdfgeneration hook
 				if (!is_object($hookmanager)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 					$hookmanager = new HookManager($this->db);
 				}
 				$hookmanager->initHooks(array('pdfgeneration'));

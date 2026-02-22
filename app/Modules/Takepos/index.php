@@ -50,10 +50,10 @@ require '../main.inc.php'; // Load $user and permissions
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
@@ -1515,7 +1515,7 @@ if (getDolGlobalString('TAKEPOS_BAR_RESTAURANT')) {
 	$customprinttemplateallowed = true;
 }
 
-include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 if (isALNERunningVersion()) {
 	// Custom printer may be allowed if mandatory information in template are guaranteed. For the moment, we prefer not allow this.
 	$customprinttemplateallowed = false;

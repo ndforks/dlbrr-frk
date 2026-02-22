@@ -27,8 +27,8 @@ namespace App\Modules\Core\Modules\Export;
  *	\brief      File of class to generate export file with Excel format
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

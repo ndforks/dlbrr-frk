@@ -100,7 +100,7 @@ if (!empty($action) && $action == 'fetch' && !empty($id) && $user->hasRight('soc
 
 	echo json_encode($outjson);
 } else {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 	$form = new Form($db);
 

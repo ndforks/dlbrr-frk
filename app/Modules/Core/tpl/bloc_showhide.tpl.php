@@ -75,7 +75,7 @@ print ' class="linkobject'.($hide ? '' : ' hideobject').'">'.img_picto('', '1dow
 print '<div id="'.$blocname.'_title" class="liste_titre">'.$title.'</div>'."\n";
 print '<div id="'.$blocname.'_bloc" class="'.($hide ? 'hideobject' : 'nohideobject').'">'."\n";
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/'.$blocname.'.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/'.$blocname.'.tpl.php';
 print '</div><br>';
 ?>
 <!-- END PHP TEMPLATE BLOCK SHOW/HIDE -->

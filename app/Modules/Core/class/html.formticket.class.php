@@ -35,7 +35,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/html.formmail.class.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/html.formprojet.class.php';
 
 if (!class_exists('FormCompany')) {
-	include DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+	include DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 }
 
 /**
@@ -564,7 +564,7 @@ class FormTicket
 			$toolbarname = 'dolibarr_details';	// TODO Allow image so use can do paste of image into content but disallow file manager
 			print '<div class="warning hideonsmartphone">'.(getDolGlobalString("TICKET_PUBLIC_TEXT_HELP_MESSAGE", $langs->trans('TicketPublicPleaseBeAccuratelyDescribe'))).'</div>';
 		}
-		include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$uselocalbrowser = true;
 		$doleditor = new DolEditor('message', $msg, '100%', 230, $toolbarname, 'In', true, $uselocalbrowser, getDolGlobalInt('FCKEDITOR_ENABLE_TICKET'), ROWS_8, '90%');
 		$doleditor->Create();
@@ -787,7 +787,7 @@ class FormTicket
 		if ($public && getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_TICKET')) {
 			print '<tr><td class="titlefield"></td><td><br>';
 
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 
 			// List of directories where we can find captcha handlers
@@ -1429,7 +1429,7 @@ class FormTicket
 	{
 		// phpcs:enable
 		global $conf, $user;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Set tmp user directory
 		$vardir = $conf->user->dir_output."/".$user->id;
@@ -1768,7 +1768,7 @@ class FormTicket
 			print '</label>';
 
 			print '</td><td>';
-			include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 			$doleditor = new DolEditor('mail_intro', $mail_intro, '100%', 90, 'dolibarr_details', '', false, $uselocalbrowser, getDolGlobalInt('FCKEDITOR_ENABLE_TICKET'), ROWS_2, 70);
 
@@ -1884,7 +1884,7 @@ class FormTicket
 		print '<tr><td colspan="2">';
 		//$toolbarname = 'dolibarr_details';
 		$toolbarname = 'dolibarr_notes';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$doleditor = new DolEditor('message', $defaultmessage, '100%', 200, $toolbarname, '', false, $uselocalbrowser, getDolGlobalInt('FCKEDITOR_ENABLE_TICKET'), ROWS_5, '90%');
 		$doleditor->Create();
 		print '</td></tr>';
@@ -1896,7 +1896,7 @@ class FormTicket
 			print '<tr class="email_line"><td><label for="mail_intro">'.$langs->trans("TicketMessageMailFooter").'</label>';
 			print $form->textwithpicto('', $langs->trans("TicketMessageMailFooterHelp"), 1, 'help');
 			print '</td><td>';
-			include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 			$doleditor = new DolEditor('mail_signature', $mail_signature, '100%', 90, 'dolibarr_details', '', false, $uselocalbrowser, getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_2, 70);
 			$doleditor->Create();
 			print '</td></tr>';

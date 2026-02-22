@@ -30,8 +30,8 @@ namespace App\Modules\Core\Modules\Supplier_proposal;
  *  			 and parent class of proposals and proposal numbering
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php'; // Requis car utilise dans les classes qui heritent
 
 
@@ -54,7 +54,7 @@ abstract class ModelePDFSupplierProposal extends CommonDocGenerator
 		$type = 'supplier_proposal';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength, 1);
 
 		return $list;

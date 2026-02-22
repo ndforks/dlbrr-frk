@@ -173,7 +173,7 @@ class FormAdmin
 
 		// Make select dynamic
 		if (!$forcecombo) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$out .= ajax_combobox($htmlname);
 		}
 
@@ -495,7 +495,7 @@ class FormAdmin
 		$out .= '</select>';
 
 		if (!$forcecombo) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$out .= ajax_combobox($htmlname);
 		}
 

@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    partnership
  *  \brief      Description and activation file for module Partnership
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module Partnership
@@ -385,15 +385,15 @@ class modPartnership extends DolibarrModules
 		$this->export_icon[$r]='partnership';
 		// Define $this->export_fields_array, $this->export_TypeFields_array and $this->export_entities_array
 		$keyforclass = 'Partnership'; $keyforclassfile='/partnership/class/partnership.class.php'; $keyforelement='partnership';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		//$this->export_fields_array[$r]['t.fieldtoadd']='FieldToAdd'; $this->export_TypeFields_array[$r]['t.fieldtoadd']='Text';
 		//unset($this->export_fields_array[$r]['t.fieldtoremove']);
 		//$keyforclass = 'PartnershipLine'; $keyforclassfile='/partnership/class/partnership.class.php'; $keyforelement='partnershipline@partnership'; $keyforalias='tl';
-		//include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforselect='partnership'; $keyforaliasextra='extra'; $keyforelement='partnership';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$keyforselect='partnershipline'; $keyforaliasextra='extraline'; $keyforelement='partnershipline@partnership';
-		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('partnershipline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -415,9 +415,9 @@ class modPartnership extends DolibarrModules
 		 $this->export_label[$r]='PartnershipLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
 		 $this->export_icon[$r]='partnership';
 		 $keyforclass = 'Partnership'; $keyforclassfile='/partnership/class/partnership.class.php'; $keyforelement='partnership';
-		 include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		 $keyforselect='partnership'; $keyforaliasextra='extra'; $keyforelement='partnership';
-		 include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		 //$this->export_dependencies_array[$r]=array('mysubobject'=>'ts.rowid', 't.myfield'=>array('t.myfield2','t.myfield3')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		 $this->export_sql_start[$r]='SELECT DISTINCT ';
 		 $this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'partnership as t';
@@ -445,7 +445,7 @@ class modPartnership extends DolibarrModules
 		}
 
 		// Create extrafields during init
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		//include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		//$extrafields = new ExtraFields($this->db);
 		//$result1=$extrafields->addExtraField('partnership_myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'partnership', '$conf->partnership->enabled');
 		//$result2=$extrafields->addExtraField('partnership_myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'partnership', '$conf->partnership->enabled');
@@ -465,12 +465,12 @@ class modPartnership extends DolibarrModules
 
 		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 			if ($myTmpObjectArray['includerefgeneration']) {
-				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/'.$moduledir.'/template_partnerships.odt';
+				$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/'.$moduledir.'/template_partnerships.odt';
 				$dirodt = DOL_DATA_ROOT.'/doctemplates/'.$moduledir;
 				$dest = $dirodt.'/template_partnerships.odt';
 
 				if (file_exists($src) && !file_exists($dest)) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					dol_mkdir($dirodt);
 					$result = dol_copy($src, $dest, '0', 0);
 					if ($result < 0) {

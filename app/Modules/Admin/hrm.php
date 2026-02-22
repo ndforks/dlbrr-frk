@@ -31,7 +31,7 @@
 require '../main.inc.php';
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
 require_once DOL_DOCUMENT_ROOT.'/hrm/lib/hrm.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/skill.class.php';
 require_once DOL_DOCUMENT_ROOT.'/hrm/class/evaluation.class.php';
@@ -94,7 +94,7 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'update') {
 	$max_rank = request()->integer('HRM_MAXRANK', 0);
@@ -555,7 +555,7 @@ if ($action != 'editxxx') {
 				print $form->selectarray($constname, $arrayofmessagename, getDolGlobalString($constname), 'None', 0, 0, '', 0, 0, 0, '', '', 1);
 			} elseif (preg_match('/category:/', $val['type'])) {
 				require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-				require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 				$formother = new FormOther($db);
 
 				$tmp = explode(':', $val['type']);

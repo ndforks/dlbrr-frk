@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules\Supplier_order;
  *		\brief      Fichier contenant la class du modele de numerotation de reference de commande fournisseur Muguet
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_order/modules_commandefournisseur.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_order/modules_commandefournisseur.php';
 
 
 /**

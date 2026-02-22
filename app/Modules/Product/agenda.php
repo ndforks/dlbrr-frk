@@ -41,9 +41,9 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 
 // Load translation files required by the page
 $langs->load("companies");
@@ -265,7 +265,7 @@ if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') ||
 	}
 
 	// Try to know count of actioncomm from cache
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 	$cachekey = 'count_events_product_'.$object->id;
 	$nbEvent = dol_getcache($cachekey);
 

@@ -20,7 +20,7 @@ namespace App\Modules\Core\Modules\Mailings;
  *	\brief      Example file to provide a list of recipients for mailing module
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 
 
 /**
@@ -383,7 +383,7 @@ class mailing_thirdparties extends MailingTargets
 		// filter_lang_thirdparties
 		if (getDolGlobalInt('MAIN_MULTILANGS')) {
 			// Choose language
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 			$formadmin = new FormAdmin($this->db);
 			$s .= img_picto($langs->trans("DefaultLang"), 'language', 'class="pictofixedwidth"');
 			//$s .= '<span class="opacitymedium">'.$langs->trans("DefaultLang").':</span> ';

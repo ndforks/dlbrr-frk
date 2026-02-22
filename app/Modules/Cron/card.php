@@ -29,12 +29,12 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 // Cron job libraries
-require_once DOL_DOCUMENT_ROOT."/cron/class/cronjob.class.php";
-require_once DOL_DOCUMENT_ROOT."/core/class/html.formcron.class.php";
-require_once DOL_DOCUMENT_ROOT.'/core/lib/cron.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Cron/class/cronjob.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/html.formcron.class.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/cron.lib.php';
 
 /**
  * @var Conf $conf

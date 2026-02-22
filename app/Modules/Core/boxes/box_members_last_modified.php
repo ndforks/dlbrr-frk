@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *	\brief      Module to show box of members
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 
 /**

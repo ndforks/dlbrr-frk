@@ -32,12 +32,12 @@
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/prelevement/class/bonprelevement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/prelevement.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/prelevement.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 /**
@@ -205,7 +205,7 @@ if (empty($reshook)) {
 	} else {
 		$uploaddir = $conf->prelevement->dir_output;
 	}
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 }
 
 
@@ -577,8 +577,8 @@ if ($resql) {
 		if ($sourcetype != 'salary') {
 			require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
 		} else {
-			require_once DOL_DOCUMENT_ROOT.'/user/class/userbankaccount.class.php';
-			require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/User/class/userbankaccount.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 		}
 
 		while ($i < $num && $i < $limit) {

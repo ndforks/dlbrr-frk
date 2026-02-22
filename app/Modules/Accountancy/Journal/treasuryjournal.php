@@ -32,13 +32,13 @@
  *  \brief      Page with bank journal
  */
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
 
 /**
  * @var Conf $conf
@@ -568,7 +568,7 @@ if ($resql) {
 
 				$resql = $db->query($sql);
 				if ($resql) {
-					require_once DOL_DOCUMENT_ROOT.'/salaries/class/paymentsalary.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Salaries/class/paymentsalary.class.php';
 					$langs->load("salaries");
 					$static_payment_salary = new PaymentSalary($db);
 					$account_employee = getDolGlobalString('SALARIES_ACCOUNTING_ACCOUNT_PAYMENT', 'NotDefined'); // NotDefined is a reserved word

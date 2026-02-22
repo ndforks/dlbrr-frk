@@ -31,7 +31,7 @@ namespace App\Modules\Core\Modules\Facture;
  *	\ingroup    invoice
  *	\brief      File containing class for numbering module Mercure
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 
 
 /**
@@ -166,7 +166,7 @@ class mod_facture_mercure extends ModeleNumRefFactures
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// Get Mask value
 		$mask = '';

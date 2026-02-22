@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Takepos;
  *  \brief      File containing the parent class for the numbering of cash register receipts
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 
 /**

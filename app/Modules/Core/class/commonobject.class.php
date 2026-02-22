@@ -44,8 +44,8 @@ namespace App\Modules\Core\Classes;
  *	\brief      File of parent class of all other business classes (invoices, contracts, proposals, orders, ...)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/doldeprecationhandler.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commontrigger.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doldeprecationhandler.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commontrigger.class.php';
 
 /**
  *	Parent class of all other business classes (invoices, contracts, proposals, orders, ...)
@@ -1146,14 +1146,14 @@ abstract class CommonObject
 	public function getFullAddress($withcountry = 0, $sep = "\n", $withregion = 0, $extralangcode = '')
 	{
 		if ($withcountry && $this->country_id && (empty($this->country_code) || empty($this->country))) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 			$tmparray = getCountry($this->country_id, 'all');
 			$this->country_code = $tmparray['code'];
 			$this->country = $tmparray['label'];
 		}
 
 		if ($withregion && $this->state_id && (empty($this->state_code) || empty($this->state) || empty($this->region) || empty($this->region_code))) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 			$tmparray = getState($this->state_id, 'all', null, 1);
 			$this->state_code   = $tmparray['code'];
 			$this->state        = $tmparray['label'];
@@ -1193,7 +1193,7 @@ abstract class CommonObject
 		if (empty($ecmfile->id)) {	// No entry into file index already exists, we should initialize the shared key manually.
 			// Add entry into index
 			if ($initsharekey) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 				// TODO We can't, we don't have full path of file, only last_main_doc and ->element, so we must first rebuild full path $destfull
 				/*
@@ -1218,7 +1218,7 @@ abstract class CommonObject
 		} elseif (empty($ecmfile->share)) {	// Entry into file index already exists but no share key is defined.
 			// Add entry into index
 			if ($initsharekey) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 				$ecmfile->share = getRandomPassword(true);
 				$ecmfile->update($user);
 			} else {
@@ -3994,7 +3994,7 @@ abstract class CommonObject
 			}
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		$forcedroundingmode = $roundingadjust;
 		if ($forcedroundingmode == 'auto' && isset($conf->global->{$roundTotalConstName})) {
@@ -5375,7 +5375,7 @@ abstract class CommonObject
 
 		// Line extrafield
 		if (!is_object($extrafields)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 			$extrafields = new ExtraFields($this->db);
 		}
 		$extrafields->fetch_name_optionals_label($this->table_element_line);
@@ -5437,7 +5437,7 @@ abstract class CommonObject
 
 		// Line extrafield
 		if (!is_object($extrafields)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 			$extrafields = new ExtraFields($this->db);
 		}
 		$extrafields->fetch_name_optionals_label($this->table_element_line);
@@ -6162,7 +6162,7 @@ abstract class CommonObject
 			$outputlangs->charset_output = $sav_charset_output;
 
 			// We delete old preview
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_delete_preview($this);
 
 			// Index file in database
@@ -6261,7 +6261,7 @@ abstract class CommonObject
 
 			if ($setsharekey) {
 				if (empty($ecmfile->share)) {	// Because object not found or share not set yet
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 					$ecmfile->share = getRandomPassword(true);
 				}
 			}
@@ -6333,7 +6333,7 @@ abstract class CommonObject
 		$file_osencoded = dol_osencode($file);
 
 		if (file_exists($file_osencoded)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 			$tmparraysize = getDefaultImageSizes();
 			$maxwidthsmall = $tmparraysize['maxwidthsmall'];
@@ -6637,7 +6637,7 @@ abstract class CommonObject
 		if (!is_array($optionsArray)) {
 			// If $extrafields is not a known object, we initialize it. Best practice is to have $extrafields defined into card.php or list.php page.
 			if (!isset($extrafields) || !is_object($extrafields)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 				$extrafields = new ExtraFields($this->db);
 			}
 
@@ -6800,7 +6800,7 @@ abstract class CommonObject
 
 		// Check parameters
 		$langs->load('admin');
-		require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		$extrafields = new ExtraFields($this->db);
 		$target_extrafields = $extrafields->fetch_name_optionals_label($this->table_element);
 
@@ -7280,7 +7280,7 @@ abstract class CommonObject
 		if (!empty($this->array_options) && isset($this->array_options["options_".$key])) {
 			// Check parameters
 			$langs->load('admin');
-			require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 			$extrafields = new ExtraFields($this->db);
 			$extrafields->fetch_name_optionals_label($this->table_element);
 
@@ -7645,7 +7645,7 @@ abstract class CommonObject
 		// TODO pass the current object as a parameter to give more flexibility (like disable showing input for extra fields when canAlwaysBeEdited is false and $object->status is not draft...)
 
 		if (!is_object($form)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 			$form = new Form($this->db);
 		}
 
@@ -7871,7 +7871,7 @@ abstract class CommonObject
 					$out .= "</script>";
 					$value = str_replace(',', "\n", $value);
 				}
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				$doleditor = new DolEditor($keyprefix.$key.$keysuffix, $value, '', 200, 'dolibarr_notes', 'In', false, false, false, ROWS_5, '90%');
 				$out .= (string) $doleditor->Create(1, '', true, '', '', '', $morecss);
 			} else {
@@ -7879,7 +7879,7 @@ abstract class CommonObject
 			}
 		} elseif (preg_match('/^html/', (string) $type)) {
 			if (!preg_match('/search_/', $keyprefix)) {		// If keyprefix is search_ or search_options_, we must just use a simple text field
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				$doleditor = new DolEditor($keyprefix.$key.$keysuffix, $value, '', 200, 'dolibarr_notes', 'In', false, false, isModEnabled('fckeditor') && getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_5, '90%');
 				$out = (string) $doleditor->Create(1, '', true, '', '', $moreparam, $morecss);
 			} else {
@@ -7945,7 +7945,7 @@ abstract class CommonObject
 		} elseif ($type == 'select') {	// combo list
 			$out = '';
 			if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_EXTRAFIELDS_DISABLE_SELECT2')) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 				$out .= ajax_combobox($keyprefix.$key.$keysuffix, array(), 0);
 			}
 
@@ -7978,7 +7978,7 @@ abstract class CommonObject
 		} elseif ($type == 'sellist') {
 			$out = '';
 			if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_EXTRAFIELDS_DISABLE_SELECT2')) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 				$out .= ajax_combobox($keyprefix.$key.$keysuffix, array(), 0);
 			}
 
@@ -8571,7 +8571,7 @@ abstract class CommonObject
 		// TODO pass the current object as a parameter to give more flexibility (like disable ajax update when canAlwaysBeEdited is false and $object->status is not draft...)
 
 		if (!is_object($form)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 			$form = new Form($this->db);
 		}
 
@@ -8692,7 +8692,7 @@ abstract class CommonObject
 				$value = '';
 			}
 		} elseif ($type == 'duration') {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 			if (!is_null($value) && $value !== '') {
 				$value = convertSecondToTime((int) $value, 'allhourmin');
 			}
@@ -9976,8 +9976,8 @@ abstract class CommonObject
 		// phpcs:enable
 		global $user, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$sortfield = 'position_name';
 		$sortorder = 'asc';
@@ -11413,7 +11413,7 @@ abstract class CommonObject
 	 */
 	public function fetchComments()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/comment.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/comment.class.php';
 
 		$comment = new Comment($this->db);
 		$result = $comment->fetchAllFor($this->element, $this->id);

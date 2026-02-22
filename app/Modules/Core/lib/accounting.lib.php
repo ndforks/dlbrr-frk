@@ -428,7 +428,7 @@ function getCurrentPeriodOfFiscalYear($db, $conf, $from_time = null, $gm = 'tzse
 		$now_arr = dol_getdate($from_time);
 	}
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 	// Take the first period found
 	$sql  = "SELECT date_start, date_end FROM ".$db->prefix()."accounting_fiscalyear";

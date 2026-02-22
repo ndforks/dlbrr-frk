@@ -148,7 +148,7 @@ if (!isset($savingdocmask) || getDolGlobalString('MAIN_DISABLE_SUGGEST_REF_AS_PR
 }
 
 if (empty($formfile) || !is_object($formfile)) {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	$formfile = new FormFile($db);
 }
 

@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Member;
  * \brief      Fichier contenant la class du modele de numerotation d'ahérent Custom
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/member/modules_member.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/member/modules_member.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
 
@@ -135,7 +135,7 @@ class mod_member_custom extends ModeleNumRefMembers
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('MEMBER_CUSTOM_MASK');

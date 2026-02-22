@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Security\Generate;
  *      \brief      File to manage no password generation.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/security/generate/modules_genpassword.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/security/generate/modules_genpassword.php';
 
 
 /**

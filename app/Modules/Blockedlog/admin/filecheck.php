@@ -36,10 +36,10 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 $langs->load("admin");
 
@@ -127,7 +127,7 @@ $file_list = array('missing' => array(), 'updated' => array());
 // Local file to compare to
 $xmlshortfile = dol_sanitizeFileName(request()->input('xmlshortfile') ? request()->input('xmlshortfile') : 'filelist-'.DOL_VERSION.getDolGlobalString('MAIN_FILECHECK_LOCAL_SUFFIX').'.xml'.getDolGlobalString('MAIN_FILECHECK_LOCAL_EXT'));
 
-$xmlfile = DOL_DOCUMENT_ROOT.'/install/'.$xmlshortfile;
+$xmlfile = DOL_DOCUMENT_ROOT.'/Install/'.$xmlshortfile;
 if (!preg_match('/\.zip$/i', $xmlfile) && dol_is_file($xmlfile.'.zip')) {
 	$xmlfile .= '.zip';
 }
@@ -296,7 +296,7 @@ if (empty($error) && !empty($xml)) {
 			$out .= '<td class="center">';
 			$out .= isModEnabled('blockedlog') ? '<span class="ok">'.$langs->trans("Enabled").'</span>' : '<span class="warning">'.$langs->trans("Disabled").'</span>';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/modules/modBlockedLog.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/modules/modBlockedLog.class.php';
 			$objMod = new modBlockedLog($db);
 			/*$modulename = $objMod->getName();
 			$moduledesc = $objMod->getDesc();

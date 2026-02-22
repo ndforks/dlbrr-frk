@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Barcode;
  *       \brief      File of class to manage barcode numbering with standard rule
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/barcode/modules_barcode.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/barcode/modules_barcode.class.php';
 
 
 /**
@@ -186,8 +186,8 @@ class mod_barcode_product_standard extends ModeleNumRefBarCode
 			return -1;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/barcode.lib.php'; // to be able to call function barcode_gen_ean_sum($ean)
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/barcode.lib.php'; // to be able to call function barcode_gen_ean_sum($ean)
 
 		// Get barcode type configuration for products if $type not set
 		if (empty($type)) {
@@ -255,7 +255,7 @@ class mod_barcode_product_standard extends ModeleNumRefBarCode
 
 		//var_dump($code.' '.$product->ref.' '.$thirdparty_type);exit;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$result = 0;
 		$code = strtoupper(trim($code));

@@ -281,8 +281,8 @@ class RssParser
 	 */
 	public function parser($urlRSS, $maxNb = 0, $cachedelay = 60, $cachedir = '')
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 		$rss = '';
 		$str = ''; // This will contain content of feed

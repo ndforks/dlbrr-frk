@@ -39,8 +39,8 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 $langs->load("admin");
 
@@ -168,7 +168,7 @@ if (!$base) {
 		print '<td class="right">Collation</td>';
 		print "</tr>\n";
 
-		$arrayoffilesrich = dol_dir_list(DOL_DOCUMENT_ROOT.'/install/mysql/tables/', 'files', 0, '\.sql$');
+		$arrayoffilesrich = dol_dir_list(DOL_DOCUMENT_ROOT.'/Install/mysql/tables/', 'files', 0, '\.sql$');
 		$arrayoffiles = array();
 		$arrayoftablesautocreated = array();
 		foreach ($arrayoffilesrich as $value) {

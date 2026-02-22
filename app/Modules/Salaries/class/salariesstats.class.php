@@ -26,8 +26,8 @@ namespace App\Modules\Salaries\Classes;
  *  \ingroup    salaries
  *  \brief      File of class to manage salary statistics
  */
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
-include_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 
 /**
  *	Class to manage salary statistics

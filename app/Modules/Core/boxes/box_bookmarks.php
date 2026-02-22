@@ -24,7 +24,7 @@ namespace App\Modules\Core\Boxes;
  *      \ingroup    bookmark
  *      \brief      Module to generate box of bookmarks list
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 /**
  * Class to manage the box to show bookmarks

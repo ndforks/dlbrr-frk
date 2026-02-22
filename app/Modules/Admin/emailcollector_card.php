@@ -26,16 +26,16 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/events.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/events.class.php';
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-include_once DOL_DOCUMENT_ROOT.'/emailcollector/class/emailcollector.class.php';
-include_once DOL_DOCUMENT_ROOT.'/emailcollector/class/emailcollectorfilter.class.php';
-include_once DOL_DOCUMENT_ROOT.'/emailcollector/class/emailcollectoraction.class.php';
-include_once DOL_DOCUMENT_ROOT.'/emailcollector/lib/emailcollector.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Emailcollector/class/emailcollector.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Emailcollector/class/emailcollectorfilter.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Emailcollector/class/emailcollectoraction.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Emailcollector/lib/emailcollector.lib.php';
 
 use Webklex\PHPIMAP\ClientManager;
 use Webklex\PHPIMAP\Exceptions\ConnectionFailedException;
@@ -101,7 +101,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
 //if ($user->socid > 0) abort(403);
@@ -137,13 +137,13 @@ if (empty($reshook)) {
 	$backurlforlist = DOL_URL_ROOT.'/admin/emailcollector_list.php';
 
 	// Actions cancel, add, update, delete or clone
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 }
 
 if (request()->input('addfilter')) {
@@ -301,10 +301,10 @@ if ($action == 'create') {
 	//unset($fields[]);
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_add.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print '</table>'."\n";
 
@@ -330,10 +330,10 @@ if (($id || $ref) && $action == 'edit') {
 	print '<table class="border centpercent tableforfield">'."\n";
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_edit.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 	print '</table>';
 
@@ -412,7 +412,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 				dol_syslog("Scan IMAP with authentication mode = OAUTH2");
 
 				// Mode OAUth2 with PHP-IMAP
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/oauth.lib.php';
 
 				$supportedoauth2array = getSupportedOauth2Array();
 
@@ -633,10 +633,10 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	// Common attributes
 	//$keyforbreak='fieldkeytoswithonsecondcolumn';
 	$nounderbanner = 1;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 
@@ -861,7 +861,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	if (!empty($conf->use_javascript_ajax)) {
 		$urltorefreshaftermove = DOL_URL_ROOT.'/admin/emailcollector_card.php?id='.$id;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 	}
 
 	print '</form>';

@@ -35,11 +35,11 @@ namespace App\Modules\Recruitment\Core\Modules\Recruitment\Doc;
  *  \brief      File of class to generate document from standard template
  */
 
-require_once DOL_DOCUMENT_ROOT.'/recruitment/core/modules/recruitment/modules_recruitmentjobposition.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/core/modules/recruitment/modules_recruitmentjobposition.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
 
 
 /**

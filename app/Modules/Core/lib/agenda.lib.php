@@ -76,7 +76,7 @@ function print_actions_filter(
 
 	$langs->load("companies");
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 	$formactions = new FormActions($db);
 
 	// Filters
@@ -114,7 +114,7 @@ function print_actions_filter(
 		print '</div>';
 
 		if (isModEnabled('resource')) {
-			include_once DOL_DOCUMENT_ROOT.'/resource/class/html.formresource.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Resource/class/html.formresource.class.php';
 			$formresource = new FormResource($db);
 
 			// Resource
@@ -133,7 +133,7 @@ function print_actions_filter(
 	}
 
 	if (isModEnabled('project') && $user->hasRight('projet', 'lire')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 		$formproject = new FormProjets($db);
 
 		print '<div class="divsearchfield">';
@@ -144,7 +144,7 @@ function print_actions_filter(
 
 	if (isModEnabled('category') && $user->hasRight('categorie', 'lire')) {
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 		$formother = new FormOther($db);
 		$langs->load('categories');
 
@@ -467,7 +467,7 @@ function actions_prepare_head($object)
 
 	// Tab to link resources
 	if (isModEnabled('resource')) {
-		include_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
 		$resource = new Dolresource($db);
 
 		$head[$h][0] = dolBuildUrl(DOL_URL_ROOT.'/resource/element_resource.php', ['element' => 'action', 'element_id'=> $object->id]);
@@ -482,8 +482,8 @@ function actions_prepare_head($object)
 	}
 
 	// Attached files
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = $conf->agenda->dir_output."/".$object->id;
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);

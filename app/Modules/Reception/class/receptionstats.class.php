@@ -27,9 +27,9 @@ namespace App\Modules\Reception\Classes;
  *  \brief      File of class to manage reception statistics
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
-include_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 
 /**

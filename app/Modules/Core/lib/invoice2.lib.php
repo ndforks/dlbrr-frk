@@ -24,8 +24,8 @@
  *      \brief      Function to rebuild PDF and merge PDF files into one
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
 
 
 /**
@@ -55,7 +55,7 @@ function rebuild_merge_pdf($db, $langs, $conf, $diroutputpdf, $newlangid, $filte
 {
 	if ($mode == 'invoice') {
 		require_once DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php";
-		require_once DOL_DOCUMENT_ROOT."/core/modules/facture/modules_facture.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/facture/modules_facture.php";
 
 		$table = "facture";
 		$dir_output = $conf->facture->dir_output;
@@ -66,7 +66,7 @@ function rebuild_merge_pdf($db, $langs, $conf, $diroutputpdf, $newlangid, $filte
 		}
 	} elseif ($mode == 'order') {
 		require_once DOL_DOCUMENT_ROOT."/commande/class/commande.class.php";
-		require_once DOL_DOCUMENT_ROOT."/core/modules/commande/modules_commande.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/commande/modules_commande.php";
 
 		$table = "commande";
 		$dir_output = $conf->order->dir_output;
@@ -77,7 +77,7 @@ function rebuild_merge_pdf($db, $langs, $conf, $diroutputpdf, $newlangid, $filte
 		}
 	} elseif ($mode == 'proposal') {
 		require_once DOL_DOCUMENT_ROOT."/comm/propal/class/propal.class.php";
-		require_once DOL_DOCUMENT_ROOT."/core/modules/propale/modules_propale.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/propale/modules_propale.php";
 
 		$table = "propal";
 		$dir_output = $conf->propal->dir_output;
@@ -88,7 +88,7 @@ function rebuild_merge_pdf($db, $langs, $conf, $diroutputpdf, $newlangid, $filte
 		}
 	} elseif ($mode == 'shipment') {
 		require_once DOL_DOCUMENT_ROOT."/expedition/class/expedition.class.php";
-		require_once DOL_DOCUMENT_ROOT."/core/modules/expedition/modules_expedition.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/expedition/modules_expedition.php";
 
 		$table = "propal";
 		$dir_output = $conf->shipment->dir_output;

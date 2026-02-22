@@ -29,7 +29,7 @@ namespace App\Modules\Core\Boxes;
  *	\brief      Module to generate box of products with too low stock
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 include_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 

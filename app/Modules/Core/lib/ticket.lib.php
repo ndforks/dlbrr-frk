@@ -125,7 +125,7 @@ function ticket_prepare_head($object)
 	complete_head_from_modules($conf, $langs, $object, $head, $h, 'ticket', 'add', 'core');
 
 	// Attached files
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 	$upload_dir = $conf->ticket->dir_output."/".$object->ref;
 	$nbFiles = count(dol_dir_list($upload_dir, 'files'));
 	/* disabled. Too many bugs. All file of a ticket must be stored into ticket. File must be linked to an event by column agenda_id into llx_ecmfiles.
@@ -168,7 +168,7 @@ function ticket_prepare_head($object)
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of ticket count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_ticket_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -215,7 +215,7 @@ function showDirectPublicLink($object)
 {
 	global $conf, $langs;
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 	$email = CMailFile::getValidAddress($object->origin_email, 2);
 	$url = '';
 	if ($email) {

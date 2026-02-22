@@ -28,10 +28,10 @@ namespace App\Modules\Commande\Classes;
  *  \ingroup    orders
  *  \brief      File of class to manage order statistics
  */
-include_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 include_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 include_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 
 /**

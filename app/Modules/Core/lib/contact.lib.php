@@ -61,7 +61,7 @@ function contact_prepare_head(Contact $object)
 	if (isModEnabled('project') && $user->hasRight('project', 'lire')) {
 		$nbProject = 0;
 		// Enable caching of thirdrparty count projects
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_projects_contact_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 
@@ -119,8 +119,8 @@ function contact_prepare_head(Contact $object)
 		$tab++;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = $conf->societe->dir_output."/contact/".dol_sanitizeFileName($object->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
@@ -138,7 +138,7 @@ function contact_prepare_head(Contact $object)
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of contact count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_contact_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {

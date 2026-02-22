@@ -36,10 +36,10 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/cron/class/cronjob.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/cron.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Cron/class/cronjob.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/cron.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "cron", "bills", "members"));
@@ -172,7 +172,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -251,7 +251,7 @@ if (empty($reshook)) {
 				$param .= '&optioncss='.urlencode($optioncss);
 			}
 			// Add $param from extra fields
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 			header("Location: ".DOL_URL_ROOT.'/cron/list.php?'.$param.'&sortfield='.$sortfield.'&sortorder='.$sortorder); // Make a redirect to avoid to run twice the job when using back
 			exit;
@@ -262,7 +262,7 @@ if (empty($reshook)) {
 	$objectclass = 'CronJob';
 	$objectlabel = 'CronJob';
 	$uploaddir = $conf->cron->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 	if ($massaction && $permissiontoadd) {
 		$tmpcron = new Cronjob($db);
 		foreach ($toselect as $id) {
@@ -369,7 +369,7 @@ if (!empty($search_module_name)) {
 	$sql .= natural_search("t.module_name", $search_module_name);
 }
 // Add where from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 // Add where from hooks
 $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
@@ -437,7 +437,7 @@ if ($search_lastresult) {
 	$param .= '&search_lastresult='.urlencode($search_lastresult);
 }
 // Add $param from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 $stringcurrentdate = $langs->trans("CurrentHour").': '.dol_print_date(dol_now(), 'dayhour');
 
@@ -504,7 +504,7 @@ $topicmail = "SendCronRef";
 $modelmail = "cron";
 $objecttmp = new Cronjob($db);
 $trackid = 'cron'.$object->id;
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $text = $langs->trans("HoursOnThisPageAreOnServerTZ").' '.$stringcurrentdate.'<br>';
 if (getDolGlobalString('CRON_WARNING_DELAY_HOURS')) {

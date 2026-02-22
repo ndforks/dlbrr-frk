@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    takepos
  *  \brief      Description and activation file for the module TakePos
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 include_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 

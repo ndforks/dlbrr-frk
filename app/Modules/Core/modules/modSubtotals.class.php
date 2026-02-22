@@ -32,8 +32,8 @@ namespace App\Modules\Core\Modules;
  *    \ingroup    subtotals
  *    \brief      Description and activation file for the module subtotals
  */
-include_once DOL_DOCUMENT_ROOT."/core/modules/DolibarrModules.class.php";
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+include_once DOL_DOCUMENT_ROOT."/Core/modules/DolibarrModules.class.php";
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 /**
  *		Description and activation class for module subtotals

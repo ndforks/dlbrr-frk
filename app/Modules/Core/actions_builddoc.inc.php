@@ -124,7 +124,7 @@ if ($action == 'builddoc' && ($permissiontoadd || !empty($usercangeneretedoc))) 
 // Delete file in doc form
 if ($action == 'remove_file' && $permissiontoadd) {
 	if (!empty($upload_dir)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		if (empty($object->id) || !$object->id > 0) {
 			// Reload to get all modified line records and be ready for hooks

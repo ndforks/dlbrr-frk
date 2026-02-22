@@ -25,8 +25,8 @@ namespace App\Modules\Core\Modules\Barcode;
  *   \ingroup    barcode
  *   \brief      File with parent classes for barcode document modules and numbering modules
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 
 /**

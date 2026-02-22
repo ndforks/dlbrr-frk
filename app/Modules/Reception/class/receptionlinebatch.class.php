@@ -30,8 +30,8 @@ namespace App\Modules\Reception\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php";
-require_once DOL_DOCUMENT_ROOT."/reception/class/reception.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobject.class.php";
+require_once DOL_DOCUMENT_ROOT."/Reception/class/reception.class.php";
 
 
 /**

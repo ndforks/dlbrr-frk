@@ -383,7 +383,7 @@ class SimpleOpenID
 		// phpcs:enable
 		global $conf;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		if (empty($url)) {
 			$url = getDolGlobalString('MAIN_AUTHENTICATION_OPENID_URL');
 		}
@@ -506,7 +506,7 @@ class SimpleOpenID
 	{
 		global $conf;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		if (empty($url)) {
 			$url = getDolGlobalString('MAIN_AUTHENTICATION_OPENID_URL');
 		}

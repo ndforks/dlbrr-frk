@@ -84,7 +84,7 @@ function check_user_password_ldap($usertotest, $passwordtotest, $entitytotest)
 			print "DEBUG: Logging LDAP steps<br>\n";
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
 		$ldap = new Ldap();
 		$ldap->server = explode(',', $ldaphost);
 		$ldap->serverPort = $ldapport;
@@ -162,7 +162,7 @@ function check_user_password_ldap($usertotest, $passwordtotest, $entitytotest)
 					dol_syslog("functions_ldap::check_user_password_ldap login is now $login (LDAP_FIELD_LOGIN=".getDolGlobalString('LDAP_FIELD_LOGIN').")");
 				}
 
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 				// Note: Test on date validity is done later natively with isNotIntoValidityDateRange() by core after calling checkLoginPassEntity() that call this method
 

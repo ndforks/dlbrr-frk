@@ -139,7 +139,7 @@ class mod_evaluation_advanced extends ModeleNumRefEvaluation
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('HRM_EVALUATION_ADVANCED_MASK');

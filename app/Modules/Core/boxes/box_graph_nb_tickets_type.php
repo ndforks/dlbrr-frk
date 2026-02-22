@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *     \ingroup     ticket
  *     \brief       This box shows the number of tickets types
  */
-require_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+require_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box to show number of ticket types
@@ -68,8 +68,8 @@ class box_graph_nb_tickets_type extends ModeleBoxes
 		global $conf, $user, $langs;
 		global $theme_datacolor, $badgeStatus8;
 
-		require_once DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php";
-		require_once DOL_DOCUMENT_ROOT."/theme/".$conf->theme."/theme_vars.inc.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/lib/functions2.lib.php";
+		require_once DOL_DOCUMENT_ROOT."/Theme/".$conf->theme."/theme_vars.inc.php";
 
 
 		$badgeStatus8 = '#993013';
@@ -143,7 +143,7 @@ class box_graph_nb_tickets_type extends ModeleBoxes
 			$stringtoprint = '';
 			$stringtoprint .= '<div class="div-table-responsive-no-min ">';
 			if (!empty($dataseries) && count($dataseries) > 0) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 				$px1 = new DolGraph();
 
 				$mesg = $px1->isGraphKo();

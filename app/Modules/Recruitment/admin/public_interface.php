@@ -36,8 +36,8 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/lib/recruitment.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "recruitment"));

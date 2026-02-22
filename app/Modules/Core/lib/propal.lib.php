@@ -97,8 +97,8 @@ function propal_prepare_head($object)
 		$h++;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = $conf->propal->multidir_output[$object->entity ?? $conf->entity]."/".dol_sanitizeFileName($object->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
@@ -116,7 +116,7 @@ function propal_prepare_head($object)
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of thirdparty count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_propal_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -267,7 +267,7 @@ function getCustomerProposalPieChart($socid = 0)
 		$db->free($resql);
 
 		global $badgeStatus0, $badgeStatus1, $badgeStatus4, $badgeStatus6, $badgeStatus9;
-		include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 
 		$result = '<div class="div-table-responsive-no-min">';
 		$result .= '<table class="noborder nohover centpercent">';
@@ -306,7 +306,7 @@ function getCustomerProposalPieChart($socid = 0)
 			$result .=  '<tr>';
 			$result .=  '<td align="center" colspan="2">';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 			$dolgraph = new DolGraph();
 			$dolgraph->SetData($dataseries);
 			$dolgraph->SetDataColor(array_values($colorseries));

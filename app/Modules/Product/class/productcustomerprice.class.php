@@ -25,8 +25,8 @@ namespace App\Modules\Product\Classes;
  * \ingroup product
  * \brief File of class to manage predefined price products or services by customer
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  * File of class to manage predefined price products or services by customer

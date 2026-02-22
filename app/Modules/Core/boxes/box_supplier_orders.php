@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  * \ingroup    fournisseurs
  * \brief      Module that generates the latest supplier orders box
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 /**
  * Class that manages the box showing latest supplier orders

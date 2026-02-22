@@ -38,12 +38,12 @@ namespace App\Modules\Accountancy\Classes;
  * \brief 		Class accountancy export
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  * Manage the different format accountancy export
@@ -2222,7 +2222,7 @@ class AccountancyExport
 	 */
 	public function exportLDCompta10($objectLines, $exportFile = null)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$separator = ';';
 		$end_line = "\r\n";

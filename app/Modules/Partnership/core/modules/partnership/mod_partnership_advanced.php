@@ -29,7 +29,7 @@ namespace App\Modules\Partnership\Core\Modules\Partnership;
  * \brief      File containing class for advanced numbering model of Partnership
  */
 
-require_once DOL_DOCUMENT_ROOT.'/partnership/core/modules/partnership/modules_partnership.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/core/modules/partnership/modules_partnership.php';
 
 
 /**
@@ -135,7 +135,7 @@ class mod_partnership_advanced extends ModeleNumRefPartnership
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('PARTNERSHIP_ADVANCED_MASK');

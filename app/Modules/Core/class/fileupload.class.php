@@ -28,8 +28,8 @@ namespace App\Modules\Core\Classes;
  *       			For large files upload, see flowjs-server.php
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 
 /**

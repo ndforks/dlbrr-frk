@@ -29,7 +29,7 @@ namespace App\Modules\Fourn\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT."/reception/class/receptionlinebatch.class.php";
+require_once DOL_DOCUMENT_ROOT."/Reception/class/receptionlinebatch.class.php";
 
 
 /**

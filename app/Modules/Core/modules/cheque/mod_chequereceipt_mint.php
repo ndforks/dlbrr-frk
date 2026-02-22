@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Cheque;
  * \brief      File containing class for numbering module Mint
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/cheque/modules_chequereceipts.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/cheque/modules_chequereceipts.php';
 
 /**
  *  Class to manage cheque receipts numbering rules Mint

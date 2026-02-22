@@ -20,8 +20,8 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
-require_once DOL_DOCUMENT_ROOT.'/reception/class/receptionlinebatch.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Reception/class/receptionlinebatch.class.php';
 
 /**
  * API class for receptions

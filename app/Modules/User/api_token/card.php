@@ -34,8 +34,8 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
 
 // Load translation files required by page
 $langs->loadLangs(array('admin', 'users', 'errors'));
@@ -354,7 +354,7 @@ if ($action == 'create') {
 }
 
 if (isModEnabled('api') && $action == 'create') {
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	print dolJSToSetRandomPassword('api_key', 'generate_api_key', 1);
 }
 

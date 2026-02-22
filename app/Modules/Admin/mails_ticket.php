@@ -27,8 +27,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 /**
  * @var Conf $conf
@@ -105,7 +105,7 @@ if ($action == 'update' && !$cancel) {
 	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS_TICKET", request()->input('MAIN_MAIL_EMAIL_STARTTLS_TICKET'), 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_TICKET", request()->input('MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED_TICKET'), 'chaine', 0, '', $conf->entity);
 
-	include_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
+	include_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
 
 	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
@@ -120,7 +120,7 @@ $paramname = 'id';
 $mode = 'emailfortest';
 $trackid = (($action == 'testhtml') ? "testhtml" : "test");
 $sendcontext = 'ticket'; // Force to use dedicated context of setup for ticket
-include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
@@ -755,7 +755,7 @@ if ($action == 'edit') {
 		print '<div id="formmailaftertstconnect" name="formmailaftertstconnect"></div>';
 		print load_fiche_titre($langs->trans("DoTestServerAvailability"));
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mail = new CMailFile('', '', '', '', array(), array(), array(), '', '', 0, 0, '', '', '', $trackid, $sendcontext);
 
 		$result = $mail->check_server_port((string) $server, (int) $port);
@@ -781,7 +781,7 @@ if ($action == 'edit') {
 		print dol_get_fiche_head(array(), '', '', -1);
 
 		// Cree l'objet formulaire mail
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
 		$formmail->frommail = (request()->has('frommail') ? request()->input('frommail') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));

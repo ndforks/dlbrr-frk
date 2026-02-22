@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Supplier_payment;
  * \brief      File containing class for numbering module Brodator
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_payment/modules_supplier_payment.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_payment/modules_supplier_payment.php';
 
 
 /**
@@ -136,7 +136,7 @@ class mod_supplier_payment_brodator extends ModeleNumRefSupplierPayments
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString("SUPPLIER_PAYMENT_BRODATOR_MASK");

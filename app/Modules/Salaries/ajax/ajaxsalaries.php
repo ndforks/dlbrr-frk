@@ -42,7 +42,7 @@ if (!defined('NOREQUIRESOC')) {
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 /**
  * @var Conf $conf
  * @var DoliDB $db

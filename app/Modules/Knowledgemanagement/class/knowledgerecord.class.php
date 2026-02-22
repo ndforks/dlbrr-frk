@@ -26,7 +26,7 @@ namespace App\Modules\Knowledgemanagement\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/societe/class/societe.class.php';
 //require_once DOL_DOCUMENT_ROOT . '/product/class/product.class.php';
 
@@ -565,7 +565,7 @@ class KnowledgeRecord extends CommonObject
 	{
 		global $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -828,7 +828,7 @@ class KnowledgeRecord extends CommonObject
 			$label = implode($this->getTooltipContentArray($params));
 		}
 
-		$url = dol_buildpath('/knowledgemanagement/knowledgerecord_card.php', 1).'?id='.$this->id;
+		$url = dol_buildpath('/Knowledgemanagement/knowledgerecord_card.php', 1).'?id='.$this->id;
 
 		if ($option != 'nolink') {
 			// Add param to save lastsearch_values or not
@@ -873,7 +873,7 @@ class KnowledgeRecord extends CommonObject
 			}
 		} else {
 			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				list($class, $module) = explode('@', $this->picto);
 				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);
@@ -1238,7 +1238,7 @@ class KnowledgeRecord extends CommonObject
 }
 
 
-// require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+// require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 // /**
 //  * Class KnowledgeRecordLine. You can also remove this and generate a CRUD class for lines objects.

@@ -29,8 +29,8 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/api.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/api.lib.php';
 
 /**
  * @var Conf $conf
@@ -307,11 +307,11 @@ print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 // @phan-suppress-next-line PhanPluginSuspiciousParamOrder
 print_barre_liste($langs->trans("ListOfTokensForAllUsers"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'fa-at', 0, $morehtmlright, '', $limit, 0, 0, 1);
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $colspan = 6; // Base colspan for empty list
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/apitoken_list.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/apitoken_list.tpl.php';
 
 print '</form>';
 

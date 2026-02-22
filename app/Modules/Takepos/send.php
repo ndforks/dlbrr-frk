@@ -50,7 +50,7 @@ require '../main.inc.php'; // Load $user and permissions
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 $facid = request()->integer('facid', 0);
@@ -78,8 +78,8 @@ $error = 0;
 if ($action == "send" && $user->hasRight('takepos', 'run')) {
 	top_httphead('text/html');
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 	$formmail = new FormMail($db);
 	$outputlangs = new Translate('', $conf);
 	$model_id = getDolGlobalInt('TAKEPOS_EMAIL_TEMPLATE_INVOICE');
@@ -98,7 +98,7 @@ if ($action == "send" && $user->hasRight('takepos', 'run')) {
 		$nojs = 1;	// used by include of takepos/receipt.php
 
 		ob_start(); // turn on output receipt
-		include DOL_DOCUMENT_ROOT.'/takepos/receipt.php';
+		include DOL_DOCUMENT_ROOT.'/Takepos/receipt.php';
 		$receipt = ob_get_contents(); // get the contents of the output buffer
 		ob_end_clean();
 	} else {

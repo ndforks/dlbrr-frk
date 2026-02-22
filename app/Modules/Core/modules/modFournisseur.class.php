@@ -32,7 +32,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    fournisseur
  *  \brief      Description and activation file for the module Supplier
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -428,11 +428,11 @@ class modFournisseur extends DolibarrModules
 		$keyforselect = 'facture_fourn';
 		$keyforelement = 'invoice';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'facture_fourn_det';
 		$keyforelement = 'invoice_line';
 		$keyforaliasextra = 'extraline';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		// End add extra fields line
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'societe as s';
@@ -517,7 +517,7 @@ class modFournisseur extends DolibarrModules
 		$keyforselect = 'facture_fourn';
 		$keyforelement = 'invoice';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		// End add extra fields object
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'societe as s';
@@ -588,13 +588,13 @@ class modFournisseur extends DolibarrModules
 		$keyforselect = 'commande_fournisseur';
 		$keyforelement = 'order';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		// End add extra fields object
 		// Add extra fields line
 		$keyforselect = 'commande_fournisseurdet';
 		$keyforelement = 'order_line';
 		$keyforaliasextra = 'extraline';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		// End add extra fields line
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'societe as s';
@@ -974,12 +974,12 @@ class modFournisseur extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template for Supplier Orders
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/supplier_orders/template_supplier_order.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/supplier_orders/template_supplier_order.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/supplier_orders';
 		$dest = $dirodt.'/template_supplier_order.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {
@@ -995,12 +995,12 @@ class modFournisseur extends DolibarrModules
 		);
 
 		//ODT template for Supplier Invoice
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/supplier_invoices/template_supplier_invoices.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/supplier_invoices/template_supplier_invoices.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/supplier_invoices';
 		$dest = $dirodt.'/template_supplier_invoices.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

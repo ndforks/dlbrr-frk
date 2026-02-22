@@ -26,8 +26,8 @@ namespace App\Modules\Core\Triggers;
  *  \ingroup    core
  *  \brief      File of trigger for ticket module
  */
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 
 
 /**
@@ -416,7 +416,7 @@ class InterfaceTicketEmail extends DolibarrTriggers
 			$old_MAIN_MAIL_AUTOCOPY_TO = getDolGlobalString('MAIN_MAIL_AUTOCOPY_TO');
 			$conf->global->MAIN_MAIL_AUTOCOPY_TO = '';
 		}
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($subject, $sendto, $from, $message_admin, $filepaths, $mimetypes, $filenames, '', '', 0, -1, '', '', $trackid, '', 'ticket');
 		if ($mailfile->error) {
 			dol_syslog($mailfile->error, LOG_DEBUG);
@@ -507,7 +507,7 @@ class InterfaceTicketEmail extends DolibarrTriggers
 			$conf->global->MAIN_MAIL_AUTOCOPY_TO = '';
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($subject, $sendto, $from, $message_customer, $filepaths, $mimetypes, $filenames, '', '', 0, -1, '', '', $trackid, '', 'ticket');
 		if ($mailfile->error) {
 			dol_syslog($mailfile->error, LOG_DEBUG);
@@ -573,7 +573,7 @@ class InterfaceTicketEmail extends DolibarrTriggers
 			$conf->global->MAIN_MAIL_AUTOCOPY_TO = '';
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($subject, $sendto, $from, $message, $filepaths, $mimetypes, $filenames, '', '', 0, -1);
 		if ($mailfile->error) {
 			setEventMessages($mailfile->error, $mailfile->errors, 'errors');

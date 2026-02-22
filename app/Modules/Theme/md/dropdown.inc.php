@@ -4,7 +4,7 @@
 if (!defined('ISLOADEDBYSTEELSHEET')) {
 	die('Must be call by steelsheet');
 }
-include_once DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php";
+include_once DOL_DOCUMENT_ROOT."/Core/lib/functions2.lib.php";
 
 // When no photo, we show the login name, so we need an offset to output picto at a fixed position.
 $atoploginusername = empty($user->photo) ? 52 : 0;

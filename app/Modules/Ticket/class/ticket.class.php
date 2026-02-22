@@ -31,9 +31,9 @@ namespace App\Modules\Ticket\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobject.class.php";
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ticket.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ticket.lib.php';
 
 
 /**
@@ -1918,7 +1918,7 @@ class Ticket extends CommonObject
 					$destdir = $conf->ticket->dir_output.'/'.$this->ref;
 					//$destfile = $destdir.'/'.$attachedfiles['names'][$key];
 					//if (dol_mkdir($destdir) >= 0) {
-					//require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					//require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					//dol_move($filespath, $destfile);	// Disabled, a file for a ticket should be stored into ticket directory. It generates big trouble.
 					if (in_array($actioncomm->code, array('TICKET_MSG', 'TICKET_MSG_SENTBYMAIL', 'TICKET_MSG_PRIVATE'))) {
 						$ecmfile = new EcmFiles($this->db);
@@ -2530,7 +2530,7 @@ class Ticket extends CommonObject
 	public function is_photo_available($sdir)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$dir = $sdir.'/';
 
@@ -2565,9 +2565,9 @@ class Ticket extends CommonObject
 		global $conf;
 
 		// Create form object
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 		$maxwidthsmall = 270;
 		$maxheightsmall = 150;
@@ -3163,7 +3163,7 @@ class Ticket extends CommonObject
 
 			$upload_dir_tmp = $conf->user->dir_output."/".$user->id.'/temp';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 			$trackid = "tic".$this->id;
 
 			$moreinheader = 'X-Dolibarr-Info: sendTicketMessageByEmail'."\r\n";

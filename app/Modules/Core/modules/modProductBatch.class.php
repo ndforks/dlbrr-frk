@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    productbatch
  *  \brief      Description and activation file for the module productbatch
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -139,7 +139,7 @@ class modProductBatch extends DolibarrModules
 
 		if (isModEnabled('cashdesk')) {
 			if (!getDolGlobalString('CASHDESK_NO_DECREASE_STOCK')) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 				$res = dolibarr_set_const($db, "CASHDESK_NO_DECREASE_STOCK", 1, 'chaine', 0, '', $conf->entity);
 			}
 		}

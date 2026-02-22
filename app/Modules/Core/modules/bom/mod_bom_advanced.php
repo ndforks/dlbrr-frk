@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Bom;
  * \brief      File containing class for numbering model of BOMs advanced
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/bom/modules_bom.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/bom/modules_bom.php';
 
 
 /**
@@ -135,7 +135,7 @@ class mod_bom_advanced extends ModeleNumRefBoms
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('BOM_ADVANCED_MASK');

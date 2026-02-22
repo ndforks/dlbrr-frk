@@ -32,7 +32,7 @@ namespace App\Modules\Core\Modules;
  *    \ingroup    holiday
  *    \brief      Description and activation file for the module holiday
  */
-include_once DOL_DOCUMENT_ROOT."/core/modules/DolibarrModules.class.php";
+include_once DOL_DOCUMENT_ROOT."/Core/modules/DolibarrModules.class.php";
 
 
 /**
@@ -250,11 +250,11 @@ class modHoliday extends DolibarrModules
 		$keyforselect = 'holiday';
 		$keyforelement = 'holiday';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'user';
 		$keyforelement = 'user';
 		$keyforaliasextra = 'extrau';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'holiday as d';
@@ -323,7 +323,7 @@ class modHoliday extends DolibarrModules
 		$keyforselect = 'holiday';
 		$keyforelement = 'holiday';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinimport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinimport.inc.php';
 	}
 
 	/**
@@ -340,13 +340,13 @@ class modHoliday extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		/*$src=DOL_DOCUMENT_ROOT.'/install/doctemplates/holiday/template_holiday.odt';
+		/*$src=DOL_DOCUMENT_ROOT.'/Install/doctemplates/holiday/template_holiday.odt';
 		$dirodt=DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/holiday';
 		$dest=$dirodt.'/template_order.odt';
 
 		if (file_exists($src) && ! file_exists($dest))
 		{
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result=dol_copy($src, $dest, 0, 0);
 			if ($result < 0)

@@ -39,21 +39,21 @@ if (!defined('DISABLE_JS_GRAHP')) {
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/website/lib/website.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/website2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formwebsite.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/website2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formwebsite.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/website/class/website.class.php';
 require_once DOL_DOCUMENT_ROOT.'/website/class/websitepage.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 
 
 /**
@@ -438,13 +438,13 @@ if ($sortfield) {
 if ($sortorder) {
 	$backtopage .= '&sortorder='.urlencode($sortorder);
 }
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';	// This manage 'sendit', 'confirm_deletefile', 'renamefile' action when submitting new file.
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';	// This manage 'sendit', 'confirm_deletefile', 'renamefile' action when submitting new file.
 
 $backtopage = $savbacktopage;
 //var_dump($backtopage);
 //var_dump($action);
 
-if ($action == 'renamefile') {	// Test on permission not required here. Must be after include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php'; If action were renamefile, we set it to 'file_manager'
+if ($action == 'renamefile') {	// Test on permission not required here. Must be after include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php'; If action were renamefile, we set it to 'file_manager'
 	$action = 'file_manager';
 }
 
@@ -789,7 +789,7 @@ if ($action == 'addcontainer' && $usercanedit) {
 		$grabimages = request()->integer('grabimages', 0) ? 1 : 0;
 		$grabimagesinto = request()->input('grabimagesinto');
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		// The include seems to break typing on variables
 
 		if (empty($urltograb)) {
@@ -1091,7 +1091,7 @@ if ($action == 'addcontainer' && $usercanedit) {
 						getAllImages($object, $objectpage, $urltograbbis, $tmpgeturl['content'], $action, 1, $grabimages, $grabimagesinto);
 
 						// We try to convert the CSS we got by adding a prefix .bodywebsite with lessc to avoid conflict with CSS of Dolibarr.
-						include_once DOL_DOCUMENT_ROOT.'/core/class/lessc.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/lessc.class.php';
 						$lesscobj = new Lessc();
 						try {
 							$contentforlessc = ".bodywebsite {\n".$tmpgeturl['content']."\n}\n";
@@ -1648,8 +1648,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				$htmlheadercontent.= "<?php // BEGIN PHP\n";
 				$htmlheadercontent.= '$websitekey=basename(__DIR__);'."\n";
 				$htmlheadercontent.= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once './master.inc.php'; } // Load env if not already loaded"."\n";
-				$htmlheadercontent.= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				$htmlheadercontent.= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				$htmlheadercontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				$htmlheadercontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				$htmlheadercontent.= "ob_start();\n";
 				// $htmlheadercontent.= "header('Content-type: text/html');\n";		// Not required. htmlheader.html is never call as a standalone page
 				$htmlheadercontent.= "// END PHP ?>\n";*/
@@ -1685,8 +1685,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				$csscontent .= "<?php // BEGIN PHP\n";
 				$csscontent .= '$websitekey=basename(__DIR__);'."\n";
 				$csscontent .= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded\n"; // For the css, we need to set path of master using the dirname of css file.
-				$csscontent .= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				$csscontent .= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				$csscontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				$csscontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				$csscontent .= "ob_start();\n";
 				$csscontent .= "if (! headers_sent()) {	/* because file is included inline when in edit mode and we don't want warning */ \n";
 				$csscontent .= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
@@ -1728,8 +1728,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				$jscontent .= "<?php // BEGIN PHP\n";
 				$jscontent .= '$websitekey=basename(__DIR__);'."\n";
 				$jscontent .= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded\n"; // For the css, we need to set path of master using the dirname of css file.
-				$jscontent .= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				$jscontent .= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				$jscontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				$jscontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				$jscontent .= "ob_start();\n";
 				$jscontent .= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
 				$jscontent .= "header('Content-type: application/javascript');\n";
@@ -1766,8 +1766,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				/*$robotcontent.= "<?php // BEGIN PHP\n";
 				$robotcontent.= '$websitekey=basename(__DIR__);'."\n";
 				$robotcontent.= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once './master.inc.php'; } // Load env if not already loaded"."\n";
-				$robotcontent.= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				$robotcontent.= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				$robotcontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				$robotcontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				$robotcontent.= "ob_start();\n";
 				$robotcontent.= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
 				$robotcontent.= "header('Content-type: text/css');\n";
@@ -1832,8 +1832,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				$manifestjsoncontent .= "<?php // BEGIN PHP\n";
 				$manifestjsoncontent .= '$websitekey=basename(__DIR__);'."\n";
 				$manifestjsoncontent .= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded\n"; // For the css, we need to set path of master using the dirname of css file.
-				$manifestjsoncontent .= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				$manifestjsoncontent .= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				$manifestjsoncontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				$manifestjsoncontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				$manifestjsoncontent .= "ob_start();\n";
 				$manifestjsoncontent .= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
 				$manifestjsoncontent .= "header('Content-type: application/manifest+json');\n";
@@ -1871,8 +1871,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				/*$readmecontent.= "<?php // BEGIN PHP\n";
 				   $readmecontent.= '$websitekey=basename(__DIR__);'."\n";
 				   $readmecontent.= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded"."\n";	// For the css, we need to set path of master using the dirname of css file.
-				   $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				   $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				   $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				   $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				   $readmecontent.= "ob_start();\n";
 				   $readmecontent.= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
 				   $readmecontent.= "header('Content-type: application/manifest+json');\n";
@@ -1910,8 +1910,8 @@ if ($action == 'updatecss' && $usercanedit) {
 				/*$readmecontent.= "<?php // BEGIN PHP\n";
 				 $readmecontent.= '$websitekey=basename(__DIR__);'."\n";
 				 $readmecontent.= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded"."\n";	// For the css, we need to set path of master using the dirname of css file.
-				 $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-				 $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+				 $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+				 $readmecontent.= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 				 $readmecontent.= "ob_start();\n";
 				 $readmecontent.= "header('Cache-Control: max-age=3600, public, must-revalidate');\n";
 				 $readmecontent.= "header('Content-type: application/manifest+json');\n";
@@ -5115,7 +5115,7 @@ if ($action == 'editmeta' || $action == 'createcontainer') {	// Edit properties 
 		$showlinktoailabel = $langs->trans("FillPageWithAIContent");
 		$htmlname = 'content';
 		// Fill $out
-		include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 		print $out;
 		print '</td></tr>';
@@ -5317,7 +5317,7 @@ if ($action == 'editfile' || $action == 'file_manager' || $action == 'convertimg
 	if (empty($url)) {
 		$url = DOL_URL_ROOT.'/website/index.php'; // Must be an url without param
 	}
-	include DOL_DOCUMENT_ROOT.'/core/tpl/filemanager.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/filemanager.tpl.php';
 
 	print '</div>';
 }
@@ -5348,7 +5348,7 @@ if ($action == 'editsource') {
 	}
 
 	$poscursor = array('x' => request()->input('PAGE_CONTENT_x'), 'y' => request()->input('PAGE_CONTENT_y'));
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('PAGE_CONTENT', $contentforedit, '', $maxheightwin, 'Full', '', true, true, 'ace', ROWS_5, '40%', 0, $poscursor);
 	$doleditor->Create(0, '', false, 'HTML Source', 'php');
 }
@@ -5367,7 +5367,7 @@ if ($action == 'editcontent') {
 	// with http, /viewimage.php or DOL_URL_ROOT./viewimage.phps
 	$contentforedit = preg_replace('/(<img.*\ssrc=")(?!http|\/viewimage\.php|'.preg_quote(DOL_URL_ROOT, '/').'\/viewimage\.php)/', '\1'.DOL_URL_ROOT.'/viewimage.php?modulepart=medias&file=', $contentforedit, -1, $nbrep);
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$poscursor = array('x' => request()->input('PAGE_CONTENT_x'), 'y' => request()->input('PAGE_CONTENT_y'));
 	$doleditor = new DolEditor('PAGE_CONTENT', $contentforedit, '', 500, 'Full', '', true, true, true, ROWS_5, '90%', 0, $poscursor);
 	$doleditor->Create(0, '', false);
@@ -5448,7 +5448,7 @@ if ($mode == 'replacesite' || $massaction == 'replace') {
 		print '<div class="tagtd">';
 		//print $form->selectCategories(Categorie::TYPE_WEBSITE_PAGE, 'optioncategory', $object);
 		print img_picto('', 'category', 'class="paddingrightonly"').' '.$form->select_all_categories(Categorie::TYPE_WEBSITE_PAGE, request()->has('optioncategory') ? request()->input('optioncategory') : '', 'optioncategory', 0, 0, 0, 0, 'minwidth125 maxwidth400 widthcentpercentminusx');
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 		print ajax_combobox('optioncategory');
 		print '</div>';
 		print '</div>';
@@ -5500,7 +5500,7 @@ if ($mode == 'replacesite' || $massaction == 'replace') {
 			$massactionbutton .= '<div class="massactionother massactionsetcategory massactiondelcategory hidden">';
 			$massactionbutton .= img_picto('', 'category', 'class="pictofixedwidth"');
 			$massactionbutton .= $form->select_all_categories(Categorie::TYPE_WEBSITE_PAGE, request()->has('setcategory') ? request()->input('setcategory') : '', 'setcategory', 64, 0, 0, 0, 'minwidth300 alignstart');
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$massactionbutton .= ajax_combobox('setcategory');
 			$massactionbutton .= '</div>';
 
@@ -5516,7 +5516,7 @@ if ($mode == 'replacesite' || $massaction == 'replace') {
 			$modelmail = "websitepage_send";
 			$objecttmp = new WebsitePage($db);
 			$trackid = 'wsp'.$object->id;
-			include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 			$param = 'mode=replacesite&website='.urlencode($website->ref);
 			$param .= '&searchstring='.urlencode($searchkey);

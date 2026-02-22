@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Ticket;
  *    \brief      File with class to manage the numbering module Universal for Ticket references
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/ticket/modules_ticket.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/ticket/modules_ticket.php';
 
 /**
  *  Class to manage the numbering module Universal for Ticket references
@@ -139,7 +139,7 @@ class mod_ticket_universal extends ModeleNumRefTicket
 	{
 		global $db, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We define criterion search counter
 		$mask = getDolGlobalString("TICKET_UNIVERSAL_MASK");

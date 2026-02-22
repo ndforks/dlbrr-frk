@@ -69,7 +69,7 @@ restrictedArea($user, 'projet', 0, 'projet&project');
 
 dol_syslog("Call ajax projet/ajax/projects.php");
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 
 // Mode to get list of projects
 if (empty($mode) || $mode != 'gettasks') {

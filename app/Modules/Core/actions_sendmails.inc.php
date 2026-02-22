@@ -57,7 +57,7 @@ $error = 0;
 if (request()->input('addfile')) {
 	$trackid = request()->integer('trackid', 0);
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 	// Set tmp user directory
 	$vardir = $conf->user->dir_output."/".$user->id;
@@ -73,7 +73,7 @@ if (request()->input('addfile')) {
 if (request()->input('removedfile') && !request()->input('removeAll')) {
 	$trackid = request()->integer('trackid', 0);
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 	// Set tmp user directory
 	$vardir = $conf->user->dir_output."/".$user->id;
@@ -105,7 +105,7 @@ if (request()->input('removeAll')) {
 		$listofmimes = explode(';', $_SESSION["listofmimes".$keytoavoidconflict]);
 	}
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 	$formmail = new FormMail($db);
 	$formmail->trackid = $trackid;
 
@@ -306,7 +306,7 @@ if (($action == 'send' || $action == 'relance') && !request()->input('addfile') 
 			$urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domain name found into config file
 			//$urlwithroot=DOL_MAIN_URL_ROOT;					// This is to use same domain name than current
 
-			require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 
 			$langs->load("commercial");
 
@@ -382,7 +382,7 @@ if (($action == 'send' || $action == 'relance') && !request()->input('addfile') 
 			}
 
 			// Create form object
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($db);
 			$formmail->trackid = $trackid; // $trackid must be defined
 

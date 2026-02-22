@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Export;
  *	\brief      File of parent class for export modules
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 
 
 /**
@@ -122,7 +122,7 @@ class ModeleExports extends CommonDocGenerator    // This class can't be abstrac
 
 		dol_syslog(get_class($this)."::listOfAvailableExportFormat");
 
-		$dir = DOL_DOCUMENT_ROOT."/core/modules/export/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/modules/export/";
 		$handle = opendir($dir);
 
 		// Recherche des fichiers drivers exports disponibles

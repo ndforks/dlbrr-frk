@@ -62,12 +62,12 @@ require '../../main.inc.php';
  * @var ?User $user
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership_type.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership_type.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 // Init vars
 $errmsg = '';
@@ -122,7 +122,7 @@ function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $
 
 	print '<body id="mainbody" class="publicnewmemberform">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	htmlPrintOnlineHeader($mysoc, $langs, 1, getDolGlobalString('PARTNERSHIP_PUBLIC_INTERFACE_TOPIC'), 'PARTNERSHIP_IMAGE_PUBLIC_REGISTRATION');
 
 	print '<div class="divmainbodylarge">';
@@ -324,7 +324,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 			$result = $partnership->create($user);
 			if ($result > 0) {
 				/*
-				require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 				$object = $partnership;
 
 
@@ -336,7 +336,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 					$msg = '';
 
 					// Send subscription email
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 					$formmail = new FormMail($db);
 					// Set output language
 					$outputlangs = new Translate('', $conf);
@@ -670,7 +670,7 @@ if (!getDolGlobalString('SOCIETE_DISABLE_STATE')) {
 // Other attributes
 $parameters['tdclass'] = 'titlefieldauto';
 $parameters['tpl_context'] = 'public';	// define template context to public
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 // Comments
 print '<tr>';
 print '<td class="tdtop wordbreak">'.$langs->trans("Comments").'</td>';

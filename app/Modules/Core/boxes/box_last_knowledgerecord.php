@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *     \ingroup     knowledgerecord
  *     \brief       This box shows latest created knowledgerecords
  */
-require_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+require_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box
@@ -79,7 +79,7 @@ class box_last_knowledgerecord extends ModeleBoxes
 
 		$this->max = $max;
 
-		require_once DOL_DOCUMENT_ROOT."/knowledgemanagement/class/knowledgerecord.class.php";
+		require_once DOL_DOCUMENT_ROOT."/Knowledgemanagement/class/knowledgerecord.class.php";
 
 		$text = $langs->trans("BoxLastKnowledgerecordDescription", $max);
 		$this->info_box_head = array(

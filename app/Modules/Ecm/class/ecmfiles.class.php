@@ -30,8 +30,8 @@ namespace App\Modules\Ecm\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  * Class to manage ECM files
@@ -269,7 +269,7 @@ class EcmFiles extends CommonObject
 
 		// If ref not defined
 		if (empty($this->ref)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 			$this->ref = dol_hash($this->filepath.'/'.$this->filename, '3');
 		}
 

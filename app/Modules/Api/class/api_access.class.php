@@ -280,7 +280,7 @@ class DolibarrApiAccess implements iAuthenticate
 			if (getDolGlobalString('API_COUNTER_ENABLED')) {
 				if (!getDolGlobalString('API_IN_TOKEN_TABLE')) {
 					// Update the counter into table llx_const
-					include DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+					include DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 					dolibarr_set_const($this->db, 'API_COUNTER_COUNT', getDolGlobalInt('API_COUNTER_COUNT') + 1);
 					//var_dump('eeee');exit;
 				} else {

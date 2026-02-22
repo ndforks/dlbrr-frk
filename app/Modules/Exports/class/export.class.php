@@ -188,7 +188,7 @@ class Export
 		$i = 0;
 
 		// Define list of modules directories into modulesdir
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$modulesdir = dolGetModulesDirs();
 
@@ -701,7 +701,7 @@ class Export
 		}
 
 		// Creation of class to export using model ExportXXX
-		$dir = DOL_DOCUMENT_ROOT."/core/modules/export/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/modules/export/";
 		$file = "export_".$model.".modules.php";
 		$classname = "Export".$model;
 		require_once $dir.$file;
@@ -796,7 +796,7 @@ class Export
 								}
 							} elseif (is_string($item) && $item == 'getNumOpenDays') {
 								// Operation GETNUMOPENDAYS (for Holiday module)
-								include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+								include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 								//$alias=$this->array_export_alias[$indice][$key];
 								$alias = str_replace(array('.', '-', '(', ')'), '_', $key);

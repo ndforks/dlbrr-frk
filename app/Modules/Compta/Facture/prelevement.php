@@ -30,11 +30,11 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/invoice.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fourn.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/invoice.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fourn.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/prelevement/class/bonprelevement.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
@@ -481,7 +481,7 @@ if ($object->id > 0) {
 	}
 	$backtopage = urlencode($_SERVER["PHP_SELF"].'?facid='.$object->id);
 	$cannotApplyDiscount = 1;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/object_discounts.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/object_discounts.tpl.php';
 
 	print '</td></tr>';
 
@@ -613,7 +613,7 @@ if ($object->id > 0) {
 
 	print '<table class="border tableforfield centpercent">';
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/object_currency_amount.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/object_currency_amount.tpl.php';
 
 	$sign = 1;
 	if (getDolGlobalString('INVOICE_POSITIVE_CREDIT_NOTE_SCREEN') && $object->type == $object::TYPE_CREDIT_NOTE) {

@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Cheque;
  * \brief      File containing class for numbering module Thyme
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/cheque/modules_chequereceipts.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/cheque/modules_chequereceipts.php';
 
 
 /**
@@ -132,7 +132,7 @@ class mod_chequereceipt_thyme extends ModeleNumRefChequeReceipts
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('CHEQUERECEIPTS_THYME_MASK');

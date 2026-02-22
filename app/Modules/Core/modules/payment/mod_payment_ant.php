@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Payment;
  * \brief      File containing class for numbering module Ant
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/payment/modules_payment.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/payment/modules_payment.php';
 
 
 /**
@@ -141,7 +141,7 @@ class mod_payment_ant extends ModeleNumRefPayments
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('PAYMENT_ANT_MASK');

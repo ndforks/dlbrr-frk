@@ -194,7 +194,7 @@ if ((!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE
 	$sectiondir = request()->input('file') ? request()->input('file') : request()->input('section_dir');
 
 	print '<!-- Start form to attach new file in filemanager.tpl.php sectionid='.$section.' sectiondir='.$sectiondir.' -->'."\n";
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	$formfile = new FormFile($db);
 	print $formfile->form_attach_new_file($_SERVER["PHP_SELF"], 'none', 0, ($section ? $section : -1), $permtoupload, 48, null, '', 0, '', 0, $nameforformuserfile, '', $sectiondir, empty($formalreadyopen) ? 0 : $formalreadyopen, 0, 0, 1);
 } else {
@@ -257,7 +257,7 @@ if ($action == 'convertimgwebp' && $permtoadd) {
 		$imagefolder = $conf->ecm->dir_output.'/'.dol_sanitizePathName(request()->input('section_dir'));
 	}
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 	if (!empty($file)) {
 		$filelist = array();
@@ -358,7 +358,7 @@ if (empty($action) || $action == 'editfile' || $action == 'file_manager' || preg
 		if (empty($url)) {
 			$url = DOL_URL_ROOT.'/ecm/index.php';
 		}
-		include DOL_DOCUMENT_ROOT.'/core/ajax/ajaxdirtree.php';
+		include DOL_DOCUMENT_ROOT.'/Core/ajax/ajaxdirtree.php';
 
 		print '</div>';
 		print '</td></tr>';
@@ -388,7 +388,7 @@ if (empty($url)) {	// autoset $url but it is better to have it defined before (f
 		$url = DOL_URL_ROOT.'/ecm/index.php';
 	}
 }
-include DOL_DOCUMENT_ROOT.'/core/ajax/ajaxdirpreview.php'; // Show content of a directory on right side
+include DOL_DOCUMENT_ROOT.'/Core/ajax/ajaxdirpreview.php'; // Show content of a directory on right side
 
 
 // End right panel

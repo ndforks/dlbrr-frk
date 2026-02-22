@@ -40,11 +40,11 @@ require '../../main.inc.php';
  */
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("users", "companies", "agenda", "commercial", "other", "orders", "bills"));
@@ -194,7 +194,7 @@ foreach ($object->fields as $key => $val) {
 }
 
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 // Complete arrayfields with special fields
 $arrayfields = array_merge($arrayfields, array(
@@ -242,7 +242,7 @@ if ($reshook < 0) {
 }
 
 // Selection of new fields
-include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 // Purge search criteria
 if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	//$actioncode='';
@@ -301,7 +301,7 @@ if (empty($reshook)) {
 	// Only users that can delete any event can remove records.
 	$permissiontodelete = $user->hasRight('agenda', 'allactions', 'delete');
 	$permissiontoadd = $user->hasRight('agenda', 'myactions', 'create');
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 }
 
 
@@ -426,7 +426,7 @@ if ($search_categ_cus != 0) {
 }
 
 // Add $param from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 $paramnoactionodate = $param;
 
@@ -609,7 +609,7 @@ if ($search_categ_cus != -1) {
 }
 
 // Add where from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 
 // Add where from hooks
 $parameters = array();
@@ -809,7 +809,7 @@ print_barre_liste($langs->trans("Agenda"), $page, $_SERVER["PHP_SELF"], $param, 
 print $s;
 
 $objecttmp = new ActionComm($db);
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $moreforfilter = '';
 
@@ -883,7 +883,7 @@ if (!empty($arrayfields['a.fk_element']['checked'])) {
 }
 
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 // Fields from hook
 $parameters = array('arrayfields' => $arrayfields);
@@ -962,7 +962,7 @@ if (!empty($arrayfields['a.fk_element']['checked'])) {
 	$totalarray['nbfield']++;
 }
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 // Hook fields
 $parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);
 $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters); // Note that $action and $object may have been modified by hook
@@ -1288,7 +1288,7 @@ while ($i < $imaxinloop) {
 	}
 
 	// Extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 	// Fields from hook
 	$parameters = array('arrayfields' => $arrayfields, 'obj' => $obj, 'i' => $i, 'totalarray' => &$totalarray);
 	$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters); // Note that $action and $object may have been modified by hook

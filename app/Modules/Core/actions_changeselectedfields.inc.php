@@ -48,7 +48,7 @@ if (request()->input('formfilteraction') == 'listafterchangingselectedfields') {
 		$tabparam["MAIN_SELECTEDFIELDS_".$varpage] = '';
 	}
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 	$result = dol_set_user_param($db, $conf, $user, $tabparam);
 

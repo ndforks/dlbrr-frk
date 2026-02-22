@@ -136,7 +136,7 @@ class mod_myobject_advanced extends ModeleNumRefMyObject
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('MYMODULE_MYOBJECT_ADVANCED_MASK');

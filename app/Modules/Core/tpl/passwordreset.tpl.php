@@ -75,7 +75,7 @@ if ($size > 10000) {
 	httponly_abort(403);.'<br><a href="'.DOL_URL_ROOT.'">'.$langs->trans("ClickHereToGoToApp").'</a></center>', 413, 1);
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 
 /*
@@ -249,8 +249,8 @@ if (!empty($captcha)) {
 		$php_self .= '?time='.dol_print_date(dol_now(), 'dayhourlog');
 	}
 
-	$classfile = DOL_DOCUMENT_ROOT."/core/modules/security/captcha/modCaptcha".ucfirst($captcha).'.class.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	$classfile = DOL_DOCUMENT_ROOT."/Core/modules/security/captcha/modCaptcha".ucfirst($captcha).'.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 	$captchaobj = null;
 	if (dol_is_file($classfile)) {
 		// Charging the numbering class

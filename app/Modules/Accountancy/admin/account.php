@@ -34,10 +34,10 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('accountancy', 'admin', 'bills', 'compta', 'salaries'));
@@ -148,12 +148,12 @@ if (empty($reshook)) {
 
 	$objectclass = 'AccountingAccount';
 	$uploaddir = $conf->accounting->multidir_output[$conf->entity];
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 
 	if ($action == "delete") {
 		$action = "";
 	}
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$search_account = "";
@@ -188,7 +188,7 @@ if (empty($reshook)) {
 
 			// Try to load sql file
 			if ($country_code) {
-				$sqlfile = DOL_DOCUMENT_ROOT.'/install/mysql/data/llx_accounting_account_'.strtolower($country_code).'.sql';
+				$sqlfile = DOL_DOCUMENT_ROOT.'/Install/mysql/data/llx_accounting_account_'.strtolower($country_code).'.sql';
 
 				$offsetforchartofaccount = 0;
 				// Get the comment line '-- ADD CCCNNNNN to rowid...' to find CCCNNNNN (CCC is country num, NNNNN is id of accounting account)
@@ -446,7 +446,7 @@ if ($resql) {
 	// @phan-suppress-next-line PhanPluginSuspiciousParamOrder
 	print_barre_liste($langs->trans('ListAccounts'), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'accounting_account', 0, $newcardbutton, '', $limit, 0, 0, 1);
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 	// Box to select active chart of account
 	print $langs->trans("Selectchartofaccounts")." : ";

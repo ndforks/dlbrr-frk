@@ -26,7 +26,7 @@ namespace App\Modules\Partnership\Core\Modules\Partnership;
  *  \ingroup    partnership
  *  \brief      File of class to manage Partnership numbering rules standard
  */
-require_once DOL_DOCUMENT_ROOT.'/partnership/core/modules/partnership/modules_partnership.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/core/modules/partnership/modules_partnership.php';
 
 
 /**

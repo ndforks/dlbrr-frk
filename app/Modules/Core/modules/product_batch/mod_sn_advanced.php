@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules\Product_batch;
  * \brief      File containing class for numbering model of SN advanced
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/product_batch/modules_product_batch.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/product_batch/modules_product_batch.class.php';
 
 
 /**
@@ -148,7 +148,7 @@ class mod_sn_advanced extends ModeleNumRefBatch
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('SN_ADVANCED_MASK');

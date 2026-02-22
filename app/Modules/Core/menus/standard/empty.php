@@ -114,7 +114,7 @@ class MenuManager
 
 		$id = 'mainmenu';
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/menu.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/menu.class.php';
 		$this->menu = new Menu();
 
 		$noout = 0;

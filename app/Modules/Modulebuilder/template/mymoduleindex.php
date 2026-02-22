@@ -68,7 +68,7 @@ if (!$res) {
  * @var Translate $langs
  * @var User $user
  */
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("mymodule@mymodule"));

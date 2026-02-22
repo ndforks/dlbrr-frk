@@ -140,7 +140,7 @@ if ($conf->use_javascript_ajax && 1 == 2) {   // select2 is not best with smartp
 	$usedbyinclude = 1; // Used into next include
 	$showtitlebefore = request()->integer('showtitlebefore', 0);
 	$arrayresult = array();
-	include DOL_DOCUMENT_ROOT.'/core/ajax/selectsearchbox.php';
+	include DOL_DOCUMENT_ROOT.'/Core/ajax/selectsearchbox.php';
 
 	$i = 0;
 	$accesskeyalreadyassigned = array();

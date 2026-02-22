@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *      \ingroup    banque
  *      \brief      Module to generate box for bank accounts
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 include_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 

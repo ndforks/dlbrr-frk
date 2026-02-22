@@ -68,7 +68,7 @@ if ($size > 10000) {
 	httponly_abort(403);.'.<br><a href="'.DOL_URL_ROOT.'">'.$langs->trans("ClickHereToGoToApp").'</a></center>', 413, 1);
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 '
 @phan-var-force HookManager $hookmanager
@@ -317,7 +317,7 @@ if ($disablenofollow) {
 <span class="fa fa-key"></span>
 <input type="password" id="password" maxlength="128" placeholder="<?php echo $langs->trans("Password"); ?>" name="password" class="flat input-icon-password minwidth150 input-nobottom" value="<?php echo dol_escape_htmltag($password); ?>" tabindex="2" autocomplete="<?php echo !getDolGlobalString('MAIN_LOGIN_ENABLE_PASSWORD_AUTOCOMPLETE') ? 'off' : 'on'; ?>" />
 	<?php
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	print showEyeForField('togglepassword', 'password');
 	?>
 </div></div>
@@ -555,7 +555,7 @@ if (!empty($message)) {
 
 // Add commit strip
 if (getDolGlobalString('MAIN_EASTER_EGG_COMMITSTRIP')) {
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 	if (substr($langs->defaultlang, 0, 2) == 'fr') {
 		$resgetcommitstrip = getURLContent("https://www.commitstrip.com/fr/feed/");
 	} else {

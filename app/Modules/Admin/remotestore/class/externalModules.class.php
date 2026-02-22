@@ -18,7 +18,7 @@
  * or see https://www.gnu.org/
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 
 /**
  * Class ExternalModules

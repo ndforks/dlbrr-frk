@@ -51,7 +51,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 	$h++;
 	$nbContacts = 0;
 	// Enable caching of project count Contacts
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 	$cachekey = 'count_contacts_project_'.$project->id;
 	$dataretrieved = dol_getcache($cachekey);
 
@@ -73,7 +73,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 		// Then tab for sub level of projet, i mean tasks
 		$nbTasks = 0;
 		// Enable caching of project count Tasks
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_tasks_project_'.$project->id;
 		$dataretrieved = dol_getcache($cachekey);
 
@@ -234,7 +234,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 		// Enable caching of conf or booth count
 		$nbConfOrBooth = 0;
 		$nbAttendees = 0;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_conferenceorbooth_'.$project->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -305,14 +305,14 @@ function project_prepare_head(Project $project, $moreparam = '')
 	// Attached files and Links
 	$totalAttached = 0;
 	// Enable caching of thirdrparty count attached files and links
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 	$cachekey = 'count_attached_project_'.$project->id;
 	$dataretrieved = dol_getcache($cachekey);
 	if (!is_null($dataretrieved)) {
 		$totalAttached = $dataretrieved;
 	} else {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$upload_dir = $conf->project->multidir_output[empty($project->entity) ? 1 : $project->entity]."/".dol_sanitizeFileName($project->ref);
 		$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 		$nbLinks = Link::count($db, $project->element, $project->id);
@@ -331,7 +331,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 	if (getDolGlobalString('PROJECT_ALLOW_COMMENT_ON_PROJECT')) {
 		$nbComments = 0;
 		// Enable caching of thirdrparty count attached files and links
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_attached_project_'.$project->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -354,7 +354,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of project count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_project_'.$project->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -466,8 +466,8 @@ function task_prepare_head($object)
 
 	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(request()->input('withproject') ? '&withproject=1' : '');
 	$filesdir = $conf->project->multidir_output[$object->entity ?? $conf->entity]."/".dol_sanitizeFileName($object->project->ref).'/'.dol_sanitizeFileName($object->ref);
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$nbFiles = count(dol_dir_list($filesdir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
 	$head[$h][1] = $langs->trans('Documents');
@@ -999,7 +999,7 @@ function projectLinesa(&$inc, $parent, &$lines, &$level, $var, $showproject, &$t
 				$extrafieldsobjectprefix = 'efpt.';
 				$obj = $lines[$i];
 				$object = $lines[$i];
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 				// Fields from hook
 				$parameters = array('arrayfields' => $arrayfields, 'obj' => $lines[$i]);
 				$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters); // Note that $action and $object may have been modified by hook
@@ -1490,7 +1490,7 @@ function projectLinesPerDay(&$inc, $parent, $fuser, $lines, &$level, &$projectsr
 	$restrictBefore = null;
 
 	if (getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$restrictBefore = dol_time_plus_duree(dol_now(), -1 * getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS'), 'm');
 	}
 
@@ -1581,7 +1581,7 @@ function projectLinesPerDay(&$inc, $parent, $fuser, $lines, &$level, &$projectsr
 
 					$extrafieldsobjectkey='projet';
 					$extrafieldsobjectprefix='efp.';
-					include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 
 					print '</tr>';
 					print '<tr>';
@@ -1621,7 +1621,7 @@ function projectLinesPerDay(&$inc, $parent, $fuser, $lines, &$level, &$projectsr
 
 					$extrafieldsobjectkey='projet';
 					$extrafieldsobjectprefix='efp.';
-					include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 
 					print '</tr>';
 					print '</table>';
@@ -1680,7 +1680,7 @@ function projectLinesPerDay(&$inc, $parent, $fuser, $lines, &$level, &$projectsr
 				// TASK extrafields
 				$extrafieldsobjectkey = 'projet_task';
 				$extrafieldsobjectprefix = 'efpt.';
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 
 				// Planned Workload
 				if (!empty($arrayfields['t.planned_workload']['checked'])) {
@@ -1895,7 +1895,7 @@ function projectLinesPerWeek(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &$
 	$restrictBefore = null;
 
 	if (getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$restrictBefore = dol_time_plus_duree(dol_now(), -1 * getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS'), 'm');
 	}
 
@@ -1986,7 +1986,7 @@ function projectLinesPerWeek(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &$
 
 					$extrafieldsobjectkey='projet';
 					$extrafieldsobjectprefix='efp.';
-					include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 
 					print '</tr>';
 					print '<tr>';
@@ -2026,7 +2026,7 @@ function projectLinesPerWeek(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &$
 
 					$extrafieldsobjectkey='projet';
 					$extrafieldsobjectprefix='efp.';
-					include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 
 					print '</tr>';
 					print '</table>';
@@ -2085,7 +2085,7 @@ function projectLinesPerWeek(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &$
 				// TASK extrafields
 				$extrafieldsobjectkey = 'projet_task';
 				$extrafieldsobjectprefix = 'efpt.';
-				include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 
 				// Planned Workload
 				if (!empty($arrayfields['t.planned_workload']['checked'])) {
@@ -2302,7 +2302,7 @@ function projectLinesPerMonth(&$inc, $firstdaytoshow, $fuser, $parent, $lines, &
 	$restrictBefore = null;
 
 	if (getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$restrictBefore = dol_time_plus_duree(dol_now(), -1 * getDolGlobalInt('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS'), 'm');
 	}
 

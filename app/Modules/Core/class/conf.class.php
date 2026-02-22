@@ -551,7 +551,7 @@ class Conf extends stdClass
 		);
 
 		if (!is_null($db) && is_object($db)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 
 			// Define all global constants into $this->global->key=value
 			$sql = "SELECT ".$db->decrypt('name')." as name,";

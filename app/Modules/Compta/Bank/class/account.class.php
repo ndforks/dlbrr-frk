@@ -34,7 +34,7 @@ namespace App\Modules\Compta\Bank\Classes;
  *	\brief      File of class to manage bank accounts
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -779,7 +779,7 @@ class Account extends CommonObject
 		}
 
 		// Load the library to validate/check a BAN account
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
 
 		$now = dol_now();
 
@@ -1048,7 +1048,7 @@ class Account extends CommonObject
 		global $conf, $langs;
 
 		// Load library to get BAN control function
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
 
 		dol_syslog(get_class($this)."::update_bban $this->code_banque,$this->code_guichet,$this->number,$this->cle_rib,$this->iban");
 
@@ -1418,7 +1418,7 @@ class Account extends CommonObject
 			$langs->load("banks");
 			$now = dol_now();
 
-			require_once DOL_DOCUMENT_ROOT.'/core/class/workboardresponse.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/workboardresponse.class.php';
 
 			$response = new WorkboardResponse();
 			$response->warning_delay = $conf->bank->rappro->warning_delay / 60 / 60 / 24;
@@ -1529,7 +1529,7 @@ class Account extends CommonObject
 	{
 		global $langs;
 		$langs->loadLangs(['banks', 'compta']);
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
 
 		$datas = array();
 
@@ -1547,7 +1547,7 @@ class Account extends CommonObject
 		$datas['accountcurrency'] = '<br><br><b>'.$langs->trans("AccountCurrency").':</b> '.$this->currency_code;
 
 		if (isModEnabled('accounting')) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 			$langs->load("accountancy");
 			$datas['accountaccounting'] = '<br><b>'.$langs->trans('AccountAccounting').':</b> '.length_accountg($this->account_number);
 			$datas['accountancyjournal'] = '<br><b>'.$langs->trans('AccountancyJournal').':</b> '.$this->accountancy_journal;
@@ -1581,7 +1581,7 @@ class Account extends CommonObject
 			$notooltip = 1; // Force disable tooltips
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
 
 		$result = '';
 		$classfortooltip = 'classfortooltip';
@@ -1666,7 +1666,7 @@ class Account extends CommonObject
 	 */
 	public function verif()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
 
 		$error = 0;
 
@@ -2067,7 +2067,7 @@ class Account extends CommonObject
 }
 
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  *	Class to manage bank transaction lines

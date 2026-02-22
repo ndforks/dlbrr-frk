@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Printing;
  *      \brief      File to provide printing with Google Cloud Print
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/printing/modules_printing.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/printing/modules_printing.php';
 require_once DOL_DOCUMENT_ROOT.'/includes/OAuth/bootstrap.php';
 
 use OAuth\Common\Storage\DoliStorage;
@@ -349,7 +349,7 @@ class printing_printgcp extends PrintingDriver
 	 */
 	public function printFile($file, $module, $subdir = '')
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		global $conf, $user;
 		$error = 0;

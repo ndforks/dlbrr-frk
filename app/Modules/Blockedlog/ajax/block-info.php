@@ -48,7 +48,7 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 
 
 $id = request()->integer('id', 0);

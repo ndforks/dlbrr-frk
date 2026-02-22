@@ -84,9 +84,9 @@ class FormFile
 	{
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 
 		$tmparraysize = getDefaultImageSizes();
 		$maxwidthsmall = $tmparraysize['maxwidthsmall'];
@@ -496,7 +496,7 @@ class FormFile
 			$form = new Form($this->db);
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// For backward compatibility
 		if (!empty($iconPDF)) {
@@ -580,63 +580,63 @@ class FormFile
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/societe/modules_societe.class.php';
 					$modellist = ModeleThirdPartyDoc::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'propal') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/propale/modules_propale.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/propale/modules_propale.php';
 					$modellist = ModelePDFPropales::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'supplier_proposal') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_proposal/modules_supplier_proposal.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_proposal/modules_supplier_proposal.php';
 					$modellist = ModelePDFSupplierProposal::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'commande') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/commande/modules_commande.php';
 					$modellist = ModelePDFCommandes::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'expedition') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/expedition/modules_expedition.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/expedition/modules_expedition.php';
 					$modellist = ModelePdfExpedition::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'reception') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
 					$modellist = ModelePdfReception::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'delivery') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/modules_delivery.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/modules_delivery.php';
 					$modellist = ModelePDFDeliveryOrder::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'ficheinter') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/fichinter/modules_fichinter.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/fichinter/modules_fichinter.php';
 					$modellist = ModelePDFFicheinter::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'facture') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/facture/modules_facture.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/facture/modules_facture.php';
 					$modellist = ModelePDFFactures::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'contract') {
@@ -644,63 +644,63 @@ class FormFile
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/contract/modules_contract.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/contract/modules_contract.php';
 					$modellist = ModelePDFContract::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'project') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/project/modules_project.php';
 					$modellist = ModelePDFProjects::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'project_task') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/project/task/modules_task.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/project/task/modules_task.php';
 					$modellist = ModelePDFTask::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'product') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/product/modules_product.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/product/modules_product.class.php';
 					$modellist = ModelePDFProduct::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'product_batch') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/product_batch/modules_product_batch.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/product_batch/modules_product_batch.class.php';
 					$modellist = ModelePDFProductBatch::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'stock') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/stock/modules_stock.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/stock/modules_stock.php';
 					$modellist = ModelePDFStock::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'hrm') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/hrm/modules_evaluation.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/hrm/modules_evaluation.php';
 					$modellist = ModelePDFEvaluation::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'movement') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/movement/modules_movement.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/movement/modules_movement.php';
 					$modellist = ModelePDFMovement::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'export') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/export/modules_export.php';
 					//$modellist = ModeleExports::liste_modeles($this->db);		// liste_modeles() does not exists. We are using listOfAvailableExportFormat() method instead that return a different array format.
 					$modellist = array();
 				}
@@ -708,7 +708,7 @@ class FormFile
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_order/modules_commandefournisseur.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_order/modules_commandefournisseur.php';
 					$modellist = ModelePDFSuppliersOrders::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'facture_fournisseur' || $modulepart == 'supplier_invoice') {
@@ -716,49 +716,49 @@ class FormFile
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_invoice/modules_facturefournisseur.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_invoice/modules_facturefournisseur.php';
 					$modellist = ModelePDFSuppliersInvoices::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'supplier_payment') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_payment/modules_supplier_payment.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_payment/modules_supplier_payment.php';
 					$modellist = ModelePDFSuppliersPayments::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'remisecheque') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/cheque/modules_chequereceipts.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/cheque/modules_chequereceipts.php';
 					$modellist = ModeleChequeReceipts::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'donation') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/dons/modules_don.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/dons/modules_don.php';
 					$modellist = ModeleDon::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'member') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/member/modules_cards.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/member/modules_cards.php';
 					$modellist = ModelePDFCards::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'agenda' || $modulepart == 'actions') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/action/modules_action.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/action/modules_action.php';
 					$modellist = ModeleAction::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'expensereport') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/expensereport/modules_expensereport.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/expensereport/modules_expensereport.php';
 					$modellist = ModeleExpenseReport::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'unpaid') {
@@ -767,14 +767,14 @@ class FormFile
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/user/modules_user.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/user/modules_user.class.php';
 					$modellist = ModelePDFUser::liste_modeles($this->db);
 				}
 			} elseif ($modulepart == 'usergroup') {
 				if (is_array($genallowed)) {
 					$modellist = $genallowed;
 				} else {
-					include_once DOL_DOCUMENT_ROOT.'/core/modules/usergroup/modules_usergroup.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/modules/usergroup/modules_usergroup.class.php';
 					$modellist = ModelePDFUserGroup::liste_modeles($this->db);
 				}
 			} else {
@@ -852,7 +852,7 @@ class FormFile
 
 			// Language code (if multilang)
 			if (($allowgenifempty || (is_array($modellist) && count($modellist) > 0)) && getDolGlobalInt('MAIN_MULTILANGS') && !$forcenomultilang && (!empty($modellist) || $showempty)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 				$formadmin = new FormAdmin($this->db);
 				$defaultlang = ($codelang && $codelang != 'auto') ? $codelang : $langs->getDefaultLang();
 				$morecss = 'maxwidth150';
@@ -909,7 +909,7 @@ class FormFile
 		if (!empty($filedir)) {
 			$link_list = array();
 			if (is_object($object)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 				$link = new Link($this->db);
 				$sortfield = $sortorder = '';
 				$res = $link->fetchAll($link_list, $object->element, $object->id, $sortfield, $sortorder);
@@ -1166,7 +1166,7 @@ class FormFile
 	{
 		global $conf, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$out = '';
 		$this->infofiles = array('nboffiles' => 0, 'extensions' => array(), 'files' => array());
@@ -1369,7 +1369,7 @@ class FormFile
 			return $reshook;
 		} else {
 			if (!is_object($form)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php'; // The component may be included into ajax page that does not include the Form class
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php'; // The component may be included into ajax page that does not include the Form class
 				$form = new Form($this->db);
 			}
 
@@ -1486,7 +1486,7 @@ class FormFile
 
 			$nboffiles = count($filearray);
 			if ($nboffiles > 0) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 			}
 
 			$i = 0;
@@ -1820,7 +1820,7 @@ class FormFile
 			if ($nboflines > 1 && is_object($object)) {
 				if (!empty($conf->use_javascript_ajax) && $permtoeditline) {
 					$table_element_line = 'ecm_files';	// used by ajaxrow.tpl.php
-					include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 				}
 			}
 
@@ -1947,7 +1947,7 @@ class FormFile
 			include_once DOL_DOCUMENT_ROOT.'/compta/tva/class/tva.class.php';
 			$object_instance = new Tva($this->db);
 		} elseif ($modulepart == 'salaries') {
-			include_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Salaries/class/salary.class.php';
 			$object_instance = new Salary($this->db);
 		} elseif ($modulepart == 'project') {
 			include_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
@@ -1959,7 +1959,7 @@ class FormFile
 			include_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 			$object_instance = new Fichinter($this->db);
 		} elseif ($modulepart == 'user') {
-			include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 			$object_instance = new User($this->db);
 		} elseif ($modulepart == 'expensereport') {
 			include_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
@@ -1968,7 +1968,7 @@ class FormFile
 			include_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
 			$object_instance = new Holiday($this->db);
 		} elseif ($modulepart == 'recruitment-recruitmentcandidature') {
-			include_once DOL_DOCUMENT_ROOT.'/recruitment/class/recruitmentcandidature.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Recruitment/class/recruitmentcandidature.class.php';
 			$object_instance = new RecruitmentCandidature($this->db);
 		} elseif ($modulepart == 'banque') {
 			include_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
@@ -2262,7 +2262,7 @@ class FormFile
 
 		$langs->load("link");
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$link = new Link($this->db);
 		$links = array();
 		if ($sortfield == "name") {
@@ -2346,7 +2346,7 @@ class FormFile
 		print '</tr>';
 		$nboflinks = count($links);
 		if ($nboflinks > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 		}
 		foreach ($links as $key => $link) {
 			print '<tr class="oddeven">';

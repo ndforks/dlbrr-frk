@@ -49,14 +49,14 @@ require '../../main.inc.php';
  * @var string $dolibarr_main_url_root
  */
 
-require_once DOL_DOCUMENT_ROOT.'/recruitment/class/recruitmentjobposition.class.php';
-require_once DOL_DOCUMENT_ROOT.'/recruitment/class/recruitmentcandidature.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/class/recruitmentjobposition.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/class/recruitmentcandidature.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT . '/core/lib/public.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 
 // Load translation files required by the page
@@ -113,7 +113,7 @@ $extrafields = new ExtraFields($db);
 
 $captchaobj = null;
 if (getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_RECRUITMENT')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 	// List of directories where we can find captcha handlers
 	$dirModCaptcha = array_merge(
@@ -277,7 +277,7 @@ $triggersendname = 'CANDIDATURE_SENTBYMAIL';
 $paramname = 'id';
 $autocopy = 'MAIN_MAIL_AUTOCOPY_CANDIDATURE_TO'; // used to know the automatic BCC to add
 $trackid = 'recruitmentcandidature'.$object->id;
-include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 
 
@@ -491,7 +491,7 @@ if ($action != 'dosubmit') {
 		$parameters['tpl_context'] = 'public';	// define template context to public
 		$parameters['tdclass'] = 'left';
 		$extrafields->fetch_name_optionals_label("recruitment_recruitmentcandidature");
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 		print '<tr><td class="titlefieldcreate left">'.$langs->trans("Message").'</td><td class="left">';
 		print '<textarea class="flat quatrevingtpercent" rows="'.ROWS_5.'" name="message">'.$message.'</textarea>';

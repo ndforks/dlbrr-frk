@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Holiday;
  *  \brief      File of class to manage holiday numbering rules Immaculate
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/holiday/modules_holiday.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/holiday/modules_holiday.php';
 
 /**
  *	Class to manage holiday numbering rules Immaculate
@@ -131,7 +131,7 @@ class mod_holiday_immaculate extends ModelNumRefHolidays
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$mask = getDolGlobalString('HOLIDAY_IMMACULATE_MASK');
 

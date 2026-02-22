@@ -27,9 +27,9 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/contact.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/contact.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ldap.lib.php';
 
 /**
  * @var Conf $conf

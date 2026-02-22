@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Member;
  *	\brief		File of parent class of document generator for members cards.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 
@@ -58,7 +58,7 @@ class ModelePDFCards
 		$type = 'member';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

@@ -31,7 +31,7 @@ namespace App\Modules\Modulebuilder\Template\Core\Triggers;
  * - The class name must be InterfaceMyTrigger
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 
 /**

@@ -75,7 +75,7 @@ if ($action == 'stopreminder') {	// Test on permission not required here. Endpoi
 		abort(500);
 	}
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 	// Clean database
 	$sql = 'DELETE FROM '.MAIN_DB_PREFIX.'actioncomm_reminder';

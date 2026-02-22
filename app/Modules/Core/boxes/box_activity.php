@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *  \brief      Module to show box of bills, orders & propal of the current year
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 /**
  * Class to manage the box of customer activity (invoice, order, proposal)
@@ -72,8 +72,8 @@ class box_activity extends ModeleBoxes
 	{
 		global $conf, $user, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$totalnb = 0;
 		$line = 0;

@@ -49,13 +49,13 @@ if (!defined("NOSESSION")) {
 
 require '../main.inc.php';
 require_once NUSOAP_PATH.'/nusoap.php'; // Include SOAP
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT."/categories/class/categorie.class.php";
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var DoliDB $db
@@ -548,7 +548,7 @@ function createProductOrService($authentication, $product)
 	}
 
 	if (!$error) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$newobject = new Product($db);
 		$newobject->ref = $product['ref'];
@@ -698,7 +698,7 @@ function updateProductOrService($authentication, $product)
 	}
 
 	if (!$error) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$newobject = new Product($db);
 		$newobject->fetch((int) $product['id']);

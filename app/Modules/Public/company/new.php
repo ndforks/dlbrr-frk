@@ -127,7 +127,7 @@ function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $
 
 	print '<body id="mainbody" class="publicnewmemberform">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	htmlPrintOnlineHeader($mysoc, $langs, 1, getDolGlobalString('THIRDPARTY_PUBLIC_INTERFACE_TOPIC'), 'THIRDPARTY_PUBLIC_INTERFACE_IMAGE');
 
 	print '<div class="divmainbodylarge">';
@@ -426,7 +426,7 @@ print '</tr>' . "\n";
 
 // Other attributes
 $parameters['tpl_context'] = 'public';	// define template context to public
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 
 // TODO Move this into generic feature.

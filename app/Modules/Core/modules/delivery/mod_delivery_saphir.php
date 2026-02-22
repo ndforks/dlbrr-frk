@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Delivery;
  *	\ingroup    expedition
  *	\brief      Fichier contenant la class du modele de numerotation de reference de livraison Saphir
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/modules_delivery.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/modules_delivery.php';
 
 /**
  *	\class      mod_delivery_saphir
@@ -144,7 +144,7 @@ class mod_delivery_saphir extends ModeleNumRefDeliveryOrder
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// On defini critere recherche compteur
 		$mask = getDolGlobalString('DELIVERY_SAPHIR_MASK');

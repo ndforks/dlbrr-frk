@@ -313,12 +313,12 @@ if (empty($dolibarr_strict_mode)) {
 
 define('DOL_DOCUMENT_ROOT', $dolibarr_main_document_root); // Filesystem core php (htdocs)
 
-if (empty(DOL_DOCUMENT_ROOT) || !file_exists(DOL_DOCUMENT_ROOT."/core/lib/functions.lib.php")) {
+if (empty(DOL_DOCUMENT_ROOT) || !file_exists(DOL_DOCUMENT_ROOT."/Core/lib/functions.lib.php")) {
 	print "Error: Dolibarr config file content seems to be not correctly defined";
 	if (empty($dolibarr_main_document_root)) {
 		print " (dolibarr_main_document_root can't be known).<br>\n";
 	} else {
-		print " (file ".DOL_DOCUMENT_ROOT."/core/lib/functions.lib.php not found).<br>\n";
+		print " (file ".DOL_DOCUMENT_ROOT."/Core/lib/functions.lib.php not found).<br>\n";
 	}
 	print "Please run dolibarr setup by calling page <b>/install</b>.<br>\n";
 	exit(1);
@@ -326,8 +326,8 @@ if (empty(DOL_DOCUMENT_ROOT) || !file_exists(DOL_DOCUMENT_ROOT."/core/lib/functi
 
 
 // Included by default (must be before the CSRF check so wa can use the dol_syslog)
-include_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 //print memory_get_usage();
 
 

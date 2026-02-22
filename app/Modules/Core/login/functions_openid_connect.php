@@ -26,8 +26,8 @@
  *      See https://github.com/Dolibarr/dolibarr/issues/22740 for more information about setup openid_connect
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/openid_connect.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/openid_connect.lib.php';
 
 /**
  * Check validity of user/password/entity

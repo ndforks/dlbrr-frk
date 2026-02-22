@@ -52,8 +52,8 @@ require_once DOL_DOCUMENT_ROOT.'/compta/cashcontrol/class/cashcontrol.class.php'
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/cashcontrol/class/cashcontrol.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 $langs->loadLangs(array("bills", "banks", "cashdesk", "blockedlog"));
 
@@ -384,7 +384,7 @@ if ($resql) {
 	if (!$summaryonly) {
 		// Show total line
 		$moreinfoontotal = ' ('.$num.' '.$langs->trans($num > 1 ? "Invoices" : "Invoice").')';		// Used in the .tpl
-		include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 		print "</table>";
 		print "</div>";

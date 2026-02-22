@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Supplier_proposal;
  * \brief      File that contains the numbering module rules Saphir
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_proposal/modules_supplier_proposal.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_proposal/modules_supplier_proposal.php';
 
 
 /**
@@ -141,7 +141,7 @@ class mod_supplier_proposal_saphir extends ModeleNumRefSupplierProposal
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// On defini critere recherche compteur
 		$mask = !getDolGlobalString('SUPPLIER_PROPOSAL_SAPHIR_MASK') ? '' : $conf->global->SUPPLIER_PROPOSAL_SAPHIR_MASK;

@@ -24,7 +24,7 @@
  *  \file		htdocs/core/menus/standard/auguria.lib.php
  *  \brief		Library for file auguria menus
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/menubase.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/menubase.class.php';
 
 /** @phan-file-suppress PhanTypeInvalidDimOffset */
 

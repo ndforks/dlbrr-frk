@@ -29,8 +29,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 /**
  * @var Conf $conf
@@ -188,7 +188,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 		$dir = $conf->adherent->dir_output; // By default
 	}
 } elseif ($modulepart == 'societe') {
-	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 	$object = new Societe($db);
 	if ($id > 0) {
 		$result = $object->fetch($id);
@@ -198,7 +198,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 		$dir = $conf->$modulepart->dir_output;
 	}
 } elseif ($modulepart == 'user') {
-	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 	$object = new User($db);
 	if ($id > 0) {
 		$result = $object->fetch($id);

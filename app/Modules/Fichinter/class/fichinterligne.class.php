@@ -31,7 +31,7 @@ namespace App\Modules\Fichinter\Classes;
  * 	\ingroup    fichinter
  * 	\brief      File for class to manage intervention lines
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  *	Class to manage intervention lines

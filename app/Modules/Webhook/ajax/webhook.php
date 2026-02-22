@@ -50,7 +50,7 @@ if (!defined('NOBROWSERNOTIF')) {
 	define('NOBROWSERNOTIF', '1');
 }
 include '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/webhook/class/target.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Webhook/class/target.class.php';
 /**
  * @var Conf $conf
  * @var DoliDB $db

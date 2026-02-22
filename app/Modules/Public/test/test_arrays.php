@@ -190,7 +190,7 @@ if (!isset($moreforfilter)) {  // @phan-suppress-current-line PhanPluginUndeclar
 	$moreforfilter = '';
 }
 if (!empty($conf->use_javascript_ajax)) {
-	include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 }
 
 $nav = '';
@@ -339,7 +339,7 @@ $(document).ready(function(){
 	$tasksarray = array(1, 2, 3); // To force having several lines
 $tagidfortablednd = 'tablelines';
 if (!empty($conf->use_javascript_ajax)) {
-	include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 }
 ?>
 <div class="tagtable centpercent liste_titre_bydiv" id="tablelines">

@@ -48,8 +48,8 @@ if (!defined("NOSESSION")) {
 
 require '../main.inc.php';
 require_once NUSOAP_PATH.'/nusoap.php'; // Include SOAP
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT."/commande/class/commande.class.php";
 
 /**
@@ -682,7 +682,7 @@ function createOrder($authentication, $order)
 {
 	global $db, $conf, $langs;
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 	$now = dol_now();
 
@@ -919,7 +919,7 @@ function updateOrder($authentication, $order)
 	if (!$error) {
 		$objectfound = false;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$object = new Commande($db);
 		$result = $object->fetch((int) $order['id'], (empty($order['id']) ? $order['ref'] : ''), (empty($order['id']) && empty($order['ref']) ? $order['ref_ext'] : ''));

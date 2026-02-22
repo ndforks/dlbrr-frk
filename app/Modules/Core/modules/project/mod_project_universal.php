@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Project;
  *   \brief      File containing the Universal project reference numbering model class
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/modules_project.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/project/modules_project.php';
 
 
 /**
@@ -146,7 +146,7 @@ class mod_project_universal extends ModeleNumRefProjects
 	{
 		global $db, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We define criterion search counter
 		$mask = getDolGlobalString('PROJECT_UNIVERSAL_MASK');

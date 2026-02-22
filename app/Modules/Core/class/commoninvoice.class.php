@@ -29,8 +29,8 @@ namespace App\Modules\Core\Classes;
  *       \brief      File of the superclass of invoice classes (customer and supplier)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
 
 /**
  * 	Superclass for invoice classes
@@ -394,7 +394,7 @@ abstract class CommonInvoice extends CommonObject
 			return 0.0;
 		}*/
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$discountstatic = new DiscountAbsolute($this->db);
 		$result = $discountstatic->getSumDepositsUsed($this, $multicurrency);
@@ -422,7 +422,7 @@ abstract class CommonInvoice extends CommonObject
 	 */
 	public function getSumCreditNotesUsed($multicurrency = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$discountstatic = new DiscountAbsolute($this->db);
 		$result = $discountstatic->getSumCreditNotesUsed($this, $multicurrency);
@@ -448,7 +448,7 @@ abstract class CommonInvoice extends CommonObject
 	 */
 	public function getSumFromThisCreditNotesNotUsed($multicurrency = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$discountstatic = new DiscountAbsolute($this->db);
 		$result = $discountstatic->getSumFromThisCreditNotesNotUsed($this, $multicurrency);
@@ -757,7 +757,7 @@ abstract class CommonInvoice extends CommonObject
 				return -4;
 			}
 
-			include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 			if (isALNERunningVersion()) {
 				$this->error = 'Action not allowed on the certified version';
 				return -7;
@@ -830,7 +830,7 @@ abstract class CommonInvoice extends CommonObject
 					return -6;
 				}
 
-				include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 				if (isALNERunningVersion()) {
 					$this->error = 'Action not allowed on the certified version';
 					return -7;
@@ -1285,7 +1285,7 @@ abstract class CommonInvoice extends CommonObject
 			$datelim += ($cdr_decalage * 3600 * 24);
 		} elseif ($cdr_type == 2 && !empty($cdr_decalage)) {
 			// 2 : application of the rule, the N of the current or next month
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 			$datelim = $this->date + ($cdr_nbjour * 3600 * 24);
 
 			$date_piece = dol_mktime(0, 0, 0, (int) date('m', $datelim), (int) date('d', $datelim), (int) date('Y', $datelim)); // Sans les heures minutes et secondes
@@ -2265,7 +2265,7 @@ abstract class CommonInvoice extends CommonObject
 
 
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  *	Parent class of all other business classes for details of elements (invoices, contracts, proposals, orders, ...)

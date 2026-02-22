@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Fichinter;
  *	\ingroup    Intervention card
  *	\brief      File with Arctic numbering module for interventions
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/fichinter/modules_fichinter.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/fichinter/modules_fichinter.php';
 
 /**
  *	Class to manage numbering of intervention cards with rule Arctic.
@@ -138,7 +138,7 @@ class mod_arctic extends ModeleNumRefFicheinter
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We define the search criteria of the counter
 		$mask = getDolGlobalString("FICHINTER_ARTIC_MASK");

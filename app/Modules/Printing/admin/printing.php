@@ -26,10 +26,10 @@
 // Load Dolibarr environment
 require '../../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/printing/modules_printing.php';
-require_once DOL_DOCUMENT_ROOT.'/printing/lib/printing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/printing/modules_printing.php';
+require_once DOL_DOCUMENT_ROOT.'/Printing/lib/printing.lib.php';
 use OAuth\Common\Storage\DoliStorage;
 
 /**

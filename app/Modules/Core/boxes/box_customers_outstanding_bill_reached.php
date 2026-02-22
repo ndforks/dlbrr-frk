@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *	\brief      Module d'affichage pour les encours dépassés
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 
 /**

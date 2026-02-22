@@ -29,10 +29,10 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/interface_50_modNotification_Notification.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/interface_50_modNotification_Notification.class.php';
 
 /**
  * @var Conf $conf

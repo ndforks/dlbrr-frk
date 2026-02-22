@@ -137,7 +137,7 @@ class mod_knowledgerecord_advanced extends ModeleNumRefKnowledgeRecord
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('KNOWLEDGEMANAGEMENT_KNOWLEDGERECORD_ADVANCED_MASK');

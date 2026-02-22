@@ -186,7 +186,7 @@ class Import
 
 		$i = 0;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$modulesdir = dolGetModulesDirs();
 
 		// Load list of modules
@@ -327,7 +327,7 @@ class Import
 		dol_syslog(get_class($this)."::build_example_file ".$model);
 
 		// Create the import class for the model Import_XXX
-		$dir = DOL_DOCUMENT_ROOT."/core/modules/import/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/modules/import/";
 		$file = "import_".$model.".modules.php";
 		$classname = "Import".$model;
 		require_once $dir.$file;

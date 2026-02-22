@@ -33,9 +33,9 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/class/opensurveysondage.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/class/opensurveysondage.class.php";
 
 // Load translation files required by the page
 $langs->load("opensurvey");
@@ -100,7 +100,7 @@ $fieldstosearchall = array();
 // Definition of fields for list
 $arrayfields = array();
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_array_fields.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_array_fields.tpl.php';
 
 
 $object->fields = dol_sort_array($object->fields, 'position');
@@ -132,7 +132,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -151,7 +151,7 @@ if (empty($reshook)) {
 	$objectclass = 'Opensurveysondage';
 	$objectlabel = 'Opensurveysondage';
 	$uploaddir = $conf->opensurvey->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 }
 
 
@@ -193,7 +193,7 @@ if (!empty($search_title)) {
 	$sql .= natural_search("p.titre", $search_title);
 }
 // Add where from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_sql.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_sql.tpl.php';
 // Add where from hooks
 $parameters = array();
 $reshook = $hookmanager->executeHooks('printFieldListWhere', $parameters, $object); // Note that $action and $object may have been modified by hook
@@ -265,7 +265,7 @@ if ($optioncss != '') {
 $fieldtosortuser = getDolGlobalString('MAIN_FIRSTNAME_NAME_POSITION') ? 'lastname' : 'firstname';
 
 // Add $param from extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 // List of mass actions available
 $arrayofmassactions = array(
@@ -304,7 +304,7 @@ $topicmail = "SendOpenSurveyRef";
 $modelmail = "opensurvey";
 $objecttmp = new Opensurveysondage($db);
 $trackid = 'surv'.$object->id;
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 
 if ($search_all) {
@@ -368,7 +368,7 @@ print '<td class="liste_titre"></td>';
 $arraystatus = array('-1' => '&nbsp;', '0' => $langs->trans("Draft"), '1' => $langs->trans("Opened"), '2' => $langs->trans("Closed"));
 print '<td class="liste_titre center parentonrightofpage">'.$form->selectarray('search_status', $arraystatus, $search_status, 0, 0, 0, '', 0, 0, 0, '', 'maxwidth100 onrightofpage').'</td>';
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_input.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_input.tpl.php';
 
 // Fields from hook
 $parameters = array('arrayfields' => $arrayfields);
@@ -411,7 +411,7 @@ $totalarray['nbfield']++;
 print_liste_field_titre("Status", $_SERVER["PHP_SELF"], "p.status", "", $param, 'align="center"', $sortfield, $sortorder);
 $totalarray['nbfield']++;
 // Extra fields
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_title.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_title.tpl.php';
 // Hook fields
 $parameters = array('arrayfields' => $arrayfields, 'param' => $param, 'sortfield' => $sortfield, 'sortorder' => $sortorder);
 $reshook = $hookmanager->executeHooks('printFieldListTitle', $parameters, $object); // Note that $action and $object may have been modified by hook
@@ -541,7 +541,7 @@ while ($i < $imaxinloop) {
 	}
 
 	// Extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_print_fields.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_print_fields.tpl.php';
 	// Fields from hook
 	$parameters = array('arrayfields' => $arrayfields, 'obj' => $obj, 'i' => $i, 'totalarray' => &$totalarray);
 	$reshook = $hookmanager->executeHooks('printFieldListValue', $parameters, $object); // Note that $action and $object may have been modified by hook
@@ -567,7 +567,7 @@ while ($i < $imaxinloop) {
 }
 
 // Show total line
-include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 
 // If no record found
@@ -594,7 +594,7 @@ if (in_array('builddoc', array_keys($arrayofmassactions)) && ($nbtotalofrecords 
 		$hidegeneratedfilelistifempty = 0;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	$formfile = new FormFile($db);
 
 	// Show list of available documents

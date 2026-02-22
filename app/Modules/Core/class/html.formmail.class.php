@@ -31,8 +31,8 @@ namespace App\Modules\Core\Classes;
  *       \ingroup    core
  *       \brief      File of class to generate HTML form to send email of unitary email.
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cemailtemplate.class.php';	// So the class ModelMail that was defined into this file in old version is still available when including this file
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cemailtemplate.class.php';	// So the class ModelMail that was defined into this file in old version is still available when including this file
 
 
 /**
@@ -323,7 +323,7 @@ class FormMail extends Form
 	{
 		// phpcs:enable
 		global $conf, $user;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Set tmp user directory
 		$vardir = $conf->user->dir_output."/".$user->id;
@@ -480,10 +480,10 @@ class FormMail extends Form
 		}
 
 		// Required to show editor assistants
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 		$formfile = new FormFile($this->db);
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formai.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formai.class.php';
 		$formai = new FormAI($this->db);
 
 		// Load translation files required by the page
@@ -1003,7 +1003,7 @@ class FormMail extends Form
 				// Complete substitution array with the url to make online payment
 				$paymenturl = '';
 				// Set the online payment url link into __ONLINE_PAYMENT_URL__ key
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 				$validpaymentmethod = getValidOnlinePaymentMethods('');
 
 				if (empty($this->substit['__REF__'])) {  // @phan-suppress-current-line PhanTypeMismatchProperty
@@ -1113,7 +1113,7 @@ class FormMail extends Form
 
 				// Fill $out
 				$db = $this->db;
-				include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 				$out .= '</td>';
 				$out .= '</tr>';
@@ -1129,7 +1129,7 @@ class FormMail extends Form
 					}
 
 					// Editor wysiwyg
-					require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 					if ($this->withfckeditor == -1) {
 						if (getDolGlobalString('FCKEDITOR_ENABLE_MAIL')) {
 							$this->withfckeditor = 1;
@@ -1509,8 +1509,8 @@ class FormMail extends Form
 	{
 		global $conf, $db, $websitepage, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/emaillayout.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/emaillayout.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		require_once DOL_DOCUMENT_ROOT.'/website/class/website.class.php';
 		require_once DOL_DOCUMENT_ROOT.'/website/class/websitepage.class.php';
 
@@ -1521,7 +1521,7 @@ class FormMail extends Form
 			'none' => 'None',
 		);
 		// Add layouts found on disk in install/doctemplates/maillayout directory
-		$arrayoflayoutemplates = dol_dir_list(DOL_DOCUMENT_ROOT.'/install/doctemplates/maillayout/', 'files', 0, '\.html$');
+		$arrayoflayoutemplates = dol_dir_list(DOL_DOCUMENT_ROOT.'/Install/doctemplates/maillayout/', 'files', 0, '\.html$');
 		foreach ($arrayoflayoutemplates as $layouttemplatefile) {
 			$layoutname = preg_replace('/\.html$/i', '', $layouttemplatefile['name']);
 
@@ -1584,7 +1584,7 @@ class FormMail extends Form
 		if (in_array('product', array_keys($layouts))) {
 			$productArray = array();
 			if (isModEnabled('product') || isModEnabled('service')) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 				$form = new Form($this->db);
 				$arrayofproduct = $form->select_produits_list(0, 'product-select', '', 0, 0, '', 1, 2, 1);
 				if (!empty($arrayofproduct)) {
@@ -1611,7 +1611,7 @@ class FormMail extends Form
 			$out .= '</div>';
 		}
 		if (in_array('product', array_keys($layouts)) && (isModEnabled('product') || isModEnabled('service'))) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 			$form = new Form($this->db);
 			$out .= '<div id="product-dropdown-container" class="email-layout-container hidden" style="height: 32px; display:none;">';
 			$out .= '<label for="product-select">'.img_picto('', 'product', 'class="pictofixedwidth"').$langs->trans("Product").' : </label>';

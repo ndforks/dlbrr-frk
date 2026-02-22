@@ -36,13 +36,13 @@ require '../../main.inc.php'; // Load $user and permissions
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/takepos.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+require_once DOL_DOCUMENT_ROOT."/Core/lib/takepos.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 $terminal = request()->integer('terminal', 0);
 // If socid provided by ajax company selector
@@ -365,7 +365,7 @@ if (isModEnabled('stock')) {
 }
 
 if (isModEnabled('project')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 	$formproject = new FormProjets($db);
 	print '<tr class="oddeven"><td>'.$langs->trans("CashDeskDefaultProject").'</td><td>';
 	print img_picto('', 'project', 'class="pictofixedwidth"');
@@ -443,7 +443,7 @@ if (getDolGlobalString('TAKEPOS_ADDON') == "terminal") {
 $customprinterallowed = true;
 $orderprinterallowed = (getDolGlobalString('TAKEPOS_BAR_RESTAURANT') && getDolGlobalInt('TAKEPOS_ORDER_PRINTERS'));
 $customprinttemplateallowed = true;
-include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 if (isALNERunningVersion()) {		// No need to show the custom template when isALNERunningVersion is true because it has no effect (disabled by receipt.php).
 	$customprinterallowed = false;
 	$customprinttemplateallowed = false;	// Custom printer may be allowed if mandatory information in template are guaranteed. For the moment, we prefer not allow this.
@@ -451,7 +451,7 @@ if (isALNERunningVersion()) {		// No need to show the custom template when isALN
 
 if (isModEnabled('receiptprinter')) {
 	// Select printer to use with terminal
-	require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 	$printer = new dolReceiptPrinter($db);
 
 	$printer->listprinters();
@@ -488,7 +488,7 @@ if (isModEnabled('receiptprinter')) {
 
 if (isModEnabled('receiptprinter') || getDolGlobalString('TAKEPOS_PRINT_METHOD') == "receiptprinter" || getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector") {
 	// Select printer to use with terminal
-	require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 	$printer = new dolReceiptPrinter($db);
 	$printer->listPrintersTemplates();
 	$templates = array();
@@ -552,7 +552,7 @@ $variablename = 'TAKEPOS_HEADER'.$terminaltouse;
 if (!getDolGlobalInt('PDF_ALLOW_HTML_FOR_FREE_TEXT')) {
 	print '<textarea name="'.$variablename.'" class="flat" cols="120">'.getDolGlobalString($variablename).'</textarea>';
 } else {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor($variablename, getDolGlobalString($variablename), '', 80, 'dolibarr_notes');
 	print $doleditor->Create();
 }
@@ -568,7 +568,7 @@ $variablename = 'TAKEPOS_FOOTER'.$terminaltouse;
 if (!getDolGlobalInt('PDF_ALLOW_HTML_FOR_FREE_TEXT')) {
 	print '<textarea name="'.$variablename.'" class="flat" cols="120">'.getDolGlobalString($variablename).'</textarea>';
 } else {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor($variablename, getDolGlobalString($variablename), '', 80, 'dolibarr_notes');
 	print $doleditor->Create();
 }

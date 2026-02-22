@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules;
  *  \brief      Description and activation file for the module Reception
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -215,16 +215,16 @@ class modReception extends DolibarrModules
 			$keyforselect = 'socpeople';
 			$keyforelement = 'contact';
 			$keyforaliasextra = 'extra3';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		}
 		$keyforselect = 'reception';
 		$keyforelement = 'reception';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'receptiondet_batch';
 		$keyforelement = 'reception_line';
 		$keyforaliasextra = 'extra2';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'reception as c';
@@ -268,12 +268,12 @@ class modReception extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/reception/template_reception.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/reception/template_reception.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/reception';
 		$dest = $dirodt.'/template_reception.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

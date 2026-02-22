@@ -34,7 +34,7 @@ namespace App\Modules\Core\Modules;
  *      \ingroup    agenda
  *      \brief      Description and activation file for the module agenda
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *	Class to describe and enable/disable module Agenda
@@ -481,7 +481,7 @@ class modAgenda extends DolibarrModules
 		$keyforselect = 'actioncomm';
 		$keyforelement = 'action';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM  '.MAIN_DB_PREFIX.'actioncomm as ac';
@@ -593,7 +593,7 @@ class modAgenda extends DolibarrModules
 		$keyforselect = 'actioncomm';
 		$keyforelement = 'action';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 	}
 
 

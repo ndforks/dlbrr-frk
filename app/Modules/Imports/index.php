@@ -30,8 +30,8 @@ require_once '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/imports/class/import.class.php';
-require_once DOL_DOCUMENT_ROOT.'/exports/class/export.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Imports/class/import.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Exports/class/export.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("exports", "other"));
@@ -85,7 +85,7 @@ if (isModEnabled('import')) {
 	$out .= '<td class="right">'.$langs->trans("LibraryVersion").'</td>';
 	$out .= '</tr>';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/modules/import/modules_import.php';
 	$model = new ModeleImports();
 	$list = $model->listOfAvailableImportFormat($db);
 
@@ -132,7 +132,7 @@ if (isModEnabled('export')) {
 	$out .= '<td class="right">'.$langs->trans("LibraryVersion").'</td>';
 	$out .= '</tr>';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/modules/export/modules_export.php';
 	$model = new ModeleExports($db);
 	$liste = $model->listOfAvailableExportFormat($db); // This is not a static method for exports because method load non static properties
 

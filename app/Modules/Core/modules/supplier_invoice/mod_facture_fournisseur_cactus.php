@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Supplier_invoice;
  *		\brief      File containing class for the numbering module Cactus
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_invoice/modules_facturefournisseur.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_invoice/modules_facturefournisseur.php';
 
 
 /**

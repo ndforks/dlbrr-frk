@@ -23,7 +23,7 @@ namespace App\Modules\Core\Classes;
  *  \ingroup    core
  *	\brief      File of predefined functions for HTML forms for mailing module
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 /**
  *  Class to offer components to list and upload files

@@ -33,8 +33,8 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
 
 /**
  * @var Conf $conf
@@ -249,13 +249,13 @@ foreach ($tableau as $key => $const) {	// Loop on each param
 			print $obj->value;
 			print "</textarea>\n";
 		} elseif ($obj->type == 'html') {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 			$doleditor = new DolEditor('constvalue_'.$const, $obj->value, '', 160, 'dolibarr_notes', '', false, false, isModEnabled('fckeditor'), ROWS_5, '90%');
 			$doleditor->Create();
 		} elseif ($obj->type == 'yesno') {
 			print $form->selectyesno('constvalue_'.$const, $obj->value, 1, false, 0, 1);
 		} elseif (preg_match('/emailtemplate/', $obj->type)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($db);
 
 			$tmp = explode(':', $obj->type);

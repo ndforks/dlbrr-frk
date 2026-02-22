@@ -49,9 +49,9 @@ require '../main.inc.php'; // Load $user and permissions
  * @var User $user
  * @var Societe $mysoc
  */
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("main", "bills", "cashdesk", "banks"));
@@ -599,7 +599,7 @@ if (isModEnabled('multicurrency') && $sessioncurrency != "" && $conf->currency !
 	</div>
 	<?php
 	if (getDolGlobalString('TAKEPOS_CAN_FORCE_BANK_ACCOUNT_DURING_PAYMENT')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 		print '<div class="paymentbordline paddingtop paddingbottom center">';
 		$filter = '';
 		$form = new Form($db);

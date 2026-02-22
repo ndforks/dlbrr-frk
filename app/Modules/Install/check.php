@@ -518,7 +518,7 @@ if (!file_exists($conffile)) {
 			$allowupgrade = true;
 		}
 
-		$dir = DOL_DOCUMENT_ROOT."/install/mysql/migration/";	// We use mysql migration scripts whatever is database driver
+		$dir = DOL_DOCUMENT_ROOT."/Install/mysql/migration/";	// We use mysql migration scripts whatever is database driver
 		dolibarr_install_syslog("Scan sql files for migration files in ".$dir);
 
 		// Get files list of migration file x.y.z-a.b.c.sql into /install/mysql/migration

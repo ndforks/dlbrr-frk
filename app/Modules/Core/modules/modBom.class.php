@@ -31,7 +31,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    bom
  *  \brief      Description and activation file for the module Bom
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -283,21 +283,21 @@ class modBom extends DolibarrModules
 		$keyforclass = 'BOM';
 		$keyforclassfile = '/bom/class/bom.class.php';
 		$keyforelement = 'bom';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforclass = 'BOMLine';
 		$keyforclassfile = '/bom/class/bom.class.php';
 		$keyforelement = 'bomline';
 		$keyforalias = 'tl';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		unset($this->export_fields_array[$r]['tl.fk_bom']);
 		$keyforselect = 'bom_bom';
 		$keyforaliasextra = 'extra';
 		$keyforelement = 'bom';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'bom_bomline';
 		$keyforaliasextra = 'extraline';
 		$keyforelement = 'bomline';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_dependencies_array[$r] = array('bomline' => 'tl.rowid'); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'bom_bom as t';
@@ -462,7 +462,7 @@ class modBom extends DolibarrModules
 		$result = $this->_load_tables('/install/mysql/', 'bom');
 
 		// Create extrafields
-		//include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		//include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		//$extrafields = new ExtraFields($this->db);
 		//$result1=$extrafields->addExtraField('myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'mrp', '$conf->bom->enabled');
 		//$result2=$extrafields->addExtraField('myattr2', "New Attr 2 label", 'varchar', 1, 10, 'project',      0, 0, '', '', 1, '', 0, 0, '', '', 'mrp', '$conf->bom->enabled');
@@ -481,12 +481,12 @@ class modBom extends DolibarrModules
 		$sql = array();
 
 		// ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/boms/template_bom.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/boms/template_bom.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/boms';
 		$dest = $dirodt.'/template_bom.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

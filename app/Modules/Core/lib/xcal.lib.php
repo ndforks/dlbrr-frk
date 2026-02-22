@@ -50,7 +50,7 @@ function build_calfile($format, $title, $desc, $events_array, $outputfile)
 	$calfileh = fopen($outputfile, "w");
 
 	if ($calfileh) {
-		include_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
+		include_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
 
 		$now      = dol_now();
 		$encoding = "";
@@ -399,7 +399,7 @@ function build_rssfile($format, $title, $desc, $events_array, $outputfile, $filt
 					if (!empty($event->image)) {
 						$tmpevent['image'] = $GLOBALS['website']->virtualhost.'/medias/'.$event->image;
 					} else {
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';
 						$tmpimage = getImageFromHtmlContent($event->content);
 						if ($tmpimage) {
 							if (strpos($tmpimage, '/') === 0) {				// If $tmpimage is an absolute path

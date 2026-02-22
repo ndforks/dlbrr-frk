@@ -30,8 +30,8 @@
 
 
 namespace App\Modules\Stripe\Classes;
-require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonhookactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonhookactions.class.php';
 
 
 /**

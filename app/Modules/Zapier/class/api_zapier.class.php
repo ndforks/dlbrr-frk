@@ -27,7 +27,7 @@ namespace App\Modules\Zapier\Classes;
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/zapier/class/hook.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Zapier/class/hook.class.php';
 
 
 /**

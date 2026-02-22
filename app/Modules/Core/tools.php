@@ -42,7 +42,7 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/redirect_if_setup_not_complete.inc.php';
 
 
 /*

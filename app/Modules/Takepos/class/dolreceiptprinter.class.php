@@ -591,7 +591,7 @@ class dolReceiptPrinter extends Printer
 	public function sendTestToPrinter($printerid, $addimgandbarcode = 0)
 	{
 		$error = 0;
-		$img = EscposImage::load(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo_bw.png');
+		$img = EscposImage::load(DOL_DOCUMENT_ROOT.'/Theme/dolibarr_logo_bw.png');
 
 		// TODO Set the profile into $this->profile (used by initPrinter). Profile not used yet.
 
@@ -648,7 +648,7 @@ class dolReceiptPrinter extends Printer
 
 		$error = 0;
 
-		include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 		$islneverion = isALNERunningVersion();
 
 		if ($templateid) {

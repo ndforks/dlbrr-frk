@@ -26,9 +26,9 @@ namespace App\Modules\Resource\Classes;
  *  \brief      Class file for resource object
  */
 
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/functions2.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobject.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/functions2.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
 
 /**
  *  DAO Resource object
@@ -529,7 +529,7 @@ class Dolresource extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$rowid = $this->id;
 
@@ -609,7 +609,7 @@ class Dolresource extends CommonObject
 	 */
 	public function fetchAll(string $sortorder, string $sortfield, int $limit, int $offset, $filter = '')
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		$extrafields = new ExtraFields($this->db);
 
 		$sql = "SELECT ";

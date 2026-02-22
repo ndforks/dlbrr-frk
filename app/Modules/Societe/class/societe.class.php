@@ -43,12 +43,12 @@ namespace App\Modules\Societe\Classes;
  *	\ingroup    societe
  *	\brief      File for third party class
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonsocialnetworks.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonsocialnetworks.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 
 
 /**
@@ -1475,7 +1475,7 @@ class Societe extends CommonObject
 	{
 		global $langs, $conf, $hookmanager;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		if (empty($id)) {
 			$id = $this->id;
@@ -2435,7 +2435,7 @@ class Societe extends CommonObject
 			$fuser = $user;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$entity = isset($this->entity) ? $this->entity : $conf->entity;
 
@@ -2774,7 +2774,7 @@ class Societe extends CommonObject
 				$vatrate = preg_replace('/\s*\(.*\)/', '', $vatrate); // Remove code into vatrate.
 			}
 
-			require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 			$discount = new DiscountAbsolute($this->db);
 			$discount->fk_soc = $this->id;
@@ -2831,7 +2831,7 @@ class Societe extends CommonObject
 	 */
 	public function getAvailableDiscounts($user = null, $filter = '', $maxvalue = 0, $discount_type = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$discountstatic = new DiscountAbsolute($this->db);
 		$result = $discountstatic->getAvailableDiscounts($this, $user, $filter, $maxvalue, $discount_type);
@@ -4305,7 +4305,7 @@ class Societe extends CommonObject
 		global $conf;
 
 		// load the library necessary to check the professional identifiers
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/profid.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/profid.lib.php';
 
 		$ok = 1;
 
@@ -4497,7 +4497,7 @@ class Societe extends CommonObject
 	 */
 	public function isInEEC()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 		return isInEEC($this);
 	}
 
@@ -4508,7 +4508,7 @@ class Societe extends CommonObject
 	 */
 	public function isInSEPA()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 		return isInSEPA($this);
 	}
 
@@ -4815,7 +4815,7 @@ class Societe extends CommonObject
 			} else {
 				// For backward compatibility
 				dol_syslog("Your country setup use an old syntax. Reedit it using setup area.", LOG_WARNING);
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 				$country_code = getCountry($country_id, '2', $this->db); // This need a SQL request, but it's the old feature that should not be used anymore
 				$country_label = getCountry($country_id, '', $this->db); // This need a SQL request, but it's the old feature that should not be used anymore
 			}
@@ -4840,7 +4840,7 @@ class Societe extends CommonObject
 				$state_label = $tmp[2];
 			} else { // For backward compatibility
 				dol_syslog("Your setup of State has an old syntax (entity=".$conf->entity."). Go in Home - Setup - Organization then Save should remove this error.", LOG_ERR);
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 				$state_code = getState($state_id, '2', $this->db); // This need a SQL request, but it's the old feature that should not be used anymore
 				$state_label = getState($state_id, '0', $this->db); // This need a SQL request, but it's the old feature that should not be used anymore
 			}
@@ -5298,7 +5298,7 @@ class Societe extends CommonObject
 	 */
 	public function getOutstandingBills($mode = 'customer', $late = 0)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		$table = 'facture';
 		if ($mode == 'supplier') {
@@ -5680,7 +5680,7 @@ class Societe extends CommonObject
 
 		if ($resql) {
 			// Call triggers
-			include_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/interfaces.class.php';
 			$interface = new Interfaces($this->db);
 			$result = $interface->run_triggers('COMPANY_MODIFY', $this, $user, $langs, $conf);
 			if ($result < 0) {
@@ -5709,7 +5709,7 @@ class Societe extends CommonObject
 	 */
 	public function fetchPartnerships($mode)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
 
 		$this->partnerships[] = array();
 

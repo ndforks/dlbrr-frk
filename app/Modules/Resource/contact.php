@@ -30,10 +30,10 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/resource.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/resource.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 
 /**
  * @var Conf $conf
@@ -53,7 +53,7 @@ $action = request()->input('action');
 $object = new Dolresource($db);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php';     // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php';     // Must be 'include', not 'include_once'
 
 // Security check
 if ($user->socid) {
@@ -170,7 +170,7 @@ if ($id > 0 || !empty($ref)) {
 
 	$permission = 1;
 	// Contacts lines
-	include DOL_DOCUMENT_ROOT.'/core/tpl/contacts.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/contacts.tpl.php';
 }
 
 // End of page

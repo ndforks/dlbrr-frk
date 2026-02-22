@@ -29,10 +29,10 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formldap.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formldap.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ldap.lib.php';
 
 /**
  * @var Conf $conf

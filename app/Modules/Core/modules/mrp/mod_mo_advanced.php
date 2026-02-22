@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules\Mrp;
  * \brief      File containing class for numbering model of MOs advanced
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/mrp/modules_mo.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/mrp/modules_mo.php';
 
 
 /**
@@ -138,7 +138,7 @@ class mod_mo_advanced extends ModeleNumRefMos
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('MRP_MO_ADVANCED_MASK');

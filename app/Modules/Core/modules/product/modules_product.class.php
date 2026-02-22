@@ -30,8 +30,8 @@ namespace App\Modules\Core\Modules\Product;
  *  \brief      File with parent class for generating products to PDF and File of class to manage product numbering
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 
 /**
@@ -53,7 +53,7 @@ abstract class ModelePDFProduct extends CommonDocGenerator
 		$type = 'product';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 		return $list;
 	}

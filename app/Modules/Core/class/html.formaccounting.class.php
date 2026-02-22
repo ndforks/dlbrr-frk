@@ -28,7 +28,7 @@ namespace App\Modules\Core\Classes;
  *  \ingroup    Accountancy (Double entries)
  *	\brief      File of class with all html predefined components
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 
 /**
@@ -374,7 +374,7 @@ class FormAccounting extends Form
 	public function select_account($selectid, $htmlname = 'account', $showempty = 0, $event = array(), $select_in = 0, $select_out = 0, $morecss = 'minwidth100 maxwidth300 maxwidthonsmartphone', $usecache = '', $active = '1', $centralized = 0)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 
 		$out = '';
 		$selected = '';

@@ -29,9 +29,9 @@ namespace App\Modules\Core\Modules\Rapport;
  *	\brief      File to build payment reports
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 
 
 /**
@@ -170,7 +170,7 @@ class pdf_paiement extends CommonDocGenerator
 	public function write_file($_dir, $month, $year, $outputlangs, $day = 0)
 	{
 		// phpcs:enable
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		global $conf, $hookmanager, $langs, $user;
 
@@ -217,7 +217,7 @@ class pdf_paiement extends CommonDocGenerator
 
 		// Add pdfgeneration hook
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($this->db);
 		}
 		$hookmanager->initHooks(array('pdfgeneration'));
@@ -422,7 +422,7 @@ class pdf_paiement extends CommonDocGenerator
 
 		// Add pdfgeneration hook
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($this->db);
 		}
 		$hookmanager->initHooks(array('pdfgeneration'));

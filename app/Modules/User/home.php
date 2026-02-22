@@ -25,8 +25,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 /**
  * @var Conf $conf
@@ -71,7 +71,7 @@ $resultboxes = FormOther::getBoxesArea($user, "1");
 
 if (request()->input('addbox')) {
 	// Add box (when submit is done from a form when ajax disabled)
-	require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/infobox.class.php';
 	$zone = request()->integer('areacode', 0);
 	$userid = request()->integer('userid', 0);
 	$boxorder = request()->input('boxorder');

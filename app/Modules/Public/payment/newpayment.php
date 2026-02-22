@@ -75,11 +75,11 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/eventorganization/class/conferenceorboothattendee.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societeaccount.class.php';
@@ -322,8 +322,8 @@ $urlko = preg_replace('/&$/', '', $urlko); // Remove last &
 
 if ((empty($paymentmethod) || $paymentmethod == 'paypal') && isModEnabled('paypal')) {
 	global $PAYPAL_API_SANDBOX, $PAYPAL_API_OK, $PAYPAL_API_KO, $PAYPAL_API_USER, $PAYPAL_API_PASSWORD, $PAYPAL_API_SIGNATURE;
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypal.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/paypal/lib/paypalfunctions.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypal.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Paypal/lib/paypalfunctions.lib.php';
 
 
 	// Check parameters
@@ -352,7 +352,7 @@ if ((empty($paymentmethod) || $paymentmethod == 'paypal') && isModEnabled('paypa
 // No specific test for the moment
 //}
 if ((empty($paymentmethod) || $paymentmethod == 'stripe') && isModEnabled('stripe')) {
-	require_once DOL_DOCUMENT_ROOT.'/stripe/config.php'; // This include also /stripe/lib/stripe.lib.php, /includes/stripe/stripe-php/init.php, ...
+	require_once DOL_DOCUMENT_ROOT.'/Stripe/config.php'; // This include also /stripe/lib/stripe.lib.php, /includes/stripe/stripe-php/init.php, ...
 	/**
 	 * @var array<strint,mixed>		$stripearrayofkeys
 	 * @var array<int,mixed>		$stripearrayofkeysbyenv
@@ -540,7 +540,7 @@ if ($action == 'dopayment') {	// Test on permission not required here (anonymous
 		if (empty($mesg)) {
 			dol_syslog("newpayment.php call paybox api and do redirect", LOG_DEBUG, 0, '_payment');
 
-			include_once DOL_DOCUMENT_ROOT.'/paybox/lib/paybox.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Paybox/lib/paybox.lib.php';
 			print_paybox_redirect((float) $PRICE, getDolCurrency(), $email, $urlok, $urlko, $FULLTAG);
 
 			session_destroy();
@@ -622,7 +622,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 				$thirdparty->fetch($thirdparty_id);
 
 				// Create Stripe customer
-				include_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 				$stripe = new Stripe($db);
 				$stripeacc = $stripe->getStripeAccount($service);
 				$customer = $stripe->customerStripe($thirdparty, $stripeacc, $servicestatus, 1);
@@ -829,7 +829,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 			$service = 'StripeLive';
 			$servicestatus = 1;
 		}
-		include_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 		$stripe = new Stripe($db);
 		$stripeacc = $stripe->getStripeAccount($service);
 
@@ -2493,7 +2493,7 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 		}
 
 		if ($checkamount && (getDolGlobalString('STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION') || getDolGlobalString('STRIPE_USE_NEW_CHECKOUT'))) {	// Use a SCA ready method
-			require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 			$service = 'StripeLive';
 			$servicestatus = 1;

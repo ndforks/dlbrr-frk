@@ -31,7 +31,7 @@ namespace App\Modules\Core\Modules\Supplier_invoice;
  *	\brief      File containing the Tulip Class of numbering models of suppliers invoices references
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_invoice/modules_facturefournisseur.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_invoice/modules_facturefournisseur.php';
 
 
 /**
@@ -165,7 +165,7 @@ class mod_facture_fournisseur_tulip extends ModeleNumRefSuppliersInvoices
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// Get Mask value
 		$mask = '';

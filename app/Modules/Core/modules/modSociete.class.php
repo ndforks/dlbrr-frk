@@ -32,7 +32,7 @@ namespace App\Modules\Core\Modules;
  *	\ingroup    societe
  *	\brief      Description and activation file for the module societe (thirdparty)
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -303,7 +303,7 @@ class modSociete extends DolibarrModules
 		$keyforselect = 'societe';
 		$keyforelement = 'company';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_fields_array[$r] += array('u.login' => 'SaleRepresentativeLogin', 'u.firstname' => 'SaleRepresentativeFirstname', 'u.lastname' => 'SaleRepresentativeLastname');
 
 		$this->export_TypeFields_array[$r] = array(
@@ -423,11 +423,11 @@ class modSociete extends DolibarrModules
 		$keyforselect = 'socpeople';
 		$keyforelement = 'contact';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'societe';
 		$keyforelement = 'company';
 		$keyforaliasextra = 'extrasoc';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'socpeople as c';
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'societe as s ON c.fk_soc = s.rowid';
@@ -1033,12 +1033,12 @@ class modSociete extends DolibarrModules
 		//$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/thirdparties/template_thirdparty.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/thirdparties/template_thirdparty.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/thirdparties';
 		$dest = $dirodt.'/template_thirdparty.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

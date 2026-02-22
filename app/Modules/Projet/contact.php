@@ -29,8 +29,8 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 if (isModEnabled('category')) {
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 }
@@ -61,7 +61,7 @@ $mine   = request()->input('mode') == 'mine' ? 1 : 0;
 
 $object = new Project($db);
 
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 if (getDolGlobalString('PROJECT_ALLOW_COMMENT_ON_PROJECT') && empty($object->comments)) {
 	$object->fetchComments();
 }
@@ -184,7 +184,7 @@ if (empty($reshook)) {
 		$errorgrouparray = array();
 
 		if ($groupid > 0) {
-			require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
 			$usergroup = new UserGroup($db);
 			$result = $usergroup->fetch($groupid);
 			if ($result > 0) {
@@ -481,7 +481,7 @@ if ($id > 0 || !empty($ref)) {
 
 	// Other attributes
 	$cols = 2;
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print "</table>";
 

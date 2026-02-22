@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules;
  *  \brief      Description and activation file for the module datapolicy
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -192,7 +192,7 @@ class modDataPolicy extends DolibarrModules
 		global $langs;
 
 		// Create extrafields
-		include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		$extrafields = new ExtraFields($this->db);
 
 		// Extrafield contact

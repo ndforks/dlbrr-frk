@@ -38,7 +38,7 @@ namespace App\Modules\Expedition\Classes;
  *  \brief      File of class managing the shipments
  */
 
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobjectline.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobjectline.class.php";
 require_once DOL_DOCUMENT_ROOT.'/expedition/class/expeditionlinebatch.class.php';
 
 /**

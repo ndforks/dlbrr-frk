@@ -30,11 +30,11 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ldap.lib.php';
 
 /**
  * @var Conf $conf

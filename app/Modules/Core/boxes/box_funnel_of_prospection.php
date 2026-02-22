@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *  \ingroup    projet
  *  \brief      Module to show the funnel of prospection
  */
-include_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+include_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 
 /**
@@ -85,8 +85,8 @@ class box_funnel_of_prospection extends ModeleBoxes
 		$badgeStatus7 = '#baa32b';
 		$badgeStatus8 = '#993013';
 		$badgeStatus9 = '#e7f0f0';
-		if (file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php')) {
-			include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+		if (file_exists(DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php')) {
+			include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 		}
 
 		$listofoppstatus = array();
@@ -265,7 +265,7 @@ class box_funnel_of_prospection extends ModeleBoxes
 
 				$dataseries[] = $data;
 				if ($conf->use_javascript_ajax) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 					$dolgraph = new DolGraph();
 					$dolgraph->SetMinValue(0);
 					$dolgraph->SetData($dataseries);

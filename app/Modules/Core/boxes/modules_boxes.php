@@ -263,7 +263,7 @@ class ModeleBoxes // Can't be abstract as it is instantiated to build "empty" bo
 			return "\n<!-- Box ".get_class($this)." hidden -->\n"; // Nothing done if hidden (for example when user has no permission)
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$MAXLENGTHBOX = 0; // When set to 0: no length limit
 

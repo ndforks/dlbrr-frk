@@ -29,8 +29,8 @@ namespace App\Modules\Multicurrency\Classes;
  * \brief   This file is a CRUD class file (Create/Read/Update/Delete) for multicurrency
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/currencyrate.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/currencyrate.class.php';
 
 /**
  * Class Currency
@@ -679,7 +679,7 @@ class MultiCurrency extends CommonObject
 			return -1;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 		$urlendpoint = $this->urlendpoint;
 

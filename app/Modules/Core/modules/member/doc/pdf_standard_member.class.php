@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules\Member\Doc;
  *	\brief		File of class to generate PDF document of labels
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonstickergenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonstickergenerator.class.php';
 
 /**
  *	Class to generate stick sheet with format Avery or other personalised

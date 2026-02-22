@@ -28,11 +28,11 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/stripe/lib/stripe.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Stripe/lib/stripe.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
-require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 $servicename = 'Stripe';
 $listofsupportedhooks = array('payment_intent.payment_failed', 'payment_intent.succeeded');
@@ -675,7 +675,7 @@ print '<br><br><br>';
 
 
 $token = '';
-include DOL_DOCUMENT_ROOT.'/core/tpl/onlinepaymentlinks.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/onlinepaymentlinks.tpl.php';
 
 
 

@@ -22,7 +22,7 @@ namespace App\Modules\Core\Modules\Mailings;
 
 
 // Load Dolibarr Environment
-include_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 
 
 /**
@@ -284,7 +284,7 @@ class mailing_partnership extends MailingTargets
 		$s .= '</select> ';
 
 		// Add filter on thirdparties status
-		include_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
 		$tmppartnership = new Partnership($this->db);
 
 		$dummy = $tmppartnership->getLibStatut(0);	// We call this only to have $tmppartnership->labelStatus loaded

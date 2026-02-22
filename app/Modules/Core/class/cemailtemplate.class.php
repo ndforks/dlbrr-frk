@@ -25,7 +25,7 @@
  */
 
 namespace App\Modules\Core\Classes;
-require_once DOL_DOCUMENT_ROOT.'/core/class/doldeprecationhandler.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doldeprecationhandler.class.php';
 
 
 /**

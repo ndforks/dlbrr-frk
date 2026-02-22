@@ -68,14 +68,14 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 // Init vars
 $backtopage = request()->input('backtopage');
@@ -112,7 +112,7 @@ $user->loadDefaultValues();
 
 $captchaobj = null;
 if (getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_MEMBER')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 	// List of directories where we can find captcha handlers
 	$dirModCaptcha = array_merge(
@@ -182,7 +182,7 @@ function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $
 
 	print '<body id="mainbody" class="publicnewmemberform">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	htmlPrintOnlineHeader($mysoc, $langs, 1, getDolGlobalString('MEMBER_PUBLIC_INTERFACE'), 'MEMBER_IMAGE_PUBLIC_REGISTRATION');
 
 	print '<div class="divmainbodylarge">';
@@ -472,7 +472,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 		if (!$error) {
 			$result = $adh->create($user);
 			if ($result > 0) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 				$object = $adh;
 
 				$adht = new AdherentType($db);
@@ -483,7 +483,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 					$msg = '';
 
 					// Send subscription email
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 					$formmail = new FormMail($db);
 					// Set output language
 					$outputlangs = new Translate('', $conf);
@@ -957,7 +957,7 @@ if (getDolGlobalString('MEMBER_SKIP_TABLE') || getDolGlobalString('MEMBER_NEWFOR
 
 	// Other attributes
 	$parameters['tpl_context'] = 'public';	// define template context to public
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	// Comments
 	print '<tr>';

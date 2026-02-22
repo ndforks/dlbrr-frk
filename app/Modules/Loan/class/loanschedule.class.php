@@ -25,7 +25,7 @@ namespace App\Modules\Loan\Classes;
  *      \brief      File of class to manage schedule of loans
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -532,8 +532,8 @@ class LoanSchedule extends CommonObject
 	private function transPayment() // @phpstan-ignore-line
 	{
 		require_once DOL_DOCUMENT_ROOT.'/loan/class/loan.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/loan.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/loan.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		$toinsert = array();
 

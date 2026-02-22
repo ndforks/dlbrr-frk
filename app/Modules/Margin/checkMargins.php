@@ -26,10 +26,10 @@
  */
 
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
 
 /**
  * @var Conf $conf
@@ -109,7 +109,7 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	if ($action == 'update' && $permissiontocreate) {
 		$datapost = $_POST;
@@ -148,7 +148,7 @@ if (empty($reshook)) {
 	$permissiontoread = $user->rights->produit->lire;
 	$permissiontodelete = $user->rights->produit->supprimer;
 	$uploaddir = $conf->product->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 	*/
 }
 

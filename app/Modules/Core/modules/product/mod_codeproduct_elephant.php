@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Product;
  *       \brief      File of class to manage product code with elephant rule
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/product/modules_product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/product/modules_product.class.php';
 
 
 /**
@@ -181,7 +181,7 @@ class mod_codeproduct_elephant extends ModeleProductCode
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// Get Mask value
 		$mask = '';
@@ -263,7 +263,7 @@ class mod_codeproduct_elephant extends ModeleProductCode
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$result = 0;
 		$code = strtoupper(trim($code));

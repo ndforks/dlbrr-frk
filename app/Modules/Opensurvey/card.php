@@ -26,11 +26,11 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/class/opensurveysondage.class.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/doleditor.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/class/opensurveysondage.class.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/lib/opensurvey.lib.php";
 
 
 /**

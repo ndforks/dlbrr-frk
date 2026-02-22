@@ -484,7 +484,7 @@ class SMTPs
 		$host = preg_replace('@tls://@i', '', $host); // Remove prefix
 
 		// @CHANGE LDR
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		if ((!is_ip($host)) && ((gethostbyname($host)) == $host)) {
 			$this->_setErr(99, $host.' is either offline or is an invalid host name.');
@@ -550,7 +550,7 @@ class SMTPs
 		// phpcs:enable
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		// Send the RFC2554 specified EHLO.
 		// This improvement as provided by 'SirSir' to
 		// accommodate both SMTP AND ESMTP capable servers
@@ -727,7 +727,7 @@ class SMTPs
 	 */
 	public function sendMsg()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 		// Default return value
 		$_retVal = false;

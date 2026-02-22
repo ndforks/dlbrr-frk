@@ -80,7 +80,7 @@ if (empty($object) || !is_object($object)) {
 
 // Handle subtotals line view
 if (defined('SUBTOTALS_SPECIAL_CODE') && $line->special_code == SUBTOTALS_SPECIAL_CODE) {
-	return require DOL_DOCUMENT_ROOT.'/core/tpl/subtotal_view.tpl.php';
+	return require DOL_DOCUMENT_ROOT.'/Core/tpl/subtotal_view.tpl.php';
 }
 
 global $mysoc;
@@ -154,12 +154,12 @@ if (($line->info_bits & 2) == 2) {
 	print '</a>';
 	if ($line->description) {
 		if ($line->description == '(CREDIT_NOTE)' && $line->fk_remise_except > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 			$discount = new DiscountAbsolute($this->db);
 			$discount->fetch($line->fk_remise_except);
 			print($txt ? ' - ' : '').$langs->transnoentities("DiscountFromCreditNote", $discount->getNomUrl(0));
 		} elseif ($line->description == '(DEPOSIT)' && $line->fk_remise_except > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 			$discount = new DiscountAbsolute($this->db);
 			$discount->fetch($line->fk_remise_except);
 			print($txt ? ' - ' : '').$langs->transnoentities("DiscountFromDeposit", $discount->getNomUrl(0));
@@ -168,12 +168,12 @@ if (($line->info_bits & 2) == 2) {
 				print ' ('.dol_print_date($discount->datec).')';
 			}
 		} elseif ($line->description == '(EXCESS RECEIVED)' && $objp->fk_remise_except > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 			$discount = new DiscountAbsolute($this->db);
 			$discount->fetch($line->fk_remise_except);
 			print($txt ? ' - ' : '').$langs->transnoentities("DiscountFromExcessReceived", $discount->getNomUrl(0));
 		} elseif ($line->description == '(EXCESS PAID)' && $objp->fk_remise_except > 0) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 			$discount = new DiscountAbsolute($this->db);
 			$discount->fetch($line->fk_remise_except);
 			print($txt ? ' - ' : '').$langs->transnoentities("DiscountFromExcessPaid", $discount->getNomUrl(0));
@@ -472,7 +472,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 if (!empty($line->remise_percent) && $line->special_code != 3) {
 	print '<td class="linecoldiscount right">';
 	$coldisplay++;
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 	print dol_print_reduction((float) $line->remise_percent, $langs);
 	print '</td>';
 } else {
@@ -482,7 +482,7 @@ if (!empty($line->remise_percent) && $line->special_code != 3) {
 
 // Fields for situation invoices
 if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 	$coldisplay++;
 	if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
 		$previous_progress = $line->getAllPrevProgress($object->id);

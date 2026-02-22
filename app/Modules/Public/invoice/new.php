@@ -56,15 +56,15 @@ define("DOLENTITY", $entity);
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 if (isModEnabled('project') || isModEnabled('eventorganization')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
@@ -137,7 +137,7 @@ function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $
 	print '<body id="mainbody" class="publicnewmemberform">';
 
 	if (!$ws) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 		htmlPrintOnlineHeader($mysoc, $langs, 1);
 	}
 
@@ -558,7 +558,7 @@ if (!$action || $action == 'create') {
 	print '</td></tr>';
 
 	// Display Captcha code if is enabled
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	print '<tr><td class="titlefield"><label><span class="fieldrequired">'.$langs->trans("SecurityCode").'</span></label></td><td>';
 	print '<span class="span-icon-security inline-block">';
 	print '<input id="securitycode" placeholder="'.$langs->trans("SecurityCode").'" class="flat input-icon-security width150" type="text" maxlength="5" name="code" tabindex="3" />';

@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Import;
  *		\brief      File to load import files with CSV format
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/import/modules_import.php';
 
 
 /**
@@ -119,7 +119,7 @@ class ImportCsv extends ModeleImports
 		$this->version = '1.34'; // Driver version
 		$this->phpmin = array(7, 0); // Minimum version of PHP required by module
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 		if (versioncompare($this->phpmin, versionphparray()) > 0) {
 			dol_syslog("Module need a higher PHP version");
 			$this->error = "Module need a higher PHP version";

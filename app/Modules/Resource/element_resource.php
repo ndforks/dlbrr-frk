@@ -29,12 +29,12 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 }
 if (isModEnabled("product") || isModEnabled("service")) {
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
@@ -347,7 +347,7 @@ if (!$ret) {
 
 	// Specific to agenda module
 	if (($element_id || $element_ref) && $element == 'action') {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/agenda.lib.php';
 
 		// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 		$hookmanager->initHooks(array('actioncard', 'globalcard'));
@@ -531,7 +531,7 @@ if (!$ret) {
 			$savobject = $object;
 			$object = $socstatic;
 
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 			$head = societe_prepare_head($socstatic);
 
 			print dol_get_fiche_head($head, 'resources', $langs->trans("ThirdParty"), -1, 'company');
@@ -560,7 +560,7 @@ if (!$ret) {
 
 	// Specific to fichinter module
 	if (($element_id || $element_ref) && $element == 'fichinter') {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/fichinter.lib.php';
 
 		$fichinter = new Fichinter($db);
 		$fichinter->fetch($element_id, $element_ref);
@@ -615,7 +615,7 @@ if (!$ret) {
 
 	// Specific to product/service module
 	if (($element_id || $element_ref) && ($element == 'product' || $element == 'service')) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 
 		$product = new Product($db);
 		$product->fetch($element_id, $element_ref);

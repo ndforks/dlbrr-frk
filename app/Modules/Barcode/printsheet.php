@@ -35,10 +35,10 @@ if (!empty($_POST['mode']) && $_POST['mode'] === 'label') {	// Page is called to
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/printsheet/modules_labels.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/printsheet/modules_labels.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/genericobject.class.php';
 
 /**
  * @var Conf $conf
@@ -536,7 +536,7 @@ print '	<div class="tagtr">';
 print '	<div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 300px;">';
 print $langs->trans("BarcodeType").' &nbsp; ';
 print '</div><div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 300px;">';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formbarcode.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formbarcode.class.php';
 $formbarcode = new FormBarCode($db);
 print $formbarcode->selectBarcodeType($fk_barcode_type, 'fk_barcode_type', 1);
 print '</div></div>';

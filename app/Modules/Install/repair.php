@@ -1586,7 +1586,7 @@ if ($ok && request()->input('force_utf8_on_tables')) {
 		// Restore dropped foreign keys
 		foreach ($foreignkeystorestore as $tmptable => $foreignkeyname) {
 			$stringtofindinline = "ALTER TABLE .* ADD CONSTRAINT ".$db->sanitize($foreignkeyname);
-			$fileforkeys = DOL_DOCUMENT_ROOT.'/install/mysql/tables/'.$tmptable.'.key.sql';
+			$fileforkeys = DOL_DOCUMENT_ROOT.'/Install/mysql/tables/'.$tmptable.'.key.sql';
 			//print 'Search in '.$fileforkeys.' to get '.$stringtofindinline."<br>\n";
 
 			$handle = fopen($fileforkeys, 'r');
@@ -1716,7 +1716,7 @@ if ($ok && request()->input('force_utf8mb4_on_tables')) {
 		// Restore dropped foreign keys
 		foreach ($foreignkeystorestore as $tmptable => $foreignkeyname) {
 			$stringtofindinline = "ALTER TABLE .* ADD CONSTRAINT ".$db->sanitize($foreignkeyname);
-			$fileforkeys = DOL_DOCUMENT_ROOT.'/install/mysql/tables/'.$tmptable.'.key.sql';
+			$fileforkeys = DOL_DOCUMENT_ROOT.'/Install/mysql/tables/'.$tmptable.'.key.sql';
 			//print 'Search in '.$fileforkeys.' to get '.$stringtofindinline."<br>\n";
 
 			$handle = fopen($fileforkeys, 'r');
@@ -2098,7 +2098,7 @@ if ($ok && request()->input('repair_mailing_path')) {
 	$sav_user = is_object($user) ? clone $user : $user;
 
 	require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 	print '<tr><td colspan="2"><br>*** Repair mailing path<br>';
 

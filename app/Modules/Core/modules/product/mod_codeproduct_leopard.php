@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Product;
  *       \brief      File of class to manage product code with leopard rule
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/product/modules_product.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/product/modules_product.class.php';
 
 
 /**

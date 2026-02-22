@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules;
  *	\brief      Description and activation file for the module Bookmarks
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**

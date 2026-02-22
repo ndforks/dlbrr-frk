@@ -28,7 +28,7 @@ namespace App\Modules\Core\Classes;
  *      \brief      Class file for html component project
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 /**
  *      Class to manage building of HTML components

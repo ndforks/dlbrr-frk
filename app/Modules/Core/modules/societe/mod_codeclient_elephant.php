@@ -32,7 +32,7 @@ namespace App\Modules\Core\Modules\Societe;
  *       \brief      File of class to manage third party code with elephant rule
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/societe/modules_societe.class.php';
 
 
 /**
@@ -241,7 +241,7 @@ class mod_codeclient_elephant extends ModeleThirdPartyCode
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// Get Mask value
 		$mask = '';
@@ -320,7 +320,7 @@ class mod_codeclient_elephant extends ModeleThirdPartyCode
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$result = 0;
 		$code = strtoupper(trim($code));

@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *		\brief      Widget for latest sale orders
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 
 /**

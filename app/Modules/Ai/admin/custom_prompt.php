@@ -33,9 +33,9 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/ai/lib/ai.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/class/html.formai.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Ai/lib/ai.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/html.formai.class.php";
 
 $langs->loadLangs(array("admin", "website", "other"));
 
@@ -72,7 +72,7 @@ if (!$user->admin) {
 $useFormSetup = 1;
 
 if (!class_exists('FormSetup')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsetup.class.php';
 }
 
 $formSetup = new FormSetup($db);
@@ -397,7 +397,7 @@ if ($action == 'edit' || $action == 'create' || $action == 'deleteproperty') {
 			$out .= '<td>'.$langs->trans("Test").'</td>';
 			$out .= '<td>';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($db);
 			$formmail->withaiprompt = 'html';		// set format
 
@@ -408,7 +408,7 @@ if ($action == 'edit' || $action == 'create' || $action == 'deleteproperty') {
 			$showlinktolayout = 0;
 
 			// Fill $out
-			include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 			$out .= '<div id="'.$htmlname.'"></div>';
 

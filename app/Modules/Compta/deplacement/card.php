@@ -28,9 +28,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/trip.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/trip.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/deplacement/class/deplacement.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
@@ -70,7 +70,7 @@ $permissionnote = $user->hasRight('deplacement', 'creer'); // Used by the includ
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be include, not includ_once
+include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be include, not includ_once
 
 if ($action == 'validate' && $user->hasRight('deplacement', 'creer')) {
 	$object->fetch($id);
@@ -207,7 +207,7 @@ $form = new Form($db);
 */
 if ($action == 'create') {
 	//WYSIWYG Editor
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 	print load_fiche_titre($langs->trans("NewTrip"));
 
@@ -288,7 +288,7 @@ if ($action == 'create') {
 
 		if ($action == 'edit' && $user->hasRight('deplacement', 'creer')) {
 			//WYSIWYG Editor
-			require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 			$soc = new Societe($db);
 			if ($object->socid) {
@@ -462,14 +462,14 @@ if ($action == 'create') {
 
 			// Other attributes
 			$parameters = array('socid' => $object->id);
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			print "</table><br>";
 
 			// Notes
 			$blocname = 'notes';
 			$title = $langs->trans('Notes');
-			include DOL_DOCUMENT_ROOT.'/core/tpl/bloc_showhide.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/bloc_showhide.tpl.php';
 
 			print '</div>';
 

@@ -23,7 +23,7 @@
  * \brief   Library files with common functions for Ai
  */
 
-include_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Ai/class/ai.class.php';
 
 
 /**
@@ -179,25 +179,25 @@ function aiAdminPrepareHead()
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = dol_buildpath("/ai/admin/setup.php", 1);
+	$head[$h][0] = dol_buildpath("/Ai/admin/setup.php", 1);
 	$head[$h][1] = $langs->trans("Settings");
 	$head[$h][2] = 'settings';
 	$h++;
 
-	$head[$h][0] = dol_buildpath("/ai/admin/custom_prompt.php", 1);
+	$head[$h][0] = dol_buildpath("/Ai/admin/custom_prompt.php", 1);
 	$head[$h][1] = $langs->trans("CustomPrompt");
 	$head[$h][2] = 'custom';
 	$h++;
 
 	if (getDolGlobalString("MAIN_FEATURES_LEVEL") >= 2) {
-		$head[$h][0] = dol_buildpath("/ai/admin/server_mcp.php", 1);
+		$head[$h][0] = dol_buildpath("/Ai/admin/server_mcp.php", 1);
 		$head[$h][1] = $langs->trans("MCPServer");
 		$head[$h][2] = 'servermcp';
 		$h++;
 	}
 
 	/*
-	$head[$h][0] = dol_buildpath("/ai/admin/myobject_extrafields.php", 1);
+	$head[$h][0] = dol_buildpath("/Ai/admin/myobject_extrafields.php", 1);
 	$head[$h][1] = $langs->trans("ExtraFields");
 	$head[$h][2] = 'myobject_extrafields';
 	$h++;

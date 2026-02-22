@@ -86,10 +86,10 @@ if (!$res) {
  * @var Translate $langs
  * @var User $user
  */
-include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 dol_include_once('/mymodule/class/myobject.class.php');
 dol_include_once('/mymodule/lib/mymodule_myobject.lib.php');
 
@@ -130,7 +130,7 @@ $hookmanager->initHooks(array($object->element.'document', 'globalcard')); // No
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'. Include fetch and fetch_thirdparty but not fetch_optionals
 
 $upload_dir = null;
 if ($id > 0 || !empty($ref)) {
@@ -170,7 +170,7 @@ if (empty($object->id) || $upload_dir === null) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 
 /*
@@ -253,7 +253,7 @@ $param = '&id='.$object->id;
 //$relativepathwithnofile='myobject/' . dol_sanitizeFileName($object->id).'/';
 $relativepathwithnofile = 'myobject/'.dol_sanitizeFileName($object->ref).'/';
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 
 // End of page
 llxFooter();

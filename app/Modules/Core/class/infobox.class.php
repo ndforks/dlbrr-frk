@@ -233,7 +233,7 @@ class InfoBox
 
 		$error = 0;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		dol_syslog(self::class."::saveboxorder zone=".$zone." userid=".$userid);
 

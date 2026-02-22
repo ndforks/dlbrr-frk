@@ -44,7 +44,7 @@ if (!defined('NOREQUIRESOC')) {
 
 require '../../main.inc.php';
 
-require_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Ai/class/ai.class.php';
 
 /**
  * @var Conf $conf

@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules;
  *	\brief      Description and activation file for the module Ficheinter
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -174,7 +174,7 @@ class modFicheinter extends DolibarrModules
 		$keyforselect = 'fichinter';
 		$keyforelement = 'intervention';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_fields_array[$r] += array(
 			'pj.ref'=>'ProjectRef', 'pj.title'=>'ProjectLabel',
 			'fd.rowid'=>'InterLineId',
@@ -199,7 +199,7 @@ class modFicheinter extends DolibarrModules
 		$keyforselect = 'fichinterdet';
 		$keyforelement = 'inter_line';
 		$keyforaliasextra = 'extradet';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'fichinter as f';

@@ -25,7 +25,7 @@ namespace App\Modules\Core\Triggers;
  *  \brief      Trigger file for blockedlog module
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 /**
  *  Class of triggered functions for agenda module
@@ -82,7 +82,7 @@ class InterfaceActionsBlockedLog extends DolibarrTriggers
 		/** @var Facture|Don|Paiement|PaymentDonation|Subscription|PaymentVarious|CashControl $object */
 		dol_syslog("Trigger '".$this->name."' for action '".$action."' launched by ".__FILE__.". id=".$object->id);
 
-		require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 		$b = new BlockedLog($this->db);
 		$b->loadTrackedEvents();			// Get the list of tracked events into $b->trackedevents
 
@@ -94,7 +94,7 @@ class InterfaceActionsBlockedLog extends DolibarrTriggers
 		// If we are here, we are on an action code that will have a control or will generate a record in blockedlog database.
 
 		if ($action === 'PAYMENT_CUSTOMER_CREATE' && $object->element == 'payment') {
-			include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 			if (isALNERunningVersion() && $mysoc->country_code == 'FR') {
 				if (empty($object->paiementcode) && !empty($object->paiementid)) {
 					$object->paiementcode = dol_getIdFromCode($this->db, $object->paiementid, 'c_paiement', 'id', 'code', 1);

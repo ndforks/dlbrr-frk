@@ -27,9 +27,9 @@ namespace App\Modules\Core\Triggers;
  * a JSON message is sent.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
-require_once DOL_DOCUMENT_ROOT.'/webhook/class/target.class.php';
-require_once DOL_DOCUMENT_ROOT.'/webhook/class/triggerhistory.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Webhook/class/target.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Webhook/class/triggerhistory.class.php';
 
 /**
  *  Class of triggers for Webhook module
@@ -71,7 +71,7 @@ class InterfaceWebhookTriggers extends DolibarrTriggers
 			return 0; // If module is not enabled, we do nothing
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 		// Or you can execute some code here
 		$nbPosts = 0;

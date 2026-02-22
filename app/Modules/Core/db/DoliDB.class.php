@@ -26,7 +26,7 @@ namespace App\Modules\Core\Db;
  * \brief 		Class file to manage Dolibarr database access
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/db/Database.interface.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/db/Database.interface.php';
 
 
 /**

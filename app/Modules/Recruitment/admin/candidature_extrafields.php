@@ -24,8 +24,8 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/lib/recruitment.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var Conf $conf
@@ -57,7 +57,7 @@ if (!$user->admin) {
  * Actions
  */
 
-require DOL_DOCUMENT_ROOT.'/core/actions_extrafields.inc.php';
+require DOL_DOCUMENT_ROOT.'/Core/actions_extrafields.inc.php';
 
 
 
@@ -79,7 +79,7 @@ $head = recruitmentAdminPrepareHead();
 
 print dol_get_fiche_head($head, 'candidature_extrafields', '', -1, '');
 
-require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_view.tpl.php';
+require DOL_DOCUMENT_ROOT.'/Core/tpl/admin_extrafields_view.tpl.php';
 
 print dol_get_fiche_end();
 
@@ -91,7 +91,7 @@ if ($action == 'create') {
 	print '<br><div id="newattrib"></div>';
 	print load_fiche_titre($langs->trans('NewAttribute'));
 
-	require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_add.tpl.php';
+	require DOL_DOCUMENT_ROOT.'/Core/tpl/admin_extrafields_add.tpl.php';
 }
 
 /*
@@ -101,7 +101,7 @@ if ($action == 'edit' && !empty($attrname)) {
 	print "<br>";
 	print load_fiche_titre($langs->trans("FieldEdition", $attrname));
 
-	require DOL_DOCUMENT_ROOT.'/core/tpl/admin_extrafields_edit.tpl.php';
+	require DOL_DOCUMENT_ROOT.'/Core/tpl/admin_extrafields_edit.tpl.php';
 }
 
 // End of page

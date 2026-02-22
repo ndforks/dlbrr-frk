@@ -56,14 +56,14 @@ if (is_numeric($entity)) {
 // Load Dolibarr environment
 require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/ticket/class/actions_ticket.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formticket.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ticket.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formticket.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ticket.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
 
 /**
@@ -113,7 +113,7 @@ if (!is_object($user)) {
 
 $captchaobj = null;
 if (getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_TICKET')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 	// List of directories where we can find captcha handlers
 	$dirModCaptcha = array_merge(
@@ -167,7 +167,7 @@ if (empty($reshook)) {
 	}
 
 	if (request()->input('addfile') && !request()->input('save')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Set tmp directory
 		// TODO Use a dedicated directory for temporary emails files
@@ -183,7 +183,7 @@ if (empty($reshook)) {
 
 	// Remove file
 	if (request()->input('removedfile') && !request()->input('save')) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Set tmp directory
 		// TODO Use a dedicated directory for temporary emails files
@@ -429,8 +429,8 @@ if (empty($reshook)) {
 					$res = $object->fetch($id);
 					if ($res) {
 						// Create form object
-						include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 						$formmail = new FormMail($db);
 
 						// Init to avoid errors
@@ -468,7 +468,7 @@ if (empty($reshook)) {
 						if ($old_MAIN_MAIL_AUTOCOPY_TO !== '') {
 							$conf->global->MAIN_MAIL_AUTOCOPY_TO = '';
 						}
-						include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 						$mailfile = new CMailFile($subject, $sendto, $from, $message, $filepath, $mimetype, $filename, $sendtocc, '', $deliveryreceipt, -1, '', '', 'tic'.$object->id, '', 'ticket');
 						if ($mailfile->error || !empty($mailfile->errors)) {
 							setEventMessages($mailfile->error, $mailfile->errors, 'errors');
@@ -511,7 +511,7 @@ if (empty($reshook)) {
 							if ($old_MAIN_MAIL_AUTOCOPY_TO !== '') {
 								$conf->global->MAIN_MAIL_AUTOCOPY_TO = '';
 							}
-							include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 							$mailfile = new CMailFile($subject, $sendto, $from, $message_admin, $filepath, $mimetype, $filename, $sendtocc, '', $deliveryreceipt, -1, '', '', 'tic'.$object->id, '', 'ticket');
 							if ($mailfile->error || !empty($mailfile->errors)) {
 								setEventMessages($mailfile->error, $mailfile->errors, 'errors');

@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Asset;
  * \brief      File containing class for advanced numbering model of Asset
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/asset/modules_asset.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/asset/modules_asset.php';
 
 /**
  *	Class to manage customer Bom numbering rules advanced
@@ -126,7 +126,7 @@ class mod_asset_advanced extends ModeleNumRefAsset
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('ASSET_ADVANCED_MASK');

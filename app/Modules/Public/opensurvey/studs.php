@@ -39,11 +39,11 @@ if (!defined('NOIPCHECK')) {
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/class/opensurveysondage.class.php";
-require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/class/opensurveysondage.class.php";
+require_once DOL_DOCUMENT_ROOT."/Opensurvey/lib/opensurvey.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 /**
  * @var Conf $conf
@@ -228,7 +228,7 @@ if (request()->input('boutonp') || request()->input('boutonp.x') || request()->i
 
 					//Linked user may not have an email set
 					if ($email) {
-						include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 
 						$application = ($conf->global->MAIN_APPLICATION_TITLE ? $conf->global->MAIN_APPLICATION_TITLE : 'Dolibarr ERP/CRM');
 

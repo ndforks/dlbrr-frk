@@ -29,7 +29,7 @@ namespace App\Modules\Core\Triggers;
  *  \brief      Trigger file for workflows
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 
 /**

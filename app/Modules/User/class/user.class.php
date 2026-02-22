@@ -39,10 +39,10 @@ namespace App\Modules\User\Classes;
  *  \ingroup	core
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
 
 
 /**
@@ -842,7 +842,7 @@ class User extends CommonObject
 
 		if (getDolGlobalString('MAIN_ENABLE_DEFAULT_VALUES')) {
 			// Load user->default_values for user. TODO Save this in memcached ?
-			require_once DOL_DOCUMENT_ROOT.'/core/class/defaultvalues.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/defaultvalues.class.php';
 
 			$defaultValues = new DefaultValues($this->db);
 			$result = $defaultValues->fetchAll('', '', 0, 0, '(t.user_id:in:0,'.$this->id.') AND (entity:in:'.(isset($this->entity) ? $this->entity : $conf->entity).','.$conf->entity.')');	// User 0 (all) + me (if defined)
@@ -1983,7 +1983,7 @@ class User extends CommonObject
 		$this->employee = 0;
 
 		if (empty($login)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$login = dol_buildlogin($contact->lastname, $contact->firstname);
 		}
 		$this->login = $login;
@@ -2067,7 +2067,7 @@ class User extends CommonObject
 		$this->pass_crypted = $member->pass_indatabase_crypted;
 
 		if (empty($login)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 			$login = dol_buildlogin($member->lastname, $member->firstname);
 		}
 		$this->login = $login;
@@ -2585,7 +2585,7 @@ class User extends CommonObject
 	public function setPassword($user, $password = '', $changelater = 0, $notrigger = 0, $nosyncmember = 0, $passwordalreadycrypted = 0, $flagdelsessionsbefore = 1)
 	{
 		global $conf, $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 		$error = 0;
 
@@ -2603,7 +2603,7 @@ class User extends CommonObject
 				// Add a check on rules for password syntax using the setup of the password generator
 				$modGeneratePassClass = 'modGeneratePass'.ucfirst(getDolGlobalString('USER_PASSWORD_GENERATED'));
 
-				include_once DOL_DOCUMENT_ROOT.'/core/modules/security/generate/'.$modGeneratePassClass.'.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/modules/security/generate/'.$modGeneratePassClass.'.class.php';
 				if (class_exists($modGeneratePassClass)) {
 					$modGeneratePass = new $modGeneratePassClass($this->db, $conf, $langs, $user);
 					'@phan-var-force ModeleGenPassword $modGeneratePass';
@@ -2744,7 +2744,7 @@ class User extends CommonObject
 		global $conf, $langs;
 		global $dolibarr_main_url_root;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 
 		$msgishtml = 0;
 
@@ -3045,7 +3045,7 @@ class User extends CommonObject
 	 */
 	public function isNotIntoValidityDateRange()
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		$now = dol_now();
 

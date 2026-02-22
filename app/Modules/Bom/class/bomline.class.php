@@ -28,7 +28,7 @@ namespace App\Modules\Bom\Classes;
  * \brief       This file is a class file for BOM lines
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 
 /**
  * Class for BOMLine

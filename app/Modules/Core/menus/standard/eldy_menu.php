@@ -136,7 +136,7 @@ class MenuManager
 			$leftmenu = $forceleftmenu;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/menubase.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/menubase.class.php';
 		$tabMenu = array();
 		$menuArbo = new Menubase($this->db, 'eldy');
 		$menuArbo->menuLoad($mainmenu, $leftmenu, $this->type_user, 'eldy', $tabMenu);
@@ -156,14 +156,14 @@ class MenuManager
 	{
 		global $conf, $langs, $user;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/menus/standard/eldy.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/menus/standard/eldy.lib.php';
 
 		if ($this->type_user == 1) {
 			$conf->global->MAIN_SEARCHFORM_SOCIETE_DISABLED = 1;
 			$conf->global->MAIN_SEARCHFORM_CONTACT_DISABLED = 1;
 		}
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/menu.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/menu.class.php';
 		$this->menu = new Menu();
 
 		if (!getDolGlobalString('MAIN_MENU_INVERT')) {

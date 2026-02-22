@@ -24,7 +24,7 @@ namespace App\Modules\Ticket\Classes;
  *       \ingroup    ticket
  *       \brief      File for class to manage the ticket stats
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 require_once 'ticket.class.php';
 
 

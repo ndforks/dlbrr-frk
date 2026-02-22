@@ -248,7 +248,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 					$out = "";
 
 					// Fill $out
-					include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+					include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 					print $out;
 					print '<script>
 						$(document).ready(function() {
@@ -319,7 +319,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 
 				/** @var ?FormAI $formai */
 				if (empty($formai) || $formai instanceof FormAI) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formai.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formai.class.php';
 					$formai = new FormAI($db);
 				}
 				print $formai->getAjaxAICallFunction();

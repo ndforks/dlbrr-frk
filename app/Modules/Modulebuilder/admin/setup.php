@@ -23,7 +23,7 @@
  *  \brief      Page setup for modulebuilder module
  */
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 
 /**
  * @var Conf $conf

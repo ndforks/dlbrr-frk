@@ -352,7 +352,7 @@ class Documentation
 
 		// LOGO
 		print '<div class="sidebar-logo">';
-		if (is_readable(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo.svg')) {
+		if (is_readable(DOL_DOCUMENT_ROOT.'/Theme/dolibarr_logo.svg')) {
 			$urllogo = DOL_URL_ROOT.'/theme/dolibarr_logo.svg';
 			print '<img src="'.$urllogo.'" />';
 		}

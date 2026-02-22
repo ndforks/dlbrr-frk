@@ -27,9 +27,9 @@ namespace App\Modules\Core\Modules\Reception\Doc;
  *	\brief      Fichier de la class permettant de generer les bordereaux envoi au modele Squille
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
 
 
 /**
@@ -239,7 +239,7 @@ class pdf_squille extends ModelePdfReception
 			if (file_exists($dir)) {
 				// Add pdfgeneration hook
 				if (!is_object($hookmanager)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 					$hookmanager = new HookManager($this->db);
 				}
 				$hookmanager->initHooks(array('pdfgeneration'));
@@ -384,7 +384,7 @@ class pdf_squille extends ModelePdfReception
 				$height_barcode = 0;
 				//$pdf->Rect($this->marge_gauche, $this->marge_haute, $this->page_largeur-$this->marge_gauche-$this->marge_droite, 30);
 				if (isModEnabled('barcode') && getDolGlobalString('BARCODE_ON_RECEPTION_PDF')) {
-					require_once DOL_DOCUMENT_ROOT.'/core/modules/barcode/doc/tcpdfbarcode.modules.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/modules/barcode/doc/tcpdfbarcode.modules.php';
 
 					$encoding = 'QRCODE';
 					$module = new modTcpdfbarcode();

@@ -222,8 +222,8 @@ function product_prepare_head($object)
 	}
 
 	// Attachments
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = null;
 	$nbFiles = 0;
 	if (isModEnabled("product") && ($object->type == Product::TYPE_PRODUCT)) {
@@ -261,7 +261,7 @@ function product_prepare_head($object)
 	if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 		$nbEvent = 0;
 		// Enable caching of product count actioncomm
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 		$cachekey = 'count_events_product_'.$object->id;
 		$dataretrieved = dol_getcache($cachekey);
 		if (!is_null($dataretrieved)) {
@@ -324,8 +324,8 @@ function productlot_prepare_head($object)
 	$h++;
 
 	// Attachments
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 	$upload_dir = $conf->productbatch->multidir_output[$object->entity ?? $conf->entity].'/'.dol_sanitizeFileName($object->ref);
 	$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 	$nbLinks = Link::count($db, $object->element, $object->id);
@@ -975,7 +975,7 @@ function measuringUnitString($unitid, $measuring_style = '', $unitscale = null, 
 	}
 
 	if (empty($measuring_unit_cache[$unitid.'_'.$measuring_style.'_'.$unitscale.'_'.$use_short_label])) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 		$measuringUnits = new CUnits($db);
 
 		if ($measuring_style == '' && $unitscale == '') {

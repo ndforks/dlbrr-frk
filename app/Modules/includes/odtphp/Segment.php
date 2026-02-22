@@ -189,7 +189,7 @@ class Segment implements IteratorAggregate, Countable
 	*/
 	public function macroReplace($text)
 	{
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		global $langs;
 
 		$hoy = dol_getdate(dol_now('tzuser'));

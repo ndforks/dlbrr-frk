@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules\Commande;
  *  \brief     File of class to manage Sales Order numbering rules Saphir
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/commande/modules_commande.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/commande/modules_commande.php';
 
 
 /**
@@ -143,7 +143,7 @@ class mod_commande_saphir extends ModeleNumRefCommandes
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString("COMMANDE_SAPHIR_MASK");

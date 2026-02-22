@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules;
  *      \ingroup    loan
  *      \brief      Description and activation file for the module loan
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**

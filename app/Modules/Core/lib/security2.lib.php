@@ -193,7 +193,7 @@ if (!function_exists('dol_loginfunction')) {
 				}
 			}
 		} else {
-			$template_dir = DOL_DOCUMENT_ROOT."/core/tpl/";
+			$template_dir = DOL_DOCUMENT_ROOT."/Core/tpl/";
 		}
 
 		// Set cookie for timeout management. We set it as a cookie so we will be able to use it to set timeout on next page before the session start
@@ -257,7 +257,7 @@ if (!function_exists('dol_loginfunction')) {
 			$width = 128;
 		} elseif (!empty($mysoc->logo_squarred_small) && is_readable($conf->mycompany->dir_output.'/logos/thumbs/'.$mysoc->logo_squarred_small)) {
 			$urllogo = DOL_URL_ROOT.'/viewimage.php?cache=1&amp;modulepart=mycompany&amp;file='.urlencode('logos/thumbs/'.$mysoc->logo_squarred_small);
-		} elseif (is_readable(DOL_DOCUMENT_ROOT.'/theme/dolibarr_logo.svg')) {
+		} elseif (is_readable(DOL_DOCUMENT_ROOT.'/Theme/dolibarr_logo.svg')) {
 			$urllogo = DOL_URL_ROOT.'/theme/dolibarr_logo.svg';
 		}
 
@@ -378,7 +378,7 @@ function encodedecode_dbpassconf($level = 0)
 	$passwd = '';
 	$passwd_crypted = '';
 
-	if ($fp = fopen(DOL_DOCUMENT_ROOT.'/conf/conf.php', 'r')) {
+	if ($fp = fopen(DOL_DOCUMENT_ROOT.'/Conf/conf.php', 'r')) {
 		while (!feof($fp)) {
 			$buffer = fgets($fp, 4096);
 
@@ -447,7 +447,7 @@ function encodedecode_dbpassconf($level = 0)
 		fclose($fp);
 
 		// Write new conf file
-		$file = DOL_DOCUMENT_ROOT.'/conf/conf.php';
+		$file = DOL_DOCUMENT_ROOT.'/Conf/conf.php';
 		if ($fp = @fopen($file, 'w')) {
 			fwrite($fp, $config);
 			fflush($fp);
@@ -532,8 +532,8 @@ function getRandomPassword($generic = false, $replaceambiguouschars = null, $len
 	} elseif (getDolGlobalString('USER_PASSWORD_GENERATED')) {
 		$nomclass = "modGeneratePass".ucfirst($conf->global->USER_PASSWORD_GENERATED);
 		$nomfichier = $nomclass.".class.php";
-		//print DOL_DOCUMENT_ROOT."/core/modules/security/generate/".$nomclass;
-		require_once DOL_DOCUMENT_ROOT."/core/modules/security/generate/".$nomfichier;
+		//print DOL_DOCUMENT_ROOT."/Core/modules/security/generate/".$nomclass;
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/security/generate/".$nomfichier;
 		$genhandler = new $nomclass($db, $conf, $langs, $user);
 		'@phan-var-force ModeleGenPassword $genhandler';
 		$generated_password = $genhandler->getNewGeneratedPassword();

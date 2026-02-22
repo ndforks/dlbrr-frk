@@ -26,7 +26,7 @@ namespace App\Modules\Core\Boxes;
  *     \ingroup     ticket
  *     \brief       This box shows the number of new daily tickets the last X days
  */
-require_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+require_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box to show new daily tickets
@@ -81,8 +81,8 @@ class box_graph_nb_ticket_last_x_days extends ModeleBoxes
 		$badgeStatus7 = '#baa32b';
 		$badgeStatus8 = '#993013';
 		$badgeStatus9 = '#e7f0f0';
-		if (file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php')) {
-			include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+		if (file_exists(DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php')) {
+			include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 		}
 		$this->max = $max;
 
@@ -158,7 +158,7 @@ class box_graph_nb_ticket_last_x_days extends ModeleBoxes
 			$stringtoshow .= '</form>';
 			$stringtoshow .= '</div>';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 			$px1 = new DolGraph();
 
 			$mesg = $px1->isGraphKo();

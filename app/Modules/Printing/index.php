@@ -25,7 +25,7 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-include_once DOL_DOCUMENT_ROOT.'/core/modules/printing/modules_printing.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/printing/modules_printing.php';
 
 /**
  * @var Conf $conf
@@ -64,7 +64,7 @@ print $langs->trans("DirectPrintingJobsDesc").'<br><br>';
 $object = new PrintingDriver($db);
 $result = $object->listDrivers($db, 10);
 foreach ($result as $driver) {
-	require_once DOL_DOCUMENT_ROOT.'/core/modules/printing/'.$driver.'.modules.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/modules/printing/'.$driver.'.modules.php';
 	$classname = 'printing_'.$driver;
 	$langs->load($driver);
 	$printer = new $classname($db);

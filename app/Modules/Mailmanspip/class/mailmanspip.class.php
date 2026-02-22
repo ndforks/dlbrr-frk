@@ -31,11 +31,11 @@ namespace App\Modules\Mailmanspip\Classes;
  *	\brief      File of class to manage mailman and spip actions
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 /**
  *	Class to manage mailman and spip
@@ -146,7 +146,7 @@ class MailmanSpip
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 		//Patterns that are going to be replaced with their original value
 		$patterns = array(
 			'%LISTE%',
@@ -186,7 +186,7 @@ class MailmanSpip
 				$mydb = $this->connectSpip();
 
 				if ($mydb) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 					$mdpass = dol_hash($object->pass);
 					$htpass = crypt($object->pass, makesalt());
 

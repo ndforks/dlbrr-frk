@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Project\Task;
  *	\brief      Fichier contenant la class du modele de numerotation de reference de projet Universal
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/task/modules_task.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/project/task/modules_task.php';
 
 
 /**
@@ -137,7 +137,7 @@ class mod_task_universal extends ModeleNumRefTask
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$mask = getDolGlobalString('PROJECT_TASK_UNIVERSAL_MASK');
 

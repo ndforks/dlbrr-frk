@@ -55,7 +55,7 @@ require_once __DIR__.'/../../main.inc.php'; // __DIR__ allow this script to be i
 /**
  * @var Conf $conf
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 // Define css type
 top_httphead('text/css');
@@ -67,7 +67,7 @@ if (empty($dolibarr_nocache)) {
 }
 
 
-include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 if (defined('THEME_ONLY_CONSTANT')) {
 	return;
 }

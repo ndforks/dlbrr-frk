@@ -69,7 +69,7 @@ if (empty($object) || !is_object($object)) {
 
 // Handle subtotals line edit
 if (defined('SUBTOTALS_SPECIAL_CODE') && $line->special_code == SUBTOTALS_SPECIAL_CODE) {
-	return require DOL_DOCUMENT_ROOT.'/core/tpl/subtotal_edit.tpl.php';
+	return require DOL_DOCUMENT_ROOT.'/Core/tpl/subtotal_edit.tpl.php';
 }
 
 $usemargins = 0;
@@ -184,7 +184,7 @@ $coldisplay++;
 
 	if (!$situationinvoicelinewithparent) {
 		// editor wysiwyg
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$nbrows = ROWS_2;
 		if (getDolGlobalString('MAIN_INPUT_DESC_HEIGHT')) {
 			$nbrows = getDolGlobalString('MAIN_INPUT_DESC_HEIGHT');
@@ -309,7 +309,7 @@ $coldisplay++;
 		$unit_type = false;
 		// limit unit select to unit type
 		if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
 			$cUnit = new CUnits($line->db);
 			if ($cUnit->fetch($line->fk_unit) > 0) {
 				if (!empty($cUnit->unit_type)) {

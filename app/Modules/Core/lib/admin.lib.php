@@ -27,7 +27,7 @@
  *  \brief			Library of admin functions
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 /**
  *  Return a version in a string from a version into an array
@@ -591,7 +591,7 @@ function dolibarr_del_const($db, $name, $entity = 1)
 		return -1;
 	}
 	if (! is_object($hookmanager)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 		$hookmanager = new HookManager($db);
 	}
 
@@ -651,7 +651,7 @@ function dolibarr_get_const($db, $name, $entity = 1)
 	if ($resql) {
 		$obj = $db->fetch_object($resql);
 		if ($obj) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 			$value = dolDecrypt($obj->value);
 		}
 	}
@@ -687,7 +687,7 @@ function dolibarr_set_const($db, $name, $value, $type = 'chaine', $visible = 0, 
 		exit;
 	}
 	if (! is_object($hookmanager)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 		$hookmanager = new HookManager($db);
 	}
 
@@ -726,7 +726,7 @@ function dolibarr_set_const($db, $name, $value, $type = 'chaine', $visible = 0, 
 			// To list all sensitive constant, you can make a
 			// WHERE name like '%\_KEY' or name like '%\_EXPORTKEY' or name like '%\_SECUREKEY' or name like '%\_SERVERKEY' or name like '%\_PASS' or name like '%\_PASSWORD' or name like '%\_SECRET'
 			// or name like '%\_SECURITY_TOKEN' or name like '%\WEB_TOKEN'
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 			$newvalue = dolEncrypt($value);
 		} else {
 			$newvalue = $value;
@@ -1083,7 +1083,7 @@ function listOfSessions()
 	$arrayofSessions = array();
 	// Set the handler of session
 	if (!empty($php_session_save_handler) && $php_session_save_handler == 'db') {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/phpsessionin'.$php_session_save_handler.'.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/phpsessionin'.$php_session_save_handler.'.lib.php';
 		return dolListSessions();
 	}
 	// session.save_path can be returned empty so we set a default location and work from there
@@ -1380,7 +1380,7 @@ function unActivateModule($value, $requiredby = 1, $options = '')
 	} else { // We come here when we try to unactivate a module when module does not exists anymore in sources
 		//print $dir.$modFile;exit;
 		// TODO Replace this after DolibarrModules is moved as abstract class with a try catch, to show if the module we try to disable has not been found or could not be loaded
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 		$genericMod = new DolibarrModules($db);
 		$genericMod->name = preg_replace('/^mod/i', '', $modName);
 		$genericMod->rights_class = strtolower(preg_replace('/^mod/i', '', $modName));
@@ -1874,7 +1874,7 @@ function form_constantes($tableau, $strictw3c = 2, $helptext = '', $text = '')
 			if ($const == 'ADHERENT_CARD_TYPE' || $const == 'ADHERENT_ETIQUETTE_TYPE') {
 				print '<td>';
 				// List of possible labels (defined into $_Avery_Labels variable set into format_cards.lib.php)
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php';
 				$arrayoflabels = array();
 				foreach (array_keys($_Avery_Labels) as $codecards) {
 					$arrayoflabels[$codecards] = $_Avery_Labels[$codecards]['name'];
@@ -1892,13 +1892,13 @@ function form_constantes($tableau, $strictw3c = 2, $helptext = '', $text = '')
 					print $obj->value;
 					print "</textarea>\n";
 				} elseif ($obj->type == 'html') {
-					require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 					$doleditor = new DolEditor('constvalue'.($strictw3c == 3 ? '_'.$const : '[]'), $obj->value, '', 160, 'dolibarr_notes', '', false, false, isModEnabled('fckeditor'), ROWS_5, '90%');
 					$doleditor->Create();
 				} elseif ($obj->type == 'yesno') {
 					print $form->selectyesno('constvalue'.($strictw3c == 3 ? '_'.$const : '[]'), $obj->value, 1, false, 0, 1);
 				} elseif (preg_match('/emailtemplate/', $obj->type)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 					$formmail = new FormMail($db);
 
 					$tmp = explode(':', $obj->type);

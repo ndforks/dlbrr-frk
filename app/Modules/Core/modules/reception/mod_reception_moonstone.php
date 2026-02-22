@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Reception;
  *  \brief      File of class to manage reception numbering rules Moonstone
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
 
 /**
  *	Class to manage reception numbering rules Moonstone
@@ -117,7 +117,7 @@ class mod_reception_moonstone extends ModelNumRefReception
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$mask = getDolGlobalString("RECEPTION_MOONSTONE_MASK");
 

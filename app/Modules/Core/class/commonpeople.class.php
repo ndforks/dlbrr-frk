@@ -219,7 +219,7 @@ trait CommonPeople
 
 			if (/* is_array($arrayoflangcode) &&  */count($arrayoflangcode)) {
 				if (!is_object($extralanguages)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/extralanguages.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/extralanguages.class.php';
 					$extralanguages = new ExtraLanguages($this->db);
 				}
 				$extralanguages->fetch_name_extralanguages($elementforaltlanguage);

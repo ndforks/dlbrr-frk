@@ -140,7 +140,7 @@ class mod_stocktransfer_advanced extends ModeleNumRefStockTransfer
 	{
 		global $db, $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('STOCKTRANSFER_STOCKTRANSFER_ADVANCED_MASK');

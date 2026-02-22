@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Security\Captcha;
  *		\ingroup    core
  *		\brief      File with parent class for captcha generating classes
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
 
 
 /**

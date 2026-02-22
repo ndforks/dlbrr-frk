@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    dav
  *  \brief      Description and activation file for the module dav
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -254,7 +254,7 @@ class modDav extends DolibarrModules
 	public function init($options = '')
 	{
 		// Create extrafields
-		include_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		$extrafields = new ExtraFields($this->db);
 
 		//$result1=$extrafields->addExtraField('myattr1', "New Attr 1 label", 'boolean', 1,  3, 'thirdparty',   0, 0, '', '', 1, '', 0, 0, '', '', 'dav@dav', '$conf->dav->enabled');

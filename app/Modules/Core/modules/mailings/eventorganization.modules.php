@@ -22,7 +22,7 @@ namespace App\Modules\Core\Modules\Mailings;
 
 
 // Load Dolibarr Environment
-include_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 
 
 /**
@@ -202,7 +202,7 @@ class mailing_eventorganization extends MailingTargets
 
 		$langs->load("companies");
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 		$formproject = new FormProjets($this->db);
 
 		$s = img_picto($langs->trans("OrganizedEvent"), 'project', 'class="pictofixedwidth"');

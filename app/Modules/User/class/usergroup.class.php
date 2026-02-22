@@ -32,9 +32,9 @@ namespace App\Modules\User\Classes;
  *	 \brief      File of class to manage user groups
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 if (isModEnabled('ldap')) {
-	require_once DOL_DOCUMENT_ROOT."/core/class/ldap.class.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/class/ldap.class.php";
 }
 
 

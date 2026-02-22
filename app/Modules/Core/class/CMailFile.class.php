@@ -569,7 +569,7 @@ class CMailFile
 			// ------------------------------------------
 			$host = dol_getprefix('email');
 
-			require_once DOL_DOCUMENT_ROOT.'/core/class/smtps.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/smtps.class.php';
 			$smtps = new SMTPs();
 			$smtps->setCharSet($conf->file->character_set_client);
 
@@ -868,7 +868,7 @@ class CMailFile
 
 		if (!getDolGlobalString('MAIN_DISABLE_ALL_MAILS')) {
 			if (!is_object($hookmanager)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 				$hookmanager = new HookManager($db);
 			}
 			$hookmanager->initHooks(array('mail'));
@@ -1134,7 +1134,7 @@ class CMailFile
 				}
 
 				if (getDolGlobalString($keyforsmtpauthtype) === "XOAUTH2") {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php'; // define $supportedoauth2array
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/oauth.lib.php'; // define $supportedoauth2array
 
 					$supportedoauth2array = getSupportedOauth2Array();
 
@@ -1317,7 +1317,7 @@ class CMailFile
 					$this->transport->setPassword(getDolGlobalString($keyforsmtppw));
 				}
 				if (getDolGlobalString($keyforsmtpauthtype) === "XOAUTH2") {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/oauth.lib.php';
 
 					$supportedoauth2array = getSupportedOauth2Array();
 
@@ -1562,7 +1562,7 @@ class CMailFile
 
 				// Move dolibarr_mail.log into a dolibarr_mail.log.v123456789
 				if (getDolGlobalInt('MAIN_MAIL_DEBUG_LOG_WITH_DATE')) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					archiveOrBackupFile($outputfile, getDolGlobalInt('MAIN_MAIL_DEBUG_LOG_WITH_DATE'));
 				}
 			}
@@ -1607,7 +1607,7 @@ class CMailFile
 				$destfile = $dolibarr_main_data_root."/dolibarr_mail.err";
 			}
 
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_move($srcfile, $destfile, '0', 1, 0, 0);
 		}
 	}
@@ -2168,7 +2168,7 @@ class CMailFile
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Build the array of image extensions
 		$extensions = array_keys($this->image_types);

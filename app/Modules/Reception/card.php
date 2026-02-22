@@ -38,15 +38,15 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/reception/class/reception.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Reception/class/reception.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/reception.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/reception.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/entrepot.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 if (isModEnabled("product") || isModEnabled("service")) {
@@ -63,7 +63,7 @@ if (isModEnabled('productbatch')) {
 }
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 }
 /**
  * @var Conf $conf
@@ -132,7 +132,7 @@ $extrafields->fetch_name_optionals_label($object->table_element_line);
 $extrafields->fetch_name_optionals_label($objectorder->table_element_line);
 
 // Load object. Make an object->fetch
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('receptioncard', 'globalcard'));
@@ -230,7 +230,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
 
 	// Reopen
 	if ($action == 'reopen' && $permissiontoadd) {	// Test on permissions not required here
@@ -708,7 +708,7 @@ if (empty($reshook)) {
 		}
 	} elseif ($action == 'remove_file' && $permissiontoadd) {
 		// Delete file in doc form
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$upload_dir = $conf->reception->dir_output;
 		$file = $upload_dir.'/'.request()->input('file');
@@ -1094,7 +1094,7 @@ if (empty($reshook)) {
 		}
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Actions to send emails
 	if (empty($id)) {
@@ -1105,7 +1105,7 @@ if (empty($reshook)) {
 	$mode = 'emailfromreception';
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_RECEPTION_TO';
 	$trackid = 'rec'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 }
 
 
@@ -1299,7 +1299,7 @@ if ($action == 'create' && $permissiontoadd) {
 		print '<tr><td>'.$langs->trans('Model').'</td>';
 		print '<td colspan="2">';
 		print img_picto('', 'pdf', 'class="pictofixedwidth"');
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
 		$list = ModelePdfReception::liste_modeles($db);
 		print $form->selectarray('model', $list, getDolGlobalString('RECEPTION_ADDON_PDF'), 0, 0, 0, '', 0, 0, 0, '', 'maxwidth200 widthcentpercentminusx', 1);
 		print "</td></tr>";
@@ -1510,7 +1510,7 @@ if ($action == 'create' && $permissiontoadd) {
 			}
 
 			// Document model
-			include_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
 			$list = ModelePdfReception::liste_modeles($db);
 
 			if (is_array($list) && count($list) > 1) {
@@ -1958,7 +1958,7 @@ if ($action == 'create' && $permissiontoadd) {
 		}
 
 		if (isModEnabled('notification')) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/notify.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/notify.class.php';
 			$notify = new Notify($db);
 			$text .= '<br>';
 			$text .= $notify->confirmMessage('RECEPTION_VALIDATE', $object->socid, $object);
@@ -2247,7 +2247,7 @@ if ($action == 'create' && $permissiontoadd) {
 	// Other attributes
 	$cols = 2;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 	print '</table>';
 
@@ -2340,7 +2340,7 @@ if ($action == 'create' && $permissiontoadd) {
 			';
 
 			if (!empty($conf->use_javascript_ajax) && $object->status == $object::STATUS_DRAFT) {
-				include DOL_DOCUMENT_ROOT.'/core/tpl/ajaxrow.tpl.php';
+				include DOL_DOCUMENT_ROOT.'/Core/tpl/ajaxrow.tpl.php';
 			}
 
 			print '<div class="div-table-responsive-no-min">';
@@ -2896,7 +2896,7 @@ if ($action == 'create' && $permissiontoadd) {
 	$diroutput = $conf->reception->dir_output;
 	$trackid = 'rec'.$object->id;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 }
 
 

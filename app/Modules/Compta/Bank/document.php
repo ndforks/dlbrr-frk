@@ -25,10 +25,10 @@
  * 	\brief      Page to manage documents attached to a bank account
  */
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/bank.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/images.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/class/html.formfile.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/bank.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/images.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/html.formfile.class.php";
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 
 /**
@@ -98,7 +98,7 @@ if ($object->id > 0) {
 	$upload_dir = $conf->bank->dir_output."/".dol_sanitizeFileName($object->ref);
 }
 
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 
 /*
@@ -152,7 +152,7 @@ if ($id > 0 || !empty($ref)) {
 		$permissiontoadd = $user->hasRight('banque', 'modifier');
 		$permtoedit = $user->hasRight('banque', 'modifier');
 		$param = '&id='.$object->id;
-		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 	} else {
 		abort(500);
 	}

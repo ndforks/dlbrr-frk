@@ -26,8 +26,8 @@ namespace App\Modules\Core\Modules\Security\Captcha;
  *		\brief      File to manage captcha generation according to dolibarr native code
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/security/captcha/modules_captcha.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/security/generate/modGeneratePassStandard.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/security/captcha/modules_captcha.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/security/generate/modGeneratePassStandard.class.php';
 
 
 /**

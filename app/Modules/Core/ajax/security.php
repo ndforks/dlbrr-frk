@@ -76,7 +76,7 @@ top_httphead();
 // Return a new generated password
 if ($action) {
 	if ($action == 'getrandompassword') {	// Test on permission not required here. Endpoint can be called by anu logged user.
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 		$generic = request()->input('generic') ? true : false;
 		echo getRandomPassword($generic);
 	}

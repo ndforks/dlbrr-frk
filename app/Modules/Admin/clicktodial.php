@@ -36,7 +36,7 @@ require '../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
 
 // Load translation files required by the page
 $langs->load("admin");
@@ -201,7 +201,7 @@ if (getDolGlobalString('CLICKTODIAL_URL')) {
 }
 
 // Add button to autosuggest a key
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 print dolJSToSetRandomPassword('CLICKTODIAL_KEY_FOR_CIDLOOKUP');
 
 

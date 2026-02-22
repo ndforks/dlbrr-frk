@@ -166,7 +166,7 @@ if (!request()->input('action') || preg_match('/upgrade/i', request()->input('ac
 	$db = getDoliDBInstance($conf->db->type, $conf->db->host, $conf->db->user, $conf->db->pass, $conf->db->name, (int) $conf->db->port);
 
 	// Create the global $hookmanager object
-	include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 	$hookmanager = new HookManager($db);
 
 	if ($db->connected) {

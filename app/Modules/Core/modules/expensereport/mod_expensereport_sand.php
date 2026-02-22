@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Expensereport;
  * \brief      Fichier contenant la class du modele de numerotation de reference de note de frais Sand
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/expensereport/modules_expensereport.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/expensereport/modules_expensereport.php';
 
 
 /**
@@ -136,7 +136,7 @@ class mod_expensereport_sand extends ModeleNumRefExpenseReport
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString('EXPENSEREPORT_SAND_MASK');

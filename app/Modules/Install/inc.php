@@ -41,11 +41,11 @@ if (!defined('DOL_DOCUMENT_ROOT')) {
 	define('DOL_DOCUMENT_ROOT', '..');
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/conf.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/translate.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/conf.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/translate.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 '
 @phan-var-force ?string $dolibarr_main_url_root_alt
@@ -388,7 +388,7 @@ if (!defined('SYSLOG_FILE_NO_ERROR')) {
 // We init log handler for install
 $handlers = array('mod_syslog_file');
 foreach ($handlers as $handler) {
-	$file = DOL_DOCUMENT_ROOT.'/core/modules/syslog/'.$handler.'.php';
+	$file = DOL_DOCUMENT_ROOT.'/Core/modules/syslog/'.$handler.'.php';
 	if (!file_exists($file)) {
 		throw new Exception('Missing log handler file '.$handler.'.php');
 	}
@@ -503,7 +503,7 @@ function conf($dolibarr_main_document_root)
 	// We init log handler for install
 	$handlers = array('mod_syslog_file');
 	foreach ($handlers as $handler) {
-		$file = DOL_DOCUMENT_ROOT.'/core/modules/syslog/'.$handler.'.php';
+		$file = DOL_DOCUMENT_ROOT.'/Core/modules/syslog/'.$handler.'.php';
 		if (!file_exists($file)) {
 			throw new Exception('Missing log handler file '.$handler.'.php');
 		}

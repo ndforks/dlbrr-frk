@@ -29,7 +29,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    stocktransfer
  *  \brief      Description and activation file for module StockTransfer
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module StockTransfer
@@ -373,15 +373,15 @@ class modStockTransfer extends DolibarrModules
 		$this->export_icon[$r]='stocktransfer@stocktransfer';
 		// Define $this->export_fields_array, $this->export_TypeFields_array and $this->export_entities_array
 		$keyforclass = 'StockTransfer'; $keyforclassfile='/stocktransfer/class/stocktransfer.class.php'; $keyforelement='stocktransfer@stocktransfer';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		//$this->export_fields_array[$r]['t.fieldtoadd']='FieldToAdd'; $this->export_TypeFields_array[$r]['t.fieldtoadd']='Text';
 		//unset($this->export_fields_array[$r]['t.fieldtoremove']);
 		//$keyforclass = 'StockTransferLine'; $keyforclassfile='/stocktransfer/class/stocktransfer.class.php'; $keyforelement='stocktransferline@stocktransfer'; $keyforalias='tl';
-		//include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforselect='stocktransfer'; $keyforaliasextra='extra'; $keyforelement='stocktransfer@stocktransfer';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$keyforselect='stocktransferline'; $keyforaliasextra='extraline'; $keyforelement='stocktransferline@stocktransfer';
-		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('stocktransferline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -403,9 +403,9 @@ class modStockTransfer extends DolibarrModules
 		 $this->export_label[$r]='StockTransferLines';	// Translation key (used only if key ExportDataset_xxx_z not found)
 		 $this->export_icon[$r]='stocktransfer@stocktransfer';
 		 $keyforclass = 'StockTransfer'; $keyforclassfile='/stocktransfer/class/stocktransfer.class.php'; $keyforelement='stocktransfer@stocktransfer';
-		 include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		 $keyforselect='stocktransfer'; $keyforaliasextra='extra'; $keyforelement='stocktransfer@stocktransfer';
-		 include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		 include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		 //$this->export_dependencies_array[$r]=array('mysubobject'=>'ts.rowid', 't.myfield'=>array('t.myfield2','t.myfield3')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		 $this->export_sql_start[$r]='SELECT DISTINCT ';
 		 $this->export_sql_end[$r]  =' FROM '.MAIN_DB_PREFIX.'stocktransfer as t';

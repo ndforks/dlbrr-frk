@@ -58,8 +58,8 @@ if (!defined('NOREQUIREAJAX')) {
 
 if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 	require_once '../../main.inc.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
 	$action = request()->input('action');
@@ -473,7 +473,7 @@ if ($useajax || $action == 'deletefile') {
 	}
 	$section_id = $section;
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 	$form = new Form($db);
 	$formquestion = array();

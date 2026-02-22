@@ -36,11 +36,11 @@ namespace App\Modules\Contrat\Classes;
  *	\brief      File of class to manage contracts
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contrat/class/contratligne.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonsignedobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonsignedobject.class.php';
 
 /**
  * Class to manage contracts
@@ -531,7 +531,7 @@ class Contrat extends CommonObject
 	 */
 	public function validate(User $user, $force_number = '', $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		global $conf;
 
 		$now = dol_now();
@@ -655,7 +655,7 @@ class Contrat extends CommonObject
 	 */
 	public function reopen($user, $notrigger = 0)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$now = dol_now();
 
@@ -1214,7 +1214,7 @@ class Contrat extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -2641,14 +2641,14 @@ class Contrat extends CommonObject
 			}
 		}
 
-		if (!getDolGlobalString('CONTRACT_ADDON') || !is_readable(DOL_DOCUMENT_ROOT."/core/modules/contract/" . getDolGlobalString('CONTRACT_ADDON').".php")) {
+		if (!getDolGlobalString('CONTRACT_ADDON') || !is_readable(DOL_DOCUMENT_ROOT."/Core/modules/contract/" . getDolGlobalString('CONTRACT_ADDON').".php")) {
 			$this->error = 'ErrorSetupNotComplete';
 			dol_syslog($this->error);
 			return -1;
 		}
 
 		// Set ref
-		require_once DOL_DOCUMENT_ROOT."/core/modules/contract/" . getDolGlobalString('CONTRACT_ADDON').'.php';
+		require_once DOL_DOCUMENT_ROOT."/Core/modules/contract/" . getDolGlobalString('CONTRACT_ADDON').'.php';
 		$obj = getDolGlobalString('CONTRACT_ADDON');
 		$modContract = new $obj();
 		'@phan-var-force ModelNumRefContracts $modContract';
@@ -2758,7 +2758,7 @@ class Contrat extends CommonObject
 		if ($resql) {
 			$num = $this->db->num_rows($resql);
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 
 			$i = 0;
 			while ($i < $num) {

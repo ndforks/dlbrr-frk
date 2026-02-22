@@ -38,9 +38,9 @@ namespace App\Modules\Reception\Classes;
  *  \brief      File for class to manage receptions
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobjectline.class.php";
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobjectline.class.php";
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
 if (isModEnabled("propal")) {
 	require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
 }
@@ -588,7 +588,7 @@ class Reception extends CommonObject
 
 				// Retrieve all extrafields for reception
 				// fetch optionals attributes and labels
-				require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 				$extrafields = new ExtraFields($this->db);
 				$extrafields->fetch_name_optionals_label($this->table_element, true);
 				$this->fetch_optionals();
@@ -628,7 +628,7 @@ class Reception extends CommonObject
 	{
 		global $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		dol_syslog(get_class($this)."::valid");
 
@@ -1418,7 +1418,7 @@ class Reception extends CommonObject
 	public function delete(User $user)
 	{
 		global $conf, $langs, $user;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 		$this->error = '';

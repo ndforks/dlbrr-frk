@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Export;
  *		\brief      File of class to build export files with format TSV
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/export/modules_export.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/export/modules_export.php';
 
 // avoid timeout for big export
 set_time_limit(0);

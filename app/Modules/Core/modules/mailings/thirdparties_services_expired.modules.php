@@ -17,8 +17,8 @@ namespace App\Modules\Core\Modules\Mailings;
  *	\ingroup    mailing
  *	\brief      File of class to offer a selector of emailing targets with Rule 'services expired'.
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 
 /**

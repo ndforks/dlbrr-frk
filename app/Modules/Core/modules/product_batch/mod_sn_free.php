@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Product_batch;
  *       \brief      File containing class for numbering model of SN free
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/product_batch/modules_product_batch.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/product_batch/modules_product_batch.class.php';
 
 /**
  *	\class 		mod_codeproduct_leopard

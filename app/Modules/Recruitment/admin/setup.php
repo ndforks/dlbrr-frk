@@ -27,9 +27,9 @@
 require '../../main.inc.php';
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment.lib.php';
-require_once DOL_DOCUMENT_ROOT."/recruitment/class/recruitmentjobposition.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Recruitment/lib/recruitment.lib.php';
+require_once DOL_DOCUMENT_ROOT."/Recruitment/class/recruitmentjobposition.class.php";
 
 /**
  * @var Conf $conf
@@ -79,7 +79,7 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconst = request()->input('maskconstjob');

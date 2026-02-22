@@ -773,7 +773,7 @@ function getStructuredData($type, $data = array())
 		$ret .= '</script>'."\n";
 	} elseif ($type == 'blogpost') {
 		if (!empty($websitepage->author_alias)) {
-			//include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+			//include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 			//$tmpuser = new User($db);
 			//$restmpuser = $tmpuser->fetch($websitepage->fk_user_creat);
 
@@ -1051,7 +1051,7 @@ function getNbOfImagePublicURLOfObject($object)
 
 	$nb = 0;
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$regexforimg = getListOfPossibleImageExt(0);
 	$regexforimg = '('.$regexforimg.')$';
 
@@ -1090,7 +1090,7 @@ function getImagePublicURLOfObject($object, $no = 1, $extName = '', $cover = 1)
 
 	$image_path = '';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$regexforimg = getListOfPossibleImageExt(0);
 	$regexforimg = '('.$regexforimg.')$';
 
@@ -1169,7 +1169,7 @@ function getPublicFilesOfObject($object)
 
 	$files = array();
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$regexforimg = getListOfPossibleImageExt(0);
 	$regexforimg = '/('.$regexforimg.')$/i';
 

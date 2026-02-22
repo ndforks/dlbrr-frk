@@ -1349,7 +1349,7 @@ function abort(403);{
 	global $action, $object;
 
 	if (!is_object($langs)) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/translate.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/translate.class.php';
 		$langs = new Translate('', $conf);
 		$langs->setDefaultLang();
 	}
@@ -1374,7 +1374,7 @@ function abort(403);{
 	print '<br>';
 	if (empty($showonlymessage)) {
 		if (empty($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($db);
 			// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 			$hookmanager->initHooks(array('main'));

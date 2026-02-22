@@ -56,7 +56,7 @@ if (!$res) {
 }
 
 // Libraries
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
 require_once '../lib/mymodule.lib.php';
 //require_once "../class/myclass.class.php";
 
@@ -98,7 +98,7 @@ if (!$user->admin) {
 $useFormSetup = 1;
 
 if (!class_exists('FormSetup')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsetup.class.php';
 }
 $formSetup = new FormSetup($db);
 
@@ -215,7 +215,7 @@ if (versioncompare(explode('.', DOL_VERSION), array(15)) < 0 && $action == 'upda
 	$formSetup->saveConfFromPost();
 }
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
 	$maskconst = request()->input('maskconst');

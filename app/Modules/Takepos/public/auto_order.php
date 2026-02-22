@@ -43,9 +43,9 @@ $_SESSION["takeposterminal"] = getDolGlobalInt('TAKEPOS_TERMINAL_NB_FOR_PUBLIC',
 
 define('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE', 1);
 if (request()->has('mobilepage')) {
-	require DOL_DOCUMENT_ROOT.'/takepos/invoice.php';	// The section with list of selected products in order
+	require DOL_DOCUMENT_ROOT.'/Takepos/invoice.php';	// The section with list of selected products in order
 } elseif (request()->has('genimg')) {
-	require DOL_DOCUMENT_ROOT.'/takepos/genimg/index.php';
+	require DOL_DOCUMENT_ROOT.'/Takepos/genimg/index.php';
 } else {
-	require DOL_DOCUMENT_ROOT.'/takepos/phone.php';
+	require DOL_DOCUMENT_ROOT.'/Takepos/phone.php';
 }

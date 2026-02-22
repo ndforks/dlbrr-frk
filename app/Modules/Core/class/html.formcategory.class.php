@@ -25,7 +25,7 @@ namespace App\Modules\Core\Classes;
  *	\brief		File of class to build HTML component for category filtering
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 
@@ -78,7 +78,7 @@ class FormCategory extends Form
 		} else {
 			$htmlName = "search_".$type."_category";
 			$htmlName2 = "";
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 			$formother = new FormOther($db);
 
 			$filter .= $formother->select_categories($type, $preSelected[0], $htmlName, $nocateg, $tmptitle, $morecss);

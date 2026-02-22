@@ -27,8 +27,8 @@ namespace App\Modules\Cron\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php";
-require_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/commonobject.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
 
 
 /**
@@ -1295,7 +1295,7 @@ class Cronjob extends CommonObject
 		$conf->setEntityValues($this->db, $this->entity);
 		dol_syslog(get_class($this)."::run_jobs entity for running job is ".$conf->entity);
 
-		require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$user = new User($this->db);
 		$result = $user->fetch(0, $userlogin);
 		if ($result < 0) {
@@ -1520,7 +1520,7 @@ class Cronjob extends CommonObject
 					$outputfile = $outputdir.'/cronjob.'.$userlogin.'.out'; // File used with popen method
 
 					// Execute a CLI
-					include_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 					$utils = new Utils($this->db);
 					$arrayresult = $utils->executeCLI($this->command, $outputfile);
 
@@ -1552,7 +1552,7 @@ class Cronjob extends CommonObject
 		$conf->setEntityValues($this->db, $savcurrententity);
 
 		if ($error && !empty($this->email_alert)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 			$subject = $langs->transnoentitiesnoconv("ErrorInBatch", $this->label);
 			$msg = $langs->transnoentitiesnoconv("ErrorInBatch", $this->label);
 			$from = getDolGlobalString('MAIN_MAIL_EMAIL_FROM');
@@ -1577,7 +1577,7 @@ class Cronjob extends CommonObject
 		// phpcs:enable
 		dol_syslog(get_class($this)."::reprogram_jobs userlogin:$userlogin", LOG_DEBUG);
 
-		require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		$user = new User($this->db);
 		$result = $user->fetch(0, $userlogin);
 		if ($result < 0) {

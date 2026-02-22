@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Bom;
  *  \ingroup    bom
  *  \brief      File of class to manage BOMs numbering rules standard
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/bom/modules_bom.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/bom/modules_bom.php';
 
 /**
  *	Class to manage the Standard numbering rule for BOM

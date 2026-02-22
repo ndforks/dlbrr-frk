@@ -24,7 +24,7 @@ namespace App\Modules\Core\Boxes;
  *	\ingroup    invoices
  *	\brief      Box to show graph of invoices per month
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 
 /**
@@ -106,7 +106,7 @@ class box_graph_invoices_permonth extends ModeleBoxes
 			$param_shownb = 'DOLUSER_box_'.$this->boxcode.'_shownb';
 			$param_showtot = 'DOLUSER_box_'.$this->boxcode.'_showtot';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 			include_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facturestats.class.php';
 			$autosetarray = preg_split("/[,;:]+/", request()->input('DOL_AUTOSET_COOKIE'));
 			if (in_array('DOLUSER_box_'.$this->boxcode, $autosetarray)) {

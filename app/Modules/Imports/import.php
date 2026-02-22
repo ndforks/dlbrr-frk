@@ -34,13 +34,13 @@ require_once '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/imports/class/import.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/import/modules_import.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/import.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Imports/class/import.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/import/modules_import.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/import.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('exports', 'compta', 'errors', 'projects', 'admin'));
@@ -724,7 +724,7 @@ if ($step == 3 && $datatoimport) {
 	$separator_used = str_replace('\t', "\t", $separator);
 
 	// Create class to use for import
-	$dir = DOL_DOCUMENT_ROOT."/core/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT."/Core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once $dir.$file;
@@ -1499,7 +1499,7 @@ if ($step == 4 && $datatoimport) {
 	$list = $objmodelimport->listOfAvailableImportFormat($db);
 
 	// Create class to use for import
-	$dir = DOL_DOCUMENT_ROOT."/core/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT."/Core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once $dir.$file;
@@ -2003,7 +2003,7 @@ if ($step == 5 && $datatoimport) {
 
 
 	// Create class to use for import
-	$dir = DOL_DOCUMENT_ROOT."/core/modules/import/";
+	$dir = DOL_DOCUMENT_ROOT."/Core/modules/import/";
 	$file = "import_".$model.".modules.php";
 	$classname = "Import".ucfirst($model);
 	require_once $dir.$file;

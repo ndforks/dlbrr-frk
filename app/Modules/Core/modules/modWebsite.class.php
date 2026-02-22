@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    websites
  *  \brief      Description and activation file for the module Website
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -143,9 +143,9 @@ class modWebsite extends DolibarrModules
 		$keyforclass = 'WebsitePage';
 		$keyforclassfile = '/website/class/websitepage.class.php';
 		$keyforelement = 'Website';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		//$keyforselect='myobject'; $keyforelement='myobject'; $keyforaliasextra='extra';
-		//include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		//include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'website_page as t, '.MAIN_DB_PREFIX.'website as p';
 		$this->export_sql_end[$r] .= ' WHERE t.fk_website = p.rowid';
@@ -179,11 +179,11 @@ class modWebsite extends DolibarrModules
 		// Copy flags directory
 		$dirarray = array('common/flags'=>'flags');
 		foreach ($dirarray as $dirfrom => $dirtarget) {
-			$src = DOL_DOCUMENT_ROOT.'/theme/'.$dirfrom;
+			$src = DOL_DOCUMENT_ROOT.'/Theme/'.$dirfrom;
 			$dest = DOL_DATA_ROOT.'/medias/image/'.$dirtarget;
 
 			if (is_dir($src)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 				dol_mkdir($dest);
 				$result = dolCopyDir($src, $dest, '0', 0);
 				if ($result < 0) {
@@ -200,7 +200,7 @@ class modWebsite extends DolibarrModules
 		}
 
 		// Website templates
-		$srcroot = DOL_DOCUMENT_ROOT.'/install/doctemplates/websites';
+		$srcroot = DOL_DOCUMENT_ROOT.'/Install/doctemplates/websites';
 		$destroot = DOL_DATA_ROOT.'/doctemplates/websites';
 
 		dol_mkdir($destroot);

@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Contract;
  *  \ingroup    contract
  *  \brief      File of class to manage contract numbering rules Serpis
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/contract/modules_contract.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/contract/modules_contract.php';
 
 /**
  * 	Class to manage contract numbering rules Serpis

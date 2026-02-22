@@ -419,7 +419,7 @@ class FormActions
 		}
 
 		require_once DOL_DOCUMENT_ROOT.'/comm/action/class/cactioncomm.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 		$caction = new CActionComm($this->db);
 
 		// Suggest a list with manual events or all auto events

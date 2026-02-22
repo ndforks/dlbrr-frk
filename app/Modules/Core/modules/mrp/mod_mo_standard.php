@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Mrp;
  *  \ingroup    mrp
  *  \brief      File of class to manage MO numbering rules standard
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/mrp/modules_mo.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/mrp/modules_mo.php';
 
 /**
  *	Class to manage MO numbering rules standard

@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Expensereport;
  *  \ingroup    expensereport
  *  \brief      File of class to manage expensereport numbering rules Jade
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/expensereport/modules_expensereport.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/expensereport/modules_expensereport.php';
 
 /**
  *	Class to manage expensereport numbering rules Jade

@@ -20,8 +20,8 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 /**
  * API that allows to log in with an user account.
@@ -132,7 +132,7 @@ class Login
 			$entity = 1;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 		$login = checkLoginPassEntity($login, $password, $entity, $authmode, 'api');		// Check credentials.
 		if ($login === '--bad-login-validity--') {
 			$login = '';

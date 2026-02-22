@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Supplier_payment;
  * \brief      File containing class for numbering module Bronan
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_payment/modules_supplier_payment.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_payment/modules_supplier_payment.php';
 
 /**
  *	Class to manage customer payment numbering rules Cicada

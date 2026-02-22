@@ -37,13 +37,13 @@ require '../../main.inc.php';
  *
  * @var string $dolibarr_main_db_name
  */
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'banks', 'bills', 'blockedlog', 'other'));
@@ -170,7 +170,7 @@ if (request()->input('button_removefilter_x') || request()->input('button_remove
 	$search_array_options = array();
 }
 
-include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is read/export for blockedlog
 	$error = 0;
@@ -703,7 +703,7 @@ if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is 
 			setEventMessages($langs->trans("ErrorPeriodMustBePastToAllowExport"), null, "warnings");
 		} else {
 			// We record the export as a new line into the unalterable logs
-			require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 			$b = new BlockedLog($db);
 
 			$object = new stdClass();
@@ -1214,7 +1214,7 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 	}
 
 	// Add $param from extra fields
-	//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+	//include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 	if ($action == 'deletefile') {
 		$langs->load("companies"); // Need for string DeleteFile+ConfirmDeleteFiles
@@ -1283,10 +1283,10 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 	$disablemove = 1;
 	/*
 	$param = '&id='.$object->id.'&entity='.(empty($object->entity) ? getDolEntity() : $object->entity);
-	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/document_actions_post_headers.tpl.php';
 	*/
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
 	$formfile = new FormFile($db);
 
 	$savingdocmask = '';

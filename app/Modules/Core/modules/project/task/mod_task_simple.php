@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Project\Task;
  *	\brief      File with class to manage the numbering module Simple for project references
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/task/modules_task.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/project/task/modules_task.php';
 
 
 /**

@@ -36,12 +36,12 @@ require '../../main.inc.php';
  * @var User $user
  * @var Societe $mysoc
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/donation.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/donation.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 if (isModEnabled('accounting')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
 }
 
 // Load translation files required by the page
@@ -71,7 +71,7 @@ if ($action == 'specimen') {
 	$don->initAsSpecimen();
 
 	// Search template files
-	$dir = DOL_DOCUMENT_ROOT."/core/modules/dons/";
+	$dir = DOL_DOCUMENT_ROOT."/Core/modules/dons/";
 	$file = $modele.".modules.php";
 	if ($modele !== '' && file_exists($dir.$file)) {
 		require_once $dir.$file;

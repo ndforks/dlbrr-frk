@@ -119,7 +119,7 @@ class DoliStorage implements TokenStorageInterface
 			$servicepluskeyforprovider .= '-'.$this->keyforprovider;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 		$serializedToken = serialize($tokenobj);
 
 		if (!is_array($this->tokens)) {
@@ -192,7 +192,7 @@ class DoliStorage implements TokenStorageInterface
 		$result = $this->db->fetch_array($resql);
 
 		if ($result) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 			$tokenobj = unserialize(dolDecrypt($result['token']));
 			if ($result['token'] && empty($tokenobj)) {
 				dol_syslog("Error: We found a record for the OAuth token of '.$servicepluskeyforprovider.', we we failed to decrypt it. May be the crypt/decrypt key has been modifier ?", LOG_WARNING);

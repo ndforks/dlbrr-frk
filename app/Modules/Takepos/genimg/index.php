@@ -60,7 +60,7 @@ if (!isModEnabled('takepos')) {
 
 if ($query == "cat") {
 	require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/categories.lib.php';
 
 	$object = new Categorie($db);
 	$result = $object->fetch($id);

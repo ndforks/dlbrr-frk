@@ -33,9 +33,9 @@ require_once '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/ai/class/ai.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Ai/class/ai.class.php';
 
 
 if (request()->input('lang')) {
@@ -136,7 +136,7 @@ if ($action == 'uploadfile') {	// Test on permission not required here. Done lat
 		// $dir_output = output dir of object
 		// $dir_temp = temp dir of object
 		// $upload_dir is "users/temp/import"
-		include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 		// TODO Add a js call of ajax service and show instead a message
 		// @phpstan-ignore-next-line $error may have been modified by actions_linkedfiles.inc.php

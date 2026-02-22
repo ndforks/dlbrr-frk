@@ -43,13 +43,13 @@ namespace App\Modules\Comm\Propal\Classes;
  *	\brief      File of class to manage proposals
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propaleligne.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 /**
  *	Class to manage proposals
@@ -546,8 +546,8 @@ class Propal extends CommonObject
 		// phpcs:enable
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$this->db->begin();
 
@@ -673,7 +673,7 @@ class Propal extends CommonObject
 		dol_syslog(get_class($this)."::addline propalid=$this->id, desc=$desc, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, fk_product=$fk_product, remise_except=$remise_percent, price_base_type=$price_base_type, pu_ttc=$pu_ttc, info_bits=$info_bits, type=$type, fk_remise_except=".$fk_remise_except);
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 			if (empty($remise_percent)) {
@@ -931,7 +931,7 @@ class Propal extends CommonObject
 
 		dol_syslog(get_class($this)."::updateLine rowid=$rowid, pu=$pu, qty=$qty, remise_percent=$remise_percent,
         txtva=$txtva, desc=$desc, price_base_type=$price_base_type, info_bits=$info_bits, special_code=$special_code, fk_parent_line=$fk_parent_line, pa_ht=$pa_ht, type=$type, date_start=$date_start, date_end=$date_end");
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Clean parameters
 		$remise_percent = price2num($remise_percent);
@@ -1965,7 +1965,7 @@ class Propal extends CommonObject
 		dol_syslog(get_class($this)."::fetch_lines", LOG_DEBUG);
 		$result = $this->db->query($sql);
 		if ($result) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 			$num = $this->db->num_rows($result);
 
@@ -2078,7 +2078,7 @@ class Propal extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 
@@ -3129,7 +3129,7 @@ class Propal extends CommonObject
 	public function delete($user, $notrigger = 0)
 	{
 		global $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

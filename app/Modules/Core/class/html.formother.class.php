@@ -461,7 +461,7 @@ class FormOther
 
 		// Enhance with select2
 		if ($conf->use_javascript_ajax) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$comboenhancement = ajax_combobox('select_categ_'.$htmlname);
 			$moreforfilter .= $comboenhancement;
 		}
@@ -643,7 +643,7 @@ class FormOther
 
 		// Enhance with select2
 		if ($conf->use_javascript_ajax) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 
 			$comboenhancement = ajax_combobox($htmlname);
 			if ($comboenhancement) {
@@ -814,7 +814,7 @@ class FormOther
 	public static function showColor($color, $textifnotdefined = '')
 	{
 		$textcolor = 'FFF';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		if (colorIsLight($color)) {
 			$textcolor = '000';
 		}
@@ -1108,7 +1108,7 @@ class FormOther
 		// Add code for jquery to use multiselect
 		if ($addjscombo) {
 			// Enhance with select2
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$select_day .= ajax_combobox($htmlname);
 		}
 
@@ -1132,7 +1132,7 @@ class FormOther
 		// phpcs:enable
 		global $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		if ($longlabel) {
 			$montharray = monthArray($langs, 0); // Get array of month with long labels
@@ -1162,7 +1162,7 @@ class FormOther
 		// Add code for jquery to use multiselect
 		if ($addjscombo) {
 			// Enhance with select2
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$select_month .= ajax_combobox($htmlname);
 		}
 
@@ -1248,7 +1248,7 @@ class FormOther
 		// Add code for jquery to use multiselect
 		if ($addjscombo) {
 			// Enhance with select2
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 			$out .= ajax_combobox($htmlname);
 		}
 
@@ -1268,7 +1268,7 @@ class FormOther
 	{
 		global $conf, $langs, $db;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/infobox.class.php';
 		// From include
 		'
 		@phan-var-force ModeleBoxes[] $boxactivated
@@ -1338,7 +1338,7 @@ class FormOther
 			}
 			$selectboxlist .= '</form>';
 			if (!empty($conf->use_javascript_ajax)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 				$selectboxlist .= ajax_combobox("boxcombo");
 			}
 		}

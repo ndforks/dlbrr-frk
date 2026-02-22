@@ -24,8 +24,8 @@ namespace App\Modules\Core\Boxes;
  *      \brief      Fichier de gestion d'une box pour le module Fediverse
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/class/fediverseparser.class.php';
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/fediverseparser.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 /**
  * Class to manage the box to show Fediverse posts

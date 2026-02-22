@@ -28,8 +28,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/fichinter.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/fichinter.lib.php';
 
 
 /**
@@ -249,7 +249,7 @@ print info_admin($message);
 $constname = 'MAIN_FICHINTER_XCAL_EXPORTKEY';
 
 // Add button to autosuggest a key
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 print dolJSToSetRandomPassword($constname);
 
 // End of page

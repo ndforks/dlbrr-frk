@@ -31,12 +31,12 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/delivery/class/delivery.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/modules_delivery.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/sendings.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Delivery/class/delivery.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/modules_delivery.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/sendings.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 if (isModEnabled("product") || isModEnabled("service")) {
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 }
@@ -48,7 +48,7 @@ if (isModEnabled('stock')) {
 }
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
 }
 
 /**
@@ -85,7 +85,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $extrafields->fetch_name_optionals_label($object->table_element_line);
 
 // Load object. Make an object->fetch
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 
 $error = 0;
 
@@ -121,7 +121,7 @@ $parameters = array();
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);       // Note that $action and $object may have been modified by some hooks
 // Delete Link
 $permissiondellink = $user->hasRight('expedition', 'delivery', 'supprimer'); // Used by the include of actions_dellink.inc.php
-include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';     // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';     // Must be 'include', not 'include_once'
 
 if ($action == 'add' && $permissiontoadd) {
 	$array_options = array();
@@ -269,7 +269,7 @@ if ($action == 'update_extras_line' && $permissiontoeditextraline) {
 
 // Actions to build doc
 $upload_dir = $conf->expedition->dir_output.'/receipt';
-include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 // Provided by include of ...builddoc...:
 '
 @phan-var-force int<0,1> $hidedetails
@@ -277,7 +277,7 @@ include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 @phan-var-force int<0,1> $hideref
 ';
 
-include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 // Actions to send emails
 
@@ -539,7 +539,7 @@ if ($action == 'create') {
 				}
 			}
 			$cols = 2;
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			print "</table><br>\n";
 
@@ -726,7 +726,7 @@ if ($action == 'create') {
 					print '</div><div class="fichehalfright">';
 
 					// List of actions on element
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 
 					//$tmparray = $form->showLinkToObjectBlock($object, null, array('order'), 1);
 					$somethingshown = $form->showLinkedObjectBlock($object, '');
@@ -761,7 +761,7 @@ if ($action == 'create') {
 	$diroutput = $conf->expedition->dir_output . '/receipt';
 	$trackid = 'del' . $object->id;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 }
 
 // End of page

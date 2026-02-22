@@ -27,8 +27,8 @@
 
 // Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/cron.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/cron.lib.php';
 
 /**
  * @var Conf $conf
@@ -150,7 +150,7 @@ print '<br>';
 $constname = 'CRON_KEY';
 
 // Add button to autosuggest a key
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 print dolJSToSetRandomPassword($constname);
 
 llxFooter();

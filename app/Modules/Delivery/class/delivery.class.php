@@ -31,9 +31,9 @@ namespace App\Modules\Delivery\Classes;
  *  \brief      Delivery Order Management Class File
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonincoterm.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonincoterm.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
 if (isModEnabled("propal")) {
 	require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
@@ -409,7 +409,7 @@ class Delivery extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		dol_syslog(get_class($this)."::valid begin");
 
@@ -428,8 +428,8 @@ class Delivery extends CommonObject
 				// Setting the command numbering module name
 				$modName = getDolGlobalString('DELIVERY_ADDON_NUMBER');
 
-				if (is_readable(DOL_DOCUMENT_ROOT.'/core/modules/delivery/'.$modName.'.php')) {
-					require_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/'.$modName.'.php';
+				if (is_readable(DOL_DOCUMENT_ROOT.'/Core/modules/delivery/'.$modName.'.php')) {
+					require_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/'.$modName.'.php';
 
 					$now = dol_now();
 
@@ -701,7 +701,7 @@ class Delivery extends CommonObject
 	{
 		global $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$this->db->begin();
 

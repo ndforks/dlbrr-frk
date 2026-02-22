@@ -26,7 +26,7 @@ namespace App\Modules\ExpenseReport\Classes;
  *       \ingroup    expensereport
  *       \brief      File of lass to manage the statistics of the expensereports et expense notes
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/stats.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/stats.class.php';
 require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
 
 /**

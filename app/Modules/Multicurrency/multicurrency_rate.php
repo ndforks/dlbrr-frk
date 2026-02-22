@@ -37,8 +37,8 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/multicurrency.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/multicurrency.lib.php';
 
 /**
  * @var Conf $conf
@@ -252,7 +252,7 @@ if ($reshook < 0) {
 }
 if (empty($reshook)) {
 	// Selection of new fields
-	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
 	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
@@ -269,7 +269,7 @@ if (empty($reshook)) {
 	$uploaddir = $conf->multicurrency->multidir_output; // define only because core/actions_massactions.inc.php want it
 	$permissiontoread = $user->admin;
 	$permissiontodelete = $user->admin;
-	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_massactions.inc.php';
 }
 
 
@@ -453,7 +453,7 @@ if ($resql) {
 	}
 
 	// Add $param from extra fields
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_list_search_param.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_list_search_param.tpl.php';
 
 	if ($user->admin) {
 		$arrayofmassactions['predelete'] = $langs->trans("Delete");
@@ -479,7 +479,7 @@ if ($resql) {
 
 	print_barre_liste($texte, $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'title_currency.png', 0, $newcardbutton, '', $limit);
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 	if ($search_all) {
 		$setupstring = '';

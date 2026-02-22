@@ -135,8 +135,8 @@ if (!$error && $massaction == 'confirm_presend') {
 	$nbsent = 0;
 	$nbignored = 0;
 	$langs->load("mails");
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/signature.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/signature.lib.php';
 
 	$listofobjectid = array();
 	$listofobjectthirdparties = array();
@@ -651,7 +651,7 @@ if (!$error && $massaction == 'confirm_presend') {
 					$upload_dir_tmp = $vardir.'/temp'; // TODO Add $keytoavoidconflict in upload_dir path
 
 					// Send mail (substitutionarray must be done just before this)
-					require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 					$mailfile = new CMailFile($subjectreplaced, (string) $sendto, $from, $messagereplaced, $filepath, $mimetype, $filename, $sendtocc, $sendtobcc, (int) $deliveryreceipt, -1, '', '', $trackid, '', $sendcontext, '', $upload_dir_tmp);
 					if ($mailfile->error) {
 						$resaction .= '<div class="error">'.$mailfile->error.'</div>';
@@ -826,9 +826,9 @@ if (!$error && $massaction == "builddoc" && $permissiontoread && !request()->inp
 		exit;
 	}
 
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/pdf.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 	$objecttmp = new $objectclass($db);
 	$listofobjectid = array();
@@ -1009,7 +1009,7 @@ if (!$error && $massaction == "builddoc" && $permissiontoread && !request()->inp
 
 // Remove a file from massaction area
 if ($action == 'remove_file') {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 	$langs->load("other");
 	$upload_dir = $diroutputmassaction;
@@ -1799,7 +1799,7 @@ if (!$error && ($massaction == 'approveleave' || ($action == 'approveleave' && $
 
 						$trackid = 'leav'.$objecttmp->id;
 
-						require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+						require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 						$mail = new CMailFile($subject, $emailTo, $emailFrom, $message, array(), array(), array(), '', '', 0, 0, '', '', $trackid);
 
 						// Sending email

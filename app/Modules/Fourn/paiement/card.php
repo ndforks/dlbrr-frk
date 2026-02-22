@@ -38,8 +38,8 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php';
@@ -62,7 +62,7 @@ $object = new PaiementFourn($db);
 $hookmanager->initHooks(array('supplierpaymentcard', 'globalcard'));
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $result = restrictedArea($user, $object->element, $object->id, 'paiementfourn', '');	// This also test permission on read invoice
 
@@ -151,14 +151,14 @@ if ($action == 'setdatep' && request()->input('datepday') && $permissiontoadd) {
 
 // Build document
 $upload_dir = $conf->fournisseur->payment->dir_output;
-include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 
 // Actions to send emails
 $triggersendname = 'PAYMENTRECEIPT_SENTBYMAIL';
 $paramname = 'id';
 $autocopy = 'MAIN_MAIL_AUTOCOPY_SUPPLIER_INVOICE_TO';
 $trackid = 'pre'.$object->id;
-include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 
 /*
@@ -407,7 +407,7 @@ if ($result > 0) {
 		print '<div class="fichecenter"><div class="fichehalfleft">';
 
 		// Generated documents
-		include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_payment/modules_supplier_payment.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_payment/modules_supplier_payment.php';
 		$modellist = ModelePDFSuppliersPayments::liste_modeles($db);
 		if (is_array($modellist)) {
 			$ref = dol_sanitizeFileName($object->ref);
@@ -432,7 +432,7 @@ if ($result > 0) {
 		//print '<br>';
 
 		// List of actions on element
-		/*include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+		/*include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 		$formactions=new FormActions($db);
 		$somethingshown = $formactions->showactions($object,'supplier_payment',$socid,1,'listaction'.($genallowed?'largetitle':''));
 		*/
@@ -446,7 +446,7 @@ if ($result > 0) {
 		if (!empty($defaultpdfmodel)) {
 			$object->model_pdf = $defaultpdfmodel;
 		} else {
-			include_once DOL_DOCUMENT_ROOT.'/core/modules/supplier_payment/modules_supplier_payment.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/modules/supplier_payment/modules_supplier_payment.php';
 			$modellist = ModelePDFSuppliersPayments::liste_modeles($db);
 			if (!empty($modellist)) {
 				$tmpkeys = array_keys($modellist);
@@ -465,7 +465,7 @@ if ($result > 0) {
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_SUPPLIER_INVOICE_TO';
 	$trackid = 'pre'.$object->id;
 
-	include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 } else {
 	recordNotFound('', 0);
 }

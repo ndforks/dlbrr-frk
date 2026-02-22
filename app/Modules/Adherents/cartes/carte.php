@@ -34,13 +34,13 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php';
 /** @var array<string,array{name:string,paper-size:string|array{0:float,1:float},orientation:string,metric:string,marginLeft:float,marginTop:float,NX:int,NY:int,SpaceX:float,SpaceY:float,width:float,height:float,font-size:int,custom_x:float,custom_y:float}> $_Avery_Labels */
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/member/modules_cards.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/printsheet/modules_labels.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/member/modules_cards.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/printsheet/modules_labels.php';
 
 $langs->loadLangs(array("members", "errors"));
 

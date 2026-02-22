@@ -31,7 +31,7 @@ namespace App\Modules\Core\Modules;
  *	\ingroup    supplier_proposal
  *	\brief      Description and activation file for the module supplier proposal
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -165,12 +165,12 @@ class modSupplierProposal extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/supplier_proposals/template_supplier_proposal.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/supplier_proposals/template_supplier_proposal.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/supplier_proposals';
 		$dest = $dirodt.'/template_supplier_proposal.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

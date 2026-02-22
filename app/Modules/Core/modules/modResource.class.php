@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  * 	\ingroup	resource
  * 	\brief		Description and activation file for the module Resource
  */
-include_once DOL_DOCUMENT_ROOT."/core/modules/DolibarrModules.class.php";
+include_once DOL_DOCUMENT_ROOT."/Core/modules/DolibarrModules.class.php";
 
 
 /**
@@ -251,7 +251,7 @@ class modResource extends DolibarrModules
 		$keyforelement = 'resource';
 		$keyforaliasextra = 'extra';
 
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_dependencies_array[$r] = array('resource' => array('r.rowid')); // We must keep this until the aggregate_array is used. To add unique key if we ask a field of a child to avoid the DISTINCT to discard them.
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';

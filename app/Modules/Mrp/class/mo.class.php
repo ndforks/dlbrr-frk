@@ -27,7 +27,7 @@ namespace App\Modules\Mrp\Classes;
  * \brief       This file is a CRUD class file for Mo (Create/Read/Update/Delete)
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 require_once DOL_DOCUMENT_ROOT.'/mrp/class/moline.class.php';
 
 /**
@@ -1118,7 +1118,7 @@ class Mo extends CommonObject
 	{
 		global $conf;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$error = 0;
 

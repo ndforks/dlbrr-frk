@@ -46,11 +46,11 @@ if (!defined("NOSESSION")) {
 
 require '../main.inc.php';
 require_once NUSOAP_PATH.'/nusoap.php'; // Include SOAP
-require_once DOL_DOCUMENT_ROOT.'/core/lib/ws.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/ws.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var DoliDB $db
@@ -469,7 +469,7 @@ function createThirdParty($authentication, $thirdparty)
 
 
 	if (!$error) {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$newobject = new Societe($db);
 		$newobject->ref = $thirdparty['ref'];
@@ -603,7 +603,7 @@ function updateThirdParty($authentication, $thirdparty)
 	if (!$error) {
 		$objectfound = false;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 		$object = new Societe($db);
 		$result = $object->fetch((int) $thirdparty['id']);

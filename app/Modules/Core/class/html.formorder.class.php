@@ -25,7 +25,7 @@ namespace App\Modules\Core\Classes;
  *	\brief      File of predefined functions for HTML forms for order module
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 require_once DOL_DOCUMENT_ROOT.'/commande/class/commande.class.php';
 
 /**

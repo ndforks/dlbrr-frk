@@ -24,7 +24,7 @@ if (strpos($_SERVER["PHP_SELF"], 'website/samples/wrapper.php')) {
 if (!defined('USEDOLIBARRSERVER') && !defined('USEDOLIBARREDITOR')) {
 	require_once './master.inc.php';
 } // Load master if not already loaded
-include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 
 $encoding = '';
 
@@ -49,7 +49,7 @@ if ($rss) {
 // If we have a hash public (hashp), we guess the original_file.
 if (!empty($hashp)) {
 	include_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$ecmfile = new EcmFiles($db);
 	$result = $ecmfile->fetch(0, '', '', '', $hashp);
 	if ($result > 0) {
@@ -172,9 +172,9 @@ if ($rss) {
 		}
 	}
 
-	require_once DOL_DOCUMENT_ROOT."/core/lib/xcal.lib.php";
-	require_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
-	require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/xcal.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
 
 	dol_syslog("build_exportfile Build export file format=".$format.", type=".$type.", cachestring=".$cachestring.", filename=".$filename.", filters size=".count($filters), LOG_DEBUG);
 
@@ -194,7 +194,7 @@ if ($rss) {
 
 	if ($cachedelay) {
 		$nowgmt = dol_now();
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		if (dol_filemtime($outputfile) > ($nowgmt - $cachedelay)) {
 			dol_syslog("build_exportfile file ".$outputfile." is not older than now - cachedelay (".$nowgmt." - ".$cachedelay."). Build is canceled");
 			$buildfile = false;
@@ -280,7 +280,7 @@ if ($rss) {
 	readfile(dol_osencode($conf->mycompany->dir_output."/".$original_file));
 } else {
 	// Find the subdirectory name as the reference
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 	$check_access = dol_check_secure_access_document($modulepart, $original_file, $entity, null, $refname);
 	$accessallowed              = empty($check_access['accessallowed']) ? '' : $check_access['accessallowed'];
 	$sqlprotectagainstexternals = empty($check_access['sqlprotectagainstexternals']) ? '' : $check_access['sqlprotectagainstexternals'];

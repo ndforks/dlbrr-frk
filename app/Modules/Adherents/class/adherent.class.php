@@ -38,10 +38,10 @@ namespace App\Modules\Adherents\Classes;
  *	\ingroup    member
  *	\brief      File of class to manage members of a foundation
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
 
 
 /**
@@ -512,7 +512,7 @@ class Adherent extends CommonObject
 		$trackid = 'mem'.$this->id;
 
 		// Send email (substitutionarray must be done just before this)
-		include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$mailfile = new CMailFile($subjecttosend, (string) $this->email, $from, $texttosend, $filename_list, $mimetype_list, $mimefilename_list, $addr_cc, $addr_bcc, $deliveryreceipt, $msgishtml, '', '', $trackid, $moreinheader);
 		if ($mailfile->sendfile()) {
 			return 1;
@@ -797,7 +797,7 @@ class Adherent extends CommonObject
 	{
 		global $langs, $hookmanager;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		if (empty($this->country_id) && !empty($this->country_code)) {
 			$country_id = getCountry($this->country_code, '3');
@@ -949,7 +949,7 @@ class Adherent extends CommonObject
 			if (!$error && $nbrowsaffected) { // If something has change in main data
 				// Update information on linked user if it is an update
 				if ($this->user_id > 0 && !$nosyncuser) {
-					require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 					dol_syslog(get_class($this)."::update update linked user");
 
@@ -1367,7 +1367,7 @@ class Adherent extends CommonObject
 
 		// If new password not provided, we generate one
 		if (!$password) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$password = getRandomPassword(false);
 		}
 
@@ -1403,7 +1403,7 @@ class Adherent extends CommonObject
 				$this->pass_indatabase_crypted = $password_crypted;
 
 				if ($this->user_id && !$nosyncuser) {
-					require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 					// This member is linked with a user, so we also update users information
 					// if this is an update.
@@ -1810,7 +1810,7 @@ class Adherent extends CommonObject
 	 */
 	public function fetchPartnerships($mode)
 	{
-		require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
 
 
 		$this->partnerships[] = array();
@@ -2100,7 +2100,7 @@ class Adherent extends CommonObject
 			if (!$error && $option == 'bankviainvoice' && $accountid) {
 				require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 				require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
 
 				$amounts = array();
 				$amounts[$invoice->id] = (float) price2num($amount);
@@ -2341,7 +2341,7 @@ class Adherent extends CommonObject
 		// phpcs:enable
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Mailmanspip/class/mailmanspip.class.php';
 		$mailmanspip = new MailmanSpip($this->db);
 
 		$err = 0;
@@ -2393,7 +2393,7 @@ class Adherent extends CommonObject
 		// phpcs:enable
 		global $conf, $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/mailmanspip/class/mailmanspip.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Mailmanspip/class/mailmanspip.class.php';
 		$mailmanspip = new MailmanSpip($this->db);
 
 		$err = 0;
@@ -3285,7 +3285,7 @@ class Adherent extends CommonObject
 			if ($resql) {
 				$num_rows = $this->db->num_rows($resql);
 
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 				$adherent = new Adherent($this->db);
 				$formmail = new FormMail($this->db);
 
@@ -3335,7 +3335,7 @@ class Adherent extends CommonObject
 							$trackid = 'mem'.$adherent->id;
 							$moreinheader = 'X-Dolibarr-Info: sendReminderForExpiredSubscription'."\r\n";
 
-							include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 							$cmail = new CMailFile($subject, $to, $from, $msg, array(), array(), array(), $cc, '', 0, 1, '', '', $trackid, $moreinheader);
 							$result = $cmail->sendfile();
 							if (!$result) {

@@ -27,7 +27,7 @@ namespace App\Modules\Compta\Sociales\Classes;
  *		\ingroup    invoice
  *		\brief      File for the ChargesSociales class
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -683,7 +683,7 @@ class ChargeSociales extends CommonObject
 		if (!empty($this->type_label)) {
 			$label .= '<br><b>'.$langs->trans('Type').':</b> '.$this->type_label;
 			if (isModEnabled('accounting') || !empty($this->type_accountancy_code)) {
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/accounting.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/accounting.lib.php';
 				$label .= ' <span class="opacitymedium">('.$langs->trans('AccountancyCode').': '.(empty($this->type_accountancy_code) ? $langs->trans("Unknown") : length_accountg($this->type_accountancy_code)).')</span>';
 			}
 		}

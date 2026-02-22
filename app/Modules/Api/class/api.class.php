@@ -24,7 +24,7 @@
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 /**
  * Class for API REST v1
@@ -65,7 +65,7 @@ class DolibarrApi
 
 		if ($production_mode) {
 			// Create the directory Defaults::$cacheDirectory if it does not exist. If dir does not exist, using production_mode generates an error 500.
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			if (!dol_is_dir(Defaults::$cacheDirectory)) {
 				dol_mkdir(Defaults::$cacheDirectory, DOL_DATA_ROOT);
 			}

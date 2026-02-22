@@ -85,7 +85,7 @@ function llxHeaderSurvey($title, $head = "", $disablejs = 0, $disablehead = 0, $
 
 	print '<body id="mainbody" class="publicnewmemberform">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	htmlPrintOnlineHeader($mysoc, $langs, 'OPENSURVEY_IMAGE_PUBLIC_INTERFACE');
 
 	print '<span id="dolpaymentspan"></span>'."\n";
@@ -203,7 +203,7 @@ function ajouter_sondage()
 {
 	global $db, $user;
 
-	require_once DOL_DOCUMENT_ROOT.'/opensurvey/class/opensurveysondage.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Opensurvey/class/opensurveysondage.class.php';
 
 	$sondage = dol_survey_random(16);
 

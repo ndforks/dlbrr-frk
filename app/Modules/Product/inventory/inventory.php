@@ -25,7 +25,7 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-include_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 include_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 include_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 include_once DOL_DOCUMENT_ROOT.'/product/inventory/class/inventory.class.php';
@@ -109,7 +109,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
 //if ($user->socid > 0) abort(403);
@@ -374,19 +374,19 @@ if (empty($reshook)) {
 	$backtopage = DOL_URL_ROOT.'/product/inventory/inventory.php?id='.$object->id.'&page='.$page.$paramwithsearch;
 
 	// Actions cancel, add, update, delete or clone
-	include DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_addupdatedelete.inc.php';
 
 	// Actions when linking object each other
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Actions to send emails
 	/*$triggersendname = 'MYOBJECT_SENTBYMAIL';
 	$autocopy='MAIN_MAIL_AUTOCOPY_MYOBJECT_TO';
 	$trackid='stockinv'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';*/
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';*/
 
 	if (request()->input('addline')) {
 		$qty = (request()->input('qtytoadd') != '' ? ((float) price2num(request()->input('qtytoadd'), 'MS')) : null);
@@ -588,10 +588,10 @@ print '<div class="underbanner clearboth"></div>';
 print '<table class="border centpercent tableforfield">'."\n";
 
 // Common attributes
-include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 // Other attributes. Fields from hook formObjectOptions and Extrafields.
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 //print '<tr><td class="titlefield fieldname_invcode">'.$langs->trans("InventoryCode").'</td><td>INV'.$object->id.'</td></tr>';
 
@@ -922,7 +922,7 @@ if ($action == 'updatebyscaning') {
 		';
 		print '</script>';
 	}
-	include DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+	include DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 	$formother = new FormOther($db);
 	print $formother->getHTMLScannerForm("barcodescannerjs", 'all');
 }

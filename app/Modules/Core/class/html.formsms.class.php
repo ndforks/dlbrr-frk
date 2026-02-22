@@ -25,7 +25,7 @@ namespace App\Modules\Core\Classes;
  *       \ingroup    core
  *       \brief      Class file for generating the HTML form used to send individual SMS messages
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 
 /**

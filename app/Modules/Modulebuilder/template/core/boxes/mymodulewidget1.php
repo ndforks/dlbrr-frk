@@ -27,7 +27,7 @@ namespace App\Modules\Modulebuilder\Template\Core\Boxes;
  * Put detailed description here.
  */
 
-include_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+include_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 
 /**

@@ -165,7 +165,7 @@ class FormContract
 
 			if (!empty($conf->use_javascript_ajax)) {
 				// Make select dynamic
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/ajax.lib.php';
 				$ret .= ajax_combobox($htmlname);
 			}
 

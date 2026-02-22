@@ -29,7 +29,7 @@ namespace App\Modules\Core\Triggers;
  * \ingroup agenda
  * \brief Trigger file for company - contactroles
  */
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 /**
  * Class of triggered functions for agenda module

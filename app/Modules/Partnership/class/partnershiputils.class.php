@@ -25,14 +25,14 @@ namespace App\Modules\Partnership\Classes;
  *  \brief      Class with utilities
  */
 
-//require_once(DOL_DOCUMENT_ROOT."/core/class/commonobject.class.php");
+//require_once(DOL_DOCUMENT_ROOT."/Core/class/commonobject.class.php");
 //require_once(DOL_DOCUMENT_ROOT."/societe/class/societe.class.php");
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/partnership/class/partnership.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/lib/partnership.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Partnership/class/partnership.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 
@@ -173,8 +173,8 @@ class PartnershipUtils
 							dol_syslog("Now we will send an email to member id=".$object->fk_member." with label ".$labeltemplate);
 
 							// Send deployment email
-							include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-							include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 							$formmail = new FormMail($this->db);
 
 							// Define output language
@@ -399,8 +399,8 @@ class PartnershipUtils
 									dol_syslog("Now we will send an email to partner id=".$fk_partner." with label ".$labeltemplate);
 
 									// Send deployment email
-									include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-									include_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+									include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+									include_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 									$formmail = new FormMail($this->db);
 
 									// Define output language

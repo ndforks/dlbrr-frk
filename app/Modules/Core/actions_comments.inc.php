@@ -39,7 +39,7 @@
 @phan-var-force int $idcomment
 ';
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/comment.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/comment.class.php';
 
 $varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 $comment = new Comment($db);

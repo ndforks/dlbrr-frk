@@ -56,13 +56,13 @@ define("DOLENTITY", $entity);
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cunits.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 if (isModEnabled('project') || isModEnabled('eventorganization')) {
 	require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 }
@@ -107,7 +107,7 @@ $user->loadDefaultValues();
 
 $captchaobj = null;
 if (getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_DONATION')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 	$captcha = getDolGlobalString('MAIN_SECURITY_ENABLECAPTCHA_HANDLER', 'standard');
 	// List of directories where we can find captcha handlers
 	$dirModCaptcha = array_merge(
@@ -160,7 +160,7 @@ function llxHeaderVierge($title, $head = "", $disablejs = 0, $disablehead = 0, $
 
 	print '<body id="mainbody" class="publicnewmemberform">';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	htmlPrintOnlineHeader($mysoc, $langs, 1, getDolGlobalString('DONATION_PUBLIC_INTERFACE'), 'DONATION_IMAGE_PUBLIC_REGISTRATION');
 
 	print '<div class="divmainbodylarge">';
@@ -525,7 +525,7 @@ if (!$action || $action == 'create') {
 
 	// Other attributes
 	$parameters['tpl_context'] = 'public';	// define template context to public
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print '<tr id="trseparator"><td colspan="2"><hr></td></tr>';
 

@@ -30,7 +30,7 @@ namespace App\Modules\Partnership\Classes;
  *	\brief      File of class to manage partnership types
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 
 /**
@@ -272,7 +272,7 @@ class PartnershipType extends CommonObject
 		$label .= '<b>'.$langs->trans('Code').':</b> '.$this->code;
 		$label .= '<br><b>'.$langs->trans('Label').':</b> '.$this->label;
 
-		//$url = dol_buildpath('/partnership/partnership_card.php', 1).'?id='.$this->id;
+		//$url = dol_buildpath('/Partnership/partnership_card.php', 1).'?id='.$this->id;
 		$url = '';
 
 		if ($option != 'nolink') {
@@ -318,7 +318,7 @@ class PartnershipType extends CommonObject
 			}
 		} else {
 			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				list($class, $module) = explode('@', $this->picto);
 				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);

@@ -30,7 +30,7 @@ namespace App\Modules\Core\Modules\Accountancy;
  *  \brief     File of class to manage Bookkeeping numbering rules Helium
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/accountancy/modules_accountancy.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/accountancy/modules_accountancy.php';
 
 
 /**
@@ -140,7 +140,7 @@ class mod_bookkeeping_helium extends ModeleNumRefBookkeeping
 	{
 		global $conf, $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		// We get cursor rule
 		$mask = getDolGlobalString("BOOKKEEPING_HELIUM_MASK");

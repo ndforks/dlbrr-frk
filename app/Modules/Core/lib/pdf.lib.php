@@ -38,7 +38,7 @@
  *	\ingroup    core
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/lib/signature.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/signature.lib.php';
 
 
 /**
@@ -96,7 +96,7 @@ function pdf_getFormat($outputlangs = null, $mode = 'setup')
 	$unit = 'mm';
 
 	if ($mode == 'auto' || !getDolGlobalString('MAIN_PDF_FORMAT') || getDolGlobalString('MAIN_PDF_FORMAT') == 'auto') {
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$pdfformat = dol_getDefaultFormat($outputlangs);
 	} else {
 		$pdfformat = getDolGlobalString('MAIN_PDF_FORMAT');
@@ -313,7 +313,7 @@ function pdf_getHeightForLogo($logo, $url = false)
 {
 	$height = getDolGlobalFloat('MAIN_DOCUMENTS_LOGO_HEIGHT', 20);
 	$maxwidth = 130;
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$tmp = dol_getImageSize($logo, $url);
 	if ($tmp['height']) {
 		$width = round($height * $tmp['width'] / $tmp['height']);
@@ -782,7 +782,7 @@ function pdfWriteBlockedLogSignature(&$pdf, $outputlangs, $page_height, $object,
 	global $db;
 
 	// Transaction ID
-	include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 	if (isALNERunningVersion() && isModEnabled('blockedlog')) {
 		if ($object->status > $object::STATUS_DRAFT) {
@@ -907,7 +907,7 @@ function pdf_watermark(&$pdf, $outputlangs, $h, $w, $unit, $text)
  */
 function pdfCertifMention(&$pdf, $outputlangs, $seller, $default_font_size, &$posy, $pdftemplate)
 {
-	include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 	return pdfCertifMentionblockedLog($pdf, $outputlangs, $seller, $default_font_size, $posy, $pdftemplate);
 }
@@ -927,7 +927,7 @@ function pdfCertifMention(&$pdf, $outputlangs, $seller, $default_font_size, &$po
  */
 function pdf_bank(&$pdf, $outputlangs, $curx, $cury, $account, $onlynumber = 0, $default_font_size = 10)
 {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formbank.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formbank.class.php';
 
 	$diffsizetitle = getDolGlobalInt('PDF_DIFFSIZE_TITLE', 3);
 	$diffsizecontent = getDolGlobalInt('PDF_DIFFSIZE_CONTENT', 4);
@@ -2432,7 +2432,7 @@ function pdf_getlineremisepercent($object, $i, $outputlangs, $hidedetails = 0)
 {
 	global $hookmanager;
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 	$reshook = 0;
 	$result = '';
@@ -2841,7 +2841,7 @@ function pdf_getSizeForImage($realpath)
 	$maxwidth = getDolGlobalInt('MAIN_DOCUMENTS_WITH_PICTURE_WIDTH', 20);
 	$maxheight = getDolGlobalInt('MAIN_DOCUMENTS_WITH_PICTURE_HEIGHT', 32);
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
 	$tmp = dol_getImageSize($realpath);
 	$width = 0;
 	$height = 0;

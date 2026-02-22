@@ -19,9 +19,9 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/api/class/api.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/cemailtemplate.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Api/class/api.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/cemailtemplate.class.php';
 
 /**
  * API for handling Object of table llx_c_email_templates

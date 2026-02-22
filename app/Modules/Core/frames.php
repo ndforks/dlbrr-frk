@@ -29,7 +29,7 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/menubase.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/menubase.class.php';
 
 /**
  * @var Conf $conf

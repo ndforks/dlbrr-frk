@@ -47,12 +47,12 @@ require '../main.inc.php';
  * @var string $dolibarr_main_document_root
  * @var string $dolibarr_main_document_root_alt
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/modulebuilder.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/modulebuilder.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "modulebuilder", "exports", "other", "cron", "errors", "uxdocumentation"));
@@ -283,7 +283,7 @@ if ($dirins && $action == 'initmodule' && $modulename /* && $user->hasRight("mod
 	}
 
 	if (!$error) {
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$destdir = $dirins.'/'.strtolower($modulename);
 
 		$arrayreplacement = array(
@@ -307,7 +307,7 @@ if ($dirins && $action == 'initmodule' && $modulename /* && $user->hasRight("mod
 		if (getDolGlobalInt('MODULEBUILDER_SUPPORT_COMPATIBILITY_V16')) {
 			$tryToCopyFromSetupClass = true;
 			$backportDest = $destdir .'/backport/v16/core/class';
-			$backportFileSrc = DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
+			$backportFileSrc = DOL_DOCUMENT_ROOT.'/Core/class/html.formsetup.class.php';
 			$backportFileDest = $backportDest.'/html.formsetup.class.php';
 			$result = dol_mkdir($backportDest);
 
@@ -433,7 +433,7 @@ if ($dirins && $action == 'initmodule' && $modulename /* && $user->hasRight("mod
 		}
 		// for create file to add properties
 		// file_put_contents($destdir.'/'.strtolower($modulename).'propertycard.php','');
-		// $srcFileCard = DOL_DOCUMENT_ROOT.'/modulebuilder/card.php';
+		// $srcFileCard = DOL_DOCUMENT_ROOT.'/Modulebuilder/card.php';
 		// $destFileCard = $dirins.'/'.strtolower($modulename).'/template/card.php';
 		// dol_copy($srcFileCard, $destdir.'/'.strtolower($modulename).'propertycard.php', '0',1, $arrayreplacement);
 	}
@@ -470,38 +470,38 @@ if ($dirins && in_array($action, array('initapi', 'initphpunit', 'initpagecontac
 
 	if ($action == 'initapi') {					// Test on permission already done
 		if (file_exists($dirins.'/'.strtolower($module).'/class/api_'.strtolower($module).'.class.php')) {
-			$result = dol_copy(DOL_DOCUMENT_ROOT.'/modulebuilder/template/class/api_mymodule.class.php', $dirins.'/'.strtolower($module).'/class/api_'.strtolower($module).'.class.php', '0', 1);
+			$result = dol_copy(DOL_DOCUMENT_ROOT.'/Modulebuilder/template/class/api_mymodule.class.php', $dirins.'/'.strtolower($module).'/class/api_'.strtolower($module).'.class.php', '0', 1);
 		}
 		dol_mkdir($dirins.'/'.strtolower($module).'/class');
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/class/api_mymodule.class.php';
 		$destfile = $dirins.'/'.strtolower($module).'/class/api_'.strtolower($module).'.class.php';
 	} elseif ($action == 'initphpunit') {		// Test on permission already done
 		dol_mkdir($dirins.'/'.strtolower($module).'/test/phpunit');
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/test/phpunit/MyObjectTest.php';
 		$destfile = $dirins.'/'.strtolower($module).'/test/phpunit/'.strtolower($objectname).'Test.php';
 	} elseif ($action == 'initpagecontact') {	// Test on permission already done
 		dol_mkdir($dirins.'/'.strtolower($module));
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/myobject_contact.php';
 		$destfile = $dirins.'/'.strtolower($module).'/'.strtolower($objectname).'_contact.php';
 		$varnametoupdate = 'showtabofpagecontact';
 	} elseif ($action == 'initpagedocument') {	// Test on permission already done
 		dol_mkdir($dirins.'/'.strtolower($module));
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/myobject_document.php';
 		$destfile = $dirins.'/'.strtolower($module).'/'.strtolower($objectname).'_document.php';
 		$varnametoupdate = 'showtabofpagedocument';
 	} elseif ($action == 'initpagenote') {		// Test on permission already done
 		dol_mkdir($dirins.'/'.strtolower($module));
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/myobject_note.php';
 		$destfile = $dirins.'/'.strtolower($module).'/'.strtolower($objectname).'_note.php';
 		$varnametoupdate = 'showtabofpagenote';
 	} elseif ($action == 'initpageagenda') {	// Test on permission already done
 		dol_mkdir($dirins.'/'.strtolower($module));
-		$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+		$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 		$srcfile = $srcdir.'/myobject_agenda.php';
 		$destfile = $dirins.'/'.strtolower($module).'/'.strtolower($objectname).'_agenda.php';
 		$varnametoupdate = 'showtabofpageagenda';
@@ -558,7 +558,7 @@ if ($dirins && $action == 'initsqlextrafields' && !empty($module) /* && $user->h
 	$objectname = $tabobj;
 
 	dol_mkdir($dirins.'/'.strtolower($module).'/sql');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile1 = $srcdir.'/sql/llx_mymodule_myobject_extrafields.sql';
 	$destfile1 = $dirins.'/'.strtolower($module).'/sql/llx_'.strtolower($module).'_'.strtolower($objectname).'_extrafields.sql';
 	$result1 = dol_copy($srcfile1, $destfile1, '0', 0);
@@ -609,7 +609,7 @@ if ($dirins && $action == 'initsqlextrafields' && !empty($module) /* && $user->h
 // init Hook
 if ($dirins && $action == 'inithook' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/class');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/class/actions_mymodule.class.php';
 	$destfile = $dirins.'/'.strtolower($module).'/class/actions_'.strtolower($module).'.class.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -642,7 +642,7 @@ if ($dirins && $action == 'inithook' && !empty($module) /* && $user->hasRight("m
 // init Trigger
 if ($dirins && $action == 'inittrigger' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/core/triggers');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/core/triggers/interface_99_modMyModule_MyModuleTriggers.class.php';
 	$destfile = $dirins.'/'.strtolower($module).'/core/triggers/interface_99_mod'.$module.'_'.$module.'Triggers.class.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -675,7 +675,7 @@ if ($dirins && $action == 'inittrigger' && !empty($module) /* && $user->hasRight
 // init Widget
 if ($dirins && $action == 'initwidget' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/core/boxes');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/core/boxes/mymodulewidget1.php';
 	$destfile = $dirins.'/'.strtolower($module).'/core/boxes/'.strtolower($module).'widget1.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -708,7 +708,7 @@ if ($dirins && $action == 'initwidget' && !empty($module) /* && $user->hasRight(
 // init EmailSelector
 if ($dirins && $action == 'initemailing' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/core/modules/mailings');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/core/modules/mailings/mailing_mymodule_selector1.modules.php';
 	$destfile = $dirins.'/'.strtolower($module).'/core/modules/mailings/mailing_'.strtolower($module).'_selector1.modules.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -741,7 +741,7 @@ if ($dirins && $action == 'initemailing' && !empty($module) /* && $user->hasRigh
 // init CSS
 if ($dirins && $action == 'initcss' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/css');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/css/mymodule.css.php';
 	$destfile = $dirins.'/'.strtolower($module).'/css/'.strtolower($module).'.css.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -779,7 +779,7 @@ if ($dirins && $action == 'initcss' && !empty($module) /* && $user->hasRight("mo
 // init JS
 if ($dirins && $action == 'initjs' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/js');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/js/mymodule.js.php';
 	$destfile = $dirins.'/'.strtolower($module).'/js/'.strtolower($module).'.js.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -817,7 +817,7 @@ if ($dirins && $action == 'initjs' && !empty($module) /* && $user->hasRight("mod
 // init CLI
 if ($dirins && $action == 'initcli' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/scripts');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/scripts/mymodule.php';
 	$destfile = $dirins.'/'.strtolower($module).'/scripts/'.strtolower($module).'.php';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -858,7 +858,7 @@ $modulelowercase = null;
 // init Doc
 if ($dirins && $action == 'initdoc' && !empty($module) /* && $user->hasRight("modulebuilder", "run") // already checked */) {
 	dol_mkdir($dirins.'/'.strtolower($module).'/doc');
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$srcfile = $srcdir.'/doc/Documentation.asciidoc';
 	$destfile = $dirins.'/'.strtolower($module).'/doc/Documentation.asciidoc';
 	$result = dol_copy($srcfile, $destfile, '0', 0);
@@ -973,7 +973,7 @@ if ($dirins && $action == 'addlanguage' && !empty($module) /* && $user->hasRight
 
 			$arrayofreplacement = array();
 			if (!dol_is_dir($srcdir) || !dol_is_file($srcfile)) {
-				$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template/langs/en_US';
+				$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template/langs/en_US';
 				$arrayofreplacement = array('mymodule' => $modulelowercase);
 			}
 			$result = dolCopyDir($srcdir, $destdir, '0', 0, $arrayofreplacement);
@@ -1093,7 +1093,7 @@ if ($dirins && $action == 'initobject' && $module && $objectname /* && $user->ha
 		$tabobj = 'newobject';
 	}
 
-	$srcdir = DOL_DOCUMENT_ROOT.'/modulebuilder/template';
+	$srcdir = DOL_DOCUMENT_ROOT.'/Modulebuilder/template';
 	$destdir = $dirins.'/'.strtolower($module);
 
 	// The dir was not created by init
@@ -4189,7 +4189,7 @@ if ($module == 'initmodule') {
 						// Combo with list of fields
 						/*
 						if (empty($formadmin)) {
-							include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+							include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 							$formadmin = new FormAdmin($db);
 						}
 						print $formadmin->selectTypeOfFields($key, GETPOST($key, 'alpha'));
@@ -4715,7 +4715,7 @@ if ($module == 'initmodule') {
 										// Combo with list of fields
 										/*
 										if (empty($formadmin)) {
-											include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+											include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 											$formadmin = new FormAdmin($db);
 										}
 										print $formadmin->selectTypeOfFields($key, GETPOST($key, 'alpha'));
@@ -6100,7 +6100,7 @@ if ($module == 'initmodule') {
 
 		if ($tab == 'triggers') {
 			print '<!-- tab=triggers -->'."\n";
-			require_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/interfaces.class.php';
 
 			$interfaces = new Interfaces($db);
 			$triggers = $interfaces->getTriggersList(array('/'.strtolower($module).'/core/triggers'));
@@ -6259,7 +6259,7 @@ if ($module == 'initmodule') {
 
 		if ($tab == 'widgets') {
 			print '<!-- tab=widgets -->'."\n";
-			require_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 			$widgets = ModeleBoxes::getWidgetsList(array('/'.strtolower($module).'/core/boxes'));
 
@@ -6311,7 +6311,7 @@ if ($module == 'initmodule') {
 
 		if ($tab == 'emailings') {
 			print '<!-- tab=emailings -->'."\n";
-			require_once DOL_DOCUMENT_ROOT.'/core/modules/mailings/modules_mailings.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/modules/mailings/modules_mailings.php';
 
 			$emailingselectors = MailingTargets::getEmailingSelectorsList(array('/'.strtolower($module).'/core/modules/mailings'));
 

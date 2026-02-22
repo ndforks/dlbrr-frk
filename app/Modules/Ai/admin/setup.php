@@ -27,9 +27,9 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT."/core/class/doleditor.class.php";
-require_once DOL_DOCUMENT_ROOT."/ai/lib/ai.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/class/doleditor.class.php";
+require_once DOL_DOCUMENT_ROOT."/Ai/lib/ai.lib.php";
 
 /**
  * @var Conf $conf
@@ -61,7 +61,7 @@ $setupnotempty = 0;
 $useFormSetup = 1;
 
 if (!class_exists('FormSetup')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formsetup.class.php';
 }
 
 $formSetup = new FormSetup($db);
@@ -119,7 +119,7 @@ if (!isModEnabled('ai')) {
  * Actions
  */
 
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 $action = 'edit';
 
@@ -237,8 +237,8 @@ if (getDolGlobalString("AI_API_SERVICE")) {
 	print '<br>';
 	//print '<hr>';
 
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-	include_once DOL_DOCUMENT_ROOT."/core/class/html.formai.class.php";
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+	include_once DOL_DOCUMENT_ROOT."/Core/class/html.formai.class.php";
 	$formai = new FormAI($db);
 	$formmail = new FormMail($db);
 
@@ -251,7 +251,7 @@ if (getDolGlobalString("AI_API_SERVICE")) {
 	// Fill $out
 
 	$out = $langs->trans("Test").': &nbsp; ';
-	include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 	print $out;
 
 	print '<br><textarea id="'.$htmlname.'" placeholder="Click on picto to enter a prompt or enter a message and click picto to make text transformation..." class="quatrevingtpercent" rows="4"></textarea>';	// The div
@@ -265,7 +265,7 @@ if (getDolGlobalString("AI_API_SERVICE")) {
 
 	// Fill $out
 	$out = $langs->trans("Test").': &nbsp; ';
-	include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 	print $out;
 
 	print '<br>';

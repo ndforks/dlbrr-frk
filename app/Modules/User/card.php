@@ -48,21 +48,21 @@ require '../main.inc.php';
  * @var string 	$dolibarr_main_authentication
  * @var string	$dolibarr_api_count_always_enabled
  */
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 if (isModEnabled('ldap')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/ldap.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/ldap.class.php';
 }
 if (isModEnabled('member')) {
 	require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
@@ -435,7 +435,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'update' && ($permissiontoedit || $permissiontoeditpasswordandsee)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		if ($permissiontoedit) {    // Case we can edit all field
 			$error = 0;
@@ -654,7 +654,7 @@ if (empty($reshook)) {
 
 								// Index file in database
 								if (getDolGlobalString('USER_PHOTO_ALLOW_EXTERNAL_DOWNLOAD')) {
-									require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+									require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 									// the dir dirname($newfile) is directory of logo, so we should have only one file at once into index, so we delete indexes for the dir
 									deleteFilesIntoDatabaseIndex(dirname($newfile), '', '', $object);
 									// now we index the uploaded logo file
@@ -877,14 +877,14 @@ if (empty($reshook)) {
 	$paramname = 'id'; // Name of param key to open the card
 	$mode = 'emailfromuser';
 	$trackid = 'use'.$id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 	// Actions to build doc
 	$upload_dir = $conf->user->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 }
 
 
@@ -1439,12 +1439,12 @@ if ($action == 'create' || $action == 'adduserldap') {
 
 	// Other attributes
 	$parameters = array();
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	// Signature
 	print '<tr><td class="tdtop">'.$langs->trans("Signature").'</td>';
 	print '<td class="wordbreak">';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 	$doleditor = new DolEditor('signature', request()->input('signature'), '', 138, 'dolibarr_notes', 'In', true, $acceptlocallinktomedia, !getDolGlobalString('FCKEDITOR_ENABLE_USERSIGN') ? 0 : 1, ROWS_4, '90%');
 	print $doleditor->Create(1);
@@ -1454,7 +1454,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print '<tr><td class="tdtop">';
 	print $langs->trans("NotePublic");
 	print '</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('note_public', request()->has('note_public') ? request()->input('note_public') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PUBLIC'), ROWS_3, '90%');
 	$doleditor->Create();
 	print "</td></tr>\n";
@@ -1463,7 +1463,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print '<tr><td class="tdtop">';
 	print $langs->trans("NotePrivate");
 	print '</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('note_private', request()->has('note_private') ? request()->input('note_private') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVATE'), ROWS_3, '90%');
 	$doleditor->Create();
 	print "</td></tr>\n";
@@ -1893,7 +1893,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			// Default language
 			if (getDolGlobalInt('MAIN_MULTILANGS')) {
 				$langs->load("languages");
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 				print '<tr><td>';
 				print $form->textwithpicto($langs->trans("DefaultLang"), $langs->trans("WarningNotLangOfInterface", $langs->transnoentitiesnoconv("UserGUISetup")));
 				print '</td><td>';
@@ -1929,7 +1929,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			}
 
 			// Other attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			// Company / Contact
 			if (isModEnabled("societe")) {
@@ -2312,7 +2312,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			$diroutput = $conf->user->dir_output;
 			$trackid = 'use'.$object->id;
 
-			include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 
 			if ($action != 'presend' && $action != 'send') {
 				/*
@@ -3039,7 +3039,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 
 			// Other attributes
 			$parameters = array('colspan' => ' colspan="2"');
-			//include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';		// We do not use common tpl here because we need a special test on $permissiontoedit
+			//include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';		// We do not use common tpl here because we need a special test on $permissiontoedit
 			$reshook = $hookmanager->executeHooks('formObjectOptions', $parameters, $object, $action); // Note that $action and $object may have been modified by hook
 			print $hookmanager->resPrint;
 			if (empty($reshook)) {
@@ -3054,7 +3054,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			print '<tr><td class="tdtop">'.$langs->trans("Signature").'</td>';
 			print '<td>';
 			if ($permissiontoedit) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 
 				$doleditor = new DolEditor('signature', $object->signature, '', 138, 'dolibarr_notes', 'In', false, $acceptlocallinktomedia, !getDolGlobalString('FCKEDITOR_ENABLE_USERSIGN') ? 0 : 1, ROWS_4, '90%');
 				print $doleditor->Create(1);
@@ -3225,7 +3225,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			print '</div><div class="fichehalfright">';
 
 			// List of actions on element
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 			$formactions = new FormActions($db);
 			$somethingshown = $formactions->showactions($object, 'user', $socid, 1, 'listactions', $MAXEVENT, '', $morehtmlcenter, $object->id);
 
@@ -3239,7 +3239,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 }
 
 // Add button to autosuggest a key
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 $usegenericrule = getDolGlobalString('USER_PASSWORD_GENERATED') == 'none' ? 1 : 0;
 print dolJSToSetRandomPassword('password', 'generate_password', $usegenericrule);
 if (isModEnabled('api')) {

@@ -30,8 +30,8 @@ namespace App\Modules\Core\Modules\Fichinter;
  *   			and parent class for interventions numbering models
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 
 /**
@@ -53,7 +53,7 @@ abstract class ModelePDFFicheinter extends CommonDocGenerator
 		$type = 'ficheinter';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;
@@ -173,7 +173,7 @@ function fichinter_create($db, $object, $modele, $outputlangs, $hidedetails = 0,
 			$outputlangs->charset_output = $sav_charset_output;
 
 			// We delete old preview
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_delete_preview($object);
 
 			return 1;

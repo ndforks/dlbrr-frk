@@ -34,7 +34,7 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
 
 // Load translation files required by page
 $langs->loadLangs(array('admin', 'users'));
@@ -337,11 +337,11 @@ print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 // @phan-suppress-next-line PhanPluginSuspiciousParamOrder
 print_barre_liste($langs->trans("ListOfTokensForUser"), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, $massactionbutton, $num, $nbtotalofrecords, 'fa-at', 0, $morehtmlright, '', $limit, 0, 0, 1);
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/massactions_pre.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/massactions_pre.tpl.php';
 
 $colspan = 5; // Base colspan for empty list
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/apitoken_list.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/apitoken_list.tpl.php';
 
 
 print '</form>';

@@ -26,8 +26,8 @@
 use Luracast\Restler\RestException;
 
 require_once DOL_DOCUMENT_ROOT.'/main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/api/class/api.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Api/class/api.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 /**
  * API class for receive files
@@ -460,7 +460,7 @@ class Documents extends DolibarrApi
 
 			$upload_dir = $conf->societe->multidir_output[$object->entity ?? $conf->entity]."/".$object->id;
 		} elseif ($modulepart == 'user') {
-			require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 
 			// Can get doc if has permission to read all user or if it is user itself
 			if (!DolibarrApiAccess::$user->hasRight('user', 'user', 'lire') && DolibarrApiAccess::$user->id != $id) {
@@ -663,7 +663,7 @@ class Documents extends DolibarrApi
 
 			$upload_dir = $conf->ticket->dir_output.'/'.dol_sanitizeFileName((string) $object->ref);
 		} elseif ($modulepart == 'knowledgemanagement') {
-			require_once DOL_DOCUMENT_ROOT.'/knowledgemanagement/class/knowledgerecord.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Knowledgemanagement/class/knowledgerecord.class.php';
 
 			if (!DolibarrApiAccess::$user->hasRight('knowledgemanagement', 'knowledgerecord', 'read')) {
 				throw new RestException(403);
@@ -1013,7 +1013,7 @@ class Documents extends DolibarrApi
 				$fetchbyid = true;
 			} elseif ($modulepart == 'knowledgemanagement' ) {
 				$modulepart = 'knowledgemanagement';
-				require_once DOL_DOCUMENT_ROOT.'/knowledgemanagement/class/knowledgerecord.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Knowledgemanagement/class/knowledgerecord.class.php';
 				$object = new KnowledgeRecord($this->db);
 				$fetchbyid = true;
 			} elseif ($modulepart == 'ticket' ) {
@@ -1215,7 +1215,7 @@ class Documents extends DolibarrApi
 		}
 
 		if (is_object($object) && $generateThumbs) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			if (image_format_supported($dest_file)) {
 				$object->addThumbs($dest_file);
 			}

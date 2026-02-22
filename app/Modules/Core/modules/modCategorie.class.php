@@ -32,7 +32,7 @@ namespace App\Modules\Core\Modules;
  *      \ingroup    category
  *      \brief      Description and activation file for the module Category
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 include_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 
@@ -215,7 +215,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'product';
 			$keyforelement = 'product';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -264,7 +264,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'societe';
 			$keyforelement = 'company';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -315,7 +315,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'societe';
 			$keyforelement = 'company';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -347,7 +347,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'adherent';
 			$keyforelement = 'member';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -405,7 +405,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'socpeople';
 			$keyforelement = 'contact';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -438,7 +438,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'projet';
 			$keyforelement = 'project';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -467,7 +467,7 @@ class modCategorie extends DolibarrModules
 			$keyforselect = 'user';
 			$keyforelement = 'user';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';
@@ -860,7 +860,7 @@ class modCategorie extends DolibarrModules
 		$keyforelement = $arrayofproperties['element'];
 		$keyfortable = $arrayofproperties['table_element'];
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'categorie as cat';

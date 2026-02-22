@@ -28,8 +28,8 @@ namespace App\Modules\Core\Modules\Societe;
  *		\ingroup    societe
  *		\brief      File with parent class of submodules to manage numbering and document generation
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 
 
 /**
@@ -51,7 +51,7 @@ abstract class ModeleThirdPartyDoc extends CommonDocGenerator
 		$type = 'company';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

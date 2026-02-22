@@ -49,4 +49,4 @@ require_once '../../../main.inc.php';
 
 // Now include the common lib_head.js.php
 define('MAIN_ALREADY_INCLUDED', 1);
-include DOL_DOCUMENT_ROOT.'/core/js/lib_head.js.php';
+include DOL_DOCUMENT_ROOT.'/Core/js/lib_head.js.php';

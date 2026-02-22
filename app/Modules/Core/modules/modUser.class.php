@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  *  \brief      Description and activation file for the module users
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *	Class to describe and enable module User
@@ -262,7 +262,7 @@ class modUser extends DolibarrModules
 		$keyforselect = 'user';
 		$keyforelement = 'user';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		if (!isModEnabled('member')) {
 			unset($this->export_fields_array[$r]['u.fk_member']);
 			unset($this->export_entities_array[$r]['u.fk_member']);

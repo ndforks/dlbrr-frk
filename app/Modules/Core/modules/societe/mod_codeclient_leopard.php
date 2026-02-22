@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Societe;
  *       \brief      Fichier de la class des gestion leopard des codes clients
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/societe/modules_societe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/societe/modules_societe.class.php';
 
 
 /**

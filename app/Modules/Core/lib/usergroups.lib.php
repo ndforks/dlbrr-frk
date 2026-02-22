@@ -187,8 +187,8 @@ function user_prepare_head(User $object)
 		$h++;
 
 		// Attached files
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 		$upload_dir = $conf->user->dir_output."/".$object->id;
 		$nbFiles = count(dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png)$'));
 		$nbLinks = Link::count($db, $object->element, $object->id);
@@ -205,7 +205,7 @@ function user_prepare_head(User $object)
 		if (isModEnabled('agenda') && ($user->hasRight('agenda', 'myactions', 'read') || $user->hasRight('agenda', 'allactions', 'read'))) {
 			$nbEvent = 0;
 			// Enable caching of thirdparty count actioncomm
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/memory.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/memory.lib.php';
 			$cachekey = 'count_events_user_'.$object->id;
 			$dataretrieved = dol_getcache($cachekey);
 			if (!is_null($dataretrieved)) {
@@ -358,7 +358,7 @@ function showSkins($fuser, $edit = 0, $foruserprofile = false)
 {
 	global $conf, $langs, $db, $form;
 
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 	$formother = new FormOther($db);
 
@@ -507,8 +507,8 @@ function showSkins($fuser, $edit = 0, $foruserprofile = false)
 	$butactionbg = '';
 	$textbutaction = '';
 	// Set the variables with the default value
-	if (file_exists(DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php')) {
-		include DOL_DOCUMENT_ROOT.'/theme/'.$conf->theme.'/theme_vars.inc.php';
+	if (file_exists(DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php')) {
+		include DOL_DOCUMENT_ROOT.'/Theme/'.$conf->theme.'/theme_vars.inc.php';
 	}
 
 	// Dark mode

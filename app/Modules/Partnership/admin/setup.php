@@ -25,7 +25,7 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
 require_once '../lib/partnership.lib.php';
 //require_once "../class/myclass.class.php";
 
@@ -56,11 +56,11 @@ if (!$user->admin) {
  */
 
 $nomessageinsetmoduleoptions = 1;
-include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_setmoduleoptions.inc.php';
 
 
 if ($action == 'setting') {
-	require_once DOL_DOCUMENT_ROOT."/core/modules/modPartnership.class.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/modules/modPartnership.class.php";
 
 	$modulemenu = (request()->input('PARTNERSHIP_IS_MANAGED_FOR') == 'member') ? 'member' : 'thirdparty';
 	$res = dolibarr_set_const($db, "PARTNERSHIP_IS_MANAGED_FOR", $modulemenu, 'chaine', 0, '', $conf->entity);

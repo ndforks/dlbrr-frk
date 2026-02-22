@@ -27,7 +27,7 @@ namespace App\Modules\Core\Boxes;
  *  \ingroup    project
  *  \brief      Module to show Project opportunities of the current Year
  */
-include_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+include_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 /**
  * Class to manage the box to show project opportunities

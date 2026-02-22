@@ -25,7 +25,7 @@ namespace App\Modules\Core\Boxes;
  *      \ingroup    fournisseur
  *      \brief      Widget to show remain to get on purchase invoices
  */
-include_once DOL_DOCUMENT_ROOT.'/core/boxes/modules_boxes.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/boxes/modules_boxes.php';
 
 
 /**

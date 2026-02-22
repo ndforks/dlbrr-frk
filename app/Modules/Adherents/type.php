@@ -40,10 +40,10 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/member.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
 // Load translation files required by the page
@@ -141,7 +141,7 @@ $result = restrictedArea($user, 'adherent', $rowid, 'adherent_type');
 $error = 0;
 
 // Selection of new fields
-include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_changeselectedfields.inc.php';
 
 if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_ref = "";
@@ -541,7 +541,7 @@ if (!$rowid && $action != 'create' && $action != 'edit') {
 		}
 
 		// Show total line
-		include DOL_DOCUMENT_ROOT.'/core/tpl/list_print_total.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/list_print_total.tpl.php';
 
 		// If no record found
 		if ($num == 0) {
@@ -611,7 +611,7 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	print '<tr><td class="tdtop">'.$langs->trans("AmountFormulaDescription").'</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('amountformuladescription', (request()->has('amountformuladescription') ? request()->input('amountformuladescription') : $object->amountformuladescription), '', 100, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 
@@ -625,18 +625,18 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('comment', (request()->has('comment') ? request()->input('comment') : $object->note_public), '', 200, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 
 	print '<tr><td class="tdtop">'.$langs->trans("WelcomeEMail").'</td><td>';
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('mail_valid', request()->has('mail_valid') ? request()->input('mail_valid') : $object->mail_valid, '', 250, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 	$doleditor->Create();
 	print '</td></tr>';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print '<tbody>';
 	print "</table>\n";
@@ -737,7 +737,7 @@ if ($rowid > 0) {
 		print "</div></td></tr>";
 
 		// Other attributes
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
 		print '</div>';
@@ -1162,7 +1162,7 @@ if ($rowid > 0) {
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("AmountFormulaDescription").'</td><td>';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$doleditor = new DolEditor('amountformuladescription', $object->amountformuladescription, '', 220, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 		$doleditor->Create();
 		print '</td></tr>';
@@ -1177,7 +1177,7 @@ if ($rowid > 0) {
 		print '</td></tr>';
 
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td><td>';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$doleditor = new DolEditor('comment', $object->note_public, '', 220, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor'), 15, '90%');
 		$doleditor->Create();
 		print "</td></tr>";
@@ -1188,7 +1188,7 @@ if ($rowid > 0) {
 		print "</td></tr>";
 
 		// Other attributes
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 		print '</table>';
 

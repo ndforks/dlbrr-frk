@@ -27,7 +27,7 @@ set_include_path($_SERVER['DOCUMENT_ROOT'].'/htdocs');
 
 require_once '../master.inc.php';
 require_once NUSOAP_PATH.'/nusoap.php'; // Include SOAP
-require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 /**
  * @var Conf $conf
  * @var DoliDB $db

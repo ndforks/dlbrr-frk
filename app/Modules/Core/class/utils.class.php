@@ -86,7 +86,7 @@ class Utils
 
 		$langs->load("admin");
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		if (empty($choices)) {
 			$choices = 'tempfilesold+logfiles';
@@ -255,7 +255,7 @@ class Utils
 		$langs->load("admin");
 
 		dol_syslog("Utils::dumpDatabase type=".$type." compression=".$compression." file=".$file, LOG_DEBUG);
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Clean data
 		$file = dol_sanitizeFileName($file);
@@ -913,7 +913,7 @@ class Utils
 					$contentreadme = file_get_contents($dirofmoduletmp.'/README.md');
 					$contentchangelog = file_get_contents($dirofmoduletmp.'/ChangeLog.md');
 
-					include DOL_DOCUMENT_ROOT.'/core/lib/parsemd.lib.php';
+					include DOL_DOCUMENT_ROOT.'/Core/lib/parsemd.lib.php';
 
 					//var_dump($phpfileval['fullname']);
 					$arrayreplacement = array(
@@ -944,7 +944,7 @@ class Utils
 				$currentdir = getcwd();
 				chdir($dirofmodule);
 
-				require_once DOL_DOCUMENT_ROOT.'/core/class/utils.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/utils.class.php';
 				$utils = new Utils($this->db);
 
 				// Build HTML doc
@@ -1343,7 +1343,7 @@ class Utils
 		}
 
 		$tmpfiles = array();
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		if ($filename) {
 			if (dol_is_file($conf->admin->dir_output.'/backup/'.$filename)) {
 				$tmpfiles = dol_most_recent_file($conf->admin->dir_output.'/backup', $filename);

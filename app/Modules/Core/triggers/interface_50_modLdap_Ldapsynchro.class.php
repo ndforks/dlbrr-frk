@@ -27,7 +27,7 @@ namespace App\Modules\Core\Triggers;
  *  \brief      Fichier de gestion des triggers LDAP
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/triggers/dolibarrtriggers.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/triggers/dolibarrtriggers.class.php';
 
 
 /**
@@ -76,8 +76,8 @@ class InterfaceLdapsynchro extends DolibarrTriggers
 			return 0;
 		}
 
-		require_once DOL_DOCUMENT_ROOT."/core/class/ldap.class.php";
-		require_once DOL_DOCUMENT_ROOT."/user/class/usergroup.class.php";
+		require_once DOL_DOCUMENT_ROOT."/Core/class/ldap.class.php";
+		require_once DOL_DOCUMENT_ROOT."/User/class/usergroup.class.php";
 
 		$result = 0;
 

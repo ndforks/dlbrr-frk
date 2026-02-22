@@ -25,8 +25,8 @@ namespace App\Modules\Core\Modules\Printing;
  *      \ingroup    printing
  *      \brief      File with parent class of printing modules
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 
 /**

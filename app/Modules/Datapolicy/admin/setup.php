@@ -27,10 +27,10 @@
 
 // Load Dolibarr environment
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
-require_once DOL_DOCUMENT_ROOT.'/datapolicy/lib/datapolicy.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/datapolicy/class/datapolicycron.class.php';
-require_once DOL_DOCUMENT_ROOT.'/cron/class/cronjob.class.php';
+require_once DOL_DOCUMENT_ROOT."/Core/lib/admin.lib.php";
+require_once DOL_DOCUMENT_ROOT.'/Datapolicy/lib/datapolicy.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Datapolicy/class/datapolicycron.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Cron/class/cronjob.class.php';
 
 /**
  * @var Conf $conf

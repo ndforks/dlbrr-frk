@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Expedition;
  *  \brief      File of class to manage expedition numbering rules Ribera
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/expedition/modules_expedition.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/expedition/modules_expedition.php';
 
 /**
  *	Class to manage expedition numbering rules Ribera
@@ -136,7 +136,7 @@ class mod_expedition_ribera extends ModelNumRefExpedition
 	{
 		global $db;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 		$mask = getDolGlobalString('EXPEDITION_RIBERA_MASK');
 

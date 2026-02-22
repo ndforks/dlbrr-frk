@@ -21,7 +21,7 @@
 
 use Luracast\Restler\RestException;
 
-require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstation.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Workstation/class/workstation.class.php';
 
 /**
  * \file    htdocs/workstation/class/api_workstations.class.php

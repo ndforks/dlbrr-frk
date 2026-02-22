@@ -2709,8 +2709,8 @@ class Form
 		// phpcs:enable
 		global $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/resource/class/html.formresource.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Resource/class/html.formresource.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
 		$formresources = new FormResource($this->db);
 		$resourcestatic = new Dolresource($this->db);
 
@@ -11968,7 +11968,7 @@ class Form
 		// TODO: Use $arrayoffiltercriterias param instead of $arrayofcriterias to include linked object fields in search
 		global $langs, $form;
 
-		//require_once DOL_DOCUMENT_ROOT."/core/class/html.formother.class.php";
+		//require_once DOL_DOCUMENT_ROOT."/Core/class/html.formother.class.php";
 		//$formother = new FormOther($this->db);
 
 		if ($search_component_params_hidden != '' && !preg_match('/^\(.*\)$/', $search_component_params_hidden)) {    // If $search_component_params_hidden does not start and end with ()
@@ -12002,7 +12002,7 @@ class Form
 					$this->error = 'ERROR in parsing search string: '.$errormessage;
 				}
 				// Remove first and last parenthesis but only if first is the opening and last the closing of the same group
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 				$searchtags = removeGlobalParenthesis($searchtags);
 
 				$ret .= '<span class="marginleftonlyshort valignmiddle tagsearch" data-ufilterid="'.($tmpkey + 1).'" data-ufilter="'.dol_escape_htmltag($tmpval).'">';

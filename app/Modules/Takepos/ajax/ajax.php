@@ -48,7 +48,7 @@ require '../../main.inc.php'; // Load $user and permissions
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT."/product/class/product.class.php";
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
@@ -417,7 +417,7 @@ if ($action == 'getProducts' && $user->hasRight('takepos', 'run')) {
 } elseif ($action == "opendrawer" && $term != '' && $user->hasRight('takepos', 'run')) {
 	top_httphead('application/html');
 
-	require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 	$printer = new dolReceiptPrinter($db);
 
 	// check printer for terminal
@@ -437,7 +437,7 @@ if ($action == 'getProducts' && $user->hasRight('takepos', 'run')) {
 } elseif ($action == "printinvoiceticket" && $term != '' && $id > 0 && $user->hasRight('takepos', 'run') && $user->hasRight('facture', 'lire')) {
 	top_httphead('application/html');
 
-	require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 	require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 	$printer = new dolReceiptPrinter($db);
 
@@ -482,7 +482,7 @@ if ($action == 'getProducts' && $user->hasRight('takepos', 'run')) {
 	top_httphead('application/html');
 
 	require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-	require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 
 	$object = new Facture($db);
 	$printer = new dolReceiptPrinter($db);

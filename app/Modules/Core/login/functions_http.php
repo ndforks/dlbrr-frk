@@ -41,7 +41,7 @@ function check_user_password_http($usertotest, $passwordtotest, $entitytotest)
 	if (!empty($_SERVER["REMOTE_USER"])) {
 		$login = $_SERVER["REMOTE_USER"];
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 		// Note: Test on date validity is done later natively with isNotIntoValidityDateRange() by core after calling checkLoginPassEntity() that call this method
 	}

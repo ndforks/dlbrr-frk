@@ -140,7 +140,7 @@ if (!empty($showlinktolayout)) {
 	} else {
 		if (!is_object($formmail)) {
 			// Create form object
-			include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 			$formmail = new FormMail($db);
 		}
 		$out .= $formmail->getEmailLayoutSelector($htmlname, $showlinktolayout);
@@ -153,7 +153,7 @@ if (!empty($showlinktolayout)) {
 
 if (!empty($showlinktoai)) {
 	if (empty($formai) || $formai instanceof FormAI) {
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formai.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formai.class.php';
 		$formai = new FormAI($db);
 	}
 	$out .= $formai->getAjaxAICallFunction();

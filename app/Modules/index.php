@@ -41,7 +41,7 @@ require 'main.inc.php';
  *
  * @var string $conffile	defined into filefunc.inc.php
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // If not defined, we select menu "home"
 $_GET['mainmenu'] = request()->input('mainmenu') ? request()->input('mainmenu') : 'home';	// Keep this ?
@@ -49,7 +49,7 @@ $action = request()->input('action');
 
 $hookmanager->initHooks(array('index'));
 
-require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/redirect_if_setup_not_complete.inc.php';
 
 
 /*
@@ -57,7 +57,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
  */
 
 if (request()->input('addbox')) {	// Add box (when submit is done from a form when ajax disabled)
-	require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/infobox.class.php';
 	$zone = request()->integer('areacode', 0);
 	$userid = request()->integer('userid', 0);
 	$boxorder = request()->input('boxorder');
@@ -185,7 +185,7 @@ if (!getDolGlobalString('MAIN_DISABLE_GLOBAL_WORKBOARD') && getDolGlobalInt('MAI
 	$dashboardlines = array();
 
 	// Do not include sections without management permission
-	require_once DOL_DOCUMENT_ROOT.'/core/class/workboardresponse.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/workboardresponse.class.php';
 
 	// Number of actions to do (late)
 	if (isModEnabled('agenda') && !getDolGlobalString('MAIN_DISABLE_BLOCK_AGENDA') && $user->hasRight('agenda', 'myactions', 'read')) {

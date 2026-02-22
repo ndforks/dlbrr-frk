@@ -47,16 +47,16 @@ namespace App\Modules\Compta\Facture\Classes;
  *	\brief      File of class to manage invoices
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commoninvoice.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commoninvoice.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/factureligne.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/client.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
-require_once DOL_DOCUMENT_ROOT.'/subtotals/class/commonsubtotal.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Subtotals/class/commonsubtotal.class.php';
 
 if (isModEnabled('accounting')) {
-	require_once DOL_DOCUMENT_ROOT.'/core/class/html.formaccounting.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formaccounting.class.php';
 }
 if (isModEnabled('accounting')) {
 	require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingaccount.class.php';
@@ -2214,7 +2214,7 @@ class Facture extends CommonInvoice
 		if ($doFetchInOneSqlRequest) {
 			// If $extrafields is not a known object, we initialize it
 			if (!isset($extrafields) || !is_object($extrafields)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 				$extrafields = new ExtraFields($this->db);
 			}
 
@@ -2483,7 +2483,7 @@ class Facture extends CommonInvoice
 		if ($doFetchInOneSqlRequest) {
 			// If $extrafields is not a known object, we initialize it
 			if (!isset($extrafields) || !is_object($extrafields)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 				$extrafields = new ExtraFields($this->db);
 			}
 
@@ -2877,8 +2877,8 @@ class Facture extends CommonInvoice
 		// phpcs:enable
 		global $langs;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/discount.class.php';
 
 		$this->db->begin();
 
@@ -2918,7 +2918,7 @@ class Facture extends CommonInvoice
 			if ($remise->fk_facture_source > 0) {
 				$srcinvoice = new Facture($this->db);
 				$srcinvoice->fetch($remise->fk_facture_source);
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmargin.class.php'; // TODO Move this into commonobject
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmargin.class.php'; // TODO Move this into commonobject
 				$formmargin = new FormMargin($this->db);
 				$arraytmp = $formmargin->getMarginInfosArray($srcinvoice, false);
 				$facligne->pa_ht = $arraytmp['pa_total'];
@@ -3099,7 +3099,7 @@ class Facture extends CommonInvoice
 	public function delete($user, $notrigger = 0, $idwarehouse = -1)
 	{
 		global $langs, $conf;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$rowid = $this->id;
 
@@ -3532,7 +3532,7 @@ class Facture extends CommonInvoice
 	public function validate($user, $force_number = '', $idwarehouse = 0, $notrigger = 0, $batch_rule = 0)
 	{
 		global $conf, $langs, $mysoc;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$productStatic = null;
 		$warehouseStatic = null;
@@ -4221,7 +4221,7 @@ class Facture extends CommonInvoice
 		dol_syslog(get_class($this)."::addline id=$this->id, pu_ht=$pu_ht, qty=$qty, txtva=$txtva, txlocaltax1=$txlocaltax1, txlocaltax2=$txlocaltax2, fk_product=$fk_product, remise_percent=$remise_percent, date_start=$date_start, date_end=$date_end, fk_code_ventilation=$fk_code_ventilation, info_bits=$info_bits, fk_remise_except=$fk_remise_except, price_base_type=$price_base_type, pu_ttc=$pu_ttc, type=$type, fk_unit=$fk_unit, desc=".dol_trunc($desc, 25), LOG_DEBUG);
 
 		if ($this->status == self::STATUS_DRAFT) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 			// Clean parameters
 			if (empty($remise_percent)) {
@@ -4542,7 +4542,7 @@ class Facture extends CommonInvoice
 			dol_syslog(__METHOD__.": using line label is deprecated", LOG_WARNING);
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		global $mysoc, $langs;
 
@@ -4839,7 +4839,7 @@ class Facture extends CommonInvoice
 			return;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
 
 		// Cap percentages to 100
 		if ($percent > 100) {
@@ -6229,9 +6229,9 @@ class Facture extends CommonInvoice
 		}
 		*/
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 		$formmail = new FormMail($this->db);
 
 		$now = dol_now();

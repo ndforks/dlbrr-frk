@@ -35,9 +35,9 @@ namespace App\Modules\Contact\Classes;
  *	\ingroup    societe
  *	\brief      File of contacts class
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonsocialnetworks.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonpeople.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonsocialnetworks.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonpeople.class.php';
 
 
 /**

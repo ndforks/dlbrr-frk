@@ -29,8 +29,8 @@ namespace App\Modules\Core\Modules\Cheque;
  *	\brief      File with parent class of check receipt document generators
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonnumrefgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonnumrefgenerator.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php'; // Requis car utilise dans les classes qui heritent
 
@@ -106,7 +106,7 @@ abstract class ModeleChequeReceipts extends CommonDocGenerator
 		$type = 'chequereceipt';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 		// TODO Remove this to use getListOfModels only
 		$list = array('blochet' => 'blochet');
@@ -146,7 +146,7 @@ function chequereceipt_pdf_create($db, $id, $message, $modele, $outputlangs)
 	global $conf, $langs;
 	$langs->load("bills");
 
-	$dir = DOL_DOCUMENT_ROOT."/core/modules/cheque/doc/";
+	$dir = DOL_DOCUMENT_ROOT."/Core/modules/cheque/doc/";
 
 	// Positionne modele sur le nom du modele a utiliser
 	if (!dol_strlen($modele)) {

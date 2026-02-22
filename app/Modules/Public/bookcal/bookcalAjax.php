@@ -43,7 +43,7 @@ if (!defined('NOBROWSERNOTIF')) {
 }
 
 require '../../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 /**
  * @var DoliDB $db
  */

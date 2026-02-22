@@ -24,7 +24,7 @@ namespace App\Modules\Core\Classes;
  *      \ingroup    social
  *      \brief      Class to manage each socialNetwork (Mastodon, etc.)
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/mastodonhandler.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/mastodonhandler.class.php';
 
 
 /**

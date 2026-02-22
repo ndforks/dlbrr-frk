@@ -157,7 +157,7 @@ class FormSetup
 	{
 		global $hookmanager, $action;
 
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 		$parameters = array(
 			'editMode' => $editMode
@@ -230,7 +230,7 @@ class FormSetup
 	public function generateTableOutput($editMode = false, $hideTitle = false, $title = '', $cssfirstcolumn = '')
 	{
 		global $hookmanager, $action;
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 		$parameters = array(
 			'editMode' => $editMode
@@ -956,7 +956,7 @@ class FormSetupItem
 		} elseif (preg_match('/category:/', $this->type)) {
 			$out .= $this->generateInputFieldCategories();
 		} elseif (preg_match('/thirdparty_type/', $this->type)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formcompany.class.php';
 			$formcompany = new FormCompany($this->db);
 			$out .= $formcompany->selectProspectCustomerType($this->fieldValue, $this->confKey);
 		} elseif ($this->type == 'securekey') {
@@ -1077,7 +1077,7 @@ class FormSetupItem
 	public function generateInputFieldCategories()
 	{
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 		$formother = new FormOther($this->db);
 
 		$tmp = explode(':', $this->type);
@@ -1139,7 +1139,7 @@ class FormSetupItem
 			$out .= '&nbsp;'.img_picto($this->langs->trans('Generate'), 'refresh', 'id="generate_token'.$this->confKey.'" class="linkobject"');
 
 			// Add button to autosuggest a key
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 			$out .= dolJSToSetRandomPassword($this->confKey, 'generate_token'.$this->confKey);
 		}
 
@@ -1168,7 +1168,7 @@ class FormSetupItem
 			}
 			$nomclass = "modGeneratePass".ucfirst($gen);
 			$nomfichier = $nomclass.".class.php";
-			require_once DOL_DOCUMENT_ROOT."/core/modules/security/generate/".$nomfichier;
+			require_once DOL_DOCUMENT_ROOT."/Core/modules/security/generate/".$nomfichier;
 			$genhandler = new $nomclass($this->db, $conf, $langs, $user);
 			$min = $genhandler->length;
 			$max = $genhandler->length2;
@@ -1466,7 +1466,7 @@ class FormSetupItem
 	{
 		$this->fieldAttr['type'] = 'color';
 		$default = $this->defaultFieldValue;
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 		$formother = new FormOther($this->db);
 		return $formother->selectColor(colorArrayToHex(colorStringToArray((string) $this->fieldAttr['value'], array()), ''), $this->fieldAttr['name'], '', 1, array(), '', '', (string) $default).' ';
 	}

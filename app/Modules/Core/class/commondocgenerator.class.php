@@ -388,7 +388,7 @@ abstract class CommonDocGenerator
 		if ($member->photo) {
 			$logotouse = $conf->member->dir_output.'/'.get_exdir(0, 0, 0, 1, $member, 'user').'/photos/'.$member->photo;
 		} else {
-			$logotouse = DOL_DOCUMENT_ROOT.'/public/theme/common/nophoto.png';
+			$logotouse = DOL_DOCUMENT_ROOT.'/Public/theme/common/nophoto.png';
 		}
 
 		$array_member = array(
@@ -960,7 +960,7 @@ abstract class CommonDocGenerator
 		// Retrieve extrafields
 		$extrafieldkey = $line->table_element;
 		$array_key = "line";
-		require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 		$extrafields = new ExtraFields($this->db);
 		$extrafields->fetch_name_optionals_label($extrafieldkey, true);
 		$line->fetch_optionals();
@@ -1044,7 +1044,7 @@ abstract class CommonDocGenerator
 		// phpcs:enable
 		global $extrafields;
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/product.lib.php';
 
 		$object->list_delivery_methods((int) $object->shipping_method_id);
 

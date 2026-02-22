@@ -28,11 +28,11 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/html.formresource.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/resource.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/html.formresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/resource.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 
 /**
  * @var Conf $conf
@@ -77,7 +77,7 @@ $extrafields = new ExtraFields($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $hookmanager->initHooks(array('resource', 'resource_card', 'globalcard'));
 
@@ -191,7 +191,7 @@ if (empty($reshook)) {
 				if ($result > 0) {
 					if ($oldref != $ref) {
 						// We renamed the ref so we must change the directory too
-						include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 						$srcdir = $conf->resource->dir_output.'/'.dol_sanitizeFileName($oldref);
 						$destdir = $conf->resource->dir_output.'/'.dol_sanitizeFileName($ref);
 						dol_move_dir($srcdir, $destdir);
@@ -292,7 +292,7 @@ if ($action == 'create' || $object->fetch($id, $ref) > 0) {
 		// Description
 		print '<tr><td class="tdtop">'.$langs->trans("Description").'</td>';
 		print '<td>';
-		require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 		$doleditor = new DolEditor('description', ($description ?: $object->description), '', 200, 'dolibarr_notes');
 		$doleditor->Create();
 		print '</td></tr>';
@@ -437,7 +437,7 @@ if ($action == 'create' || $object->fetch($id, $ref) > 0) {
 		print '</tr>';
 
 		// Other attributes
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		print '</tr>';
 

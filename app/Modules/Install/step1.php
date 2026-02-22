@@ -516,7 +516,7 @@ if (!$error && $db->connected && $action == "set") {	// Test on permission not r
 				}
 			}
 
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 			// Copy directory medias
 			$srcroot = $main_dir.'/install/medias';

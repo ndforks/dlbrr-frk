@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Import;
  *	\ingroup    export
  *	\brief      File of parent class for import file readers
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions.lib.php';
 
 
 /**
@@ -265,7 +265,7 @@ class ModeleImports
 	{
 		dol_syslog(get_class($this)."::listOfAvailableImportFormat");
 
-		$dir = DOL_DOCUMENT_ROOT."/core/modules/import/";
+		$dir = DOL_DOCUMENT_ROOT."/Core/modules/import/";
 		$handle = opendir($dir);
 
 		// Search list ov drivers available and qualified

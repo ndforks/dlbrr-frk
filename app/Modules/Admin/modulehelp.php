@@ -41,9 +41,9 @@ require '../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/admin.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('errors', 'admin', 'modulebuilder', 'exports'));
@@ -440,7 +440,7 @@ if ($mode == 'feature') {
 	$text .= '<br><br>';
 
 	$text .= '<br><strong>'.$langs->trans("AddDataTables").':</strong> ';
-	$listofsqlfiles1 = dol_dir_list(DOL_DOCUMENT_ROOT.'/install/mysql/tables/', 'files', 0, 'llx.*-'.$moduledir.'\.sql', array('\.key\.sql', '\.sql\.back'));
+	$listofsqlfiles1 = dol_dir_list(DOL_DOCUMENT_ROOT.'/Install/mysql/tables/', 'files', 0, 'llx.*-'.$moduledir.'\.sql', array('\.key\.sql', '\.sql\.back'));
 	$listofsqlfiles2 = dol_dir_list(dol_buildpath($moduledir.'/sql/'), 'files', 0, 'llx.*\.sql', array('\.key\.sql', '\.sql\.back'));
 	$sqlfiles = array_merge($listofsqlfiles1, $listofsqlfiles2);
 
@@ -536,7 +536,7 @@ if ($mode == 'feature') {
 	} else {
 		$yesno = '<span class="opacitymedium">'.$langs->trans("No").'</span>';
 	}
-	require_once DOL_DOCUMENT_ROOT.'/core/class/interfaces.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/interfaces.class.php';
 	$interfaces = new Interfaces($db);
 	$triggers = $interfaces->getTriggersList(array((($objMod->isCoreOrExternalModule() == 'external') ? '/'.$moduledir : '').'/core/triggers'));
 	foreach ($triggers as $triggercursor) {

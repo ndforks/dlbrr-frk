@@ -328,7 +328,7 @@ class FormWebPortal extends Form
 	public function getSignatureLink($modulepart, $object, $morecss = '')
 	{
 		global $langs;
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/signature.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/signature.lib.php';
 		$out = '<!-- html.formwebportal::getSignatureLink -->' . "\n";
 		$url = getOnlineSignatureUrl(0, $modulepart, $object->ref, 1, $object);
 		if (!empty($url)) {

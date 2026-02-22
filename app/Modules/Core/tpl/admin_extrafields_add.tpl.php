@@ -186,7 +186,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 <?php
 // Combo with list of fields
 if (empty($formadmin)) {
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 	$formadmin = new FormAdmin($db);
 }
 print $formadmin->selectTypeOfFields('type', request()->input('type'));

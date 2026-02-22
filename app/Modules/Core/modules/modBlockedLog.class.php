@@ -24,8 +24,8 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    blockedlog
  *  \brief      Description and activation file for the module BlockedLog
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
-include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 include_once DOL_DOCUMENT_ROOT.'/versioncert.inc.php';
 
 
@@ -155,7 +155,7 @@ class modBlockedLog extends DolibarrModules
 	 */
 	public function alreadyUsed()
 	{
-		require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 		return isBlockedLogUsed();
 	}
@@ -188,8 +188,8 @@ class modBlockedLog extends DolibarrModules
 
 		$this->db->begin();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 
 		// Check that the HTTPS is forced
 		$s = $b->canBeEnabled();
@@ -286,7 +286,7 @@ class modBlockedLog extends DolibarrModules
 		$sql = array();
 
 		// If already used, we add an entry to show we enable module
-		require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Blockedlog/class/blockedlog.class.php';
 
 		dol_syslog("modBlockedLog::remove option=".$options, LOG_DEBUG);
 

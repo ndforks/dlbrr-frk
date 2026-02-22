@@ -49,7 +49,7 @@ function check_user_password_dolibarr($usertotest, $passwordtotest, $entitytotes
 	$login = '';
 
 	if (!empty($usertotest)) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		dol_syslog("functions_dolibarr::check_user_password_dolibarr usertotest=".$usertotest." passwordtotest=".preg_replace('/./', '*', $passwordtotest)." entitytotest=".$entitytotest);
 
 		// Verification number of USER_LOGIN_FAILED

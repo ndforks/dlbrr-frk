@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  *      \ingroup    expensereport
  *      \brief      Description and activation file for the module ExpenseReport
  */
-include_once DOL_DOCUMENT_ROOT."/core/modules/DolibarrModules.class.php";
+include_once DOL_DOCUMENT_ROOT."/Core/modules/DolibarrModules.class.php";
 
 
 /**
@@ -225,11 +225,11 @@ class modExpenseReport extends DolibarrModules
 		$keyforselect = 'expensereport';
 		$keyforelement = 'expensereport';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'user';
 		$keyforelement = 'user';
 		$keyforaliasextra = 'extrau';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'expensereport as d';

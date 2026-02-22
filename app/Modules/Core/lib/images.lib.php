@@ -188,7 +188,7 @@ function dol_getImageSize($file, $url = false)
  */
 function dol_imageResizeOrCrop($file, $mode, $newWidth, $newHeight, $src_x = 0, $src_y = 0, $filetowrite = '', $newquality = 0)
 {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 	global $langs;
 
@@ -541,7 +541,7 @@ function correctExifImageOrientation($fileSource, $fileDest, $quality = 95)
  */
 function vignette($file, $maxWidth = 160, $maxHeight = 120, $extName = '_small', $quality = 50, $outdir = 'thumbs', $targetformat = 0)
 {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 	global $langs;
 

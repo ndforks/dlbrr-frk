@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  *     \ingroup     ticket
  *     \brief       Description and activation file for the module Ticket
  */
-require_once DOL_DOCUMENT_ROOT."/core/modules/DolibarrModules.class.php";
+require_once DOL_DOCUMENT_ROOT."/Core/modules/DolibarrModules.class.php";
 
 
 /**
@@ -381,11 +381,11 @@ class modTicket extends DolibarrModules
 		$keyforclass = 'Ticket';
 		$keyforclassfile = '/ticket/class/ticket.class.php';
 		$keyforelement = 'ticket';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$keyforselect = 'ticket';
 		$keyforaliasextra = 'extra';
 		$keyforelement = 'ticket';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'ticket as t';
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'ticket_extrafields as extra on (t.rowid = extra.fk_object)';
@@ -415,12 +415,12 @@ class modTicket extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/tickets/template_ticket.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/tickets/template_ticket.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/tickets';
 		$dest = $dirodt.'/template_ticket.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

@@ -29,7 +29,7 @@ if (empty($conf) || !is_object($conf)) {
 	exit(1);
 }
 
-require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 
 print '<!-- BEGIN PHP TEMPLATE ONLINEPAYMENTLINKS -->';
 
@@ -152,7 +152,7 @@ if (isModEnabled('don')) {
 $constname = 'PAYMENT_SECURITY_TOKEN';
 
 // Add button to autosuggest a key
-include_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/lib/security2.lib.php';
 print dolJSToSetRandomPassword($constname);
 
 print info_admin($langs->trans("YouCanAddTagOnUrl"));

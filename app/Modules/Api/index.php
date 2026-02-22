@@ -113,9 +113,9 @@ call_user_func(
 	}
 );
 
-require_once DOL_DOCUMENT_ROOT.'/api/class/api.class.php';
-require_once DOL_DOCUMENT_ROOT.'/api/class/api_access.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Api/class/api.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Api/class/api_access.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 
 
 // In API context, we force the protection to avoid forging of criteria including bind SQL injection

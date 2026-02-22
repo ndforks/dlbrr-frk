@@ -19,7 +19,7 @@
 
 
 namespace App\Modules\Core\Modules\Stock;
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 
 /**
  *  Parent class for stock models of doc generators
@@ -66,7 +66,7 @@ abstract class ModelePDFStock extends CommonDocGenerator
 		$type = 'stock';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 
 		return $list;

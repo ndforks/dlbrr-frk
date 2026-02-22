@@ -64,7 +64,7 @@ if (!isset($action)) {
  * @var User $user
  */
 include_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
-include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 $langs->loadLangs(array("main", "bills", "cashdesk", "companies"));
 
@@ -116,7 +116,7 @@ print '<body>';
 // Record entry in blocked logs each time we print a receipt
 //
 // This will also increase the counter of printings of the receipt
-// DOL_DOCUMENT_ROOT.'/blockedlog/ajax/block-add.php?id='.$object->id.'&element='.$object->element.'&action=DOC_PREVIEW&token='.newToken();
+// DOL_DOCUMENT_ROOT.'/Blockedlog/ajax/block-add.php?id='.$object->id.'&element='.$object->element.'&action=DOC_PREVIEW&token='.newToken();
 
 if (!request()->input('specimen') && empty($nojs)) {
 	print "
@@ -438,7 +438,7 @@ if (price2num($object->total_localtax1, 'MU') || $mysoc->useLocalTax(1)) { ?>
 <?php
 if (isModEnabled('multicurrency') && !empty($_SESSION["takeposcustomercurrency"]) && $_SESSION["takeposcustomercurrency"] != "" && $conf->currency != $_SESSION["takeposcustomercurrency"]) {
 	//Only show customer currency if multicurrency module is enabled, if currency selected and if this currency selected is not the same as main currency
-	include_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 	$multicurrency = new MultiCurrency($db);
 	$multicurrency->fetch(0, $_SESSION["takeposcustomercurrency"]);
 	echo '<tr><th class="right">';

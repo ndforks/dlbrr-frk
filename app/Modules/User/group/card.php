@@ -38,11 +38,11 @@ require '../../main.inc.php';
  * @var Translate $langs
  * @var User $user
  */
-require_once DOL_DOCUMENT_ROOT.'/user/class/usergroup.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/User/class/usergroup.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/usergroups.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 
 // Define if user can read permissions
 $permissiontoadd = ($user->admin || $user->hasRight("user", "user", "write"));
@@ -79,7 +79,7 @@ $extrafields = new ExtraFields($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 $object->loadRights();
 
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
@@ -238,7 +238,7 @@ if (empty($reshook)) {
 
 	// Actions to build doc
 	$upload_dir = $conf->user->dir_output.'/usergroups';
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 }
 
 
@@ -288,7 +288,7 @@ if ($action == 'create') {
 	unset($object->fields['color']);
 
 	// Common attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_add.tpl.php';
 
 	print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 	print '<td>';
@@ -296,7 +296,7 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	// Other attributes
-	include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_add.tpl.php';
 
 	print "</table>\n";
 
@@ -362,7 +362,7 @@ if ($action == 'create') {
 
 			// Common attributes
 			$keyforbreak = '';
-			include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_view.tpl.php';
 
 			print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 			print '<td>';
@@ -370,7 +370,7 @@ if ($action == 'create') {
 			print '</td></tr>';
 
 			// Other attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			print '</table>';
 			print '</div>';
@@ -550,7 +550,7 @@ if ($action == 'create') {
 			unset($object->fields['color']);
 
 			// Common attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/commonfields_edit.tpl.php';
 
 			print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 			print '<td>';
@@ -558,7 +558,7 @@ if ($action == 'create') {
 			print '</td></tr>';
 
 			// Other attributes
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_edit.tpl.php';
 
 			print '</table>';
 

@@ -26,7 +26,7 @@ namespace App\Modules\Variants\Classes;
  *	\brief      File of the ProductAttribute class
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 /**
  * Class ProductAttribute

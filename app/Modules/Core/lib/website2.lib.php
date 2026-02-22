@@ -149,7 +149,7 @@ function dolSavePageContent($filetpl, Website $object, WebsitePage $objectpage, 
 	// Now create the .tpl file (duplicate code with actions updatesource or updatecontent but we need this to save new header)
 	dol_syslog("dolSavePageContent We regenerate the tpl page filetpl=".$filetpl);
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 	if (dol_is_file($filetpl)) {
 		if ($backupold) {
@@ -196,8 +196,8 @@ function dolSavePageContent($filetpl, Website $object, WebsitePage $objectpage, 
 			$tplcontent .= '	require_once DOL_DOCUMENT_ROOT.\'/waf.inc.php\';'."\n";
 		}
 		$tplcontent .= "}\n";
-		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 		if (in_array($objectpage->type_container, array('page', 'blogpost', 'service'))) {
 			$tplcontent .= 'dol_syslog("--- Prepare content of page '.((int) $objectpage->id).' - '.$objectpage->pageurl.'");'."\n";
 		}
@@ -465,8 +465,8 @@ function dolSavePageContent($filetpl, Website $object, WebsitePage $objectpage, 
 			$tplcontent .= '	require_once DOL_DOCUMENT_ROOT.\'/waf.inc.php\';'."\n";
 		}
 		$tplcontent .= "}\n";
-		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+		$tplcontent .= "require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 		if (in_array($objectpage->type_container, array('page', 'blogpost', 'service'))) {
 			$tplcontent .= 'dol_syslog("--- Prepare content of page '.((int) $objectpage->id).' - '.$objectpage->pageurl.'");'."\n";
 		}
@@ -510,8 +510,8 @@ function dolSaveIndexPage($pathofwebsite, $fileindex, $filetpl, $filewrapper, $o
 		$indexcontent .= '$websitekey=basename(__DIR__); if (empty($websitepagefile)) $websitepagefile=__FILE__;'."\n";
 		$indexcontent .= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once './master.inc.php'; } // Load master if not already loaded\n";
 		$indexcontent .= 'if (!empty($_GET[\'pageref\']) || !empty($_GET[\'pagealiasalt\']) || !empty($_GET[\'pageid\'])) {'."\n";
-		$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-		$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+		$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+		$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 		$indexcontent .= '	redirectToContainer($_GET[\'pageref\'], $_GET[\'pagealiasalt\'], $_GET[\'pageid\']);'."\n";
 		$indexcontent .= "}\n";
 		$indexcontent .= "include_once './".basename($filetpl)."'\n";
@@ -543,8 +543,8 @@ function dolSaveIndexPage($pathofwebsite, $fileindex, $filetpl, $filewrapper, $o
 						$indexcontent .= '$websitekey=basename(__DIR__); if (empty($websitepagefile)) $websitepagefile=__FILE__;'."\n";
 						$indexcontent .= "if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once '".$relpath."/master.inc.php'; } // Load master if not already loaded\n";
 						$indexcontent .= 'if (!empty($_GET[\'pageref\']) || !empty($_GET[\'pagealiasalt\']) || !empty($_GET[\'pageid\'])) {'."\n";
-						$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';\n";
-						$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';\n";
+						$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';\n";
+						$indexcontent .= "	require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';\n";
 						$indexcontent .= '	redirectToContainer($_GET[\'pageref\'], $_GET[\'pagealiasalt\'], $_GET[\'pageid\']);'."\n";
 						$indexcontent .= "}\n";
 						$indexcontent .= "include_once '".$relpath."/".basename($filetpl)."'\n";	// use .. instead of .
@@ -786,7 +786,7 @@ function showWebsiteTemplates(Website $website, int $refresh)
 		}
 
 		// Now test if we found template available into source not copied into documents
-		$arrayofsourcetemplates = dol_dir_list(DOL_DOCUMENT_ROOT.'/install/doctemplates/websites', 'directories', 0, 'website_.*$');
+		$arrayofsourcetemplates = dol_dir_list(DOL_DOCUMENT_ROOT.'/Install/doctemplates/websites', 'directories', 0, 'website_.*$');
 		$arrayofsourcetemplatesnotdeployed = array();
 		foreach ($arrayofsourcetemplates as $val) {
 			// Disable not stable themes (dir ends with _exp or _dev)
@@ -800,7 +800,7 @@ function showWebsiteTemplates(Website $website, int $refresh)
 			if (empty($arrayoftemplatesfound[$val['relativename']])) {
 				// We found a template into sources that is not into documents
 				if ($refresh) {		// We copy it
-					$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/websites/'.$val['name'];
+					$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/websites/'.$val['name'];
 					$dest = DOL_DATA_ROOT.'/doctemplates/websites/'.$val['name'];
 
 					dol_delete_file($dest.'.zip');
@@ -813,7 +813,7 @@ function showWebsiteTemplates(Website $website, int $refresh)
 						dol_syslog("Error in compress of dir ".$src, LOG_ERR);
 					}
 
-					$srcfile = DOL_DOCUMENT_ROOT.'/install/doctemplates/websites/'.preg_replace('/(_exp|_dev)$/', '', $val['name']).'.jpg';
+					$srcfile = DOL_DOCUMENT_ROOT.'/Install/doctemplates/websites/'.preg_replace('/(_exp|_dev)$/', '', $val['name']).'.jpg';
 					$destfile = DOL_DATA_ROOT.'/doctemplates/websites/'.preg_replace('/(_exp|_dev)$/', '', $val['name']).'.jpg';
 
 					dol_copy($srcfile, $destfile);
@@ -1086,7 +1086,7 @@ function checkPHPCode(&$phpfullcodestringold, &$phpfullcodestring)
 		if (!$error) {
 			$dolibarrdataroot = preg_replace('/([\\/]+)$/i', '', DOL_DATA_ROOT);
 			$allowimportsite = true;
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			if (dol_is_file($dolibarrdataroot.'/installmodules.lock')) {
 				$allowimportsite = false;
 			}

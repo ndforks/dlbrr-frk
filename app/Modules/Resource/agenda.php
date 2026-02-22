@@ -32,10 +32,10 @@
 // Load Dolibarr environment
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/resource.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/resource/class/dolresource.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/resource.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Resource/class/dolresource.class.php';
 
 /**
  * @var Conf $conf
@@ -92,7 +92,7 @@ $hookmanager->initHooks(array('agendaresource'));
 $object = new Dolresource($db);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 $result = restrictedArea($user, 'resource', $object->id, 'resource');
 
@@ -136,7 +136,7 @@ $contactstatic = new Contact($db);
 $form = new Form($db);
 
 if ($object->id > 0) {
-	require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 	require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 	$picto = 'resource';

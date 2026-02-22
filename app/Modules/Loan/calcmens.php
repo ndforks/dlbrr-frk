@@ -35,7 +35,7 @@ if (!defined('NOREQUIREAJAX')) {
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require DOL_DOCUMENT_ROOT.'/core/lib/loan.lib.php';
+require DOL_DOCUMENT_ROOT.'/Core/lib/loan.lib.php';
 /**
  * @var Conf $conf
  * @var DoliDB $db

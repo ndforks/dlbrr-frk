@@ -154,7 +154,7 @@ function dol_print_object_info($object, $usetable = 0)
 	// Load translation files required by the page
 	$langs->loadLangs(array('other', 'admin'));
 
-	include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 
 	$deltadateforserver = getServerTimeZoneInt('now');
 	$deltadateforclient = ((int) $_SESSION['dol_tz'] + (int) $_SESSION['dol_dst']);
@@ -827,7 +827,7 @@ function get_next_value($db, $mask, $table, $field, $where = '', $objsoc = '', $
 
 	// For debugging
 	//dol_syslog("mask=".$mask, LOG_DEBUG);
-	//include_once(DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php');
+	//include_once(DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php');
 	//$mask='FA{yy}{mm}-{0000@99}';
 	//$date=dol_mktime(12, 0, 0, 1, 1, 1900);
 	//$date=dol_stringtotime('20130101');
@@ -1896,7 +1896,7 @@ function getListOfModels($db, $type, $maxfilenamelength = 0, $showempty = 0)
 			// If this generation module needs to scan a directory, then description field is filled
 			// with the constant that contains list of directories to scan (COMPANY_ADDON_PDF_ODT_PATH, ...).
 			if (!empty($obj->description)) {	// A list of directories to scan is defined
-				include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				$const = $obj->description;
 				$dirtoscan = preg_replace('/[\r\n]+/', ',', trim(getDolGlobalString($const)));
@@ -1932,7 +1932,7 @@ function getListOfModels($db, $type, $maxfilenamelength = 0, $showempty = 0)
 			} else {
 				if ($type == 'member' && $obj->doc_template_name == 'standard_member') {   // Special case, if member template, we add variant per format
 					global $_Avery_Labels;
-					include_once DOL_DOCUMENT_ROOT.'/core/lib/format_cards.lib.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/lib/format_cards.lib.php';
 					foreach ($_Avery_Labels as $key => $val) {
 						$docmodels[$obj->id.':'.$key] = ($obj->label ? $obj->label : $obj->doc_template_name).' '.$val['name'];
 					}
@@ -3129,7 +3129,7 @@ function printCodeForPing($constanttosavelastko, $constanttosavefirstok, $arrayo
 	global $dolibarr_distrib;
 	global $db, $conf;
 
-	require_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+	require_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 
 	$algo = 'sha256';
 	$hash_unique_id = getHashUniqueIdOfRegistration($algo);

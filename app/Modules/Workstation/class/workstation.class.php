@@ -27,7 +27,7 @@ namespace App\Modules\Workstation\Classes;
  */
 
 // Put here all includes required by your class file
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobject.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobject.class.php';
 
 /**
  * Class for Workstation
@@ -184,8 +184,8 @@ class Workstation extends CommonObject
 	{
 		global $conf, $langs;
 
-		require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstationusergroup.class.php';
-		require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstationresource.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Workstation/class/workstationusergroup.class.php';
+		require_once DOL_DOCUMENT_ROOT.'/Workstation/class/workstationresource.class.php';
 
 		$this->db = $db;
 
@@ -619,7 +619,7 @@ class Workstation extends CommonObject
 			$label = implode($this->getTooltipContentArray($params));
 		}
 
-		$url = dol_buildpath('/workstation/workstation_card.php', 1).'?id='.$this->id;
+		$url = dol_buildpath('/Workstation/workstation_card.php', 1).'?id='.$this->id;
 
 		if ($option != 'nolink') {
 			// Add param to save lastsearch_values or not
@@ -656,7 +656,7 @@ class Workstation extends CommonObject
 			}
 		} else {
 			if ($withpicto) {
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 				list($class, $module) = explode('@', $this->picto);
 				$upload_dir = $conf->$module->multidir_output[$conf->entity]."/$class/".dol_sanitizeFileName($this->ref);

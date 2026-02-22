@@ -31,7 +31,7 @@ namespace App\Modules\Core\Classes;
  *       \ingroup    core
  *       \brief      File for class FormAI class to generate HTML forms for single email
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
 
 
 /**
@@ -105,8 +105,8 @@ class FormAI extends Form
 	public function getSectionForAIEnhancement($function = 'textgeneration', $format = '', $htmlContent = 'message', $onlyenhancements = '', $aiprompt = "")
 	{
 		global $langs, $form;
-		require_once DOL_DOCUMENT_ROOT."/ai/lib/ai.lib.php";
-		require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+		require_once DOL_DOCUMENT_ROOT."/Ai/lib/ai.lib.php";
+		require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 		$formadmin = new FormAdmin($this->db);
 
 		if (!is_object($form)) {

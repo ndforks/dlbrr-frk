@@ -25,7 +25,7 @@ namespace App\Modules\Debugbar\Classes;
  *	\ingroup    debugbar
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/db/DoliDB.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/db/DoliDB.class.php';
 
 /**
  * TraceableDB class

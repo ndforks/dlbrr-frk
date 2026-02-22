@@ -29,7 +29,7 @@ namespace App\Modules\Accountancy\Classes;
 
 include_once DOL_DOCUMENT_ROOT."/accountancy/class/bookkeeping.class.php";
 include_once DOL_DOCUMENT_ROOT."/societe/class/societe.class.php";
-include_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
+include_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
 
 /**
  * Class Lettering

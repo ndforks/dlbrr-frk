@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    webhook
  *  \brief      Description and activation file for module Webhook
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 /**
  *  Description and activation class for module Webhook

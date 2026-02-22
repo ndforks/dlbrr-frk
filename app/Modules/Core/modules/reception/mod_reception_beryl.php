@@ -25,7 +25,7 @@ namespace App\Modules\Core\Modules\Reception;
  *  \ingroup    reception
  *  \brief      File of class to manage shipments numbering rules Beryl
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/reception/modules_reception.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/reception/modules_reception.php';
 
 /**
  *	Class to manage reception numbering rules Beryl

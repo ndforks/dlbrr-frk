@@ -31,7 +31,7 @@ namespace App\Modules\Core\Classes;
  *      \ingroup    notification
  *      \brief      File of class to manage notifications
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 
 
 /**
@@ -634,7 +634,7 @@ class Notify
 
 		// Complete the array Notify::$arrayofnotifsupported
 		if (!is_object($hookmanager)) {
-			include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 			$hookmanager = new HookManager($this->db);
 		}
 		$hookmanager->initHooks(array('notification'));
@@ -652,7 +652,7 @@ class Notify
 			return 0;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		dol_syslog(get_class($this)."::send notifcode=".$notifcode.", object id=".$object->id);
 
@@ -947,7 +947,7 @@ class Notify
 								break;
 						}
 
-						include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 						$formmail = new FormMail($this->db);
 						$arraydefaultmessage = null;
 
@@ -1287,7 +1287,7 @@ class Notify
 				$mailTemplateLabel = getDolGlobalString($notifcode.'_TEMPLATE');
 				$emailTemplate = null;
 				if (!empty($mailTemplateLabel)) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 					$formmail = new FormMail($this->db);
 					$emailTemplate = $formmail->getEMailTemplate($this->db, $object_type.'_send', $user, $outputlangs, 0, 1, $mailTemplateLabel);
 				}

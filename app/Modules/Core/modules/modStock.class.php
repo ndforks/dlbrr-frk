@@ -31,7 +31,7 @@ namespace App\Modules\Core\Modules;
  *	\brief      Description and activation file for the module Stock
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -240,7 +240,7 @@ class modStock extends DolibarrModules
 		$keyforselect = 'warehouse';
 		$keyforelement = 'warehouse';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'entrepot as e';
@@ -292,7 +292,7 @@ class modStock extends DolibarrModules
 		$keyforselect = 'product';
 		$keyforelement = 'product';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_fields_array[$r] = array_merge($this->export_fields_array[$r], array('ps.reel' => 'Stock'));
 
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
@@ -354,7 +354,7 @@ class modStock extends DolibarrModules
 			$keyforselect = 'product_lot';
 			$keyforelement = 'batch';
 			$keyforaliasextra = 'extra';
-			include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+			include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 
 			$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 			$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'product_batch as pb';
@@ -570,12 +570,12 @@ class modStock extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/stocks/template_warehouse.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/stocks/template_warehouse.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/stocks';
 		$dest = $dirodt.'/template_warehouse.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

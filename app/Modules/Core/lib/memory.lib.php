@@ -135,9 +135,9 @@ function dol_setcache($memoryid, $data, $expire = 0, $filecache = 0, $replace = 
 		// Using shmop
 		$result = dol_setshmop($memoryid, $data, $expire);
 	} elseif ($filecache > 0) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$now = dol_now();
 		$memoryid = session_name().'_'.$memoryid;
 		$dircache = 'dolcache';
@@ -241,9 +241,9 @@ function dol_getcache($memoryid, $filecache = 0)
 		$data = dol_getshmop($memoryid);
 		return $data;
 	} elseif ($filecache > 0) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$now = dol_now();
 		$memoryid = session_name().'_'.$memoryid;
 		$dircache = 'dolcache';

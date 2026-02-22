@@ -26,7 +26,7 @@ namespace App\Modules\Core\Modules\Holiday;
  *  \ingroup    holiday
  *  \brief      File of class to manage holiday numbering rules Madonna
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/holiday/modules_holiday.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/holiday/modules_holiday.php';
 
 /**
  * 	Class to manage holiday numbering rules Madonna

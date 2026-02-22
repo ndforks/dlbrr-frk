@@ -47,8 +47,8 @@ if (!defined('NOREQUIREAJAX')) {
 if (!defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE')) {
 	require '../main.inc.php';
 }
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.form.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
@@ -698,7 +698,7 @@ if (empty($reshook)) {
 		$yearuser = dol_print_date($dolnowtzuserrel, '%Y', 'gmt');
 		$dateinvoice = dol_mktime(0, 0, 0, (int) $monthuser, (int) $dayuser, (int) $yearuser, 'tzserver');	// If we enter the 02 january, we need to save the 02 january for server
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
 		$invoice->date = $dateinvoice;		// Invoice::create() needs a date with no hours
 
 		/*
@@ -1223,7 +1223,7 @@ if (empty($reshook)) {
 	if ($action == "order" && $placeid != 0 && ($user->hasRight('takepos', 'run') || defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE'))) {
 		include_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 		if ((isModEnabled('receiptprinter') && getDolGlobalInt('TAKEPOS_PRINTER_TO_USE'.$term) > 0) || getDolGlobalString('TAKEPOS_PRINT_METHOD') == "receiptprinter" || getDolGlobalString('TAKEPOS_PRINT_METHOD') == "takeposconnector") {
-			require_once DOL_DOCUMENT_ROOT.'/takepos/class/dolreceiptprinter.class.php';
+			require_once DOL_DOCUMENT_ROOT.'/Takepos/class/dolreceiptprinter.class.php';
 			$printer = new dolReceiptPrinter($db);
 		}
 
@@ -1368,7 +1368,7 @@ if (empty($reshook)) {
 			$customprinttemplateallowed = true;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Blockedlog/lib/blockedlog.lib.php';
 		if (isALNERunningVersion()) {
 			// Custom printer may be allowed if mandatory information in template are guaranteed. For the moment, we prefer not allow this.
 			$customprinttemplateallowed = false;
@@ -1951,7 +1951,7 @@ if (empty($_SESSION["basiclayout"]) || $_SESSION["basiclayout"] != 1) {
 		print '<span id="linecolht-span-total" style="font-size:1.3em; font-weight: bold;">'.price($invoice->total_ttc, 1, '', 1, -1, -1, $conf->currency).'</span>';
 		if (isModEnabled('multicurrency') && !empty($_SESSION["takeposcustomercurrency"]) && $conf->currency != $_SESSION["takeposcustomercurrency"]) {
 			//Only show customer currency if multicurrency module is enabled, if currency selected and if this currency selected is not the same as main currency
-			include_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 			$multicurrency = new MultiCurrency($db);
 			$multicurrency->fetch(0, $_SESSION["takeposcustomercurrency"]);
 			print '<br><span id="linecolht-span-total" style="font-size:0.9em; font-style:italic;">('.price($invoice->total_ttc * $multicurrency->rate->rate).' '.$_SESSION["takeposcustomercurrency"].')</span>';
@@ -2268,7 +2268,7 @@ if ($placeid > 0) {
 					$htmlforlines .= price($line->total_ht, 1, '', 1, -1, -1, $conf->currency);
 					if (isModEnabled('multicurrency') && !empty($_SESSION["takeposcustomercurrency"]) && $conf->currency != $_SESSION["takeposcustomercurrency"]) {
 						//Only show customer currency if multicurrency module is enabled, if currency selected and if this currency selected is not the same as main currency
-						include_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+						include_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 						$multicurrency = new MultiCurrency($db);
 						$multicurrency->fetch(0, $_SESSION["takeposcustomercurrency"]);
 						$htmlforlines .= '<br><span id="linecolht-span-total" style="font-size:0.9em; font-style:italic;">('.price($line->total_ht * $multicurrency->rate->rate).' '.$_SESSION["takeposcustomercurrency"].')</span>';
@@ -2279,7 +2279,7 @@ if ($placeid > 0) {
 				$htmlforlines .= price($line->total_ttc, 1, '', 1, -1, -1, $conf->currency);
 				if (isModEnabled('multicurrency') && !empty($_SESSION["takeposcustomercurrency"]) && $conf->currency != $_SESSION["takeposcustomercurrency"]) {
 					//Only show customer currency if multicurrency module is enabled, if currency selected and if this currency selected is not the same as main currency
-					include_once DOL_DOCUMENT_ROOT.'/multicurrency/class/multicurrency.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Multicurrency/class/multicurrency.class.php';
 					$multicurrency = new MultiCurrency($db);
 					$multicurrency->fetch(0, $_SESSION["takeposcustomercurrency"]);
 					$htmlforlines .= '<br><span id="linecolht-span-total" style="font-size:0.9em; font-style:italic;">('.price($line->total_ttc * $multicurrency->rate->rate).' '.$_SESSION["takeposcustomercurrency"].')</span>';

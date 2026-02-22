@@ -45,10 +45,10 @@ namespace App\Modules\Compta\Facture\Classes;
  *	\brief      File of class to manage invoice lines
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commoninvoice.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonobjectline.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commoninvoice.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonobjectline.class.php';
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
-require_once DOL_DOCUMENT_ROOT.'/margin/lib/margins.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Margin/lib/margins.lib.php';
 
 /**
  *	Class to manage invoice lines.
@@ -208,7 +208,7 @@ class FactureLigne extends CommonInvoiceLine
 		if ($doFetchInOneSqlRequest) {
 			// If $extrafields is not a known object, we initialize it
 			if (!isset($extrafields) || !is_object($extrafields)) {
-				require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 				$extrafields = new ExtraFields($this->db);
 			}
 

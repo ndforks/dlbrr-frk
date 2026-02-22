@@ -24,8 +24,8 @@ namespace App\Modules\Core\Modules\Accountancy;
  *  \ingroup    accountancy
  *  \brief      File of class to manage Bookkeeping numbering rules Argon
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/accountancy/modules_accountancy.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/accountancy/modules_accountancy.php';
 
 /**
  *	Class to manage Bookkeeping numbering rules Argon

@@ -35,7 +35,7 @@ namespace App\Modules\Core\Modules;
  *		\brief      Description and activation file for the module command
  */
 
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 
 
 /**
@@ -262,19 +262,19 @@ class modCommande extends DolibarrModules
 		$keyforselect = 'commande';
 		$keyforelement = 'order';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'commandedet';
 		$keyforelement = 'order_line';
 		$keyforaliasextra = 'extra2';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'product';
 		$keyforelement = 'product';
 		$keyforaliasextra = 'extra3';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$keyforselect = 'societe';
 		$keyforelement = 'company';
 		$keyforaliasextra = 'extra4';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		$this->export_sql_start[$r] = 'SELECT DISTINCT ';
 		$this->export_sql_end[$r]  = ' FROM '.MAIN_DB_PREFIX.'societe as s';
 		$this->export_sql_end[$r] .= ' LEFT JOIN '.MAIN_DB_PREFIX.'societe_extrafields as extra4 ON s.rowid = extra4.fk_object';
@@ -351,7 +351,7 @@ class modCommande extends DolibarrModules
 		$keyforselect = 'commande';
 		$keyforelement = 'order';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinimport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinimport.inc.php';
 
 		$this->import_fieldshidden_array[$r] = array('extra.fk_object' => 'lastrowid-'.MAIN_DB_PREFIX.'commande');
 		$this->import_regex_array[$r] = array(
@@ -429,7 +429,7 @@ class modCommande extends DolibarrModules
 		$keyforselect = 'commandedet';
 		$keyforelement = 'orderline';
 		$keyforaliasextra = 'extra';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinimport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinimport.inc.php';
 
 		$this->import_fieldshidden_array[$r] = ['extra.fk_object' => 'lastrowid-'.MAIN_DB_PREFIX.'commandedet'];
 		$this->import_regex_array[$r] = [
@@ -468,12 +468,12 @@ class modCommande extends DolibarrModules
 		$this->remove($options);
 
 		//ODT template
-		$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/orders/template_order.odt';
+		$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/orders/template_order.odt';
 		$dirodt = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/doctemplates/orders';
 		$dest = $dirodt.'/template_order.odt';
 
 		if (file_exists($src) && !file_exists($dest)) {
-			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			dol_mkdir($dirodt);
 			$result = dol_copy($src, $dest, '0', 0);
 			if ($result < 0) {

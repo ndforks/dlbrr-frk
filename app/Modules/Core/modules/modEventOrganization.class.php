@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules;
  *  \ingroup    eventorganization
  *  \brief      Description and activation file for the EventOrganization
  */
-include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
+include_once DOL_DOCUMENT_ROOT.'/Core/modules/DolibarrModules.class.php';
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 
 /**
@@ -325,7 +325,7 @@ class modEventOrganization extends DolibarrModules
 		$keyforclass = 'ConferenceOrBoothAttendee';
 		$keyforclassfile = '/eventorganization/class/conferenceorboothattendee.class.php';
 		$keyforelement = 'conferenceorboothattendee';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		$this->export_entities_array[$r]['t.fk_invoice'] = 'invoice';
 		unset($this->export_fields_array[$r]['t.fk_project']);	// Remove field so we can add it at end just after
 		unset($this->export_fields_array[$r]['t.fk_soc']);	// Remove field so we can add it at end just after
@@ -345,7 +345,7 @@ class modEventOrganization extends DolibarrModules
 		$keyforselect = 'eventorganization_conferenceorboothattendee';		// The value in column elementtype of llx_extrafields table
 		$keyforaliasextra = 'extra';
 		$keyforelement = 'conferenceorboothattendee';						// The value of key for icon and class
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('aaaline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -366,7 +366,7 @@ class modEventOrganization extends DolibarrModules
 		$keyforclass = 'ConferenceOrBooth';
 		$keyforclassfile = '/eventorganization/class/conferenceorbooth.class.php';
 		$keyforelement = 'conferenceorbooth';
-		include DOL_DOCUMENT_ROOT.'/core/commonfieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/commonfieldsinexport.inc.php';
 		unset($this->export_fields_array[$r]['t.fk_action']);	// Remove field so we can add it at end just after
 		unset($this->export_fields_array[$r]['t.fk_project']);	// Remove field so we can add it at end just after
 		unset($this->export_fields_array[$r]['t.fk_soc']);	// Remove field so we can add it at end just after
@@ -394,7 +394,7 @@ class modEventOrganization extends DolibarrModules
 		$keyforselect = 'actioncomm';		// The value in column elementtype of llx_extrafields table
 		$keyforaliasextra = 'extra';
 		$keyforelement = 'conferenceorbooth';
-		include DOL_DOCUMENT_ROOT.'/core/extrafieldsinexport.inc.php';
+		include DOL_DOCUMENT_ROOT.'/Core/extrafieldsinexport.inc.php';
 		//$this->export_dependencies_array[$r] = array('aaaline'=>array('tl.rowid','tl.ref')); // To force to activate one or several fields if we select some fields that need same (like to select a unique key if we ask a field of a child to avoid the DISTINCT to discard them, or for computed field than need several other fields)
 		//$this->export_special_array[$r] = array('t.field'=>'...');
 		//$this->export_examplevalues_array[$r] = array('t.field'=>'Example');
@@ -428,7 +428,7 @@ class modEventOrganization extends DolibarrModules
 	{
 		global $conf, $langs, $user;
 
-		/*$result = run_sql(DOL_DOCUMENT_ROOT.'/install/mysql/data/llx_c_email_templates.sql', 1, '', 1);
+		/*$result = run_sql(DOL_DOCUMENT_ROOT.'/Install/mysql/data/llx_c_email_templates.sql', 1, '', 1);
 		if ($result <= 0) {
 			return -1; // Do not activate module if error 'not allowed' returned when loading module SQL queries (the _load_table run sql with run_sql with the error allowed parameter set to 'default')
 		}
@@ -447,12 +447,12 @@ class modEventOrganization extends DolibarrModules
 
 		foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 			if ($myTmpObjectArray['includerefgeneration']) {
-				$src = DOL_DOCUMENT_ROOT.'/install/doctemplates/eventorganization/template_conferenceorbooths.odt';
+				$src = DOL_DOCUMENT_ROOT.'/Install/doctemplates/eventorganization/template_conferenceorbooths.odt';
 				$dirodt = DOL_DATA_ROOT.'/doctemplates/eventorganization';
 				$dest = $dirodt.'/template_conferenceorbooths.odt';
 
 				if (file_exists($src) && !file_exists($dest)) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 					dol_mkdir($dirodt);
 					$result = dol_copy($src, $dest, '0', 0);
 					if ($result < 0) {
@@ -475,10 +475,10 @@ class modEventOrganization extends DolibarrModules
 
 
 		// Insert some vars
-		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 		$formmail = new FormMail($this->db);
 
-		include_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
+		include_once DOL_DOCUMENT_ROOT.'/User/class/user.class.php';
 		if (!is_object($user)) {
 			$user = new User($this->db); // To avoid error during migration
 		}

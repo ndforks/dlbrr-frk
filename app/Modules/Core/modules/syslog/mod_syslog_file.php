@@ -5,7 +5,7 @@
 
 
 namespace App\Modules\Core\Modules\Syslog;
-require_once DOL_DOCUMENT_ROOT.'/core/modules/syslog/logHandler.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/syslog/logHandler.php';
 
 /**
  * Class to manage logging to a file

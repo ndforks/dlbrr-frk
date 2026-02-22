@@ -28,13 +28,13 @@
 require "../../main.inc.php";
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/project/task/modules_task.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/project.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/date.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/project/task/modules_task.php';
 
 /**
  * @var Conf $conf
@@ -69,7 +69,7 @@ $projectstatic = new Project($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // include comment actions
-include DOL_DOCUMENT_ROOT.'/core/actions_comments.inc.php';
+include DOL_DOCUMENT_ROOT.'/Core/actions_comments.inc.php';
 
 // Security check
 $socid = 0;
@@ -345,7 +345,7 @@ if ($id > 0 || !empty($ref)) {
 		// Other attributes
 		$cols = 3;
 		$parameters = array('socid' => $socid);
-		include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 		print '</table>';
 
@@ -355,7 +355,7 @@ if ($id > 0 || !empty($ref)) {
 
 
 		// Include comment tpl view
-		include DOL_DOCUMENT_ROOT.'/core/tpl/bloc_comment.tpl.php';
+		include DOL_DOCUMENT_ROOT.'/Core/tpl/bloc_comment.tpl.php';
 	}
 }
 

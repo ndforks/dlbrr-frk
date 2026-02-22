@@ -42,14 +42,14 @@ require '../../main.inc.php';
  *
  * @var Societe $mysoc
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/emailing.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 if (isModEnabled('project')) {
 	require_once DOL_DOCUMENT_ROOT . '/projet/class/project.class.php';
 	require_once DOL_DOCUMENT_ROOT . '/core/class/html.formprojet.class.php';
@@ -77,7 +77,7 @@ $hookmanager->initHooks(array('mailingcard', 'globalcard'));
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Load object->fk_project
 if (isset($object->fk_project) && $object->fk_project > 0 ) {
@@ -312,7 +312,7 @@ if (empty($reshook)) {
 							$onlinepaymentenabled++;
 						}
 						if ($onlinepaymentenabled && getDolGlobalString('PAYMENT_SECURITY_TOKEN')) {
-							require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
+							require_once DOL_DOCUMENT_ROOT.'/Core/lib/payments.lib.php';
 							$substitutionarray['__ONLINEPAYMENTLINK_MEMBER__'] = getHtmlOnlinePaymentLink('member', $obj->source_id);
 							$substitutionarray['__ONLINEPAYMENTLINK_DONATION__'] = getHtmlOnlinePaymentLink('donation', $obj->source_id);
 							$substitutionarray['__ONLINEPAYMENTLINK_ORDER__'] = getHtmlOnlinePaymentLink('order', $obj->source_id);
@@ -669,7 +669,7 @@ if (empty($reshook)) {
 	if (request()->input('addfile') && $permissiontocreate) {
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		// Set tmp user directory
 		dol_add_file_process($upload_dir, 0, 0, 'addedfile', '', null, '', 0);
@@ -681,7 +681,7 @@ if (empty($reshook)) {
 	if (request()->integer('removedfile', 0) && $permissiontocreate) {
 		$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		dol_remove_file_process(request()->integer('removedfile', 0), 0, 0); // We really delete file linked to mailing
 
@@ -690,7 +690,7 @@ if (empty($reshook)) {
 
 	// Action of emailing update
 	if ($action == 'update' && !request()->integer('removedfile', 0) && !$cancel && $permissiontocreate) {
-		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 
 		$isupload = 0;
 
@@ -948,7 +948,7 @@ if ($action == 'create') {	// aaa
 	$htmlname = 'bodyemail';
 
 	// Fill $out
-	include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+	include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 	print $out;
 
@@ -958,7 +958,7 @@ if ($action == 'create') {	// aaa
 
 	print '<div style="padding-top: 10px">';
 	// wysiwyg editor
-	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+	require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 	$doleditor = new DolEditor('bodyemail', request()->input('bodyemail'), '', 600, 'dolibarr_mailings', '', true, -1, getDolGlobalInt('FCKEDITOR_ENABLE_MAILING'), 20, '100%');
 	$doleditor->Create();
 	print '</div>';
@@ -1238,7 +1238,7 @@ if ($action == 'create') {	// aaa
 			print '</td></tr>';
 
 			// Other attributes. Fields from hook formObjectOptions and Extrafields.
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			print '</table>';
 			print '</div>';
@@ -1342,7 +1342,7 @@ if ($action == 'create') {	// aaa
 				print dol_get_fiche_head([], '', '', -1);
 
 				// Create mail form object
-				include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
+				include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
 				$formmail = new FormMail($db);
 				$formmail->fromname = $object->email_from;
 				$formmail->frommail = $object->email_from;
@@ -1428,7 +1428,7 @@ if ($action == 'create') {	// aaa
 			if (empty($object->bgcolor) || strtolower($object->bgcolor) == 'ffffff') {	// CKEditor does not apply the color of the div into its content area
 				$readonly = 1;
 				// wysiwyg editor
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				$doleditor = new DolEditor('bodyemail', $object->body, '', 600, 'dolibarr_mailings', '', false, -1, getDolGlobalInt('FCKEDITOR_ENABLE_MAILING'), 20, '100%', $readonly);
 				$doleditor->Create();
 			} else {
@@ -1683,7 +1683,7 @@ if ($action == 'create') {	// aaa
 			//$formai->substit_lines = $this->substit_lines;
 
 			// Fill $out
-			include DOL_DOCUMENT_ROOT.'/core/tpl/formlayoutai.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/formlayoutai.tpl.php';
 
 			$out .= '</td>';
 			$out .= '</tr>';
@@ -1698,7 +1698,7 @@ if ($action == 'create') {	// aaa
 
 			if ($action == 'edit') {
 				// wysiwyg editor
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				if ($object->bgcolor) {
 					if (!preg_match('/^<div style="background-color: #'.$object->bgcolor.'">/', $object->body)) {
 						$object->body = '<div style="background-color: #'.$object->bgcolor.'; margin-bottom:-20px; margin-left:-10px; margin-right:-10px; margin-top:-10px; padding: 10px;">'.$object->body.'</div>';
@@ -1709,13 +1709,13 @@ if ($action == 'create') {	// aaa
 			}
 			if ($action == 'edittxt') {
 				// wysiwyg editor
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				$doleditor = new DolEditor('bodyemail', $object->body, '', 600, 'dolibarr_mailings', '', true, -1, 0, 20, '100%');
 				$doleditor->Create();
 			}
 			if ($action == 'edithtml') {
 				// HTML source editor
-				require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
 				$doleditor = new DolEditor('bodyemail', $object->body, '', 600, 'dolibarr_mailings', '', true, -1, 'ace', 20, '100%');
 				$doleditor->Create(0, '', false, 'HTML Source', 'php');
 			}

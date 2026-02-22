@@ -28,7 +28,7 @@ namespace App\Modules\Core\Boxes;
  *  \ingroup    project
  *  \brief      Module to show validated projects whose tasks are assigned to the connected person, without any time entered by the connected person
  */
-include_once DOL_DOCUMENT_ROOT."/core/boxes/modules_boxes.php";
+include_once DOL_DOCUMENT_ROOT."/Core/boxes/modules_boxes.php";
 
 
 /**

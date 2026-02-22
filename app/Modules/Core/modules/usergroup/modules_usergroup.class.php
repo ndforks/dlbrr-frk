@@ -27,7 +27,7 @@ namespace App\Modules\Core\Modules\Usergroup;
  *  \brief      File with parent class for generating contracts to PDF and File of class to manage contract numbering
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commondocgenerator.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commondocgenerator.class.php';
 
 
 /**
@@ -49,7 +49,7 @@ abstract class ModelePDFUserGroup extends CommonDocGenerator
 		$type = 'group';
 		$list = array();
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/functions2.lib.php';
 		$list = getListOfModels($db, $type, $maxfilenamelength);
 		return $list;
 	}

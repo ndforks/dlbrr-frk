@@ -40,23 +40,23 @@ require '../main.inc.php';
  *
  * @var string $dolibarr_main_url_root
  */
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formexpensereport.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/CMailFile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formexpensereport.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formmail.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formprojet.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/CMailFile.class.php';
 require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/expensereport.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/modules/expensereport/modules_expensereport.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/expensereport.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/price.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/expensereport/modules_expensereport.php';
 require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
 require_once DOL_DOCUMENT_ROOT.'/expensereport/class/paymentexpensereport.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/doleditor.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/extrafields.class.php';
 if (isModEnabled('accounting')) {
 	require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 }
@@ -121,7 +121,7 @@ $extrafields = new ExtraFields($db);
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Load object
-include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
+include DOL_DOCUMENT_ROOT.'/Core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('expensereportcard', 'globalcard'));
@@ -222,7 +222,7 @@ if (empty($reshook)) {
 		$fk_c_type_fees = -1;
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_linkedfiles.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_linkedfiles.inc.php';
 
 	if (!empty(request()->input('sendit'))) {   // If we just submit a file
 		if ($action == 'updateline') {	// Test on permission not required here
@@ -232,11 +232,11 @@ if (empty($reshook)) {
 		}
 	}
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_setnotes.inc.php'; // Must be 'include', not 'include_once'
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_dellink.inc.php'; // Must be 'include', not 'include_once'
 
-	include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php'; // Must be 'include', not 'include_once'
+	include DOL_DOCUMENT_ROOT.'/Core/actions_lineupdown.inc.php'; // Must be 'include', not 'include_once'
 
 	// Action clone object
 	if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontoadd) {
@@ -1439,17 +1439,17 @@ if (empty($reshook)) {
 	}
 
 	// Actions when printing a doc from card
-	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_printing.inc.php';
 
 	// Actions to send emails
 	$triggersendname = 'EXPENSEREPORT_SENTBYMAIL';
 	$autocopy = 'MAIN_MAIL_AUTOCOPY_EXPENSEREPORT_TO';
 	$trackid = 'exp'.$object->id;
-	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_sendmails.inc.php';
 
 	// Actions to build doc
 	$upload_dir = $conf->expensereport->dir_output;
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 }
 
 
@@ -1935,7 +1935,7 @@ if ($action == 'create') {
 
 			// Other attributes
 			$cols = 2;
-			include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_view.tpl.php';
+			include DOL_DOCUMENT_ROOT.'/Core/tpl/extrafields_view.tpl.php';
 
 			print '</table>';
 
@@ -2322,7 +2322,7 @@ if ($action == 'create') {
 											// Conversion du PDF en image png si fichier png non existent
 											if (!file_exists($fileimage) || (filemtime($fileimage) < filemtime($filepdf))) {
 												if (!getDolGlobalString('MAIN_DISABLE_PDF_THUMBS')) {		// If you experience trouble with pdf thumb generation and imagick, you can disable here.
-													include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+													include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 													$ret = dol_convert_file($filepdf, 'png', $fileimage, '0'); // Convert first page of PDF into a file _preview.png
 													if ($ret < 0) {
 														$error++;
@@ -2536,9 +2536,9 @@ if ($action == 'create') {
 				$nbFiles = $nbLinks = 0;
 				$arrayoffiles = array();
 				if (!getDolGlobalString('EXPENSEREPORT_DISABLE_ATTACHMENT_ON_LINES')) {
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-					require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-					require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/lib/images.lib.php';
+					require_once DOL_DOCUMENT_ROOT.'/Core/class/link.class.php';
 					$upload_dir = $conf->expensereport->dir_output."/".dol_sanitizeFileName($object->ref);
 					$arrayoffiles = dol_dir_list($upload_dir, 'files', 0, '', '(\.meta|_preview.*\.png|'.preg_quote(dol_sanitizeFileName($object->ref.'.pdf'), '/').')$');
 					$nbFiles = count($arrayoffiles);
@@ -2989,7 +2989,7 @@ if ($action != 'presend') {
 
 	print '</div><div class="fichehalfright">';
 	// List of actions on element
-	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formactions.class.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formactions.class.php';
 	$formactions = new FormActions($db);
 	$somethingshown = $formactions->showactions($object, 'expensereport', 0);
 
@@ -3002,7 +3002,7 @@ $defaulttopic = 'SendExpenseReportRef';
 $diroutput = $conf->expensereport->dir_output;
 $trackid = 'exp'.$object->id;
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/card_presend.tpl.php';
+include DOL_DOCUMENT_ROOT.'/Core/tpl/card_presend.tpl.php';
 
 
 llxFooter();

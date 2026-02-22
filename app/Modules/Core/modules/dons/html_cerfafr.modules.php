@@ -29,9 +29,9 @@ namespace App\Modules\Core\Modules\Dons;
  *	\ingroup    don
  *	\brief      Form of donation
  */
-require_once DOL_DOCUMENT_ROOT.'/core/modules/dons/modules_don.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/dons/modules_don.php';
 require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
 
 
 /**
@@ -153,7 +153,7 @@ class html_cerfafr extends ModeleDon
 				*/
 
 				// Define contents
-				$donmodel = DOL_DOCUMENT_ROOT."/core/modules/dons/html_cerfafr.html";
+				$donmodel = DOL_DOCUMENT_ROOT."/Core/modules/dons/html_cerfafr.html";
 
 				$form = file_get_contents($donmodel);
 

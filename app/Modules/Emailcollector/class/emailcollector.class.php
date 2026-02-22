@@ -352,7 +352,7 @@ class EmailCollector extends CommonObject
 			return -1;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 		$this->password = dolEncrypt($this->password);
 
 		$id = $this->createCommon($user, $notrigger);
@@ -472,7 +472,7 @@ class EmailCollector extends CommonObject
 	{
 		$result = $this->fetchCommon($id, $ref);
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 		$this->password = dolDecrypt($this->password);
 
 		//if ($result > 0 && !empty($this->table_element_line)) $this->fetchLines();
@@ -567,7 +567,7 @@ class EmailCollector extends CommonObject
 			return -1;
 		}
 
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/security.lib.php';
 		$this->password = dolEncrypt($this->password);
 
 		$result = $this->updateCommon($user, $notrigger);
@@ -1196,7 +1196,7 @@ class EmailCollector extends CommonObject
 				// Mode OAUth2 (access_type == 1) with PHP-IMAP
 				$this->debuginfo .= 'doCollectOneCollector is using method MAIN_IMAP_USE_PHPIMAP=1, access_type=1 (OAUTH2)<br>';
 
-				require_once DOL_DOCUMENT_ROOT.'/core/lib/oauth.lib.php';
+				require_once DOL_DOCUMENT_ROOT.'/Core/lib/oauth.lib.php';
 
 				$supportedoauth2array = getSupportedOauth2Array();
 
@@ -3326,7 +3326,7 @@ class EmailCollector extends CommonObject
 								);
 
 								if (!is_object($hookmanager)) {
-									include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+									include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 									$hookmanager = new HookManager($this->db);
 								}
 								$hookmanager->initHooks(array('emailcolector'));
@@ -3796,7 +3796,7 @@ class EmailCollector extends CommonObject
 							// Create event specific on hook
 							// this code action is hook..... for support this call
 							if (!is_object($hookmanager)) {
-								include_once DOL_DOCUMENT_ROOT.'/core/class/hookmanager.class.php';
+								include_once DOL_DOCUMENT_ROOT.'/Core/class/hookmanager.class.php';
 								$hookmanager = new HookManager($this->db);
 							}
 							$hookmanager->initHooks(['emailcolector']);

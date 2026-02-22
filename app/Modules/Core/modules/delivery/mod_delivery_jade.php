@@ -28,7 +28,7 @@ namespace App\Modules\Core\Modules\Delivery;
  *   \brief      Fichier contenant la class du modele de numerotation de reference de bon de livraison Jade
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/modules/delivery/modules_delivery.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/modules/delivery/modules_delivery.php';
 
 
 /**

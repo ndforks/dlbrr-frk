@@ -128,7 +128,7 @@ if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
 		if ($conf->use_javascript_ajax) {
 			print '<tr><td class="center nopaddingleftimp nopaddingrightimp pair nohover" colspan="2">';
 
-			include_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/class/dolgraph.class.php';
 			$dolgraph = new DolGraph();
 			$dolgraph->SetData($dataseries);
 			$dolgraph->SetDataColor(array_values($colorseries));

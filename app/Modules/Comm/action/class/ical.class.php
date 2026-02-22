@@ -28,8 +28,8 @@ namespace App\Modules\Comm\Action\Classes;
  *       \ingroup    agenda
  *       \brief      File of class to parse ical calendars
  */
-require_once DOL_DOCUMENT_ROOT.'/core/lib/xcal.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/xcal.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/geturl.lib.php';
 
 
 /**
@@ -161,7 +161,7 @@ class ICal
 
 		// Save file into a cache
 		if ($usecachefile) {
-			include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 			$datefile = dol_filemtime($usecachefile);
 			$now = dol_now('gmt');
 			//print $datefile.' '.$now.' ...';

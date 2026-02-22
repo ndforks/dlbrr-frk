@@ -391,9 +391,9 @@ function build_exportfile($format, $type, $cachedelay, $filename, $filters)
 	// phpcs:enable
 	global $conf, $langs, $dolibarr_main_url_root, $mysoc;
 
-	require_once DOL_DOCUMENT_ROOT."/core/lib/xcal.lib.php";
-	require_once DOL_DOCUMENT_ROOT."/core/lib/date.lib.php";
-	require_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/xcal.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/date.lib.php";
+	require_once DOL_DOCUMENT_ROOT."/Core/lib/files.lib.php";
 
 	dol_syslog("build_exportfile Build export file format=".$format.", type=".$type.", cachedelay=".$cachedelay.", filename=".$filename.", filters size=".count($filters), LOG_DEBUG);
 
@@ -429,7 +429,7 @@ function build_exportfile($format, $type, $cachedelay, $filename, $filters)
 
 	if ($cachedelay) {
 		$nowgmt = dol_now();
-		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
+		include_once DOL_DOCUMENT_ROOT.'/Core/lib/files.lib.php';
 		if (dol_filemtime($outputfile) > ($nowgmt - $cachedelay)) {
 			dol_syslog("build_exportfile file ".$outputfile." is not older than now - cachedelay (".$nowgmt." - ".$cachedelay."). Build is canceled");
 			$buildfile = false;

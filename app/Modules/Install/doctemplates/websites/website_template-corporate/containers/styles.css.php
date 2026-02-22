@@ -1,8 +1,8 @@
 <?php // BEGIN PHP
 $websitekey=basename(__DIR__);
 if (! defined('USEDOLIBARRSERVER') && ! defined('USEDOLIBARREDITOR')) { require_once __DIR__.'/master.inc.php'; } // Load env if not already loaded
-require_once DOL_DOCUMENT_ROOT.'/core/lib/website.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/website.inc.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/website.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/website.inc.php';
 ob_start();
 if (! headers_sent()) {	/* because file is included inline when in edit mode and we don't want warning */
 header('Cache-Control: max-age=3600, public, must-revalidate');

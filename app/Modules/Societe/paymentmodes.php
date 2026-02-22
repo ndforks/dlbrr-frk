@@ -34,15 +34,15 @@
 
 // Load Dolibarr environment
 require '../main.inc.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/lib/bank.lib.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
-require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/company.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/lib/bank.lib.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formfile.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/html.formother.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/companybankaccount.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/companypaymentmode.class.php';
 require_once DOL_DOCUMENT_ROOT.'/societe/class/societeaccount.class.php';
 require_once DOL_DOCUMENT_ROOT.'/compta/prelevement/class/bonprelevement.class.php';
-require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Stripe/class/stripe.class.php';
 
 /**
  * @var Conf $conf
@@ -545,7 +545,7 @@ if (empty($reshook)) {
 
 	$id = $socid;
 	$upload_dir = $conf->societe->multidir_output[$object->entity ?? $conf->entity];
-	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
+	include DOL_DOCUMENT_ROOT.'/Core/actions_builddoc.inc.php';
 
 	$id = $savid;
 
@@ -1705,7 +1705,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 			$buttonlabel = $langs->trans("BuildDoc");
 			$forname = 'builddocrib'.$rib->id;
 
-			include_once DOL_DOCUMENT_ROOT.'/core/modules/bank/modules_bank.php';
+			include_once DOL_DOCUMENT_ROOT.'/Core/modules/bank/modules_bank.php';
 			$modellist = ModeleBankAccountDoc::liste_modeles($db);
 
 			$out = '';
@@ -1735,7 +1735,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 
 				// Language code (if multilang)
 				if (getDolGlobalInt('MAIN_MULTILANGS')) {
-					include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
+					include_once DOL_DOCUMENT_ROOT.'/Core/class/html.formadmin.class.php';
 					$formadmin = new FormAdmin($db);
 					$defaultlang = $langs->getDefaultLang();
 					$out .= $formadmin->select_language($defaultlang, 'lang_idrib'.$rib->id, 0, array(), 0, 0, 0, $morecss);
@@ -1962,7 +1962,7 @@ if ($socid && $action != 'edit' && $action != 'create' && $action != 'editcard' 
 		print '<br>';
 	}
 	/*
-	include_once DOL_DOCUMENT_ROOT.'/core/modules/bank/modules_bank.php';
+	include_once DOL_DOCUMENT_ROOT.'/Core/modules/bank/modules_bank.php';
 	$modellist=ModeleBankAccountDoc::liste_modeles($db);
 	//print '<td>';
 	if (is_array($modellist) && count($modellist) == 1)    // If there is only one element

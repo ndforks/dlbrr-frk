@@ -26,7 +26,7 @@ namespace App\Modules\Modulebuilder\Template\Classes;
  * TODO: Write detailed description here.
  */
 
-require_once DOL_DOCUMENT_ROOT.'/core/class/commonhookactions.class.php';
+require_once DOL_DOCUMENT_ROOT.'/Core/class/commonhookactions.class.php';
 
 /**
  * Class ActionsMyModule
