@@ -111,9 +111,9 @@ class box_graph_orders_supplier_permonth extends ModeleBoxes
 			include_once DOL_DOCUMENT_ROOT.'/commande/class/commandestats.class.php';
 			$autosetarray = preg_split("/[,;:]+/", request()->input('DOL_AUTOSET_COOKIE'));
 			if (in_array('DOLUSER_box_'.$this->boxcode, $autosetarray)) {
-				$endyear = GETPOSTINT($param_year);
-				$shownb = GETPOST($param_shownb, 'alpha');
-				$showtot = GETPOST($param_showtot, 'alpha');
+				$endyear = request()->integer($param_year, 0);
+				$shownb = request()->input($param_shownb);
+				$showtot = request()->input($param_showtot);
 			} else {
 				$tmparray = (!empty($_COOKIE['DOLUSER_box_'.$this->boxcode]) ? json_decode($_COOKIE['DOLUSER_box_'.$this->boxcode], true) : array());
 				$endyear = (!empty($tmparray['year']) ? $tmparray['year'] : '');

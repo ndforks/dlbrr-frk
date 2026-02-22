@@ -77,7 +77,7 @@ if (request()->has('confirmecreation')) {
 	$toutchoix = '';
 	for ($i = 0; $i < $_SESSION["nbrecases"] + 1; $i++) {
 		$tmpchoice = $arrayofchoices[$i];
-		$tmptypecolumn = GETPOST('typecolonne'.$i, 'alphanohtml');
+		$tmptypecolumn = request()->input('typecolonne' . $i);
 		if (!empty($tmpchoice)) {
 			$toutchoix .= ',';
 			$toutchoix .= str_replace(array(",", "@"), " ", $tmpchoice).(empty($tmptypecolumn) ? '' : '@'.$tmptypecolumn);

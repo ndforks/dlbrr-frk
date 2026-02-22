@@ -105,8 +105,8 @@ if (!$sortorder) {
 $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha') !== '') {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key) !== '') {
+		$search[$key] = request()->input('search_' . $key);
 	}
 	if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
 		$search[$key.'_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtstartmonth'), GETPOSTINT('search_'.$key.'_dtstartday'), GETPOSTINT('search_'.$key.'_dtstartyear'));
@@ -173,7 +173,7 @@ if (preg_match('/^set/', $action) && ($projectid > 0 || $projectref) && $user->h
 			setEventMessages(null, $project->errors, 'errors');
 		} else {
 			$projectid = $project->id;
-			$project->{$project_attr} = GETPOST($project_attr);
+			$project->{$project_attr} = request()->input($project_attr);
 			$result = $project->update($user);
 			if ($result < 0) {
 				setEventMessages(null, $project->errors, 'errors');

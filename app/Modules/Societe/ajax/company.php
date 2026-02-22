@@ -117,7 +117,7 @@ if (!empty($action) && $action == 'fetch' && !empty($id) && $user->hasRight('soc
 	$id = (!empty($match[0]) ? $match[0] : '');		// Take first key found into GET array with matching $htmlname123
 
 	// When used from jQuery, the search term is added as GET param $htmlname.
-	$searchkey = (($id && GETPOST($id, 'alpha')) ? GETPOST($id, 'alpha') : (($htmlname && GETPOST($htmlname, 'alpha')) ? (string) GETPOST($htmlname, 'alpha') : ''));
+	$searchkey = (($id && request()->input($id)) ? request()->input($id) : (($htmlname && request()->input($htmlname)) ? (string) request()->input($htmlname) : ''));
 	if (!$searchkey) {
 		return;
 	}

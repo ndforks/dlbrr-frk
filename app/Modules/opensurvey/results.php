@@ -145,7 +145,7 @@ if ($testmodifier) {
 		}
 	}
 
-	$idtomodify = GETPOST("idtomodify".$modifier);
+	$idtomodify = request()->input("idtomodify" . $modifier);
 	$sql = 'UPDATE '.MAIN_DB_PREFIX."opensurvey_user_studs";
 	$sql .= " SET reponses = '".$db->escape($nouveauchoix)."'";
 	$sql .= " WHERE id_users = '".$db->escape($idtomodify)."'";
@@ -309,7 +309,7 @@ if (request()->has('ajoutercolonne') && $object->format == "D") {
 
 // Delete line
 for ($i = 0; $i < $nblines; $i++) {
-	if (GETPOST("effaceligne".$i) || GETPOST("effaceligne".$i."_x") || GETPOST("effaceligne".$i.".x")) {	// effacelignei for chrome, effacelignei_x for firefox
+	if (request()->input("effaceligne" . $i) || GETPOST("effaceligne".$i."_x") || GETPOST("effaceligne".$i.".x")) {	// effacelignei for chrome, effacelignei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
 			abort(403);
@@ -343,7 +343,7 @@ for ($i = 0; $i < $nblines; $i++) {
 
 // Delete column
 for ($i = 0; $i < $nbcolonnes; $i++) {
-	if ((GETPOST("effacecolonne".$i) || GETPOST("effacecolonne".$i."_x") || GETPOST("effacecolonne".$i.".x"))
+	if ((request()->input("effacecolonne" . $i) || GETPOST("effacecolonne".$i."_x") || GETPOST("effacecolonne".$i.".x"))
 		&& $nbcolonnes > 1) {	// effacecolonnei for chrome, effacecolonnei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
@@ -1043,7 +1043,7 @@ if (empty($testligneamodifier)) {
 		print '<td class="vide">';
 		if (empty($listofanswers[$i]['format']) || !in_array($listofanswers[$i]['format'], array('yesno', 'foragainst'))) {
 			print '<input type="checkbox" name="choix'.$i.'" value="1"';
-			if (GETPOSTISSET('choix'.$i) && GETPOST('choix'.$i) == '1') {
+			if (GETPOSTISSET('choix'.$i) && request()->input('choix' . $i) == '1') {
 				print ' checked';
 			}
 			print '>';

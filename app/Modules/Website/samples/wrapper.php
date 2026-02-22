@@ -35,7 +35,7 @@ $encoding = '';
 
 // Parameters to download files
 $hashp = request()->input('hashp');
-$extname = GETPOST('extname', 'alpha', 1);
+$extname = request()->input('extname');
 $modulepart = request()->input('modulepart');
 $entity = request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity;
 $original_file = request()->input('file');

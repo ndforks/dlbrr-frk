@@ -72,7 +72,7 @@ error_reporting(0);
 @set_time_limit(120);
 error_reporting($err);
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : 'auto';
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : 'auto';
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("admin", "install", "other"));
@@ -295,7 +295,7 @@ foreach ($sections as $section => $options) {
 		$option = $opt['name'];
 		$info = $opt['info'];
 		$tooltip = empty($opt['tooltip']) ? '' : $opt['tooltip'];
-		$value = GETPOST($option, 'alpha') ? GETPOST($option, 'alpha') : 'undefined';
+		$value = request()->input($option) ? request()->input($option) : 'undefined';
 		// Generate links with the right option and value
 		$url_test = $_SERVER['PHP_SELF'].'?'.$option.'=test';
 		$url_confirmed = $_SERVER['PHP_SELF'].'?'.$option.'=confirmed';

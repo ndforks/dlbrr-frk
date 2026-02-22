@@ -5896,7 +5896,7 @@ class Form
 
 		$arrayselected = array();
 		if (is_array(request()->input($htmlname))) {
-			$arrayselected = GETPOST($htmlname, 'array:int');
+			$arrayselected = request()->input($htmlname);
 		} elseif (is_object($object)) {
 			$c = new Categorie($this->db);
 			$cats = $c->containing($object->id, $categtype);

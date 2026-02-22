@@ -4165,10 +4165,10 @@ if ($module == 'initmodule') {
 						print '<tr>';
 					}
 					if ($key == 'propname' || $key == 'proplabel') {
-						print '<td class="titlefieldcreate fieldrequired">'.$attribute.'</td><td class="valuefieldcreate maxwidth50"><input class="maxwidth200" id="'.$key.'" type="text" name="'.$key.'" value="'.dol_escape_htmltag(GETPOST($key, 'alpha')).'"></td>';
+						print '<td class="titlefieldcreate fieldrequired">'.$attribute.'</td><td class="valuefieldcreate maxwidth50"><input class="maxwidth200" id="'.$key.'" type="text" name="'.$key.'" value="'.dol_escape_htmltag(request()->input($key)).'"></td>';
 					} elseif ($key == 'proptype') {
 						print '<td class="titlefieldcreate fieldrequired">'.$attribute.'</td><td class="valuefieldcreate maxwidth50">';
-						print '<input class="maxwidth200" name="'.$key.'" id="'.$key.'" list="datalist'.$key.'" type="text" value="'.dol_escape_htmltag(GETPOST($key, 'alpha')).'">';
+						print '<input class="maxwidth200" name="'.$key.'" id="'.$key.'" list="datalist'.$key.'" type="text" value="'.dol_escape_htmltag(request()->input($key)).'">';
 						//print '<div id="suggestions"></div>';
 						print '<datalist id="datalist'.$key.'">';
 						print '<option>varchar(128)</option>';
@@ -4197,17 +4197,17 @@ if ($module == 'initmodule') {
 						print '</datalist>';
 						print '</td>';
 						//} elseif ($key == 'propvalidate') {
-						//	print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate maxwidth50"><input type="number" step="1" min="0" max="1" class="text maxwidth100" value="'.dol_escape_htmltag(GETPOST($key, 'alpha')).'"></td>';
+						//	print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate maxwidth50"><input type="number" step="1" min="0" max="1" class="text maxwidth100" value="'.dol_escape_htmltag(request()->input($key)).'"></td>';
 					} elseif ($key == 'propvisible') {
-						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(GETPOSTISSET($key) ? GETPOST($key, 'alpha') : "1").'"></td>';
+						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(request()->has($key) ? request()->input($key) : "1").'"></td>';
 					} elseif ($key == 'propenabled') {
 						//$default = "isModEnabled('".strtolower($module)."')";
 						$default = 1;
-						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(GETPOSTISSET($key) ? GETPOST($key, 'alpha') : $default).'"></td>';
+						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(request()->has($key) ? request()->input($key) : $default).'"></td>';
 					} elseif ($key == 'proparrayofkeyval') {
-						print '<td class="titlefieldcreate tdproparrayofkeyval">'.$attribute.'</td><td class="valuefieldcreate"><textarea class="maxwidth200" name="'.$key.'">'.dol_escape_htmltag(GETPOSTISSET($key) ? GETPOST($key, 'alpha') : "").'</textarea></td>';
+						print '<td class="titlefieldcreate tdproparrayofkeyval">'.$attribute.'</td><td class="valuefieldcreate"><textarea class="maxwidth200" name="'.$key.'">'.dol_escape_htmltag(request()->has($key) ? request()->input($key) : "").'</textarea></td>';
 					} else {
-						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(GETPOSTISSET($key) ? GETPOST($key, 'alpha') : '').'"></td>';
+						print '<td class="titlefieldcreate">'.$attribute.'</td><td class="valuefieldcreate"><input class="maxwidth200" type="text" name="'.$key.'" value="'.dol_escape_htmltag(request()->has($key) ? request()->input($key) : '').'"></td>';
 					}
 					$counter++;
 					if ($counter % 2 === 0) {

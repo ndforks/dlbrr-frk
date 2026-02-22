@@ -78,7 +78,7 @@ include_once 'inc.php';
 
 $err = 0;
 
-$setuplang = GETPOST("selectlang", 'alpha', 3) ? GETPOST("selectlang", 'alpha', 3) : (GETPOST('lang', 'alpha', 1) ? GETPOST('lang', 'alpha', 1) : 'auto');
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (request()->input('lang') ? request()->input('lang') : 'auto');
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("install", "errors", "admin"));

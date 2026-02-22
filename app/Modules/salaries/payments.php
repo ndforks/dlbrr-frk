@@ -125,8 +125,8 @@ $childids = $user->getAllChildIds(1);
 $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_'.$key, 'alpha') !== '') {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	if (request()->input('search_' . $key) !== '') {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 

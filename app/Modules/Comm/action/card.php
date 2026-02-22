@@ -1490,12 +1490,12 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	$datep = ($datep ? $datep : (is_null($object->datep) ? '' : $object->datep));
-	if (GETPOST('datep', 'alpha', 1)) {
-		$datep = dol_stringtotime(GETPOST('datep', 'alpha', 1), 'tzuserrel');
+	if (request()->input('datep')) {
+		$datep = dol_stringtotime(request()->input('datep'), 'tzuserrel');
 	}
 	$datef = ($datef ? $datef : $object->datef);
-	if (GETPOST('datef', 'alpha', 1)) {
-		$datef = dol_stringtotime(GETPOST('datef', 'alpha', 1), 'tzuserrel');
+	if (request()->input('datef')) {
+		$datef = dol_stringtotime(request()->input('datef'), 'tzuserrel');
 	}
 	if (empty($datef) && !empty($datep)) {
 		if (request()->input('actioncode') == 'AC_RDV' || (!getDolGlobalString('AGENDA_USE_EVENT_TYPE_DEFAULT') || getDolGlobalString('AGENDA_USE_EVENT_TYPE_DEFAULT') == '-1')) {

@@ -92,7 +92,7 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 7) == 'amount_') {
 				$other_chid = (int) substr($key, 7);
-				$amounts[$other_chid] = (float) price2num(GETPOST($key));
+				$amounts[$other_chid] = (float) price2num(request()->input($key));
 			}
 		}
 

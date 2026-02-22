@@ -98,11 +98,11 @@ if (getDolGlobalInt('MAIN_OVERRIDE_TIME_LIMIT')) {
 }
 error_reporting($err);
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : 'auto';
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : 'auto';
 $langs->setDefaultLang($setuplang);
-$versionfrom = GETPOST("versionfrom", 'alpha', 3) ? GETPOST("versionfrom", 'alpha', 3) : (empty($argv[1]) ? '' : $argv[1]);
-$versionto = GETPOST("versionto", 'alpha', 3) ? GETPOST("versionto", 'alpha', 3) : (empty($argv[2]) ? '' : $argv[2]);
-$enablemodules = GETPOST("enablemodules", 'alpha', 3) ? GETPOST("enablemodules", 'alpha', 3) : (empty($argv[3]) ? '' : $argv[3]);
+$versionfrom = request()->input('versionfrom') ? request()->input('versionfrom') : (empty($argv[1]) ? '' : $argv[1]);
+$versionto = request()->input('versionto') ? request()->input('versionto') : (empty($argv[2]) ? '' : $argv[2]);
+$enablemodules = request()->input('enablemodules') ? request()->input('enablemodules') : (empty($argv[3]) ? '' : $argv[3]);
 
 $langs->loadLangs(array("admin", "install", "bills", "suppliers"));
 

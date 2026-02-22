@@ -94,8 +94,8 @@ $search = array();
 foreach ($object->fields as $key => $val) {
 	if ($key == 'fk_pays' && !GETPOSTISSET('search_'.$key)) {
 		$search[$key] = $mysoc->country_id;
-	} elseif (GETPOST('search_'.$key, 'alpha') !== '') {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+	} elseif (request()->input('search_' . $key) !== '') {
+		$search[$key] = request()->input('search_' . $key);
 	}
 	if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
 		$search[$key.'_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtstartmonth'), GETPOSTINT('search_'.$key.'_dtstartday'), GETPOSTINT('search_'.$key.'_dtstartyear'));

@@ -58,7 +58,7 @@ if (is_array(request()->input('actioncode'))) {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
 $id = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);

@@ -872,9 +872,9 @@ if (getDolGlobalString('MEMBER_SKIP_TABLE') || getDolGlobalString('MEMBER_NEWFOR
 
 	// Login
 	if (!getDolGlobalString('ADHERENT_LOGIN_NOT_REQUIRED')) {
-		print '<tr><td><span class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</span></td><td><input type="text" name="login" maxlength="50" class="minwidth100" value="'.(request()->has('login') ? GETPOST("login", 'alphanohtml', 2) : $object->login).'"></td></tr>'."\n";
-		print '<tr><td><span class="fieldrequired">'.$langs->trans("Password").'</span></td><td><input type="password" maxlength="128" name="pass1" class="minwidth100" value="'.dol_escape_htmltag(GETPOST("pass1", "none", 2)).'"></td></tr>'."\n";
-		print '<tr><td><span class="fieldrequired">'.$langs->trans("PasswordRetype").'</span></td><td><input type="password" maxlength="128" name="pass2" class="minwidth100" value="'.dol_escape_htmltag(GETPOST("pass2", "none", 2)).'"></td></tr>'."\n";
+		print '<tr><td><span class="fieldrequired">'.$langs->trans("Login").' / '.$langs->trans("Id").'</span></td><td><input type="text" name="login" maxlength="50" class="minwidth100" value="'.(request()->has('login') ? request()->input('login') : $object->login).'"></td></tr>'."\n";
+		print '<tr><td><span class="fieldrequired">'.$langs->trans("Password").'</span></td><td><input type="password" maxlength="128" name="pass1" class="minwidth100" value="'.dol_escape_htmltag(request()->input('pass1')).'"></td></tr>'."\n";
+		print '<tr><td><span class="fieldrequired">'.$langs->trans("PasswordRetype").'</span></td><td><input type="password" maxlength="128" name="pass2" class="minwidth100" value="'.dol_escape_htmltag(request()->input('pass2')).'"></td></tr>'."\n";
 	}
 
 	// Gender

@@ -62,7 +62,7 @@ $allowinstall = 0;
 $allowupgrade = false;
 $checksok = 1;
 
-$setuplang = GETPOST("selectlang", 'aZ09', 3) ? GETPOST("selectlang", 'aZ09', 3) : $langs->getDefaultLang();
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : $langs->getDefaultLang();
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("install", "errors"));

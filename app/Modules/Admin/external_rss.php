@@ -82,7 +82,7 @@ if ($action == 'add' || request()->input('modify')) {
 	$external_rss_title = "external_rss_title_".request()->integer('norss', 0);
 	$external_rss_urlrss = "external_rss_urlrss_".request()->integer('norss', 0);
 
-	if (GETPOST($external_rss_urlrss, 'alpha')) {
+	if (request()->input($external_rss_urlrss)) {
 		$boxlabel = '(ExternalRSSInformations)';
 		//$external_rss_url = "external_rss_url_" . request()->input('norss');
 
@@ -104,7 +104,7 @@ if ($action == 'add' || request()->input('modify')) {
 		} else {
 			// Ajoute boite box_external_rss dans definition des boites
 			$sql = "INSERT INTO ".MAIN_DB_PREFIX."boxes_def (file, note)";
-			$sql .= " VALUES ('box_external_rss.php', '".$db->escape(request()->integer('norss', 0)." (".GETPOST($external_rss_title)).")')";
+			$sql .= " VALUES ('box_external_rss.php', '".$db->escape(request()->integer('norss', 0)." (".request()->input($external_rss_title)).")')";
 			if (!$db->query($sql)) {
 				abort(500);
 				$error++;
@@ -112,11 +112,11 @@ if ($action == 'add' || request()->input('modify')) {
 			//print $sql;exit;
 		}
 
-		$result1 = dolibarr_set_const($db, "EXTERNAL_RSS_TITLE_".request()->integer('norss', 0), GETPOST($external_rss_title), 'chaine', 0, '', $conf->entity);
+		$result1 = dolibarr_set_const($db, "EXTERNAL_RSS_TITLE_".request()->integer('norss', 0), request()->input($external_rss_title), 'chaine', 0, '', $conf->entity);
 		$result2 = 0;
 		if ($result1) {
 			$consttosave = "EXTERNAL_RSS_URLRSS_".request()->integer('norss', 0);
-			$urltosave = GETPOST($external_rss_urlrss, 'alpha');
+			$urltosave = request()->input($external_rss_urlrss);
 			$result2 = dolibarr_set_const($db, $consttosave, $urltosave, 'chaine', 0, '', $conf->entity);
 			//var_dump($result2);exit;
 		}

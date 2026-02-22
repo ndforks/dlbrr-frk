@@ -146,7 +146,7 @@ class RealField extends CommonField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$value = GETPOST($htmlName, 'restricthtml');
+		$value = request()->input($htmlName);
 		$value = str_replace(',', '.', $value);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $value);
@@ -167,8 +167,8 @@ class RealField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = (double) price2num(GETPOST($htmlName, 'alphanohtml'));
+		if (request()->has($htmlName)) {
+			$value = (double) price2num(request()->input($htmlName));
 		} else {
 			$value = $defaultValue;
 		}
@@ -191,8 +191,8 @@ class RealField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

@@ -181,7 +181,7 @@ class CheckboxField extends CommonSelectField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$values = GETPOST($htmlName, 'array');
+		$values = request()->input($htmlName);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $values);
 	}
@@ -201,7 +201,7 @@ class CheckboxField extends CommonSelectField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$values = request()->input($htmlName, []);
 			if (is_array($values)) $values = implode(',', $values);
 		} else {
@@ -226,7 +226,7 @@ class CheckboxField extends CommonSelectField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$values = request()->input($htmlName, []);
 		} else {
 			$values = $defaultValue;

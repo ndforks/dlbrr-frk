@@ -75,8 +75,8 @@ $search_array_options = $extrafields->getOptionalsFromPost($object->table_elemen
 $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
-	if (GETPOST('search_' . $key, 'alpha')) {
-		$search[$key] = GETPOST('search_' . $key, 'alpha');
+	if (request()->input('search_' . $key)) {
+		$search[$key] = request()->input('search_' . $key);
 	}
 }
 
@@ -372,9 +372,9 @@ if (($id || $ref) && $action == 'edit') {
 				//                  print img_picto('', $val['picto'], '', 0, 0, 0, '', 'pictofixedwidth');
 				//              }
 				//              if (in_array($val['type'], array('int', 'integer'))) {
-				//                  $value = GETPOSTISSET($key) ? GETPOST($key, 'int') : $sk->$key;
+				//                  $value = request()->has($key) ? request()->input($key) : $sk->$key;
 				//              } elseif ($val['type'] == 'double') {
-				//                  $value = GETPOSTISSET($key) ? price2num(GETPOST($key, 'alphanohtml')) : $sk->$key;
+				//                  $value = request()->has($key) ? price2num(request()->input($key)) : $sk->$key;
 				//              } elseif (preg_match('/^(text|html)/', $val['type'])) {
 				//                  $tmparray = explode(':', $val['type']);
 				//if (!empty($tmparray[1])) {
@@ -386,15 +386,15 @@ if (($id || $ref) && $action == 'edit') {
 
 				$skilldetArray = request()->input('descriptionline');
 				if (empty($skilldetArray)) {
-					$value = GETPOSTISSET($key) ? GETPOST($key, $check) : $sk->$key;
+					$value = request()->has($key) ? GETPOST($key, $check) : $sk->$key;
 				} else {
 					$value = $skilldetArray[$sk->id];
 				}
 				//
 				//              } elseif ($val['type'] == 'price') {
-				//                  $value = GETPOSTISSET($key) ? price2num(GETPOST($key)) : price2num($sk->$key);
+				//                  $value = request()->has($key) ? price2num(request()->input($key)) : price2num($sk->$key);
 				//              } else {
-				//                  $value = GETPOSTISSET($key) ? GETPOST($key, 'alpha') : $sk->$key;
+				//                  $value = request()->has($key) ? request()->input($key) : $sk->$key;
 				//              }
 				//var_dump($val.' '.$key.' '.$value);
 				if (!empty($val['noteditable'])) {

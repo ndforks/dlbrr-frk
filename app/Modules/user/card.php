@@ -81,7 +81,7 @@ $id = request()->integer('id', 0);
 $action = request()->input('action');
 $mode = request()->input('mode');
 $confirm = request()->input('confirm');
-$group = GETPOSTINT("group", 3);
+$group = request()->integer('group', 0);
 $cancel = request()->input('cancel');
 $contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'usercard'; // To manage different context of search
 $backtopage = request()->input('backtopage');
@@ -310,8 +310,8 @@ if (empty($reshook)) {
 			if (isModEnabled('socialnetworks')) {
 				$object->socialnetworks = array();
 				foreach ($socialnetworks as $key => $value) {
-					if (GETPOST($key, 'alphanohtml')) {
-						$object->socialnetworks[$key] = GETPOST($key, 'alphanohtml');
+					if (request()->input($key)) {
+						$object->socialnetworks[$key] = request()->input($key);
 					}
 				}
 			}
@@ -496,8 +496,8 @@ if (empty($reshook)) {
 				if (isModEnabled('socialnetworks')) {
 					$object->socialnetworks = array();
 					foreach ($socialnetworks as $key => $value) {
-						if (GETPOST($key, 'alphanohtml')) {
-							$object->socialnetworks[$key] = GETPOST($key, 'alphanohtml');
+						if (request()->input($key)) {
+							$object->socialnetworks[$key] = request()->input($key);
 						}
 					}
 				}
@@ -1377,7 +1377,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 					print '<input type="hidden" name="'.$key.'" value="'.$ldap_social[$key].'">';
 					print $ldap_social[$key];
 				} else {
-					print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="'.$key.'" value="'.GETPOST($key, 'alphanohtml').'">';
+					print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="'.$key.'" value="'.request()->input($key).'">';
 				}
 				print '</td></tr>';
 			} else {
@@ -1385,7 +1385,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				if (!empty($ldap_social[$key])) {
 					print '<input type="hidden" name="'.$key.'" value="'.$ldap_social[$key].'">';
 				} else {
-					print '<input type="hidden" name="'.$key.'" value="'.GETPOST($key, 'alphanohtml').'">';
+					print '<input type="hidden" name="'.$key.'" value="'.request()->input($key).'">';
 				}
 			}
 		}

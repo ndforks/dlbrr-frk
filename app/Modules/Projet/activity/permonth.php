@@ -60,7 +60,7 @@ if ($mode == 'mine') {
 	$mine = 1;
 }
 
-$projectid = request()->has('id') ? GETPOSTINT("id", 1) : request()->integer('projectid', 0);
+$projectid = request()->has('id') ? request()->integer('id', 0) : request()->integer('projectid', 0);
 
 $hookmanager->initHooks(array('timesheetpermonthcard'));
 

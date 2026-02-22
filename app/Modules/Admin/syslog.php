@@ -252,8 +252,8 @@ foreach ($syslogModules as $moduleName) {
 			$tmpoption = $option['constant'];
 			$value = '';
 			if (!empty($tmpoption)) {
-				if (GETPOSTISSET($tmpoption)) {
-					$value = GETPOST($tmpoption);
+				if (request()->has($tmpoption)) {
+					$value = request()->input($tmpoption);
 				} else {
 					$value = getDolGlobalString($tmpoption);
 				}

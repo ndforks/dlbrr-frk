@@ -77,9 +77,9 @@ require_once $dolibarr_main_document_root.'/core/lib/functions2.lib.php';
 
 global $langs;
 
-$versionfrom = GETPOST("versionfrom", 'alpha', 3) ? GETPOST("versionfrom", 'alpha', 3) : (empty($argv[1]) ? '' : $argv[1]);
-$versionto = GETPOST("versionto", 'alpha', 3) ? GETPOST("versionto", 'alpha', 3) : (empty($argv[2]) ? '' : $argv[2]);
-$setuplang = GETPOST('selectlang', 'aZ09', 3) ? GETPOST('selectlang', 'aZ09', 3) : (empty($argv[3]) ? 'auto' : $argv[3]);
+$versionfrom = request()->input('versionfrom') ? request()->input('versionfrom') : (empty($argv[1]) ? '' : $argv[1]);
+$versionto = request()->input('versionto') ? request()->input('versionto') : (empty($argv[2]) ? '' : $argv[2]);
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (empty($argv[3]) ? 'auto' : $argv[3]);
 $langs->setDefaultLang($setuplang);
 $action = request()->input('action') ? request()->input('action') : (empty($argv[4]) ? '' : $argv[4]);
 

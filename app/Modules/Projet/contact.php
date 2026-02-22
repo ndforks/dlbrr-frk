@@ -242,13 +242,13 @@ if (empty($reshook)) {
 					$task_to_affect = explode(',', $affecttotask);
 					if (!empty($task_to_affect)) {
 						foreach ($task_to_affect as $task_id) {
-							if (GETPOSTISSET('person_'.$task_id) && GETPOST('person_'.$task_id, 'aZ09comma')) {
+							if (GETPOSTISSET('person_'.$task_id) && request()->input('person_' . $task_id)) {
 								$tasksToAffect = new Task($db);
 								$result = $tasksToAffect->fetch((int) $task_id);
 								if ($result < 0) {
 									setEventMessages($tasksToAffect->error, null, 'errors');
 								} else {
-									$result = $tasksToAffect->add_contact($contactid, GETPOST('person_role_'.$task_id), request()->input('source'));
+									$result = $tasksToAffect->add_contact($contactid, request()->input('person_role_' . $task_id), request()->input('source'));
 									if ($result < 0) {
 										if ($tasksToAffect->error == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 											$langs->load("errors");

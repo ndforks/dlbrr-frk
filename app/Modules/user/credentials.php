@@ -73,7 +73,7 @@ $contextpage = request()->input('contextpage') ? request()->input('contextpage')
 $backtopage = request()->input('backtopage');
 $backtopageforcancel = request()->input('backtopageforcancel');
 
-$group = GETPOSTINT("group", 3);
+$group = request()->integer('group', 0);
 $search_secret_key = request()->input('search_secret_key');
 
 // Load variable for pagination

@@ -465,9 +465,9 @@ if (empty($reshook)) {
 			$tva_tx = '';
 		}
 
-		$qty = GETPOST('qty' . $predef, 'alpha');
-		$qty = ($qty === '') ? '' : (float) price2num(GETPOST('qty' . $predef, 'alpha'), 'MS', 2);
-		$remise_percent = price2num(GETPOST('remise_percent' . $predef), '', 2);
+		$qty = request()->input('qty' . $predef);
+		$qty = ($qty === '') ? '' : (float) price2num(request()->input('qty' . $predef), 'MS', 2);
+		$remise_percent = price2num(request()->input('remise_percent' . $predef), '', 2);
 
 		// Extrafields
 		$extralabelsline = $extrafields->fetch_name_optionals_label($object->table_element_line);
@@ -676,8 +676,8 @@ if (empty($reshook)) {
 			$date_end_fill = request()->integer('date_end_fill', 0);
 
 			// Margin
-			$fournprice = (int) (GETPOST('fournprice' . $predef) ? GETPOST('fournprice' . $predef) : '');				// This can be id of supplier price, or 'pmpprice' or 'costprice', or 'inputprice', we force to keep ID only
-			$buyingprice = price2num(GETPOST('buying_price' . $predef) != '' ? GETPOST('buying_price' . $predef) : ''); // If buying_price is '0', we must keep this value
+			$fournprice = (int) (request()->input('fournprice' . $predef) ? request()->input('fournprice' . $predef) : '');				// This can be id of supplier price, or 'pmpprice' or 'costprice', or 'inputprice', we force to keep ID only
+			$buyingprice = price2num(request()->input('buying_price' . $predef) != '' ? request()->input('buying_price' . $predef) : ''); // If buying_price is '0', we must keep this value
 
 			// Local Taxes
 			$localtax1_tx = get_localtax((string) $tva_tx, 1, $mysoc, $object->thirdparty, $tva_npr);

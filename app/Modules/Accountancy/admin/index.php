@@ -179,7 +179,7 @@ if ($action == 'update') {
 	$error = 0;
 
 	foreach ($list as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -197,7 +197,7 @@ if ($action == 'update_binding') {
 	$error = 0;
 
 	foreach ($list_binding as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if ($constname == 'ACCOUNTING_DATE_START_BINDING') {
 			$constvalue = dol_mktime(0, 0, 0, GETPOSTINT($constname.'month'), GETPOSTINT($constname.'day'), GETPOSTINT($constname.'year'));
@@ -253,7 +253,7 @@ if ($action == 'update_export') {
 	}
 
 	foreach ($main_option as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -264,7 +264,7 @@ if ($action == 'update_export') {
 		$constante = $key;
 
 		if (strpos($constante, 'ACCOUNTING') !== false) {
-			$constvalue = GETPOST($key, 'alpha');
+			$constvalue = request()->input($key);
 			if (!dolibarr_set_const($db, $constante, $constvalue, 'chaine', 0, '', $conf->entity)) {
 				$error++;
 			}

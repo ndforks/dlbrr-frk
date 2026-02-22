@@ -153,8 +153,8 @@ if ($action == 'vedit' && $cancel != $langs->trans("Cancel") && $permissiontoadd
 	$current_lang = $langs->getDefaultLang();
 
 	foreach ($object->multilangs as $key => $value) {     // recording of new values in the object
-		$libelle = GETPOST('libelle-'.$key, 'alpha');
-		$desc = GETPOST('desc-'.$key, 'restricthtml');
+		$libelle = request()->input('libelle-' . $key);
+		$desc = request()->input('desc-' . $key);
 
 		if (empty($libelle)) {
 			$error++;
@@ -285,11 +285,11 @@ if ($action == 'edit') {
 			print '<table class="border centpercent">';
 
 			// Label
-			$libelle = (GETPOST('libelle-'.$key, 'alpha') ? GETPOST('libelle-'.$key, 'alpha') : ($object->multilangs[$key]['label'] ?? ''));
+			$libelle = (request()->input('libelle-' . $key) ? request()->input('libelle-' . $key) : ($object->multilangs[$key]['label'] ?? ''));
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle-'.$key.'" size="40" value="'.$libelle.'"></td></tr>';
 
 			// Desc
-			$desc = (GETPOST('desc-'.$key) ? GETPOST('desc-'.$key) : ($object->multilangs[$key]['description'] ?? ''));
+			$desc = (request()->input('desc-' . $key) ? request()->input('desc-' . $key) : ($object->multilangs[$key]['description'] ?? ''));
 			print '<tr><td class="tdtop">'.$langs->trans('Description').'</td><td>';
 			$doleditor = new DolEditor("desc-$key", $desc, '', 160, 'dolibarr_notes', '', false, true, isModEnabled('fckeditor') && getDolGlobalInt('FCKEDITOR_ENABLE_SOCIETE'), ROWS_3, '90%');
 			$doleditor->Create();

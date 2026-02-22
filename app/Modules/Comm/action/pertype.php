@@ -112,7 +112,7 @@ $year = request()->integer('year', 0) ? request()->integer('year', 0) : date("Y"
 $month = request()->integer('month', 0) ? request()->integer('month', 0) : date("m");
 $week = request()->integer('week', 0) ? request()->integer('week', 0) : date("W");
 $day = request()->integer('day', 0) ? request()->integer('day', 0) : date("d");
-$pid = request()->has('search_projectid') ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
+$pid = request()->has('search_projectid') ? request()->integer('search_projectid', 0) : request()->integer('projectid', 0);
 $status = request()->has('search_status') ? request()->input('search_status') : request()->input('status');
 $type = request()->has('search_type') ? request()->input('search_type') : request()->input('type');
 $maxprint = ((request()->integer('maxprint', 0) != '') ? request()->integer('maxprint', 0) : $conf->global->AGENDA_MAX_EVENTS_DAY_VIEW);
@@ -120,7 +120,7 @@ $optioncss = request()->input('optioncss'); // Option for the css output (always
 
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
 if (request()->input('search_actioncode')) {
-	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
+	$actioncode = request()->input('search_actioncode');
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

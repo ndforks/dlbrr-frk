@@ -59,7 +59,7 @@ include_once '../../../main.inc.php'; // Load $user and permissions
 
 $action = request()->input('action');
 $id = request()->integer('id', 0);
-$email = GETPOST('email', 'custom', 0, FILTER_VALIDATE_EMAIL);
+$email = request()->input('email');
 
 
 if (!isModEnabled('ticket')) {

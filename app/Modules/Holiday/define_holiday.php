@@ -162,7 +162,7 @@ if (empty($reshook)) {
 		$db->begin();
 
 		foreach ($typeleaves as $key => $val) {
-			$userValue = GETPOST('nb_holiday_'.$val['rowid']);
+			$userValue = request()->input('nb_holiday_' . $val['rowid']);
 			$userValue = $userValue[$userID];
 
 			if (!empty($userValue) || (string) $userValue == '0') {

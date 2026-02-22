@@ -127,8 +127,8 @@ $paymentexpensereport_static = new PaymentExpenseReport($db);
 $morequerystring = '';
 $listofparams = array('date_startmonth', 'date_startyear', 'date_startday', 'date_endmonth', 'date_endyear', 'date_endday');
 foreach ($listofparams as $param) {
-	if (GETPOST($param) != '') {
-		$morequerystring .= ($morequerystring ? '&' : '').$param.'='.GETPOSTINT($param);
+	if (request()->input($param) != '') {
+		$morequerystring .= ($morequerystring ? '&' : '').$param.'='.request()->integer($param, 0);
 	}
 }
 

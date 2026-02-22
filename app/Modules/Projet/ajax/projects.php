@@ -76,7 +76,7 @@ if (empty($mode) || $mode != 'gettasks') {
 	top_httphead('application/json');
 
 	// When used from jQuery, the search term is added as GET param "term".
-	$searchkey = (GETPOSTISSET($htmlname) ? GETPOST($htmlname, 'aZ09') : '');
+	$searchkey = (request()->has($htmlname) ? request()->input($htmlname) : '');
 
 	$formproject = new FormProjets($db);
 	$arrayresult = $formproject->select_projects_list($socid, 0, '', 0, 0, 1, $discard_closed, 0, 0, 1, $searchkey);

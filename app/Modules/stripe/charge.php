@@ -101,7 +101,7 @@ if (!$rowid) {
 	$moreforfilter = '';
 	$list = null;
 	if (GETPOSTISSET('starting_after_'.$page)) {
-		$option['starting_after'] = GETPOST('starting_after_'.$page, 'alphanohtml');
+		$option['starting_after'] = request()->input('starting_after_' . $page);
 	}
 	print '<form method="POST" action="'.dolBuildUrl($_SERVER["PHP_SELF"]).'">';
 	if ($optioncss != '') {

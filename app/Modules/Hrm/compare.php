@@ -445,7 +445,7 @@ function displayUsersListWithPicto(&$TUser, $fk_usergroup = 0, $namelist = 'list
 	if ($fk_usergroup > 0) {
 		$list = $namelist . '_excluded_id';
 
-		$excludedIdsList = GETPOST($list);
+		$excludedIdsList = request()->input($list);
 
 		$sql = "SELECT u.rowid FROM " . MAIN_DB_PREFIX . "user u
 		LEFT JOIN " . MAIN_DB_PREFIX . "usergroup_user as ugu ON (u.rowid = ugu.fk_user)

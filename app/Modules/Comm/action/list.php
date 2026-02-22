@@ -73,7 +73,7 @@ $month = request()->integer('month', 0);
 $day = request()->integer('day', 0);
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
 if (request()->input('search_actioncode')) {
-	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
+	$actioncode = request()->input('search_actioncode');
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}

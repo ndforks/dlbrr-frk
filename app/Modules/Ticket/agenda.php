@@ -52,7 +52,7 @@ $langs->loadLangs(array('companies', 'other', 'ticket'));
 // Get parameters
 $id       = request()->integer('id', 0);
 $ref      = request()->input('ref');
-$track_id = GETPOST('track_id', 'alpha', 3);
+$track_id = request()->input('track_id');
 $socid    = request()->integer('socid', 0);
 $action   = request()->input('action');
 
@@ -81,7 +81,7 @@ if (request()->input('actioncode')) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = request()->input('actioncode') ? request()->input('actioncode') : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
 $search_rowid = request()->integer('search_rowid', 0);

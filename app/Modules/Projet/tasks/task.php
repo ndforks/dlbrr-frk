@@ -55,7 +55,7 @@ $confirm = request()->input('confirm');
 //$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
 
 $id = request()->integer('id', 0);
-$ref = GETPOST("ref", 'alpha', 1); // task ref
+$ref = request()->input('ref'); // task ref
 $taskref = request()->input('taskref'); // task ref
 $withproject = request()->integer('withproject', 0);
 $project_ref = request()->input('project_ref');
@@ -116,7 +116,7 @@ if ($action == 'update' && !request()->input('cancel') && $user->hasRight('proje
 			$task_parent = 0; // If task_parent is ''
 		}
 
-		$object->ref = $taskref ? $taskref : GETPOST("ref", 'alpha', 2);
+		$object->ref = $taskref ? $taskref : request()->input('ref');
 		$object->label = request()->input('label');
 		if (!getDolGlobalString('FCKEDITOR_ENABLE_SOCIETE')) {
 			$object->description = request()->input('description');

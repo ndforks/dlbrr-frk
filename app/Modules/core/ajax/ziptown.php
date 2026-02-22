@@ -151,7 +151,7 @@ if (request()->input('zipcode') || request()->input('town')) {
 	top_httphead('text/html');
 
 	$formcompany = new FormCompany($db);
-	print $formcompany->select_state(GETPOSTINT('selected', 1), GETPOSTINT('country_codeid', 1), GETPOST('htmlname', 'alpha', 1), GETPOST('morecss', 'alpha', 1));
+	print $formcompany->select_state(request()->integer('selected', 0), request()->integer('country_codeid', 0), request()->input('htmlname'), request()->input('morecss'));
 }
 
 $db->close();

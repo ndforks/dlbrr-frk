@@ -119,7 +119,7 @@ $year = request()->integer('year', 0) ? request()->integer('year', 0) : date("Y"
 $month = request()->integer('month', 0) ? request()->integer('month', 0) : date("m");
 $week = request()->integer('week', 0) ? request()->integer('week', 0) : date("W");
 $day = request()->integer('day', 0) ? request()->integer('day', 0) : date("d");
-$pid = request()->has('search_projectid') ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
+$pid = request()->has('search_projectid') ? request()->integer('search_projectid', 0) : request()->integer('projectid', 0);
 $status = request()->has('search_status') ? request()->input('search_status') : request()->input('status'); // status may be 0, 50, 100, 'todo', 'na' or -1
 $type = request()->has('search_type') ? request()->input('search_type') : request()->input('type');
 $maxprint = request()->has('maxprint') ? request()->integer('maxprint', 0) : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
@@ -133,7 +133,7 @@ if ($dateselect > 0) {
 
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
 if (request()->input('search_actioncode')) {
-	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
+	$actioncode = request()->input('search_actioncode');
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
@@ -689,7 +689,7 @@ if (!empty($conf->use_javascript_ajax)) {	// If javascript on
 		foreach ($showextcals as $val) {
 			$htmlname = md5($val['name']);	// not used for security purpose, only to get a string with no special char
 
-			if (!empty($val['default']) || GETPOSTINT('check_ext'.$htmlname)) {
+			if (!empty($val['default']) || request()->integer('check_ext' . $htmlname, 0)) {
 				$default = "checked";
 			} else {
 				$default = '';
@@ -710,7 +710,7 @@ if (!empty($conf->use_javascript_ajax)) {	// If javascript on
 			foreach ($bookcalcalendars["calendars"] as $key => $value) {
 				$label = $value['label'];
 				$s .= '<div class="nowrap inline-block minheight30">';
-				$s .= '<input '.(GETPOST('check_bookcal_calendar_'.$value['id']) ? "checked" : "").' type="checkbox" id="check_bookcal_calendar_'.$value['id'].'" name="check_bookcal_calendar_'.$value['id'].'" class="marginleftonly check_bookcal_calendar_'.$value['id'].'">';
+				$s .= '<input '.(request()->input('check_bookcal_calendar_' . $value['id']) ? "checked" : "").' type="checkbox" id="check_bookcal_calendar_'.$value['id'].'" name="check_bookcal_calendar_'.$value['id'].'" class="marginleftonly check_bookcal_calendar_'.$value['id'].'">';
 				$s .= '<label for="check_bookcal_calendar_'.$value['id'].'" class="labelcalendar">';
 				$s .= '<span class="check_bookcal_calendar_'.$value['id'].'_text">'.$langs->trans("AgendaShowBookcalCalendar", $label).'</span>';
 				$s .= '</label> &nbsp; </div>';

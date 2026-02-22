@@ -59,7 +59,7 @@ error_reporting(0);      // Disable all errors
 error_reporting($err);
 
 $action = request()->input('action') ? request()->input('action') : (empty($argv[1]) ? '' : $argv[1]);
-$setuplang = GETPOST('selectlang', 'aZ09', 3) ? GETPOST('selectlang', 'aZ09', 3) : (empty($argv[2]) ? 'auto' : $argv[2]);
+$setuplang = request()->input('selectlang') ? request()->input('selectlang') : (empty($argv[2]) ? 'auto' : $argv[2]);
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("admin", "install"));

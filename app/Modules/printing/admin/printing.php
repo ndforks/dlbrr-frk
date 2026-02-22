@@ -45,7 +45,7 @@ $langs->loadLangs(array('admin', 'printing', 'oauth'));
 
 $action = request()->input('action');
 $mode = request()->input('mode');
-$value = GETPOST('value', 'alpha', 0, null, null, 1); // The value may be __google__docs so we force disable of replace
+$value = request()->input('value'); // The value may be __google__docs so we force disable of replace
 $varname = request()->input('varname');
 $driver = request()->input('driver');
 

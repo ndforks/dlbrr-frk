@@ -69,7 +69,7 @@ if ($action == 'settemplates') { // Test on permission already done
 			}
 
 			$triggername = $reg[1];
-			$constvalue = GETPOST($key, 'alpha');
+			$constvalue = request()->input($key);
 			$consttype = 'emailtemplate:xxx';
 			$tmparray = explode(':', $constvalue);
 			if (!empty($tmparray[0]) && !empty($tmparray[1])) {

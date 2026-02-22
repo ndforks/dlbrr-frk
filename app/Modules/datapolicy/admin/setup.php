@@ -109,8 +109,8 @@ if ($action == 'update') {
 			// Iterate through defined actions ('anonymize', 'delete') for the entity.
 			foreach ($val['config_keys'] as $actionType => $constKey) {
 				// Save the constant only if its value was submitted in the form.
-				if (GETPOSTISSET($constKey)) {
-					$val_const = GETPOST($constKey, 'alpha');
+				if (request()->has($constKey)) {
+					$val_const = request()->input($constKey);
 					if (dolibarr_set_const($db, $constKey, $val_const, 'chaine', 0, '', $conf->entity) >= 0) {
 						$nbdone++;
 					} else {

@@ -68,7 +68,7 @@ if (request()->input('confirmation')) {
 			for ($i = 0; $i < $nbofchoice; $i++) {
 				// Show hours choices
 				for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-					$horairesi = GETPOST("horaires".$i);
+					$horairesi = request()->input("horaires" . $i);
 					$_SESSION["horaires$i"][$j] = $horairesi[$j];
 
 					$tmphorairesi = request()->input('horaires'.$i, []);
@@ -237,7 +237,7 @@ if (!isset($_SESSION["nbrecaseshoraires"])) {
 		for ($i = 0; $i < $nbofchoice; $i++) {
 			//affichage des 5 cases horaires
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-				$horairesi = GETPOST("horaires".$i);
+				$horairesi = request()->input("horaires" . $i);
 				$_SESSION["horaires$i"][$j] = $horairesi[$j];
 			}
 		}
@@ -283,7 +283,7 @@ if (issetAndNoEmpty('moisavant_x') || issetAndNoEmpty('moisavant')) {
 		for ($i = 0; $i < $nbofchoice; $i++) {
 			//affichage des 5 cases horaires
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-				$horairesi = GETPOST("horaires".$i);
+				$horairesi = request()->input("horaires" . $i);
 				$_SESSION["horaires$i"][$j] = $horairesi[$j];
 			}
 		}
@@ -305,7 +305,7 @@ if (issetAndNoEmpty('moisapres_x') || issetAndNoEmpty('moisapres')) {
 		for ($i = 0; $i < $nbofchoice; $i++) {
 			//affichage des 5 cases horaires
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-				$horairesi = GETPOST("horaires".$i);
+				$horairesi = request()->input("horaires" . $i);
 				$_SESSION["horaires$i"][$j] = $horairesi[$j];
 			}
 		}
@@ -322,7 +322,7 @@ if (issetAndNoEmpty('anneeavant_x') || issetAndNoEmpty('anneeavant')) {
 		for ($i = 0; $i < $nbofchoice; $i++) {
 			//affichage des 5 cases horaires
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-				$horairesi = GETPOST("horaires".$i);
+				$horairesi = request()->input("horaires" . $i);
 				$_SESSION["horaires$i"][$j] = $horairesi[$j];
 			}
 		}
@@ -339,7 +339,7 @@ if (issetAndNoEmpty('anneeapres_x') || issetAndNoEmpty('anneeapres')) {
 		for ($i = 0; $i < $nbofchoice; $i++) {
 			//affichage des 5 cases horaires
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-				$horairesi = GETPOST("horaires".$i);
+				$horairesi = request()->input("horaires" . $i);
 				$_SESSION["horaires$i"][$j] = $horairesi[$j];
 			}
 		}
@@ -442,7 +442,7 @@ if (issetAndNoEmpty('choixjourajout')) {
 
 		//On sauvegarde les heures deja entrées
 		for ($i = 0; $i < $cle; $i++) {
-			$horairesi = GETPOST("horaires".$i);
+			$horairesi = request()->input("horaires" . $i);
 			for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
 				if (issetAndNoEmpty('horaires'.$i) === true && issetAndNoEmpty((string) $i, $_POST['horaires'.$i]) === true) {
 					$_SESSION["horaires$i"][$j] = $horairesi[$j];
@@ -472,7 +472,7 @@ if (issetAndNoEmpty('choixjourretrait')) {
 	for ($i = 0; $i < $nbofchoice; $i++) {
 		//affichage des 5 cases horaires
 		for ($j = 0; $j < $_SESSION["nbrecaseshoraires"]; $j++) {
-			$horairesi = GETPOST("horaires".$i);
+			$horairesi = request()->input("horaires" . $i);
 			$_SESSION["horaires$i"][$j] = $horairesi[$j];
 		}
 	}

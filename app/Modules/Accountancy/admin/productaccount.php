@@ -209,7 +209,7 @@ if ($action == 'update' && $permissiontobind) {
 
 			$cpt = 0;
 			foreach ($toselect as $productid) {
-				$accounting_account_id = GETPOSTINT('codeventil_'.$productid);
+				$accounting_account_id = request()->integer('codeventil_' . $productid, 0);
 
 				$result = 0;
 				if ($accounting_account_id > 0) {

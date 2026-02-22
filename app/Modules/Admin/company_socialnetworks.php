@@ -70,13 +70,13 @@ if (($action == 'update' && !request()->input('cancel'))) {
 			$networkconstid = 'MAIN_INFO_SOCIETE_'.strtoupper($key);
 			if (GETPOSTISSET($key.'url') && GETPOST($key.'url', 'alpha') != '') {
 				dolibarr_set_const($db, $networkconstname, GETPOST($key.'url', 'alpha'), 'chaine', 0, '', $conf->entity);
-				dolibarr_set_const($db, $networkconstid, GETPOST($key, 'alpha'), 'chaine', 0, '', $conf->entity);
-			} elseif (GETPOSTISSET($key) && GETPOST($key, 'alpha') != '') {
+				dolibarr_set_const($db, $networkconstid, request()->input($key), 'chaine', 0, '', $conf->entity);
+			} elseif (request()->has($key) && request()->input($key) != '') {
 				if (!empty($listofnetworks[$key]['url'])) {
-					$url = str_replace('{socialid}', GETPOST($key, 'alpha'), $listofnetworks[$key]['url']);
+					$url = str_replace('{socialid}', request()->input($key), $listofnetworks[$key]['url']);
 					dolibarr_set_const($db, $networkconstname, $url, 'chaine', 0, '', $conf->entity);
 				}
-				dolibarr_set_const($db, $networkconstid, GETPOST($key, 'alpha'), 'chaine', 0, '', $conf->entity);
+				dolibarr_set_const($db, $networkconstid, request()->input($key), 'chaine', 0, '', $conf->entity);
 			} else {
 				dolibarr_del_const($db, $networkconstname, $conf->entity);
 				dolibarr_del_const($db, $networkconstid, $conf->entity);

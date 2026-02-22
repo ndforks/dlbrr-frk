@@ -160,7 +160,7 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 		if (($value == 'country' || $value == 'country_id') && request()->input('country_id')) {
 			continue;
 		}
-		if (!GETPOSTISSET($value) || GETPOST($value) == '') {
+		if (!request()->has($value) || request()->input($value) == '') {
 			$ok = 0;
 			$fieldnamekey = $listfield[$f];
 			// We take translate key of field
@@ -479,8 +479,8 @@ if ($tabname[$id]) {
 	// If data was already input, we define them in obj to populate input fields.
 	if (request()->input('actionadd')) {
 		foreach ($fieldlist as $key => $val) {
-			if (GETPOST($val) != '') {
-				$obj->$val = GETPOST($val);
+			if (request()->input($val) != '') {
+				$obj->$val = request()->input($val);
 			}
 		}
 	}

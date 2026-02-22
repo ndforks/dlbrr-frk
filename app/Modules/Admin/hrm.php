@@ -566,7 +566,7 @@ if ($action != 'editxxx') {
 				$formcompany = new FormCompany($db);
 				print $formcompany->selectProspectCustomerType(getDolGlobalString($constname), $constname);
 			} elseif ($val['type'] == 'securekey') {
-				print '<input required="required" type="text" class="flat" id="' . $constname . '" name="' . $constname . '" value="' . (GETPOST($constname, 'alpha') ? GETPOST($constname, 'alpha') : getDolGlobalString($constname)) . '" size="40">';
+				print '<input required="required" type="text" class="flat" id="' . $constname . '" name="' . $constname . '" value="' . (request()->input($constname) ? request()->input($constname) : getDolGlobalString($constname)) . '" size="40">';
 				if (!empty($conf->use_javascript_ajax)) {
 					print '&nbsp;' . img_picto($langs->trans('Generate'), 'refresh', 'id="generate_token' . $constname . '" class="linkobject"');
 				}

@@ -120,7 +120,7 @@ if ($action == 'updateMask') {
 	}
 } elseif (preg_match('/set_(.*)/', $action, $reg)) {
 	$code = $reg[1];
-	$value = GETPOSTISSET($code) ? GETPOSTINT($code) : 1;
+	$value = request()->has($code) ? request()->integer($code, 0) : 1;
 	$res = dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;

@@ -322,13 +322,13 @@ if ($action == 'fetch' && !empty($id)) {
 
 	$idprod = (empty($match[0]) ? '' : $match[0]);		// Take first key found into GET array with matching $htmlname123
 
-	if (GETPOST($htmlname, 'alpha') == '' && (!$idprod || !GETPOST($idprod, 'alpha'))) {
+	if (request()->input($htmlname) == '' && (!$idprod || !request()->input($idprod))) {
 		print json_encode(array());
 		return;
 	}
 
 	// When used from jQuery, the search term is added as GET param "term".
-	$searchkey = (($idprod && GETPOST($idprod, 'alpha')) ? GETPOST($idprod, 'alpha') : (GETPOST($htmlname, 'alpha') ? GETPOST($htmlname, 'alpha') : ''));
+	$searchkey = (($idprod && request()->input($idprod)) ? request()->input($idprod) : (request()->input($htmlname) ? request()->input($htmlname) : ''));
 
 	if (!isset($form) || !is_object($form)) {
 		$form = new Form($db);

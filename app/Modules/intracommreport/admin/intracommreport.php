@@ -64,7 +64,7 @@ if ($action == 'update') {
 
 	if (!$error) {
 		foreach ($list_DEB as $constname) {
-			$constvalue = GETPOST($constname, 'alpha');
+			$constvalue = request()->input($constname);
 
 			if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 				$error++;
@@ -72,7 +72,7 @@ if ($action == 'update') {
 		}
 
 		foreach ($list_DES as $constname) {
-			$constvalue = GETPOST($constname, 'alpha');
+			$constvalue = request()->input($constname);
 
 			if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 				$error++;

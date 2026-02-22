@@ -439,10 +439,10 @@ if ($step == 4 && $action == 'submitFormField' && $user->hasRight('export', 'lir
 		$_SESSION["export_filtered_fields"] = array();
 		foreach ($objexport->array_export_TypeFields[0] as $code => $type) {	// $code: s.fieldname $value: Text|Boolean|List:ccc
 			$newcode = (string) preg_replace('/\./', '_', $code);
-			//print 'xxx '.$code."=".$newcode."=".$type."=".GETPOST($newcode)."\n<br>";
+			//print 'xxx '.$code."=".$newcode."=".$type."=".request()->input($newcode)."\n<br>";
 			$check = 'alphanohtml';
 			$filterqualified = 1;
-			if (!GETPOSTISSET($newcode) || GETPOST($newcode, $check) == '') {
+			if (!request()->has($newcode) || GETPOST($newcode, $check) == '') {
 				$filterqualified = 0;
 			} elseif (preg_match('/^List/', $type) && (is_numeric(GETPOST($newcode, $check)) && GETPOST($newcode, $check) <= 0)) {
 				$filterqualified = 0;

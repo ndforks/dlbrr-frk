@@ -57,7 +57,7 @@ $langs->loadLangs(array("companies", "commercial", "banks", "bills", 'paypal', '
 
 
 // Get parameters
-$action = GETPOST("action", 'alpha', 3);
+$action = request()->input('action');
 $cancel = request()->input('cancel');
 $backtopage = request()->input('backtopage');
 
@@ -2237,7 +2237,7 @@ if ($socid && $action == 'create' && $permissiontoaddupdatepaymentinformation) {
 			print $langs->trans($val);
 		}
 		print '</td>';
-		print '<td><input size="'.$size.'" type="text" class="flat" name="'.$name.'" value="'.GETPOST($name).'"></td>';
+		print '<td><input size="'.$size.'" type="text" class="flat" name="'.$name.'" value="'.request()->input($name).'"></td>';
 		print '</tr>';
 	}
 

@@ -1322,8 +1322,8 @@ function show_contacts($conf, $langs, $db, $object, $backtopage = '', $showuserl
 	$search = array();
 	foreach ($arrayfields as $key => $val) {
 		$queryName = 'search_' . substr($key, 2);
-		if (GETPOST($queryName, 'alpha')) {
-			$search[substr($key, 2)] = GETPOST($queryName, 'alpha');
+		if (request()->input($queryName)) {
+			$search[substr($key, 2)] = request()->input($queryName);
 		}
 	}
 	$search_array_options = $extrafields->getOptionalsFromPost($contactstatic->table_element, '', 'search_');

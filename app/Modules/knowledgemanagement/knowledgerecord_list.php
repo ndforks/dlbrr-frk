@@ -103,9 +103,9 @@ $search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if ($key == "lang") {
-		$search[$key] = GETPOST('search_'.$key, 'alpha') != '0' ? GETPOST('search_'.$key, 'alpha') : '';
+		$search[$key] = request()->input('search_' . $key) != '0' ? request()->input('search_' . $key) : '';
 	} else {
-		$search[$key] = GETPOST('search_'.$key, 'alpha');
+		$search[$key] = request()->input('search_' . $key);
 	}
 
 	if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {

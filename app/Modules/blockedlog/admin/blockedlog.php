@@ -61,7 +61,7 @@ if (!$user->admin || !isModEnabled('blockedlog')) {
 $reg = array();
 if (preg_match('/set_(.*)/', $action, $reg)) {
 	$code = $reg[1];
-	$values = GETPOST($code);
+	$values = request()->input($code);
 	if (is_array($values)) {
 		$values = implode(',', $values);
 	}

@@ -83,9 +83,9 @@ foreach ($object->fields as $key => $val) {
 		print img_picto('', $val['picto'], '', 0, 0, 0, '', 'pictofixedwidth');
 	}
 	if (in_array($val['type'], array('int', 'integer'))) {
-		$value = GETPOST($key);	// We must not use GETPOSTINT in creation form because value can still be ""
+		$value = request()->input($key);	// We must not use GETPOSTINT in creation form because value can still be ""
 	} elseif ($val['type'] == 'double') {
-		$value = price2num(GETPOST($key, 'alphanohtml'));
+		$value = price2num(request()->input($key));
 	} elseif (preg_match('/^text/', $val['type'])) {
 		$tmparray = explode(':', $val['type']);
 		if (!empty($tmparray[1])) {
@@ -107,13 +107,13 @@ foreach ($object->fields as $key => $val) {
 	} elseif ($val['type'] == 'datetime') {
 		$value = dol_mktime(GETPOSTINT($key.'hour'), GETPOSTINT($key.'min'), 0, GETPOSTINT($key.'month'), GETPOSTINT($key.'day'), GETPOSTINT($key.'year'));
 	} elseif ($val['type'] == 'boolean') {
-		$value = (GETPOST($key) == 'on' ? 1 : 0);
+		$value = (request()->input($key) == 'on' ? 1 : 0);
 	} elseif ($val['type'] == 'price') {
-		$value = price2num(GETPOST($key));
+		$value = price2num(request()->input($key));
 	} elseif ($key == 'lang') {
-		$value = GETPOST($key, 'aZ09');
+		$value = request()->input($key);
 	} else {
-		$value = GETPOST($key, 'alphanohtml');
+		$value = request()->input($key);
 	}
 	if (!empty($val['noteditable'])) {
 		print $object->showOutputField($val, $key, $value, '', '', '', 0);

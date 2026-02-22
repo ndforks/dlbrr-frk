@@ -165,8 +165,8 @@ class IntField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = (int) price2num(GETPOSTINT($htmlName));
+		if (request()->has($htmlName)) {
+			$value = (int) price2num(request()->integer($htmlName, 0));
 		} else {
 			$value = $defaultValue;
 		}
@@ -189,8 +189,8 @@ class IntField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

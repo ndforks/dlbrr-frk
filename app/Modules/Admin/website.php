@@ -153,12 +153,12 @@ if (request()->input('actionadd') || request()->input('actionmodify')) {
 	// Check that all fields are filled
 	$ok = 1;
 	foreach ($listfield as $f => $value) {
-		if ($value == 'ref' && (!GETPOSTISSET($value) || GETPOST($value) == '')) {
+		if ($value == 'ref' && (!request()->has($value) || request()->input($value) == '')) {
 			$ok = 0;
 			$fieldnamekey = $listfield[$f];
 			setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->transnoentities($fieldnamekey)), null, 'errors');
 			break;
-		} elseif ($value == 'ref' && !preg_match('/^[a-z0-9_\-\.]+$/i', GETPOST($value))) {
+		} elseif ($value == 'ref' && !preg_match('/^[a-z0-9_\-\.]+$/i', request()->input($value))) {
 			$ok = 0;
 			$fieldnamekey = $listfield[$f];
 			setEventMessages($langs->transnoentities("ErrorFieldCanNotContainSpecialCharacters", $langs->transnoentities($fieldnamekey)), null, 'errors');
@@ -510,8 +510,8 @@ if ($id) {
 		// If data was already input, we define them in obj to populate input fields.
 		if (request()->input('actionadd')) {
 			foreach ($fieldlist as $key => $val) {
-				if (GETPOST($val, 'alpha')) {
-					$obj->$val = GETPOST($val);
+				if (request()->input($val)) {
+					$obj->$val = request()->input($val);
 				}
 			}
 		}

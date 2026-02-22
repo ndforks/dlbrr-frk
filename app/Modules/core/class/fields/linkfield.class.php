@@ -315,8 +315,8 @@ class LinkField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOSTINT($htmlName);
+		if (request()->has($htmlName)) {
+			$value = request()->integer($htmlName, 0);
 		} else {
 			$value = $defaultValue;
 		}
@@ -339,8 +339,8 @@ class LinkField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alphanohtml');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

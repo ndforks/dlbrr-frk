@@ -234,7 +234,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'update' || $action == 'add') {
 	// Action to update or add a constant
 	$constname = request()->input('constname');
-	$constvalue = (GETPOST('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname) : request()->input('constvalue'));
+	$constvalue = (request()->input('constvalue_' . $constname) ? request()->input('constvalue_' . $constname) : request()->input('constvalue'));
 
 
 	if (($constname == 'ADHERENT_CARD_TYPE' || $constname == 'ADHERENT_ETIQUETTE_TYPE' || $constname == 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS') && $constvalue == -1) {

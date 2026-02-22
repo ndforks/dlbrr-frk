@@ -81,8 +81,8 @@ if ($action == 'update' || preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$result = 1;
 	foreach ($arrayofcode as $code) {
 		$value = 1;
-		if (GETPOSTISSET($code)) {	// For the case of nojs=1
-			$value = GETPOST($code);
+		if (request()->has($code)) {	// For the case of nojs=1
+			$value = request()->input($code);
 		}
 
 		if ($value == 1) {

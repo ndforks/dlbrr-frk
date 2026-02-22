@@ -47,10 +47,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
  * @var User $user
  */
 
-$field = GETPOST('field', 'alpha', 2);
-$element = GETPOST('element', 'alpha', 2);
-$table_element = GETPOST('table_element', 'alpha', 2);
-$fk_element = GETPOST('fk_element', 'alpha', 2);
+$field = request()->input('field');
+$element = request()->input('element');
+$table_element = request()->input('table_element');
+$fk_element = request()->input('fk_element');
 $id = $fk_element;
 
 /* Example:
@@ -108,14 +108,14 @@ top_httphead();
 if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_element)) {
 	$field = preg_replace('/^editval_/', '', $field); 	// remove prefix "editval_"
 
-	$type = GETPOST('type', 'alpha', 2);	// type string by default
+	$type = request()->input('type');	// type string by default
 
-	$value = ($type == 'ckeditor' ? GETPOST('value', '', 2) : GETPOST('value', 'alpha', 2));
+	$value = ($type == 'ckeditor' ? request()->input('value') : request()->input('value'));
 
-	//$ext_element = GETPOST('ext_element', 'alpha', 2);
+	//$ext_element = request()->input('ext_element');
 	$ext_element = 'notused';
 
-	//$savemethod = GETPOST('savemethod', 'alpha', 2);
+	//$savemethod = request()->input('savemethod');
 	//$savemethodname = (!empty($savemethod) ? $savemethod : 'setValueFrom');
 	$savemethodname = 'setValueFrom';
 
@@ -187,7 +187,7 @@ if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_e
 				$return['error'] = $langs->trans('ErrorBadValue');
 			}
 		} elseif ($type == 'datepicker') {
-			$timestamp = GETPOSTINT('timestamp', 2);
+			$timestamp = request()->integer('timestamp', 0);
 			$format = 'date';
 			$newvalue = ($timestamp / 1000);
 		}

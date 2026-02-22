@@ -139,7 +139,7 @@ print '</td>';
 
 // Qty
 $coldisplay++;
-print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(request()->has('qty') ? GETPOST("qty", 'alpha', 2) : 1).'">';
+print '<td class="bordertop nobottom linecolqty right"><input type="text" size="2" name="qty" id="qty" class="flat right" value="'.(request()->has('qty') ? request()->input('qty') : 1).'">';
 print '</td>';
 
 // Unit

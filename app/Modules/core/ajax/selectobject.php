@@ -52,7 +52,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 
 $extrafields = new ExtraFields($db);
 
-$objectdesc = GETPOST('objectdesc', 'alphanohtml', 0, null, null, 1);
+$objectdesc = request()->input('objectdesc');
 $htmlname = request()->input('htmlname');
 $outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
 $id = request()->integer('id', 0);
@@ -144,7 +144,7 @@ if ($usesublevelpermission && !isset($user->rights->$module->$element)) {	// The
 */
 
 // When used from jQuery, the search term is added as GET param "term".
-$searchkey = (($id && GETPOST((string) $id, 'alpha')) ? GETPOST((string) $id, 'alpha') : (($htmlname && GETPOST($htmlname, 'alpha')) ? GETPOST($htmlname, 'alpha') : ''));
+$searchkey = (($id && GETPOST((string) $id, 'alpha')) ? GETPOST((string) $id, 'alpha') : (($htmlname && request()->input($htmlname)) ? request()->input($htmlname) : ''));
 
 // Add a security test to avoid to get content of all tables
 $allowModules = ['bom'];

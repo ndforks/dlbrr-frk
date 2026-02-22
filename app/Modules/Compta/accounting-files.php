@@ -689,7 +689,7 @@ foreach ($listofchoices as $choice => $val) {
 	if (empty($val['perms'])) {
 		$disabled = ' disabled';
 	}
-	$checked = (((!request()->has('search') && $action != 'searchfiles') || GETPOST($choice)) ? ' checked="checked"' : '');
+	$checked = (((!request()->has('search') && $action != 'searchfiles') || request()->input($choice)) ? ' checked="checked"' : '');
 	print '<div class="inline-block marginrightonlylarge paddingright margintoponly"><input type="checkbox" id="'.$choice.'" name="'.$choice.'" value="1"'.$checked.$disabled.'><label for="'.$choice.'"> ';
 	print img_picto($langs->trans($val['label']), $val['picto'], 'class=""').' '.$langs->trans($val['label']);
 	print '</label></div>';
@@ -711,7 +711,7 @@ if (!empty($date_start) && !empty($date_stop)) {
 	$param .= '&date_stopmonth='.request()->integer('date_stopmonth', 0);
 	$param .= '&date_stopyear='.request()->integer('date_stopyear', 0);
 	foreach ($listofchoices as $choice => $val) {
-		if (GETPOSTINT($choice)) {
+		if (request()->integer($choice, 0)) {
 			$param .= '&'.$choice.'=1';
 		}
 	}

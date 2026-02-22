@@ -100,9 +100,9 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		// Read possible payments
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 7) == 'amount_') {
-				if (GETPOST($key)) {
-					$amounts[$expensereport->fk_user_author] = (float) price2num(GETPOST($key));
-					// $total += price2num(GETPOST($key));
+				if (request()->input($key)) {
+					$amounts[$expensereport->fk_user_author] = (float) price2num(request()->input($key));
+					// $total += price2num(request()->input($key));
 				}
 			}
 		}
@@ -319,7 +319,7 @@ if ($action == 'create' || empty($action)) {
 			}
 			$remaintopay = $objp->total_ttc - $sumpaid; // autofill remainder amount
 			print '<input type=hidden class="sum_remain" name="'.$nameRemain.'" value="'.$remaintopay.'">'; // autofill remainder amount
-			print '<input type="text" class="width75" name="'.$namef.'" id="'.$namef.'" value="'.GETPOST($namef).'">';
+			print '<input type="text" class="width75" name="'.$namef.'" id="'.$namef.'" value="'.request()->input($namef).'">';
 		} else {
 			print '-';
 		}

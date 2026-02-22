@@ -50,7 +50,7 @@ $langs->loadLangs(array('projects', 'companies'));
 
 $id = request()->integer('id', 0);
 $idcomment = request()->integer('idcomment', 0);
-$ref = GETPOST("ref", 'alpha', 1); // task ref
+$ref = request()->input('ref'); // task ref
 $objectref = request()->input('taskref'); // task ref
 $action = request()->input('action');
 $confirm = request()->input('confirm');

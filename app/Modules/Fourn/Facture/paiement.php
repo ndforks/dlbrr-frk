@@ -177,13 +177,13 @@ if (empty($reshook)) {
 		foreach ($_POST as $key => $value) {
 			if (substr($key, 0, 7) == 'amount_') {
 				$cursorfacid = (int) substr($key, 7);
-				$amounts[$cursorfacid] = price2num(GETPOST($key));
+				$amounts[$cursorfacid] = price2num(request()->input($key));
 				if (!empty($amounts[$cursorfacid])) {
 					$atleastonepaymentnotnull++;
 					if (is_numeric($amounts[$cursorfacid])) {
 						$totalpayment += (float) $amounts[$cursorfacid];
 					} else {
-						setEventMessages($langs->transnoentities("InputValueIsNotAnNumber", GETPOST($key)), null, 'warnings');
+						setEventMessages($langs->transnoentities("InputValueIsNotAnNumber", request()->input($key)), null, 'warnings');
 					}
 				}
 				$result = $tmpinvoice->fetch($cursorfacid);
@@ -205,10 +205,10 @@ if (empty($reshook)) {
 					}
 				}
 
-				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => GETPOST($key));
+				$formquestion[$i++] = array('type' => 'hidden', 'name' => $key, 'value' => request()->input($key));
 			} elseif (substr($key, 0, 21) == 'multicurrency_amount_') {
 				$cursorfacid = (int) substr($key, 21);
-				$multicurrency_amounts[$cursorfacid] = (GETPOST($key) ? price2num(GETPOST($key)) : 0);
+				$multicurrency_amounts[$cursorfacid] = (request()->input($key) ? price2num(request()->input($key)) : 0);
 				$multicurrency_totalpayment += $multicurrency_amounts[$cursorfacid];
 				if (!empty($multicurrency_amounts[$cursorfacid])) {
 					$atleastonepaymentnotnull++;
@@ -790,10 +790,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 											print '</button>';
 										}
 										print '<input type=hidden class="multicurrency_remain" name="'.$nameRemain.'" value="'.$multicurrency_remaintopay.'">';
-										print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount width100" name="'.$namef.'" value="'.GETPOST($namef).'">';
+										print '<input '.$min.' '.$max.' type="text" class="multicurrency_amount width100" name="'.$namef.'" value="'.request()->input($namef).'">';
 									} else {
-										print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.GETPOST($namef).'" disabled>';
-										print '<input type="hidden" name="'.$namef.'" value="'.GETPOST($namef).'">';
+										print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.request()->input($namef).'" disabled>';
+										print '<input type="hidden" name="'.$namef.'" value="'.request()->input($namef).'">';
 									}
 								}
 								print "</td>";
@@ -858,10 +858,10 @@ if ($action == 'create' || $action == 'confirm_paiement' || $action == 'add_paie
 									print '</button>';
 								}
 								print '<input type="hidden" class="remain" name="'.$nameRemain.'" value="'.$remaintopay.'">';
-								print '<input '.$max.' '.$min.' type="text" class="amount width100" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">'; // class is required to be used by javascript callForResult();
+								print '<input '.$max.' '.$min.' type="text" class="amount width100" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">'; // class is required to be used by javascript callForResult();
 							} else {
-								print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(GETPOST($namef)).'" disabled>';
-								print '<input type="hidden" class="amount" name="'.$namef.'" value="'.dol_escape_htmltag(GETPOST($namef)).'">'; // class is required to be used by javascript callForResult();
+								print '<input type="text" class="width100" name="'.$namef.'_disabled" value="'.dol_escape_htmltag(request()->input($namef)).'" disabled>';
+								print '<input type="hidden" class="amount" name="'.$namef.'" value="'.dol_escape_htmltag(request()->input($namef)).'">'; // class is required to be used by javascript callForResult();
 							}
 							print "</td>";
 

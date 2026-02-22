@@ -90,9 +90,9 @@ if ($action == 'updateall') {
 
 	$res = 0;
 	foreach ($constantes as $constname => $value) {
-		$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname, 'alphanohtml') : request()->input('constvalue'));
-		$consttype = (GETPOSTISSET('consttype_'.$constname) ? GETPOST('consttype_'.$constname, 'alphanohtml') : request()->input('consttype'));
-		$constnote = (GETPOSTISSET('constnote_'.$constname) ? GETPOST('constnote_'.$constname, 'restricthtml') : request()->input('constnote'));
+		$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? request()->input('constvalue_' . $constname) : request()->input('constvalue'));
+		$consttype = (GETPOSTISSET('consttype_'.$constname) ? request()->input('consttype_' . $constname) : request()->input('consttype'));
+		$constnote = (GETPOSTISSET('constnote_'.$constname) ? request()->input('constnote_' . $constname) : request()->input('constnote'));
 
 		$typetouse = empty($oldtypetonewone[$consttype]) ? $consttype : $oldtypetonewone[$consttype];
 		$constvalue = preg_replace('/:member$/', '', $constvalue);
@@ -118,9 +118,9 @@ if ($action == 'update' || $action == 'add') {
 	$constlineid = request()->integer('rowid', 0);
 	$constname = request()->input('constname');
 
-	$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname, 'alphanohtml') : request()->input('constvalue'));
-	$consttype = (GETPOSTISSET('consttype_'.$constname) ? GETPOST('consttype_'.$constname, 'alphanohtml') : request()->input('consttype'));
-	$constnote = (GETPOSTISSET('constnote_'.$constname) ? GETPOST('constnote_'.$constname, 'restricthtml') : request()->input('constnote'));
+	$constvalue = (GETPOSTISSET('constvalue_'.$constname) ? request()->input('constvalue_' . $constname) : request()->input('constvalue'));
+	$consttype = (GETPOSTISSET('consttype_'.$constname) ? request()->input('consttype_' . $constname) : request()->input('consttype'));
+	$constnote = (GETPOSTISSET('constnote_'.$constname) ? request()->input('constnote_' . $constname) : request()->input('constnote'));
 
 	$typetouse = empty($oldtypetonewone[$consttype]) ? $consttype : $oldtypetonewone[$consttype];
 	$constvalue = preg_replace('/:member$/', '', $constvalue);

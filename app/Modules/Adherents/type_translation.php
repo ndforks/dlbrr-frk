@@ -116,13 +116,13 @@ if ($action == 'vedit' && $cancel != $langs->trans("Cancel") && $user->hasRight(
 
 	foreach ($object->multilangs as $key => $value) { // saving new values in the object
 		if ($key == $current_lang) {
-			$object->label = GETPOST("libelle-".$key, 'alphanohtml');
-			$object->description = dol_htmlcleanlastbr(GETPOST("desc-".$key, 'restricthtml'));
-			$object->other = dol_htmlcleanlastbr(GETPOST("other-".$key, 'restricthtml'));
+			$object->label = request()->input("libelle-" . $key);
+			$object->description = dol_htmlcleanlastbr(request()->input("desc-" . $key));
+			$object->other = dol_htmlcleanlastbr(request()->input("other-" . $key));
 		} else {
-			$object->multilangs[$key]["label"] = GETPOST("libelle-".$key, 'alphanohtml');
-			$object->multilangs[$key]["description"] = dol_htmlcleanlastbr(GETPOST("desc-".$key, 'restricthtml'));
-			$object->multilangs[$key]["other"] = dol_htmlcleanlastbr(GETPOST("other-".$key, 'restricthtml'));
+			$object->multilangs[$key]["label"] = request()->input("libelle-" . $key);
+			$object->multilangs[$key]["description"] = dol_htmlcleanlastbr(request()->input("desc-" . $key));
+			$object->multilangs[$key]["other"] = dol_htmlcleanlastbr(request()->input("other-" . $key));
 		}
 	}
 

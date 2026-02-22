@@ -168,7 +168,7 @@ class StarsField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		return $this->verifyFieldValue($fieldInfos, $key, GETPOST($htmlName, 'restricthtml'));
+		return $this->verifyFieldValue($fieldInfos, $key, request()->input($htmlName));
 	}
 
 	/**
@@ -186,8 +186,8 @@ class StarsField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOSTINT($htmlName);
+		if (request()->has($htmlName)) {
+			$value = request()->integer($htmlName, 0);
 		} else {
 			$value = $defaultValue;
 		}
@@ -210,8 +210,8 @@ class StarsField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOSTINT($htmlName);
+		if (request()->has($htmlName)) {
+			$value = request()->integer($htmlName, 0);
 		} else {
 			$value = $defaultValue;
 		}

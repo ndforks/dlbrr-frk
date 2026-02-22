@@ -87,8 +87,8 @@ class box_task extends ModeleBoxes
 		$textHead = $langs->trans("CurentlyOpenedTasks");
 
 		$filterValue = 'all';
-		if (in_array(GETPOST($cookie_name), array('all', 'im_project_contact', 'im_task_contact'))) {
-			$filterValue = GETPOST($cookie_name);
+		if (in_array(request()->input($cookie_name), array('all', 'im_project_contact', 'im_task_contact'))) {
+			$filterValue = request()->input($cookie_name);
 		} elseif (!empty($_COOKIE[$cookie_name])) {
 			$filterValue = preg_replace('/[^a-z_]/', '', $_COOKIE[$cookie_name]); // Clean cookie from evil data
 		}

@@ -83,10 +83,10 @@ class box_graph_product_distribution extends ModeleBoxes
 		$param_showordernb = 'DOLUSER_box_'.$this->boxcode.'_showordernb';
 		$autosetarray = preg_split("/[,;:]+/", request()->input('DOL_AUTOSET_COOKIE'));
 		if (in_array('DOLUSER_box_'.$this->boxcode, $autosetarray)) {
-			$year = GETPOSTINT($param_year);
-			$showinvoicenb = GETPOST($param_showinvoicenb, 'alpha');
-			$showpropalnb = GETPOST($param_showpropalnb, 'alpha');
-			$showordernb = GETPOST($param_showordernb, 'alpha');
+			$year = request()->integer($param_year, 0);
+			$showinvoicenb = request()->input($param_showinvoicenb);
+			$showpropalnb = request()->input($param_showpropalnb);
+			$showordernb = request()->input($param_showordernb);
 		} else {
 			$tmparray = (!empty($_COOKIE['DOLUSER_box_'.$this->boxcode]) ? json_decode($_COOKIE['DOLUSER_box_'.$this->boxcode], true) : array());
 			$year = (!empty($tmparray['year']) ? $tmparray['year'] : '');

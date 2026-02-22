@@ -106,8 +106,8 @@ foreach ($object->fields as $key => $val) {
 	if ($search_key == 'statut') {
 		$search_key = 'status'; // remove this after refactor entrepot.class property statut to status
 	}
-	if (GETPOST('search_'.$search_key, 'alpha') !== '') {
-		$search[$search_key] = GETPOST('search_'.$search_key, 'alpha');
+	if (request()->input('search_' . $search_key) !== '') {
+		$search[$search_key] = request()->input('search_' . $search_key);
 	}
 }
 

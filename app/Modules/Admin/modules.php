@@ -84,7 +84,7 @@ $options['categorie'] 		= (request()->integer('categorie', 0) ? request()->integ
 $options['search']    		= request()->input('search_keyword');
 
 // If it is a new search, we reset page to 1
-if (GETPOST('buttonsubmit', 'alphanohtml', 2)) {
+if (request()->input('buttonsubmit')) {
 	$options['no_page'] = 1;
 }
 

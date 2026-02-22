@@ -146,7 +146,7 @@ if (request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empt
 
 // Delete file/link
 if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissiontoadd)) {
-	$urlfile = GETPOST('urlfile', 'alpha', 0, null, null, 1);
+	$urlfile = request()->input('urlfile');
 	if (request()->input('section')) {
 		// For a delete from the ECM module, upload_dir is ECM root dir and urlfile contains relative path from upload_dir
 		$file = $upload_dir.(preg_match('/\/$/', $upload_dir) ? '' : '/').$urlfile;

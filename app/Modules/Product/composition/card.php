@@ -111,9 +111,9 @@ if (empty($reshook)) {
 		$maxprod = request()->integer('max_prod', 0);
 
 		for ($i = 0; $i < $maxprod; $i++) {
-			$qty = price2num(GETPOST("prod_qty_" . $i, 'alpha'), 'MS');
+			$qty = price2num(request()->input("prod_qty_" . $i), 'MS');
 			if ($qty > 0) {
-				if ($object->add_sousproduit($id, GETPOSTINT("prod_id_" . $i), (float) $qty, GETPOSTINT("prod_incdec_" . $i)) > 0) {
+				if ($object->add_sousproduit($id, request()->integer("prod_id_" . $i, 0), (float) $qty, request()->integer("prod_incdec_" . $i, 0)) > 0) {
 					//var_dump($i.' '.GETPOST("prod_id_".$i, 'int'), $qty, GETPOST("prod_incdec_".$i, 'int'));
 					$action = 'edit';
 				} else {
@@ -126,7 +126,7 @@ if (empty($reshook)) {
 					}
 				}
 			} else {
-				if ($object->del_sousproduit($id, GETPOSTINT("prod_id_" . $i)) > 0) {
+				if ($object->del_sousproduit($id, request()->integer("prod_id_" . $i, 0)) > 0) {
 					$action = 'edit';
 				} else {
 					$error++;

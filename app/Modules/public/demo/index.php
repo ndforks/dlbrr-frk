@@ -227,7 +227,7 @@ if (request()->input('action') == 'gotodemo') {     // Action run when we click 
 	// If we disable modules using personalized list
 	foreach ($modules as $val) {
 		$modulekeyname = strtolower($val->name);
-		if (!GETPOST($modulekeyname) && empty($val->always_enabled) && !in_array($modulekeyname, $alwayscheckedmodules)) {
+		if (!request()->input($modulekeyname) && empty($val->always_enabled) && !in_array($modulekeyname, $alwayscheckedmodules)) {
 			$disablestring .= $modulekeyname.',';
 			if ($modulekeyname == 'propale') {
 				$disablestring .= 'propal,';

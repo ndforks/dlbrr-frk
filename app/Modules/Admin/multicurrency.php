@@ -59,7 +59,7 @@ $multicurrency = new MultiCurrency($db);
 $reg = array();
 if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
-	$value = GETPOST($code, 'alpha');
+	$value = request()->input($code);
 	if (dolibarr_set_const($db, $code, $value, 'chaine', 0, '', $conf->entity) > 0) {
 		setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 	} else {

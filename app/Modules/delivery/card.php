@@ -145,7 +145,7 @@ if ($action == 'add' && $permissiontoadd) {
 		$idl = "idl".$i;
 		$qtytouse = price2num((float)request()->input($qty, 0.0));
 		if ($qtytouse > 0) {
-			$object->addline(GETPOSTINT($idl), (float) price2num($qtytouse), $array_options);
+			$object->addline(request()->integer($idl, 0), (float) price2num($qtytouse), $array_options);
 		}
 	}
 

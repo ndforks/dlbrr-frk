@@ -73,7 +73,7 @@ $coldisplay++;
 		<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
 
 		<?php $coldisplay++; ?>
-		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(request()->has('line_ref') ? GETPOST("line_ref", 'alpha', 2) : $line->ref); ?>">
+		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(request()->has('line_ref') ? request()->input('line_ref') : $line->ref); ?>">
 		<?php
 		if (is_object($hookmanager)) {
 			$parameters = array('line' => $line);
@@ -86,7 +86,7 @@ $coldisplay++;
 	</td>
 
 	<td class="nobottom linecolvalue"><?php $coldisplay++; ?>
-		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(request()->has('line_value') ? GETPOST("line_value", 'alpha', 2) : $line->value); ?>">
+		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(request()->has('line_value') ? request()->input('line_value') : $line->value); ?>">
 	</td>
 
 	<!-- colspan for this td because it replace td for buttons+... -->

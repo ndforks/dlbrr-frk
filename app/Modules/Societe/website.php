@@ -101,7 +101,7 @@ $search_all = request()->input('search_all');
 /** @var array<string[]|string> $search */
 $search = array();
 foreach ($objectwebsiteaccount->fields as $key => $val) {
-	$value = GETPOST('search_'.$key, 'alpha');
+	$value = request()->input('search_' . $key);
 	if ($value) {
 		$search[$key] = $value;
 	}

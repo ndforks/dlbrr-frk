@@ -148,9 +148,9 @@ if (empty($reshook)) {
 				print img_picto('', $field_info['picto'], '', 0, 0, 0, '', 'pictofixedwidth');
 			}
 			if (in_array($field_info['type'], array('int', 'integer'))) {
-				$value = GETPOSTISSET($html_name) ? GETPOSTINT($html_name) : $assetdepreciationoptions->$field_key;
+				$value = request()->has($html_name) ? request()->integer($html_name, 0) : $assetdepreciationoptions->$field_key;
 			} elseif ($field_info['type'] == 'double') {
-				$value = GETPOSTISSET($html_name) ? price2num(GETPOST($html_name, 'alphanohtml')) : $assetdepreciationoptions->$field_key;
+				$value = request()->has($html_name) ? price2num(request()->input($html_name)) : $assetdepreciationoptions->$field_key;
 			} elseif (preg_match('/^(text|html)/', $field_info['type'])) {
 				$tmparray = explode(':', $field_info['type']);
 				if (!empty($tmparray[1])) {
@@ -158,11 +158,11 @@ if (empty($reshook)) {
 				} else {
 					$check = 'restricthtml';
 				}
-				$value = GETPOSTISSET($html_name) ? GETPOST($html_name, $check) : $assetdepreciationoptions->$field_key;
+				$value = request()->has($html_name) ? GETPOST($html_name, $check) : $assetdepreciationoptions->$field_key;
 			} elseif ($field_info['type'] == 'price') {
-				$value = GETPOSTISSET($html_name) ? price2num(GETPOST($html_name)) : ($assetdepreciationoptions->$field_key ? price2num($assetdepreciationoptions->$field_key) : (!empty($field_info['default']) ? dol_eval((string) $field_info['default'], 1) : 0));
+				$value = request()->has($html_name) ? price2num(request()->input($html_name)) : ($assetdepreciationoptions->$field_key ? price2num($assetdepreciationoptions->$field_key) : (!empty($field_info['default']) ? dol_eval((string) $field_info['default'], 1) : 0));
 			} else {
-				$value = GETPOSTISSET($html_name) ? GETPOST($html_name, 'alpha') : $assetdepreciationoptions->$field_key;
+				$value = request()->has($html_name) ? request()->input($html_name) : $assetdepreciationoptions->$field_key;
 			}
 			if (!empty($field_info['noteditable'])) {
 				print $assetdepreciationoptions->showOutputField($field_info, $field_key, $value, '', '', $prefix_html_name, 0);

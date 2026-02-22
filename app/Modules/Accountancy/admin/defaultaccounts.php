@@ -154,7 +154,7 @@ $error = 0;
 if ($action == 'update') {
 	// Process $list_account_main
 	foreach ($list_account_main as $constname) {
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -167,7 +167,7 @@ if ($action == 'update') {
 			continue;
 		}
 
-		$constvalue = GETPOST($constname, 'alpha');
+		$constvalue = request()->input($constname);
 
 		if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -175,13 +175,13 @@ if ($action == 'update') {
 	}
 
 	$constname = 'ACCOUNTING_ACCOUNT_CUSTOMER_DEPOSIT';
-	$constvalue = GETPOSTINT($constname);
+	$constvalue = request()->integer($constname, 0);
 	if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}
 
 	$constname = 'ACCOUNTING_ACCOUNT_SUPPLIER_DEPOSIT';
-	$constvalue = GETPOSTINT($constname);
+	$constvalue = request()->integer($constname, 0);
 	if (!dolibarr_set_const($db, $constname, $constvalue, 'chaine', 0, '', $conf->entity)) {
 		$error++;
 	}

@@ -247,7 +247,7 @@ class AssetDepreciationOptions extends CommonObject
 						continue; // The field was not submitted to be saved
 					}
 				} else {
-					if (!GETPOSTISSET($html_name)) {
+					if (!request()->has($html_name)) {
 						continue; // The field was not submitted to be saved
 					}
 				}
@@ -263,7 +263,7 @@ class AssetDepreciationOptions extends CommonObject
 
 				// Set value to insert
 				if (in_array($field_info['type'], array('text', 'html'))) {
-					$value = GETPOST($html_name, 'restricthtml');
+					$value = request()->input($html_name);
 				} elseif ($field_info['type'] == 'date') {
 					$value = dol_mktime(0, 0, 0, GETPOSTINT($html_name . 'month'), GETPOSTINT($html_name . 'day'), GETPOSTINT($html_name . 'year'), 'gmt'); // for date without hour, we use gmt
 				} elseif ($field_info['type'] == 'datetime') {
@@ -271,16 +271,16 @@ class AssetDepreciationOptions extends CommonObject
 				} elseif ($field_info['type'] == 'duration') {
 					$value = 60 * 60 * GETPOSTINT($html_name . 'hour') + 60 * GETPOSTINT($html_name . 'min');
 				} elseif (preg_match('/^(integer|price|real|double)/', $field_info['type'])) {
-					$value = price2num(GETPOST($html_name, 'alphanohtml')); // To fix decimal separator according to lang setup
+					$value = price2num(request()->input($html_name)); // To fix decimal separator according to lang setup
 				} elseif ($field_info['type'] == 'boolean') {
-					$value = ((GETPOST($html_name) == '1' || GETPOST($html_name) == 'on') ? 1 : 0);
+					$value = ((request()->input($html_name) == '1' || request()->input($html_name) == 'on') ? 1 : 0);
 				} elseif ($field_info['type'] == 'reference') {
-					$value = GETPOST($html_name) . ',' . GETPOST($html_name . '2');
+					$value = request()->input($html_name) . ',' . GETPOST($html_name . '2');
 				} else {
 					if ($field_key == 'lang') {
-						$value = GETPOST($html_name, 'aZ09') ? GETPOST($html_name, 'aZ09') : "";
+						$value = request()->input($html_name) ? request()->input($html_name) : "";
 					} else {
-						$value = GETPOST($html_name, 'alphanohtml');
+						$value = request()->input($html_name);
 					}
 				}
 				if (preg_match('/^integer:/i', $field_info['type']) && $value == '-1') {

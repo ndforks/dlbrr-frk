@@ -3040,7 +3040,7 @@ function dol_check_secure_access_document($modulepart, $original_file, $entity, 
 				$tmpobject = new User($db);
 				$tmpobject->fetch((int) $reg[1], '', '', 1);
 				if (getDolUserInt('USER_ENABLE_PUBLIC', 0, $tmpobject)) {
-					$securekey = GETPOST('securekey', 'alpha', 1);
+					$securekey = request()->input('securekey');
 					// Security check
 					global $dolibarr_main_cookie_cryptkey, $dolibarr_main_instance_unique_id;
 					$valuetouse = $dolibarr_main_instance_unique_id ? $dolibarr_main_instance_unique_id : $dolibarr_main_cookie_cryptkey; // Use $dolibarr_main_instance_unique_id first then $dolibarr_main_cookie_cryptkey

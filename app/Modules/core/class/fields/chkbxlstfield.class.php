@@ -197,7 +197,7 @@ class ChkbxlstField extends CommonSellistField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$values = GETPOST($htmlName, 'array');
+		$values = request()->input($htmlName);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $values);
 	}
@@ -217,7 +217,7 @@ class ChkbxlstField extends CommonSellistField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$values = request()->input($htmlName, []);
 			if (is_array($values)) $values = implode(',', $values);
 		} else {
@@ -242,7 +242,7 @@ class ChkbxlstField extends CommonSellistField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			$value = request()->input($htmlName, []);
 		} else {
 			$value = $defaultValue;

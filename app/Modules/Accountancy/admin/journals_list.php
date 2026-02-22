@@ -452,8 +452,8 @@ if ($tabname[$id]) {
 	// If data was already input, we define them in obj to populate input fields.
 	if (request()->input('actionadd')) {
 		foreach ($fieldlist as $key => $val) {
-			if (GETPOST($val) != '') {
-				$obj->$val = GETPOST($val);
+			if (request()->input($val) != '') {
+				$obj->$val = request()->input($val);
 			}
 		}
 	}

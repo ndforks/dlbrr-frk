@@ -106,8 +106,8 @@ class box_graph_invoices_peryear extends ModeleBoxes
 			include_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facturestats.class.php';
 			$autosetarray = preg_split("/[,;:]+/", request()->input('DOL_AUTOSET_COOKIE'));
 			if (in_array('DOLUSER_box_'.$this->boxcode, $autosetarray)) {
-				$endyear = GETPOSTINT($param_year);
-				$showtot = GETPOST($param_showtot, 'alpha');
+				$endyear = request()->integer($param_year, 0);
+				$showtot = request()->input($param_showtot);
 			} else {
 				$tmparray = json_decode($_COOKIE['DOLUSER_box_'.$this->boxcode], true);
 				$endyear = $tmparray['year'];

@@ -86,10 +86,10 @@ if ($action == 'createecheancier' && empty($pay_without_schedule) && $permission
 	$db->begin();
 	$i = 1;
 	while ($i < $object->nbterm + 1) {
-		$date = GETPOSTINT('hi_date'.$i);
-		$mens = price2num(GETPOST('mens'.$i));
-		$int = price2num(GETPOST('hi_interets'.$i));
-		$insurance = price2num(GETPOST('hi_insurance'.$i));
+		$date = request()->integer('hi_date' . $i, 0);
+		$mens = price2num(request()->input('mens' . $i));
+		$int = price2num(request()->input('hi_interets' . $i));
+		$insurance = price2num(request()->input('hi_insurance' . $i));
 
 		$new_echeance = new LoanSchedule($db);
 
@@ -123,10 +123,10 @@ if ($action == 'updateecheancier' && empty($pay_without_schedule) && $permission
 	$db->begin();
 	$i = 1;
 	while ($i < $object->nbterm + 1) {
-		$mens = price2num(GETPOST('mens'.$i));
-		$int = price2num(GETPOST('hi_interets'.$i));
-		$id = GETPOSTINT('hi_rowid'.$i);
-		$insurance = price2num(GETPOST('hi_insurance'.$i));
+		$mens = price2num(request()->input('mens' . $i));
+		$int = price2num(request()->input('hi_interets' . $i));
+		$id = request()->integer('hi_rowid' . $i, 0);
+		$insurance = price2num(request()->input('hi_insurance' . $i));
 
 		$new_echeance = new LoanSchedule($db);
 		$new_echeance->fetch($id);

@@ -146,7 +146,7 @@ class TextField extends CommonField
 	public function verifyPostFieldValue($fieldInfos, $key, $keyPrefix = '', $keySuffix = '')
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
-		$value = GETPOST($htmlName, 'restricthtml');
+		$value = request()->input($htmlName);
 
 		return $this->verifyFieldValue($fieldInfos, $key, $value);
 	}
@@ -166,11 +166,11 @@ class TextField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
+		if (request()->has($htmlName)) {
 			if (!empty($fieldInfos->getPostCheck)) {
 				$value = GETPOST($htmlName, $fieldInfos->getPostCheck);
 			} else {
-				$value = GETPOST($htmlName, 'nohtml');
+				$value = request()->input($htmlName);
 				if (!empty($fieldInfos->options) && !empty($fieldInfos->multiInput)) {
 					$tmpArrayMultiSelect = request()->input($htmlName . '_multiselect', []);
 					foreach ($tmpArrayMultiSelect as $tmpValue) {
@@ -200,8 +200,8 @@ class TextField extends CommonField
 	{
 		$htmlName = $keyPrefix . $key . $keySuffix;
 
-		if (GETPOSTISSET($htmlName)) {
-			$value = GETPOST($htmlName, 'alpha');
+		if (request()->has($htmlName)) {
+			$value = request()->input($htmlName);
 		} else {
 			$value = $defaultValue;
 		}

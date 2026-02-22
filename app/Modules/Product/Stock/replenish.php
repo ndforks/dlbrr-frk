@@ -180,10 +180,10 @@ if ($action == 'order' && request()->input('valid') && $user->hasRight('fourniss
 		require_once DOL_DOCUMENT_ROOT . '/fourn/class/fournisseur.product.class.php';
 		$productsupplier = new ProductFournisseur($db);
 		for ($i = 0; $i < $linecount; $i++) {
-			if (GETPOST('choose'.$i) === 'on' && GETPOSTINT('fourn'.$i) > 0) {
+			if (request()->input('choose' . $i) === 'on' && request()->integer('fourn' . $i, 0) > 0) {
 				//one line
 				$box = $i;
-				$supplierpriceid = GETPOSTINT('fourn'.$i);
+				$supplierpriceid = request()->integer('fourn' . $i, 0);
 				//get all the parameters needed to create a line
 				$qty = (float)request()->input('tobuy'.$i, 0.0);
 				$idprod = $productsupplier->get_buyprice($supplierpriceid, $qty);

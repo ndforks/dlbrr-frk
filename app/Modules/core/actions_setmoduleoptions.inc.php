@@ -62,17 +62,17 @@ if (($action == 'update' || !empty($websitetemplateconf)) && !empty($arrayofpara
 
 	foreach ($arrayofparameters as $key => $val) {
 		// Modify constant only if key was posted (avoid resetting key to the null value)
-		if (GETPOSTISSET($key)) {
+		if (request()->has($key)) {
 			if (isset($val['type']) && preg_match('/category:/', $val['type'])) {
-				if (GETPOSTINT($key) == '-1') {
+				if (request()->integer($key, 0) == '-1') {
 					$val_const = '';
 				} else {
-					$val_const = GETPOSTINT($key);
+					$val_const = request()->integer($key, 0);
 				}
 			} elseif (isset($val['type']) && $val['type'] == 'html') {
-				$val_const = GETPOST($key, 'restricthtml');
+				$val_const = request()->input($key);
 			} else {
-				$val_const = GETPOST($key, 'alpha');
+				$val_const = request()->input($key);
 			}
 
 			$result = dolibarr_set_const($db, $key, $val_const, 'chaine', 0, '', $conf->entity);
