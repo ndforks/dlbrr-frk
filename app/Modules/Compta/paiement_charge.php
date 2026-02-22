@@ -297,7 +297,7 @@ if ($action == 'create') {
 			}
 			$remaintopay = $objp->amount - $sumpaid;
 			print '<input type=hidden class="sum_remain" name="'.$nameRemain.'" value="'.$remaintopay.'">';
-			print '<input type="text" size="8" name="'.$namef.'" id="'.$namef.'" value="'.GETPOST('amount_'.$objp->id, 'alpha').'">';
+			print '<input type="text" size="8" name="'.$namef.'" id="'.$namef.'" value="'.request()->input('amount_' . $objp->id).'">';
 		} else {
 			print '-';
 		}

@@ -2027,11 +2027,11 @@ if ($action == "updatesecurity" && $usercanedit && request()->input('btn_WEBSITE
 if ($action == "updatesecurity" && $usercanedit) {
 	$db->begin();
 	$res1 = $res2 = $res3 = $res4 = 0;
-	$securityrp = GETPOST('WEBSITE_'.$object->id.'_SECURITY_FORCERP', 'alpha');
-	$securitysts = GETPOST('WEBSITE_'.$object->id.'_SECURITY_FORCESTS', 'alpha');
-	$securitypp = GETPOST('WEBSITE_'.$object->id.'_SECURITY_FORCEPP', 'alpha');
-	$securitysp = GETPOST('WEBSITE_'.$object->id.'_SECURITY_FORCECSP', 'alpha');
-	$securitycspro = GETPOST('WEBSITE_'.$object->id.'_SECURITY_FORCECSPRO', 'alpha');
+	$securityrp = request()->input('WEBSITE_' . $object->id . '_SECURITY_FORCERP');
+	$securitysts = request()->input('WEBSITE_' . $object->id . '_SECURITY_FORCESTS');
+	$securitypp = request()->input('WEBSITE_' . $object->id . '_SECURITY_FORCEPP');
+	$securitysp = request()->input('WEBSITE_' . $object->id . '_SECURITY_FORCECSP');
+	$securitycspro = request()->input('WEBSITE_' . $object->id . '_SECURITY_FORCECSPRO');
 
 	$res1 = dolibarr_set_const($db, 'WEBSITE_'.$object->id.'_SECURITY_FORCERP', $securityrp, 'chaine', 0, '', $conf->entity);
 	$res2 = dolibarr_set_const($db, 'WEBSITE_'.$object->id.'_SECURITY_FORCESTS', $securitysts, 'chaine', 0, '', $conf->entity);

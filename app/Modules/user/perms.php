@@ -575,8 +575,8 @@ foreach ($arrayofpermission as $i => $obj) {
 
 	$objMod = $modules[$obj->module];
 
-	if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-		$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+	if (request()->has('forbreakperms_' . $obj->module)) {
+		$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 	} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 		$ishidden = 1;
 	} else {
@@ -599,8 +599,8 @@ foreach ($arrayofpermission as $i => $obj) {
 		$oldmod = $obj->module;
 
 		$j++;
-		if (GETPOSTISSET('forbreakperms_'.$obj->module)) {
-			$ishidden = GETPOSTINT('forbreakperms_'.$obj->module);
+		if (request()->has('forbreakperms_' . $obj->module)) {
+			$ishidden = request()->integer('forbreakperms_' . $obj->module, 0);
 		} elseif (in_array($j, $cookietohidegrouparray)) {	// If j is among list of hidden group
 			$ishidden = 1;
 		} else {

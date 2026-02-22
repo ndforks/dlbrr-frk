@@ -117,8 +117,8 @@ if ($action == 'setcoder') {
 		while ($i < $num) {
 			$obj = $db->fetch_object($resql);
 
-			if (GETPOST('coder'.$obj->rowid, 'alpha')) {
-				$coder = GETPOST('coder'.$obj->rowid, 'alpha');
+			if (request()->input('coder' . $obj->rowid)) {
+				$coder = request()->input('coder' . $obj->rowid);
 				$code_id = $obj->rowid;
 
 				$sqlp = "UPDATE ".MAIN_DB_PREFIX."c_barcode_type";
