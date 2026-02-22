@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2011-2013  Regis Houssin   <regis.houssin@inodbox.com>
  * Copyright (C) 2025		MDW				<mdeweerd@users.noreply.github.com>
  *
@@ -32,8 +32,7 @@ $objectUrl = $object->getNomUrl(0, '', '0', 1);
 if ($object->element == 'propal') {
 	$objectUrl = dolBuildUrl(DOL_URL_ROOT.'/comm/propal/card.php', ['id' => $object->id]);
 }
-
-?>
+@endphp
 
 <!-- START TEMPLATE IMPORT OBJECT LINKED LINES -->
 <script>

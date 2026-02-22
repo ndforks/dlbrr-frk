@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2014-2017  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -29,7 +29,8 @@
  * @var Conf $conf
  * @var int $i
  */
-
+--}}
+@php
 '
 @phan-var-force Propal|Contrat|Commande|Facture|Expedition|Delivery|CommandeFournisseur|FactureFournisseur|SupplierProposal|Fichinter $object
 @phan-var-force CommonObjectLine|CommonInvoiceLine|CommonOrderLine|ExpeditionLigne|PropaleLigne|FichinterLigne $line
@@ -91,8 +92,8 @@ if (!getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
 if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	$colspan += 1;
 }
+@endphp
 
-?>
 
 <td class="linecoldesc minwidth250onall">
 	<div id="line_{{ $line->id }}"></div>
@@ -103,8 +104,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="{{ $line->fk_parent_line }}">
 	<input type="hidden" name="action" value="update{{ $line_type }}line">
 
-	<?php
-
+	@php
 	$situationinvoicelinewithparent = 0;
 	if ($line->fk_prev_id != null && in_array($object->element, array('facture', 'facturedet'))) {
 		/** @var CommonInvoice $object */
@@ -122,7 +122,6 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	}
 
 	$langs->load('subtotals');
-
 
 	if (!$situationinvoicelinewithparent) {
 		print '<input type="text" name="line_desc" class="marginrightonly" id="line_desc" value="';
@@ -154,7 +153,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		print GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description;
 		print '"></td>';
 	}
-	?>
+	@endphp
 
 
 <td class="center valignmiddle" colspan="4">

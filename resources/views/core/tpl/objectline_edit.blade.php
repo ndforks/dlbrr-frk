@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Regis Houssin       <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2022	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012		Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -115,14 +115,15 @@ if (isModEnabled('asset') && $object->element == 'invoice_supplier') {
 print "<!-- BEGIN PHP TEMPLATE objectline_edit.tpl.php -->\n";
 
 $coldisplay = 0;
-?>
+@endphp
 <tr class="oddeven tredited">
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-		<td class="linecolnum center"><?php $coldisplay++; ?>{{ $i + 1 }}</td>
-<?php }
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+		<td class="linecolnum center">@php $coldisplay++; @endphp{{ $i + 1 }}</td>
+@php
+}
 
 $coldisplay++;
-?>
+@endphp
 	<td class="linecoldesc minwidth250onall">
 	<div id="line_{{ $line->id }}"></div>
 
@@ -131,20 +132,22 @@ $coldisplay++;
 	<input type="hidden" id="special_code" name="special_code" value="{{ $line->special_code }}">
 	<input type="hidden" id="fk_parent_line" name="fk_parent_line" value="{{ $line->fk_parent_line }}">
 
-	<?php if ($line->fk_product > 0) { ?>
-		<?php
-		if (empty($canchangeproduct)) {
+	@if($line->fk_product > 0)
+@php
+if (empty($canchangeproduct)) {
 			if ($line->fk_parent_line > 0) {
 {{ img_picto('', 'rightarrow') }}
-			} ?>
+			}
+@endphp
 			<a href="{{ DOL_URL_ROOT.'/product/card.php?id='.$line->fk_product }}">
-			<?php
-			if ($line->product_type == 1) {
+@php
+if ($line->product_type == 1) {
 {{ img_object($langs->trans('ShowService'), 'service') }}
 			} else {
 				print img_object($langs->trans('ShowProduct'), 'product');
 			}
-			echo ' '.$line->ref; ?>
+			echo ' '.$line->ref;
+@endphp
 			</a>
 			{{ ' - '.nl2br($line->product_label);
 			print '<input type="hidden" id="product_id" name="productid" value="'.(!empty($line->fk_product) ? $line->fk_product : 0).'">';
@@ -156,10 +159,10 @@ $coldisplay++;
 			}
 		} }}
 		<br><br>
-	<?php }	?>
+	@endif
 
-	<?php
-	if (is_object($hookmanager)) {
+@php
+if (is_object($hookmanager)) {
 		$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOSTINT('fk_parent_line') : $line->fk_parent_line);
 		$parameters = array('line' => $line, 'fk_parent_line' => $fk_parent_line, 'var' => $var, 'dateSelector' => $dateSelector, 'seller' => $seller, 'buyer' => $buyer);
 		$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
@@ -224,13 +227,13 @@ $coldisplay++;
 {{ $langs->trans('AutoFillDateTo').' ' }}
 {{ $form->selectyesno('date_end_fill', GETPOSTISSET('date_end_fill') ? GETPOSTINT('date_end_fill') : $line->date_end_fill, 1) }}
 	}
-
-	?>
+@endphp
 	</td>
 
-	<?php
-	if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
-		$coldisplay++; ?>
+@php
+if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
+		$coldisplay++;
+@endphp
 		<td class="right linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="{{ GETPOSTISSET('fourn_ref') ? GETPOST('fourn_ref') : ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn) }}"></td>
 					{!! '<input type="hidden" id="fournprice" name="fournprice"  class="" value="'.$line->fk_fournprice.'">';
 	}
@@ -285,7 +288,8 @@ $coldisplay++;
 		print '<td class="right"><input rel="'.$object->multicurrency_tx.'" type="text" class="flat right width50" id="multicurrency_price_ttc" name="multicurrency_price_ttc" value="'. ($multicurrency_upinctax ? $multicurrency_upinctax : price($line->multicurrency_subprice)).'" /></td>';
 	} !!}
 	<td class="right">
-	<?php $coldisplay++;
+@php
+$coldisplay++;
 	if (($line->info_bits & 2) != 2) {
 		// I comment warning of stock because it shows the info even when it should not.
 		// for example always visible on invoice but must be visible only if stock module on and stock decrease option is on invoice validation and status is not validated
@@ -296,13 +300,14 @@ $coldisplay++;
 			print ' readonly';
 		}
 		print '>';
-	} else { ?>
+	} else {
+@endphp
 		&nbsp;
-	<?php } ?>
+	@endif
 	</td>
 
-	<?php
-	if (getDolGlobalString('PRODUCT_USE_UNITS')) {
+@php
+if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		$unit_type = false;
 		// limit unit select to unit type
 		if (!empty($line->fk_unit) && !getDolGlobalString('MAIN_EDIT_LINE_ALLOW_ALL_UNIT_TYPE')) {
@@ -319,11 +324,11 @@ $coldisplay++;
 		print $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type);
 		print '</td>';
 	}
-	?>
+@endphp
 
 	<td class="nowraponall right linecoldiscount">
-	<?php
-	// Discount
+@php
+// Discount
 	$coldisplay++;
 	if (($line->info_bits & 2) != 2) {
 		print '<input type="text" class="flat right width40" name="remise_percent" id="remise_percent" value="'.(GETPOSTISSET('remise_percent') ? GETPOST('remise_percent') : ($line->remise_percent ? $line->remise_percent : '')).'"';
@@ -331,13 +336,14 @@ $coldisplay++;
 			print ' readonly';
 		}
 		print '><span class="hideonsmartphone opacitymedium">%</span>';
-	} else { ?>
+	} else {
+@endphp
 		&nbsp;
-	<?php } ?>
+	@endif
 	</td>
 
-	<?php
-	// Progression for situation invoices
+@php
+// Progression for situation invoices
 	if ($object->situation_cycle_ref) {
 		$coldisplay++;
 		if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
@@ -357,17 +363,18 @@ $coldisplay++;
 
 	if (!empty($usemargins)) {
 		if ($user->hasRight('margins', 'creer')) {
-			$coldisplay++; ?>
+			$coldisplay++;
+@endphp
 		<td class="margininfos right">
 			<!-- For predef product -->
-						<?php if (isModEnabled("product") || isModEnabled("service")) { ?>
+						@if(isModEnabled("product") || isModEnabled("service"))
 			<select id="fournprice_predef" name="fournprice_predef" class="flat minwidth75imp right" style="display: none;"></select>
-						<?php } ?>
+						@endif
 			<!-- For free product -->
-			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="{{ GETPOSTISSET('buying_price') ? GETPOST('buying_price') : price($line->pa_ht, 0, '', 0)); ?>">
+			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="{{ GETPOSTISSET('buying_price') ? GETPOST('buying_price') : price($line->pa_ht, 0, '', 0) }}">
 		</td>
-						<?php
-		}
+@php
+}
 
 		if ($user->hasRight('margins', 'creer')) {
 			if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
@@ -392,23 +399,23 @@ $coldisplay++;
 			}
 		}
 	}
-	?>
+@endphp
 
 	<!-- colspan for this td because it replace total_ht+3 td for buttons+... -->
-	<td class="center valignmiddle" colspan="{{ $colspan }}"><?php $coldisplay += $colspan; ?>
+	<td class="center valignmiddle" colspan="{{ $colspan }}">@php $coldisplay += $colspan; @endphp
 		<input type="submit" class="reposition button buttongen marginbottomonly button-save" id="savelinebutton marginbottomonly" name="save" value="{{ $langs->trans("Save") }}"><br>
 		<input type="submit" class="reposition button buttongen marginbottomonly button-cancel" id="cancellinebutton" name="cancel" value="{{ $langs->trans("Cancel") }}">
 	</td>
 </tr>
 
-<?php if (isModEnabled("service") && $line->product_type == 1 && $dateSelector) { ?>
+@if(isModEnabled("service") && $line->product_type == 1 && $dateSelector)
 <tr id="service_duration_area" class="treditedlinefordate">
-	<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
+	@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
 		<td class="linecolnum center"></td>
-	<?php } ?>
+	@endif
 	<td colspan="{{ $coldisplay - (!getDolGlobalString('MAIN_VIEW_LINE_NUMBER') ? 0 : 1 }}">{{ $langs->trans('ServiceLimitedDuration').' '.$langs->trans('From').' ' }}
-	<?php
-	$prefillDates = false;
+@php
+$prefillDates = false;
 	$date_start_prefill = 0;
 	$date_end_prefill = 0;
 	if (getDolGlobalString('MAIN_FILL_SERVICE_DATES_FROM_LAST_SERVICE_LINE') && !empty($object->lines) && $i > 0) {
@@ -445,9 +452,10 @@ $coldisplay++;
 			$('#prefill_service_dates').click(prefill_service_dates);
 		});
 
-		<?php
+@php
 	}
 	if (!$line->date_start) {
+@endphp
 		if (getDolGlobalString('MAIN_DEFAULT_DATE_START_HOUR') != '') {
 			print 'jQuery("#date_starthour").val("' . getDolGlobalString('MAIN_DEFAULT_DATE_START_HOUR').'");';
 		}
@@ -484,37 +492,39 @@ $coldisplay++;
 		}
 	}
 	print '</script>'
-	?>
+@endphp
 	</td>
 </tr>
-<?php }
-?>
+@php
+}
+@endphp
 
 
 <script>
 
-<?php
+@php
 if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
-	?>
+@endphp
 	/* Some js test when we click on button "Add" */
 	jQuery(document).ready(function() {
-	<?php
-	if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
-		?>
+@php
+if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
+@endphp
 			$("input[name='np_marginRate']:first").blur(function(e) {
 				console.log("np_marginRate blur, call checkFreeLine");
 				return checkFreeLine(e, "np_marginRate");
 			});
-		<?php
-	}
+@php
+}
 	if (getDolGlobalString('DISPLAY_MARK_RATES')) {
-		?>
+@endphp
 			$("input[name='np_markRate']:first").blur(function(e) {
 				console.log("np_markRate blur, call checkFreeLine");
 				return checkFreeLine(e, "np_markRate");
 			});
-		<?php
-	} ?>
+@php
+}
+@endphp
 	});
 
 	/* TODO This does not work for number with thousand separator that is , */
@@ -563,9 +573,9 @@ if (!empty($usemargins) && $user->hasRight('margins', 'creer')) {
 
 		return true;
 	}
-	<?php
+@php
 }
-?>
+@endphp
 
 jQuery(document).ready(function()
 {
@@ -591,7 +601,7 @@ jQuery(document).ready(function()
 		}
 	});
 
-	<?php if (in_array($object->table_element_line, array('propaldet', 'commandedet', 'facturedet'))) { ?>
+	@if(in_array($object->table_element_line, array('propaldet', 'commandedet', 'facturedet')))
 	$("#date_start, #date_end").focusout(function() {
 		if ( $(this).val() == ''  && !$(this).hasClass('inputmandatory') ) {
 			$(this).addClass('inputmandatory');
@@ -599,11 +609,11 @@ jQuery(document).ready(function()
 			$(this).removeClass('inputmandatory');
 		}
 	});
-		<?php
-	}
+@php
+}
 
 	if (isModEnabled('margin')) {
-		?>
+@endphp
 		/* Add rule to clear margin when we change some data, so when we change sell or buy price, margin will be recalculated after submitting form */
 		jQuery("#tva_tx").click(function() {						/* sometimes field is a text, sometimes a combo */
 			jQuery("input[name='np_marginRate']:first").val('');
@@ -638,13 +648,13 @@ jQuery(document).ready(function()
 			var trouve=false;
 			$(data).each(function() {
 				options += '<option value="'+this.id+'" price="'+this.price+'"';
-				<?php if ($line->fk_fournprice > 0) { ?>
+				@if($line->fk_fournprice > 0)
 				if (this.id == {{ $line->fk_fournprice }}) {
 					options += ' selected';
 					$("#buying_price").val(this.price);
 					trouve = true;
 				}
-				<?php } ?>
+				@endif
 				options += '>'+this.label+'</option>';
 			});
 			options += '<option value=null'+(trouve?'':' selected')+'>{{ $langs->trans("InputPrice") }}</option>';
@@ -667,9 +677,9 @@ jQuery(document).ready(function()
 			$('#buying_price').show();
 		}
 		}, 'json');
-		<?php
-	}
-	?>
+@php
+}
+@endphp
 });
 
 </script>

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2022 	Laurent Destailleur 	<eldy@users.sourceforge.net>
  * Copyright (C) 2024	Frédéric France			<frederic.france@free.fr>
  * Copyright (C) 2025		MDW						<mdeweerd@users.noreply.github.com>
@@ -160,33 +160,34 @@ if ($setnewpassword && $username && $passworduidhash) {
 	$langs->load("errors");
 	$message = '<div class="error">'.$langs->trans("ErrorFailedToValidatePasswordReset").'</div>';
 }
-
-
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE PASSWORDRESET.TPL.PHP -->
 
 <body class="body bodylogin"{!! !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; background-image: url(\''.DOL_URL_ROOT.'/viewimage.php?cache=1&noalt=1&modulepart=mycompany&file='.urlencode('logos/' . getDolGlobalString('MAIN_LOGIN_BACKGROUND')).'\')"' !!}>
 
-<?php if (empty($conf->dol_use_jmobile)) { ?>
+@if(empty($conf->dol_use_jmobile))
 <script>
 $(document).ready(function () {
 	// Set focus on correct field
-	<?php if ($focus_element) {
-		?>$('#{{ $focus_element }}').focus(); <?php
-	} ?>		// Warning to use this only on visible element
+	@if($focus_element)
+		$('#{{ $focus_element }}').focus();
+	@endif
+@endphp
+		// Warning to use this only on visible element
 });
 </script>
-<?php } ?>
+@endif
 
 
-<div class="login_center center"<?php
+@php
 if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 	$backstyle = 'background: linear-gradient('.($conf->browser->layout == 'phone' ? '0deg' : '4deg').', var(--colorbackbody) 52%, rgb('.$colorbackhmenu1.') 52.1%);';
 	// old style:  $backstyle = 'background-image: linear-gradient(rgb('.$colorbackhmenu1.',0.3), rgb(240,240,240));';
 	$backstyle = getDolGlobalString('MAIN_LOGIN_BACKGROUND_STYLE', $backstyle);
 	print !getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? ' style="background-size: cover; background-position: center center; background-attachment: fixed; background-repeat: no-repeat; '.$backstyle.'"' : '';
 }
-?>>
+@endphp
+>
 <div class="login_vertical_align">
 
 <form id="login" name="login" method="POST" action="{{ $php_self }}">
@@ -196,7 +197,7 @@ if (!getDolGlobalString('ADD_UNSPLASH_LOGIN_BACKGROUND')) {
 
 <!-- Title with version -->
 <div class="login_table_title center" title="{{ dol_escape_htmltag($title) }}">
-<?php
+@php
 if (!empty($disablenofollow)) {
 	echo '<a class="login_table_title" href="https://www.dolibarr.org" target="_blank" rel="noopener noreferrer external">';
 }
@@ -204,7 +205,7 @@ echo dol_escape_htmltag($title);
 if (!empty($disablenofollow)) {
 	echo '</a>';
 }
-?>
+@endphp
 </div>
 
 
@@ -240,7 +241,7 @@ if (!empty($disablenofollow)) {
 </div>
 
 
-<?php
+@php
 if (!empty($captcha)) {
 	// Add a variable param to force not using cache (jmobile)
 	$php_self = preg_replace('/[&\?]time=(\d+)/', '', $php_self); // Remove param time
@@ -264,7 +265,7 @@ if (!empty($captcha)) {
 	if (is_object($captchaobj) && method_exists($captchaobj, 'getCaptchaCodeForForm')) {
 		// TODO: get this code using a method of captcha
 	} else {
-		?>
+@endphp
 	<!-- Captcha -->
 	<div class="trinputlogin">
 	<div class="tagtd tdinputlogin nowrap none valignmiddle">
@@ -280,8 +281,8 @@ if (!empty($captcha)) {
 
 	</div>
 	</div>
-		<?php
-	}
+@php
+}
 }
 
 if (!empty($morelogincontent)) {
@@ -297,7 +298,7 @@ if (!empty($morelogincontent)) {
 		echo $morelogincontent;
 	}
 }
-?>
+@endphp
 
 </div>
 
@@ -313,8 +314,8 @@ if (!empty($morelogincontent)) {
 
 <br>
 <div class="center" style="margin-top: 15px;">
-	<?php
-	$moreparam = '';
+@php
+$moreparam = '';
 	if (!empty($conf->dol_hide_topmenu)) {
 		$moreparam .= (strpos($moreparam, '?') === false ? '?' : '&').'dol_hide_topmenu='.$conf->dol_hide_topmenu;
 	}
@@ -329,7 +330,7 @@ if (!empty($morelogincontent)) {
 	}
 
 	print '<a class="alogin" href="'.$dol_url_root.'/index.php'.$moreparam.'">'.$langs->trans('BackToLoginPage').'</a>';
-	?>
+@endphp
 </div>
 
 </div>
@@ -339,7 +340,7 @@ if (!empty($morelogincontent)) {
 </form>
 
 
-<?php
+@php
 if ($mode == 'dolibarr' || !$disabled) {
 	if (empty($message)) {
 		print '<div class="center login_main_home divpasswordmessagedesc paddingtopbottom'.(!getDolGlobalString('MAIN_LOGIN_BACKGROUND') ? '' : ' backgroundsemitransparent boxshadow').'" style="max-width: 70%">';
@@ -355,21 +356,21 @@ if ($mode == 'dolibarr' || !$disabled) {
 	print '</div>';
 	print '</div>';
 }
-?>
+@endphp
 
 
 <br>
 
-<?php if (!empty($message)) { ?>
+@if(!empty($message))
 	<div class="center login_main_message">
-	<?php dol_htmloutput_mesg($message, [], '', 1); ?>
+	@php dol_htmloutput_mesg($message, [], '', 1); @endphp
 	</div>
-<?php } ?>
+@endif
 
 
 <!-- Common footer is not used for passwordforgotten page, this is same than footer but inside passwordforgotten tpl -->
 
-<?php
+@php
 if (getDolGlobalString('MAIN_HTML_FOOTER')) {
 	print $conf->global->MAIN_HTML_FOOTER;
 }
@@ -391,8 +392,7 @@ $parameters = array();
 $dummyobject = new stdClass();
 $result = $hookmanager->executeHooks('getPasswordResetExtraContent', $parameters, $dummyobject, $action);
 print $hookmanager->resPrint;
-
-?>
+@endphp
 
 
 </div>

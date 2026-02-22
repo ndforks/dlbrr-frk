@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2014-2017  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
@@ -42,6 +42,8 @@
  * @var ?string $tagidfortablednd
  * @var ?string $urltorefreshaftermove
  */
+--}}
+@php
 // Protection to avoid direct call of template
 if (empty($object) || !is_object($object)) {
 	print "Error, template page ".basename(__FILE__)." can't be called with no object defined.";
@@ -52,10 +54,6 @@ if (empty($object) || !is_object($object)) {
 @phan-var-force ?Task[] $tasksarray
 ';
 
-?>
-
-<!-- BEGIN PHP TEMPLATE SUBTOTAL_AJAXROW.TPL.PHP - Script to enable drag and drop on lines of a table using subtotal lines -->
-<?php
 $id = $object->id;
 $fk_element = empty($object->fk_element) ? $fk_element : $object->fk_element;
 $table_element_line = (empty($table_element_line) ? $object->table_element_line : $table_element_line);
@@ -64,8 +62,10 @@ $forcereloadpage = getDolGlobalInt('MAIN_FORCE_RELOAD_PAGE');
 $tagidfortablednd = (empty($tagidfortablednd) ? 'tablelines' : $tagidfortablednd);
 $filepath = (empty($filepath) ? '' : $filepath);
 $langs->load("subtotals");
+@endphp
 
-if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
+<!-- BEGIN PHP TEMPLATE SUBTOTAL_AJAXROW.TPL.PHP - Script to enable drag and drop on lines of a table using subtotal lines -->
+@if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone')
 <div id="notification-message" hidden=""></div>
 <script>
 function openDialog() {
@@ -171,11 +171,11 @@ function init(){
 					console.log("tableDND end of ajax call");
 					console.log(roworder, table_element_line, fk_element, element_id, filepath, token);
 					if (reloadpage == 1) {
-						<?php
+						@php
 						$redirectURL = empty($urltorefreshaftermove) ? ($_SERVER['PHP_SELF'].'?'.dol_escape_js($_SERVER['QUERY_STRING'])) : $urltorefreshaftermove;
 						// remove action parameter from URL
 						$redirectURL = preg_replace('/(&|\?)action=[^&#]*/', '', $redirectURL);
-						?>
+						@endphp
 						location.href = '{{ dol_escape_js($redirectURL) }}';
 					}
 				});
@@ -292,7 +292,7 @@ $(document).ready(function(){
 });
 
 </script>
-<?php } else { ?>
+@else
 <script>
 $(document).ready(function(){
 	$(".imgupforline").hide();
@@ -300,5 +300,5 @@ $(document).ready(function(){
 	$(".lineupdown").removeAttr('href');
 });
 </script>
-<?php } ?>
+@endif
 <!-- END PHP TEMPLATE AJAXROW.TPL.PHP -->

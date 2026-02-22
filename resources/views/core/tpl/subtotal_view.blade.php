@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2014-2017  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -57,9 +57,9 @@ if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 	echo '<td class="linecolnum center"><span class="opacitymedium">' . ($i + 1) . '</span></td>';
 }
 
-if ($line->qty > 0) { ?>
-	<td class="linecollabel" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>>{{ str_repeat('&nbsp;', (int) ($line->qty - 1) * 8) }}
-		<?php
+if ($line->qty > 0) { @endphp
+	<td class="linecollabel" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' @endphp>{{ str_repeat('&nbsp;', (int) ($line->qty - 1) * 8) }}
+		@php
 		echo $line->desc;
 		if (array_key_exists('titleshowuponpdf', $line_options)) {
 			echo '&nbsp;' . img_picto($langs->trans("ShowUPOnPDF"), 'invoicing');
@@ -76,7 +76,7 @@ if ($line->qty > 0) { ?>
 		} }}
 	</td>
 	<td class="linecolvat nowrap right">
-		<?php
+		@php
 		if ($this->status == 0 && $object->element != 'facturerec') {
 			if (GETPOST('mode', 'aZ09') == 'vatforblocklines' && GETPOSTINT('lineid') == $line->id) {
 				$type_tva = $type_tva ?? 0;
@@ -95,10 +95,10 @@ if ($line->qty > 0) { ?>
 				echo '</a>';
 			}
 		}
-		?>
+@endphp
 	</td>
 	<td class="linecoluht"></td>
-	<?php
+	@php
 	if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) {
 		print '<td class="linecoluht_currency"></td>';
 	}
@@ -113,9 +113,9 @@ if ($line->qty > 0) { ?>
 	if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 		print '<td class="linecoluseunit"></td>';
 	}
-	?>
+@endphp
 	<td class="linecoldiscount right">
-		<?php
+		@php
 		if ($this->status == 0 && $object->element != 'facturerec') {
 			if (GETPOST('mode', 'aZ09') == 'discountforblocklines' && GETPOSTINT('lineid') == $line->id) {
 				print '<div class="inline-block nowraponall">';
@@ -139,9 +139,9 @@ if ($line->qty > 0) { ?>
 				echo '</a>';
 			}
 		}
-		?>
+@endphp
 	</td>
-	<?php
+	@php
 	// Handling if situation invoices conf is enabled
 	if (property_exists($this, 'situation_cycle_ref') && isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 		print '<td class="linecolcycleref nowrap right"></td>';
@@ -163,12 +163,12 @@ if ($line->qty > 0) { ?>
 			print '<td class="linecolmark1 nowrap margininfos right"></td>';
 		}
 	}
-	?>
+@endphp
 	<td class="linecolht"></td>
-	<?php if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) { ?>
+	@php if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) { @endphp
 		<td class="linecolutotalht_currency"></td>
-	<?php } ?>
-<?php } elseif ($line->qty < 0) {
+	@php } @endphp
+@php } elseif ($line->qty < 0) {
 	// Base colspan if there is no module activated to display line correctly
 	$colspan = 3;
 
@@ -210,7 +210,7 @@ if ($line->qty > 0) { ?>
 	if (in_array($object->element, ['supplier_proposal'])) {
 		$colspan += 1;
 	}
-	?>
+@endphp
 	<td class="linecollabel nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' }} colspan="{{ $colspan + 2 }}">
 		{{ $line->desc;
 		if (array_key_exists('subtotalshowtotalexludingvatonpdf', $line_options)) {
@@ -218,10 +218,10 @@ if ($line->qty > 0) { ?>
 		}
 		echo ' :' }}
 	</td>
-	<td class="linecolamount nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' ?>>
+	<td class="linecolamount nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' @endphp>
 		{{ $this->getSubtotalLineAmount($line) }}
 	</td>
-	<?php
+	@php
 	if (isModEnabled('multicurrency') && $object->multicurrency_code != $conf->currency) {
 		echo '<td class="linecolamount nowrap right"';
 		echo !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"';
@@ -229,7 +229,7 @@ if ($line->qty > 0) { ?>
 		echo $this->getSubtotalLineMulticurrencyAmount($line);
 		echo '</td>';
 	} }}
-<?php }
+@php }
 
 if ($this->status == 0) {
 	// Edit picto
@@ -285,10 +285,10 @@ if ($this->status == 0) {
 	print '<td colspan="' . $colspan . '"></td>';
 }
 
-if ($action == 'selectlines') { ?>
+if ($action == 'selectlines') { @endphp
 	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[{!! $i + 1 !!}]" value="{!! $line->id !!}" ></td>
-<?php }
+@php }
 
 echo '</tr>';
 echo '<!-- END PHP TEMPLATE subtotal_view.tpl.php -->';
-?>
+@endphp

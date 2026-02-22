@@ -1,6 +1,6 @@
 {{-- Blade version of template --}}
-<?php
-<?php
+@php
+@php
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>

@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2014	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -130,42 +130,44 @@ if (!empty($extrafields)) {
 print "<!-- BEGIN PHP TEMPLATE objectline_create.tpl.php -->\n";
 $nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
 if ($nolinesbefore) {
-	?>
-	<tr class="liste_titre{{ ($nolinesbefore || $object->element == 'contrat') ? '' : ' liste_titre_add_') ?> nodrag nodrop">
-		<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
+@endphp
+	<tr class="liste_titre{{ ($nolinesbefore || $object->element == 'contrat') ? '' : ' liste_titre_add' }} nodrag nodrop">
+		@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
 			<td class="linecolnum center"></td>
-		<?php } ?>
+		@endif
 		<td class="linecoldescription minwidth400imp">
 			<div id="add"></div><span class="hideonsmartphone">{{ $langs->trans('AddNewLine') }}</span>
 		</td>
-		<?php
-		if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
-			?>
+@php
+if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
+@endphp
 			<td class="linecolrefsupplier"><span id="title_fourn_ref">{{ $langs->trans('SupplierRef') }}</span></td>
-			<?php
-		} ?>
+@php
+}
+@endphp
 		<td class="linecolvat right"><span id="title_vat">{{ $langs->trans('VAT') }}</span></td>
 		<td class="linecoluht right"><span id="title_up_ht">{{ $langs->trans('PriceUHT') }}</span></td>
-		<?php if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) { ?>
+		@if(isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency)
 			<td class="linecoluht_currency right"><span id="title_up_ht_currency">{{ $langs->trans('PriceUHT').'&nbsp;<span class="opacitymedium">('.$langs->getCurrencySymbol($this->multicurrency_code).')</span>' }}</span></td>
-		<?php } ?>
-		<?php if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) { ?>
+		@endif
+		@if(!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX'))
 			<td class="linecoluttc right"><span id="title_up_ttc">{{ $langs->trans('PriceUTTC') }}</span></td>
-		<?php } ?>
-		<?php if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) { ?>
+		@endif
+		@if(isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX'))
 			<td class="linecoluttc_currency right"><span id="title_up_ttc_currency">{{ $langs->trans('PriceUTTC').'&nbsp;<span class="opacitymedium">('.$langs->getCurrencySymbol($this->multicurrency_code).')</span>' }}</td>
-		<?php } ?>
+		@endif
 		<td class="linecolqty right">{{ $langs->trans('Qty') }}</td>
-		<?php
-		if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
+@php
+if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
 			print '<td class="linecoluseunit left">';
 			print '<span id="title_units">';
 			print $langs->trans('Unit');
 			print '</span></td>';
-		} ?>
+		}
+@endphp
 		<td class="linecoldiscount right">{{ $langs->trans('ReductionShort') }}</td>
-		<?php
-		// Fields for situation invoice
+@php
+// Fields for situation invoice
 		if (property_exists($this, 'situation_cycle_ref') && isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 			print '<td class="linecolcycleref right">'.$langs->trans('Progress').'</td>';
 			if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
@@ -191,25 +193,26 @@ if ($nolinesbefore) {
 {{ '<td class="margininfos linecolmark1 right"><span class="np_markRate">'.$langs->trans('MarkRate').'</span></td>' }}
 				}
 			}
-		} ?>
+		}
+@endphp
 		<td class="linecoledit" colspan="{{ $colspan }}">&nbsp;</td>
 	</tr>
-	<?php
+@php
 }
-?>
+@endphp
 <tr class="pair nodrag nodrop nohoverpair{{ ($nolinesbefore || $object->element == 'contrat') ? '' : ' liste_titre_create' }}">
-	<?php
-	$coldisplay = 0;
+@php
+$coldisplay = 0;
 	// Adds a line numbering column
 	if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 		$coldisplay++;
 {{ '<td class="nobottom linecolnum center"></td>' }}
 	}
 	$coldisplay++;
-	?>
+@endphp
 	<td class="nobottom linecoldescription minwidth400imp">
-		<?php
-		$freelines = false;
+@php
+$freelines = false;
 		if (!getDolGlobalString('MAIN_DISABLE_FREE_LINES')) {
 			$freelines = true;
 			$forceall = 1; // We always force all type for free lines (module product or service means we use predefined product or service)
@@ -301,7 +304,7 @@ if ($nolinesbefore) {
 					$form->select_produits(GETPOSTINT('idprod'), 'idprod', $filtertype, getDolGlobalInt('PRODUIT_LIMIT_SIZE'), $buyer->price_level, $statustoshow, 2, '', 1, array(), $buyer->id, $labelforradio, 0, 'maxwidth500 widthcentpercentminusx', 0, '', GETPOST('combinations', 'array:alphanohtml'));
 				}
 				if (getDolGlobalString('MAIN_AUTO_OPEN_SELECT2_ON_FOCUS_FOR_CUSTOMER_PRODUCTS')) {
-					?>
+@endphp
 				<script>
 					$(document).ready(function() {
 						// On first focus on a select2 combo, auto open the menu (this allow to use the keyboard only)
@@ -315,8 +318,8 @@ if ($nolinesbefore) {
 						});
 					});
 				</script>
-					<?php
-				}
+@php
+}
 			} else {
 				// $senderissupplier=2 is the same as 1 but disables test on minimum qty, disable autofill qty with minimum and autofill unit price
 				if ($senderissupplier != 2) {
@@ -343,7 +346,7 @@ if ($nolinesbefore) {
 				$form->select_produits_fournisseurs($socid, GETPOST('idprodfournprice'), 'idprodfournprice', '', '', $ajaxoptions, 1, $alsoproductwithnosupplierprice, 'minwidth100 maxwidth500 widthcentpercentminusx', $labelforradio);
 
 				if (getDolGlobalString('MAIN_AUTO_OPEN_SELECT2_ON_FOCUS_FOR_SUPPLIER_PRODUCTS')) {
-					?>
+@endphp
 				<script>
 					$(document).ready(function(){
 						// On first focus on a select2 combo, auto open the menu (this allow to use the keyboard only)
@@ -356,8 +359,8 @@ if ($nolinesbefore) {
 						});
 					});
 				</script>
-					<?php
-				}
+@php
+}
 			}
 
 			$parentId = GETPOSTINT('parentId');
@@ -403,7 +406,7 @@ if ($nolinesbefore) {
 				}
 			}
 			print '</span>';
-			?>
+@endphp
 			<script>
 				$(document).ready(function(){
 					$("#dropdownAddProductAndService .dropdown-toggle").on("click", function(event) {
@@ -481,8 +484,8 @@ if ($nolinesbefore) {
 		if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
 			$coldisplay++ }}
 	<td class="nobottom linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="{{ GETPOSTISSET("fourn_ref") ? GETPOST("fourn_ref", 'alpha', 2) : '' }}"></td>
-					<?php
-		}
+@php
+}
 		print '<td class="nobottom linecolvat right">';
 		$coldisplay++;
 		$type_tva = 0;
@@ -496,43 +499,47 @@ if ($nolinesbefore) {
 		} else {
 {{ $form->load_tva('tva_tx', (GETPOSTISSET("tva_tx") ? GETPOST("tva_tx", 'alpha', 2) : -1), $seller, $buyer, 0, 0, '', false, 1, $type_tva) }}
 		}
-		?>
+@endphp
 	</td>
 
-	<td class="nobottom linecoluht right"><?php $coldisplay++; ?>
+	<td class="nobottom linecoluht right">@php $coldisplay++; @endphp
 		<input type="text" name="price_ht" id="price_ht" class="flat right width50" value="{{ GETPOSTISSET("price_ht") ? GETPOST("price_ht", 'alpha', 2) : '' }}">
 	</td>
 
-	<?php
-	if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) {
-		$coldisplay++; ?>
+@php
+if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency) {
+		$coldisplay++;
+@endphp
 		<td class="nobottom linecoluht_currency right">
 			<input type="text" name="multicurrency_price_ht" id="multicurrency_price_ht" class="flat right width50" value="{{ GETPOSTISSET("multicurrency_price_ht") ? GETPOST("multicurrency_price_ht", 'alpha', 2) : '' }}">
 		</td>
-		<?php
-	}
+@php
+}
 	if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
-		$coldisplay++; ?>
+		$coldisplay++;
+@endphp
 		<td class="nobottom linecoluttc right">
 			<input type="text" name="price_ttc" id="price_ttc" class="flat right width50" value="{{ GETPOSTISSET("price_ttc") ? GETPOST("price_ttc", 'alpha', 2) : '' }}">
 		</td>
-					<?php
-	}
+@php
+}
 	if (isModEnabled("multicurrency") && $this->multicurrency_code && $this->multicurrency_code != $conf->currency && !empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
-		$coldisplay++; ?>
+		$coldisplay++;
+@endphp
 		<td class="nobottom linecoluttc_currency right">
 			<input type="text" name="multicurrency_price_ttc" id="multicurrency_price_ttc" class="flat right width50" value="{{ GETPOSTISSET("multicurrency_price_ttc") ? GETPOST("multicurrency_price_ttc", 'alpha', 2) : '' }}">
 		</td>
-					<?php
-	}
+@php
+}
 	$coldisplay++;
-	?>
+@endphp
 	<td class="nobottom linecolqty right">
-	<?php $default_qty = (!getDolGlobalString('MAIN_OBJECTLINE_CREATE_EMPTY_QTY_BY_DEFAULT') ? 1 : '' }}
+@php
+$default_qty = (!getDolGlobalString('MAIN_OBJECTLINE_CREATE_EMPTY_QTY_BY_DEFAULT') ? 1 : '' }}
 	<input type="text" name="qty" id="qty" class="flat width40 right" value="{{ GETPOSTISSET("qty") ? GETPOST("qty", 'alpha', 2) : $default_qty }}">
 	</td>
-	<?php
-	if (getDolGlobalInt('PRODUCT_USE_UNITS')) {
+	@if(getDolGlobalInt('PRODUCT_USE_UNITS'))
+@php
 		$coldisplay++;
 		print '<td class="nobottom linecoluseunit left">';
 		print $form->selectUnits(empty($line->fk_unit) ? getDolGlobalInt('PRODUCT_USE_UNITS') : $line->fk_unit, "units");
@@ -543,11 +550,11 @@ if ($nolinesbefore) {
 		$remise_percent = $seller->remise_supplier_percent;
 	}
 	$coldisplay++;
-	?>
+@endphp
 
 	<td class="nobottom nowrap linecoldiscount right"><input type="text" name="remise_percent" id="remise_percent" class="flat width40 right" value="{{ GETPOSTISSET("remise_percent") ? GETPOST("remise_percent", 'alpha', 2) : ($remise_percent ? $remise_percent : '') }}"><span class="opacitymedium hideonsmartphone">%</span></td>
-	<?php
-	if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
+@php
+if (isset($this->situation_cycle_ref) && $this->situation_cycle_ref) {
 		$coldisplay++;
 		print '<td class="nobottom nowrap right"><input class="flat right" type="text" size="1" value="" name="progress"><span class="opacitymedium hideonsmartphone">%</span></td>';
 		if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
@@ -559,17 +566,18 @@ if ($nolinesbefore) {
 	}
 	if (!empty($usemargins)) {
 		if ($user->hasRight('margins', 'creer')) {
-			$coldisplay++; ?>
+			$coldisplay++;
+@endphp
 			<td class="nobottom margininfos linecolmargin right">
 				<!-- For predef product -->
-						<?php if (isModEnabled("product") || isModEnabled("service")) { ?>
+						@if(isModEnabled("product") || isModEnabled("service"))
 					<select id="fournprice_predef" name="fournprice_predef" class="flat minwidth75imp maxwidth150" style="display: none;"></select>
-						<?php } ?>
+						@endif
 				<!-- For free product -->
 				<input type="text" id="buying_price" name="buying_price" class="flat maxwidth75 right" value="{{ GETPOSTISSET("buying_price") ? GETPOST("buying_price", 'alpha', 2) : '' }}">
 			</td>
-						<?php
-						if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
+@php
+if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
 {{ '<td class="nobottom nowraponall margininfos right"><input class="flat right width40" type="text" id="np_marginRate" name="np_marginRate" value="'.(GETPOSTISSET("np_marginRate") ? GETPOST("np_marginRate", 'alpha', 2) : '').'"><span class="np_marginRate opacitymedium hideonsmartphone">%</span></td>' }}
 							$coldisplay++;
 						}
@@ -580,13 +588,13 @@ if ($nolinesbefore) {
 		}
 	}
 	$coldisplay += $colspan;
-	?>
+@endphp
 	<td class="nobottom linecoledit center valignmiddle" colspan="{{ $colspan }}">
 		<input type="submit" class="button reposition" value="{{ $langs->trans('Add') }}" name="addline" id="addline">
 	</td>
 </tr>
 
-<?php
+@php
 if ((isModEnabled("service") || ($object->element == 'contrat')) && $dateSelector && GETPOST('type') != '0') {	// We show date field if required
 	print '<tr id="trlinefordates" class="oddeven">'."\n";
 	if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
@@ -633,7 +641,7 @@ if ((isModEnabled("service") || ($object->element == 'contrat')) && $dateSelecto
 	print '<script>';
 
 	if ($prefillDates) {
-		?>
+@endphp
 		function prefill_service_dates()
 		{
 			$('#date_start').val("{{ dol_escape_js(dol_print_date($date_start_prefill, 'day')) }}").trigger('change');
@@ -647,8 +655,8 @@ if ((isModEnabled("service") || ($object->element == 'contrat')) && $dateSelecto
 			$('#prefill_service_dates').click(prefill_service_dates);
 		});
 
-		<?php
-	}
+@php
+}
 
 	if (!$date_start) {
 		if (getDolGlobalString('MAIN_DEFAULT_DATE_START_HOUR') != '') {
@@ -739,8 +747,7 @@ if ( !empty($object->thirdparty) ) {
 }
 
 //var_dump($jsConf);
-
-?>
+@endphp
 <script nonce="{!! getNonce() !!}">
 	/**
 	 * First Step of factoring js part in goal of remove printed js to migrate to js files this class with hooks
@@ -1441,7 +1448,7 @@ if ( !empty($object->thirdparty) ) {
 			}
 		});
 
-		if (jsConf.conf.prod_entry_mode_is_predef) { // When we submit with a predef product and it fails we must start with predef?>
+		if (jsConf.conf.prod_entry_mode_is_predef) { // When we submit with a predef product and it fails we must start with predef
 			setforpredef();
 		}
 
@@ -1503,9 +1510,3 @@ if ( !empty($object->thirdparty) ) {
 		jQuery('#trlinefordates, .divlinefordates').show();
 	}
 </script>
-<?php
-
-
-//print '<span onclick="setFocusOnDescription();">Click</span>';
-
-print "<!-- END PHP TEMPLATE objectline_create.tpl.php -->\n";

@@ -1,6 +1,6 @@
 {{-- Blade version of template --}}
-<?php
-<?php
+@php
+@php
 /* Copyright (C) 2010-2012	Regis Houssin		    <regis.houssin@inodbox.com>
  * Copyright (C) 2010-2012	Laurent Destailleur	    <eldy@users.sourceforge.net>
  * Copyright (C) 2012		Christophe Battarel	    <christophe.battarel@altairis.fr>
@@ -97,16 +97,16 @@ if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 }
 
 $coldisplay++;
-?>
+@endphp
 	<td>
-	<div id="line_<?php echo $line->id; ?>"></div>
+	<div id="line_@php echo $line->id; @endphp"></div>
 
-	<input type="hidden" name="lineid" value="<?php echo $line->id; ?>">
-	<input type="hidden" id="product_type" name="type" value="<?php echo $line->product_type; ?>">
-	<input type="hidden" id="product_id" name="productid" value="<?php echo(!empty($line->fk_product) ? $line->fk_product : 0); ?>" />
-	<input type="hidden" id="special_code" name="special_code" value="<?php echo $line->special_code; ?>">
+	<input type="hidden" name="lineid" value="@php echo $line->id; @endphp">
+	<input type="hidden" id="product_type" name="type" value="@php echo $line->product_type; @endphp">
+	<input type="hidden" id="product_id" name="productid" value="@php echo(!empty($line->fk_product) ? $line->fk_product : 0); @endphp" />
+	<input type="hidden" id="special_code" name="special_code" value="@php echo $line->special_code; @endphp">
 
-<?php
+@php
 // Predefined product/service
 if ($line->fk_product > 0) {
 	$tmpproduct = new Product($object->db);
@@ -134,9 +134,9 @@ print '</td>';
 /*if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier')	// We must have same test in printObjectLines
 {
 	$coldisplay++;
-?>
-	<td class="right"><input id="fourn_ref" name="fourn_ref" class="flat minwidth75" value="<?php echo ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); ?>"></td>
-<?php
+@endphp
+	<td class="right"><input id="fourn_ref" name="fourn_ref" class="flat minwidth75" value="@php echo ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); @endphp"></td>
+@php
 */
 
 $coldisplay++;

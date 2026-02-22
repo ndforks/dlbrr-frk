@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<?php
-
+{{--
 /**
  * @var CommonObject $object
  * @var CommonObjectLine $line
@@ -8,7 +7,8 @@
  *
  * @var int $i
  */
-
+--}}
+@php
 '
 @phan-var-force CommonObjectLine|CommonOrderLine|ExpeditionLigne $line
 @phan-var-force Commande|Expedition $object
@@ -47,10 +47,11 @@ print '<tr id="row-' . $id . '" data-id="' . $id . '" data-element="' . $element
 if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 	print '<td class="center linecolnum">' . ($i + 1) . '</td>';
 }
+@endphp
 
-if ($line->qty > 0) { ?>
-	<td class="linecollabel" colspan="{{ $colspan ?>" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' }}>{{ str_repeat('&nbsp;', (int) ($line->qty - 1) * 8) }}
-		<?php
+@if ($line->qty > 0)
+	<td class="linecollabel" colspan="{{ $colspan }}" {!! !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' !!}>{{ str_repeat('&nbsp;', (int) ($line->qty - 1) * 8) }}
+		@php
 		echo $desc;
 		if (array_key_exists('titleshowuponpdf', $line_options)) {
 			echo '&nbsp;' . img_picto($langs->trans("ShowUPOnPDF"), 'invoicing');
@@ -60,17 +61,21 @@ if ($line->qty > 0) { ?>
 		}
 		if (array_key_exists('titleforcepagebreak', $line_options)) {
 			echo '&nbsp;' . img_picto($langs->trans("ForcePageBreak"), 'file');
-		} }}
+		}
+		@endphp
 	</td>
-<?php } elseif ($line->qty < 0) { ?>
-<td class="linecollabel nowrap right" {{ !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' }} colspan="{{ $colspan }}">
-	{{ $desc;
+@elseif ($line->qty < 0)
+<td class="linecollabel nowrap right" {!! !colorIsLight($line_color) ? ' style="color: white"' : ' style="color: black"' !!} colspan="{{ $colspan }}">
+	@php
+	echo $desc;
 	if (array_key_exists('subtotalshowtotalexludingvatonpdf', $line_options)) {
 		echo '&nbsp; <span title="' . $langs->trans("ShowTotalExludingVATOnPDF") . '">%</span>';
-	} }}
+	}
+	@endphp
 </td>
-<?php }
+@endif
 
+@php
 if (isset($buttons) && $buttons) {
 	// Delete picto
 	echo '<td class="linecoldelete center">';
@@ -88,3 +93,4 @@ if (isset($buttons) && $buttons) {
 }
 
 print "</tr>";
+@endphp

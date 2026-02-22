@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+@php
 /* Copyright (C) 2010-2012	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2017		Charlie Benke		<charlie@patas-monkey.com>
  * Copyright (C) 2022		Gauthier VERDOL		<gauthier.verdol@atm-consulting.fr>
@@ -28,11 +28,10 @@ if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
 	exit(1);
 }
-
-?>
+@endphp
 
 <!-- BEGIN PHP TEMPLATE core/tpl/originproductline.tpl.php -->
-<?php
+@php
 '
 @phan-var-force CommonObject $this
 @phan-var-force PropaleLigne|ContratLigne|CommonObjectLine|CommonInvoiceLine|CommonOrderLine|ExpeditionLigne|DeliveryLine|FactureFournisseurLigneRec|SupplierInvoiceLine|SupplierProposalLine $line
@@ -78,5 +77,5 @@ print '<td class="center">';
 print '<input id="cb'.$this->tpl['id'].'" class="flat checkforselect" type="checkbox" name="toselect[]" value="'.$this->tpl['id'].'"'.($selected ? ' checked="checked"' : '').'>';
 print '</td>';
 print '</tr>'."\n";
-?>
+@endphp
 <!-- END PHP TEMPLATE originproductline.tpl.php -->

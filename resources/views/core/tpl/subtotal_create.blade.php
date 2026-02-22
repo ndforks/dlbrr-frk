@@ -1,5 +1,5 @@
 {{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2014-2017  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2024		MDW						<mdeweerd@users.noreply.github.com>
  * Copyright (C) 2024-2025  Frédéric France         <frederic.france@free.fr>
@@ -32,7 +32,8 @@
  * @var array<string,string> $titles
  * @var string $type
  */
-
+--}}
+@php
 '
 @phan-var-force Propal|Commande|Facture|FactureRec|Expedition|SupplierProposal|CommandeFournisseur|FactureFournisseur $this
 ';
@@ -71,5 +72,6 @@ if ($object->element == 'facture') {
 }
 
 $form_title = $type == 'title' ? $langs->trans('AddTitleLine') : $langs->trans('AddSubtotalLine');
+@endphp
 
-print $form->formconfirm($page, $form_title, '', 'confirm_add' . $type . 'line', $formquestion, 'yes', 1);
+{!! $form->formconfirm($page, $form_title, '', 'confirm_add' . $type . 'line', $formquestion, 'yes', 1) !!}
