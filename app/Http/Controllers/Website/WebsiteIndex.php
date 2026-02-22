@@ -24,7 +24,7 @@ class WebsiteIndex extends Controller
         $conf->dol_hide_leftmenu = 1;
 
         // Get parameters
-        $action = GETPOST('action', 'aZ09') ?: 'preview';
+        $rawAction = GETPOST('action', 'aZ09');
         $websiteid = GETPOSTINT('websiteid');
         $websitekey = GETPOST('website', 'alpha');
         $pageid = GETPOSTINT('pageid');
@@ -35,11 +35,19 @@ class WebsiteIndex extends Controller
         $file_manager = GETPOST('file_manager', 'alpha');
         $replacesite = GETPOST('replacesite', 'alpha');
         
-        if ($file_manager && empty($action)) {
+        // Determine action based on parameters
+        $action = $rawAction;
+        if ($file_manager && empty($rawAction)) {
             $action = 'file_manager';
         }
-        if ($action == 'replacesite' || (empty($action) && $replacesite)) {
+        if ($action == 'replacesite' || (empty($rawAction) && $replacesite)) {
             $mode = 'replacesite';
+            $action = 'replacesite';
+        }
+        
+        // Default to preview if no action specified
+        if (empty($action)) {
+            $action = 'preview';
         }
 
         // Override action based on POST parameters
@@ -223,10 +231,11 @@ class WebsiteIndex extends Controller
             accessforbidden();
         }
         
-        global $db;
+        global $db, $langs;
         $object->setStatut(1);
         
-        return redirect()->back()->with('success', 'Website set online');
+        setEventMessages($langs->trans('WebsiteSetOnline'), null, 'mesgs');
+        return redirect()->back();
     }
 
     private function setWebsiteOffline(Request $request, $object, $usercanedit): RedirectResponse
@@ -235,10 +244,11 @@ class WebsiteIndex extends Controller
             accessforbidden();
         }
         
-        global $db;
+        global $db, $langs;
         $object->setStatut(0);
         
-        return redirect()->back()->with('success', 'Website set offline');
+        setEventMessages($langs->trans('WebsiteSetOffline'), null, 'mesgs');
+        return redirect()->back();
     }
 
     private function executeDolibarrFile(string $file): Response

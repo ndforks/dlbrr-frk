@@ -71,11 +71,29 @@ class ListSupplierProposal extends Controller
         if (!empty($search_montant_ht)) {
             $sql .= natural_search('p.total_ht', $search_montant_ht, 1);
         }
-        if ($search_status !== '' && $search_status >= 0) {
+        if ($search_status !== '' && $search_status !== null) {
+            // Normalize search_status to an array of non-negative integers (supports comma-separated string from GETPOST)
             if (is_array($search_status)) {
-                $sql .= ' AND p.fk_statut IN ('.$db->sanitize(implode(',', $search_status)).')';
+                $statusList = $search_status;
             } else {
-                $sql .= ' AND p.fk_statut = '.((int) $search_status);
+                $statusList = explode(',', (string) $search_status);
+            }
+
+            $statusList = array_filter(
+                array_map('trim', $statusList),
+                function ($value) {
+                    return $value !== '' && is_numeric($value) && (int) $value >= 0;
+                }
+            );
+
+            $statusList = array_values(array_unique(array_map('intval', $statusList)));
+
+            if (!empty($statusList)) {
+                if (count($statusList) > 1) {
+                    $sql .= ' AND p.fk_statut IN ('.$db->sanitize(implode(',', $statusList)).')';
+                } else {
+                    $sql .= ' AND p.fk_statut = '.reset($statusList);
+                }
             }
         }
         

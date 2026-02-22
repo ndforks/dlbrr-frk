@@ -205,7 +205,7 @@ class ShowStock extends Controller
                 return redirect("/product/stock/card.php?action=edit&id={$id}");
             }
             
-            $ret = $object->update($id, $user);
+            $ret = $object->update($user);
             if ($ret < 0) {
                 setEventMessages($object->error, $object->errors, 'errors');
                 return redirect("/product/stock/card.php?action=edit&id={$id}");

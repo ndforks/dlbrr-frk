@@ -130,6 +130,9 @@ class EcmIndex extends Controller
             $morejs[] = "public/includes/jquery/plugins/jqueryFileTree/jqueryFileTree.js";
         }
         
+        // Capture legacy output
+        ob_start();
+        
         llxHeader('', $langs->trans("ECMArea"), '', '', 0, 0, $morejs, '', '', 'mod-ecm page-index');
         
         $head = ecm_prepare_dasboard_head();
@@ -142,9 +145,10 @@ class EcmIndex extends Controller
         
         print dol_get_fiche_end();
         llxFooter();
-        $db->close();
         
-        return view('blank');
+        $output = ob_get_clean();
+        
+        return response($output);
     }
     
     private function add(Request $request): RedirectResponse

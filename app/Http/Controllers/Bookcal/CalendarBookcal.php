@@ -47,7 +47,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $langs, $user, $conf, $mysoc;
         
-        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write') ?: 1;
+        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
         
         if (empty($permissiontoadd)) {
             accessforbidden('NotEnoughPermissions', 0, 1);
@@ -77,7 +77,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $langs, $user, $conf;
         
-        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write') ?: 1;
+        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
         
         $object = new \Calendar($db);
         
@@ -108,7 +108,7 @@ class CalendarBookcal extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        global $db, $user;
+        global $db, $user, $langs;
         
         $object = new \Calendar($db);
         $object->fetch($id);
@@ -143,7 +143,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $permissiontodelete = $user->hasRight('bookcal', 'calendar', 'delete') ?: 1;
+        $permissiontodelete = $user->hasRight('bookcal', 'calendar', 'delete');
         
         if (!$permissiontodelete) {
             accessforbidden();
@@ -221,7 +221,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user, $langs;
         
-        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write') ?: 1;
+        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
         
         if (!$permissiontoadd) {
             accessforbidden();
@@ -239,7 +239,7 @@ class CalendarBookcal extends Controller
     {
         global $db, $user;
         
-        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write') ?: 1;
+        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
         
         if (!$permissiontoadd) {
             accessforbidden();
@@ -257,9 +257,9 @@ class CalendarBookcal extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager, $mysoc, $dolibarr_main_url_root;
         
-        $permissiontoread = $user->hasRight('bookcal', 'calendar', 'read') ?: 1;
-        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write') ?: 1;
-        $permissiontodelete = $user->hasRight('bookcal', 'calendar', 'delete') ?: 1;
+        $permissiontoread = $user->hasRight('bookcal', 'calendar', 'read');
+        $permissiontoadd = $user->hasRight('bookcal', 'calendar', 'write');
+        $permissiontodelete = $user->hasRight('bookcal', 'calendar', 'delete');
         
         if (!$permissiontoread) {
             accessforbidden();

@@ -135,10 +135,33 @@ class ShowConferenceOrBoothEventOrganization extends Controller
      */
     private function update(Request $request, \ConferenceOrBooth $object): RedirectResponse
     {
-        global $db, $user;
+        global $db, $user, $langs;
         
-        // Include action handler
-        require_once DOL_DOCUMENT_ROOT.'/core/actions_addupdatedelete.inc.php';
+        // Get form data and update object fields
+        foreach ($object->fields as $key => $val) {
+            if (array_key_exists($key, $_POST)) {
+                $object->$key = GETPOST($key, $val['type']);
+            }
+        }
+        
+        // Set extrafields
+        $extrafields = new \ExtraFields($db);
+        $extrafields->fetch_name_optionals_label($object->table_element);
+        $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
+        
+        if ($ret < 0) {
+            setEventMessages($object->error, $object->errors, 'errors');
+            return redirect('/eventorganization/conferenceorbooth_card.php?id='.$object->id.'&action=edit');
+        }
+        
+        // Update the object
+        $result = $object->update($user);
+        
+        if ($result > 0) {
+            setEventMessages($langs->trans('RecordSaved'), null, 'mesgs');
+        } else {
+            setEventMessages($object->error, $object->errors, 'errors');
+        }
         
         $withproject = GETPOSTINT('withproject');
         $withProjectUrl = $withproject ? '&withproject=1' : '';
