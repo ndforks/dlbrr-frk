@@ -1,38 +1,47 @@
-@php
-/* Position Create View */
-$title = $langs->trans("NewObject", $langs->transnoentitiesnoconv("Position"));
-llxHeader('', $title, '');
+@extends('layouts.app')
 
-print load_fiche_titre($langs->trans("NewObject", $langs->transnoentitiesnoconv("Position")), '', 'object_'.$object->picto);
+@section('title', 'Create New Position')
 
-print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
-print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="action" value="add">';
-if ($backtopage) {
-    print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
-}
-if ($backtopageforcancel) {
-    print '<input type="hidden" name="backtopageforcancel" value="'.$backtopageforcancel.'">';
-}
-if ($fk_job > 0) {
-    print '<input type="hidden" name="fk_job" value="'.$fk_job.'">';
-}
+@section('content')
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+            Create New Position
+        </h1>
 
-print dol_get_fiche_head(array(), '');
+        <x-card title="Position Information">
+            <form method="POST" action="{{ $_SERVER['PHP_SELF'] }}" class="space-y-6">
+                @csrf
+                <input type="hidden" name="action" value="add">
+                @if($backtopage ?? false)
+                    <input type="hidden" name="backtopage" value="{{ $backtopage }}">
+                @endif
+                @if($backtopageforcancel ?? false)
+                    <input type="hidden" name="backtopageforcancel" value="{{ $backtopageforcancel }}">
+                @endif
+                @if(($fk_job ?? 0) > 0)
+                    <input type="hidden" name="fk_job" value="{{ $fk_job }}">
+                @endif
 
-print '<table class="border centpercent tableforfieldcreate">'."\n";
+                @php
+                    // Include common fields
+                    if (defined('DOL_DOCUMENT_ROOT')) {
+                        include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+                        include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+                    }
+                @endphp
 
-include DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
-include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
-
-print '</table>'."\n";
-
-print dol_get_fiche_end();
-
-print $form->buttonsSaveCancel("Create");
-
-print '</form>';
-
-llxFooter();
-$db->close();
-@endphp
+                <div class="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <button 
+                        type="submit"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition duration-150 ease-in-out"
+                    >
+                        Create Position
+                    </button>
+                    <x-button href="{{ $backtopage ?? url('/hrm') }}" variant="secondary">
+                        Cancel
+                    </x-button>
+                </div>
+            </form>
+        </x-card>
+    </div>
+@endsection
