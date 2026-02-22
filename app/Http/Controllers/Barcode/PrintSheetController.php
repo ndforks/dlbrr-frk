@@ -124,11 +124,7 @@ class PrintSheetController extends Controller
         $label_product_ref_option = $request->has('label_product_ref_option');
         $label_product_label_option = $request->has('label_product_label_option');
         
-        if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
-            $label_product_ref = $request->input('label_product_ref');
-        } else {
-            $label_product_ref = $request->input('label_product_ref');
-        }
+        $label_product_ref = $request->input('label_product_ref');
         
         if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
             $security_check = 'nohtml';

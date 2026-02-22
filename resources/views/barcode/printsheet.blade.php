@@ -233,7 +233,7 @@ jQuery(document).ready(function() {
         init_gendoc_button();
     });
     jQuery("#forbarcode").keyup(function() {
-        init_gendoc_button()
+        init_gendoc_button();
     });
 });
 </script>

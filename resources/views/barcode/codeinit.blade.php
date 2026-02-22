@@ -180,7 +180,7 @@ $thirdpartyModuleEnabled = isModEnabled('societe');
         <p class="text-gray-700 dark:text-gray-300">
             {{ $langs->trans('ClickHereToGoTo') }}:
             <a 
-                href="{{ DOL_URL_ROOT }}/barcode/printsheet.php" 
+                href="{{ route('barcode.printsheet') }}" 
                 class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
             >
                 {{ $langs->trans('BarCodePrintsheet') }}
