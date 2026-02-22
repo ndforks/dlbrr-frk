@@ -3,36 +3,60 @@
 namespace App\Http\Controllers\Ticket;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasSearchableList;
 use App\Models\Ticket;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListTicket extends Controller
 {
+    use HasSearchableList;
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
-        $searchRef = $request->input('search_ref');
-        $page = $request->integer('page', 0);
-        $limit = $request->integer('limit', 25);
+        $pagination = $this->getPaginationParams($request);
+        $searchParams = $this->getSearchParams($request);
         
-        $query = Ticket::with('societe');
+        $query = Ticket::query()->with('societe');
+        $query = $this->applySearchFilters($query, $request);
+        $query->orderBy('datec', 'DESC');
         
-        if ($searchAll) {
-            $query->where(function($q) use ($searchAll) {
-                $q->where('ref', 'like', "%{$searchAll}%")
-                  ->orWhere('subject', 'like', "%{$searchAll}%");
-            });
+        $data = $this->buildListViewData($query, $pagination, $searchParams);
+        
+        return view('ticket.list', [
+            'tickets' => $data['items'],
+            'total' => $data['total'],
+            'page' => $data['page'],
+            'limit' => $data['limit'],
+        ]);
+    }
+
+    protected function getSearchParams(Request $request): array
+    {
+        return [
+            'all' => $request->input('search_all'),
+            'ref' => $request->input('search_ref'),
+        ];
+    }
+
+    protected function applySearchFilters(Builder $query, Request $request): Builder
+    {
+        $searchParams = $this->getSearchParams($request);
+        
+        // Early return if no search parameters
+        if (empty(array_filter($searchParams))) {
+            return $query;
         }
         
-        if ($searchRef) {
-            $query->where('ref', 'like', "%{$searchRef}%");
+        if (!empty($searchParams['all'])) {
+            $query = $this->applySearchAll($query, $searchParams['all'], ['ref', 'subject']);
         }
         
-        $total = $query->count();
-        $offset = $page * $limit;
-        $tickets = $query->orderBy('datec', 'DESC')->skip($offset)->take($limit)->get();
+        if (!empty($searchParams['ref'])) {
+            $query = $this->applyFieldSearch($query, $searchParams['ref'], 'ref');
+        }
         
-        return view('ticket.list', ['tickets' => $tickets, 'total' => $total, 'page' => $page, 'limit' => $limit]);
+        return $query;
     }
 }

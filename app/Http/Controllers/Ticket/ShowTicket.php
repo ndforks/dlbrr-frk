@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Ticket;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Ticket;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowTicket extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -23,35 +27,37 @@ class ShowTicket extends Controller
             default => $this->show($request, $id),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $ticket = Ticket::with('societe')->findOrFail($id);
-        return view('ticket.show', ['ticket' => $ticket, 'action' => 'view']);
+        return Ticket::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $ticket = Ticket::with('societe')->findOrFail($id);
-        return view('ticket.edit', ['ticket' => $ticket, 'action' => 'edit']);
+        return 'ticket';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('ticket.create', ['action' => 'create']);
+        return 'ticket.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $ticket = Ticket::findOrFail($id);
-        $data = ['subject' => $request->input('subject'), 'fk_soc' => $request->integer('socid', 0)];
-        $ticket->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
-        return redirect()->route('ticket.show', ['id' => $id])->with('success', 'Ticket updated');
+        return 'ticket.list';
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function loadModel(int $id): Model
     {
-        Ticket::findOrFail($id)->delete();
-        return redirect()->route('ticket.list')->with('success', 'Ticket deleted');
+        return Ticket::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'subject' => $request->input('subject'),
+            'fk_soc' => $request->integer('socid', 0),
+        ];
     }
 }

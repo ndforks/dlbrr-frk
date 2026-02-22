@@ -3,55 +3,66 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasSearchableList;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListProduct extends Controller
 {
+    use HasSearchableList;
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
-        $searchRef = $request->input('search_ref');
-        $searchLabel = $request->input('search_label');
-        $page = $request->integer('page', 0);
-        $limit = $request->integer('limit', 25);
+        $pagination = $this->getPaginationParams($request);
+        $searchParams = $this->getSearchParams($request);
         
         $query = Product::query();
+        $query = $this->applySearchFilters($query, $request);
+        $query->orderBy('ref', 'ASC');
         
-        if ($searchAll) {
-            $query->where(function($q) use ($searchAll) {
-                $q->where('ref', 'like', "%{$searchAll}%")
-                  ->orWhere('label', 'like', "%{$searchAll}%")
-                  ->orWhere('description', 'like', "%{$searchAll}%");
-            });
-        }
-        
-        if ($searchRef) {
-            $query->where('ref', 'like', "%{$searchRef}%");
-        }
-        
-        if ($searchLabel) {
-            $query->where('label', 'like', "%{$searchLabel}%");
-        }
-        
-        $total = $query->count();
-        $offset = $page * $limit;
-        $products = $query->orderBy('ref', 'ASC')
-                          ->skip($offset)
-                          ->take($limit)
-                          ->get();
+        $data = $this->buildListViewData($query, $pagination, $searchParams);
         
         return view('product.list', [
-            'products' => $products,
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit,
-            'search' => [
-                'all' => $searchAll,
-                'ref' => $searchRef,
-                'label' => $searchLabel,
-            ],
+            'products' => $data['items'],
+            'total' => $data['total'],
+            'page' => $data['page'],
+            'limit' => $data['limit'],
+            'search' => $data['search'],
         ]);
+    }
+
+    protected function getSearchParams(Request $request): array
+    {
+        return [
+            'all' => $request->input('search_all'),
+            'ref' => $request->input('search_ref'),
+            'label' => $request->input('search_label'),
+        ];
+    }
+
+    protected function applySearchFilters(Builder $query, Request $request): Builder
+    {
+        $searchParams = $this->getSearchParams($request);
+        
+        // Early return if no search parameters
+        if (empty(array_filter($searchParams))) {
+            return $query;
+        }
+        
+        if (!empty($searchParams['all'])) {
+            $query = $this->applySearchAll($query, $searchParams['all'], ['ref', 'label', 'description']);
+        }
+        
+        if (!empty($searchParams['ref'])) {
+            $query = $this->applyFieldSearch($query, $searchParams['ref'], 'ref');
+        }
+        
+        if (!empty($searchParams['label'])) {
+            $query = $this->applyFieldSearch($query, $searchParams['label'], 'label');
+        }
+        
+        return $query;
     }
 }
