@@ -20,7 +20,7 @@ class HrmIndex extends Controller
         $hookmanager = new \HookManager($db);
         $hookmanager->initHooks(array('hrmindex'));
         
-        $socid = GETPOSTINT("socid");
+        $socid = $request->integer("socid", 0);
         
         if ($user->socid > 0) {
             accessforbidden();

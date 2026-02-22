@@ -12,8 +12,8 @@ class ShowHoliday extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => view('holiday.create', ['action' => 'create']),
@@ -26,7 +26,7 @@ class ShowHoliday extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        Holiday::findOrFail($id)->update(array_filter(['description' => GETPOST('description', 'alpha')], fn($v) => $v));
+        Holiday::findOrFail($id)->update(array_filter(['description' => $request->input('description')], fn($v) => $v));
         return redirect("/holiday/card.php?id={$id}")->with('success', 'Holiday updated');
     }
     

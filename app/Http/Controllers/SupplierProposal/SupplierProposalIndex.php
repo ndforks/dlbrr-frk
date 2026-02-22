@@ -24,7 +24,7 @@ class SupplierProposalIndex extends Controller
         
         $hookmanager->initHooks(['suppliersproposalsindex']);
         
-        $socid = GETPOSTINT('socid');
+        $socid = $request->integer('socid', 0);
         if (!empty($user->socid) && $user->socid > 0) {
             $socid = $user->socid;
         }

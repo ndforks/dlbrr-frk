@@ -12,8 +12,8 @@ class ShowPropal extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -44,7 +44,7 @@ class ShowPropal extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         $propal = Propal::findOrFail($id);
-        $data = ['ref' => GETPOST('ref', 'alpha'), 'fk_soc' => GETPOSTINT('socid')];
+        $data = ['ref' => $request->input('ref'), 'fk_soc' => $request->integer('socid', 0)];
         $propal->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
         return redirect("/comm/propal/card.php?id={$id}")->with('success', 'Proposal updated');
     }

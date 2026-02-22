@@ -22,12 +22,12 @@ class PageWebsite extends Controller
         }
 
         // Get parameters
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $websiteid = GETPOSTINT('websiteid');
-        $websitekey = GETPOST('website', 'alpha');
-        $pageid = GETPOSTINT('pageid');
-        $pageref = GETPOST('pageref', 'alphanohtml');
-        $confirm = GETPOST('confirm', 'alpha');
+        $action = $request->input('action', 'view');
+        $websiteid = $request->integer('websiteid', 0);
+        $websitekey = $request->input('website');
+        $pageid = $request->integer('pageid', 0);
+        $pageref = $request->input('pageref');
+        $confirm = $request->input('confirm');
 
         // Load objects
         $object = new Website($db);
@@ -148,12 +148,12 @@ class PageWebsite extends Controller
 
         global $db, $user;
 
-        $objectpage->title = GETPOST('WEBSITE_TITLE', 'alphanohtml');
-        $objectpage->description = GETPOST('WEBSITE_DESCRIPTION', 'alphanohtml');
-        $objectpage->keywords = GETPOST('WEBSITE_KEYWORDS', 'alphanohtml');
-        $objectpage->lang = GETPOST('WEBSITE_LANG', 'aZ09');
-        $objectpage->aliasalt = GETPOST('WEBSITE_ALIASALT', 'alphanohtml');
-        $objectpage->pageurl = GETPOST('WEBSITE_PAGENAME', 'alpha');
+        $objectpage->title = $request->input('WEBSITE_TITLE');
+        $objectpage->description = $request->input('WEBSITE_DESCRIPTION');
+        $objectpage->keywords = $request->input('WEBSITE_KEYWORDS');
+        $objectpage->lang = $request->input('WEBSITE_LANG');
+        $objectpage->aliasalt = $request->input('WEBSITE_ALIASALT');
+        $objectpage->pageurl = $request->input('WEBSITE_PAGENAME');
 
         $result = $objectpage->update($user);
         
@@ -175,7 +175,7 @@ class PageWebsite extends Controller
 
         global $db, $user;
 
-        $objectpage->content = GETPOST('PAGE_CONTENT', 'restricthtml');
+        $objectpage->content = $request->input('PAGE_CONTENT');
         
         $result = $objectpage->update($user);
         
@@ -197,7 +197,7 @@ class PageWebsite extends Controller
 
         global $db, $user;
 
-        $objectpage->content = GETPOST('PAGE_CONTENT', 'restricthtml');
+        $objectpage->content = $request->input('PAGE_CONTENT');
         
         $result = $objectpage->update($user);
         

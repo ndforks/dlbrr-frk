@@ -28,10 +28,10 @@ class ShowSupplierProposal extends Controller
         
         $hookmanager->initHooks(['supplier_proposalcard', 'globalcard']);
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
-        $socid = GETPOSTINT('socid');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
+        $socid = $request->integer('socid', 0);
         
         if (!empty($user->socid)) {
             $socid = $user->socid;
@@ -88,14 +88,14 @@ class ShowSupplierProposal extends Controller
             accessforbidden();
         }
         
-        if ($request->method() === 'POST' && GETPOST('add')) {
+        if ($request->method() === 'POST' && $request->input('add')) {
             $object = new SupplierProposal($db);
-            $object->ref = GETPOST('ref', 'alpha');
-            $object->socid = GETPOSTINT('socid');
-            $object->date = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
-            $object->cond_reglement_id = GETPOSTINT('cond_reglement_id');
-            $object->mode_reglement_id = GETPOSTINT('mode_reglement_id');
-            $object->fk_project = GETPOSTINT('projectid');
+            $object->ref = $request->input('ref');
+            $object->socid = $request->integer('socid', 0);
+            $object->date = dol_mktime(0, 0, 0, $request->integer('remonth', 0), $request->integer('reday', 0), $request->integer('reyear', 0));
+            $object->cond_reglement_id = $request->integer('cond_reglement_id', 0);
+            $object->mode_reglement_id = $request->integer('mode_reglement_id', 0);
+            $object->fk_project = $request->integer('projectid', 0);
             
             $result = $object->create($user);
             if ($result > 0) {
@@ -128,9 +128,9 @@ class ShowSupplierProposal extends Controller
         $object = new SupplierProposal($db);
         $object->fetch($id);
         
-        $object->ref = GETPOST('ref', 'alpha');
-        $object->socid = GETPOSTINT('socid');
-        $object->date = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+        $object->ref = $request->input('ref');
+        $object->socid = $request->integer('socid', 0);
+        $object->date = dol_mktime(0, 0, 0, $request->integer('remonth', 0), $request->integer('reday', 0), $request->integer('reyear', 0));
         
         $result = $object->update($user);
         if ($result > 0) {
@@ -145,7 +145,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $confirm = GETPOST('confirm', 'alpha');
+        $confirm = $request->input('confirm');
         if ($confirm === 'yes') {
             $object = new SupplierProposal($db);
             $object->fetch($id);
@@ -164,7 +164,7 @@ class ShowSupplierProposal extends Controller
     {
         global $db, $user;
         
-        $confirm = GETPOST('confirm', 'alpha');
+        $confirm = $request->input('confirm');
         if ($confirm === 'yes') {
             $object = new SupplierProposal($db);
             $object->fetch($id);
@@ -186,7 +186,7 @@ class ShowSupplierProposal extends Controller
         $object = new SupplierProposal($db);
         $object->fetch($id);
         
-        $result = $object->cloture($user, GETPOSTINT('statut'), GETPOST('note', 'restricthtml'));
+        $result = $object->cloture($user, $request->integer('statut', 0), $request->input('note'));
         if ($result >= 0) {
             return redirect("/supplier_proposal/card.php?id={$id}");
         }

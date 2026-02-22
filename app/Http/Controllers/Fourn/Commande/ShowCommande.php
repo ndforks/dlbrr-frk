@@ -20,11 +20,11 @@ class ShowCommande extends Controller
             $langs->load('incoterm');
         }
 
-        $action = GETPOST('action', 'alpha');
-        $confirm = GETPOST('confirm', 'alpha');
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
-        $socid = GETPOSTINT('socid');
+        $action = $request->input('action');
+        $confirm = $request->input('confirm');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
+        $socid = $request->integer('socid', 0);
 
         if ($user->socid) {
             $socid = $user->socid;
@@ -73,7 +73,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $object->ref_supplier = GETPOST('ref_supplier', 'alpha');
+        $object->ref_supplier = $request->input('ref_supplier');
         $result = $object->update($user);
 
         if ($result < 0) {
@@ -91,7 +91,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $result = $object->setIncoterms(GETPOSTINT('incoterm_id'), GETPOST('incoterm_location', 'alpha'));
+        $result = $object->setIncoterms($request->integer('incoterm_id', 0), $request->input('incoterm_location'));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -108,7 +108,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $result = $object->setPaymentTerms(GETPOSTINT('cond_reglement_id'), GETPOSTINT('cond_reglement_id_deposit_percent'));
+        $result = $object->setPaymentTerms($request->integer('cond_reglement_id', 0), $request->integer('cond_reglement_id_deposit_percent', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -125,7 +125,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+        $result = $object->setPaymentMethods($request->integer('mode_reglement_id', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -142,7 +142,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $result = $object->setBankAccount(GETPOSTINT('fk_account'));
+        $result = $object->setBankAccount($request->integer('fk_account', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -159,7 +159,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $date_livraison = dol_mktime(0, 0, 0, GETPOSTINT('date_livraisonmonth'), GETPOSTINT('date_livraisonday'), GETPOSTINT('date_livraisonyear'));
+        $date_livraison = dol_mktime(0, 0, 0, $request->integer('date_livraisonmonth', 0), $request->integer('date_livraisonday', 0), $request->integer('date_livraisonyear', 0));
         $result = $object->setDeliveryDate($user, $date_livraison);
 
         if ($result < 0) {
@@ -177,7 +177,7 @@ class ShowCommande extends Controller
             accessforbidden();
         }
 
-        $result = $object->setProject(GETPOSTINT('projectid'));
+        $result = $object->setProject($request->integer('projectid', 0));
 
         if ($result < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -198,7 +198,7 @@ class ShowCommande extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
 
         $object->oldcopy = dol_clone($object, 2);
-        $attribute_name = GETPOST('attribute', 'aZ09');
+        $attribute_name = $request->input('attribute');
         $ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
 
         if ($ret >= 0) {

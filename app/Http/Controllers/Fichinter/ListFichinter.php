@@ -11,9 +11,9 @@ class ListFichinter extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         $query = Fichinter::with('societe');
         if ($searchAll) { $query->where('ref', 'like', "%{$searchAll}%"); }

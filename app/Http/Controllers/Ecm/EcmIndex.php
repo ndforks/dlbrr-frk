@@ -18,10 +18,10 @@ class EcmIndex extends Controller
         $langs->loadLangs(array('ecm', 'companies', 'other', 'users', 'orders', 'propal', 'bills', 'contracts'));
         
         // Get parameters
-        $action = GETPOST('action', 'aZ09');
-        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-        $section_dir = GETPOST('section_dir', 'alpha');
-        $overwritefile = GETPOSTINT('overwritefile');
+        $action = $request->input('action');
+        $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
+        $section_dir = $request->input('section_dir');
+        $overwritefile = $request->integer('overwritefile', 0);
         
         // Security check
         $result = restrictedArea($user, 'ecm', 0);
@@ -36,7 +36,7 @@ class EcmIndex extends Controller
         $hookmanager->initHooks(array('ecmindexcard', 'globalcard'));
         
         // Handle file upload
-        if (GETPOST("sendit", 'alphanohtml') && getDolGlobalString('MAIN_UPLOAD_DOC') && $user->hasRight('ecm', 'upload')) {
+        if ($request->input("sendit") && getDolGlobalString('MAIN_UPLOAD_DOC') && $user->hasRight('ecm', 'upload')) {
             return $this->uploadFile($request);
         }
         
@@ -51,9 +51,9 @@ class EcmIndex extends Controller
     
     private function uploadFile(Request $request): RedirectResponse
     {
-        global $conf, $db, $langs, $user;        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-        $section_dir = GETPOST('section_dir', 'alpha');
-        $overwritefile = GETPOSTINT('overwritefile');
+        global $conf, $db, $langs, $user;        $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
+        $section_dir = $request->input('section_dir');
+        $overwritefile = $request->integer('overwritefile', 0);
         
         $ecmdir = new EcmDirectory($db);
         
@@ -105,7 +105,7 @@ class EcmIndex extends Controller
         require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/ecm.lib.php';
         require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+        require_once DOL_DOCUMENT_ROOT.'/core/lib/treeview.lib.php';        $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
         
         $ecmdir = new EcmDirectory($db);
         if ($section > 0) {
@@ -153,8 +153,8 @@ class EcmIndex extends Controller
         
         $ecmdir = new EcmDirectory($db);
         $ecmdir->ref = 'NOTUSEDYET';
-        $ecmdir->label = GETPOST("label");
-        $ecmdir->description = GETPOST("desc");
+        $ecmdir->label = $request->input("label");
+        $ecmdir->description = $request->input("desc");
         
         $id = $ecmdir->create($user);
         if ($id > 0) {
@@ -171,9 +171,9 @@ class EcmIndex extends Controller
             accessforbidden();
         }
         
-        if (GETPOST('confirm') == 'yes') {
-            $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
-            $section_dir = GETPOST('section_dir', 'alpha');
+        if ($request->input('confirm') == 'yes') {
+            $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
+            $section_dir = $request->input('section_dir');
             
             $relativepath = '';
             $ecmdir = new EcmDirectory($db);
@@ -186,16 +186,16 @@ class EcmIndex extends Controller
             }
             
             $upload_dir = $conf->ecm->dir_output.($relativepath ? '/'.$relativepath : '');
-            $file = $upload_dir."/".GETPOST('urlfile', 'alpha');
+            $file = $upload_dir."/".$request->input('urlfile');
             $ret = dol_delete_file($file);
             
             if ($ret) {
-                $urlfiletoshow = GETPOST('urlfile', 'alpha');
+                $urlfiletoshow = $request->input('urlfile');
                 $urlfiletoshow = preg_replace('/\.noexe$/', '', $urlfiletoshow);
                 setEventMessages($langs->trans("FileWasRemoved", $urlfiletoshow), null, 'mesgs');
                 $ecmdir->changeNbOfFiles('-');
             } else {
-                setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile', 'alpha')), null, 'errors');
+                setEventMessages($langs->trans("ErrorFailToDeleteFile", $request->input('urlfile')), null, 'errors');
             }
             
             clearstatcache();
@@ -210,8 +210,8 @@ class EcmIndex extends Controller
             accessforbidden();
         }
         
-        if (GETPOST('confirm', 'alpha') == 'yes') {
-            $section = GETPOSTINT('section') ?: GETPOSTINT('section_id') ?: 0;
+        if ($request->input('confirm') == 'yes') {
+            $section = $request->integer('section', 0) ?: $request->integer('section_id', 0) ?: 0;
             
             $ecmdir = new EcmDirectory($db);
             $ecmdir->fetch($section);

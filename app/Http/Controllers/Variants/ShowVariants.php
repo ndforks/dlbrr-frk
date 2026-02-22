@@ -28,8 +28,8 @@ class ShowVariants extends Controller
         $hookmanager->initHooks(['productattributecard', 'globalcard']);
         restrictedArea($user, 'variants');
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -67,10 +67,10 @@ class ShowVariants extends Controller
     {
         global $db, $user, $langs;
         
-        if ($request->method() === 'POST' && GETPOST('add')) {
+        if ($request->method() === 'POST' && $request->input('add')) {
             $object = new ProductAttribute($db);
-            $object->ref = GETPOST('ref', 'alphanohtml');
-            $object->label = GETPOST('label', 'alphanohtml');
+            $object->ref = $request->input('ref');
+            $object->label = $request->input('label');
             
             $result = $object->create($user);
             if ($result > 0) {
@@ -100,8 +100,8 @@ class ShowVariants extends Controller
         $object = new ProductAttribute($db);
         $object->fetch($id);
         
-        $object->ref = GETPOST('ref', 'alpha');
-        $object->label = GETPOST('label', 'alpha');
+        $object->ref = $request->input('ref');
+        $object->label = $request->input('label');
         
         $result = $object->update($user);
         if ($result > 0) {
@@ -116,7 +116,7 @@ class ShowVariants extends Controller
     {
         global $db, $user;
         
-        $confirm = GETPOST('confirm', 'alpha');
+        $confirm = $request->input('confirm');
         if ($confirm === 'yes') {
             $object = new ProductAttribute($db);
             $object->fetch($id);
@@ -138,8 +138,8 @@ class ShowVariants extends Controller
         $object = new ProductAttribute($db);
         $object->fetch($id);
         
-        $line_ref = GETPOST('line_ref', 'alpha');
-        $line_value = GETPOST('line_value', 'alpha');
+        $line_ref = $request->input('line_ref');
+        $line_value = $request->input('line_value');
         
         $result = $object->addLine($line_ref, $line_value);
         if ($result > 0) {
@@ -158,9 +158,9 @@ class ShowVariants extends Controller
         $object = new ProductAttribute($db);
         $object->fetch($id);
         
-        $lineid = GETPOSTINT('lineid');
-        $line_ref = GETPOST('line_ref', 'alpha');
-        $line_value = GETPOST('line_value', 'alpha');
+        $lineid = $request->integer('lineid', 0);
+        $line_ref = $request->input('line_ref');
+        $line_value = $request->input('line_value');
         
         $result = $object->updateLine($lineid, $line_ref, $line_value);
         if ($result > 0) {
@@ -179,7 +179,7 @@ class ShowVariants extends Controller
         $object = new ProductAttribute($db);
         $object->fetch($id);
         
-        $rowid = GETPOSTINT('rowid');
+        $rowid = $request->integer('rowid', 0);
         $object->line_up($rowid, false);
         
         return redirect("/variants/card.php?id={$id}#{$rowid}");
@@ -192,7 +192,7 @@ class ShowVariants extends Controller
         $object = new ProductAttribute($db);
         $object->fetch($id);
         
-        $rowid = GETPOSTINT('rowid');
+        $rowid = $request->integer('rowid', 0);
         $object->line_down($rowid, false);
         
         return redirect("/variants/card.php?id={$id}#{$rowid}");

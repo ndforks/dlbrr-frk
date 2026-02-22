@@ -17,9 +17,9 @@ class ShowContact extends Controller
      */
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
-        $socid = GETPOSTINT('socid');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $socid = $request->integer('socid', 0);
         
         // Handle different actions
         return match($action) {
@@ -81,24 +81,24 @@ class ShowContact extends Controller
     {
         $contact = Contact::findOrFail($id);
         
-        // Get form data using helper
+        // Get form data using Laravel request
         $data = [
-            'lastname' => GETPOST('lastname', 'alpha'),
-            'firstname' => GETPOST('firstname', 'alpha'),
-            'email' => GETPOST('email', 'alpha'),
-            'phone' => GETPOST('phone', 'alpha'),
-            'phone_mobile' => GETPOST('phone_mobile', 'alpha'),
-            'phone_perso' => GETPOST('phone_perso', 'alpha'),
-            'fax' => GETPOST('fax', 'alpha'),
-            'poste' => GETPOST('poste', 'alpha'),
-            'address' => GETPOST('address', 'alpha'),
-            'zip' => GETPOST('zip', 'alpha'),
-            'town' => GETPOST('town', 'alpha'),
-            'fk_soc' => GETPOSTINT('socid'),
-            'fk_pays' => GETPOSTINT('country_id'),
-            'priv' => GETPOSTINT('priv'),
-            'note_public' => GETPOST('note_public', 'restricthtml'),
-            'note_private' => GETPOST('note_private', 'restricthtml'),
+            'lastname' => $request->input('lastname'),
+            'firstname' => $request->input('firstname'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'phone_mobile' => $request->input('phone_mobile'),
+            'phone_perso' => $request->input('phone_perso'),
+            'fax' => $request->input('fax'),
+            'poste' => $request->input('poste'),
+            'address' => $request->input('address'),
+            'zip' => $request->input('zip'),
+            'town' => $request->input('town'),
+            'fk_soc' => $request->integer('socid', 0),
+            'fk_pays' => $request->integer('country_id', 0),
+            'priv' => $request->integer('priv', 0),
+            'note_public' => $request->input('note_public'),
+            'note_private' => $request->input('note_private'),
         ];
         
         // Remove null values

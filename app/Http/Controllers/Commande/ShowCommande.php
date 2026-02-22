@@ -12,8 +12,8 @@ class ShowCommande extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -46,10 +46,10 @@ class ShowCommande extends Controller
         $commande = Commande::findOrFail($id);
         
         $data = [
-            'ref' => GETPOST('ref', 'alpha'),
-            'ref_client' => GETPOST('ref_client', 'alpha'),
-            'fk_soc' => GETPOSTINT('socid'),
-            'date_commande' => GETPOST('date_commande', 'alpha'),
+            'ref' => $request->input('ref'),
+            'ref_client' => $request->input('ref_client'),
+            'fk_soc' => $request->integer('socid', 0),
+            'date_commande' => $request->input('date_commande'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');

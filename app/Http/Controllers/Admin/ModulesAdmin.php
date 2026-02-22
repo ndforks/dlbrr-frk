@@ -13,7 +13,7 @@ class ModulesAdmin extends Controller
     {
         global $conf, $user, $langs, $db;
         
-        $action = GETPOST('action', 'aZ09');
+        $action = $request->input('action');
         
         if (!$user->admin) {
             accessforbidden();
@@ -33,10 +33,10 @@ class ModulesAdmin extends Controller
         
         $langs->loadLangs(['errors', 'admin', 'modulebuilder']);
         
-        $search_keyword = GETPOST('search_keyword', 'alpha');
-        $search_status = GETPOST('search_status', 'alpha');
-        $search_nature = GETPOST('search_nature', 'alpha');
-        $search_version = GETPOST('search_version', 'alpha');
+        $search_keyword = $request->input('search_keyword');
+        $search_status = $request->input('search_status');
+        $search_nature = $request->input('search_nature');
+        $search_version = $request->input('search_version');
         
         return view('admin.modules', [
             'search_keyword' => $search_keyword,
@@ -54,8 +54,8 @@ class ModulesAdmin extends Controller
     {
         global $db, $conf, $user, $langs;
         
-        $value = GETPOST('value', 'alpha');
-        $module = GETPOST('module', 'alpha');
+        $value = $request->input('value');
+        $module = $request->input('module');
         
         if ($module && $user->admin) {
             $res = activateModule($module, $value);
@@ -73,7 +73,7 @@ class ModulesAdmin extends Controller
     {
         global $db, $conf, $user, $langs;
         
-        if ($user->admin && GETPOST('confirm') == 'yes') {
+        if ($user->admin && $request->input('confirm') == 'yes') {
             $langs->load('admin');
             
             $sql = "DELETE FROM ".MAIN_DB_PREFIX."const WHERE name LIKE '%_MODULE_%'";

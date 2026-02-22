@@ -34,20 +34,20 @@ class ListVariants extends Controller
         $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
-        $limit = GETPOSTINT('limit') ?: $conf->liste_limit;
-        $sortfield = GETPOST('sortfield', 'aZ09comma') ?: 't.position';
-        $sortorder = GETPOST('sortorder', 'aZ09comma') ?: 'ASC';
-        $page = GETPOSTINT('page') ?: 0;
+        $limit = $request->integer('limit', 0) ?: $conf->liste_limit;
+        $sortfield = $request->input('sortfield', 't.position');
+        $sortorder = $request->input('sortorder', 'ASC');
+        $page = $request->integer('page', 0) ?: 0;
         $offset = $limit * $page;
         
         $search = [];
         foreach ($object->fields as $key => $val) {
-            if (GETPOST('search_'.$key, 'alpha') !== '') {
-                $search[$key] = GETPOST('search_'.$key, 'alpha');
+            if ($request->input('search_'.$key) !== '') {
+                $search[$key] = $request->input('search_'.$key);
             }
         }
-        $search['nb_of_values'] = GETPOST('search_nb_of_values', 'alpha');
-        $search['nb_products'] = GETPOST('search_nb_products', 'alpha');
+        $search['nb_of_values'] = $request->input('search_nb_of_values');
+        $search['nb_products'] = $request->input('search_nb_products');
         
         $sql = 'SELECT t.rowid, t.ref, t.label, t.position';
         $sql .= ', COUNT(DISTINCT pav.rowid) as nb_of_values';

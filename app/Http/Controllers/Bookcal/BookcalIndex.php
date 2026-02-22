@@ -16,7 +16,7 @@ class BookcalIndex extends Controller
         
         $langs->loadLangs(array("agenda"));
         
-        $socid = GETPOSTINT('socid');
+        $socid = $request->integer('socid', 0);
         if (!empty($user->socid) && $user->socid > 0) {
             $socid = $user->socid;
         }

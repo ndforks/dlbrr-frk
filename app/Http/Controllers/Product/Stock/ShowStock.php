@@ -15,9 +15,9 @@ class ShowStock extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
         
         return match($action) {
             'add' => $this->store($request),
@@ -116,19 +116,19 @@ class ShowStock extends Controller
         $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
         
-        $object->ref = GETPOST('ref', 'alpha');
-        $object->fk_parent = GETPOSTINT('fk_parent');
-        $object->fk_project = GETPOSTINT('projectid');
-        $object->label = GETPOST('libelle', 'alpha');
-        $object->description = GETPOST('desc', 'alpha');
-        $object->statut = GETPOSTINT('statut');
-        $object->lieu = GETPOST('lieu', 'alpha');
-        $object->address = GETPOST('address', 'alpha');
-        $object->zip = GETPOST('zipcode', 'alpha');
-        $object->town = GETPOST('town', 'alpha');
-        $object->country_id = GETPOSTINT('country_id');
-        $object->phone = GETPOST('phone', 'alpha');
-        $object->fax = GETPOST('fax', 'alpha');
+        $object->ref = $request->input('ref');
+        $object->fk_parent = $request->integer('fk_parent', 0);
+        $object->fk_project = $request->integer('projectid', 0);
+        $object->label = $request->input('libelle');
+        $object->description = $request->input('desc');
+        $object->statut = $request->integer('statut', 0);
+        $object->lieu = $request->input('lieu');
+        $object->address = $request->input('address');
+        $object->zip = $request->input('zipcode');
+        $object->town = $request->input('town');
+        $object->country_id = $request->integer('country_id', 0);
+        $object->phone = $request->input('phone');
+        $object->fax = $request->input('fax');
         
         if (empty($object->label)) {
             setEventMessages($langs->trans('ErrorWarehouseRefRequired'), null, 'errors');
@@ -144,10 +144,10 @@ class ShowStock extends Controller
         $id = $object->create($user);
         if ($id > 0) {
             setEventMessages($langs->trans('RecordSaved'), null, 'mesgs');
-            $categories = GETPOST('categories', 'array:int');
+            $categories = $request->input('categories');
             $object->setCategories($categories);
             
-            $backtopage = GETPOST('backtopage', 'alpha');
+            $backtopage = $request->input('backtopage');
             if (!empty($backtopage)) {
                 $backtopage = str_replace('__ID__', (string) $id, $backtopage);
                 return redirect($backtopage);
@@ -167,7 +167,7 @@ class ShowStock extends Controller
             return redirect("/product/stock/card.php?id={$id}")->with('error', 'Permission denied');
         }
         
-        $cancel = GETPOST('cancel', 'alpha');
+        $cancel = $request->input('cancel');
         if ($cancel) {
             return redirect("/product/stock/card.php?id={$id}");
         }
@@ -178,20 +178,20 @@ class ShowStock extends Controller
         $extrafields->fetch_name_optionals_label($object->table_element);
         
         if ($object->fetch($id)) {
-            $object->label = GETPOST('libelle');
-            $object->fk_parent = GETPOSTINT('fk_parent');
-            $object->fk_project = GETPOSTINT('projectid');
-            $object->description = GETPOST('desc', 'restricthtml');
-            $object->statut = GETPOSTINT('statut');
-            $object->lieu = GETPOST('lieu');
-            $object->address = GETPOST('address');
-            $object->zip = GETPOST('zipcode');
-            $object->town = GETPOST('town');
-            $object->country_id = GETPOSTINT('country_id');
-            $object->phone = GETPOST('phone');
-            $object->fax = GETPOST('fax');
+            $object->label = $request->input('libelle');
+            $object->fk_parent = $request->integer('fk_parent', 0);
+            $object->fk_project = $request->integer('projectid', 0);
+            $object->description = $request->input('desc');
+            $object->statut = $request->integer('statut', 0);
+            $object->lieu = $request->input('lieu');
+            $object->address = $request->input('address');
+            $object->zip = $request->input('zipcode');
+            $object->town = $request->input('town');
+            $object->country_id = $request->integer('country_id', 0);
+            $object->phone = $request->input('phone');
+            $object->fax = $request->input('fax');
             
-            $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
+            $ret = $extrafields->setOptionsFromPost($request, $object);
             if ($ret < 0) {
                 setEventMessages($object->error, $object->errors, 'errors');
                 return redirect("/product/stock/card.php?action=edit&id={$id}");
@@ -203,7 +203,7 @@ class ShowStock extends Controller
                 return redirect("/product/stock/card.php?action=edit&id={$id}");
             }
             
-            $categories = GETPOST('categories', 'array:int');
+            $categories = $request->input('categories');
             $object->setCategories($categories);
             setEventMessages($langs->trans('RecordSaved'), null, 'mesgs');
         } else {
@@ -225,7 +225,7 @@ class ShowStock extends Controller
         $object->fetch($id);
         $object->oldcopy = dol_clone($object, 2);
         
-        $attribute_name = GETPOST('attribute', 'aZ09');
+        $attribute_name = $request->input('attribute');
         $ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
         
         if ($ret >= 0) {
@@ -248,7 +248,7 @@ class ShowStock extends Controller
             return redirect("/product/stock/card.php?id={$id}")->with('error', 'Permission denied');
         }
         
-        $confirm = GETPOST('confirm');
+        $confirm = $request->input('confirm');
         if ($confirm !== 'yes') {
             return redirect("/product/stock/card.php?id={$id}");
         }

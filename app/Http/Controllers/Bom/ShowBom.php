@@ -12,8 +12,8 @@ class ShowBom extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => view('bom.create', ['action' => 'create']),
@@ -26,7 +26,7 @@ class ShowBom extends Controller
     
     private function update(Request $request, int $id): RedirectResponse
     {
-        Bom::findOrFail($id)->update(array_filter(['ref' => GETPOST('ref', 'alpha')], fn($v) => $v));
+        Bom::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
         return redirect("/bom/card.php?id={$id}")->with('success', 'BOM updated');
     }
     

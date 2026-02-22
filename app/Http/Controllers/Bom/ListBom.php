@@ -11,9 +11,9 @@ class ListBom extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         $query = Bom::query();
         if ($searchAll) { $query->where('ref', 'like', "%{$searchAll}%"); }

@@ -23,14 +23,14 @@ class ListContacts extends Controller
     public function __invoke(Request $request): View
     {
         // Get search parameters using helper functions (replaces GETPOST calls)
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $searchLastname = GETPOST('search_lastname', 'alpha');
-        $searchFirstname = GETPOST('search_firstname', 'alpha');
-        $searchSociete = GETPOST('search_societe', 'alpha');
-        $searchEmail = GETPOST('search_email', 'alpha');
-        $searchPhone = GETPOST('search_phone', 'alpha');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $searchLastname = $request->input('search_lastname');
+        $searchFirstname = $request->input('search_firstname');
+        $searchSociete = $request->input('search_societe');
+        $searchEmail = $request->input('search_email');
+        $searchPhone = $request->input('search_phone');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         // Build Eloquent query (replaces raw SQL)
         $query = Contact::query()

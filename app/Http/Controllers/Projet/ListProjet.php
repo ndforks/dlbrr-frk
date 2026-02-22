@@ -11,11 +11,11 @@ class ListProjet extends Controller
 {
     public function __invoke(Request $request): View
     {
-        $searchAll = GETPOST('search_all', 'alphanohtml');
-        $searchRef = GETPOST('search_ref', 'alpha');
-        $searchTitle = GETPOST('search_title', 'alpha');
-        $page = GETPOSTINT('page');
-        $limit = GETPOSTINT('limit') ?: 25;
+        $searchAll = $request->input('search_all');
+        $searchRef = $request->input('search_ref');
+        $searchTitle = $request->input('search_title');
+        $page = $request->integer('page', 0);
+        $limit = $request->integer('limit', 25);
         
         $query = Projet::with('societe');
         

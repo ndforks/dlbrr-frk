@@ -12,8 +12,8 @@ class ShowProduct extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -46,11 +46,11 @@ class ShowProduct extends Controller
         $product = Product::findOrFail($id);
         
         $data = [
-            'ref' => GETPOST('ref', 'alpha'),
-            'label' => GETPOST('label', 'alpha'),
-            'description' => GETPOST('description', 'restricthtml'),
-            'price' => GETPOST('price', 'alpha'),
-            'tva_tx' => GETPOST('tva_tx', 'alpha'),
+            'ref' => $request->input('ref'),
+            'label' => $request->input('label'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'tva_tx' => $request->input('tva_tx'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');

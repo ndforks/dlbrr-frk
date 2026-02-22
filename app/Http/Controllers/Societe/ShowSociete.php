@@ -12,9 +12,9 @@ class ShowSociete extends Controller
 {
     public function __invoke(Request $request): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        $id = GETPOSTINT('id');
-        $socid = GETPOSTINT('socid');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $socid = $request->integer('socid', 0);
         
         return match($action) {
             'create', 'add' => $this->create($request),
@@ -47,17 +47,17 @@ class ShowSociete extends Controller
         $societe = Societe::findOrFail($id);
         
         $data = [
-            'nom' => GETPOST('nom', 'alpha'),
-            'name_alias' => GETPOST('name_alias', 'alpha'),
-            'address' => GETPOST('address', 'alpha'),
-            'zip' => GETPOST('zip', 'alpha'),
-            'town' => GETPOST('town', 'alpha'),
-            'phone' => GETPOST('phone', 'alpha'),
-            'email' => GETPOST('email', 'alpha'),
-            'url' => GETPOST('url', 'alpha'),
-            'fk_pays' => GETPOSTINT('country_id'),
-            'client' => GETPOSTINT('client'),
-            'fournisseur' => GETPOSTINT('fournisseur'),
+            'nom' => $request->input('nom'),
+            'name_alias' => $request->input('name_alias'),
+            'address' => $request->input('address'),
+            'zip' => $request->input('zip'),
+            'town' => $request->input('town'),
+            'phone' => $request->input('phone'),
+            'email' => $request->input('email'),
+            'url' => $request->input('url'),
+            'fk_pays' => $request->integer('country_id', 0),
+            'client' => $request->integer('client', 0),
+            'fournisseur' => $request->integer('fournisseur', 0),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');

@@ -15,8 +15,8 @@ class BookmarksIndex extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $action = GETPOST('action', 'aZ09');
-        $id = GETPOSTINT('id');
+        $action = $request->input('action');
+        $id = $request->integer('id', 0);
         
         if (!$user->hasRight('bookmark', 'lire')) {
             accessforbidden();
@@ -30,24 +30,24 @@ class BookmarksIndex extends Controller
     {
         global $db, $langs, $user, $conf, $hookmanager;
         
-        $massaction = GETPOST('massaction', 'alpha');
-        $show_files = GETPOSTINT('show_files');
-        $confirm = GETPOST('confirm', 'alpha');
-        $cancel = GETPOST('cancel', 'alpha');
-        $toselect = GETPOST('toselect', 'array:int');
-        $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'bookmarklist';
-        $backtopage = GETPOST('backtopage', 'alpha');
-        $optioncss = GETPOST('optioncss', 'alpha');
-        $mode = GETPOST('mode', 'aZ');
+        $massaction = $request->input('massaction');
+        $show_files = $request->integer('show_files', 0);
+        $confirm = $request->input('confirm');
+        $cancel = $request->input('cancel');
+        $toselect = $request->input('toselect');
+        $contextpage = $request->input('contextpage') ? $request->input('contextpage') : 'bookmarklist';
+        $backtopage = $request->input('backtopage');
+        $optioncss = $request->input('optioncss');
+        $mode = $request->input('mode');
         
-        $search_title = GETPOST('search_title', 'alpha');
+        $search_title = $request->input('search_title');
         
-        $limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-        $sortfield = GETPOST('sortfield', 'aZ09comma');
-        $sortorder = GETPOST('sortorder', 'aZ09comma');
-        $page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+        $limit = $request->integer('limit', 0) ? $request->integer('limit', 0) : $conf->liste_limit;
+        $sortfield = $request->input('sortfield');
+        $sortorder = $request->input('sortorder');
+        $page = $request->has('pageplusone') ? ($request->integer('pageplusone', 0) - 1) : $request->integer('page', 0);
         
-        if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+        if (empty($page) || $page < 0 || $request->input('button_search') || $request->input('button_removefilter')) {
             $page = 0;
         }
         

@@ -23,10 +23,10 @@ class ShowConferenceOrBoothEventOrganization extends Controller
         // Load translation files
         $langs->loadLangs(['eventorganization', 'projects']);
         
-        $action = GETPOST('action', 'aZ09') ?: 'view';
-        $id = GETPOSTINT('id');
-        $ref = GETPOST('ref', 'alpha');
-        $withproject = GETPOSTINT('withproject');
+        $action = $request->input('action', 'view');
+        $id = $request->integer('id', 0);
+        $ref = $request->input('ref');
+        $withproject = $request->integer('withproject', 0);
         
         // Security check
         if ($user->socid > 0) {
@@ -72,7 +72,7 @@ class ShowConferenceOrBoothEventOrganization extends Controller
             $object->project = clone $projectstatic;
         }
         
-        $withproject = GETPOSTINT('withproject');
+        $withproject = $request->integer('withproject', 0);
         
         return view('eventorganization.conferenceorbooth.show', [
             'object' => $object,
@@ -96,7 +96,7 @@ class ShowConferenceOrBoothEventOrganization extends Controller
             $projectstatic->fetch_thirdparty();
         }
         
-        $withproject = GETPOSTINT('withproject');
+        $withproject = $request->integer('withproject', 0);
         
         return view('eventorganization.conferenceorbooth.edit', [
             'object' => $object,
@@ -113,14 +113,14 @@ class ShowConferenceOrBoothEventOrganization extends Controller
     {
         global $db, $langs;
         
-        $fk_project = GETPOSTINT('fk_project');
+        $fk_project = $request->integer('fk_project', 0);
         $projectstatic->fetch($fk_project);
         
         if (!empty($projectstatic->socid)) {
             $projectstatic->fetch_thirdparty();
         }
         
-        $withproject = GETPOSTINT('withproject');
+        $withproject = $request->integer('withproject', 0);
         
         return view('eventorganization.conferenceorbooth.create', [
             'object' => $object,
@@ -140,14 +140,14 @@ class ShowConferenceOrBoothEventOrganization extends Controller
         // Get form data and update object fields
         foreach ($object->fields as $key => $val) {
             if (array_key_exists($key, $_POST)) {
-                $object->$key = GETPOST($key, $val['type']);
+                $object->$key = $request->input($key);
             }
         }
         
         // Set extrafields
         $extrafields = new ExtraFields($db);
         $extrafields->fetch_name_optionals_label($object->table_element);
-        $ret = $extrafields->setOptionalsFromPost(null, $object, '@GETPOSTISSET');
+        $ret = $extrafields->setOptionsFromPost($request, $object);
         
         if ($ret < 0) {
             setEventMessages($object->error, $object->errors, 'errors');
@@ -163,7 +163,7 @@ class ShowConferenceOrBoothEventOrganization extends Controller
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        $withproject = GETPOSTINT('withproject');
+        $withproject = $request->integer('withproject', 0);
         $withProjectUrl = $withproject ? '&withproject=1' : '';
         
         return redirect('/eventorganization/conferenceorbooth_card.php?id='.$object->id.$withProjectUrl);
@@ -176,11 +176,11 @@ class ShowConferenceOrBoothEventOrganization extends Controller
     {
         global $db, $user;
         
-        $confirm = GETPOST('confirm', 'alpha');
+        $confirm = $request->input('confirm');
         
         if ($confirm === 'yes') {
             $object->delete($user);
-            $withproject = GETPOSTINT('withproject');
+            $withproject = $request->integer('withproject', 0);
             
             if ($withproject) {
                 return redirect('/eventorganization/conferenceorbooth_list.php?withproject=1&fk_project='.$object->fk_project);
