@@ -92,7 +92,7 @@ class PageWebsite extends Controller
             accessforbidden();
         }
 
-        global $db;
+        global $db, $user;
         
         $object->fk_default_home = $objectpage->id;
         $result = $object->update($user);
