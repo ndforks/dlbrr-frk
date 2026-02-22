@@ -11,6 +11,7 @@ use App\Http\Controllers\Asterisk\WrapperController as AsteriskWrapper;
 use App\Http\Controllers\Asset\ListAsset;
 use App\Http\Controllers\Asset\ShowAsset;
 use App\Http\Controllers\Barcode\CodeInitController;
+use App\Http\Controllers\Barcode\PrintSheetController;
 use App\Http\Controllers\Bom\ListBom;
 use App\Http\Controllers\Bom\ShowBom;
 use App\Http\Controllers\Bookcal\BookcalIndex;
@@ -105,6 +106,9 @@ Route::get('/asterisk/wrapper', AsteriskWrapper::class)->name('asterisk.wrapper'
 
 // Barcode mass initialization
 Route::match(['get', 'post'], '/barcode/codeinit', CodeInitController::class)->name('barcode.codeinit');
+
+// Barcode printsheet
+Route::match(['get', 'post'], '/barcode/printsheet', PrintSheetController::class)->name('barcode.printsheet');
 
 // User Management Routes
 Route::prefix('user')->name('user.')->group(function () {
