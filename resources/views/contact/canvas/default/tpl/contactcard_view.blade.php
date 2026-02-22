@@ -1,6 +1,5 @@
 {{-- Blade template version --}}
-<?php
-/* Copyright (C) 2010-2012  Regis Houssin           <regis.houssin@inodbox.com>
+{{-- Copyright (C) 2010-2012  Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2024       Frédéric France         <frederic.france@free.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
+ --}}
 
 /**
  * @var Canvas $this
@@ -25,148 +24,116 @@
  * @var User $user
  *
  * @var string $canvas
- */
-
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+ --}}
 
 
-$contact = $GLOBALS['objcanvas']->control->object;
 
-print "<!-- BEGIN PHP TEMPLATE CONTACTCARD_VIEW.TPL.PHP DEFAULT -->\n";
-echo $this->control->tpl['showhead'];
+@php $contact = $GLOBALS['objcanvas']->control->object; @endphp
 
-dol_htmloutput_errors($this->control->tpl['error'], $this->control->tpl['errors']);
+{!! "<!-- BEGIN BLADE TEMPLATE CONTACTCARD_VIEW.TPL.PHP DEFAULT -->\n"!!}
+{!! $this->control->tpl['showhead'] !!}
+{!! dol_htmloutput_errors($this->control->tpl['error'], $this->control->tpl['errors']) !!}
 
-if (!empty($this->control->tpl['action_create_user'])) {
-	echo $this->control->tpl['action_create_user'];
-}
-if (!empty($this->control->tpl['action_delete'])) {
-	echo $this->control->tpl['action_delete'];
-} ?>
-
+@if (!empty($this->control->tpl['action_create_user']))
+	echo $this->control->tpl['action_create_user']!!}
+@endif
+@if (!empty($this->control->tpl['action_delete']))
+	echo $this->control->tpl['action_delete']!!}
+@endif
 <table class="border allwidth">
 
 <tr>
-	<td width="20%"><?php echo $langs->trans("Ref"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['showrefnav']; ?></td>
+	<td width="20%">{{ $langs->trans("Ref") }}</td>
+	<td colspan="3">@php $this->control->tpl['showrefnav'] @endphp</td>
 </tr>
 
 <tr>
-	<td width="20%"><?php echo $langs->trans("Lastname"); ?></td>
-	<td width="30%"><?php echo $this->control->tpl['name']; ?></td>
-	<td width="25%"><?php echo $langs->trans("Firstname"); ?></td>
-	<td width="25%"><?php echo $this->control->tpl['firstname']; ?></td>
+	<td width="20%">{{ $langs->trans("Lastname") }}</td>
+	<td width="30%">@php $this->control->tpl['name'] @endphp</td>
+	<td width="25%">{{ $langs->trans("Firstname") }}</td>
+	<td width="25%">@php $this->control->tpl['firstname'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("ThirdParty"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['company']; ?></td>
+	<td>{{ $langs->trans("ThirdParty") }}</td>
+	<td colspan="3">@php $this->control->tpl['company'] @endphp</td>
 </tr>
 
 <tr>
-	<td width="15%"><?php echo $langs->trans("UserTitle"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['civility']; ?></td>
+	<td width="15%">{{ $langs->trans("UserTitle") }}</td>
+	<td colspan="3">@php $this->control->tpl['civility'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("PostOrFunction"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['poste']; ?></td>
+	<td>{{ $langs->trans("PostOrFunction") }}</td>
+	<td colspan="3">@php $this->control->tpl['poste'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Address"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['address']; ?></td>
+	<td>{{ $langs->trans("Address") }}</td>
+	<td colspan="3">@php $this->control->tpl['address'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Zip").' / '.$langs->trans("Town"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['zip'].$this->control->tpl['town']; ?></td>
+	<td>{{ $langs->trans("Zip").' / '.$langs->trans("Town") }}</td>
+	<td colspan="3">@php $this->control->tpl['zip'].$this->control->tpl['town'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("Country"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['country']; ?></td>
+	<td>{{ $langs->trans("Country") }}</td>
+	<td colspan="3">@php $this->control->tpl['country'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans('State'); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['departement']; ?></td>
+	<td>{{ $langs->trans('State') }}</td>
+	<td colspan="3">@php $this->control->tpl['departement'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("PhonePro"); ?></td>
-	<td><?php echo $this->control->tpl['phone_pro']; ?></td>
-	<td><?php echo $langs->trans("PhonePerso"); ?></td>
-	<td><?php echo $this->control->tpl['phone_perso']; ?></td>
+	<td>{{ $langs->trans("PhonePro") }}</td>
+	<td>@php $this->control->tpl['phone_pro'] @endphp</td>
+	<td>{{ $langs->trans("PhonePerso") }}</td>
+	<td>@php $this->control->tpl['phone_perso'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("PhoneMobile"); ?></td>
-	<td><?php echo $this->control->tpl['phone_mobile']; ?></td>
-	<td><?php echo $langs->trans("Fax"); ?></td>
-	<td><?php echo $this->control->tpl['fax']; ?></td>
+	<td>{{ $langs->trans("PhoneMobile") }}</td>
+	<td>@php $this->control->tpl['phone_mobile'] @endphp</td>
+	<td>{{ $langs->trans("Fax") }}</td>
+	<td>@php $this->control->tpl['fax'] @endphp</td>
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("EMail"); ?></td>
-	<td><?php echo $this->control->tpl['email']; ?></td>
-	<?php if ($this->control->tpl['nb_emailing']) { ?>
-	<td class="nowrap"><?php echo $langs->trans("NbOfEMailingsReceived"); ?></td>
-	<td><?php echo $this->control->tpl['nb_emailing']; ?></td>
-	<?php } else { ?>
+	<td>{{ $langs->trans("EMail") }}</td>
+	<td>@php $this->control->tpl['email'] @endphp</td>
+	@if ($this->control->tpl['nb_emailing'])
+	<td class="nowrap">{{ $langs->trans("NbOfEMailingsReceived") }}</td>
+	<td>@php $this->control->tpl['nb_emailing'] @endphp</td>
+	@else
 	<td colspan="2">&nbsp;</td>
-	<?php } ?>
+	@endif
 </tr>
 
 <tr>
-	<td><?php echo $langs->trans("ContactVisibility"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['visibility']; ?></td>
+	<td>{{ $langs->trans("ContactVisibility") }}</td>
+	<td colspan="3">@php $this->control->tpl['visibility'] @endphp</td>
 </tr>
 
 <tr>
-	<td class="tdtop"><?php echo $langs->trans("Note"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['note']; ?></td>
+	<td class="tdtop">{{ $langs->trans("Note") }}</td>
+	<td colspan="3">@php $this->control->tpl['note'] @endphp</td>
 </tr>
 
-<?php foreach ($this->control->tpl['contact_element'] as $element) { ?>
+@foreach ($this->control->tpl['contact_element'] as $element)
 <tr>
-	<td><?php echo $element['linked_element_label']; ?></td>
-	<td colspan="3"><?php echo $element['linked_element_value']; ?></td>
+	<td>{{ $element['linked_element_label'] }}</td>
+	<td colspan="3">{{ $element['linked_element_value'] }}</td>
 </tr>
-<?php } ?>
+@endif
 
 <tr>
-	<td><?php echo $langs->trans("DolibarrLogin"); ?></td>
-	<td colspan="3"><?php echo $this->control->tpl['dolibarr_user']; ?></td>
+	<td>{{ $langs->trans("DolibarrLogin") }}</td>
+	<td colspan="3">@php $this->control->tpl['dolibarr_user'] @endphp</td>
 </tr>
 
 </table>
-
-<?php echo $this->control->tpl['showend'];
-
-if (empty($user->socid)) {
-	print '<div class="tabsAction">';
-	if ($user->hasRight('societe', 'contact', 'creer')) {
-		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=edit&token='.newToken().'&canvas='.$canvas.'">'.$langs->trans('Modify').'</a>';
-	}
-
-	if (!$this->control->tpl['user_id'] && $user->hasRight('user', 'user', 'creer')) {
-		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=create_user&token='.newToken().'&canvas='.$canvas.'">'.$langs->trans("CreateDolibarrLogin").'</a>';
-	}
-
-	if ($user->hasRight('societe', 'contact', 'supprimer')) {
-		print '<a class="butActionDelete" href="'.$_SERVER["PHP_SELF"].'?id='.$this->control->tpl['id'].'&action=delete&token='.newToken().'&canvas='.$canvas.'">'.$langs->trans('Delete').'</a>';
-	}
-
-	print '</div><br>';
-}
-
-echo $this->control->tpl['actionstodo'];
-
-echo $this->control->tpl['actionsdone'];
-
-print "<!-- END PHP TEMPLATE -->\n";
