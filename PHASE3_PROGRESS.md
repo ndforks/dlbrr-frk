@@ -172,6 +172,13 @@ Phase 3 of the Laravel refactoring is now underway. This phase focuses on conver
 - **Modern Code Added:** ~1,100 lines
 - **Directories Removed:** 1 (Barcode - both files converted)
 
+### Current Testing & TODO
+- ✅ Contact: controller feature test in place
+- ✅ Societe: added controller feature test with coverage attribute
+- ✅ Facture: added controller feature test with coverage attribute
+- ✅ Projet: added controller feature test with coverage attribute
+- ☐ Service layer coverage (none defined yet for these modules)
+
 ### Code Quality
 - ✅ All PHP syntax validated
 - ✅ PSR-4 namespaces
