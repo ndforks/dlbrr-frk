@@ -9,6 +9,6 @@ class ExpenseReportIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/expensereport/list.php');
+        return redirect()->route('expensereport.list');
     }
 }

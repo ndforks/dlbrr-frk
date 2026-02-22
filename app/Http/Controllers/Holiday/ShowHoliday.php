@@ -27,12 +27,12 @@ class ShowHoliday extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Holiday::findOrFail($id)->update(array_filter(['description' => $request->input('description')], fn($v) => $v));
-        return redirect("/holiday/card.php?id={$id}")->with('success', 'Holiday updated');
+        return redirect()->route('holiday.show', ['id' => $id])->with('success', 'Holiday updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Holiday::findOrFail($id)->delete();
-        return redirect('/holiday/list.php')->with('success', 'Holiday deleted');
+        return redirect()->route('holiday.list')->with('success', 'Holiday deleted');
     }
 }

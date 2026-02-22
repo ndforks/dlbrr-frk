@@ -9,6 +9,6 @@ class ProjetIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/projet/list.php');
+        return redirect()->route('projet.list');
     }
 }

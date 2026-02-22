@@ -27,12 +27,12 @@ class ShowExpenseReport extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         ExpenseReport::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/expensereport/card.php?id={$id}")->with('success', 'Expense report updated');
+        return redirect()->route('expensereport.show', ['id' => $id])->with('success', 'Expense report updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         ExpenseReport::findOrFail($id)->delete();
-        return redirect('/expensereport/list.php')->with('success', 'Expense report deleted');
+        return redirect()->route('expensereport.list')->with('success', 'Expense report deleted');
     }
 }

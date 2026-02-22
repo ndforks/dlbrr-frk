@@ -9,6 +9,6 @@ class TicketIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/ticket/list.php');
+        return redirect()->route('ticket.list');
     }
 }

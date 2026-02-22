@@ -46,12 +46,12 @@ class ShowTicket extends Controller
         $ticket = Ticket::findOrFail($id);
         $data = ['subject' => $request->input('subject'), 'fk_soc' => $request->integer('socid', 0)];
         $ticket->update(array_filter($data, fn($v) => $v !== null && $v !== ''));
-        return redirect("/ticket/card.php?id={$id}")->with('success', 'Ticket updated');
+        return redirect()->route('ticket.show', ['id' => $id])->with('success', 'Ticket updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Ticket::findOrFail($id)->delete();
-        return redirect('/ticket/list.php')->with('success', 'Ticket deleted');
+        return redirect()->route('ticket.list')->with('success', 'Ticket deleted');
     }
 }

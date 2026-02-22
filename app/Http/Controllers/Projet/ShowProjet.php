@@ -55,12 +55,12 @@ class ShowProjet extends Controller
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');
         $projet->update($data);
         
-        return redirect("/projet/card.php?id={$id}")->with('success', 'Project updated');
+        return redirect()->route('projet.show', ['id' => $id])->with('success', 'Project updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Projet::findOrFail($id)->delete();
-        return redirect('/projet/list.php')->with('success', 'Project deleted');
+        return redirect()->route('projet.list')->with('success', 'Project deleted');
     }
 }
