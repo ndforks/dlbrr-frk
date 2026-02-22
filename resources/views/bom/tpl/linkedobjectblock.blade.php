@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2010-2011	Regis Houssin   <regis.houssin@inodbox.com>
  * Copyright (C) 2013		Juanjo Menent   <jmenent@2byte.es>
  * Copyright (C) 2014       Marcos García   <marcosgdf@gmail.com>
@@ -23,78 +21,60 @@
  */
 
 /**
- *  \file		htdocs/bom/tpl/linkedobjectblock.tpl.php
+ *  \file		resources/views/bom/tpl/linkedobjectblock.blade.php
  *  \ingroup	bom
  *  \brief		Template to show objects linked to bom
  */
+--}}
 
-/**
- * @var Translate $langs
- * @var Conf $conf
- * @var DoliDB $db
- * @var User $user
- *
- * @var CommonObject $object
- * @var int $noMoreLinkedObjectBlockAfter
- * @var int $showImportButton
- * @var BOM[] $linkedObjectBlock
- */
+@php
+    $langs->load("bom");
+    $linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
-
-print "<!-- BEGIN PHP TEMPLATE bom/tpl/linkedobjectblock.tpl.php -->\n";
-
-// Load translation files required by the page
-$langs->load("bom");
-
-$linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
-'@phan-var-force BOM[] $linkedObjectBlock';  // Type after dol_sort_array which looses typing
-/** @var BOM[] $linkedObjectBlock */
-
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
-	$product_static = new Product($db);
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	}
-	echo '<tr class="'.$trclass.'" >';
-	echo '<td class="linkedcol-element tdoverflowmax100">'.$langs->trans("Bom");
-	if (!empty($showImportButton) && getDolGlobalInt('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES')) {
-		print '<a class="objectlinked_importbtn" href="'.$objectlink->getNomUrl(0, '', 0, '1').'&amp;action=selectlines&amp;token='.newToken().'" data-element="'.$objectlink->element.'" data-id="'.$objectlink->id.'"  > <i class="fa fa-indent"></i> </a';
-	}
-	echo '</td>';
-	echo '<td class="linkedcol-name tdoverflowmax150" >'.$objectlink->getNomUrl(1).'</td>';
-
-	echo '<td class="linkedcol-ref tdoverflowmax150">';
-	$result = $product_static->fetch($objectlink->fk_product);
-	if ($result < 0) {
-		setEventMessage($product_static->error, 'errors');
-	} elseif ($result > 0) {
-		$product_static->getNomUrl(1);
-	}
-	print '</td>';
-	echo '<td class="linkedcol-date center">'.dol_print_date($objectlink->date_creation, 'day').'</td>';
-	echo '<td class="linkedcol-amount right">';
-	if ($user->hasRight('commande', 'lire')) {
-		$total += $objectlink->total_ht;
-		echo price($objectlink->total_ht);
-	}
-	echo '</td>';
-	echo '<td class="linkedcol-statut right">'.$objectlink->getLibStatut(3).'</td>';
-	echo '<td class="linkedcol-action right">';
-	// For now, shipments must stay linked to order, so link is not deletable
-	if ($object->element != 'shipping') {
-		echo '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key.'">'.img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink').'</a>';
-	}
-	echo '</td>';
-	echo "</tr>\n";
-}
-
-echo "<!-- END PHP TEMPLATE -->\n";
+@foreach ($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $product_static = new Product($db);
+        $trclass = 'oddeven';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="linkedcol-element tdoverflowmax100">{{ $langs->trans("Bom") }}
+            @if (!empty($showImportButton) && getDolGlobalInt('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES'))
+                <a class="objectlinked_importbtn" href="{!! $objectlink->getNomUrl(0, '', 0, '1') !!}&amp;action=selectlines&amp;token={{ newToken() }}" data-element="{{ $objectlink->element }}" data-id="{{ $objectlink->id }}"> <i class="fa fa-indent"></i> </a>
+            @endif
+        </td>
+        <td class="linkedcol-name tdoverflowmax150">{!! $objectlink->getNomUrl(1) !!}</td>
+        <td class="linkedcol-ref tdoverflowmax150">
+            @php
+                $result = $product_static->fetch($objectlink->fk_product);
+                if ($result < 0) {
+                    setEventMessage($product_static->error, 'errors');
+                } elseif ($result > 0) {
+                    echo $product_static->getNomUrl(1);
+                }
+            @endphp
+        </td>
+        <td class="linkedcol-date center">{{ dol_print_date($objectlink->date_creation, 'day') }}</td>
+        <td class="linkedcol-amount right">
+            @if ($user->hasRight('commande', 'lire'))
+                @php
+                    $total += $objectlink->total_ht;
+                    echo price($objectlink->total_ht);
+                @endphp
+            @endif
+        </td>
+        <td class="linkedcol-statut right">{!! $objectlink->getLibStatut(3) !!}</td>
+        <td class="linkedcol-action right">
+            @if ($object->element != 'shipping')
+                <a class="reposition" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">{!! img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink') !!}</a>
+            @endif
+        </td>
+    </tr>
+@endforeach

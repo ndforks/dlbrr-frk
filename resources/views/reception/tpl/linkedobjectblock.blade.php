@@ -1,6 +1,4 @@
-{{-- Blade version of template --}}
-<?php
-<?php
+{{--
 /* Copyright (C) 2012 Regis Houssin       <regis.houssin@inodbox.com>
  * Copyright (C) 2014 Marcos García       <marcosgdf@gmail.com>
  * Copyright (C) 2019 Laurent Destailleur <eldy@users.sourceforge.net>
@@ -22,91 +20,62 @@
  */
 
 /**
- *  \file		htdocs/reception/tpl/linkedobjectblock.tpl.php
+ *  \file		resources/views/reception/tpl/linkedobjectblock.blade.php
  *  \ingroup	reception
  *  \brief		Template to show objects linked to reception
  */
+--}}
 
-/**
- * @var Translate $langs
- * @var Conf $conf
- * @var DoliDB $db
- * @var User $user
- *
- * @var CommonObject $object
- * @var int $noMoreLinkedObjectBlockAfter
- * @var int $showImportButton
- * @var Reception[] $linkedObjectBlock
- */
+@php
+    $langs->load("receptions");
+    $linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
+    $total = 0;
+    $ilink = 0;
+@endphp
 
-// Protection to avoid direct call of template
-if (empty($conf) || !is_object($conf)) {
-	print "Error, template page can't be called as URL";
-	exit(1);
-}
+@foreach ($linkedObjectBlock as $key => $objectlink)
+    @php
+        $ilink++;
+        $trclass = 'oddeven';
+        if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
+            $trclass .= ' liste_sub_total';
+        }
+    @endphp
+    
+    <tr class="{{ $trclass }}">
+        <td class="linkedcol-element tdoverflowmax125">{{ $langs->trans("Reception") }}
+            @if (!empty($showImportButton) && getDolGlobalInt('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES'))
+                <a class="objectlinked_importbtn" href="{!! $objectlink->getNomUrl(0, '', 0, 1) !!}&amp;action=selectlines&amp;token={{ newToken() }}" data-element="{{ $objectlink->element }}" data-id="{{ $objectlink->id }}"> <i class="fa fa-indent"></i> </a>
+            @endif
+        </td>
+        <td class="linkedcol-name tdoverflowmax150">{!! $objectlink->getNomUrl(1) !!}</td>
+        <td class="linkedcol-ref tdoverflowmax150" title="{{ dol_escape_htmltag($objectlink->ref_supplier) }}">{{ dol_escape_htmltag($objectlink->ref_supplier) }}</td>
+        <td class="linkedcol-date">{{ dol_print_date($objectlink->date_delivery, 'day') }}</td>
+        <td class="linkedcol-amount right">
+            @if ($user->hasRight('reception', 'lire'))
+                @php
+                    $total += $objectlink->total_ht;
+                    echo price($objectlink->total_ht);
+                @endphp
+            @endif
+        </td>
+        <td class="linkedcol-statut right">{!! $objectlink->getLibStatut(3) !!}</td>
+        <td class="linkedcol-action right">
+            @if ($object->element != 'order_supplier')
+                <a class="reposition" href="{{ $_SERVER["PHP_SELF"] }}?id={{ $object->id }}&action=dellink&token={{ newToken() }}&dellinkid={{ $key }}">{!! img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink') !!}</a>
+            @endif
+        </td>
+    </tr>
+@endforeach
 
-?>
-
-<!-- BEGIN PHP TEMPLATE reception/tpl/linkedobjectblock.tpl.php  -->
-
-<?php
-
-// Load translation files required by the page
-$langs->load("receptions");
-
-$linkedObjectBlock = dol_sort_array($linkedObjectBlock, 'date,ref', 'desc', 0, 0, 1);
-'@phan-var-force Reception[] $linkedObjectBlock';  // Repeat because type lost after dol_sort_array)
-/** @var Reception[] $linkedObjectBlock */
-
-$total = 0;
-$ilink = 0;
-foreach ($linkedObjectBlock as $key => $objectlink) {
-	$ilink++;
-
-	$trclass = 'oddeven';
-	if ($ilink == count($linkedObjectBlock) && empty($noMoreLinkedObjectBlockAfter) && count($linkedObjectBlock) <= 1) {
-		$trclass .= ' liste_sub_total';
-	} ?>
-	<tr class="<?php echo $trclass; ?>">
-		<td class="linkedcol-element tdoverflowmax125"><?php echo $langs->trans("Reception"); ?>
-		<?php if (!empty($showImportButton) && getDolGlobalInt('MAIN_ENABLE_IMPORT_LINKED_OBJECT_LINES')) {
-			print '<a class="objectlinked_importbtn" href="'.$objectlink->getNomUrl(0, '', 0, 1).'&amp;action=selectlines&amp;token='.newToken().'"  data-element="'.$objectlink->element.'"  data-id="'.$objectlink->id.'"  > <i class="fa fa-indent"></i> </a';
-		} ?>
-		</td>
-		<td class="linkedcol-name tdoverflowmax150"><?php echo $objectlink->getNomUrl(1); ?></td>
-		<td class="linkedcol-ref tdoverflowmax150" title="<?php echo dol_escape_htmltag($objectlink->ref_supplier); ?>"><?php echo dol_escape_htmltag($objectlink->ref_supplier); ?></td>
-		<td class="linkedcol-date"><?php echo dol_print_date($objectlink->date_delivery, 'day'); ?></td>
-		<td class="linkedcol-amount right"><?php
-		if ($user->hasRight('reception', 'lire')) {
-			$total += $objectlink->total_ht;
-			echo price($objectlink->total_ht);
-		} ?></td>
-		<td class="linkedcol-statut right"><?php echo $objectlink->getLibStatut(3); ?></td>
-		<td class="linkedcol-action right">
-		<?php
-		// For now, receptions must stay linked to order, so link is not deletable
-		if ($object->element != 'order_supplier') {
-			?>
-			<a class="reposition" href="<?php echo $_SERVER["PHP_SELF"].'?id='.$object->id.'&action=dellink&token='.newToken().'&dellinkid='.$key; ?>"><?php echo img_picto($langs->transnoentitiesnoconv("RemoveLink"), 'unlink'); ?></a>
-			<?php
-		} ?>
-		   </td>
-	</tr>
-	<?php
-}
-if (count($linkedObjectBlock) > 1) {
-	?>
-	<tr class="liste_total <?php echo(empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : ''); ?>">
-		<td><?php echo $langs->trans("Total"); ?></td>
-		<td></td>
-		<td class="center"></td>
-		<td class="center"></td>
-		<td class="right"><?php echo price($total); ?></td>
-		<td class="right"></td>
-		<td class="right"></td>
-	</tr>
-	<?php
-}
-?>
-
-<!-- END PHP TEMPLATE -->
+@if (count($linkedObjectBlock) > 1)
+    <tr class="liste_total {{ empty($noMoreLinkedObjectBlockAfter) ? 'liste_sub_total' : '' }}">
+        <td>{{ $langs->trans("Total") }}</td>
+        <td></td>
+        <td class="center"></td>
+        <td class="center"></td>
+        <td class="right">{{ price($total) }}</td>
+        <td class="right"></td>
+        <td class="right"></td>
+    </tr>
+@endif
