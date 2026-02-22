@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2010-2012	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2017		Charlie Benke		<charlie@patas-monkey.com>
  * Copyright (C) 2024-2025	MDW					<mdeweerd@users.noreply.github.com>
@@ -18,7 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
+--}}
+@php
 /**
  * @var DoliDB $db
  * @var Mo $this
@@ -61,10 +61,9 @@ if ((int) $line->fk_bom_child > 0) {
 	$res = $tmpbom->fetch((int) $line->fk_bom_child);
 }
 
-?>
-
+@endphp
 <!-- BEGIN PHP TEMPLATE originproductline.tpl.php -->
-<?php
+@php
 print '<tr class="oddeven'.(empty($this->tpl['strike']) ? '' : ' strikefordisabled').'">';
 // Ref or label
 print '<td>';
@@ -204,5 +203,5 @@ if ($resql) {
 	}
 }
 
-?>
+@endphp
 <!-- END PHP TEMPLATE originproductline.tpl.php -->

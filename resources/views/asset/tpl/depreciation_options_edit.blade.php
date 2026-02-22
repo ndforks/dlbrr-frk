@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2021  		Open-Dsi  				<support@open-dsi.fr>
  * Copyright (C) 2024		Frédéric France			<frederic.france@free.fr>
  * Copyright (C) 2024		José					<jose.martinez@pichinov.com>
@@ -27,7 +26,8 @@
  *
  * $parameters
  */
-
+--}}
+@php
 /**
  * @var Conf $conf
  * @var DoliDB $db
@@ -65,9 +65,9 @@ if (!isset($formadmin) || !is_object($formadmin)) {
 }
 
 
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE depreciation_options_edit.tpl.php -->
-<?php
+@php
 
 if (!is_array($parameters)) {
 	$parameters = array();
@@ -234,5 +234,5 @@ if (!empty($enabled_field_info)) {
 SCRIPT;
 }
 
-?>
+@endphp
 <!-- END PHP TEMPLATE depreciation_options_edit.tpl.php -->

@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -39,7 +38,6 @@
  *
  * $text, $description, $line
  */
-
 /**
  * @var string $action
  * @var int $i
@@ -50,7 +48,8 @@
  * @var Form $form
  * @var Translate $langs
  */
-
+--}}
+@php
 // Protection to avoid direct call of template
 if (empty($conf) || !is_object($conf)) {
 	print "Error, template page can't be called as URL";
@@ -64,14 +63,14 @@ $domData .= ' data-qty="'.$line->qty.'"';
 $domData .= ' data-product_type="'.$line->product_type.'"';
 
 $coldisplay = 0;
-?>
+@endphp
 <!-- BEGIN PHP TEMPLATE htm/core/tpl/objectline_view.tpl.php -->
-<tr  id="row-<?php print $line->id?>" class="drag drop oddeven" <?php print $domData; ?> >
-<?php if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) { ?>
-	<td class="linecolnum center"><span class="opacitymedium"><?php $coldisplay++; ?><?php print($i + 1); ?></span></td>
-<?php } ?>
-	<td class="linecollabel"><?php $coldisplay++; ?><div id="line_<?php print $line->id; ?>"></div>
-<?php
+<tr id="row-{{ $line->id }}" class="drag drop oddeven" {!! $domData !!}>
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+	<td class="linecolnum center"><span class="opacitymedium">@php $coldisplay++; echo ($i + 1); @endphp</span></td>
+@endif
+	<td class="linecollabel">@php $coldisplay++; @endphp<div id="line_{{ $line->id }}"></div>
+@php
 $skill = null;
 $resSkill = 0;
 if ($line->fk_skill > 0) {
@@ -81,45 +80,33 @@ if ($line->fk_skill > 0) {
 		print Skill::typeCodeToLabel($skill->skill_type);
 	}
 }
-?>
+@endphp
 	</td>
 	<td>
-<?php
+@php
 if ($line->fk_skill > 0 && $skill !== null) {
 	print $skill->getNomUrl(1);
 }
-?>
+@endphp
 	</td>
 
-	<td class="linecoldescription minwidth300imp"><?php $coldisplay++; ?>
-<?php
-
-// Add description in form
-//if ($line->fk_skill > 0 && $resSkill > 0) {
-//print $skill->description;
-//}
-
-?>
+	<td class="linecoldescription minwidth300imp">@php $coldisplay++; @endphp
 	</td>
-	<td class="linecolrank nowrap right"><?php $coldisplay++; ?>
-
-<?php
+	<td class="linecolrank nowrap right">@php $coldisplay++; @endphp
+@php
 	global $permissiontoadd;
 
 // Show evaluation boxes
 print displayRankInfos($line->rankorder, $line->fk_skill, 'TNote', ($this->status == 0 && $permissiontoadd) ? 'edit' : 'view');
-
-?>
-
+@endphp
 	</td>
 
-<?php
+@php
 $coldisplay += 3;
+@endphp
+@if($action == 'selectlines')
+	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[{{ $i + 1 }}]" value="{{ $line->id }}" ></td>
+@endif
+</tr>
 
-if ($action == 'selectlines') { ?>
-	<td class="linecolcheck center"><input type="checkbox" class="linecheckbox" name="line_checkbox[<?php print $i + 1; ?>]" value="<?php print $line->id; ?>" ></td>
-<?php }
-
-print "</tr>\n";
-
-print "<!-- END PHP TEMPLATE objectline_view.tpl.php -->\n";
+<!-- END PHP TEMPLATE objectline_view.tpl.php -->

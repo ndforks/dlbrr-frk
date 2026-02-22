@@ -1,5 +1,4 @@
-{{-- Blade template version --}}
-<?php
+{{--
 /* Copyright (C) 2010-2013	Regis Houssin		<regis.houssin@inodbox.com>
  * Copyright (C) 2010-2011	Laurent Destailleur	<eldy@users.sourceforge.net>
  * Copyright (C) 2012-2013	Christophe Battarel	<christophe.battarel@altairis.fr>
@@ -42,39 +41,28 @@
  * @var Form $form
  * @var Translate $langs
  */
-
+--}}
+@php
 // Protection to avoid direct call of template
 if (empty($object) || !is_object($object)) {
 	print "Error, template page can't be called as URL";
 	exit(1);
 }
+@endphp
 
-print "<!-- BEGIN PHP TEMPLATE hrm/core/tpl/objectline_title.tpl.php -->\n";
+<!-- BEGIN PHP TEMPLATE hrm/core/tpl/objectline_title.tpl.php -->
 
-// Title line
-print "<thead>\n";
+<thead>
+<tr class="liste_titre nodrag nodrop">
+@if(getDolGlobalString('MAIN_VIEW_LINE_NUMBER'))
+	<th class="linecolnum center">&nbsp;</th>
+@endif
 
-print '<tr class="liste_titre nodrag nodrop">';
+<th class="linecollabel">{{ $langs->trans('SkillType') }}</th>
+<th class="linecollabel">{{ $langs->trans('Label') }}</th>
+<th class="linecolcomment"></th>
+<th class="linecolrank right" style="width: 80px">{!! $form->textwithpicto($langs->trans("Level"), $langs->trans('EmployeeRank')) !!}</th>
+</tr>
+</thead>
 
-// Adds a line numbering column
-if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
-	print '<th class="linecolnum center">&nbsp;</th>';
-}
-
-// Skill type
-print '<th class="linecollabel">'.$langs->trans('SkillType').'</th>';
-
-// Label skill
-print '<th class="linecollabel">'.$langs->trans('Label').'</th>';
-
-// Comment
-print '<th class="linecolcomment"></th>';
-
-// Note
-print '<th class="linecolrank right" style="width: 80px">'.$form->textwithpicto($langs->trans("Level"), $langs->trans('EmployeeRank')).'</th>';
-
-
-print "</tr>\n";
-print "</thead>\n";
-
-print "<!-- END PHP TEMPLATE objectline_title.tpl.php -->\n";
+<!-- END PHP TEMPLATE objectline_title.tpl.php -->
