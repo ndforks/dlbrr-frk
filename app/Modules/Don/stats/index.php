@@ -50,22 +50,22 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 // Load translation files required by the page
 $langs->loadLangs(array("donations"));
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 // Security check
 if ($user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
 }
 
-$status = GETPOSTINT('status');
+$status = request()->integer('status', 0);
 $nowyear = (int) dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$typent_id = GETPOSTINT('typent_id');
-$year = GETPOSTINT('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$typent_id = request()->integer('typent_id', 0);
+$year = request()->integer('year', 0) > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalInt('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
-$mode = GETPOST("mode") ? GETPOST("mode") : 'customer';
-$custcats = GETPOST('custcats', 'array');
+$mode = request()->input('mode') ? request()->input('mode') : 'customer';
+$custcats = request()->input('custcats');
 
 // Security check
 $result = restrictedArea($user, 'don');
@@ -239,7 +239,7 @@ if (isModEnabled('category')) {
 	$cate_arbo = $form->select_all_categories($cat_type, '', 'parent', 0, 0, 1);
 	print img_picto('', 'category', 'class="pictofixedwidth"');
 	if (is_array($cate_arbo)) {
-		print $form->multiselectarray('custcats', $cate_arbo, GETPOST('custcats', 'array'), 0, 0, 'widthcentpercentminusx maxwidth300');
+		print $form->multiselectarray('custcats', $cate_arbo, request()->input('custcats'), 0, 0, 'widthcentpercentminusx maxwidth300');
 	}
 	print '</td></tr>';
 }

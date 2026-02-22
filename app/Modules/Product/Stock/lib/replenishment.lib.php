@@ -139,7 +139,7 @@ function ordered($product_id)
 			return null; //img_picto('', 'stcomm-1');
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 
 		return 'Error '.$db->lasterror();
 	}

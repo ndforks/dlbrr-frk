@@ -367,7 +367,7 @@ function rebuild_merge_pdf($db, $langs, $conf, $diroutputpdf, $newlangid, $filte
 			$result = 0;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		dol_syslog("scripts/invoices/rebuild_merge.php: Error");
 		$error++;
 	}

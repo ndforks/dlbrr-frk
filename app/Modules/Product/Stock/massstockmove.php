@@ -45,8 +45,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/import.lib.php';
  * @var User $user
  */
 
-$confirm = GETPOST('confirm', 'alpha');
-$filetoimport = GETPOST('filetoimport');
+$confirm = request()->input('confirm');
+$filetoimport = request()->input('filetoimport');
 
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'stocks', 'orders', 'productbatch'));
@@ -62,20 +62,20 @@ $result = restrictedArea($user, 'produit|service');
 
 //checks if a product has been ordered
 
-$action = GETPOST('action', 'aZ09');
-$id_product = GETPOSTINT('productid');
-$id_sw = GETPOSTINT('id_sw');
-$id_tw = GETPOSTINT('id_tw');
-$batch = GETPOST('batch');
-$qty = GETPOST('qty');
-$idline = GETPOST('idline');
+$action = request()->input('action');
+$id_product = request()->integer('productid', 0);
+$id_sw = request()->integer('id_sw', 0);
+$id_tw = request()->integer('id_tw', 0);
+$batch = request()->input('batch');
+$qty = request()->input('qty');
+$idline = request()->input('idline');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -90,7 +90,7 @@ if (!$sortorder) {
 	$sortorder = 'ASC';
 }
 
-if (GETPOST('init')) {
+if (request()->input('init')) {
 	unset($_SESSION['massstockmove']);
 }
 $listofdata = array();
@@ -190,7 +190,7 @@ if ($action == 'delline' && $idline != '' && $user->hasRight('stock', 'mouvement
 if ($action == 'createmovements' && $user->hasRight('stock', 'mouvement', 'creer')) {
 	$error = 0;
 
-	if (!GETPOST("label")) {
+	if (!request()->input('label')) {
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MovementLabel")), null, 'errors');
 	}
@@ -232,9 +232,9 @@ if ($action == 'createmovements' && $user->hasRight('stock', 'mouvement', 'creer
 							$id_sw,
 							(float) $qty,
 							1,
-							GETPOST("label"),
+							request()->input('label'),
 							$pricesrc,
-							GETPOST("codemove")
+							request()->input('codemove')
 						);
 						if ($result1 < 0) {
 							$error++;
@@ -248,9 +248,9 @@ if ($action == 'createmovements' && $user->hasRight('stock', 'mouvement', 'creer
 						$id_tw,
 						(float) $qty,
 						0,
-						GETPOST("label"),
+						request()->input('label'),
 						$pricedest,
-						GETPOST("codemove")
+						request()->input('codemove')
 					);
 					if ($result2 < 0) {
 						$error++;
@@ -279,12 +279,12 @@ if ($action == 'createmovements' && $user->hasRight('stock', 'mouvement', 'creer
 							$id_sw,
 							(float) $qty,
 							1,
-							GETPOST("label"),
+							request()->input('label'),
 							$pricesrc,
 							$dlc,
 							$dluo,
 							$batch,
-							GETPOST("codemove")
+							request()->input('codemove')
 						);
 						if ($result1 < 0) {
 							$error++;
@@ -298,12 +298,12 @@ if ($action == 'createmovements' && $user->hasRight('stock', 'mouvement', 'creer
 						$id_tw,
 						(float) $qty,
 						0,
-						GETPOST("label"),
+						request()->input('label'),
 						$pricedest,
 						$dlc,
 						$dluo,
 						$batch,
-						GETPOST("codemove")
+						request()->input('codemove')
 					);
 					if ($result2 < 0) {
 						$error++;
@@ -531,12 +531,12 @@ if ($action == 'importCSV' && $user->hasRight('stock', 'mouvement', 'creer')) {
 if ($action == 'confirm_deletefile' && $confirm == 'yes' && $permissiontodelete) {
 	$langs->load("other");
 
-	$file = $conf->stock->dir_temp.'/'.GETPOST('urlfile');
+	$file = $conf->stock->dir_temp.'/'.request()->input('urlfile');
 	$ret = dol_delete_file($file);
 	if ($ret) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 	} else {
-		setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+		setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 	}
 	header('Location: '.$_SERVER["PHP_SELF"]);
 	exit;
@@ -787,8 +787,8 @@ if (count($listofdata)) {
 	print '<input type="hidden" name="action" value="createmovements">';
 
 	// Button to record mass movement
-	$codemove = (GETPOSTISSET("codemove") ? GETPOST("codemove", 'alpha') : dol_print_date(dol_now(), '%Y%m%d%H%M%S'));
-	$labelmovement = GETPOST("label") ? GETPOST('label') : $langs->trans("MassStockTransferShort").' '.dol_print_date($now, '%Y-%m-%d %H:%M');
+	$codemove = (request()->has('codemove') ? request()->input('codemove') : dol_print_date(dol_now(), '%Y%m%d%H%M%S'));
+	$labelmovement = request()->input('label') ? request()->input('label') : $langs->trans("MassStockTransferShort").' '.dol_print_date($now, '%Y-%m-%d %H:%M');
 
 	print '<div class="center">';
 	print '<span class="fieldrequired">'.$langs->trans("InventoryCode").':</span> ';
@@ -807,7 +807,7 @@ if (count($listofdata)) {
 }
 
 if ($action == 'delete') {
-	print $form->formconfirm($_SERVER["PHP_SELF"].'?urlfile='.urlencode(GETPOST('urlfile')).'&step=3'.$param, $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+	print $form->formconfirm($_SERVER["PHP_SELF"].'?urlfile='.urlencode(request()->input('urlfile')).'&step=3'.$param, $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 }
 
 // End of page

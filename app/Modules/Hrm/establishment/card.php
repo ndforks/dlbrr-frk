@@ -43,10 +43,10 @@ $langs->loadLangs(array('admin', 'hrm'));
 
 $error = 0;
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$id = GETPOSTINT('id');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
+$id = request()->integer('id', 0);
 
 // List of status
 static $tmpstatus2label = array(
@@ -70,15 +70,15 @@ $permissiontodelete = $user->admin;
 $upload_dir = $conf->hrm->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, '', '', 'fk_soc', 'rowid', 0);
 if (!isModEnabled('hrm')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -98,21 +98,21 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $permissiontodelete) {
 	if (!$cancel) {
 		$error = 0;
 
-		$object->label = GETPOST('label', 'alpha');
+		$object->label = request()->input('label');
 		if (empty($object->label)) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 			$error++;
 		}
 
 		if (empty($error)) {
-			$object->address = GETPOST('address', 'alpha');
-			$object->zip = GETPOST('zipcode', 'alpha');
-			$object->town = GETPOST('town', 'alpha');
-			$object->country_id = GETPOSTINT("country_id");
-			$object->status = GETPOSTINT('status');
+			$object->address = request()->input('address');
+			$object->zip = request()->input('zipcode');
+			$object->town = request()->input('town');
+			$object->country_id = request()->integer('country_id', 0);
+			$object->status = request()->integer('status', 0);
 			$object->fk_user_author	= $user->id;
 			$object->datec = dol_now();
-			$object->entity = GETPOSTINT('entity') > 0 ? GETPOSTINT('entity') : $conf->entity;
+			$object->entity = request()->integer('entity', 0) > 0 ? request()->integer('entity', 0) : $conf->entity;
 
 			$id = $object->create($user);
 
@@ -134,33 +134,33 @@ if ($action == 'confirm_delete' && $confirm == "yes" && $permissiontodelete) {
 	$error = 0;
 
 	if (!$cancel) {
-		$name = GETPOST('label', 'alpha');
+		$name = request()->input('label');
 		if (empty($name)) {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Label')), null, 'errors');
 			$error++;
 		}
 
 		if (empty($error)) {
-			$object->label = GETPOST('label', 'alphanohtml');
-			$object->address = GETPOST('address', 'alpha');
-			$object->zip 			= GETPOST('zipcode', 'alpha');
-			$object->town			= GETPOST('town', 'alpha');
-			$object->country_id     = GETPOSTINT('country_id');
+			$object->label = request()->input('label');
+			$object->address = request()->input('address');
+			$object->zip 			= request()->input('zipcode');
+			$object->town			= request()->input('town');
+			$object->country_id     = request()->integer('country_id', 0);
 			$object->fk_user_mod = $user->id;
-			$object->status         = GETPOSTINT('status');
-			$object->entity         = GETPOSTINT('entity') > 0 ? GETPOSTINT('entity') : $conf->entity;
+			$object->status         = request()->integer('status', 0);
+			$object->entity         = request()->integer('entity', 0) > 0 ? request()->integer('entity', 0) : $conf->entity;
 
 			$result = $object->update($user);
 
 			if ($result > 0) {
-				header("Location: ".$_SERVER["PHP_SELF"]."?id=".GETPOSTINT('id'));
+				header("Location: ".$_SERVER["PHP_SELF"]."?id=".request()->integer('id', 0));
 				exit;
 			} else {
 				setEventMessages($object->error, $object->errors, 'errors');
 			}
 		}
 	} else {
-		header("Location: ".$_SERVER["PHP_SELF"]."?id=".GETPOSTINT('id'));
+		header("Location: ".$_SERVER["PHP_SELF"]."?id=".request()->integer('id', 0));
 		exit;
 	}
 }
@@ -190,7 +190,7 @@ if ($action == 'create') {
 	// Name
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Label', 'label', '', $object, 0, 'string', '', 1).'</td>';
-	print '<td><input name="label" id="label" value="'.GETPOST("label", "alphanohtml").'" autofocus></td>';
+	print '<td><input name="label" id="label" value="'.request()->input('label').'" autofocus></td>';
 	print '</tr>';
 
 	// Entity
@@ -199,7 +199,7 @@ if ($action == 'create') {
 		print '<tr>';
 		print '<td>'.$form->editfieldkey('Parent', 'entity', '', $object, 0, 'string', '', 1).'</td>';
 		print '<td class="maxwidthonsmartphone">';
-		print $form->selectEstablishments(GETPOST('entity', 'int') > 0 ?GETPOST('entity', 'int') : $conf->entity, 'entity', 1);
+		print $form->selectEstablishments(request()->input('entity') > 0 ?request()->input('entity') : $conf->entity, 'entity', 1);
 		print '</td>';
 		print '</tr>';
 	} */
@@ -208,7 +208,7 @@ if ($action == 'create') {
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
 	print '<td>';
-	print '<input name="address" id="address" class="qutrevingtpercent" value="'.GETPOST('address', 'alphanohtml').'">';
+	print '<input name="address" id="address" class="qutrevingtpercent" value="'.request()->input('address').'">';
 	print '</td>';
 	print '</tr>';
 
@@ -217,7 +217,7 @@ if ($action == 'create') {
 	print '<td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td>';
 	print '<td>';
 	print $formcompany->select_ziptown(
-		GETPOST('zipcode', 'alpha'),
+		request()->input('zipcode'),
 		'zipcode',
 		array(
 			'town',
@@ -232,7 +232,7 @@ if ($action == 'create') {
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td>';
 	print '<td>';
-	print $formcompany->select_ziptown(GETPOSTISSET('town') ? GETPOST('town', 'alpha') : $object->town, 'town', array(
+	print $formcompany->select_ziptown(request()->has('town') ? request()->input('town') : $object->town, 'town', array(
 			'zipcode',
 			'selectcountry_id'
 	));
@@ -243,7 +243,7 @@ if ($action == 'create') {
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td>';
 	print '<td class="maxwidthonsmartphone">';
-	print $form->select_country((string) (GETPOSTISSET('country_id') ? GETPOSTINT('country_id') : ($object->country_id ? $object->country_id : $mysoc->country_id)), 'country_id');
+	print $form->select_country((string) (request()->has('country_id') ? request()->integer('country_id', 0) : ($object->country_id ? $object->country_id : $mysoc->country_id)), 'country_id');
 	if ($user->admin) {
 		print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 	}
@@ -254,7 +254,7 @@ if ($action == 'create') {
 	print '<tr>';
 	print '<td>'.$form->editfieldkey('Status', 'status', '', $object, 0, 'string', '', 1).'</td>';
 	print '<td>';
-	print $form->selectarray('status', $status2label, GETPOSTISSET('status') ? GETPOST('status', 'alpha') : 1);
+	print $form->selectarray('status', $status2label, request()->has('status') ? request()->input('status') : 1);
 	print '</td></tr>';
 
 	print '</table>';
@@ -348,7 +348,7 @@ if ((!empty($id) || !empty($ref)) && $action == 'edit') {
 			print '</form>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

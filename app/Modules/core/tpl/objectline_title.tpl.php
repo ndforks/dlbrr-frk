@@ -65,10 +65,10 @@ if (getDolGlobalString('MAIN_VIEW_LINE_NUMBER')) {
 print '<th class="linecoldescription">'.$langs->trans('Description');
 $constant = get_class($object)."::STATUS_DRAFT";
 if (in_array($object->element, array('propal', 'commande', 'facture', 'order_supplier', 'invoice_supplier')) && defined($constant) && $object->status == constant($constant)) {
-	if (empty($disableedit) && GETPOST('mode', 'aZ09') != 'servicedateforalllines') {
+	if (empty($disableedit) && request()->input('mode') != 'servicedateforalllines') {
 		print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?mode=servicedateforalllines&id='.$object->id.'">'.img_edit($langs->trans("UpdateForAllLines"), 0, 'class="clickvatforalllines opacitymedium paddingleft cursorpointer"').'</a>';
 	}
-	if (GETPOST('mode', 'aZ09') == 'servicedateforalllines') {
+	if (request()->input('mode') == 'servicedateforalllines') {
 		print '&nbsp;&nbsp;<div class="classvatforalllines inline-block nowraponall">';
 		$hourmin = getDolGlobalInt('MAIN_USE_HOURMIN_IN_DATE_RANGE');
 		print $langs->trans('ServiceLimitedDuration').' '.$langs->trans('From').' ';
@@ -98,11 +98,11 @@ if (getDolGlobalString('FACTURE_LOCAL_TAX1_OPTION') || getDolGlobalString('FACTU
 if (in_array($object->element, array('propal', 'commande', 'facture', 'supplier_proposal', 'order_supplier', 'invoice_supplier')) && $object->status == $object::STATUS_DRAFT) {
 	global $mysoc;
 
-	if (empty($disableedit) && GETPOST('mode', 'aZ09') != 'vatforalllines') {
+	if (empty($disableedit) && request()->input('mode') != 'vatforalllines') {
 		print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?mode=vatforalllines&id='.$object->id.'">'.img_edit($langs->trans("UpdateForAllLines"), 0, 'class="clickvatforalllines opacitymedium paddingleft cursorpointer"').'</a>';
 	}
 	//print '<script>$(document).ready(function() { $(".clickvatforalllines").click(function() { jQuery(".classvatforalllines").toggle(); }); });</script>';
-	if (GETPOST('mode', 'aZ09') == 'vatforalllines') {
+	if (request()->input('mode') == 'vatforalllines') {
 		print '<div class="classvatforalllines inline-block nowraponall">';
 		$societe_vendeuse = strpos($object->element, 'supplier') === false ? $mysoc : $object->thirdparty;
 		$societe_acheteuse = strpos($object->element, 'supplier') === false ? $object->thirdparty : $mysoc;
@@ -150,11 +150,11 @@ print $langs->trans('ReductionShort');
 if (in_array($object->element, array('propal', 'commande', 'facture', 'order_supplier', 'invoice_supplier')) && $object->status == $object::STATUS_DRAFT) {
 	global $mysoc;
 
-	if (empty($disableedit) && GETPOST('mode', 'aZ09') != 'remiseforalllines') {
+	if (empty($disableedit) && request()->input('mode') != 'remiseforalllines') {
 		print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?mode=remiseforalllines&id='.$object->id.'">'.img_edit($langs->trans("UpdateForAllLines"), 0, 'class="clickvatforalllines opacitymedium paddingleft cursorpointer"').'</a>';
 	}
 	//print '<script>$(document).ready(function() { $(".clickremiseforalllines").click(function() { jQuery(".classremiseforalllines").toggle(); }); });</script>';
-	if (GETPOST('mode', 'aZ09') == 'remiseforalllines') {
+	if (request()->input('mode') == 'remiseforalllines') {
 		print '<div class="remiseforalllines inline-block nowraponall">';
 		print '<input class="inline-block smallpaddingimp width50 right" name="remiseforalllines" value="" placeholder="%">';
 		print '<input class="inline-block button smallpaddingimp" type="submit" name="submitforalllines" value="'.$langs->trans("Update").'">';
@@ -187,7 +187,7 @@ if ($usemargins && isModEnabled('margin') && empty($user->socid)) {
 		// @phan-suppress-next-line PhanUndeclaredConstantOfClass
 		if (in_array($object->element, array('propal', 'commande', 'facture', 'supplier_proposal', 'order_supplier', 'invoice_supplier')) && $object->status == $object::STATUS_DRAFT) {
 			print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?mode=marginforalllines&id='.$object->id.'">'.img_edit($langs->trans("UpdateForAllLines"), 0, 'class="clickmarginforalllines opacitymedium paddingleft cursorpointer"').'</a>';
-			if (GETPOST('mode', 'aZ09') == 'marginforalllines') {
+			if (request()->input('mode') == 'marginforalllines') {
 				print '<div class="classmarginforalllines inline-block nowraponall">';
 				print '<input type="number" name="marginforalllines" min="0" max="999.9" value="20.0" step="0.1" class="width50"><label>%</label>';
 				print '<input class="inline-block button smallpaddingimp" type="submit" name="submitforallmargins" value="'.$langs->trans("Update").'">';
@@ -200,7 +200,7 @@ if ($usemargins && isModEnabled('margin') && empty($user->socid)) {
 		print '<th class="linecolmargin2 margininfos right width75">'.$langs->trans('MarkRate');
 		if (in_array($object->element, array('propal', 'commande', 'facture')) && $object->status == get_class($object)::STATUS_DRAFT) {
 			print '<a class="reposition" href="'.$_SERVER["PHP_SELF"].'?mode=markforalllines&id='.$object->id.'">'.img_edit($langs->trans("UpdateForAllLines"), 0, 'class="clickmarkforalllines opacitymedium paddingleft cursorpointer"').'</a>';
-			if (GETPOST('mode', 'aZ09') == 'markforalllines') {
+			if (request()->input('mode') == 'markforalllines') {
 				print '<div class="classmarkforalllines inline-block nowraponall">';
 				print '<input type="number" name="markforalllines" min="0" max="999.9" value="20.0" step="0.1" class="width50"><label>%</label>';
 				print '<input class="inline-block button smallpaddingimp" type="submit" name="submitforallmark" value="'.$langs->trans("Update").'">';

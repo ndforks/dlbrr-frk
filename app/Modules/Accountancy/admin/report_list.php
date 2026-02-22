@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountancyreport.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("errors", "admin", "companies"));
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
 $id = 45;
-$rowid = GETPOST('rowid', 'alpha');
-$code = GETPOST('code', 'alpha');
+$rowid = request()->input('rowid');
+$code = request()->input('code');
 
 // Security access
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
 $acts = array();
@@ -62,13 +62,13 @@ $actl = array();
 $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"');
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
-$listoffset = GETPOST('listoffset', 'alpha');
-$listlimit = GETPOSTINT('listlimit') > 0 ? GETPOSTINT('listlimit') : 1000;
+$listoffset = request()->input('listoffset');
+$listlimit = request()->integer('listlimit', 0) > 0 ? request()->integer('listlimit', 0) : 1000;
 
-$sortfield = GETPOST("sortfield", 'aZ09comma');
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -76,7 +76,7 @@ $offset = $listlimit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$search_country_id = GETPOST('search_country_id', 'int');
+$search_country_id = request()->input('search_country_id');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('admin'));
@@ -143,12 +143,12 @@ $accountingreport = new AccountancyReport($db);
  * Actions
  */
 
-if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
+if (request()->input('button_removefilter') || request()->input('button_removefilter.x') || request()->input('button_removefilter_x')) {
 	$search_country_id = '';
 }
 
 // Actions add or modify an entry into a dictionary
-if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
+if (request()->input('actionadd') || request()->input('actionmodify')) {
 	$listfield = explode(',', str_replace(' ', '', $tabfield[$id]));
 	$listfieldinsert = explode(',', $tabfieldinsert[$id]);
 	$listfieldmodify = explode(',', $tabfieldinsert[$id]);
@@ -157,7 +157,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 	// Check that all fields are filled
 	$ok = 1;
 	foreach ($listfield as $f => $value) {
-		if (($value == 'country' || $value == 'country_id') && GETPOST('country_id')) {
+		if (($value == 'country' || $value == 'country_id') && request()->input('country_id')) {
 			continue;
 		}
 		if (!GETPOSTISSET($value) || GETPOST($value) == '') {
@@ -177,15 +177,15 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 			setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->transnoentities($fieldnamekey)), null, 'errors');
 		}
 	}
-	if (GETPOSTISSET("code")) {
-		if (GETPOST("code") == '0') {
+	if (request()->has('code')) {
+		if (request()->input('code') == '0') {
 			$ok = 0;
 			setEventMessages($langs->transnoentities('ErrorCodeCantContainZero'), null, 'errors');
 		}
 	}
 
 	// In case of 'actionadd' and with valid parameters, add the line
-	if ($ok && GETPOST('actionadd', 'alpha')) {
+	if ($ok && request()->input('actionadd')) {
 		$newid = 0;
 
 		if ($tabrowid[$id]) {
@@ -196,7 +196,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 				$obj = $db->fetch_object($result);
 				$newid = ($obj->newid + 1);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -240,13 +240,13 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 			if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 
 	// If check ok and action modify, we modify the line
-	if ($ok && GETPOST('actionmodify', 'alpha')) {
+	if ($ok && request()->input('actionmodify')) {
 		if ($tabrowid[$id]) {
 			$rowidcol = $tabrowid[$id];
 		} else {
@@ -262,8 +262,8 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		}
 		$i = 0;
 		foreach ($listfieldmodify as $field) {
-			if ($field == 'fk_country' && GETPOST('country') > 0) {
-				$_POST[$listfieldvalue[$i]] = GETPOST('country');
+			if ($field == 'fk_country' && request()->input('country') > 0) {
+				$_POST[$listfieldvalue[$i]] = request()->input('country');
 			} elseif ($field == 'entity') {
 				$_POST[$listfieldvalue[$i]] = $conf->entity;
 			}
@@ -300,7 +300,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes') {       // delete
 		if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 			setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -319,7 +319,7 @@ if ($action == $acts[0]) {
 	if ($sql) {
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -338,7 +338,7 @@ if ($action == $acts[1]) {
 	if ($sql) {
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -401,15 +401,15 @@ if ($sortorder) {
 if ($sortfield) {
 	$paramwithsearch .= '&sortfield='.urlencode($sortfield);
 }
-if (GETPOST('from', 'alpha')) {
-	$paramwithsearch .= '&from='.urlencode(GETPOST('from', 'alpha'));
+if (request()->input('from')) {
+	$paramwithsearch .= '&from='.urlencode(request()->input('from'));
 }
 if ($listlimit) {
-	$paramwithsearch .= '&listlimit='.urlencode((string) (GETPOSTINT('listlimit')));
+	$paramwithsearch .= '&listlimit='.urlencode((string) (request()->integer('listlimit', 0)));
 }
 print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$id.'" method="POST">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="from" value="'.dol_escape_htmltag(GETPOST('from', 'alpha')).'">';
+print '<input type="hidden" name="from" value="'.dol_escape_htmltag(request()->input('from')).'">';
 print '<input type="hidden" name="sortfield" value="'.dol_escape_htmltag($sortfield).'">';
 print '<input type="hidden" name="sortorder" value="'.dol_escape_htmltag($sortorder).'">';
 
@@ -477,7 +477,7 @@ if ($tabname[$id]) {
 
 	$obj = new stdClass();
 	// If data was already input, we define them in obj to populate input fields.
-	if (GETPOST('actionadd', 'alpha')) {
+	if (request()->input('actionadd')) {
 		foreach ($fieldlist as $key => $val) {
 			if (GETPOST($val) != '') {
 				$obj->$val = GETPOST($val);
@@ -769,7 +769,7 @@ if ($resql) {
 		print '<tr><td colspan="'.$colspan.'"><span class="opacitymedium">'.$langs->trans("None").'</td></tr>';
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</table>';
@@ -803,7 +803,7 @@ function fieldListAccountingReport($fieldlist, $obj = null, $tabname = '', $cont
 			$fieldname = 'country';
 			if ($context == 'add') {
 				$fieldname = 'country_id';
-				$preselectcountrycode = GETPOSTISSET('country_id') ? GETPOSTINT('country_id') : $mysoc->country_code;
+				$preselectcountrycode = request()->has('country_id') ? request()->integer('country_id', 0) : $mysoc->country_code;
 				print $form->select_country($preselectcountrycode, $fieldname, '', 28, 'maxwidth150 maxwidthonsmartphone');
 			} else {
 				$preselectcountrycode = (empty($obj->country_code) ? (empty($obj->country) ? $mysoc->country_code : $obj->country) : $obj->country_code);

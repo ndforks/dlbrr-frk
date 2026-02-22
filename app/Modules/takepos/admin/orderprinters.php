@@ -44,12 +44,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->loadLangs(array("main", "categories", "takepos", "printing"));
 
-$id = GETPOSTINT('id');
-$type = (GETPOST('type', 'aZ09') ? GETPOST('type', 'aZ09') : Categorie::TYPE_PRODUCT);
-$action = GETPOST('action', 'aZ09');
-$printer1 = GETPOST('printer1', 'alpha');
-$printer2 = GETPOST('printer2', 'alpha');
-$printer3 = GETPOST('printer3', 'alpha');
+$id = request()->integer('id', 0);
+$type = (request()->input('type') ? request()->input('type') : Categorie::TYPE_PRODUCT);
+$action = request()->input('action');
+$printer1 = request()->input('printer1');
+$printer2 = request()->input('printer2');
+$printer3 = request()->input('printer3');
 
 $categstatic = new Categorie($db);
 
@@ -58,7 +58,7 @@ if (is_numeric($type)) {
 }
 
 if (!$user->hasRight('categorie', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 

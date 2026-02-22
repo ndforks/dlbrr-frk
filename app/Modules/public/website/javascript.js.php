@@ -96,9 +96,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  */
 
 $error = 0;
-$website = GETPOST('website', 'alpha');
-$websiteid = GETPOSTINT('websiteid');
-$pageid = GETPOST('page', 'alpha') ? GETPOST('page', 'alpha') : GETPOST('pageid', 'alpha');
+$website = request()->input('website');
+$websiteid = request()->integer('websiteid', 0);
+$pageid = request()->input('page') ? request()->input('page') : request()->input('pageid');
 
 $accessallowed = 1;
 $type = '';
@@ -158,7 +158,7 @@ $refname = basename(dirname($original_file)."/");
 // Security:
 // Limit access if permissions are insufficient
 if (!$accessallowed) {
-	accessforbidden();
+	abort(403);
 }
 
 // Security:

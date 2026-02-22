@@ -48,30 +48,30 @@ require_once DOL_DOCUMENT_ROOT.'/contrat/class/contrat.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'contracts', 'companies'));
 
-$action		= GETPOST('action', 'alpha');
-$confirm	= GETPOST('confirm', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'contratagenda';
+$action		= request()->input('action');
+$confirm	= request()->input('confirm');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'contratagenda';
 
-if (GETPOST('actioncode', 'array')) {
+if (request()->input('actioncode')) {
 	$actioncode = GETPOST('actioncode', 'array', 3);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
 
-$id			= GETPOSTINT('id');
-$ref		= GETPOST('ref', 'alpha');
+$id			= request()->integer('id', 0);
+$ref		= request()->input('ref');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -92,7 +92,7 @@ $object = new Contrat($db);
 $hookmanager->initHooks(array('agendacontract', 'globalcard'));
 
 // Security check
-$id = GETPOSTINT("id");
+$id = request()->integer('id', 0);
 $socid = 0;
 if ($user->socid) {
 	$socid = $user->socid;
@@ -100,13 +100,13 @@ if ($user->socid) {
 
 $result = $object->fetch($id);
 if ($result <= 0) {
-	accessforbidden('Contrat not found');
+	abort(403);
 }
 
 $result = restrictedArea($user, 'contrat', $id, '&contrat');
 
 if (!$user->hasRight('contrat', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -121,13 +121,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$actioncode = '';
 		$search_agenda_label = '';
 	}

@@ -45,11 +45,11 @@ require_once DOL_DOCUMENT_ROOT.'/website/class/website.class.php';
 // Load translation files required by the page
 $langs->loadlangs(array('errors', 'admin', 'companies', 'website'));
 
-$action = GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
+$backtopage = request()->input('backtopage');
 
-$rowid = GETPOST('rowid', 'alpha');
+$rowid = request()->input('rowid');
 
 $id = 1;
 
@@ -61,10 +61,10 @@ $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"')
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -134,7 +134,7 @@ $elementList = array();
 $sourceList = array();
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -144,7 +144,7 @@ if (!$user->admin) {
 $error = 0;
 
 // Actions add or modify a website
-if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
+if (request()->input('actionadd') || request()->input('actionmodify')) {
 	$listfield = explode(',', $tabfield[$id]);
 	$listfieldinsert = explode(',', $tabfieldinsert[$id]);
 	$listfieldmodify = explode(',', $tabfieldinsert[$id]);
@@ -167,14 +167,14 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 	}
 
 	// Clean parameters
-	if (GETPOST('ref')) {
-		$websitekey = strtolower(GETPOST('ref'));
+	if (request()->input('ref')) {
+		$websitekey = strtolower(request()->input('ref'));
 	}
 
 	$newid = 0;
 
 	// In case of 'actionadd' and with valid parameters, add the line
-	if ($ok && GETPOST('actionadd', 'alpha')) {
+	if ($ok && request()->input('actionadd')) {
 		if ($tabrowid[$id]) {
 			// Get free id for insert
 			$sql = "SELECT MAX(".$tabrowid[$id].") newid from ".$tabname[$id];
@@ -183,7 +183,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 				$obj = $db->fetch_object($result);
 				$newid = ($obj->newid + 1);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -236,13 +236,13 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 			if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 
 	// In case of 'actionmodify' and with valid parameters, modify the line
-	if ($ok && GETPOST('actionmodify', 'alpha')) {
+	if ($ok && request()->input('actionmodify')) {
 		if ($tabrowid[$id]) {
 			$rowidcol = $tabrowid[$id];
 		} else {
@@ -252,7 +252,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		$db->begin();
 
 		$website = new Website($db);
-		$rowid = GETPOSTINT('rowid');
+		$rowid = request()->integer('rowid', 0);
 		$website->fetch($rowid);
 
 		// Modify entry
@@ -284,7 +284,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 		//print $sql;
 		$resql = $db->query($sql);
 		if ($resql) {
-			$newname = dol_sanitizeFileName(GETPOST('ref', 'aZ09'));
+			$newname = dol_sanitizeFileName(request()->input('ref'));
 			if ($newname != $website->ref) {
 				$srcfile = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/website/'.$website->ref;
 				$destfile = DOL_DATA_ROOT.($conf->entity > 1 ? '/'.$conf->entity : '').'/website/'.$newname;
@@ -342,7 +342,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes') {       // delete
 			if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -371,7 +371,7 @@ if ($action == $acts[0]) {
 	if ($sql !== null) {
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
 		dol_print_error(null, "No DB entry");
@@ -395,7 +395,7 @@ if ($action == $acts[1]) {
 	if ($sql !== null) {
 		$result = $db->query($sql);
 		if (!$result) {
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
 		dol_print_error(null, "No DB entry");
@@ -508,7 +508,7 @@ if ($id) {
 
 		$obj = new stdClass();
 		// If data was already input, we define them in obj to populate input fields.
-		if (GETPOST('actionadd', 'alpha')) {
+		if (request()->input('actionadd')) {
 			foreach ($fieldlist as $key => $val) {
 				if (GETPOST($val, 'alpha')) {
 					$obj->$val = GETPOST($val);
@@ -698,7 +698,7 @@ if ($id) {
 			print '</form>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

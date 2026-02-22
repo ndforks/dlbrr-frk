@@ -180,8 +180,8 @@ class PartnershipUtils
 							// Define output language
 							$outputlangs = $langs;
 							$newlang = '';
-							if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-								$newlang = GETPOST('lang_id', 'aZ09');
+							if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+								$newlang = request()->input('lang_id');
 							}
 							if (!empty($newlang)) {
 								$outputlangs = new Translate("", $conf);
@@ -406,8 +406,8 @@ class PartnershipUtils
 									// Define output language
 									$outputlangs = $langs;
 									$newlang = '';
-									if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-										$newlang = GETPOST('lang_id', 'aZ09');
+									if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+										$newlang = request()->input('lang_id');
 									}
 									if (!empty($newlang)) {
 										$outputlangs = new Translate("", $conf);

@@ -128,7 +128,7 @@ function user_prepare_head(User $object)
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$langs->load("mails");

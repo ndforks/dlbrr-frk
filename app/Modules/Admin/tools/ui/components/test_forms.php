@@ -36,7 +36,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 
 // Security
 if ($dolibarr_main_prod) {
-	accessforbidden('Access forbidden when $dolibarr_main_prod is set to 1');
+	abort(403);
 }
 
 

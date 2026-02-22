@@ -119,7 +119,7 @@ foreach ($arrayofpaymentmodetomanage as $val) {
 		print '<a class="badge badge-info" href="'.DOL_URL_ROOT.'/compta/paiement/cheque/card.php?leftmenu=customers_bills_checks&action=new&type='.urlencode($val).'">'.dol_escape_htmltag($num).'</a>';
 		print '</td></tr>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -201,7 +201,7 @@ foreach ($arrayofpaymentmodetomanage as $val) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

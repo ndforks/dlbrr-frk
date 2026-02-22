@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
 $socid = 0;
@@ -67,7 +67,7 @@ if ($object->socid > 0) {
  * View
  */
 
-if (GETPOST('mode') == 'virtualcard') {
+if (request()->input('mode') == 'virtualcard') {
 	// Clean the data to show according to options
 	if (getDolUserInt('USER_PUBLIC_HIDE_PHOTO', 0, $object)) {
 		$object->photo = '';

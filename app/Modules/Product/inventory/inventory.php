@@ -45,18 +45,18 @@ include_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 $langs->loadLangs(array("stocks", "other", "productbatch"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'inventorycard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$listoffset = GETPOST('listoffset', 'alpha');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$limit = GETPOSTINT('limit') > 0 ? GETPOSTINT('limit') : $conf->liste_limit;
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'inventorycard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$listoffset = request()->input('listoffset');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$limit = request()->integer('limit', 0) > 0 ? request()->integer('limit', 0) : $conf->liste_limit;
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }
@@ -64,10 +64,10 @@ $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
 
-$fk_warehouse = GETPOSTINT('fk_warehouse');
-$fk_product = GETPOSTINT('fk_product');
-$lineid = GETPOSTINT('lineid');
-$batch = GETPOST('batch', 'alphanohtml');
+$fk_warehouse = request()->integer('fk_warehouse', 0);
+$fk_product = request()->integer('fk_product', 0);
+$lineid = request()->integer('lineid', 0);
+$batch = request()->input('batch');
 $totalExpectedValuation = 0;
 $totalRealValuation = 0;
 $hookmanager->initHooks(array('inventorycard')); // Note that conf->hooks_modules contains array
@@ -96,7 +96,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -112,7 +112,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'mymodule', $id);
 
@@ -388,8 +388,8 @@ if (empty($reshook)) {
 	$trackid='stockinv'.$object->id;
 	include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';*/
 
-	if (GETPOST('addline', 'alpha')) {
-		$qty = (GETPOST('qtytoadd') != '' ? ((float) price2num(GETPOST('qtytoadd'), 'MS')) : null);
+	if (request()->input('addline')) {
+		$qty = (request()->input('qtytoadd') != '' ? ((float) price2num(request()->input('qtytoadd'), 'MS')) : null);
 		if ($fk_warehouse <= 0) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Warehouse")), null, 'errors');
@@ -398,7 +398,7 @@ if (empty($reshook)) {
 			$error++;
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Product")), null, 'errors');
 		}
-		if (price2num(GETPOST('qtytoadd'), 'MS') < 0) {
+		if (price2num(request()->input('qtytoadd'), 'MS') < 0) {
 			$error++;
 			setEventMessages($langs->trans("FieldCannotBeNegative", $langs->transnoentitiesnoconv("RealQty")), null, 'errors');
 		}
@@ -1000,7 +1000,7 @@ print '</tr>';
 if ($object->status == $object::STATUS_DRAFT || $object->status == $object::STATUS_VALIDATED) {
 	print '<tr>';
 	print '<td>';
-	print $formproduct->selectWarehouses((GETPOSTISSET('fk_warehouse') ? GETPOSTINT('fk_warehouse') : $object->fk_warehouse), 'fk_warehouse', 'warehouseopen', 1, 0, 0, '', 0, 0, array(), 'maxwidth300');
+	print $formproduct->selectWarehouses((request()->has('fk_warehouse') ? request()->integer('fk_warehouse', 0) : $object->fk_warehouse), 'fk_warehouse', 'warehouseopen', 1, 0, 0, '', 0, 0, array(), 'maxwidth300');
 	print '</td>';
 	print '<td>';
 	if (getDolGlobalString('STOCK_SUPPORTS_SERVICES')) {
@@ -1008,11 +1008,11 @@ if ($object->status == $object::STATUS_DRAFT || $object->status == $object::STAT
 	} else {
 		$filtertype = 0;
 	}
-	print $form->select_produits((GETPOSTISSET('fk_product') ? GETPOSTINT('fk_product') : $object->fk_product), 'fk_product', $filtertype, 0, 0, -1, 2, '', 0, array(), 0, '1', 0, 'maxwidth300');
+	print $form->select_produits((request()->has('fk_product') ? request()->integer('fk_product', 0) : $object->fk_product), 'fk_product', $filtertype, 0, 0, -1, 2, '', 0, array(), 0, '1', 0, 'maxwidth300');
 	print '</td>';
 	if (isModEnabled('productbatch')) {
 		print '<td>';
-		print '<input type="text" name="batch" class="maxwidth100" value="'.(GETPOSTISSET('batch') ? GETPOST('batch') : '').'">';
+		print '<input type="text" name="batch" class="maxwidth100" value="'.(request()->has('batch') ? request()->input('batch') : '').'">';
 		print '</td>';
 	}
 	print '<td class="right"></td>';
@@ -1253,7 +1253,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 if (getDolGlobalString('INVENTORY_MANAGE_REAL_PMP')) {
 	print '<tr class="liste_total">';

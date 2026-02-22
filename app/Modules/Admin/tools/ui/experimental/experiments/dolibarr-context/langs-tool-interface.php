@@ -64,12 +64,12 @@ if (empty($dolibarr_nocache)) {
 header('Content-Type: application/json; charset=utf-8');
 
 
-$local = GETPOST('local');
+$local = request()->input('local');
 if (empty($local)) {
 	$local = $langs->getDefaultLang();
 }
 
-$domain = GETPOST('domain');
+$domain = request()->input('domain');
 if (empty($domain)) {
 	echo json_encode(['error' => 'Missing domain']);
 	exit;

@@ -57,37 +57,37 @@ include 'inc.php';
 
 global $langs;
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : (empty($argv[1]) ? '' : $argv[1]);
+$action = request()->input('action') ? request()->input('action') : (empty($argv[1]) ? '' : $argv[1]);
 $setuplang = GETPOST('selectlang', 'aZ09', 3) ? GETPOST('selectlang', 'aZ09', 3) : (empty($argv[2]) ? 'auto' : $argv[2]);
 $langs->setDefaultLang($setuplang);
 
 $langs->loadLangs(array("admin", "install", "errors"));
 
 // Dolibarr pages directory
-$main_dir = GETPOST('main_dir') ? GETPOST('main_dir') : (empty($argv[3]) ? '' : $argv[3]);
+$main_dir = request()->input('main_dir') ? request()->input('main_dir') : (empty($argv[3]) ? '' : $argv[3]);
 // Directory for generated documents (invoices, orders, ecm, etc...)
-$main_data_dir = GETPOST('main_data_dir') ? GETPOST('main_data_dir') : (empty($argv[4]) ? ($main_dir.'/documents') : $argv[4]);
+$main_data_dir = request()->input('main_data_dir') ? request()->input('main_data_dir') : (empty($argv[4]) ? ($main_dir.'/documents') : $argv[4]);
 // Dolibarr root URL
-$main_url = GETPOST('main_url') ? GETPOST('main_url') : (empty($argv[5]) ? '' : $argv[5]);
+$main_url = request()->input('main_url') ? request()->input('main_url') : (empty($argv[5]) ? '' : $argv[5]);
 // Database login information
-$userroot = GETPOST('db_user_root', 'alpha') ? GETPOST('db_user_root', 'alpha') : (empty($argv[6]) ? '' : $argv[6]);
-$passroot = GETPOST('db_pass_root', 'password') ? GETPOST('db_pass_root', 'password') : (empty($argv[7]) ? '' : $argv[7]);
+$userroot = request()->input('db_user_root') ? request()->input('db_user_root') : (empty($argv[6]) ? '' : $argv[6]);
+$passroot = request()->input('db_pass_root') ? request()->input('db_pass_root') : (empty($argv[7]) ? '' : $argv[7]);
 // Database server
-$db_type = GETPOST('db_type', 'aZ09') ? GETPOST('db_type', 'aZ09') : (empty($argv[8]) ? '' : $argv[8]);
-$db_host = GETPOST('db_host', 'alpha') ? GETPOST('db_host', 'alpha') : (empty($argv[9]) ? '' : $argv[9]);
-$db_name = GETPOST('db_name', 'aZ09') ? GETPOST('db_name', 'aZ09') : (empty($argv[10]) ? '' : $argv[10]);
-$db_user = GETPOST('db_user', 'alpha') ? GETPOST('db_user', 'alpha') : (empty($argv[11]) ? '' : $argv[11]);
-$db_pass = GETPOST('db_pass', 'password') ? GETPOST('db_pass', 'password') : (empty($argv[12]) ? '' : $argv[12]);
-$db_port = GETPOSTINT('db_port') ? GETPOSTINT('db_port') : (empty($argv[13]) ? '' : $argv[13]);
-$db_prefix = GETPOST('db_prefix', 'aZ09') ? GETPOST('db_prefix', 'aZ09') : (empty($argv[14]) ? '' : $argv[14]);
-$db_create_database = GETPOST('db_create_database', 'alpha') ? GETPOST('db_create_database', 'alpha') : (empty($argv[15]) ? '' : $argv[15]);
-$db_create_user = GETPOST('db_create_user', 'alpha') ? GETPOST('db_create_user', 'alpha') : (empty($argv[16]) ? '' : $argv[16]);
+$db_type = request()->input('db_type') ? request()->input('db_type') : (empty($argv[8]) ? '' : $argv[8]);
+$db_host = request()->input('db_host') ? request()->input('db_host') : (empty($argv[9]) ? '' : $argv[9]);
+$db_name = request()->input('db_name') ? request()->input('db_name') : (empty($argv[10]) ? '' : $argv[10]);
+$db_user = request()->input('db_user') ? request()->input('db_user') : (empty($argv[11]) ? '' : $argv[11]);
+$db_pass = request()->input('db_pass') ? request()->input('db_pass') : (empty($argv[12]) ? '' : $argv[12]);
+$db_port = request()->integer('db_port', 0) ? request()->integer('db_port', 0) : (empty($argv[13]) ? '' : $argv[13]);
+$db_prefix = request()->input('db_prefix') ? request()->input('db_prefix') : (empty($argv[14]) ? '' : $argv[14]);
+$db_create_database = request()->input('db_create_database') ? request()->input('db_create_database') : (empty($argv[15]) ? '' : $argv[15]);
+$db_create_user = request()->input('db_create_user') ? request()->input('db_create_user') : (empty($argv[16]) ? '' : $argv[16]);
 // Force https
-$main_force_https = ((GETPOST("main_force_https", 'alpha') && (GETPOST("main_force_https", 'alpha') == "on" || GETPOST("main_force_https", 'alpha') == 1)) ? '1' : '0');
+$main_force_https = ((request()->input('main_force_https') && (request()->input('main_force_https') == "on" || request()->input('main_force_https') == 1)) ? '1' : '0');
 // Use alternative directory
-$main_use_alt_dir = ((GETPOST("main_use_alt_dir", 'alpha') == '' || (GETPOST("main_use_alt_dir", 'alpha') == "on" || GETPOST("main_use_alt_dir", 'alpha') == 1)) ? '' : '//');
+$main_use_alt_dir = ((request()->input('main_use_alt_dir') == '' || (request()->input('main_use_alt_dir') == "on" || request()->input('main_use_alt_dir') == 1)) ? '' : '//');
 // Alternative root directory name
-$main_alt_dir_name = ((GETPOST("main_alt_dir_name", 'alpha') && GETPOST("main_alt_dir_name", 'alpha') != '') ? GETPOST("main_alt_dir_name", 'alpha') : 'custom');
+$main_alt_dir_name = ((request()->input('main_alt_dir_name') && request()->input('main_alt_dir_name') != '') ? request()->input('main_alt_dir_name') : 'custom');
 
 $dolibarr_main_distrib = 'standard';
 

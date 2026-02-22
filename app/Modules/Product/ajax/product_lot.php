@@ -51,9 +51,9 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$productId = GETPOSTINT('product_id');
-$batch = GETPOST('batch', 'alphanohtml');
+$action = request()->input('action');
+$productId = request()->integer('product_id', 0);
+$batch = request()->input('batch');
 
 // Security check
 restrictedArea($user, 'produit|service', $productId, 'product&product');

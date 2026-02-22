@@ -41,8 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "members", "ldap"));
 
-$id = GETPOSTINT('rowid');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('rowid', 0);
+$action = request()->input('action');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('membertypeldapcard', 'globalcard'));

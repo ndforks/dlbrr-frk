@@ -43,9 +43,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formprojet.class.php';
  * @var User $user
  */
 
-$invoice_id = GETPOSTINT('id'); // id of thirdparty
-$action = GETPOST('action', 'aZ09');
-$htmlname = GETPOST('htmlname', 'alpha');
+$invoice_id = request()->integer('id', 0); // id of thirdparty
+$action = request()->input('action');
+$htmlname = request()->input('htmlname');
 
 
 // Security check

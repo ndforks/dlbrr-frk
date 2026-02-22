@@ -56,11 +56,11 @@ if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 	include_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 
-	$openeddir = GETPOST('openeddir');
-	$modulepart = GETPOST('modulepart');
-	$selecteddir = jsUnEscape(GETPOST('dir')); // relative path. We must decode using same encoding function used by javascript: escape()
+	$openeddir = request()->input('openeddir');
+	$modulepart = request()->input('modulepart');
+	$selecteddir = jsUnEscape(request()->input('dir')); // relative path. We must decode using same encoding function used by javascript: escape()
 
-	$preopened = GETPOST('preopened');
+	$preopened = request()->input('preopened');
 
 	if ($selecteddir != '/') {
 		$selecteddir = preg_replace('/\/$/', '', $selecteddir); // We removed last '/' except if it is '/'
@@ -68,11 +68,11 @@ if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 } else {
 	// For no ajax call
 
-	$openeddir = GETPOST('openeddir');
-	$modulepart = GETPOST('modulepart');
-	$selecteddir = GETPOST('dir');
+	$openeddir = request()->input('openeddir');
+	$modulepart = request()->input('modulepart');
+	$selecteddir = request()->input('dir');
 
-	$preopened = GETPOST('preopened');
+	$preopened = request()->input('preopened');
 
 	if ($selecteddir != '/') {
 		$selecteddir = preg_replace('/\/$/', '', $selecteddir); // We removed last '/' except if it is '/'
@@ -82,8 +82,8 @@ if (!isset($mode) || $mode != 'noajax') {    // For ajax call
 	}
 }
 
-$websitekey = GETPOST('websitekey', 'alpha');
-$pageid = GETPOSTINT('pageid');
+$websitekey = request()->input('websitekey');
+$pageid = request()->integer('pageid', 0);
 
 // Load translation files required by the page
 $langs->load("ecm");
@@ -105,7 +105,7 @@ if ($modulepart == 'ecm') {
 if (preg_match('/\.\./', $fullpathselecteddir) || preg_match('/[<>|]/', $fullpathselecteddir)) {
 	dol_syslog("Refused to deliver file ".$original_file);
 	// Do no show plain path in shown error message
-	dol_print_error(null, $langs->trans("ErrorFileNameInvalid", GETPOST("file")));
+	dol_print_error(null, $langs->trans("ErrorFileNameInvalid", request()->input('file')));
 	exit;
 }
 
@@ -116,12 +116,12 @@ if (empty($modulepart)) {
 // Security check
 if ($modulepart == 'ecm') {
 	if (!$user->hasRight('ecm', 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 } elseif ($modulepart == 'medias' || $modulepart == 'website') {
 	// Always allowed
 } else {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -216,7 +216,7 @@ if (empty($conf->use_javascript_ajax) || getDolGlobalString('MAIN_ECM_DISABLE_JS
 		$expandedsectionarray = explode(',', $_SESSION['dol_ecmexpandedsectionarray']);
 	}
 
-	if ($section && GETPOST('sectionexpand') == 'true') {
+	if ($section && request()->input('sectionexpand') == 'true') {
 		// We add all sections that are parent of opened section
 		$pathtosection = explode('_', $fullpathselected);
 		foreach ($pathtosection as $idcursor) {
@@ -226,7 +226,7 @@ if (empty($conf->use_javascript_ajax) || getDolGlobalString('MAIN_ECM_DISABLE_JS
 		}
 		$_SESSION['dol_ecmexpandedsectionarray'] = implode(',', $expandedsectionarray);
 	}
-	if ($section && GETPOST('sectionexpand') == 'false') {
+	if ($section && request()->input('sectionexpand') == 'false') {
 		// We removed all expanded sections that are child of the closed section
 		$oldexpandedsectionarray = $expandedsectionarray;
 		$expandedsectionarray = array(); // Reset

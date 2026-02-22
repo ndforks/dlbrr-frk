@@ -40,23 +40,23 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/security.lib.php';
 // Load translation files required by the page
 $langs->load("admin");
 
-$rowid = GETPOSTINT('rowid');
-$entity = GETPOSTINT('entity');
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'aZ09');
+$rowid = request()->integer('rowid', 0);
+$entity = request()->integer('entity', 0);
+$action = request()->input('action');
+$massaction = request()->input('massaction');
 
-$debug = GETPOSTINT('debug');
-$consts = GETPOST('const', 'array');
-$constname = GETPOST('constname', 'alphanohtml');
-$constvalue = GETPOST('constvalue', 'restricthtml'); // We should be able to send everything here
-$constnote = GETPOST('constnote', 'alpha');
+$debug = request()->integer('debug', 0);
+$consts = request()->input('const');
+$constname = request()->input('constname');
+$constvalue = request()->input('constvalue'); // We should be able to send everything here
+$constnote = request()->input('constnote');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page == -1 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha') || (empty($toselect) && $massaction === '0')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page == -1 || request()->input('button_search') || request()->input('button_removefilter') || (empty($toselect) && $massaction === '0')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters or if we select empty mass action
 $offset = $limit * $page;
@@ -69,21 +69,21 @@ if (empty($sortorder)) {
 	$sortorder = 'ASC';
 }
 
-if ($action == 'add' && GETPOST('update')) {	// Click on button update must be used in priority before param $action
+if ($action == 'add' && request()->input('update')) {	// Click on button update must be used in priority before param $action
 	$action = 'update';
 }
-if ($action == 'add' && GETPOST('delete')) {	// Click on button update must be used in priority before param $action
+if ($action == 'add' && request()->input('delete')) {	// Click on button update must be used in priority before param $action
 	$action = 'delete';
 }
-/*if ($action == 'update' && GETPOST('add')) {	// 'add' button is always clicked as it is the first in form.
+/*if ($action == 'update' && request()->input('add')) {	// 'add' button is always clicked as it is the first in form.
 	$action = 'add';
 }*/
-if ($action == 'delete' && GETPOST('add')) {	// Click on button add must be used in priority before param $action
+if ($action == 'delete' && request()->input('add')) {	// Click on button add must be used in priority before param $action
 	$action = 'add';
 }
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -112,7 +112,7 @@ if ($action == 'add') {
 			$constvalue = "";
 			$constnote = "";
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -125,7 +125,7 @@ if (!empty($consts) && $action == 'update') {
 			if (dolibarr_set_const($db, $const["name"], $const["value"], $const["type"], 1, $const["note"], $const["entity"]) >= 0) {
 				$nbmodified++;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -143,7 +143,7 @@ if (!empty($consts) && $action == 'delete') {
 			if (dolibarr_del_const($db, $const["rowid"], -1) >= 0) {
 				$nbdeleted++;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -158,7 +158,7 @@ if ($action == 'delete') {
 	if (dolibarr_del_const($db, $rowid, $entity) >= 0) {
 		setEventMessages($langs->trans("RecordDeleted"), null, 'mesgs');
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -264,12 +264,12 @@ $sql .= " FROM ".MAIN_DB_PREFIX."const";
 $sql .= " WHERE entity IN (".$db->sanitize($user->entity.",".$conf->entity).")";
 if ((empty($user->entity)/*  || $user->admin */) && $debug) {
 	// empty
-} elseif (!GETPOST('visible') || GETPOST('visible') != 'all') {
+} elseif (!request()->input('visible') || request()->input('visible') != 'all') {
 	// to force for superadmin to debug
 	$sql .= " AND visible = 1"; // We must always have this. Otherwise, array is too large and submitting data fails due to apache POST or GET limits
 }
-if (GETPOST('name')) {
-	$sql .= natural_search("name", GETPOST('name'));
+if (request()->input('name')) {
+	$sql .= natural_search("name", request()->input('name'));
 }
 $sql .= $db->order($sortfield, $sortorder);
 

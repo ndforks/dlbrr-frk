@@ -28,7 +28,7 @@ require '../../../main.inc.php';
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Includes

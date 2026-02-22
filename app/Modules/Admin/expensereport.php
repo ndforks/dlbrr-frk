@@ -49,15 +49,15 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
 $langs->loadLangs(array('admin', 'errors', 'trips', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'expensereport';
 
 
@@ -69,8 +69,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskvalue = GETPOST('maskvalue', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskvalue = request()->input('maskvalue');
 
 	$res = 0;
 
@@ -88,7 +88,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') { // For fiche expensereport
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$expensespecimen = new ExpenseReport($db);
 	$expensespecimen->initAsSpecimen();
@@ -157,24 +157,24 @@ if ($action == 'updateMask') {
 } elseif ($action == 'setoptions') {
 	$db->begin();
 
-	$freetext = GETPOST('EXPENSEREPORT_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('EXPENSEREPORT_FREE_TEXT'); // No alpha here, we want exact string
 	$res1 = dolibarr_set_const($db, "EXPENSEREPORT_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
-	$draft = GETPOST('EXPENSEREPORT_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('EXPENSEREPORT_DRAFT_WATERMARK');
 	$res2 = dolibarr_set_const($db, "EXPENSEREPORT_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
 	$res3 = 0;
-	if (isModEnabled('project') && GETPOSTISSET('EXPENSEREPORT_PROJECT_IS_REQUIRED')) {  // Option may not be provided
-		$res3 = dolibarr_set_const($db, 'EXPENSEREPORT_PROJECT_IS_REQUIRED', GETPOSTINT('EXPENSEREPORT_PROJECT_IS_REQUIRED'), 'chaine', 0, '', $conf->entity);
+	if (isModEnabled('project') && request()->has('EXPENSEREPORT_PROJECT_IS_REQUIRED')) {  // Option may not be provided
+		$res3 = dolibarr_set_const($db, 'EXPENSEREPORT_PROJECT_IS_REQUIRED', request()->integer('EXPENSEREPORT_PROJECT_IS_REQUIRED', 0), 'chaine', 0, '', $conf->entity);
 	}
 
-	$dates = GETPOSTINT('EXPENSEREPORT_PREFILL_DATES_WITH_CURRENT_MONTH');
+	$dates = request()->integer('EXPENSEREPORT_PREFILL_DATES_WITH_CURRENT_MONTH', 0);
 	$res4 = dolibarr_set_const($db, 'EXPENSEREPORT_PREFILL_DATES_WITH_CURRENT_MONTH', intval($dates), 'chaine', 0, '', $conf->entity);
 
-	$amounts = GETPOSTINT('EXPENSEREPORT_FORCE_LINE_AMOUNTS_INCLUDING_TAXES_ONLY');
+	$amounts = request()->integer('EXPENSEREPORT_FORCE_LINE_AMOUNTS_INCLUDING_TAXES_ONLY', 0);
 	$res5 = dolibarr_set_const($db, 'EXPENSEREPORT_FORCE_LINE_AMOUNTS_INCLUDING_TAXES_ONLY', intval($amounts), 'chaine', 0, '', $conf->entity);
 
-	$linesblocked = GETPOSTINT('EXPENSEREPORT_BLOCK_LINE_CREATION_IF_NOT_BETWEEN_DATES');
+	$linesblocked = request()->integer('EXPENSEREPORT_BLOCK_LINE_CREATION_IF_NOT_BETWEEN_DATES', 0);
 	$res6 = dolibarr_set_const($db, 'EXPENSEREPORT_BLOCK_LINE_CREATION_IF_NOT_BETWEEN_DATES', intval($linesblocked), 'chaine', 0, '', $conf->entity);
 
 	if (!($res1 > 0) || !($res2 > 0) || !($res3 >= 0) || !($res4 > 0) || !($res5 > 0) || !($res6 > 0)) {
@@ -337,7 +337,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<table class="noborder centpercent">';

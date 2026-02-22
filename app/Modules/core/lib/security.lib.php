@@ -422,7 +422,7 @@ function dolGetLdapPasswordHash($password, $type = 'md5')
 
 /**
  *	Check permissions of a user to show a page and an object. Check read permission.
- * 	If GETPOST('action','aZ09') defined, we also check write and delete permission.
+ * 	If request()->input('action') defined, we also check write and delete permission.
  *  This method check permission on module then call checkUserAccessToObject() for permission on object (according to entity and socid of user).
  *
  *	@param	User				$user      	  	User to check
@@ -572,7 +572,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 				if ($mode) {
 					return 0;
 				} else {
-					accessforbidden(); // Module returns 0, so access forbidden
+					abort(403); // Module returns 0, so access forbidden
 				}
 			}
 		}
@@ -706,7 +706,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 		if ($mode) {
 			return 0;
 		} else {
-			accessforbidden();
+			abort(403);
 		}
 	}
 	//print "Read access is ok";
@@ -714,8 +714,8 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 	// Check write permission from module (we need to know write permission to create but also to delete drafts record or to upload files)
 	$createok = 1;
 	$nbko = 0;
-	$wemustcheckpermissionforcreate = (GETPOST('sendit', 'alpha') || GETPOST('linkit', 'alpha') || in_array(GETPOST('action', 'aZ09'), array('create', 'update', 'set', 'upload', 'add_element_resource', 'confirm_deletebank', 'confirm_delete_linked_resource')) || GETPOST('roworder', 'alpha', 2));
-	$wemustcheckpermissionfordeletedraft = ((GETPOST("action", "aZ09") == 'confirm_delete' && GETPOST("confirm", "aZ09") == 'yes') || GETPOST("action", "aZ09") == 'delete');
+	$wemustcheckpermissionforcreate = (request()->input('sendit') || request()->input('linkit') || in_array(request()->input('action'), array('create', 'update', 'set', 'upload', 'add_element_resource', 'confirm_deletebank', 'confirm_delete_linked_resource')) || GETPOST('roworder', 'alpha', 2));
+	$wemustcheckpermissionfordeletedraft = ((request()->input('action') == 'confirm_delete' && request()->input('confirm') == 'yes') || request()->input('action') == 'delete');
 
 	if ($wemustcheckpermissionforcreate || $wemustcheckpermissionfordeletedraft) {
 		foreach ($featuresarray as $feature) {
@@ -812,7 +812,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 			if ($mode) {
 				return 0;
 			} else {
-				accessforbidden();
+				abort(403);
 			}
 		}
 		//print "Write access is ok";
@@ -820,7 +820,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 
 	// Check create user permission
 	$createuserok = 1;
-	if (GETPOST('action', 'aZ09') == 'confirm_create_user' && GETPOST("confirm", 'aZ09') == 'yes') {
+	if (request()->input('action') == 'confirm_create_user' && request()->input('confirm') == 'yes') {
 		if (!$user->hasRight('user', 'user', 'creer')) {
 			$createuserok = 0;
 		}
@@ -829,7 +829,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 			if ($mode) {
 				return 0;
 			} else {
-				accessforbidden();
+				abort(403);
 			}
 		}
 		//print "Create user access is ok";
@@ -838,7 +838,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 	// Check delete permission from module
 	$deleteok = 1;
 	$nbko = 0;
-	if ((GETPOST("action", "aZ09") == 'confirm_delete' && GETPOST("confirm", "aZ09") == 'yes') || GETPOST("action", "aZ09") == 'delete') {
+	if ((request()->input('action') == 'confirm_delete' && request()->input('confirm') == 'yes') || request()->input('action') == 'delete') {
 		foreach ($featuresarray as $feature) {
 			if ($feature == 'bookmark') {
 				if (!$user->hasRight('bookmark', 'supprimer')) {
@@ -930,7 +930,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 			if ($mode) {
 				return 0;
 			} else {
-				accessforbidden();
+				abort(403);
 			}
 		}
 		//print "Delete access is ok";
@@ -948,7 +948,7 @@ function restrictedArea(User $user, $features, $object = 0, $tableandshare = '',
 			if ($ok) {
 				return 1;
 			} else {
-				accessforbidden('', 1, 1, 0, $params);
+				abort(403);
 			}
 		}
 	}
@@ -1318,10 +1318,8 @@ function checkUserAccessToObject($user, array $featuresarray, $object = 0, $tabl
  *	@param	int			$http_response_code			HTTP response code (403 for forbidden access, 400 bad parameters or request)
  *  @param	int<0,1>	$stringalreadysanitized		1 if string is already sanitized with HTML entities
  *  @return	never
- *  @see accessforbidden()
- */
-function httponly_accessforbidden($message = '1', $http_response_code = 403, $stringalreadysanitized = 0)
-{
+ *  @see abort(403);*/
+function httponly_abort(403);{
 	top_httphead();
 	http_response_code($http_response_code);
 
@@ -1345,10 +1343,8 @@ function httponly_accessforbidden($message = '1', $http_response_code = 403, $st
  *  @param  int<0,1>	$showonlymessage    Show only message parameter. Otherwise add more information.
  *  @param  ?array<string,mixed>	$params More parameters provided to hook
  *  @return	never
- *  @see httponly_accessforbidden()
- */
-function accessforbidden($message = '', $printheader = 1, $printfooter = 1, $showonlymessage = 0, $params = null)
-{
+ *  @see httponly_abort(403);*/
+function abort(403);{
 	global $conf, $db, $user, $langs, $hookmanager;
 	global $action, $object;
 

@@ -41,12 +41,12 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'banks', 'trips'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 $amounts = array();
-$accountid = GETPOSTINT('accountid');
-$cancel = GETPOST('cancel');
+$accountid = request()->integer('accountid', 0);
+$cancel = request()->input('cancel');
 
 // Security check
 $socid = 0;
@@ -77,9 +77,9 @@ if ($action == 'add_payment' && $permissiontoadd) {
 		setEventMessages($expensereport->error, $expensereport->errors, 'errors');
 	}
 
-	$datepaid = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
+	$datepaid = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
-	if (!(GETPOSTINT("fk_typepayment") > 0)) {
+	if (!(request()->integer('fk_typepayment', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("PaymentMode")), null, 'errors');
 		$error++;
 	}
@@ -122,9 +122,9 @@ if ($action == 'add_payment' && $permissiontoadd) {
 			$payment->amounts		 = $amounts; // array of amounts
 			// total is calculated in class
 			// $payment->total          = $total;
-			$payment->fk_typepayment = GETPOSTINT("fk_typepayment");
-			$payment->num_payment    = GETPOST("num_payment", 'alphanohtml');
-			$payment->note_public    = GETPOST("note_public", 'restricthtml');
+			$payment->fk_typepayment = request()->integer('fk_typepayment', 0);
+			$payment->num_payment    = request()->input('num_payment');
+			$payment->note_public    = request()->input('note_public');
 			$payment->fk_bank        = $accountid;
 
 			if (!$error) {
@@ -248,14 +248,14 @@ if ($action == 'create' || empty($action)) {
 	print '<table class="border centpercent">'."\n";
 
 	print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Date").'</td><td colspan="2">';
-	$datepaid = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
+	$datepaid = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 	$datepayment = ($datepaid == '' ? (!getDolGlobalString('MAIN_AUTOFILL_DATE') ? -1 : '') : $datepaid);
 	print $form->selectDate($datepayment, '', 0, 0, 0, "add_payment", 1, 1);
 	print "</td>";
 	print '</tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PaymentMode").'</td><td colspan="2">';
-	$form->select_types_paiements(GETPOSTISSET("fk_typepayment") ? GETPOST("fk_typepayment", 'alpha') : $expensereport->fk_c_paiement, "fk_typepayment");
+	$form->select_types_paiements(request()->has('fk_typepayment') ? request()->input('fk_typepayment') : $expensereport->fk_c_paiement, "fk_typepayment");
 	print "</td>\n";
 	print '</tr>';
 
@@ -264,7 +264,7 @@ if ($action == 'create' || empty($action)) {
 		print '<td class="fieldrequired">'.$langs->trans('AccountToDebit').'</td>';
 		print '<td colspan="2">';
 		print img_picto('', 'bank_account', 'class="pictofixedwidth"');
-		$form->select_comptes(GETPOSTISSET("accountid") ? GETPOSTINT("accountid") : 0, "accountid", 0, '', 2); // Show open bank account list
+		$form->select_comptes(request()->has('accountid') ? request()->integer('accountid', 0) : 0, "accountid", 0, '', 2); // Show open bank account list
 		print '</td></tr>';
 	}
 
@@ -272,7 +272,7 @@ if ($action == 'create' || empty($action)) {
 	print '<tr><td>'.$langs->trans('Numero');
 	print ' <em>('.$langs->trans("ChequeOrTransferNumber").')</em>';
 	print '</td>';
-	print '<td colspan="2"><input name="num_payment" type="text" value="'.GETPOST('num_payment').'"></td></tr>'."\n";
+	print '<td colspan="2"><input name="num_payment" type="text" value="'.request()->input('num_payment').'"></td></tr>'."\n";
 
 	print '<tr>';
 	print '<td class="tdtop">'.$langs->trans("Comments").'</td>';

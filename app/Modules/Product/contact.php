@@ -45,9 +45,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
 $fieldtype = (!empty($ref) ? 'ref' : 'rowid');
@@ -82,9 +82,9 @@ $usercancreate = ($user->hasRight('produit', 'creer') || $user->hasRight('servic
 
 if ($action == 'addcontact' && $usercancreate) {
 	if ($result > 0 && $id > 0) {
-		$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-		$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+		$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+		$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 	}
 
 	if ($result >= 0) {
@@ -102,16 +102,16 @@ if ($action == 'addcontact' && $usercancreate) {
 	}
 } elseif ($action == 'swapstatut' && $usercancreate) {
 	// Toggle the status of a contact
-	$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+	$result = $object->swapContactStatus(request()->integer('ligne', 0));
 } elseif ($action == 'deletecontact' && $usercancreate) {
 	// Deletes a contact
-	$result = $object->delete_contact(GETPOSTINT('lineid'));
+	$result = $object->delete_contact(request()->integer('lineid', 0));
 
 	if ($result >= 0) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -128,11 +128,11 @@ $userstatic = new User($db);
 $title = $langs->trans('ProductServiceCard');
 $help_url = "";
 $shortlabel = dol_trunc($object->label, 16);
-if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 	$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Notes');
 	$help_url = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos|DE:Modul_Produkte';
 }
-if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 	$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Notes');
 	$help_url = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios|DE:Modul_Leistungen';
 }

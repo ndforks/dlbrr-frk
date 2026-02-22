@@ -48,14 +48,14 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent_type.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "members"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Hook to be used by external payment modules (ie Payzen, ...)
 $hookmanager = new HookManager($db);
 $hookmanager->initHooks(array('newpayment'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -66,7 +66,7 @@ $error = 0;
  */
 
 if ($action == 'setMEMBER_ENABLE_PUBLIC') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'MEMBER_ENABLE_PUBLIC', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'MEMBER_ENABLE_PUBLIC', 0, 'chaine', 0, '', $conf->entity);
@@ -74,26 +74,26 @@ if ($action == 'setMEMBER_ENABLE_PUBLIC') {
 }
 
 if ($action == 'update') {
-	$public = GETPOST('MEMBER_ENABLE_PUBLIC');
-	if (GETPOST('MEMBER_NEWFORM_AMOUNT') !== '') {
-		$amount = price2num(GETPOST('MEMBER_NEWFORM_AMOUNT'), 'MT', 2);
+	$public = request()->input('MEMBER_ENABLE_PUBLIC');
+	if (request()->input('MEMBER_NEWFORM_AMOUNT') !== '') {
+		$amount = price2num(request()->input('MEMBER_NEWFORM_AMOUNT'), 'MT', 2);
 	} else {
 		$amount = '';
 	}
-	$minamount = GETPOST('MEMBER_MIN_AMOUNT');
-	$publiccounters = GETPOST('MEMBER_COUNTERS_ARE_PUBLIC');
-	$showtable = GETPOST('MEMBER_SHOW_TABLE');
-	$showvoteallowed = GETPOST('MEMBER_SHOW_VOTE_ALLOWED');
-	$payonline = GETPOST('MEMBER_NEWFORM_PAYONLINE');
-	$forcetype = GETPOSTINT('MEMBER_NEWFORM_FORCETYPE');
-	$forcemorphy = GETPOST('MEMBER_NEWFORM_FORCEMORPHY', 'aZ09');
+	$minamount = request()->input('MEMBER_MIN_AMOUNT');
+	$publiccounters = request()->input('MEMBER_COUNTERS_ARE_PUBLIC');
+	$showtable = request()->input('MEMBER_SHOW_TABLE');
+	$showvoteallowed = request()->input('MEMBER_SHOW_VOTE_ALLOWED');
+	$payonline = request()->input('MEMBER_NEWFORM_PAYONLINE');
+	$forcetype = request()->integer('MEMBER_NEWFORM_FORCETYPE', 0);
+	$forcemorphy = request()->input('MEMBER_NEWFORM_FORCEMORPHY');
 
 	$res = dolibarr_set_const($db, "MEMBER_ENABLE_PUBLIC", $public, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "MEMBER_NEWFORM_AMOUNT", $amount, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "MEMBER_MIN_AMOUNT", $minamount, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "MEMBER_COUNTERS_ARE_PUBLIC", $publiccounters, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "MEMBER_SKIP_TABLE", $showtable ? 0 : 1, 'chaine', 0, '', $conf->entity); // Logic is reversed for retrocompatibility: "skip -> show"
-	if (GETPOSTISSET('MEMBER_HIDE_VOTE_ALLOWED')) {
+	if (request()->has('MEMBER_HIDE_VOTE_ALLOWED')) {
 		$res = dolibarr_set_const($db, "MEMBER_HIDE_VOTE_ALLOWED", $showvoteallowed ? 0 : 1, 'chaine', 0, '', $conf->entity); // Logic is reversed for retrocompatibility: "hide -> show"
 	}
 	$res = dolibarr_set_const($db, "MEMBER_NEWFORM_PAYONLINE", $payonline, 'chaine', 0, '', $conf->entity);

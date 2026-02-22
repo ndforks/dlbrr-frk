@@ -51,15 +51,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/order.lib.php';
 $langs->loadLangs(array('admin', 'errors', 'orders', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'order';
 
 
@@ -72,8 +72,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstorder = GETPOST('maskconstorder', 'aZ09');
-	$maskorder = GETPOST('maskorder', 'alpha');
+	$maskconstorder = request()->input('maskconstorder');
+	$maskorder = request()->input('maskorder');
 
 	$res = 0;
 
@@ -91,7 +91,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$commande = new Commande($db);
 	$commande->initAsSpecimen();
@@ -155,7 +155,7 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "COMMANDE_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'set_COMMANDE_DRAFT_WATERMARK') {
-	$draft = GETPOST("COMMANDE_DRAFT_WATERMARK");
+	$draft = request()->input('COMMANDE_DRAFT_WATERMARK');
 	$res = dolibarr_set_const($db, "COMMANDE_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -168,7 +168,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_ORDER_FREE_TEXT') {
-	$freetext = GETPOST("ORDER_FREE_TEXT", 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('ORDER_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "ORDER_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
@@ -182,8 +182,8 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'setribchq') {
-	$rib = GETPOST('rib', 'alpha');
-	$chq = GETPOST('chq', 'alpha');
+	$rib = request()->input('rib');
+	$chq = request()->input('chq');
 
 	$res = dolibarr_set_const($db, "FACTURE_RIB_NUMBER", $rib, 'chaine', 0, '', $conf->entity);
 	$res = dolibarr_set_const($db, "FACTURE_CHQ_NUMBER", $chq, 'chaine', 0, '', $conf->entity);
@@ -424,7 +424,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

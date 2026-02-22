@@ -38,10 +38,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/usergroups.lib.php';
 // Load translation files required by page
 $langs->loadLangs(array('users', 'admin'));
 
-$action = (string) GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
+$action = (string) request()->input('action');
+$cancel = request()->input('cancel');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
 $socid = 0;
@@ -81,10 +81,10 @@ if (empty($reshook)) {
 		$edituser = new User($db);
 		$edituser->fetch($id);
 
-		$edituser->clicktodial_url = (string) GETPOST("url", "alpha");
-		$edituser->clicktodial_login = (string) GETPOST("login", "alpha");
-		$edituser->clicktodial_password = (string) GETPOST("password", "alpha");
-		$edituser->clicktodial_poste = (string) GETPOST("poste", "alpha");
+		$edituser->clicktodial_url = (string) request()->input('url');
+		$edituser->clicktodial_login = (string) request()->input('login');
+		$edituser->clicktodial_password = (string) request()->input('password');
+		$edituser->clicktodial_poste = (string) request()->input('poste');
 
 		$result = $edituser->update_clicktodial();
 		if ($result < 0) {

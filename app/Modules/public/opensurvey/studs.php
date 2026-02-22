@@ -53,10 +53,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
  */
 
 // Init vars
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $numsondage = '';
-if (GETPOST('sondage')) {
-	$numsondage = GETPOST('sondage', 'alpha');
+if (request()->input('sondage')) {
+	$numsondage = request()->input('sondage');
 }
 
 $object = new Opensurveysondage($db);
@@ -69,7 +69,7 @@ $canbemodified = ((empty($object->date_fin) || dol_get_last_hour($object->date_f
 
 // Security check
 if (!isModEnabled('opensurvey')) {
-	httponly_accessforbidden('Module Opensurvey not enabled');
+	httponly_abort(403);
 }
 
 
@@ -84,13 +84,13 @@ $listofvoters = explode(',', $_SESSION["savevoter"]);
 $error = 0;
 
 // Add comment
-if (GETPOST('ajoutcomment', 'alpha')) {
+if (request()->input('ajoutcomment')) {
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
-	$comment = GETPOST("comment", 'alphanohtml');
-	$comment_user = GETPOST('commentuser', 'alphanohtml');
+	$comment = request()->input('comment');
+	$comment_user = request()->input('commentuser');
 
 	if (!$comment) {
 		$error++;
@@ -138,19 +138,19 @@ if (GETPOST('ajoutcomment', 'alpha')) {
 		$resql = $object->addComment($comment, $comment_user, $user_ip);
 
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
 // Add vote
-if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// boutonp for chrome, boutonp_x for firefox
+if (request()->input('boutonp') || request()->input('boutonp.x') || request()->input('boutonp_x')) {		// boutonp for chrome, boutonp_x for firefox
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
 	//Si le nom est bien entré
-	if (GETPOST('nom', 'alphanohtml')) {
+	if (request()->input('nom')) {
 		$nouveauchoix = '';
 		for ($i = 0; $i < $nbcolonnes; $i++) {
 			if (GETPOSTISSET("choix".$i) && GETPOST("choix".$i) == '1') {
@@ -186,7 +186,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 		}
 
 
-		$nom = substr(GETPOST("nom", 'alphanohtml'), 0, 64);
+		$nom = substr(request()->input('nom'), 0, 64);
 
 		// Check if vote already exists
 		$sql = 'SELECT id_users, nom as name';
@@ -194,7 +194,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 		$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."' AND nom = '".$db->escape($nom)."' ORDER BY id_users";
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$num_rows = $db->num_rows($resql);
@@ -242,7 +242,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	} else {
@@ -282,7 +282,7 @@ if ($testmodifier) {
 	}
 
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
 	$idtomodify = GETPOST("idtomodify".$modifier);
@@ -292,15 +292,15 @@ if ($testmodifier) {
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Delete comment
-$idcomment = GETPOSTINT('deletecomment');
+$idcomment = request()->integer('deletecomment', 0);
 if ($idcomment) {
 	if (!$canbemodified) {
-		httponly_accessforbidden('ErrorForbidden');
+		httponly_abort(403);
 	}
 
 	$resql = $object->deleteComment($idcomment);
@@ -491,7 +491,7 @@ $sql .= " FROM ".MAIN_DB_PREFIX."opensurvey_user_studs";
 $sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 $num = $db->num_rows($resql);
@@ -859,9 +859,9 @@ if ($comments) {
 if ($object->allow_comments && $currentusername) {
 	print '<br><div class="addcomment"><span class="opacitymedium">'.$langs->trans("AddACommentForPoll")."</span><br>\n";
 
-	print '<textarea name="comment" rows="'.ROWS_2.'" class="quatrevingtpercent">'.dol_escape_htmltag(GETPOST('comment', 'alphanohtml'), 0, 1).'</textarea><br>'."\n";
+	print '<textarea name="comment" rows="'.ROWS_2.'" class="quatrevingtpercent">'.dol_escape_htmltag(request()->input('comment'), 0, 1).'</textarea><br>'."\n";
 	print $langs->trans("Name").': ';
-	print '<input type="text" name="commentuser" maxlength="64" value="'.dol_escape_htmltag(GETPOSTISSET('commentuser') ? GETPOST('commentuser', 'alphanohtml') : (empty($_SESSION['nom']) ? $currentusername : $_SESSION['nom'])).'"> &nbsp; '."\n";
+	print '<input type="text" name="commentuser" maxlength="64" value="'.dol_escape_htmltag(request()->has('commentuser') ? request()->input('commentuser') : (empty($_SESSION['nom']) ? $currentusername : $_SESSION['nom'])).'"> &nbsp; '."\n";
 	print '<input type="submit" class="button smallpaddingimp" name="ajoutcomment" value="'.dol_escape_htmltag($langs->trans("AddComment")).'"><br>'."\n";
 	print '</form>'."\n";
 

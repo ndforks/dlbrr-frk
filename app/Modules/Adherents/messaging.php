@@ -48,7 +48,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'bills', 'companies', 'orders', 'propal'));
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'useragenda';
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'useragenda';
 
 if (GETPOSTISARRAY('actioncode')) {
 	$actioncode = GETPOST('actioncode', 'array:alpha', 3);
@@ -58,19 +58,19 @@ if (GETPOSTISARRAY('actioncode')) {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$id = GETPOSTINT('rowid') ? GETPOSTINT('rowid') : GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$id = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$ref = request()->input('ref');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -83,7 +83,7 @@ if (!$sortfield) {
 if (!$sortorder) {
 	$sortorder = 'DESC,DESC';
 }
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
@@ -116,13 +116,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$actioncode = '';
 		$search_agenda_label = '';
 	}

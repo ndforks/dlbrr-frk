@@ -40,10 +40,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 $langs->loadLangs(array("install", "other", "admin", "products", "mrp"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-if (GETPOST('action', 'aZ09') == 'donothing') {
+if (request()->input('action') == 'donothing') {
 	exit;
 }
 

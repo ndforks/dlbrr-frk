@@ -50,14 +50,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('mails', 'admin', 'companies', 'categories'));
 
-$action = GETPOST('action', 'aZ09');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
+$action = request()->input('action');
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -71,15 +71,15 @@ if (!$sortfield) {
 	$sortfield = "email";
 }
 
-$id = GETPOSTINT('id');
-$rowid = GETPOSTINT('rowid');
-$search_nom = GETPOST("search_nom");
-$search_prenom = GETPOST("search_prenom");
-$search_email = GETPOST("search_email");
-$template_id = GETPOSTINT('template_id');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
+$search_nom = request()->input('search_nom');
+$search_prenom = request()->input('search_prenom');
+$search_email = request()->input('search_email');
+$template_id = request()->integer('template_id', 0);
 
 // Do we click on purge search criteria ?
-if (GETPOST('button_removefilter_x', 'alpha')) {
+if (request()->input('button_removefilter_x')) {
 	$search_nom = '';
 	$search_prenom = '';
 	$search_email = '';
@@ -120,10 +120,10 @@ if (version_compare(phpversion(), '7.0', '>=')) {
 
 // Security check
 if (!$user->hasRight('mailing', 'lire') || (!getDolGlobalString('EXTERNAL_USERS_ARE_AUTHORIZED') && $user->socid > 0)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($action) && empty($object->id)) {
-	accessforbidden('Object not found');
+	abort(403);
 }
 
 $permissiontoread = $user->hasRight('mailing', 'lire');
@@ -295,7 +295,7 @@ if ($action == 'clear' && $permissiontoadd) {
 }
 
 if (($action == 'savefilter' || $action == 'createfilter') && $permissiontoadd) {
-	$template_name = GETPOST('template_name');
+	$template_name = request()->input('template_name');
 	$error = 0;
 
 	if ($action == 'createfilter' && empty($template_name) && $permissiontoadd) {
@@ -423,11 +423,11 @@ if ($action == 'delete' && $permissiontoadd) {
 			exit();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
-if (GETPOST("button_removefilter")) {
+if (request()->input('button_removefilter')) {
 	$search_nom = '';
 	$search_prenom = '';
 	$search_email = '';

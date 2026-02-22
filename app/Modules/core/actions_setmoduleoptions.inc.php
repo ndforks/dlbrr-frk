@@ -98,7 +98,7 @@ if (($action == 'update' || !empty($websitetemplateconf)) && !empty($arrayofpara
 
 if ($action == 'deletefile' && $modulepart == 'doctemplates' && !empty($user->admin)) {
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-	$keyforuploaddir = GETPOST('keyforuploaddir', 'aZ09');
+	$keyforuploaddir = request()->input('keyforuploaddir');
 	$listofdir = explode(',', preg_replace('/[\r\n]+/', ',', trim(getDolGlobalString($keyforuploaddir))));
 
 	foreach ($listofdir as $key => $tmpdir) {
@@ -118,10 +118,10 @@ if ($action == 'deletefile' && $modulepart == 'doctemplates' && !empty($user->ad
 		}
 	}
 
-	$filetodelete = $tmpdir.'/'.GETPOST('file');
+	$filetodelete = $tmpdir.'/'.request()->input('file');
 	$result = dol_delete_file($filetodelete);
 	if ($result > 0) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('file')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('file')), null, 'mesgs');
 	}
 }
 
@@ -153,9 +153,9 @@ if ($action == 'setModuleOptions' && !empty($user->admin)) {
 	}
 
 	// Process upload fields
-	if (GETPOST('upload', 'alpha') && GETPOST('keyforuploaddir', 'aZ09')) {
+	if (request()->input('upload') && request()->input('keyforuploaddir')) {
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-		$keyforuploaddir = GETPOST('keyforuploaddir', 'aZ09');
+		$keyforuploaddir = request()->input('keyforuploaddir');
 		$listofdir = explode(',', preg_replace('/[\r\n]+/', ',', trim(getDolGlobalString($keyforuploaddir))));
 
 		foreach ($listofdir as $key => $tmpdir) {

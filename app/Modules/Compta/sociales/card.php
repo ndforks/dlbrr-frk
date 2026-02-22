@@ -55,24 +55,24 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills', 'banks', 'hrm'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'myobjectcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'myobjectcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$lineid = GETPOSTINT('lineid');
+$lineid = request()->integer('lineid', 0);
 
-$fk_project = (GETPOST('fk_project') ? GETPOSTINT('fk_project') : 0);
+$fk_project = (request()->input('fk_project') ? request()->integer('fk_project', 0) : 0);
 
-$dateech = dol_mktime(GETPOSTINT('echhour'), GETPOSTINT('echmin'), GETPOSTINT('echsec'), GETPOSTINT('echmonth'), GETPOSTINT('echday'), GETPOSTINT('echyear'));
-$dateperiod = dol_mktime(GETPOSTINT('periodhour'), GETPOSTINT('periodmin'), GETPOSTINT('periodsec'), GETPOSTINT('periodmonth'), GETPOSTINT('periodday'), GETPOSTINT('periodyear'));
-$label = GETPOST('label', 'alpha');
-$actioncode = GETPOSTINT('actioncode');
-$fk_user = GETPOSTINT('userid') > 0 ? GETPOSTINT('userid') : 0;
+$dateech = dol_mktime(request()->integer('echhour', 0), request()->integer('echmin', 0), request()->integer('echsec', 0), request()->integer('echmonth', 0), request()->integer('echday', 0), request()->integer('echyear', 0));
+$dateperiod = dol_mktime(request()->integer('periodhour', 0), request()->integer('periodmin', 0), request()->integer('periodsec', 0), request()->integer('periodmonth', 0), request()->integer('periodday', 0), request()->integer('periodyear', 0));
+$label = request()->input('label');
+$actioncode = request()->integer('actioncode', 0);
+$fk_user = request()->integer('userid', 0) > 0 ? request()->integer('userid', 0) : 0;
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('taxcard', 'globalcard'));
@@ -100,7 +100,7 @@ $permissiondellink = $user->hasRight('tax', 'charges', 'creer'); // Used by the 
 $upload_dir = $conf->tax->multidir_output[isset($object->entity) ? $object->entity : 1];
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -137,7 +137,7 @@ if (empty($reshook)) {
 
 	// Link to a project
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('fk_project'));
+		$object->setProject(request()->integer('fk_project', 0));
 	}
 
 	if ($action == 'setfk_user' && $permissiontoadd) {
@@ -146,7 +146,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setlib' && $permissiontoadd) {
-		$result = $object->setValueFrom('libelle', GETPOST('lib'), '', null, 'text', '', $user, 'TAX_MODIFY');
+		$result = $object->setValueFrom('libelle', request()->input('lib'), '', null, 'text', '', $user, 'TAX_MODIFY');
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -154,7 +154,7 @@ if (empty($reshook)) {
 
 	// payment mode
 	if ($action == 'setmode' && $permissiontoadd) {
-		$result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+		$result = $object->setPaymentMethods(request()->integer('mode_reglement_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -162,7 +162,7 @@ if (empty($reshook)) {
 
 	// Bank account
 	if ($action == 'setbankaccount' && $permissiontoadd) {
-		$result = $object->setBankAccount(GETPOSTINT('fk_account'));
+		$result = $object->setBankAccount(request()->integer('fk_account', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -187,7 +187,7 @@ if (empty($reshook)) {
 
 	// Add social contribution
 	if ($action == 'add' && $permissiontoadd) {
-		$amount = price2num(GETPOST('amount', 'alpha'), 'MT');
+		$amount = price2num(request()->input('amount'), 'MT');
 
 		if (!$dateech) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Date")), null, 'errors');
@@ -206,15 +206,15 @@ if (empty($reshook)) {
 			$action = 'create';
 		} else {
 			$object->type = $actioncode;
-			$object->label = GETPOST('label', 'alpha');
+			$object->label = request()->input('label');
 			$object->date_ech = $dateech;
 			$object->periode = $dateperiod;
 			$object->period = $dateperiod;
 			$object->amount = $amount;
 			$object->fk_user = $fk_user;
-			$object->mode_reglement_id = GETPOSTINT('mode_reglement_id');
-			$object->fk_account = GETPOSTINT('fk_account');
-			$object->fk_project = GETPOSTINT('fk_project');
+			$object->mode_reglement_id = request()->integer('mode_reglement_id', 0);
+			$object->fk_account = request()->integer('fk_account', 0);
+			$object->fk_project = request()->integer('fk_project', 0);
 			$object->paye = ChargeSociales::STATUS_UNPAID;
 
 			$id = $object->create($user);
@@ -226,7 +226,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'update' && !$cancel && $permissiontoadd) {
-		$amount = price2num(GETPOST('amount', 'alpha'), 'MT');
+		$amount = price2num(request()->input('amount'), 'MT');
 
 		if (!$dateech) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Date")), null, 'errors');
@@ -278,23 +278,23 @@ if (empty($reshook)) {
 			$object->id = 0;
 			$object->ref = '';
 			$object->paye = 0;
-			if (GETPOST('amount', 'alphanohtml')) {
-				$object->amount = price2num(GETPOST('amount', 'alphanohtml'), 'MT', 2);
+			if (request()->input('amount')) {
+				$object->amount = price2num(request()->input('amount'), 'MT', 2);
 			}
 
-			if (GETPOST('clone_label', 'alphanohtml')) {
-				$object->label = GETPOST('clone_label', 'alphanohtml');
+			if (request()->input('clone_label')) {
+				$object->label = request()->input('clone_label');
 			} else {
 				$object->label = $langs->trans("CopyOf").' '.$object->label;
 			}
 
-			if (GETPOSTINT('clone_for_next_month')) {	// This can be true only if TAX_ADD_CLONE_FOR_NEXT_MONTH_CHECKBOX has been set
+			if (request()->integer('clone_for_next_month', 0)) {	// This can be true only if TAX_ADD_CLONE_FOR_NEXT_MONTH_CHECKBOX has been set
 				$object->period = dol_time_plus_duree($object->period, 1, 'm');
 				$object->date_ech = dol_time_plus_duree($object->date_ech, 1, 'm');
 			} else {
 				// Note date_ech is often a little bit higher than dateperiod
-				$newdateech = dol_mktime(0, 0, 0, GETPOSTINT('clone_date_echmonth'), GETPOSTINT('clone_date_echday'), GETPOSTINT('clone_date_echyear'));	// = date of creation or due date
-				$newdateperiod = dol_mktime(0, 0, 0, GETPOSTINT('clone_periodmonth'), GETPOSTINT('clone_periodday'), GETPOSTINT('clone_periodyear'));
+				$newdateech = dol_mktime(0, 0, 0, request()->integer('clone_date_echmonth', 0), request()->integer('clone_date_echday', 0), request()->integer('clone_date_echyear', 0));	// = date of creation or due date
+				$newdateperiod = dol_mktime(0, 0, 0, request()->integer('clone_periodmonth', 0), request()->integer('clone_periodday', 0), request()->integer('clone_periodyear', 0));
 
 				if ($newdateperiod) {
 					$object->period = $newdateperiod;
@@ -375,7 +375,7 @@ if ($action == 'create') {
 	print '<td class="titlefieldcreate fieldrequired">';
 	print $langs->trans("Label");
 	print '</td>';
-	print '<td><input type="text" name="label" class="flat minwidth300" value="'.dol_escape_htmltag(GETPOST('label', 'alpha')).'" autofocus></td>';
+	print '<td><input type="text" name="label" class="flat minwidth300" value="'.dol_escape_htmltag(request()->input('label')).'" autofocus></td>';
 	print '</tr>';
 	print '<tr>';
 
@@ -384,7 +384,7 @@ if ($action == 'create') {
 	print $langs->trans("Type");
 	print '</td>';
 	print '<td>';
-	$formsocialcontrib->select_type_socialcontrib(GETPOST('actioncode', 'alpha') ? GETPOSTINT('actioncode') : 0, 'actioncode', 1);
+	$formsocialcontrib->select_type_socialcontrib(request()->input('actioncode') ? request()->integer('actioncode', 0) : 0, 'actioncode', 1);
 	print '</td>';
 	print '</tr>';
 
@@ -413,7 +413,7 @@ if ($action == 'create') {
 	print '<td class="fieldrequired">';
 	print $langs->trans("Amount");
 	print '</td>';
-	print '<td><input type="text" size="6" name="amount" class="flat" value="'.dol_escape_htmltag(GETPOST('amount', 'alpha')).'"></td>';
+	print '<td><input type="text" size="6" name="amount" class="flat" value="'.dol_escape_htmltag(request()->input('amount')).'"></td>';
 	print '</tr>';
 
 	// Employee
@@ -438,13 +438,13 @@ if ($action == 'create') {
 
 	// Payment Mode
 	print '<tr><td>'.$langs->trans('DefaultPaymentMode').'</td><td colspan="2">';
-	$form->select_types_paiements((string) GETPOSTINT('mode_reglement_id'), 'mode_reglement_id');
+	$form->select_types_paiements((string) request()->integer('mode_reglement_id', 0), 'mode_reglement_id');
 	print '</td></tr>';
 
 	// Bank Account
 	if (isModEnabled("bank")) {
 		print '<tr><td>'.$langs->trans('DefaultBankAccount').'</td><td colspan="2">';
-		print img_picto('', 'bank_account', 'class="pictofixedwidth"').$form->select_comptes(GETPOSTINT('fk_account'), 'fk_account', 0, '', 2, '', 0, '', 1);
+		print img_picto('', 'bank_account', 'class="pictofixedwidth"').$form->select_comptes(request()->integer('fk_account', 0), 'fk_account', 0, '', 2, '', 0, '', 1);
 		print '</td></tr>';
 	}
 
@@ -543,7 +543,7 @@ if ($id > 0) {
 					if ($result > 0) {
 						$morehtmlref .= $userstatic->getNomUrl(1);
 					} else {
-						dol_print_error($db);
+						abort(500);
 						exit();
 					}
 				}
@@ -597,7 +597,7 @@ if ($id > 0) {
 		print '<tr><td class="titlefield">';
 		print $langs->trans("Type")."</td><td>";
 		if ($action == 'edit' && $object->getSommePaiement() == 0) {
-			$actionPostValue = GETPOSTINT('actioncode');
+			$actionPostValue = request()->integer('actioncode', 0);
 			$formsocialcontrib->select_type_socialcontrib($actionPostValue ? $actionPostValue : $object->type, 'actioncode', 1);
 		} else {
 			print $object->type_label;
@@ -790,7 +790,7 @@ if ($id > 0) {
 
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '</div>';
@@ -850,7 +850,7 @@ if ($id > 0) {
 
 
 		// Select mail models is same action as presend
-		if (GETPOST('modelselected')) {
+		if (request()->input('modelselected')) {
 			$action = 'presend';
 		}
 
@@ -893,7 +893,7 @@ if ($id > 0) {
 		}
 
 		//Select mail models is same action as presend
-		if (GETPOST('modelselected')) {
+		if (request()->input('modelselected')) {
 			$action = 'presend';
 		}
 

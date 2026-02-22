@@ -43,8 +43,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/contact.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'other'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
 
 // Security check
 if ($user->socid) {
@@ -60,14 +60,14 @@ $errors = array();
  * Action
  */
 
-if ($action == 'update' && !GETPOST("cancel") && $user->hasRight('societe', 'contact', 'creer')) {
+if ($action == 'update' && !request()->input('cancel') && $user->hasRight('societe', 'contact', 'creer')) {
 	$ret = $object->fetch($id);
 
 	// Note: Correct date should be completed with location to have exact GM time of birth.
-	$object->birthday = dol_mktime(0, 0, 0, GETPOSTINT("birthdaymonth"), GETPOSTINT("birthdayday"), GETPOSTINT("birthdayyear"));
-	$object->birthday_alert = GETPOSTINT("birthday_alert");
+	$object->birthday = dol_mktime(0, 0, 0, request()->integer('birthdaymonth', 0), request()->integer('birthdayday', 0), request()->integer('birthdayyear', 0));
+	$object->birthday_alert = request()->integer('birthday_alert', 0);
 
-	if (GETPOST('deletephoto')) {
+	if (request()->input('deletephoto')) {
 		$object->photo = '';
 	} elseif (!empty($_FILES['photo']['name'])) {
 		$object->photo = dol_sanitizeFileName($_FILES['photo']['name']);
@@ -84,7 +84,7 @@ if ($action == 'update' && !GETPOST("cancel") && $user->hasRight('societe', 'con
 		if ($file_OK) {
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
-			if (GETPOST('deletephoto')) {
+			if (request()->input('deletephoto')) {
 				$fileimg = $conf->societe->dir_output.'/contact/'.get_exdir($object->id, 0, 0, 1, $object, 'contact').'/photos/'.$object->photo;
 				$dirthumbs = $conf->societe->dir_output.'/contact/'.get_exdir($object->id, 0, 0, 1, $object, 'contact').'/photos/thumbs';
 				dol_delete_file($fileimg);
@@ -184,7 +184,7 @@ if ($action == 'edit') {
 	// Civility
 	print '<tr><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td>';
 	print $object->getCivilityLabel();
-	//print $formcompany->select_civility(GETPOSTISSET("civility_code") ? GETPOST("civility_code", 'alpha') : $object->civility_code, 'civility_code');
+	//print $formcompany->select_civility(request()->has('civility_code') ? request()->input('civility_code') : $object->civility_code, 'civility_code');
 	print '</td></tr>';
 
 	// Photo

@@ -243,7 +243,7 @@ class mod_facture_fournisseur_cactus extends ModeleNumRefSuppliersInvoices
 					$ref = $obj->ref;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			return $ref;

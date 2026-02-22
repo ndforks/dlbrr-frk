@@ -83,44 +83,44 @@ if (isModEnabled('productbatch')) {
 	$langs->load('productbatch');
 }
 
-$origin = GETPOST('origin', 'alpha'); // Example: commande, propal
-$origin_id = GETPOSTINT('origin_id') ? GETPOSTINT('id') : '';
-$id = GETPOSTINT('id');
+$origin = request()->input('origin'); // Example: commande, propal
+$origin_id = request()->integer('origin_id', 0) ? request()->integer('id', 0) : '';
+$id = request()->integer('id', 0);
 if (empty($origin_id) && !empty($origin)) {
-	$origin_id  = GETPOSTINT('origin_id'); // Id of order or propal
+	$origin_id  = request()->integer('origin_id', 0); // Id of order or propal
 }
 if (empty($origin_id) && !empty($origin)) {
-	$origin_id  = GETPOSTINT('object_id'); // Id of order or propal
+	$origin_id  = request()->integer('object_id', 0); // Id of order or propal
 }
 if (empty($origin_id) && !empty($origin)) {
-	$origin_id  = GETPOSTINT('originid'); // Id of order or propal
+	$origin_id  = request()->integer('originid', 0); // Id of order or propal
 }
-$ref = GETPOST('ref', 'alpha');
-$line_id = GETPOSTINT('lineid') ? GETPOSTINT('lineid') : 0;
-$facid = GETPOSTINT('facid');
-$socid = GETPOSTINT('socid');
-$action	= GETPOST('action', 'alpha');
+$ref = request()->input('ref');
+$line_id = request()->integer('lineid', 0) ? request()->integer('lineid', 0) : 0;
+$facid = request()->integer('facid', 0);
+$socid = request()->integer('socid', 0);
+$action	= request()->input('action');
 //Select mail models is same action as presend
-if (GETPOST('modelselected')) {
+if (request()->input('modelselected')) {
 	$action = 'presend';
 }
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$contactid =  GETPOSTINT('contactid');
-$projectid =  GETPOSTINT('projectid');
+$contactid =  request()->integer('contactid', 0);
+$projectid =  request()->integer('projectid', 0);
 
 
-$cancel = GETPOST('cancel', 'alpha');
-$rank      = (GETPOSTINT('rank') > 0) ? GETPOSTINT('rank') : -1;
-$lineid    =  GETPOSTINT('lineid');
-$backtopage = GETPOST('backtopage', 'alpha');
+$cancel = request()->input('cancel');
+$rank      = (request()->integer('rank', 0) > 0) ? request()->integer('rank', 0) : -1;
+$lineid    =  request()->integer('lineid', 0);
+$backtopage = request()->input('backtopage');
 //PDF
-$hidedetails = (GETPOSTINT('hidedetails') ? GETPOSTINT('hidedetails') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS') ? 1 : 0));
-$hidedesc = (GETPOSTINT('hidedesc') ? GETPOSTINT('hidedesc') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DESC') ? 1 : 0));
-$hideref = (GETPOSTINT('hideref') ? GETPOSTINT('hideref') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_REF') ? 1 : 0));
+$hidedetails = (request()->integer('hidedetails', 0) ? request()->integer('hidedetails', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS') ? 1 : 0));
+$hidedesc = (request()->integer('hidedesc', 0) ? request()->integer('hidedesc', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DESC') ? 1 : 0));
+$hideref = (request()->integer('hideref', 0) ? request()->integer('hideref', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_REF') ? 1 : 0));
 
 $object = new Reception($db);
 $objectorder = new CommandeFournisseur($db);
@@ -137,8 +137,8 @@ include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'inclu
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('receptioncard', 'globalcard'));
 
-$date_delivery = dol_mktime(GETPOSTINT('date_deliveryhour'), GETPOSTINT('date_deliverymin'), 0, GETPOSTINT('date_deliverymonth'), GETPOSTINT('date_deliveryday'), GETPOSTINT('date_deliveryyear'));
-$date_reception = dol_mktime(GETPOSTINT('date_receptionhour'), GETPOSTINT('date_receptionmin'), 0, GETPOSTINT('date_receptionmonth'), GETPOSTINT('date_receptionday'), GETPOSTINT('date_receptionyear'));
+$date_delivery = dol_mktime(request()->integer('date_deliveryhour', 0), request()->integer('date_deliverymin', 0), 0, request()->integer('date_deliverymonth', 0), request()->integer('date_deliveryday', 0), request()->integer('date_deliveryyear', 0));
+$date_reception = dol_mktime(request()->integer('date_receptionhour', 0), request()->integer('date_receptionmin', 0), 0, request()->integer('date_receptionmonth', 0), request()->integer('date_receptionday', 0), request()->integer('date_receptionyear', 0));
 
 // Security check
 if ($user->socid) {
@@ -153,7 +153,7 @@ if (isModEnabled("reception") || $origin == 'reception' || empty($origin)) {
 	if ($origin == 'supplierorder' || $origin == 'order_supplier') {
 		$result = restrictedArea($user, 'fournisseur', $origin_id, 'commande_fournisseur', 'commande');
 	} elseif (!$user->hasRight($origin, 'lire') && !$user->hasRight($origin, 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -172,9 +172,9 @@ if (isModEnabled("reception")) {
 	$permissiontodelete = $user->hasRight('fournisseur', 'commande', 'receptionner');
 }
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras' there is a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
 $editColspan = 0;
@@ -248,8 +248,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -269,7 +269,7 @@ if (empty($reshook)) {
 
 	// Set incoterm
 	if ($action == 'set_incoterms' && isModEnabled('incoterm') && $permissiontoadd) {
-		$result = $object->setIncoterms(GETPOSTINT('incoterm_id'), GETPOST('location_incoterms'));
+		$result = $object->setIncoterms(request()->integer('incoterm_id', 0), request()->input('location_incoterms'));
 	}
 
 	if ($action == 'setref_supplier' && $permissiontoadd) {
@@ -277,7 +277,7 @@ if (empty($reshook)) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 
-		$result = $object->setValueFrom('ref_supplier', GETPOST('ref_supplier', 'alpha'), '', null, 'text', '', $user, 'RECEPTION_MODIFY');
+		$result = $object->setValueFrom('ref_supplier', request()->input('ref_supplier'), '', null, 'text', '', $user, 'RECEPTION_MODIFY');
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 			$action = 'editref_supplier';
@@ -290,7 +290,7 @@ if (empty($reshook)) {
 	if ($action == 'update_extras' && $permissiontoeditextra) {
 		$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-		$attribute_name = GETPOST('attribute', 'aZ09');
+		$attribute_name = request()->input('attribute');
 
 		// Fill array 'array_options' with data from update form
 		$ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
@@ -316,36 +316,36 @@ if (empty($reshook)) {
 		$db->begin();
 
 		if (!$error && !$origin && getDolGlobalString('RECEPTION_STANDALONE')) {
-			if (GETPOSTINT('socid') < 1) {
+			if (request()->integer('socid', 0) < 1) {
 				$error++;
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ThirdParty")), null, 'errors');
 				$action = 'create';
 			}
 
-			$object->socid = GETPOSTINT('socid');
+			$object->socid = request()->integer('socid', 0);
 			$object->fetch_thirdparty();
-			$object->note = GETPOST('note', 'alpha');
-			$object->note_private = GETPOST('note', 'alpha');
+			$object->note = request()->input('note');
+			$object->note_private = request()->input('note');
 			$object->origin = $origin; // deprecated
 			$object->origin_type = $origin;
 			$object->origin_id = $origin_id;
-			$object->fk_project = GETPOSTINT('projectid');
-			$object->weight = GETPOSTINT('weight') == '' ? null : GETPOSTINT('weight');
-			$object->trueHeight = GETPOSTINT('trueHeight') == '' ? null : GETPOSTINT('trueHeight');
-			$object->trueWidth = GETPOSTINT('trueWidth') == '' ? null : GETPOSTINT('trueWidth');
-			$object->trueDepth = GETPOSTINT('trueDepth') == '' ? null : GETPOSTINT('trueDepth');
-			$object->size_units = GETPOSTINT('size_units');
-			$object->weight_units = GETPOSTINT('weight_units');
-			$object->ref_supplier = GETPOST('ref_supplier', 'alpha');
-			$object->model_pdf = GETPOST('model');
+			$object->fk_project = request()->integer('projectid', 0);
+			$object->weight = request()->integer('weight', 0) == '' ? null : request()->integer('weight', 0);
+			$object->trueHeight = request()->integer('trueHeight', 0) == '' ? null : request()->integer('trueHeight', 0);
+			$object->trueWidth = request()->integer('trueWidth', 0) == '' ? null : request()->integer('trueWidth', 0);
+			$object->trueDepth = request()->integer('trueDepth', 0) == '' ? null : request()->integer('trueDepth', 0);
+			$object->size_units = request()->integer('size_units', 0);
+			$object->weight_units = request()->integer('weight_units', 0);
+			$object->ref_supplier = request()->input('ref_supplier');
+			$object->model_pdf = request()->input('model');
 			$object->date_delivery = $date_delivery; // Date delivery planned
 			$object->date_reception = $date_reception;
-			$object->shipping_method_id = GETPOSTINT('shipping_method_id');
-			$object->tracking_number = GETPOST('tracking_number', 'alpha');
-			$object->note_private = GETPOST('note_private', 'restricthtml');
-			$object->note_public = GETPOST('note_public', 'restricthtml');
-			$object->fk_incoterms = GETPOSTINT('incoterm_id');
-			$object->location_incoterms = GETPOST('location_incoterms', 'alpha');
+			$object->shipping_method_id = request()->integer('shipping_method_id', 0);
+			$object->tracking_number = request()->input('tracking_number');
+			$object->note_private = request()->input('note_private');
+			$object->note_public = request()->input('note_public');
+			$object->fk_incoterms = request()->integer('incoterm_id', 0);
+			$object->location_incoterms = request()->input('location_incoterms');
 
 			$product = new Product($db);
 
@@ -364,29 +364,29 @@ if (empty($reshook)) {
 			}
 		}
 		if ($origin && $origin_id > 0) {
-			$object->note = GETPOST('note', 'alpha');
-			$object->note_private = GETPOST('note', 'alpha');
+			$object->note = request()->input('note');
+			$object->note_private = request()->input('note');
 			$object->origin = $origin;
 			$object->origin_type = $origin;
 			$object->origin_id = $origin_id;
-			$object->fk_project = GETPOSTINT('projectid');
-			$object->weight = GETPOST('weight') == '' ? null : GETPOSTINT('weight');
-			$object->trueHeight = GETPOST('trueHeight') == '' ? null : GETPOSTINT('trueHeight');
-			$object->trueWidth = GETPOST('trueWidth') == '' ? null : GETPOSTINT('trueWidth');
-			$object->trueDepth = GETPOST('trueDepth') == '' ? null : GETPOSTINT('trueDepth');
-			$object->size_units = GETPOSTINT('size_units');
-			$object->weight_units = GETPOSTINT('weight_units');
+			$object->fk_project = request()->integer('projectid', 0);
+			$object->weight = request()->input('weight') == '' ? null : request()->integer('weight', 0);
+			$object->trueHeight = request()->input('trueHeight') == '' ? null : request()->integer('trueHeight', 0);
+			$object->trueWidth = request()->input('trueWidth') == '' ? null : request()->integer('trueWidth', 0);
+			$object->trueDepth = request()->input('trueDepth') == '' ? null : request()->integer('trueDepth', 0);
+			$object->size_units = request()->integer('size_units', 0);
+			$object->weight_units = request()->integer('weight_units', 0);
 
-			$object->ref_supplier = GETPOST('ref_supplier', 'alpha');
-			$object->model_pdf = GETPOST('model');
+			$object->ref_supplier = request()->input('ref_supplier');
+			$object->model_pdf = request()->input('model');
 			$object->date_delivery = $date_delivery; // Date delivery planned
 			$object->date_reception = $date_reception;
-			$object->shipping_method_id = GETPOSTINT('shipping_method_id');
-			$object->tracking_number = GETPOST('tracking_number', 'alpha');
-			$object->note_private = GETPOST('note_private', 'restricthtml');
-			$object->note_public = GETPOST('note_public', 'restricthtml');
-			$object->fk_incoterms = GETPOSTINT('incoterm_id');
-			$object->location_incoterms = GETPOST('location_incoterms', 'alpha');
+			$object->shipping_method_id = request()->integer('shipping_method_id', 0);
+			$object->tracking_number = request()->input('tracking_number');
+			$object->note_private = request()->input('note_private');
+			$object->note_public = request()->input('note_public');
+			$object->fk_incoterms = request()->integer('incoterm_id', 0);
+			$object->location_incoterms = request()->input('location_incoterms');
 
 			if ($object->origin == "supplierorder") {
 				$object->origin = 'order_supplier';
@@ -468,7 +468,7 @@ if (empty($reshook)) {
 						$ent = "entl".$i;
 						$idl = "idl".$i;
 
-						$entrepot_id = is_numeric(GETPOST($ent)) ? GETPOSTINT($ent) : GETPOSTINT('entrepot_id');
+						$entrepot_id = is_numeric(GETPOST($ent)) ? GETPOSTINT($ent) : request()->integer('entrepot_id', 0);
 
 						/*
 						if (!empty($lineToTest)) {
@@ -519,8 +519,8 @@ if (empty($reshook)) {
 							$object->fetch_thirdparty();
 							$outputlangs = $langs;
 							$newlang = '';
-							if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-								$newlang = GETPOST('lang_id', 'aZ09');
+							if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+								$newlang = request()->input('lang_id');
 							}
 							if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 								$newlang = $object->thirdparty->default_lang;
@@ -550,7 +550,7 @@ if (empty($reshook)) {
 			exit;
 		} else {
 			$db->rollback();
-			//$_GET["commande_id"] = GETPOSTINT('commande_id');
+			//$_GET["commande_id"] = request()->integer('commande_id', 0);
 			$action = 'create';
 		}
 	} elseif ($action == 'confirm_valid' && $confirm == 'yes' && $permissiontovalidate) {
@@ -566,8 +566,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -601,7 +601,7 @@ if (empty($reshook)) {
 				setEventMessages($object->error, $object->errors, 'errors');
 		}*/
 	} elseif ($action == 'setdate_livraison' && $permissiontoadd) {
-		$datedelivery = dol_mktime(GETPOSTINT('liv_hour'), GETPOSTINT('liv_min'), 0, GETPOSTINT('liv_month'), GETPOSTINT('liv_day'), GETPOSTINT('liv_year'));
+		$datedelivery = dol_mktime(request()->integer('liv_hour', 0), request()->integer('liv_min', 0), 0, request()->integer('liv_month', 0), request()->integer('liv_day', 0), request()->integer('liv_year', 0));
 
 		$object->fetch($id);
 		$result = $object->setDeliveryDate($user, $datedelivery);
@@ -609,7 +609,7 @@ if (empty($reshook)) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'setdate_reception' && $user->hasRight('reception', 'creer')) {
-		$datereception = dol_mktime(GETPOSTINT('recep_hour'), GETPOSTINT('recep_min'), 0, GETPOSTINT('recep_month'), GETPOSTINT('recep_day'), GETPOSTINT('recep_year'));
+		$datereception = dol_mktime(request()->integer('recep_hour', 0), request()->integer('recep_min', 0), 0, request()->integer('recep_month', 0), request()->integer('recep_day', 0), request()->integer('recep_year', 0));
 
 		$object->fetch($id);
 		$result = $object->setReceptionDate($user, $datereception);
@@ -625,8 +625,8 @@ if (empty($reshook)) {
 			// Define output language
 			$outputlangs = $langs;
 			$newlang = '';
-			if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-				$newlang = GETPOST('lang_id', 'aZ09');
+			if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+				$newlang = request()->input('lang_id');
 			}
 			if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 				$newlang = $object->thirdparty->default_lang;
@@ -650,27 +650,27 @@ if (empty($reshook)) {
 		$error = 0;
 
 		if ($action == 'settracking_number') {		// Test on permission already done
-			$object->tracking_number = trim(GETPOST('tracking_number', 'alpha'));
+			$object->tracking_number = trim(request()->input('tracking_number'));
 		}
 		if ($action == 'settracking_url') {			// Test on permission already done
-			$object->tracking_url = trim(GETPOST('tracking_url', 'restricthtml'));
+			$object->tracking_url = trim(request()->input('tracking_url'));
 		}
 		if ($action == 'settrueWeight') {			// Test on permission already done
-			$object->trueWeight = GETPOST('trueWeight');
-			$object->weight_units = GETPOSTINT('weight_units');
+			$object->trueWeight = request()->input('trueWeight');
+			$object->weight_units = request()->integer('weight_units', 0);
 		}
 		if ($action == 'settrueWidth') {			// Test on permission already done
-			$object->trueWidth = GETPOST('trueWidth');
+			$object->trueWidth = request()->input('trueWidth');
 		}
 		if ($action == 'settrueHeight') {			// Test on permission already done
-			$object->trueHeight = GETPOST('trueHeight');
-			$object->size_units = GETPOSTINT('size_units');
+			$object->trueHeight = request()->input('trueHeight');
+			$object->size_units = request()->integer('size_units', 0);
 		}
 		if ($action == 'settrueDepth') {			// Test on permission already done
-			$object->trueDepth = GETPOST('trueDepth');
+			$object->trueDepth = request()->input('trueDepth');
 		}
 		if ($action == 'setshipping_method_id') {	// Test on permission already done
-			$object->shipping_method_id = GETPOSTINT('shipping_method_id');
+			$object->shipping_method_id = request()->integer('shipping_method_id', 0);
 		}
 
 		if ($object->update($user) >= 0) {
@@ -684,15 +684,15 @@ if (empty($reshook)) {
 		// Build document
 		// En get ou en post
 		// Save last template used to generate document
-		if (GETPOST('model')) {
-			$object->setDocModel($user, GETPOST('model', 'alpha'));
+		if (request()->input('model')) {
+			$object->setDocModel($user, request()->input('model'));
 		}
 
 		// Define output language
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 			$newlang = $reception->thirdparty->default_lang;
@@ -711,12 +711,12 @@ if (empty($reshook)) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
 		$upload_dir = $conf->reception->dir_output;
-		$file = $upload_dir.'/'.GETPOST('file');
+		$file = $upload_dir.'/'.request()->input('file');
 		$ret = dol_delete_file($file, 0, 0, 0, $object);
 		if ($ret) {
-			setEventMessages($langs->trans("FileWasRemoved", GETPOST('urlfile')), null, 'mesgs');
+			setEventMessages($langs->trans("FileWasRemoved", request()->input('urlfile')), null, 'mesgs');
 		} else {
-			setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('urlfile')), null, 'errors');
+			setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('urlfile')), null, 'errors');
 		}
 	} elseif ($action == 'classifybilled' && $permissiontoadd) {
 		$result = $object->setBilled();
@@ -759,17 +759,17 @@ if (empty($reshook)) {
 		} else {
 			setEventMessages($line->error, $line->errors, 'errors');
 		}
-	} elseif ($action == 'updateline' && GETPOST('save') && $permissiontoadd) {
+	} elseif ($action == 'updateline' && request()->input('save') && $permissiontoadd) {
 		if (!$origin  && getDolGlobalString('RECEPTION_STANDALONE')) {
 			// Update a line
 			// Clean parameters
 
 			if (!$object->fetch($id) > 0) {
-				dol_print_error($db);
+				abort(500);
 			}
 			$object->fetch_thirdparty();
 
-			$qty = GETPOST('qty', 'alpha');
+			$qty = request()->input('qty');
 			$description = '';
 			$element_type = 'reception';
 			$fk_unit = '';
@@ -788,19 +788,19 @@ if (empty($reshook)) {
 			}
 
 			$receptionline = new ReceptionLineBatch($db);
-			$receptionline->fetch(GETPOSTINT('lineid'));
+			$receptionline->fetch(request()->integer('lineid', 0));
 
 
 			if (!$error) {
-				$result = $object->updatelinefree(GETPOSTINT('lineid'), (float) $qty, $element_type, $fk_product, GETPOSTINT('units'), $rang, $description, 0, $array_options);
+				$result = $object->updatelinefree(request()->integer('lineid', 0), (float) $qty, $element_type, $fk_product, request()->integer('units', 0), $rang, $description, 0, $array_options);
 
 				if ($result >= 0) {
 					if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 						// Define output language
 						$outputlangs = $langs;
 						$newlang = '';
-						if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-							$newlang = GETPOST('lang_id', 'aZ09');
+						if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+							$newlang = request()->input('lang_id');
 						}
 						if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 							$newlang = $object->thirdparty->default_lang;
@@ -890,8 +890,8 @@ if (empty($reshook)) {
 					// Define output language
 					$outputlangs = $langs;
 					$newlang = '';
-					if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-						$newlang = GETPOST('lang_id', 'aZ09');
+					if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+						$newlang = request()->input('lang_id');
 					}
 					if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 						$newlang = $object->thirdparty->default_lang;
@@ -909,13 +909,13 @@ if (empty($reshook)) {
 				exit();
 			}
 		}
-	} elseif ($action == 'updateline' && $permissiontoadd && GETPOST('cancel', 'alpha') == $langs->trans("Cancel")) {
+	} elseif ($action == 'updateline' && $permissiontoadd && request()->input('cancel') == $langs->trans("Cancel")) {
 		header('Location: '.$_SERVER['PHP_SELF'].'?id='.$object->id); // To reshow the record we edit
 		exit();
 	} elseif ($action == 'addline' && !$origin && getDolGlobalString('RECEPTION_STANDALONE') && $permissiontoadd) {	// Add a new line
 		$langs->load('errors');
 		$error = 0;
-		$line_desc = (GETPOSTISSET('dp_desc') ? GETPOST('dp_desc', 'restricthtml') : '');
+		$line_desc = (request()->has('dp_desc') ? request()->input('dp_desc') : '');
 		$predef = '';
 		$description = '';
 		$fk_elementdet = '';
@@ -925,11 +925,11 @@ if (empty($reshook)) {
 		$fk_product = 0;
 		$fk_entrepot = '';
 		$rang = '';
-		$prod_entry_mode = GETPOST('prod_entry_mode', 'aZ09');
+		$prod_entry_mode = request()->input('prod_entry_mode');
 		if ($prod_entry_mode == 'free') {
 			$idprod = 0;
 		} else {
-			$idprod = GETPOSTINT('idprod');
+			$idprod = request()->integer('idprod', 0);
 			if (getDolGlobalString('MAIN_DISABLE_FREE_LINES') && $idprod <= 0) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ProductOrService")), null, 'errors');
 				$error++;
@@ -949,7 +949,7 @@ if (empty($reshook)) {
 			}
 		}
 
-		if ($prod_entry_mode == 'free' && (empty($idprod) || $idprod < 0) && GETPOST('type') < 0) {
+		if ($prod_entry_mode == 'free' && (empty($idprod) || $idprod < 0) && request()->input('type') < 0) {
 			setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv('Type')), null, 'errors');
 			$error++;
 		}
@@ -968,7 +968,7 @@ if (empty($reshook)) {
 		}
 
 		if (!$error && isModEnabled('variants') && $prod_entry_mode != 'free') {
-			if ($combinations = GETPOST('combinations', 'array')) {
+			if ($combinations = request()->input('combinations')) {
 				// Check if there is a product with the given combination
 				$prodcomb = new ProductCombination($db);
 
@@ -993,8 +993,8 @@ if (empty($reshook)) {
 				if (getDolGlobalInt('MAIN_MULTILANGS') && getDolGlobalString('PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE')) {
 					$outputlangs = $langs;
 					$newlang = '';
-					if (GETPOST('lang_id', 'aZ09')) {
-						$newlang = GETPOST('lang_id', 'aZ09');
+					if (request()->input('lang_id')) {
+						$newlang = request()->input('lang_id');
 					}
 					if (empty($newlang)) {
 						$newlang = $object->thirdparty->default_lang;
@@ -1020,8 +1020,8 @@ if (empty($reshook)) {
 					if (getDolGlobalInt('MAIN_MULTILANGS') && getDolGlobalString('PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE')) {
 						$outputlangs = $langs;
 						$newlang = '';
-						if (GETPOST('lang_id', 'alpha')) {
-							$newlang = GETPOST('lang_id', 'alpha');
+						if (request()->input('lang_id')) {
+							$newlang = request()->input('lang_id');
 						}
 						if (empty($newlang)) {
 							$newlang = $object->thirdparty->default_lang;
@@ -1057,10 +1057,10 @@ if (empty($reshook)) {
 				$type = $prod->type;
 				$fk_unit = $prod->fk_unit;
 			} else {
-				$label = (GETPOST('product_label') ? GETPOST('product_label') : '');
+				$label = (request()->input('product_label') ? request()->input('product_label') : '');
 				$desc = $line_desc;
-				$type = GETPOST('type');
-				$fk_unit = GETPOST('units', 'alpha');
+				$type = request()->input('type');
+				$fk_unit = request()->input('units');
 				$description = $desc;
 				$fk_elementdet = '';
 			}
@@ -1076,7 +1076,7 @@ if (empty($reshook)) {
 					if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 						// Define output language
 						$outputlangs = $langs;
-						$newlang = GETPOST('lang_id', 'alpha');
+						$newlang = request()->input('lang_id');
 						if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 							$newlang = $object->thirdparty->default_lang;
 						}
@@ -1201,7 +1201,7 @@ if ($action == 'create' && $permissiontoadd) {
 
 		// Project
 		if (isModEnabled('project') && is_object($formproject)) {
-			$projectid = GETPOSTINT('projectid');
+			$projectid = request()->integer('projectid', 0);
 			if (empty($projectid) && !empty($object->fk_project)) {
 				$projectid = (int) $object->fk_project;
 			}
@@ -1238,8 +1238,8 @@ if ($action == 'create' && $permissiontoadd) {
 		print $langs->trans("Weight");
 		print '</td><td colspan="3">';
 		print img_picto('', 'fa-balance-scale', 'class="pictofixedwidth"');
-		print '<input name="weight" size="4" value="'.GETPOST('weight').'"> ';
-		$text = $formproduct->selectMeasuringUnits("weight_units", "weight", (string) GETPOSTINT('weight_units'), 0, 2);
+		print '<input name="weight" size="4" value="'.request()->input('weight').'"> ';
+		$text = $formproduct->selectMeasuringUnits("weight_units", "weight", (string) request()->integer('weight_units', 0), 0, 2);
 		$htmltext = $langs->trans("KeepEmptyForAutoCalculation");
 		print $form->textwithpicto($text, $htmltext);
 		print '</td></tr>';
@@ -1249,11 +1249,11 @@ if ($action == 'create' && $permissiontoadd) {
 		print $langs->trans("Width").' x '.$langs->trans("Height").' x '.$langs->trans("Depth");
 		print ' </td><td colspan="3">';
 		print img_picto('', 'fa-ruler', 'class="pictofixedwidth"');
-		print '<input name="sizeW" size="4" value="'.GETPOST('sizeW').'">';
-		print ' x <input name="sizeH" size="4" value="'.GETPOST('sizeH').'">';
-		print ' x <input name="sizeS" size="4" value="'.GETPOST('sizeS').'">';
+		print '<input name="sizeW" size="4" value="'.request()->input('sizeW').'">';
+		print ' x <input name="sizeH" size="4" value="'.request()->input('sizeH').'">';
+		print ' x <input name="sizeS" size="4" value="'.request()->input('sizeS').'">';
 		print ' ';
-		$text = $formproduct->selectMeasuringUnits("size_units", "size", (string) GETPOSTINT('size_units'), 0, 2);
+		$text = $formproduct->selectMeasuringUnits("size_units", "size", (string) request()->integer('size_units', 0), 0, 2);
 		$htmltext = $langs->trans("KeepEmptyForAutoCalculation");
 		print $form->textwithpicto($text, $htmltext);
 		print '</td></tr>';
@@ -1262,7 +1262,7 @@ if ($action == 'create' && $permissiontoadd) {
 		print "<tr><td>".$langs->trans("ReceptionMethod")."</td>";
 		print '<td colspan="3">';
 		$recept->fetch_delivery_methods();
-		print $form->selectarray("shipping_method_id", $recept->meths, GETPOSTINT('shipping_method_id'), 1, 0, 0, "", 1);
+		print $form->selectarray("shipping_method_id", $recept->meths, request()->integer('shipping_method_id', 0), 1, 0, 0, "", 1);
 		if ($user->admin) {
 			print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 		}
@@ -1272,7 +1272,7 @@ if ($action == 'create' && $permissiontoadd) {
 		print "<tr><td>".$langs->trans("TrackingNumber")."</td>";
 		print '<td colspan="3">';
 		print img_picto('', 'barcode', 'class="pictofixedwidth"');
-		print '<input name="tracking_number" size="20" value="'.GETPOST('tracking_number', 'alpha').'">';
+		print '<input name="tracking_number" size="20" value="'.request()->input('tracking_number').'">';
 		print "</td></tr>\n";
 
 		// Here $object can be of an object Reception
@@ -1359,8 +1359,8 @@ if ($action == 'create' && $permissiontoadd) {
 			print '<input type="hidden" name="origin_id" value="'.$objectsrc->id.'">';
 			print '<input type="hidden" name="backtopageforcancel" value="'.$backtopageforcancel.'">';
 			print '<input type="hidden" name="backtopage" value="'.$backtopage.'">';
-			if (GETPOSTINT('entrepot_id')) {
-				print '<input type="hidden" name="entrepot_id" value="'.GETPOSTINT('entrepot_id').'">';
+			if (request()->integer('entrepot_id', 0)) {
+				print '<input type="hidden" name="entrepot_id" value="'.request()->integer('entrepot_id', 0).'">';
 			}
 
 			print dol_get_fiche_head();
@@ -1397,7 +1397,7 @@ if ($action == 'create' && $permissiontoadd) {
 
 			// Project
 			if (isModEnabled('project') && $formproject !== null) {
-				$projectid = GETPOSTINT('projectid') ? GETPOSTINT('projectid') : 0;
+				$projectid = request()->integer('projectid', 0) ? request()->integer('projectid', 0) : 0;
 				if (empty($projectid) && !empty($objectsrc->fk_project)) {
 					$projectid = $objectsrc->fk_project;
 				}
@@ -1452,19 +1452,19 @@ if ($action == 'create' && $permissiontoadd) {
 			// Weight
 			print '<tr><td>';
 			print $langs->trans("Weight");
-			print '</td><td colspan="3"><input name="weight" size="4" value="'.GETPOST('weight').'"> ';
-			$text = $formproduct->selectMeasuringUnits("weight_units", "weight", (string) GETPOSTINT('weight_units'), 0, 2);
+			print '</td><td colspan="3"><input name="weight" size="4" value="'.request()->input('weight').'"> ';
+			$text = $formproduct->selectMeasuringUnits("weight_units", "weight", (string) request()->integer('weight_units', 0), 0, 2);
 			$htmltext = $langs->trans("KeepEmptyForAutoCalculation");
 			print $form->textwithpicto($text, $htmltext);
 			print '</td></tr>';
 			// Dim
 			print '<tr><td>';
 			print $langs->trans("Width").' x '.$langs->trans("Height").' x '.$langs->trans("Depth");
-			print ' </td><td colspan="3"><input name="trueWidth" size="4" value="'.GETPOST('trueWidth').'">';
-			print ' x <input name="trueHeight" size="4" value="'.GETPOST('trueHeight').'">';
-			print ' x <input name="trueDepth" size="4" value="'.GETPOST('trueDepth').'">';
+			print ' </td><td colspan="3"><input name="trueWidth" size="4" value="'.request()->input('trueWidth').'">';
+			print ' x <input name="trueHeight" size="4" value="'.request()->input('trueHeight').'">';
+			print ' x <input name="trueDepth" size="4" value="'.request()->input('trueDepth').'">';
 			print ' ';
-			$text = $formproduct->selectMeasuringUnits("size_units", "size", (string) GETPOSTINT('size_units'), 0, 2);
+			$text = $formproduct->selectMeasuringUnits("size_units", "size", (string) request()->integer('size_units', 0), 0, 2);
 			$htmltext = $langs->trans("KeepEmptyForAutoCalculation");
 			print $form->textwithpicto($text, $htmltext);
 			print '</td></tr>';
@@ -1473,7 +1473,7 @@ if ($action == 'create' && $permissiontoadd) {
 			print "<tr><td>".$langs->trans("ReceptionMethod")."</td>";
 			print '<td colspan="3">';
 			$recept->fetch_delivery_methods();
-			print $form->selectarray("shipping_method_id", $recept->meths, GETPOSTINT('shipping_method_id'), 1, 0, 0, "", 1);
+			print $form->selectarray("shipping_method_id", $recept->meths, request()->integer('shipping_method_id', 0), 1, 0, 0, "", 1);
 			if ($user->admin) {
 				print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 			}
@@ -1482,7 +1482,7 @@ if ($action == 'create' && $permissiontoadd) {
 			// Tracking number
 			print "<tr><td>".$langs->trans("TrackingNumber")."</td>";
 			print '<td colspan="3">';
-			print '<input name="tracking_number" size="20" value="'.GETPOST('tracking_number', 'alpha').'">';
+			print '<input name="tracking_number" size="20" value="'.request()->input('tracking_number').'">';
 			print "</td></tr>\n";
 
 			// Other attributes
@@ -1552,7 +1552,7 @@ if ($action == 'create' && $permissiontoadd) {
 					$ent = "entrepot_" . $paramSuffix;
 					$pu = "pu_" . $paramSuffix; // This is unit price including discount
 					$fk_commandefourndet = "fk_commandefourndet_" . $paramSuffix;
-					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => GETPOST('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet));
+					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet));
 				}
 
 				// with batch module enabled and product with lot/serial
@@ -1573,7 +1573,7 @@ if ($action == 'create' && $permissiontoadd) {
 					$dDLUO = dol_mktime(12, 0, 0, GETPOSTINT('dluo_'.$paramSuffix.'month'), GETPOSTINT('dluo_'.$paramSuffix.'day'), GETPOSTINT('dluo_'.$paramSuffix.'year'));
 					$dDLC = dol_mktime(12, 0, 0, GETPOSTINT('dlc_'.$paramSuffix.'month'), GETPOSTINT('dlc_'.$paramSuffix.'day'), GETPOSTINT('dlc_'.$paramSuffix.'year'));
 					$fk_commandefourndet = 'fk_commandefourndet_'.$paramSuffix;
-					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => GETPOST('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => GETPOST($lot));
+					$dispatchLines[$numAsked] = array('paramSuffix' => $paramSuffix, 'prod' => GETPOSTINT($prod), 'qty' => price2num(GETPOST($qty), 'MS'), 'ent' => GETPOSTINT($ent), 'pu' => price2num(GETPOST($pu), 'MU'), 'comment' => request()->input('comment'), 'fk_commandefourndet' => GETPOSTINT($fk_commandefourndet), 'DLC' => $dDLC, 'DLUO' => $dDLUO, 'lot' => GETPOST($lot));
 				}
 
 				// If create form is coming from same page, it means that post was sent but an error occurred
@@ -1898,7 +1898,7 @@ if ($action == 'create' && $permissiontoadd) {
 
 			print '<br>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 } elseif ($object->id > 0) {
@@ -2331,7 +2331,7 @@ if ($action == 'create' && $permissiontoadd) {
 			// Show object lines
 			$result = $object->getLinesArray();
 
-			print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+			print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
 			<input type="hidden" name="token" value="' . newToken().'">
 			<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
 			<input type="hidden" name="mode" value="">
@@ -2349,7 +2349,7 @@ if ($action == 'create' && $permissiontoadd) {
 			}
 
 			if (!empty($object->lines)) {
-				$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 0, '/reception/tpl');
+				$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 0, '/reception/tpl');
 			}
 
 			// Form to add new line
@@ -2462,8 +2462,8 @@ if ($action == 'create' && $permissiontoadd) {
 		if (getDolGlobalInt('MAIN_MULTILANGS') && getDolGlobalString('PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE')) {
 			$object->fetch_thirdparty();
 			$newlang = '';
-			if (/* empty($newlang) && */ GETPOST('lang_id', 'aZ09')) {
-				$newlang = GETPOST('lang_id', 'aZ09');
+			if (/* empty($newlang) && */ request()->input('lang_id')) {
+				$newlang = request()->input('lang_id');
 			}
 			if (empty($newlang)) {
 				$newlang = $object->thirdparty->default_lang;

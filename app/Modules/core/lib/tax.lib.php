@@ -346,7 +346,7 @@ function tax_by_thirdparty($type, $db, $y, $date_start, $date_end, $modetax, $di
 			$company_id = $assoc['company_id'];
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -3;
 	}
 
@@ -527,7 +527,7 @@ function tax_by_thirdparty($type, $db, $y, $date_start, $date_end, $modetax, $di
 			$company_id = $assoc['company_id'];
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -3;
 	}
 
@@ -641,7 +641,7 @@ function tax_by_thirdparty($type, $db, $y, $date_start, $date_end, $modetax, $di
 				$company_id = $assoc['company_id'];
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			return -3;
 		}
 	}
@@ -886,7 +886,7 @@ function tax_by_rate($type, $db, $y, $q, $date_start, $date_end, $modetax, $dire
 			$rate = $assoc['rate'];
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -3;
 	}
 
@@ -1065,7 +1065,7 @@ function tax_by_rate($type, $db, $y, $q, $date_start, $date_end, $modetax, $dire
 			$rate = $assoc['rate'];
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -3;
 	}
 
@@ -1171,7 +1171,7 @@ function tax_by_rate($type, $db, $y, $q, $date_start, $date_end, $modetax, $dire
 				$rate = $assoc['rate'];
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			return -3;
 		}
 	}

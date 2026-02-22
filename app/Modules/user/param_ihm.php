@@ -46,12 +46,12 @@ $langs->loadLangs(array('companies', 'products', 'admin', 'users', 'languages', 
 $canreaduser = ($user->admin || $user->hasRight("user", "user", "read"));
 $caneditfield = false;
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'userihm'; // To manage different context of search
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'userihm'; // To manage different context of search
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 '@phan-var-force int<1,max> $id';
 
@@ -72,7 +72,7 @@ $hookmanager->initHooks(array('usercard', 'userihm', 'globalcard'));
 
 $result = restrictedArea($user, 'user', $id, 'user&user', $feature2);
 if ($user->id != $id && !$canreaduser) {
-	accessforbidden();
+	abort(403);
 }
 
 $dirtop = "../core/menus/standard";
@@ -106,91 +106,91 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	if ($action == 'update' && ($caneditfield || !empty($user->admin))) {
-		if (!GETPOST("cancel")) {
+		if (!request()->input('cancel')) {
 			$tabparam = array();
 
-			if (GETPOST("check_MAIN_LANDING_PAGE") == "on") {
-				$tabparam["MAIN_LANDING_PAGE"] = GETPOST("MAIN_LANDING_PAGE", 'alphanohtml');
+			if (request()->input('check_MAIN_LANDING_PAGE') == "on") {
+				$tabparam["MAIN_LANDING_PAGE"] = request()->input('MAIN_LANDING_PAGE');
 			} else {
 				$tabparam["MAIN_LANDING_PAGE"] = '';
 			}
 
-			if (GETPOST("check_MAIN_LANG_DEFAULT") == "on") {
-				$tabparam["MAIN_LANG_DEFAULT"] = GETPOST("main_lang_default", 'aZ09');
+			if (request()->input('check_MAIN_LANG_DEFAULT') == "on") {
+				$tabparam["MAIN_LANG_DEFAULT"] = request()->input('main_lang_default');
 			} else {
 				$tabparam["MAIN_LANG_DEFAULT"] = '';
 			}
 
-			if (GETPOST("check_MAIN_SIZE_LISTE_LIMIT") == "on") {
-				$tabparam["MAIN_SIZE_LISTE_LIMIT"] = GETPOSTINT("MAIN_SIZE_LISTE_LIMIT");
+			if (request()->input('check_MAIN_SIZE_LISTE_LIMIT') == "on") {
+				$tabparam["MAIN_SIZE_LISTE_LIMIT"] = request()->integer('MAIN_SIZE_LISTE_LIMIT', 0);
 			} else {
 				$tabparam["MAIN_SIZE_LISTE_LIMIT"] = '';
 			}
 
-			if (GETPOST("check_MAIN_CHECKBOX_LEFT_COLUMN") == "on") {
-				$tabparam["MAIN_CHECKBOX_LEFT_COLUMN"] = array("forcevalue" => 1, "value" => GETPOSTINT("MAIN_CHECKBOX_LEFT_COLUMN"));
+			if (request()->input('check_MAIN_CHECKBOX_LEFT_COLUMN') == "on") {
+				$tabparam["MAIN_CHECKBOX_LEFT_COLUMN"] = array("forcevalue" => 1, "value" => request()->integer('MAIN_CHECKBOX_LEFT_COLUMN', 0));
 			} else {
 				$tabparam["MAIN_CHECKBOX_LEFT_COLUMN"] = '';
 			}
 
-			if (GETPOST("check_MAIN_SIZE_SHORTLIST_LIMIT") == "on") {
-				$tabparam["MAIN_SIZE_SHORTLIST_LIMIT"] = GETPOSTINT("MAIN_SIZE_SHORTLIST_LIMIT");
+			if (request()->input('check_MAIN_SIZE_SHORTLIST_LIMIT') == "on") {
+				$tabparam["MAIN_SIZE_SHORTLIST_LIMIT"] = request()->integer('MAIN_SIZE_SHORTLIST_LIMIT', 0);
 			} else {
 				$tabparam["MAIN_SIZE_SHORTLIST_LIMIT"] = '';
 			}
 
-			if (GETPOST("check_AGENDA_DEFAULT_VIEW") == "on") {
-				$tabparam["AGENDA_DEFAULT_VIEW"] = GETPOST("AGENDA_DEFAULT_VIEW", 'aZ09');
+			if (request()->input('check_AGENDA_DEFAULT_VIEW') == "on") {
+				$tabparam["AGENDA_DEFAULT_VIEW"] = request()->input('AGENDA_DEFAULT_VIEW');
 			} else {
 				$tabparam["AGENDA_DEFAULT_VIEW"] = '';
 			}
 
-			if (GETPOST("check_MAIN_THEME") == "on") {
-				$tabparam["MAIN_THEME"] = GETPOST('main_theme', 'aZ09');
+			if (request()->input('check_MAIN_THEME') == "on") {
+				$tabparam["MAIN_THEME"] = request()->input('main_theme');
 			} else {
 				$tabparam["MAIN_THEME"] = '';
 			}
 
-			$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TOPMENU_BACK1', 'alphanohtml'), array()))));
+			$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TOPMENU_BACK1'), array()))));
 			if ($val == '') {
 				$tabparam['THEME_ELDY_TOPMENU_BACK1'] = '';
 			} else {
 				$tabparam['THEME_ELDY_TOPMENU_BACK1'] = implode(
 					',',
-					colorStringToArray(GETPOST('THEME_ELDY_TOPMENU_BACK1', 'alphanohtml'), array())
+					colorStringToArray(request()->input('THEME_ELDY_TOPMENU_BACK1'), array())
 				);
 			}
 
-			$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_BACKTITLE1', 'alphanohtml'), array()))));
+			$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_BACKTITLE1'), array()))));
 			if ($val == '') {
 				$tabparam['THEME_ELDY_BACKTITLE1'] = '';
 			} else {
 				$tabparam['THEME_ELDY_BACKTITLE1'] = implode(
 					',',
-					colorStringToArray(GETPOST('THEME_ELDY_BACKTITLE1', 'alphanohtml'), array())
+					colorStringToArray(request()->input('THEME_ELDY_BACKTITLE1'), array())
 				);
 			}
 
-			if (GETPOST('check_THEME_ELDY_USE_HOVER') == 'on') {
+			if (request()->input('check_THEME_ELDY_USE_HOVER') == 'on') {
 				$tabparam["THEME_ELDY_USE_HOVER"] = 1;
 			} else {
 				$tabparam["THEME_ELDY_USE_HOVER"] = 0;
 			}
 
-			if (GETPOST('check_THEME_ELDY_USE_CHECKED') == 'on') {
+			if (request()->input('check_THEME_ELDY_USE_CHECKED') == 'on') {
 				$tabparam["THEME_ELDY_USE_CHECKED"] = 1;
 			} else {
 				$tabparam["THEME_ELDY_USE_CHECKED"] = 0;
 			}
 
-			if (GETPOST('MAIN_OPTIMIZEFORTEXTBROWSER')) {
+			if (request()->input('MAIN_OPTIMIZEFORTEXTBROWSER')) {
 				$tabparam["MAIN_OPTIMIZEFORTEXTBROWSER"] = 1;
 			} else {
 				$tabparam["MAIN_OPTIMIZEFORTEXTBROWSER"] = 0;
 			}
 
-			if (GETPOST('MAIN_OPTIMIZEFORCOLORBLIND')) {
-				$tabparam["MAIN_OPTIMIZEFORCOLORBLIND"] = GETPOST('MAIN_OPTIMIZEFORCOLORBLIND', 'aZ09');
+			if (request()->input('MAIN_OPTIMIZEFORCOLORBLIND')) {
+				$tabparam["MAIN_OPTIMIZEFORCOLORBLIND"] = request()->input('MAIN_OPTIMIZEFORCOLORBLIND');
 			} else {
 				$tabparam["MAIN_OPTIMIZEFORCOLORBLIND"] = 0;
 			}

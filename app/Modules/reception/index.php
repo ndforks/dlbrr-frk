@@ -204,7 +204,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

@@ -45,10 +45,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/localtax/class/localtax.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("other", "compta", "banks", "bills", "companies", "product", "trips", "admin"));
 
-$localTaxType = GETPOSTINT('localTaxType');
+$localTaxType = request()->integer('localTaxType', 0);
 
 // Date range
-$year = GETPOSTINT("year");
+$year = request()->integer('year', 0);
 if (empty($year)) {
 	$year_current = dol_print_date(dol_now('gmt'), "%Y", 'gmt');
 	$year_start = $year_current;
@@ -56,14 +56,14 @@ if (empty($year)) {
 	$year_current = $year;
 	$year_start = $year;
 }
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"));
-$date_end = dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"));
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0));
+$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0));
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
-		if (GETPOSTINT("month")) {
-			$date_start = dol_get_first_day($year_start, GETPOSTINT("month"), false);
-			$date_end = dol_get_last_day($year_start, GETPOSTINT("month"), false);
+		if (request()->integer('month', 0)) {
+			$date_start = dol_get_first_day($year_start, request()->integer('month', 0), false);
+			$date_end = dol_get_last_day($year_start, request()->integer('month', 0), false);
 		} else {
 			$date_start = dol_get_first_day($year_start, $conf->global->SOCIETE_FISCAL_MONTH_START, false);
 			$date_end = dol_time_plus_duree($date_start, 1, 'y') - 1;
@@ -91,15 +91,15 @@ if (empty($date_start) || empty($date_end)) { // We define date_start and date_e
 // Define modetax (0 or 1)
 // 0=normal, 1=option vat for services is on debit, 2=option on payments for products
 $modetax = getDolGlobalString('TAX_MODE');
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -202,12 +202,12 @@ function localtax_pt($db, $sql, $date)
 		print "</table>";
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if (empty($localTaxType)) {
-	accessforbidden('Parameter localTaxType is missing');
+	abort(403);
 }
 
 

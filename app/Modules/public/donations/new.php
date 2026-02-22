@@ -68,8 +68,8 @@ if (isModEnabled('project') || isModEnabled('eventorganization')) {
 }
 
 // Init vars
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
 $errmsg = '';
 $num = 0;
@@ -89,11 +89,11 @@ $langs->loadLangs(array("main", "donations", "companies", "install", "other", "e
 
 // Security check
 if (!isModEnabled('don')) {
-	httponly_accessforbidden('Module don not enabled');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('DONATION_ENABLE_PUBLIC')) {
-	httponly_accessforbidden("Donation form for public visitors has not been enabled");
+	httponly_abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -210,12 +210,12 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	$db->begin();
 
-	if (GETPOST("email", "aZ09arobase") && !isValidEmail(GETPOST("email", "aZ09arobase"))) {
+	if (request()->input('email') && !isValidEmail(request()->input('email'))) {
 		$langs->load('errors');
 		$error++;
-		$errmsg .= $langs->trans("ErrorBadEMail", GETPOST("email", "aZ09arobase"))."<br>\n";
+		$errmsg .= $langs->trans("ErrorBadEMail", request()->input('email'))."<br>\n";
 	}
-	if (!GETPOST('amount') || GETPOST('amount') < getDolGlobalInt('DONATION_MIN_AMOUNT')) {
+	if (!request()->input('amount') || request()->input('amount') < getDolGlobalInt('DONATION_MIN_AMOUNT')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldMinimumAmount", getDolGlobalInt('DONATION_MIN_AMOUNT'))."<br>\n";
 	}
@@ -236,11 +236,11 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 		}
 	}
 
-	$public = GETPOSTISSET('public') ? 1 : 0;
-	if ((isModEnabled('project') || isModEnabled('eventorganization')) && GETPOSTINT('project_id')) {
+	$public = request()->has('public') ? 1 : 0;
+	if ((isModEnabled('project') || isModEnabled('eventorganization')) && request()->integer('project_id', 0)) {
 		// Check if project is valid
 		$project = new Project($db);
-		$result = $project->fetch(GETPOSTINT('project_id'));
+		$result = $project->fetch(request()->integer('project_id', 0));
 		if ($result > 0) {
 			$projectId = $project->id;
 		}
@@ -249,26 +249,26 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 	if (!$error) {
 		$donation = new Don($db);
 
-		$donation->amount 		= (float) GETPOST('amount');
+		$donation->amount 		= (float) request()->input('amount');
 		$donation->status      	= Don::STATUS_DRAFT;
 		$donation->public      	= $public;
 		$donation->date 		= dol_now();
-		$donation->firstname   	= GETPOST('firstname');
-		$donation->lastname    	= GETPOST('lastname');
-		$donation->company     	= GETPOST('societe');
+		$donation->firstname   	= request()->input('firstname');
+		$donation->lastname    	= request()->input('lastname');
+		$donation->company     	= request()->input('societe');
 		$donation->societe     	= $donation->company;
-		$donation->address     	= GETPOST('address');
-		$donation->zip         	= GETPOST('zipcode');
-		$donation->town        	= GETPOST('town');
-		$donation->email       	= GETPOST('email', 'aZ09arobase');
-		$donation->country_id  	= GETPOSTINT('country_id');
+		$donation->address     	= request()->input('address');
+		$donation->zip         	= request()->input('zipcode');
+		$donation->town        	= request()->input('town');
+		$donation->email       	= request()->input('email');
+		$donation->country_id  	= request()->integer('country_id', 0);
 		// Assign project ID to the donation if a valid project is selected
 		if (!empty($projectId)) {
 			$donation->fk_project = $projectId;
 		}
 
-		$donation->state_id    	= GETPOSTINT('state_id');
-		$donation->note_private = GETPOST('note_private');
+		$donation->state_id    	= request()->integer('state_id', 0);
+		$donation->note_private = request()->input('note_private');
 
 		$donation->ip = getUserRemoteIP();
 
@@ -320,8 +320,8 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 				if (getDolGlobalString('DONATION_NEWFORM_PAYONLINE') && getDolGlobalString('DONATION_NEWFORM_PAYONLINE') != '-1') {
 					$urlback = getOnlinePaymentUrl(0, 'donation', (string) $donation->id, 0, '');
 
-					if (GETPOST('email')) {
-						$urlback .= '&email='.urlencode(GETPOST('email'));
+					if (request()->input('email')) {
+						$urlback .= '&email='.urlencode(request()->input('email'));
 					}
 					if (getDolGlobalString('DONATION_NEWFORM_PAYONLINE') != '-1' && getDolGlobalString('DONATION_NEWFORM_PAYONLINE') != 'all') {
 						$urlback .= '&paymentmethod='.urlencode(getDolGlobalString('DONATION_NEWFORM_PAYONLINE'));
@@ -377,7 +377,7 @@ $extrafields->fetch_name_optionals_label($object->table_element); // fetch optio
 
 if (isModEnabled('project') || isModEnabled('eventorganization')) {
 	$project = new Project($db);
-	$result = $project->fetch(GETPOSTINT('project_id'));
+	$result = $project->fetch(request()->integer('project_id', 0));
 	if ($result > 0) {
 		$projectId = $project->id;
 		$projectTitle = $project->title;
@@ -407,7 +407,7 @@ print '<form action="'.$_SERVER["PHP_SELF"].'" method="POST" name="newdonation">
 print '<input type="hidden" name="token" value="'.newToken().'" />';
 print '<input type="hidden" name="entity" value="'.$entity.'" />';
 print '<input type="hidden" name="page_y" value="" />';
-print '<input type="hidden" name="project_id" value="'.GETPOST('project_id').'" />';
+print '<input type="hidden" name="project_id" value="'.request()->input('project_id').'" />';
 
 if (!$action || $action == 'create') {
 	print '<input type="hidden" name="action" value="add" />';
@@ -444,7 +444,7 @@ if (!$action || $action == 'create') {
 	/*
 	print '<tr>';
 	print '<td class="titlefieldcreate"><label for="anonymous">'.$form->textwithpicto($langs->trans("donAnonymous"), $langs->trans("AnonymousDonationTooltip")).'</label></td>';
-	print '<td><input type="checkbox" name="anonymous" id="anonymous" '.(GETPOST('anonymous') ? 'checked' : '').'></td>';
+	print '<td><input type="checkbox" name="anonymous" id="anonymous" '.(request()->input('anonymous') ? 'checked' : '').'></td>';
 	print '</tr>'."\n";
 	print '<script type="text/javascript">
 	jQuery(document).ready(function () {
@@ -470,34 +470,34 @@ if (!$action || $action == 'create') {
 	// EMail
 	print '<tr id="tremail"><td class="fieldrequired" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Email").'</td><td>';
 	//print img_picto('', 'email', 'class="pictofixedwidth"');
-	print '<input type="email" name="email" maxlength="255" class="minwidth200" value="'.dol_escape_htmltag(GETPOST('email', "aZ09arobase")).'"></td></tr>'."\n";
+	print '<input type="email" name="email" maxlength="255" class="minwidth200" value="'.dol_escape_htmltag(request()->input('email')).'"></td></tr>'."\n";
 
 	// Company
 	print '<tr id="trcompany" class="trcompany"><td>'.$langs->trans("Company").'</td><td>';
 	print img_picto('', 'company', 'class="pictofixedwidth paddingright"');
-	print '<input type="text" name="societe" class="minwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOST('societe')).'"></td></tr>'."\n";
+	print '<input type="text" name="societe" class="minwidth150 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->input('societe')).'"></td></tr>'."\n";
 
 	// Firstname
-	print '<tr id="trfirstname"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('firstname')).'"></td></tr>'."\n";
+	print '<tr id="trfirstname"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('firstname')).'"></td></tr>'."\n";
 
 	// Lastname
-	print '<tr id="trlastname"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('lastname')).'"></td></tr>'."\n";
+	print '<tr id="trlastname"><td class="classfortooltip" title="'.dol_escape_htmltag($messagemandatory).'">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('lastname')).'"></td></tr>'."\n";
 
 	// Address
 	print '<tr id="tradress"><td>'.$langs->trans("Address").'</td><td>'."\n";
-	print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+	print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('address'), 0, 1).'</textarea></td></tr>'."\n";
 
 	// Zip / Town
 	print '<tr id="trzip"><td>'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td><td>';
-	print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 1, '', 'width75');
+	print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 1, '', 'width75');
 	print ' / ';
-	print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+	print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 	print '</td></tr>';
 
 	// Country
 	print '<tr id="trcountry"><td>'.$langs->trans('Country').'</td><td>';
 	print img_picto('', 'country', 'class="pictofixedwidth paddingright"');
-	$country_id = GETPOSTINT('country_id');
+	$country_id = request()->integer('country_id', 0);
 	if (!$country_id && !empty($conf->geoipmaxmind->enabled)) {
 		$country_code = dol_user_country();
 		//print $country_code;
@@ -518,7 +518,7 @@ if (!$action || $action == 'create') {
 		print '<tr id="trstate"><td>'.$langs->trans('State').'</td><td>';
 		if ($country_code) {
 			print img_picto('', 'state', 'class="pictofixedwidth paddingright"');
-			print $formcompany->select_state(GETPOSTINT("state_id"), $country_code);
+			print $formcompany->select_state(request()->integer('state_id', 0), $country_code);
 		}
 		print '</td></tr>';
 	}
@@ -535,7 +535,7 @@ if (!$action || $action == 'create') {
 	print '<td><input type="checkbox" name="public" id="public"></td></tr>'."\n";
 
 	if (getDolGlobalString('DONATION_NEWFORM_PAYONLINE')) {
-		$amount = (GETPOST('amount') ? price2num(GETPOST('amount', 'alpha'), 'MT', 2) : '');
+		$amount = (request()->input('amount') ? price2num(request()->input('amount'), 'MT', 2) : '');
 
 		// - If a min is set, we take it into account
 		$amount = max(0, (float) $amount, (float) getDolGlobalInt("DONATION_MIN_AMOUNT"));
@@ -557,7 +557,7 @@ if (!$action || $action == 'create') {
 	// Comments
 	print '<tr>';
 	print '<td class="tdtop">'.$langs->trans("Comments").'</td>';
-	print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('note_private', 'restricthtml'), 0, 1).'</textarea></td>';
+	print '<td class="tdtop"><textarea name="note_private" id="note_private" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('note_private'), 0, 1).'</textarea></td>';
 	print '</tr>'."\n";
 
 	// Display Captcha code if is enabled

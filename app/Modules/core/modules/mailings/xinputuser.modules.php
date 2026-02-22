@@ -119,7 +119,7 @@ class mailing_xinputuser extends MailingTargets
 	{
 		global $langs;
 
-		$s = '<input type="text" name="xinputuser" class="flat minwidth300" value="'.GETPOST("xinputuser").'">';
+		$s = '<input type="text" name="xinputuser" class="flat minwidth300" value="'.request()->input('xinputuser').'">';
 
 		return $s;
 	}
@@ -138,7 +138,7 @@ class mailing_xinputuser extends MailingTargets
 
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
-		$tmparray = explode(';', GETPOST('xinputuser'));
+		$tmparray = explode(';', request()->input('xinputuser'));
 
 		$email = $tmparray[0];
 		$lastname = empty($tmparray[1]) ? '' : $tmparray[1];

@@ -48,7 +48,7 @@ $langs->load("trips");
 
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -58,8 +58,8 @@ $hookmanager->initHooks(array('tripsandexpensescard', 'globalcard'));
 
 $result = restrictedArea($user, 'deplacement', $id, '');
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 $object = new Deplacement($db);
 
@@ -103,16 +103,16 @@ if ($action == 'validate' && $user->hasRight('deplacement', 'creer')) {
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 } elseif ($action == 'add' && $user->hasRight('deplacement', 'creer')) {
-	if (!GETPOST('cancel', 'alpha')) {
+	if (!request()->input('cancel')) {
 		$error = 0;
 
-		$object->date = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
-		$object->km = (float) price2num(GETPOST('km', 'alpha'), 'MU'); // Not 'int', it may be a formatted amount
-		$object->type = GETPOST('type', 'alpha');
-		$object->socid = GETPOSTINT('socid');
-		$object->fk_user = GETPOSTINT('fk_user');
-		$object->note_private = GETPOST('note_private', 'alpha');
-		$object->note_public = GETPOST('note_public', 'alpha');
+		$object->date = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
+		$object->km = (float) price2num(request()->input('km'), 'MU'); // Not 'int', it may be a formatted amount
+		$object->type = request()->input('type');
+		$object->socid = request()->integer('socid', 0);
+		$object->fk_user = request()->integer('fk_user', 0);
+		$object->note_private = request()->input('note_private');
+		$object->note_public = request()->input('note_public');
 		$object->statut = Deplacement::STATUS_DRAFT;
 
 		if (!$object->date) {
@@ -147,16 +147,16 @@ if ($action == 'validate' && $user->hasRight('deplacement', 'creer')) {
 	}
 } elseif ($action == 'update' && $user->hasRight('deplacement', 'creer')) {
 	// Update record
-	if (!GETPOST('cancel', 'alpha')) {
+	if (!request()->input('cancel')) {
 		$result = $object->fetch($id);
 
-		$object->date = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
-		$object->km = (float) price2num(GETPOST('km', 'alpha'), 'MU'); // Not 'int', it may be a formatted amount
-		$object->type = GETPOST('type', 'alpha');
-		$object->socid = GETPOSTINT('socid');
-		$object->fk_user = GETPOSTINT('fk_user');
-		$object->note_private = GETPOST('note_private', 'alpha');
-		$object->note_public = GETPOST('note_public', 'alpha');
+		$object->date = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
+		$object->km = (float) price2num(request()->input('km'), 'MU'); // Not 'int', it may be a formatted amount
+		$object->type = request()->input('type');
+		$object->socid = request()->integer('socid', 0);
+		$object->fk_user = request()->integer('fk_user', 0);
+		$object->note_private = request()->input('note_private');
+		$object->note_public = request()->input('note_public');
 
 		$result = $object->update($user);
 
@@ -173,13 +173,13 @@ if ($action == 'validate' && $user->hasRight('deplacement', 'creer')) {
 } elseif ($action == 'classin' && $user->hasRight('deplacement', 'creer')) {
 	// Set into a project
 	$object->fetch($id);
-	$result = $object->setProject(GETPOSTINT('projectid'));
+	$result = $object->setProject(request()->integer('projectid', 0));
 	if ($result < 0) {
 		dol_print_error($db, $object->error);
 	}
 } elseif ($action == 'setdated' && $user->hasRight('deplacement', 'creer')) {
 	// Set fields
-	$dated = dol_mktime(GETPOSTINT('datedhour'), GETPOSTINT('datedmin'), GETPOSTINT('datedsec'), GETPOSTINT('datedmonth'), GETPOSTINT('datedday'), GETPOSTINT('datedyear'));
+	$dated = dol_mktime(request()->integer('datedhour', 0), request()->integer('datedmin', 0), request()->integer('datedsec', 0), request()->integer('datedmonth', 0), request()->integer('datedday', 0), request()->integer('datedyear', 0));
 	$object->fetch($id);
 	$result = $object->setValueFrom('dated', $dated, '', null, 'date', '', $user, 'DEPLACEMENT_MODIFY');
 	if ($result < 0) {
@@ -187,7 +187,7 @@ if ($action == 'validate' && $user->hasRight('deplacement', 'creer')) {
 	}
 } elseif ($action == 'setkm' && $user->hasRight('deplacement', 'creer')) {
 	$object->fetch($id);
-	$result = $object->setValueFrom('km', GETPOSTINT('km'), '', null, 'text', '', $user, 'DEPLACEMENT_MODIFY');
+	$result = $object->setValueFrom('km', request()->integer('km', 0), '', null, 'text', '', $user, 'DEPLACEMENT_MODIFY');
 	if ($result < 0) {
 		dol_print_error($db, $object->error);
 	}
@@ -211,7 +211,7 @@ if ($action == 'create') {
 
 	print load_fiche_titre($langs->trans("NewTrip"));
 
-	$datec = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+	$datec = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
 	print '<form name="add" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 	print '<input type="hidden" name="token" value="'.newToken().'">';
@@ -221,12 +221,12 @@ if ($action == 'create') {
 
 	print "<tr>";
 	print '<td class="fieldrequired">'.$langs->trans("Type").'</td><td>';
-	$form->select_type_fees((string) GETPOSTINT('type'), 'type', 1);
+	$form->select_type_fees((string) request()->integer('type', 0), 'type', 1);
 	print '</td></tr>';
 
 	print "<tr>";
 	print '<td class="fieldrequired">'.$langs->trans("Person").'</td><td>';
-	print $form->select_dolusers(GETPOSTINT('fk_user'), 'fk_user', 1, null, 0, '', '', '0', 0, 0, '', 0, '', 'maxwidth300');
+	print $form->select_dolusers(request()->integer('fk_user', 0), 'fk_user', 1, null, 0, '', '', '0', 0, 0, '', 0, '', 'maxwidth300');
 	print '</td></tr>';
 
 	print "<tr>";
@@ -235,12 +235,12 @@ if ($action == 'create') {
 	print '</td></tr>';
 
 	// Km
-	print '<tr><td class="fieldrequired">'.$langs->trans("FeesKilometersOrAmout").'</td><td><input name="km" size="10" value="'.GETPOST("km").'"></td></tr>';
+	print '<tr><td class="fieldrequired">'.$langs->trans("FeesKilometersOrAmout").'</td><td><input name="km" size="10" value="'.request()->input('km').'"></td></tr>';
 
 	// Company
 	print "<tr>";
 	print '<td>'.$langs->trans("CompanyVisited").'</td><td>';
-	print $form->select_company(GETPOSTINT('socid'), 'socid', '', 1);
+	print $form->select_company(request()->integer('socid', 0), 'socid', '', 1);
 	print '</td></tr>';
 
 	// Public note
@@ -248,7 +248,7 @@ if ($action == 'create') {
 	print '<td class="tdtop">'.$langs->trans('NotePublic').'</td>';
 	print '<td>';
 
-	$doleditor = new DolEditor('note_public', GETPOST('note_public', 'restricthtml'), '', 200, 'dolibarr_notes', 'In', false, true, !getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PUBLIC') ? 0 : 1, ROWS_8, '90%');
+	$doleditor = new DolEditor('note_public', request()->input('note_public'), '', 200, 'dolibarr_notes', 'In', false, true, !getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PUBLIC') ? 0 : 1, ROWS_8, '90%');
 	print $doleditor->Create(1);
 
 	print '</td></tr>';
@@ -259,7 +259,7 @@ if ($action == 'create') {
 		print '<td class="tdtop">'.$langs->trans('NotePrivate').'</td>';
 		print '<td>';
 
-		$doleditor = new DolEditor('note_private', GETPOST('note_private', 'restricthtml'), '', 200, 'dolibarr_notes', 'In', false, true, !getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVATE') ? 0 : 1, ROWS_8, '90%');
+		$doleditor = new DolEditor('note_private', request()->input('note_private'), '', 200, 'dolibarr_notes', 'In', false, true, !getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVATE') ? 0 : 1, ROWS_8, '90%');
 		print $doleditor->Create(1);
 
 		print '</td></tr>';
@@ -311,13 +311,13 @@ if ($action == 'create') {
 			// Type
 			print "<tr>";
 			print '<td class="fieldrequired">'.$langs->trans("Type").'</td><td>';
-			$form->select_type_fees(GETPOSTINT('type') ? GETPOSTINT('type') : $object->type, 'type', 0);
+			$form->select_type_fees(request()->integer('type', 0) ? request()->integer('type', 0) : $object->type, 'type', 0);
 			print '</td></tr>';
 
 			// Who
 			print "<tr>";
 			print '<td class="fieldrequired">'.$langs->trans("Person").'</td><td>';
-			print $form->select_dolusers(GETPOSTINT('fk_user') ? GETPOSTINT('fk_user') : $object->fk_user, 'fk_user', 0, null, 0, '', '', '0', 0, 0, '', 0, '', 'maxwidth300');
+			print $form->select_dolusers(request()->integer('fk_user', 0) ? request()->integer('fk_user', 0) : $object->fk_user, 'fk_user', 0, null, 0, '', '', '0', 0, 0, '', 0, '', 'maxwidth300');
 			print '</td></tr>';
 
 			// Date
@@ -508,7 +508,7 @@ if ($action == 'create') {
 			print '</div>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

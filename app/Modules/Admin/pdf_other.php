@@ -52,11 +52,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 $langs->loadLangs(array('admin', 'bills', 'companies', 'languages', 'members', 'other', 'products', 'propal', 'receptions', 'stocks', 'trips', 'orders', 'sendings'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');
 
 $diroffile = '';
 $varname = '';
@@ -83,96 +83,96 @@ if ($modulepart == 'invoice') {
  */
 
 if ($action == 'update') {
-	if (GETPOSTISSET('MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING')) {
-		dolibarr_set_const($db, "MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING", GETPOST("MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING')) {
+		dolibarr_set_const($db, "MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING", request()->input('MAIN_PDF_PROPAL_USE_ELECTRONIC_SIGNING'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('PROPOSAL_PDF_HIDE_PAYMENTTERM')) {
-		dolibarr_set_const($db, "PROPOSAL_PDF_HIDE_PAYMENTTERM", GETPOST("PROPOSAL_PDF_HIDE_PAYMENTTERM"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PROPOSAL_PDF_HIDE_PAYMENTTERM')) {
+		dolibarr_set_const($db, "PROPOSAL_PDF_HIDE_PAYMENTTERM", request()->input('PROPOSAL_PDF_HIDE_PAYMENTTERM'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('PROPOSAL_PDF_HIDE_PAYMENTMODE')) {
-		dolibarr_set_const($db, "PROPOSAL_PDF_HIDE_PAYMENTMODE", GETPOST("PROPOSAL_PDF_HIDE_PAYMENTMODE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PROPOSAL_PDF_HIDE_PAYMENTMODE')) {
+		dolibarr_set_const($db, "PROPOSAL_PDF_HIDE_PAYMENTMODE", request()->input('PROPOSAL_PDF_HIDE_PAYMENTMODE'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_PROPOSALS_WITH_PICTURE')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_PROPOSALS_WITH_PICTURE", GETPOST("MAIN_GENERATE_PROPOSALS_WITH_PICTURE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_PROPOSALS_WITH_PICTURE')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_PROPOSALS_WITH_PICTURE", request()->input('MAIN_GENERATE_PROPOSALS_WITH_PICTURE'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('PROPOSAL_SHOW_SHIPPING_ADDRESS')) {
-		dolibarr_set_const($db, "PROPOSAL_SHOW_SHIPPING_ADDRESS", GETPOSTINT("PROPOSAL_SHOW_SHIPPING_ADDRESS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PROPOSAL_SHOW_SHIPPING_ADDRESS')) {
+		dolibarr_set_const($db, "PROPOSAL_SHOW_SHIPPING_ADDRESS", request()->integer('PROPOSAL_SHOW_SHIPPING_ADDRESS', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('SALES_ORDER_SHOW_SHIPPING_ADDRESS')) {
-		dolibarr_set_const($db, "SALES_ORDER_SHOW_SHIPPING_ADDRESS", GETPOSTINT("SALES_ORDER_SHOW_SHIPPING_ADDRESS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('SALES_ORDER_SHOW_SHIPPING_ADDRESS')) {
+		dolibarr_set_const($db, "SALES_ORDER_SHOW_SHIPPING_ADDRESS", request()->integer('SALES_ORDER_SHOW_SHIPPING_ADDRESS', 0), 'chaine', 0, '', $conf->entity);
 		dolibarr_del_const($db, "SALES_ORDER_SHOW_SHIPPING_ADDRESS", $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE", GETPOST("MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE", request()->input('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_UNIT_PRICE'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN", GETPOST("MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN", request()->input('MAIN_GENERATE_DOCUMENTS_SUPPLIER_PROPOSAL_WITHOUT_TOTAL_COLUMN'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE", GETPOST("MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE", request()->input('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_UNIT_PRICE'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN", GETPOST("MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN", request()->input('MAIN_GENERATE_DOCUMENTS_PURCHASE_ORDER_WITHOUT_TOTAL_COLUMN'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_DOCUMENTS_WITH_PICTURE_WIDTH')) {
-		dolibarr_set_const($db, "MAIN_DOCUMENTS_WITH_PICTURE_WIDTH", GETPOSTINT("MAIN_DOCUMENTS_WITH_PICTURE_WIDTH"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_DOCUMENTS_WITH_PICTURE_WIDTH')) {
+		dolibarr_set_const($db, "MAIN_DOCUMENTS_WITH_PICTURE_WIDTH", request()->integer('MAIN_DOCUMENTS_WITH_PICTURE_WIDTH', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_ADD_TERMSOFSALE_PROPAL')) {
-		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_PROPAL", GETPOST("MAIN_PDF_ADD_TERMSOFSALE_PROPAL", 'int'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_ADD_TERMSOFSALE_PROPAL')) {
+		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_PROPAL", request()->input('MAIN_PDF_ADD_TERMSOFSALE_PROPAL'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_ADD_TERMSOFSALE_ORDER')) {
-		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_ORDER", GETPOST("MAIN_PDF_ADD_TERMSOFSALE_ORDER", 'int'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_ADD_TERMSOFSALE_ORDER')) {
+		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_ORDER", request()->input('MAIN_PDF_ADD_TERMSOFSALE_ORDER'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_ADD_TERMSOFSALE_CONTRACT')) {
-		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_CONTRACT", GETPOST("MAIN_PDF_ADD_TERMSOFSALE_CONTRACT", 'int'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_ADD_TERMSOFSALE_CONTRACT')) {
+		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_CONTRACT", request()->input('MAIN_PDF_ADD_TERMSOFSALE_CONTRACT'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_ADD_TERMSOFSALE_INVOICE')) {
-		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_INVOICE", GETPOST("MAIN_PDF_ADD_TERMSOFSALE_INVOICE", 'int'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_ADD_TERMSOFSALE_INVOICE')) {
+		dolibarr_set_const($db, "MAIN_PDF_ADD_TERMSOFSALE_INVOICE", request()->input('MAIN_PDF_ADD_TERMSOFSALE_INVOICE'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('INVOICE_ADD_ZATCA_QR_CODE')) {
-		dolibarr_set_const($db, "INVOICE_ADD_ZATCA_QR_CODE", GETPOSTINT("INVOICE_ADD_ZATCA_QR_CODE"), 'chaine', 0, '', $conf->entity);
-		if (GETPOSTINT('INVOICE_ADD_ZATCA_QR_CODE') == 1) {
+	if (request()->has('INVOICE_ADD_ZATCA_QR_CODE')) {
+		dolibarr_set_const($db, "INVOICE_ADD_ZATCA_QR_CODE", request()->integer('INVOICE_ADD_ZATCA_QR_CODE', 0), 'chaine', 0, '', $conf->entity);
+		if (request()->integer('INVOICE_ADD_ZATCA_QR_CODE', 0) == 1) {
 			dolibarr_del_const($db, "INVOICE_ADD_SWISS_QR_CODE", $conf->entity);
 		}
 	}
-	if (GETPOSTISSET('INVOICE_ADD_EPC_QR_CODE')) {
-		dolibarr_set_const($db, "INVOICE_ADD_EPC_QR_CODE", GETPOST("INVOICE_ADD_EPC_QR_CODE", 'int'), 'chaine', 0, '', $conf->entity);
-		if (GETPOSTINT('INVOICE_ADD_EPC_QR_CODE') == 1) {
+	if (request()->has('INVOICE_ADD_EPC_QR_CODE')) {
+		dolibarr_set_const($db, "INVOICE_ADD_EPC_QR_CODE", request()->input('INVOICE_ADD_EPC_QR_CODE'), 'chaine', 0, '', $conf->entity);
+		if (request()->integer('INVOICE_ADD_EPC_QR_CODE', 0) == 1) {
 			dolibarr_del_const($db, "INVOICE_ADD_EPC_QR_CODE", $conf->entity);
 		}
 	}
-	if (GETPOSTISSET('INVOICE_ADD_SWISS_QR_CODE')) {
-		dolibarr_set_const($db, "INVOICE_ADD_SWISS_QR_CODE", GETPOST("INVOICE_ADD_SWISS_QR_CODE", 'alpha'), 'chaine', 0, '', $conf->entity);
-		if (GETPOST('INVOICE_ADD_SWISS_QR_CODE', 'alpha') != '0') {
+	if (request()->has('INVOICE_ADD_SWISS_QR_CODE')) {
+		dolibarr_set_const($db, "INVOICE_ADD_SWISS_QR_CODE", request()->input('INVOICE_ADD_SWISS_QR_CODE'), 'chaine', 0, '', $conf->entity);
+		if (request()->input('INVOICE_ADD_SWISS_QR_CODE') != '0') {
 			dolibarr_del_const($db, "INVOICE_ADD_ZATCA_QR_CODE", $conf->entity);
 		}
 	}
-	if (GETPOSTISSET('INVOICE_CATEGORY_OF_OPERATION')) {
-		dolibarr_set_const($db, "INVOICE_CATEGORY_OF_OPERATION", GETPOSTINT("INVOICE_CATEGORY_OF_OPERATION"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('INVOICE_CATEGORY_OF_OPERATION')) {
+		dolibarr_set_const($db, "INVOICE_CATEGORY_OF_OPERATION", request()->integer('INVOICE_CATEGORY_OF_OPERATION', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('INVOICE_SHOW_SHIPPING_ADDRESS')) {
-		dolibarr_set_const($db, "INVOICE_SHOW_SHIPPING_ADDRESS", GETPOSTINT("INVOICE_SHOW_SHIPPING_ADDRESS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('INVOICE_SHOW_SHIPPING_ADDRESS')) {
+		dolibarr_set_const($db, "INVOICE_SHOW_SHIPPING_ADDRESS", request()->integer('INVOICE_SHOW_SHIPPING_ADDRESS', 0), 'chaine', 0, '', $conf->entity);
 		dolibarr_del_const($db, "INVOICE_SHOW_SHIPPING_ADDRESS", $conf->entity);
 	}
-	if (GETPOSTISSET('PDF_INVOICE_SHOW_VAT_ANALYSIS')) {
-		dolibarr_set_const($db, "PDF_INVOICE_SHOW_VAT_ANALYSIS", GETPOSTINT("PDF_INVOICE_SHOW_VAT_ANALYSIS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PDF_INVOICE_SHOW_VAT_ANALYSIS')) {
+		dolibarr_set_const($db, "PDF_INVOICE_SHOW_VAT_ANALYSIS", request()->integer('PDF_INVOICE_SHOW_VAT_ANALYSIS', 0), 'chaine', 0, '', $conf->entity);
 		dolibarr_del_const($db, "PDF_INVOICE_SHOW_VAT_ANALYSIS", $conf->entity);
 	}
-	if (GETPOSTISSET('PDF_INVOICE_SHOW_BALANCE_SUMMARY')) {
-		dolibarr_set_const($db, "PDF_INVOICE_SHOW_BALANCE_SUMMARY", GETPOSTINT("PDF_INVOICE_SHOW_BALANCE_SUMMARY"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PDF_INVOICE_SHOW_BALANCE_SUMMARY')) {
+		dolibarr_set_const($db, "PDF_INVOICE_SHOW_BALANCE_SUMMARY", request()->integer('PDF_INVOICE_SHOW_BALANCE_SUMMARY', 0), 'chaine', 0, '', $conf->entity);
 		dolibarr_del_const($db, "PDF_INVOICE_SHOW_BALANCE_SUMMARY", $conf->entity);
 	}
-	if (GETPOSTISSET('INVOICE_HIDE_LINKED_OBJECT')) {
-		dolibarr_set_const($db, "INVOICE_HIDE_LINKED_OBJECT", GETPOSTINT("INVOICE_HIDE_LINKED_OBJECT"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('INVOICE_HIDE_LINKED_OBJECT')) {
+		dolibarr_set_const($db, "INVOICE_HIDE_LINKED_OBJECT", request()->integer('INVOICE_HIDE_LINKED_OBJECT', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('BARCODE_ON_SHIPPING_PDF')) {
-		dolibarr_set_const($db, "BARCODE_ON_SHIPPING_PDF", GETPOSTINT("BARCODE_ON_SHIPPING_PDF"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('BARCODE_ON_SHIPPING_PDF')) {
+		dolibarr_set_const($db, "BARCODE_ON_SHIPPING_PDF", request()->integer('BARCODE_ON_SHIPPING_PDF', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('BARCODE_ON_RECEPTION_PDF')) {
-		dolibarr_set_const($db, "BARCODE_ON_RECEPTION_PDF", GETPOSTINT("BARCODE_ON_RECEPTION_PDF"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('BARCODE_ON_RECEPTION_PDF')) {
+		dolibarr_set_const($db, "BARCODE_ON_RECEPTION_PDF", request()->integer('BARCODE_ON_RECEPTION_PDF', 0), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('BARCODE_ON_STOCKTRANSFER_PDF')) {
-		dolibarr_set_const($db, "BARCODE_ON_STOCKTRANSFER_PDF", GETPOSTINT("BARCODE_ON_STOCKTRANSFER_PDF"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('BARCODE_ON_STOCKTRANSFER_PDF')) {
+		dolibarr_set_const($db, "BARCODE_ON_STOCKTRANSFER_PDF", request()->integer('BARCODE_ON_STOCKTRANSFER_PDF', 0), 'chaine', 0, '', $conf->entity);
 	}
 	// add a file to concat
 	$concat_options = array('MAIN_INFO_PROPAL_TERMSOFSALE', 'MAIN_INFO_ORDER_TERMSOFSALE', 'MAIN_INFO_CONTRACT_TERMSOFSALE', 'MAIN_INFO_INVOICE_TERMSOFSALE');

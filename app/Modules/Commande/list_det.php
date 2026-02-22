@@ -65,90 +65,90 @@ if (isModEnabled('category')) {
 // Load translation files required by the page
 $langs->loadLangs(array("categories", "orders", 'sendings', 'companies', 'compta', 'bills', 'stocks', 'products'));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'orderlistdet';
-$optioncss = GETPOST('optioncss', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'orderlistdet';
+$optioncss = request()->input('optioncss');
 
-$productobuy = GETPOST('productobuy', 'alpha');
-$productonly = GETPOST('productonly', 'alpha');
-$disablelinefree = GETPOST('disablelinefree', 'alpha');
+$productobuy = request()->input('productobuy');
+$productonly = request()->input('productonly');
+$disablelinefree = request()->input('disablelinefree');
 
-$search_datecloture_start = GETPOSTINT('search_datecloture_start');
+$search_datecloture_start = request()->integer('search_datecloture_start', 0);
 if (empty($search_datecloture_start)) {
-	$search_datecloture_start = dol_mktime(0, 0, 0, GETPOSTINT('search_datecloture_startmonth'), GETPOSTINT('search_datecloture_startday'), GETPOSTINT('search_datecloture_startyear'));
+	$search_datecloture_start = dol_mktime(0, 0, 0, request()->integer('search_datecloture_startmonth', 0), request()->integer('search_datecloture_startday', 0), request()->integer('search_datecloture_startyear', 0));
 }
-$search_datecloture_end = GETPOSTINT('search_datecloture_end');
+$search_datecloture_end = request()->integer('search_datecloture_end', 0);
 if (empty($search_datecloture_end)) {
-	$search_datecloture_end = dol_mktime(23, 59, 59, GETPOSTINT('search_datecloture_endmonth'), GETPOSTINT('search_datecloture_endday'), GETPOSTINT('search_datecloture_endyear'));
+	$search_datecloture_end = dol_mktime(23, 59, 59, request()->integer('search_datecloture_endmonth', 0), request()->integer('search_datecloture_endday', 0), request()->integer('search_datecloture_endyear', 0));
 }
-$search_dateorder_start = dol_mktime(0, 0, 0, GETPOSTINT('search_dateorder_start_month'), GETPOSTINT('search_dateorder_start_day'), GETPOSTINT('search_dateorder_start_year'));
-$search_dateorder_end = dol_mktime(23, 59, 59, GETPOSTINT('search_dateorder_end_month'), GETPOSTINT('search_dateorder_end_day'), GETPOSTINT('search_dateorder_end_year'));
-$search_datedelivery_start = dol_mktime(0, 0, 0, GETPOSTINT('search_datedelivery_start_month'), GETPOSTINT('search_datedelivery_start_day'), GETPOSTINT('search_datedelivery_start_year'));
-$search_datedelivery_end = dol_mktime(23, 59, 59, GETPOSTINT('search_datedelivery_end_month'), GETPOSTINT('search_datedelivery_end_day'), GETPOSTINT('search_datedelivery_end_year'));
+$search_dateorder_start = dol_mktime(0, 0, 0, request()->integer('search_dateorder_start_month', 0), request()->integer('search_dateorder_start_day', 0), request()->integer('search_dateorder_start_year', 0));
+$search_dateorder_end = dol_mktime(23, 59, 59, request()->integer('search_dateorder_end_month', 0), request()->integer('search_dateorder_end_day', 0), request()->integer('search_dateorder_end_year', 0));
+$search_datedelivery_start = dol_mktime(0, 0, 0, request()->integer('search_datedelivery_start_month', 0), request()->integer('search_datedelivery_start_day', 0), request()->integer('search_datedelivery_start_year', 0));
+$search_datedelivery_end = dol_mktime(23, 59, 59, request()->integer('search_datedelivery_end_month', 0), request()->integer('search_datedelivery_end_day', 0), request()->integer('search_datedelivery_end_year', 0));
 
 $search_product_category_array = array();
 if (isModEnabled('category')) {
 	$search_product_category_array = GETPOST("search_category_".Categorie::TYPE_PRODUCT."_list", "array");
 	$searchCategoryProductOperator = 0;
-	if (GETPOSTISSET('formfilteraction')) {
-		$searchCategoryProductOperator = GETPOSTINT('search_category_product_operator');
+	if (request()->has('formfilteraction')) {
+		$searchCategoryProductOperator = request()->integer('search_category_product_operator', 0);
 	} elseif (getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT')) {
 		$searchCategoryProductOperator = getDolGlobalString('MAIN_SEARCH_CAT_OR_BY_DEFAULT');
 	}
 }
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
 // Search filters
-$search_id = GETPOST('search_id', 'alpha');
-$search_refProduct = GETPOST('search_refProduct', 'alpha');
-$search_descProduct = GETPOST('search_descProduct', 'alpha');
+$search_id = request()->input('search_id');
+$search_refProduct = request()->input('search_refProduct');
+$search_descProduct = request()->input('search_descProduct');
 
-$search_ref = GETPOST('search_ref', 'alpha') != '' ? GETPOST('search_ref', 'alpha') : GETPOST('sref', 'alpha');
-$search_ref_customer = GETPOST('search_ref_customer', 'alpha');
-$search_company = GETPOST('search_company', 'alpha');
-$search_company_alias = GETPOST('search_company_alias', 'alpha');
-$search_town = GETPOST('search_town', 'alpha');
-$search_zip = GETPOST('search_zip', 'alpha');
-$search_state = GETPOST("search_state", 'alpha');
-$search_country = GETPOST("search_country", 'aZ09');
-$search_type_thirdparty = GETPOST("search_type_thirdparty", 'intcomma');
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
-$search_user = GETPOST('search_user', 'intcomma');
-$search_sale = GETPOST('search_sale', 'intcomma');
-$search_total_ht = GETPOST('search_total_ht', 'alpha');
-$search_total_vat = GETPOST('search_total_vat', 'alpha');
-$search_total_ttc = GETPOST('search_total_ttc', 'alpha');
-$search_warehouse = GETPOST('search_warehouse', 'intcomma');
-$search_multicurrency_code = GETPOST('search_multicurrency_code', 'alpha');
-$search_multicurrency_tx = GETPOST('search_multicurrency_tx', 'alpha');
-$search_multicurrency_montant_ht = GETPOST('search_multicurrency_montant_ht', 'alpha');
-$search_multicurrency_montant_vat = GETPOST('search_multicurrency_montant_vat', 'alpha');
-$search_multicurrency_montant_ttc = GETPOST('search_multicurrency_montant_ttc', 'alpha');
-$search_login = GETPOST('search_login', 'alpha');
-$search_categ_cus = GETPOST("search_categ_cus", 'intcomma');
-$search_billed = GETPOST('search_billed', 'intcomma') ? GETPOST('search_billed', 'intcomma') : GETPOST('billed', 'intcomma');
-$search_status = GETPOST('search_status', 'intcomma');
-$search_project_ref = GETPOST('search_project_ref', 'alpha');
-$search_project = GETPOST('search_project', 'alpha');
-$search_shippable = GETPOST('search_shippable', 'aZ09');
-$search_fk_cond_reglement = GETPOSTINT("search_fk_cond_reglement");
-$search_fk_shipping_method = GETPOSTINT("search_fk_shipping_method");
-$search_fk_mode_reglement = GETPOSTINT("search_fk_mode_reglement");
-$search_fk_input_reason = GETPOSTINT("search_fk_input_reason");
+$search_ref = request()->input('search_ref') != '' ? request()->input('search_ref') : request()->input('sref');
+$search_ref_customer = request()->input('search_ref_customer');
+$search_company = request()->input('search_company');
+$search_company_alias = request()->input('search_company_alias');
+$search_town = request()->input('search_town');
+$search_zip = request()->input('search_zip');
+$search_state = request()->input('search_state');
+$search_country = request()->input('search_country');
+$search_type_thirdparty = request()->input('search_type_thirdparty');
+$search_all = trim(request()->input('search_all'));
+$search_user = request()->input('search_user');
+$search_sale = request()->input('search_sale');
+$search_total_ht = request()->input('search_total_ht');
+$search_total_vat = request()->input('search_total_vat');
+$search_total_ttc = request()->input('search_total_ttc');
+$search_warehouse = request()->input('search_warehouse');
+$search_multicurrency_code = request()->input('search_multicurrency_code');
+$search_multicurrency_tx = request()->input('search_multicurrency_tx');
+$search_multicurrency_montant_ht = request()->input('search_multicurrency_montant_ht');
+$search_multicurrency_montant_vat = request()->input('search_multicurrency_montant_vat');
+$search_multicurrency_montant_ttc = request()->input('search_multicurrency_montant_ttc');
+$search_login = request()->input('search_login');
+$search_categ_cus = request()->input('search_categ_cus');
+$search_billed = request()->input('search_billed') ? request()->input('search_billed') : request()->input('billed');
+$search_status = request()->input('search_status');
+$search_project_ref = request()->input('search_project_ref');
+$search_project = request()->input('search_project');
+$search_shippable = request()->input('search_shippable');
+$search_fk_cond_reglement = request()->integer('search_fk_cond_reglement', 0);
+$search_fk_shipping_method = request()->integer('search_fk_shipping_method', 0);
+$search_fk_mode_reglement = request()->integer('search_fk_mode_reglement', 0);
+$search_fk_input_reason = request()->integer('search_fk_input_reason', 0);
 
 $diroutputmassaction = $conf->commande->multidir_output[$conf->entity].'/temp/massgeneration/'.$user->id;
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1 or if we click on clear filters
 $offset = $limit * $page;
@@ -161,7 +161,7 @@ if (!$sortorder) {
 	$sortorder = 'DESC';
 }
 
-$show_shippable_command = GETPOST('show_shippable_command', 'aZ09');
+$show_shippable_command = request()->input('show_shippable_command');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $object = new Commande($db);
@@ -248,7 +248,7 @@ if (!$user->hasRight('societe', 'client', 'voir')) {
 }
 
 // Security check
-$id = (GETPOST('orderid') ? GETPOSTINT('orderid') : GETPOSTINT('id'));
+$id = (request()->input('orderid') ? request()->integer('orderid', 0) : request()->integer('id', 0));
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -260,11 +260,11 @@ $permissiontoread = false;
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend' && $massaction != 'confirm_createbills') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend' && $massaction != 'confirm_createbills') {
 	$massaction = '';
 }
 
@@ -279,7 +279,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$productobuy = '';
 		$productonly = '';
 		$disablelinefree = '';
@@ -329,8 +329,8 @@ if (empty($reshook)) {
 		$search_fk_mode_reglement = '';
 		$search_fk_input_reason = '';
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-	 || GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+	 || request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -595,7 +595,7 @@ if ($search_sale && $search_sale != '-1') {
 	}
 }
 // Search for tag/category ($searchCategoryCustomerList is an array of ID)
-$searchCategoryCustomerOperator = GETPOSTINT('search_category_customer_operator');
+$searchCategoryCustomerOperator = request()->integer('search_category_customer_operator', 0);
 $searchCategoryCustomerList = ($search_categ_cus !== '-1' ? explode(',', $search_categ_cus) : array());
 if (!empty($searchCategoryCustomerList)) {
 	$searchCategoryCustomerSqlList = array();
@@ -1009,7 +1009,7 @@ if ($resql) {
 	$selectedfields = $form->multiSelectArrayWithCheckbox('selectedfields', $arrayfields, $varpage, getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')); // This also change content of $arrayfields
 	$selectedfields .= $form->showCheckAddButtons('checkforselect', 1);
 
-	if (GETPOSTINT('autoselectall')) {
+	if (request()->integer('autoselectall', 0)) {
 		$selectedfields .= '<script>';
 		$selectedfields .= '   $(document).ready(function() {';
 		$selectedfields .= '        console.log("Autoclick on checkforselects");';
@@ -1976,7 +1976,7 @@ if ($resql) {
 			if ($obj->socid > 0) {
 				$listsalesrepresentatives = $companystatic->getSalesRepresentatives($user);
 				if ($listsalesrepresentatives < 0) {
-					dol_print_error($db);
+					abort(500);
 				}
 				$nbofsalesrepresentative = count($listsalesrepresentatives);
 				if ($nbofsalesrepresentative > 6) {
@@ -2316,7 +2316,7 @@ if ($resql) {
 
 	print $formfile->showdocuments('massfilesarea_orders', '', $filedir, $urlsource, 0, $delallowed, '', 1, 1, 0, 48, 1, $param, $title, '', '', '', null, $hidegeneratedfilelistifempty);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

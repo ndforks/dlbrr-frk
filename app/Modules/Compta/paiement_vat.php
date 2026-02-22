@@ -41,11 +41,11 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("banks", "bills"));
 
-$action = GETPOST('action', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
 
-$chid = GETPOSTINT("id");
+$chid = request()->integer('id', 0);
 $amounts = array();
 
 // Security check
@@ -70,9 +70,9 @@ if (($action == 'add_payment' || ($action == 'confirm_paiement' && $confirm == '
 		exit;
 	}
 
-	$datepaye = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
+	$datepaye = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
-	if (!(GETPOSTINT("paiementtype") > 0)) {
+	if (!(request()->integer('paiementtype', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("PaymentMode")), null, 'errors');
 		$error++;
 		$action = 'create';
@@ -82,7 +82,7 @@ if (($action == 'add_payment' || ($action == 'confirm_paiement' && $confirm == '
 		$error++;
 		$action = 'create';
 	}
-	if (isModEnabled("bank") && !(GETPOSTINT("accountid") > 0)) {
+	if (isModEnabled("bank") && !(request()->integer('accountid', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("AccountToDebit")), null, 'errors');
 		$error++;
 		$action = 'create';
@@ -113,13 +113,13 @@ if (($action == 'add_payment' || ($action == 'confirm_paiement' && $confirm == '
 			$paiement->chid         = $chid;
 			$paiement->datepaye     = $datepaye;
 			$paiement->amounts      = $amounts; // Tableau de montant
-			$paiement->paiementtype = GETPOST("paiementtype", 'alphanohtml');
-			$paiement->num_payment  = GETPOST("num_payment", 'alphanohtml');
-			$paiement->note         = (string) GETPOST("note", 'restricthtml');
-			$paiement->note_private = (string) GETPOST("note", 'restricthtml');
+			$paiement->paiementtype = request()->input('paiementtype');
+			$paiement->num_payment  = request()->input('num_payment');
+			$paiement->note         = (string) request()->input('note');
+			$paiement->note_private = (string) request()->input('note');
 
 			if (!$error) {
-				$paymentid = $paiement->create($user, (GETPOST('closepaidvat') == 'on' ? 1 : 0));
+				$paymentid = $paiement->create($user, (request()->input('closepaidvat') == 'on' ? 1 : 0));
 				if ($paymentid < 0) {
 					$error++;
 					setEventMessages($paiement->error, null, 'errors');
@@ -128,7 +128,7 @@ if (($action == 'add_payment' || ($action == 'confirm_paiement' && $confirm == '
 			}
 
 			if (!$error) {
-				$result = $paiement->addPaymentToBank($user, 'payment_vat', '(VATPayment)', GETPOSTINT('accountid'), '', '');
+				$result = $paiement->addPaymentToBank($user, 'payment_vat', '(VATPayment)', request()->integer('accountid', 0), '', '');
 				if (!($result > 0)) {
 					$error++;
 					setEventMessages($paiement->error, null, 'errors');
@@ -214,14 +214,14 @@ if ($action == 'create') {
 	print '<tr><td class="tdtop">'.$langs->trans("RemainderToPay").'</td><td>'.price($total-$sumpaid,0,$outputlangs,1,-1,-1,$conf->currency).'</td></tr>';*/
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("Date").'</td><td>';
-	$datepaye = dol_mktime(12, 0, 0, GETPOSTINT("remonth"), GETPOSTINT("reday"), GETPOSTINT("reyear"));
-	$datepayment = !getDolGlobalString('MAIN_AUTOFILL_DATE') ? (GETPOSTINT("remonth") ? $datepaye : -1) : 0;
+	$datepaye = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
+	$datepayment = !getDolGlobalString('MAIN_AUTOFILL_DATE') ? (request()->integer('remonth', 0) ? $datepaye : -1) : 0;
 	print $form->selectDate($datepayment, '', 0, 0, 0, "add_payment", 1, 1);
 	print "</td>";
 	print '</tr>';
 
 	print '<tr><td class="fieldrequired">'.$langs->trans("PaymentMode").'</td><td>';
-	print $form->select_types_paiements(GETPOSTISSET("paiementtype") ? GETPOSTINT("paiementtype") : $tva->paiementtype, "paiementtype", '', 0, 1, 0, 0, 1, 'maxwidth500 widthcentpercentminusx', 1);
+	print $form->select_types_paiements(request()->has('paiementtype') ? request()->integer('paiementtype', 0) : $tva->paiementtype, "paiementtype", '', 0, 1, 0, 0, 1, 'maxwidth500 widthcentpercentminusx', 1);
 	print "</td>\n";
 	print '</tr>';
 
@@ -229,14 +229,14 @@ if ($action == 'create') {
 	print '<td class="fieldrequired">'.$langs->trans('AccountToDebit').'</td>';
 	print '<td>';
 	print img_picto('', 'bank_account', 'class="pictofixedwidth"');
-	$form->select_comptes(GETPOSTINT("accountid") ? GETPOSTINT("accountid") : $tva->accountid, "accountid", 0, '', 1, '', 0, 'maxwidth500 widthcentpercentminusx'); // Show opened bank account list
+	$form->select_comptes(request()->integer('accountid', 0) ? request()->integer('accountid', 0) : $tva->accountid, "accountid", 0, '', 1, '', 0, 'maxwidth500 widthcentpercentminusx'); // Show opened bank account list
 	print '</td></tr>';
 
 	// Number
 	print '<tr><td>'.$langs->trans('Numero');
 	print ' <em>('.$langs->trans("ChequeOrTransferNumber").')</em>';
 	print '</td>';
-	print '<td><input name="num_payment" type="text" value="'.GETPOST('num_payment', 'alphanohtml').'"></td></tr>'."\n";
+	print '<td><input name="num_payment" type="text" value="'.request()->input('num_payment').'"></td></tr>'."\n";
 
 	print '<tr>';
 	print '<td class="tdtop">'.$langs->trans("Comments").'</td>';

@@ -51,12 +51,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 $langs->loadLangs(array('admin', 'languages', 'other', 'companies', 'products', 'members', 'projects', 'hrm', 'agenda'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'adminihm'; // To manage different context of search
-$mode = GETPOST('mode', 'aZ09') ? GETPOST('mode', 'aZ09') : 'other'; // 'template', 'dashboard', 'login', 'other'
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'adminihm'; // To manage different context of search
+$mode = request()->input('mode') ? request()->input('mode') : 'other'; // 'template', 'dashboard', 'login', 'other'
 
 if (!defined("MAIN_MOTD")) {
 	define("MAIN_MOTD", "");
@@ -75,7 +75,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = '';
 }
 
@@ -115,15 +115,15 @@ if ($action == 'update') {
 	if ($mode == 'template') {
 		//dolibarr_del_const($db, "MAIN_THEME", 0);	// To be sure we don't have this constant set for all entities
 
-		dolibarr_set_const($db, "MAIN_THEME", GETPOST("main_theme", 'aZ09'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_THEME", request()->input('main_theme'), 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 
-		if (GETPOSTISSET('THEME_ELDY_USECOMOACTROW')) {
-			dolibarr_set_const($db, "THEME_ELDY_USECOMOACTROW", GETPOST('THEME_ELDY_USECOMOACTROW'), 'chaine', 0, '', $conf->entity);
+		if (request()->has('THEME_ELDY_USECOMOACTROW')) {
+			dolibarr_set_const($db, "THEME_ELDY_USECOMOACTROW", request()->input('THEME_ELDY_USECOMOACTROW'), 'chaine', 0, '', $conf->entity);
 		}
 
-		if (GETPOSTISSET('THEME_DARKMODEENABLED')) {
-			$val = GETPOST('THEME_DARKMODEENABLED');
+		if (request()->has('THEME_DARKMODEENABLED')) {
+			$val = request()->input('THEME_DARKMODEENABLED');
 			if (!$val) {
 				dolibarr_del_const($db, "THEME_DARKMODEENABLED", $conf->entity);
 			}
@@ -132,124 +132,124 @@ if ($action == 'update') {
 			}
 		}
 
-		if (GETPOSTISSET('THEME_TOPMENU_DISABLE_IMAGE')) {
-			$val = GETPOST('THEME_TOPMENU_DISABLE_IMAGE');
+		if (request()->has('THEME_TOPMENU_DISABLE_IMAGE')) {
+			$val = request()->input('THEME_TOPMENU_DISABLE_IMAGE');
 			if (!$val) {
 				dolibarr_del_const($db, 'THEME_TOPMENU_DISABLE_IMAGE', $conf->entity);
 			} else {
-				dolibarr_set_const($db, 'THEME_TOPMENU_DISABLE_IMAGE', GETPOST('THEME_TOPMENU_DISABLE_IMAGE'), 'chaine', 0, '', $conf->entity);
+				dolibarr_set_const($db, 'THEME_TOPMENU_DISABLE_IMAGE', request()->input('THEME_TOPMENU_DISABLE_IMAGE'), 'chaine', 0, '', $conf->entity);
 			}
 		}
 
-		if (GETPOSTISSET('THEME_ELDY_BORDER_RADIUS')) {
-			$val = GETPOST('THEME_ELDY_BORDER_RADIUS');
-			dolibarr_set_const($db, 'THEME_ELDY_BORDER_RADIUS', GETPOSTINT('THEME_ELDY_BORDER_RADIUS'), 'chaine', 0, '', $conf->entity);
+		if (request()->has('THEME_ELDY_BORDER_RADIUS')) {
+			$val = request()->input('THEME_ELDY_BORDER_RADIUS');
+			dolibarr_set_const($db, 'THEME_ELDY_BORDER_RADIUS', request()->integer('THEME_ELDY_BORDER_RADIUS', 0), 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_BACKBODY'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_BACKBODY'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_BACKBODY', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_BACKBODY', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TOPMENU_BACK1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TOPMENU_BACK1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TOPMENU_BACK1', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_TOPMENU_BACK1', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_VERMENU_BACK1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_VERMENU_BACK1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_VERMENU_BACK1', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_VERMENU_BACK1', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TEXTTITLENOTAB'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TEXTTITLENOTAB'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TEXTTITLENOTAB', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_TEXTTITLENOTAB', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_BACKTITLE1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_BACKTITLE1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_BACKTITLE1', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_BACKTITLE1', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TEXTTITLE'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TEXTTITLE'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TEXTTITLE', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_TEXTTITLE', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TEXTTITLELINK'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TEXTTITLELINK'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TEXTTITLELINK', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_TEXTTITLELINK', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_LINEIMPAIR1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_LINEIMPAIR1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_LINEIMPAIR1', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_LINEIMPAIR1', $val, 'chaine', 0, '', $conf->entity);
 		}
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_LINEIMPAIR1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_LINEIMPAIR1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_LINEIMPAIR2', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_LINEIMPAIR2', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_LINEPAIR1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_LINEPAIR1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_LINEPAIR1', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_LINEPAIR1', $val, 'chaine', 0, '', $conf->entity);
 		}
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_LINEPAIR1'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_LINEPAIR1'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_LINEPAIR2', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_LINEPAIR2', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TEXTLINK'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TEXTLINK'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TEXTLINK', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_TEXTLINK', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_USE_HOVER'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_USE_HOVER'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_USE_HOVER', $conf->entity);
 		} else {
 			dolibarr_set_const($db, "THEME_ELDY_USE_HOVER", $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_USE_CHECKED'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_USE_CHECKED'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_USE_CHECKED', $conf->entity);
 		} else {
 			dolibarr_set_const($db, "THEME_ELDY_USE_CHECKED", $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_BTNACTION'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_BTNACTION'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_BTNACTION', $conf->entity);
 		} else {
 			dolibarr_set_const($db, 'THEME_ELDY_BTNACTION', $val, 'chaine', 0, '', $conf->entity);
 		}
 
-		$val = (implode(',', (colorStringToArray(GETPOST('THEME_ELDY_TEXTBTNACTION'), array()))));
+		$val = (implode(',', (colorStringToArray(request()->input('THEME_ELDY_TEXTBTNACTION'), array()))));
 		if ($val == '') {
 			dolibarr_del_const($db, 'THEME_ELDY_TEXTBTNACTION', $conf->entity);
 		} else {
@@ -260,41 +260,41 @@ if ($action == 'update') {
 	}
 
 	if ($mode == 'dashboard') {
-		dolibarr_set_const($db, "MAIN_MOTD", dol_htmlcleanlastbr(GETPOST("main_motd", 'restricthtml')), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MOTD", dol_htmlcleanlastbr(request()->input('main_motd')), 'chaine', 0, '', $conf->entity);
 
 		setEventMessages($langs->trans("SetupSaved"), null);
 	}
 
 	if ($mode == 'other') {
-		dolibarr_set_const($db, "MAIN_LANG_DEFAULT", GETPOST("MAIN_LANG_DEFAULT", 'aZ09'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_LANG_DEFAULT", request()->input('MAIN_LANG_DEFAULT'), 'chaine', 0, '', $conf->entity);
 		dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 
-		dolibarr_set_const($db, "MAIN_SIZE_LISTE_LIMIT", GETPOSTINT("MAIN_SIZE_LISTE_LIMIT"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_SIZE_SHORTLIST_LIMIT", GETPOSTINT("MAIN_SIZE_SHORTLIST_LIMIT"), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_SIZE_LISTE_LIMIT", request()->integer('MAIN_SIZE_LISTE_LIMIT', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_SIZE_SHORTLIST_LIMIT", request()->integer('MAIN_SIZE_SHORTLIST_LIMIT', 0), 'chaine', 0, '', $conf->entity);
 
-		if (GETPOSTISSET("MAIN_CHECKBOX_LEFT_COLUMN")) {
-			dolibarr_set_const($db, "MAIN_CHECKBOX_LEFT_COLUMN", GETPOSTINT("MAIN_CHECKBOX_LEFT_COLUMN"), 'chaine', 0, '', $conf->entity);
+		if (request()->has('MAIN_CHECKBOX_LEFT_COLUMN')) {
+			dolibarr_set_const($db, "MAIN_CHECKBOX_LEFT_COLUMN", request()->integer('MAIN_CHECKBOX_LEFT_COLUMN', 0), 'chaine', 0, '', $conf->entity);
 		}
 
-		//dolibarr_set_const($db, "MAIN_DISABLE_JAVASCRIPT", GETPOST("MAIN_DISABLE_JAVASCRIPT", 'aZ09'), 'chaine', 0, '', $conf->entity);
-		//dolibarr_set_const($db, "MAIN_BUTTON_HIDE_UNAUTHORIZED", GETPOST("MAIN_BUTTON_HIDE_UNAUTHORIZED", 'aZ09'), 'chaine', 0, '', $conf->entity);
-		//dolibarr_set_const($db, "MAIN_MENU_HIDE_UNAUTHORIZED", GETPOST("MAIN_MENU_HIDE_UNAUTHORIZED", 'aZ09'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_START_WEEK", GETPOSTINT("MAIN_START_WEEK"), 'chaine', 0, '', $conf->entity);
+		//dolibarr_set_const($db, "MAIN_DISABLE_JAVASCRIPT", request()->input('MAIN_DISABLE_JAVASCRIPT'), 'chaine', 0, '', $conf->entity);
+		//dolibarr_set_const($db, "MAIN_BUTTON_HIDE_UNAUTHORIZED", request()->input('MAIN_BUTTON_HIDE_UNAUTHORIZED'), 'chaine', 0, '', $conf->entity);
+		//dolibarr_set_const($db, "MAIN_MENU_HIDE_UNAUTHORIZED", request()->input('MAIN_MENU_HIDE_UNAUTHORIZED'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_START_WEEK", request()->integer('MAIN_START_WEEK', 0), 'chaine', 0, '', $conf->entity);
 
-		dolibarr_set_const($db, "MAIN_DEFAULT_WORKING_DAYS", GETPOST("MAIN_DEFAULT_WORKING_DAYS", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_DEFAULT_WORKING_HOURS", GETPOST("MAIN_DEFAULT_WORKING_HOURS", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_DEFAULT_WORKING_DAYS", request()->input('MAIN_DEFAULT_WORKING_DAYS'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_DEFAULT_WORKING_HOURS", request()->input('MAIN_DEFAULT_WORKING_HOURS'), 'chaine', 0, '', $conf->entity);
 
-		dolibarr_set_const($db, "MAIN_BUGTRACK_ENABLELINK", GETPOST("MAIN_BUGTRACK_ENABLELINK", 'alpha'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_BUGTRACK_ENABLELINK", request()->input('MAIN_BUGTRACK_ENABLELINK'), 'chaine', 0, '', $conf->entity);
 
-		dolibarr_set_const($db, "MAIN_FIRSTNAME_NAME_POSITION", GETPOST("MAIN_FIRSTNAME_NAME_POSITION", 'aZ09'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_FIRSTNAME_NAME_POSITION", request()->input('MAIN_FIRSTNAME_NAME_POSITION'), 'chaine', 0, '', $conf->entity);
 
 
 		setEventMessages($langs->trans("SetupSaved"), null);
 	}
 
 	if ($mode == 'login') {
-		dolibarr_set_const($db, "MAIN_HOME", dol_htmlcleanlastbr(GETPOST("main_home", 'restricthtml')), 'chaine', 0, '', $conf->entity);
-		//dolibarr_set_const($db, "MAIN_HELP_DISABLELINK", GETPOST("MAIN_HELP_DISABLELINK", 'aZ09'), 'chaine', 0, '', 0); // Param for all entities
+		dolibarr_set_const($db, "MAIN_HOME", dol_htmlcleanlastbr(request()->input('main_home')), 'chaine', 0, '', $conf->entity);
+		//dolibarr_set_const($db, "MAIN_HELP_DISABLELINK", request()->input('MAIN_HELP_DISABLELINK'), 'chaine', 0, '', 0); // Param for all entities
 
 		$varforimage = 'imagebackground';
 		$dirforimage = $conf->mycompany->dir_output . '/logos/';
@@ -335,7 +335,7 @@ if ($action == 'update') {
 	}
 
 	if ($mode == 'css') {
-		$csscontent = GETPOST('MAIN_IHM_CUSTOM_CSS', 'restricthtml');	// Will return a sanitized HTML content (so with double spaes that may be replaced with one, ...
+		$csscontent = request()->input('MAIN_IHM_CUSTOM_CSS');	// Will return a sanitized HTML content (so with double spaes that may be replaced with one, ...
 		$csscontent = dol_string_nohtmltag($csscontent, 2, 'UTF-8', 0, 0);
 
 		dolibarr_set_const($db, "MAIN_IHM_CUSTOM_CSS", $csscontent, 'chaine', 0, '', $conf->entity);
@@ -345,11 +345,11 @@ if ($action == 'update') {
 
 	$_SESSION["mainmenu"] = ""; // The menu manager may have changed
 
-	if (GETPOST('dol_resetcache')) {
+	if (request()->input('dol_resetcache')) {
 		dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 	}
 
-	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup&mode=".$mode.(GETPOSTISSET('page_y') ? '&page_y='.GETPOSTINT('page_y') : ''));
+	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup&mode=".$mode.(request()->has('page_y') ? '&page_y='.request()->integer('page_y', 0) : ''));
 	exit;
 }
 

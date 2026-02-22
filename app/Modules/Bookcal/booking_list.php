@@ -49,11 +49,11 @@ require_once DOL_DOCUMENT_ROOT.'/bookcal/class/calendar.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("agenda", "other"));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
-$type = GETPOST('type', 'aZ09');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$action = request()->input('action');
+$type = request()->input('type');
 
 $fieldid = (!empty($ref) ? 'ref' : 'rowid');
 if ($user->socid) {
@@ -91,10 +91,10 @@ if ($enablepermissioncheck) {
 }
 
 if (!isModEnabled("bookcal")) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 /*
@@ -243,7 +243,7 @@ if ($object->id > 0) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print "</table>";

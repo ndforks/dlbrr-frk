@@ -44,7 +44,7 @@ $langs->loadLangs(array("install", "user", "admin"));
 
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $lastkeyshown = null;

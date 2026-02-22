@@ -2727,7 +2727,7 @@ class ExtraFields
 		$expand_display = false;
 		if (is_array($extrafield_param_list) && count($extrafield_param_list) > 0) {
 			$extrafield_collapse_display_value = intval($extrafield_param_list[0]);
-			$expand_display = ((isset($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key]) || GETPOSTINT('ignorecollapsesetup')) ? (!empty($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key])) : !($extrafield_collapse_display_value == 2));
+			$expand_display = ((isset($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key]) || request()->integer('ignorecollapsesetup', 0)) ? (!empty($_COOKIE['DOLUSER_COLLAPSE_'.$object->table_element.'_extrafields_'.$key])) : !($extrafield_collapse_display_value == 2));
 		}
 		$disabledcookiewrite = 0;
 		if ($mode == 'create') {

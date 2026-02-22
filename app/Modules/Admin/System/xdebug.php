@@ -36,7 +36,7 @@ require '../../main.inc.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

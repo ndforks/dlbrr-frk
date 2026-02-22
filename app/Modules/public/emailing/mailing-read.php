@@ -99,10 +99,10 @@ require '../../main.inc.php';
 /**
  * @var DoliDB $db
  */
-$mtid = GETPOST('mtid');
-$email = GETPOST('email');
-$tag = GETPOST('tag');
-$securitykey = GETPOST('securitykey');
+$mtid = request()->input('mtid');
+$email = request()->input('email');
+$tag = request()->input('tag');
+$securitykey = request()->input('securitykey');
 
 
 /*
@@ -125,7 +125,7 @@ if (!empty($tag) && $tag != 'undefined') {
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$obj = $db->fetch_object($resql);
@@ -156,7 +156,7 @@ if (!empty($tag) && $tag != 'undefined') {
 	$sql = "UPDATE ".MAIN_DB_PREFIX."mailing_cibles SET statut=".((int) $statut)." WHERE rowid = ".((int) $obj->rowid);
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Update status communication of thirdparty prospect

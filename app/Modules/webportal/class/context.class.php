@@ -198,8 +198,8 @@ class Context
 
 		$this->tplPath = realpath(__DIR__ . '/../../public/webportal/tpl');
 
-		$this->controller = GETPOST('controller', 'aZ09'); // for security, limited to 'aZ09'
-		$this->action = GETPOST('action', 'aZ09');// for security, limited to 'aZ09'
+		$this->controller = request()->input('controller'); // for security, limited to 'aZ09'
+		$this->action = request()->input('action');// for security, limited to 'aZ09'
 
 		if (empty($this->controller)) {
 			$this->controller = 'default';

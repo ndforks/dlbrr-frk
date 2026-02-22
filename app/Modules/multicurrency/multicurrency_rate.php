@@ -52,21 +52,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/multicurrency.lib.php';
 $langs->loadLangs(array('admin', 'multicurrency'));
 
 // Get Parameters
-$action = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode       = GETPOST('mode', 'aZ'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$optioncss = request()->input('optioncss');
+$mode       = request()->input('mode'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -81,17 +81,17 @@ if (!$sortorder) {
 	$sortorder = "DESC";
 }
 
-$id_rate_selected = GETPOSTINT('id_rate');
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
-$search_date_sync = dol_mktime(0, 0, 0, GETPOSTINT('search_date_syncmonth'), GETPOSTINT('search_date_syncday'), GETPOSTINT('search_date_syncyear'));
-$search_date_sync_end = dol_mktime(0, 0, 0, GETPOSTINT('search_date_sync_endmonth'), GETPOSTINT('search_date_sync_endday'), GETPOSTINT('search_date_sync_endyear'));
-$search_rate = GETPOST('search_rate', 'alpha');
-$search_rate_direct = GETPOST('search_rate_direct', 'alpha');
-$search_code = GETPOST('search_code', 'alpha');
-$multicurrency_code = GETPOST('multicurrency_code', 'alpha');
-$dateinput = dol_mktime(0, 0, 0, GETPOSTINT('dateinputmonth'), GETPOSTINT('dateinputday'), GETPOSTINT('dateinputyear'));
-$rateinput = (float) price2num(GETPOST('rateinput', 'alpha'));
-$ratedirectinput = (float) price2num(GETPOST('ratedirectinput', 'alpha')); // Fix Direct
+$id_rate_selected = request()->integer('id_rate', 0);
+$search_all = trim(request()->input('search_all'));
+$search_date_sync = dol_mktime(0, 0, 0, request()->integer('search_date_syncmonth', 0), request()->integer('search_date_syncday', 0), request()->integer('search_date_syncyear', 0));
+$search_date_sync_end = dol_mktime(0, 0, 0, request()->integer('search_date_sync_endmonth', 0), request()->integer('search_date_sync_endday', 0), request()->integer('search_date_sync_endyear', 0));
+$search_rate = request()->input('search_rate');
+$search_rate_direct = request()->input('search_rate_direct');
+$search_code = request()->input('search_code');
+$multicurrency_code = request()->input('multicurrency_code');
+$dateinput = dol_mktime(0, 0, 0, request()->integer('dateinputmonth', 0), request()->integer('dateinputday', 0), request()->integer('dateinputyear', 0));
+$rateinput = (float) price2num(request()->input('rateinput'));
+$ratedirectinput = (float) price2num(request()->input('ratedirectinput')); // Fix Direct
 $type = '';
 $texte = '';
 $newcardbutton = '';
@@ -130,7 +130,7 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 // TODO Open this page to a given permission so a sale representative can modify change rates. Permission should be added into module multicurrency.
 // One permission to read rates (history) and one to add/edit rates.
 if (!$user->admin || !isModEnabled("multicurrency")) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -237,11 +237,11 @@ if ($action == "confirm_delete" && $user->hasRight('multicurrency', 'currency', 
 }
 
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -255,7 +255,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_all = "";
 		$search_date_sync = "";
 		$search_date_sync_end = "";
@@ -307,7 +307,7 @@ if (!in_array($action, array("updateRate", "deleteRate"))) {
 	print '</td>';
 
 	print '<td> '.$langs->trans('Currency').'</td>';
-	print '<td>'.$form->selectMultiCurrency((GETPOSTISSET('multicurrency_code') ? GETPOST('multicurrency_code', 'alpha') : $multicurrency_code), 'multicurrency_code', 1, " code != '".$db->escape(getDolCurrency())."'", true).'</td>';
+	print '<td>'.$form->selectMultiCurrency((request()->has('multicurrency_code') ? request()->input('multicurrency_code') : $multicurrency_code), 'multicurrency_code', 1, " code != '".$db->escape(getDolCurrency())."'", true).'</td>';
 
 	print ' <td>'.$langs->trans('Rate').' / '.$langs->getCurrencySymbol(getDolCurrency()).'</td>';
 	print ' <td><input type="text" min="0" step="any" class="maxwidth75" id="rateinput" name="rateinput" value="'.dol_escape_htmltag((string) $rateinput).'"></td>';
@@ -720,7 +720,7 @@ if ($resql) {
 
 	print '</form>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

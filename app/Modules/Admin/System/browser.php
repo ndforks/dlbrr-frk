@@ -38,7 +38,7 @@ require '../../main.inc.php';
 $langs->loadLangs(array("install", "other", "admin"));
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 

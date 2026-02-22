@@ -79,22 +79,22 @@ global $dolibarr_main_url_root;
 $errmsg = '';
 $errors = array();
 $error = 0;
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
-$email = GETPOST("email");
-$societe = GETPOST("societe");
-$emailcompany = GETPOST("emailcompany");
-$note_public = GETPOST('note_public', "restricthtml");
-$firstname = GETPOST('firstname');
-$lastname = GETPOST('lastname');
+$email = request()->input('email');
+$societe = request()->input('societe');
+$emailcompany = request()->input('emailcompany');
+$note_public = request()->input('note_public');
+$firstname = request()->input('firstname');
+$lastname = request()->input('lastname');
 
 // Getting id from Post and decoding it
-$type = GETPOST('type', 'aZ09');
+$type = request()->input('type');
 if ($type == 'conf') {
-	$id = GETPOSTINT('id');
+	$id = request()->integer('id', 0);
 } else {
-	$id = GETPOSTINT('fk_project') ? GETPOSTINT('fk_project') : GETPOSTINT('id');
+	$id = request()->integer('fk_project', 0) ? request()->integer('fk_project', 0) : request()->integer('id', 0);
 }
 
 $conference = new ConferenceOrBooth($db);
@@ -134,14 +134,14 @@ if ($type == 'global') {
 			if ($obj) {
 				$currentnbofattendees = $obj->nb;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 }
 
 // Security check
-$securekeyreceived = GETPOST('securekey', 'alpha');
+$securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY').'conferenceorbooth'.((int) $id), 'md5');
 
 // We check if the securekey collected is OK
@@ -162,7 +162,7 @@ $user->loadDefaultValues();
 
 // Security check
 if (empty($conf->eventorganization->enabled)) {
-	httponly_accessforbidden('Module Event organization not enabled');
+	httponly_abort(403);
 }
 
 $extrafields->fetch_name_optionals_label($object->table_element); // fetch optionals attributes and labels
@@ -263,21 +263,21 @@ if (empty($reshook) && $action == 'add' && (!empty($conference->id) && $conferen
 
 	$db->begin();
 
-	if (!GETPOST("email")) {
+	if (!request()->input('email')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Email"))."<br>\n";
 	}
 	// If the price has been set, name is required for the invoice
-	if (!GETPOST("societe") && !empty((float) $project->price_registration)) {
+	if (!request()->input('societe') && !empty((float) $project->price_registration)) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Company"))."<br>\n";
 	}
-	if (GETPOST("email") && !isValidEmail(GETPOST("email"))) {
+	if (request()->input('email') && !isValidEmail(request()->input('email'))) {
 		$error++;
 		$langs->load("errors");
-		$errmsg .= $langs->trans("ErrorBadEMail", GETPOST("email"))."<br>\n";
+		$errmsg .= $langs->trans("ErrorBadEMail", request()->input('email'))."<br>\n";
 	}
-	if (!GETPOST("country_id")) {
+	if (!request()->input('country_id')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Country"))."<br>\n";
 	}
@@ -490,13 +490,13 @@ if (empty($reshook) && $action == 'add' && (!empty($conference->id) && $conferen
 			} else {
 				$thirdparty->name     = $genericcompanyname;
 			}
-			$thirdparty->address      = GETPOST("address");
-			$thirdparty->zip          = GETPOST("zipcode");
-			$thirdparty->town         = GETPOST("town");
+			$thirdparty->address      = request()->input('address');
+			$thirdparty->zip          = request()->input('zipcode');
+			$thirdparty->town         = request()->input('town');
 			$thirdparty->client       = $thirdparty::PROSPECT;
 			$thirdparty->fournisseur  = 0;
-			$thirdparty->country_id   = GETPOSTINT("country_id");
-			$thirdparty->state_id     = GETPOSTINT("state_id");
+			$thirdparty->country_id   = request()->integer('country_id', 0);
+			$thirdparty->state_id     = request()->integer('state_id', 0);
 			$thirdparty->email        = ($emailcompany ? $emailcompany : $email);
 
 			// Load object modCodeTiers
@@ -854,7 +854,7 @@ if ((!empty($conference->id) && $conference->status == ConferenceOrBooth::STATUS
 		// Email
 		print '<tr><td><span class="fieldrequired">' . $langs->trans("EmailAttendee") . '</span></td><td>';
 		print img_picto('', 'email', 'class="pictofixedwidth"');
-		print '<input type="text" name="email" maxlength="255" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(GETPOST('email')) . '" required></td></tr>' . "\n";
+		print '<input type="text" name="email" maxlength="255" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(request()->input('email')) . '" required></td></tr>' . "\n";
 
 		// Company
 		print '<tr id="trcompany" class="trcompany"><td>';
@@ -867,30 +867,30 @@ if ((!empty($conference->id) && $conference->status == ConferenceOrBooth::STATUS
 		}
 		print '</td><td>';
 		print img_picto('', 'company', 'class="pictofixedwidth"');
-		print '<input type="text" name="societe" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(GETPOST('societe')) . '"'.(empty((float) $project->price_registration) ? '' : ' required').'></td></tr>' . "\n";
+		print '<input type="text" name="societe" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(request()->input('societe')) . '"'.(empty((float) $project->price_registration) ? '' : ' required').'></td></tr>' . "\n";
 
 		// Email company for invoice
 		if ($project->price_registration) {
 			print '<tr><td>' . $form->textwithpicto($langs->trans("EmailCompany"), $langs->trans("EmailCompanyForInvoice")) . '</td><td>';
 			print img_picto('', 'email', 'class="pictofixedwidth"');
-			print '<input type="text" name="emailcompany" maxlength="255" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(GETPOST('emailcompany')) . '"></td></tr>' . "\n";
+			print '<input type="text" name="emailcompany" maxlength="255" class="minwidth200 widthcentpercentminusx maxwidth300" value="' . dol_escape_htmltag(request()->input('emailcompany')) . '"></td></tr>' . "\n";
 		}
 
 		// Address
 		print '<tr><td>' . $langs->trans("Address") . '</td><td>' . "\n";
-		print '<textarea name="address" id="address" wrap="soft" class="centpercent" rows="' . ROWS_2 . '">' . dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1) . '</textarea></td></tr>' . "\n";
+		print '<textarea name="address" id="address" wrap="soft" class="centpercent" rows="' . ROWS_2 . '">' . dol_escape_htmltag(request()->input('address'), 0, 1) . '</textarea></td></tr>' . "\n";
 
 		// Zip / Town
 		print '<tr><td>' . $langs->trans('Zip') . ' / ' . $langs->trans('Town') . '</td><td>';
-		print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
+		print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
 		print ' / ';
-		print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+		print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 		print '</td></tr>';
 
 		// Country
 		print '<tr><td><span class="fieldrequired">'.$langs->trans('Country').'</span></td><td>';
 		print img_picto('', 'country', 'class="pictofixedwidth"');
-		$country_id = GETPOST('country_id');
+		$country_id = request()->input('country_id');
 		if (!$country_id && getDolGlobalString('MEMBER_NEWFORM_FORCECOUNTRYCODE')) {
 			$country_id = getCountry($conf->global->MEMBER_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 		}
@@ -913,7 +913,7 @@ if ((!empty($conference->id) && $conference->status == ConferenceOrBooth::STATUS
 			print '<tr><td>' . $langs->trans('State') . '</td><td>';
 			if ($country_code) {
 				print img_picto('', 'state', 'class="pictofixedwidth"');
-				print $formcompany->select_state(GETPOSTINT("state_id"), $country_code);
+				print $formcompany->select_state(request()->integer('state_id', 0), $country_code);
 			} else {
 				print '';
 			}

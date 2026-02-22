@@ -77,13 +77,13 @@ $langs->loadLangs(array("main", "other", "dict", "bills", "companies", "errors",
 // No check on module enabled. Done later according to $validpaymentmethod
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 
 
-$refusepropal = GETPOST('refusepropal', 'alpha');
-$message = GETPOST('message', 'aZ09');
+$refusepropal = request()->input('refusepropal');
+$message = request()->input('message');
 
 // Input are:
 // type ('invoice','order','contractline'),
@@ -92,9 +92,9 @@ $message = GETPOST('message', 'aZ09');
 // tag (a free text, required if type is empty)
 // currency (iso code)
 
-$suffix = GETPOST("suffix", 'aZ09');
-$source = (string) GETPOST("source", 'alpha');
-$ref = $REF = GETPOST("ref", 'alpha');
+$suffix = request()->input('suffix');
+$source = (string) request()->input('source');
+$ref = $REF = request()->input('ref');
 $urlok = '';
 $urlko = '';
 
@@ -113,7 +113,7 @@ $urlwithroot = DOL_MAIN_URL_ROOT; // This is to use same domain name than curren
 
 
 // Complete urls for post treatment
-$SECUREKEY = GETPOST("securekey"); // Secure key
+$SECUREKEY = request()->input('securekey'); // Secure key
 
 if (!empty($source)) {
 	$urlok .= 'source='.urlencode($source).'&';
@@ -139,7 +139,7 @@ $creditor = $mysoc->name;
 $type = $source;
 if (!$action) {
 	if ($source && !$ref) {
-		httponly_accessforbidden($langs->trans('ErrorBadParameters')." - ref missing", 400, 1);
+		httponly_abort(403);." - ref missing", 400, 1);
 	}
 }
 
@@ -155,7 +155,7 @@ if ($source == 'proposal') {
 	$securekeyseed = getDolGlobalString('SOCIETE_RIB_ONLINE_SIGNATURE_SECURITY_TOKEN');
 }
 if (!dol_verifyHash($securekeyseed.$type.$ref.(isModEnabled('multicompany') ? $entity : ''), $SECUREKEY, '0')) {
-	httponly_accessforbidden('Bad value for securitykey. Value provided '.dol_escape_htmltag($SECUREKEY).' does not match expected value for ref='.dol_escape_htmltag($ref), 403, 1);
+	httponly_abort(403);.' does not match expected value for ref='.dol_escape_htmltag($ref), 403, 1);
 }
 
 if ($source == 'proposal') {
@@ -179,7 +179,7 @@ if ($source == 'proposal') {
 	$object = new Expedition($db);
 	$result = $object->fetch(0, $ref);
 } else {
-	httponly_accessforbidden($langs->trans('ErrorBadParameters')." - Bad value for source. Value not supported.", 400, 1);
+	httponly_abort(403);." - Bad value for source. Value not supported.", 400, 1);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -270,8 +270,8 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dosign">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
-print '<input type="hidden" name="suffix" value="'.GETPOST("suffix", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
+print '<input type="hidden" name="suffix" value="'.request()->input('suffix').'">'."\n";
 print '<input type="hidden" name="securekey" value="'.$SECUREKEY.'">'."\n";
 print '<input type="hidden" name="entity" value="'.$entity.'" />';
 print '<input type="hidden" name="page_y" value="" />';
@@ -429,7 +429,7 @@ if ($source == 'proposal') {
 		}
 	}
 
-	print '<input type="hidden" name="source" value="'.GETPOST("source", 'alpha').'">';
+	print '<input type="hidden" name="source" value="'.request()->input('source').'">';
 	print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 	print '</td></tr>'."\n";
 } elseif ($source == 'contract') { // Signature on contract
@@ -479,7 +479,7 @@ if ($source == 'proposal') {
 	}
 
 
-	print '<input type="hidden" name="source" value="'.GETPOST("source", 'alpha').'">';
+	print '<input type="hidden" name="source" value="'.request()->input('source').'">';
 	print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 	print '</td></tr>'."\n";
 } elseif ($source == 'fichinter') {
@@ -528,7 +528,7 @@ if ($source == 'proposal') {
 			print $langs->trans("DownloadDocument").'</a>';
 		}
 	}
-	print '<input type="hidden" name="source" value="'.GETPOST("source", 'alpha').'">';
+	print '<input type="hidden" name="source" value="'.request()->input('source').'">';
 	print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 	print '</td></tr>'."\n";
 } elseif ($source == 'societe_rib') {
@@ -631,7 +631,7 @@ if ($source == 'proposal') {
 			print $langs->trans("DownloadDocument").'</a>';
 		}
 	}
-	print '<input type="hidden" name="source" value="'.GETPOST("source", 'alpha').'">';
+	print '<input type="hidden" name="source" value="'.request()->input('source').'">';
 	print '<input type="hidden" name="ref" value="'.$object->ref.'">';
 	print '</td></tr>'."\n";
 } else {

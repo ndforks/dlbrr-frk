@@ -59,13 +59,13 @@ if (isModEnabled('productbatch')) {
 }
 
 // Security check
-$id = GETPOSTINT("id");
-$ref = GETPOST('ref');
-$lineid = GETPOSTINT('lineid');
-$action = GETPOST('action', 'aZ09');
-$fk_default_warehouse = GETPOSTINT('fk_default_warehouse');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$action = request()->input('action');
+$fk_default_warehouse = request()->integer('fk_default_warehouse', 0);
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 
 $error = 0;
 $errors = array();
@@ -78,8 +78,8 @@ $hookmanager->initHooks(array('ordersupplierdispatch'));
 
 // Recuperation de l'id de projet
 $projectid = 0;
-if (GETPOSTISSET("projectid")) {
-	$projectid = GETPOSTINT("projectid");
+if (request()->has('projectid')) {
+	$projectid = request()->integer('projectid', 0);
 }
 
 $object = new Reception($db);
@@ -120,7 +120,7 @@ if (empty($conf->reception->enabled)) {
 $result = restrictedArea($user, 'reception', $object->id);
 
 if (!isModEnabled('stock')) {
-	accessforbidden('Module stock disabled');
+	abort(403);
 }
 
 $usercancreate = $user->hasRight('reception', 'creer');
@@ -226,7 +226,7 @@ if ($action == 'updatelines' && $permissiontoreceive) {
 								$entrepot = GETPOST($ent, 'int');
 								$qtymouv = GETPOST($qty) - $qtystart;
 								$price = GETPOST($pu);
-								$comment = GETPOST('comment');
+								$comment = request()->input('comment');
 								$inventorycode = dol_print_date(dol_now(), 'dayhourlog');
 								$now = dol_now();
 								$eatby = '';
@@ -258,7 +258,7 @@ if ($action == 'updatelines' && $permissiontoreceive) {
 							*/
 						}
 					} else {
-						$result = $objectsrc->dispatchProduct($user, GETPOSTINT($prod), GETPOSTFLOAT($qty), GETPOSTINT($ent), GETPOSTFLOAT($pu), GETPOST('comment'), $dDLUO, $dDLC, $lot, GETPOSTINT($fk_commandefourndet), 0, $object->id);
+						$result = $objectsrc->dispatchProduct($user, GETPOSTINT($prod), GETPOSTFLOAT($qty), GETPOSTINT($ent), GETPOSTFLOAT($pu), request()->input('comment'), $dDLUO, $dDLC, $lot, GETPOSTINT($fk_commandefourndet), 0, $object->id);
 						if ($result < 0) {
 							setEventMessages($objectsrc->error, $objectsrc->errors, 'errors');
 							$error++;
@@ -1060,7 +1060,7 @@ if ($id > 0 || !empty($ref)) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print "</table>\n";
@@ -1077,7 +1077,7 @@ if ($id > 0 || !empty($ref)) {
 				if (empty($conf->reception->enabled)) {
 					print $langs->trans("Comment").' : ';
 					print '<input type="text" class="minwidth400" maxlength="128" name="comment" value="';
-					print GETPOSTISSET("comment") ? GETPOST("comment") : $langs->trans("DispatchSupplierOrder", $object->ref);
+					print request()->has('comment') ? request()->input('comment') : $langs->trans("DispatchSupplierOrder", $object->ref);
 					// print ' / '.$object->ref_supplier; // Not yet available
 					print '" class="flat"><br>';
 

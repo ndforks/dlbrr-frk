@@ -105,15 +105,15 @@ if (isModEnabled('notification')) {
 	$langs->load("mails");
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$id = (GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id'));
+$id = (request()->integer('socid', 0) ? request()->integer('socid', 0) : request()->integer('id', 0));
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -126,7 +126,7 @@ if (!$sortorder) {
 if (!$sortfield) {
 	$sortfield = "nom";
 }
-$cancel = GETPOST('cancel', 'alpha');
+$cancel = request()->input('cancel');
 
 $object = new Client($db);
 $extrafields = new ExtraFields($db);
@@ -149,7 +149,7 @@ if ($id > 0 && empty($object->id)) {
 }
 if ($object->id > 0) {
 	if (!($object->client > 0) || !$user->hasRight('societe', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -161,9 +161,9 @@ $result = restrictedArea($user, 'societe', $object->id, '&societe', '', 'fk_soc'
 
 $permissiontoadd = $user->hasRight('societe', 'creer');
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
 
@@ -186,7 +186,7 @@ if (empty($reshook)) {
 	// set accountancy code
 	if ($action == 'setcustomeraccountancycodegeneral' && $permissiontoadd) {
 		$result = $object->fetch($id);
-		$object->accountancy_code_customer_general = GETPOST("customeraccountancycodegeneral");
+		$object->accountancy_code_customer_general = request()->input('customeraccountancycodegeneral');
 		$result = $object->update($object->id, $user, 1, 1, 0);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -196,7 +196,7 @@ if (empty($reshook)) {
 	// Set accountancy code
 	if ($action == 'setcustomeraccountancycode' && $permissiontoadd) {
 		$result = $object->fetch($id);
-		$object->code_compta_client = GETPOST("customeraccountancycode");
+		$object->code_compta_client = request()->input('customeraccountancycode');
 		$object->code_compta = $object->code_compta_client; // For Backward compatibility
 		$result = $object->update($object->id, $user, 1, 1, 0);
 		if ($result < 0) {
@@ -208,7 +208,7 @@ if (empty($reshook)) {
 	// Payment terms of the settlement
 	if ($action == 'setconditions' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setPaymentTerms(GETPOSTINT('cond_reglement_id'), GETPOSTFLOAT('cond_reglement_id_deposit_percent'));
+		$result = $object->setPaymentTerms(request()->integer('cond_reglement_id', 0), GETPOSTFLOAT('cond_reglement_id_deposit_percent'));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -217,7 +217,7 @@ if (empty($reshook)) {
 	// Payment mode
 	if ($action == 'setmode' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+		$result = $object->setPaymentMethods(request()->integer('mode_reglement_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -226,7 +226,7 @@ if (empty($reshook)) {
 	// Transport mode
 	if ($action == 'settransportmode' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setTransportMode(GETPOSTINT('transport_mode_id'));
+		$result = $object->setTransportMode(request()->integer('transport_mode_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -235,7 +235,7 @@ if (empty($reshook)) {
 	// Bank account
 	if ($action == 'setbankaccount' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setBankAccount(GETPOSTINT('fk_account'));
+		$result = $object->setBankAccount(request()->integer('fk_account', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -244,7 +244,7 @@ if (empty($reshook)) {
 	// customer preferred shipping method
 	if ($action == 'setshippingmethod' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setShippingMethod(GETPOSTINT('shipping_method_id'));
+		$result = $object->setShippingMethod(request()->integer('shipping_method_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -253,7 +253,7 @@ if (empty($reshook)) {
 	// assujetissement a la TVA
 	if ($action == 'setassujtva' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->tva_assuj = GETPOSTINT('assujtva_value');
+		$object->tva_assuj = request()->integer('assujtva_value', 0);
 		$result = $object->update($object->id, $user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -263,7 +263,7 @@ if (empty($reshook)) {
 	// set prospect level
 	if ($action == 'setprospectlevel' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->fk_prospectlevel = GETPOST('prospect_level_id', 'alpha');
+		$object->fk_prospectlevel = request()->input('prospect_level_id');
 		$result = $object->update($object->id, $user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -273,7 +273,7 @@ if (empty($reshook)) {
 	// set communication status
 	if ($action == 'setstcomm' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->stcomm_id = dol_getIdFromCode($db, GETPOST('stcomm', 'alpha'), 'c_stcomm');
+		$object->stcomm_id = dol_getIdFromCode($db, request()->input('stcomm'), 'c_stcomm');
 		$result = $object->update($object->id, $user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -285,7 +285,7 @@ if (empty($reshook)) {
 	// update outstandng limit
 	if ($action == 'setoutstanding_limit' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->outstanding_limit = GETPOST('outstanding_limit');
+		$object->outstanding_limit = request()->input('outstanding_limit');
 		$result = $object->update($object->id, $user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -295,7 +295,7 @@ if (empty($reshook)) {
 	// update order min amount
 	if ($action == 'setorder_min_amount' && $permissiontoadd) {
 		$object->fetch($id);
-		$object->order_min_amount = price2num(GETPOST('order_min_amount', 'alpha'));
+		$object->order_min_amount = price2num(request()->input('order_min_amount'));
 		$result = $object->update($object->id, $user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -305,7 +305,7 @@ if (empty($reshook)) {
 	// Set sales representatives
 	if ($action == 'set_salesrepresentatives' && $permissiontoadd) {
 		$object->fetch($id);
-		$result = $object->setSalesRep(GETPOST('commercial', 'array'));
+		$result = $object->setSalesRep(request()->input('commercial'));
 	}
 
 	if ($action == 'update_extras' && $permissiontoeditextra) {
@@ -313,7 +313,7 @@ if (empty($reshook)) {
 
 		$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-		$attribute_name = GETPOST('attribute', 'aZ09');
+		$attribute_name = request()->input('attribute');
 
 		// Fill array 'array_options' with data from update form
 		$ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
@@ -336,7 +336,7 @@ if (empty($reshook)) {
 
 	// warehouse
 	if ($action == 'setwarehouse' && $permissiontoadd) {
-		$result = $object->setWarehouse(GETPOSTINT('fk_warehouse'));
+		$result = $object->setWarehouse(request()->integer('fk_warehouse', 0));
 	}
 }
 
@@ -981,7 +981,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1101,7 +1101,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1206,7 +1206,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1324,7 +1324,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1418,7 +1418,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1525,7 +1525,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1672,7 +1672,7 @@ if ($object->id > 0) {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

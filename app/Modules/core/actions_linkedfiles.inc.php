@@ -42,7 +42,7 @@
 ';
 
 // Protection to understand what happen when submitting files larger than post_max_size
-if (GETPOSTINT('uploadform') && empty($_POST) && empty($_FILES)) {
+if (request()->integer('uploadform', 0) && empty($_POST) && empty($_FILES)) {
 	dol_syslog("The PHP parameter 'post_max_size' is too low. All POST parameters and FILES were set to empty.");
 	$langs->loadLangs(array("errors", "install"));
 	print $langs->trans("ErrorFileSizeTooLarge").' ';
@@ -50,11 +50,11 @@ if (GETPOSTINT('uploadform') && empty($_POST) && empty($_FILES)) {
 	die;
 }
 
-if ((GETPOST('sendit', 'alpha')
-	|| GETPOST('linkit', 'restricthtml')
+if ((request()->input('sendit')
+	|| request()->input('linkit')
 	|| ($action == 'confirm_deletefile' && $confirm == 'yes')
-	|| ($action == 'confirm_updateline' && GETPOST('save', 'alpha') && GETPOST('link', 'alpha'))
-	|| ($action == 'renamefile' && GETPOST('renamefilesave', 'alpha'))) && empty($permissiontoadd)) {
+	|| ($action == 'confirm_updateline' && request()->input('save') && request()->input('link'))
+	|| ($action == 'renamefile' && request()->input('renamefilesave'))) && empty($permissiontoadd)) {
 	dol_syslog('The file actions_linkedfiles.inc.php was included but parameter $permissiontoadd was not set before.');
 	print 'The file actions_linkedfiles.inc.php was included but parameter $permissiontoadd was not set before.';
 	die;
@@ -63,7 +63,7 @@ if ((GETPOST('sendit', 'alpha')
 $error = 0;
 
 // Submit file/link
-if (GETPOST('sendit', 'alpha') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empty($permissiontoadd)) {
+if (request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empty($permissiontoadd)) {
 	if (!empty($_FILES) && is_array($_FILES['userfile'])) {
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -101,21 +101,21 @@ if (GETPOST('sendit', 'alpha') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empt
 		if (!$error) {
 			// Define if we have to generate thumbs or not
 			$generatethumbs = 1;
-			if (GETPOST('section_dir', 'alpha')) {
+			if (request()->input('section_dir')) {
 				$generatethumbs = 0;
 			}
-			$allowoverwrite = (GETPOSTINT('overwritefile') ? 1 : 0);
+			$allowoverwrite = (request()->integer('overwritefile', 0) ? 1 : 0);
 			$forceFullTextIndexation = (!empty($forceFullTextIndexation) ? $forceFullTextIndexation : '');
 
 			if (!empty($upload_dirold) && getDolGlobalInt('PRODUCT_USE_OLD_PATH_FOR_PHOTO')) {
-				$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'userfile', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object, empty($forceFullTextIndexation) ? 0 : $forceFullTextIndexation);
+				$result = dol_add_file_process($upload_dirold, $allowoverwrite, 1, 'userfile', request()->input('savingdocmask'), null, '', $generatethumbs, $object, empty($forceFullTextIndexation) ? 0 : $forceFullTextIndexation);
 			} elseif (!empty($upload_dir)) {
-				$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'userfile', GETPOST('savingdocmask', 'alpha'), null, '', $generatethumbs, $object, empty($forceFullTextIndexation) ? 0 : $forceFullTextIndexation);
+				$result = dol_add_file_process($upload_dir, $allowoverwrite, 1, 'userfile', request()->input('savingdocmask'), null, '', $generatethumbs, $object, empty($forceFullTextIndexation) ? 0 : $forceFullTextIndexation);
 			}
 		}
 	}
-} elseif (GETPOST('linkit', 'restricthtml') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empty($permissiontoadd)) {
-	$link = GETPOST('link', 'alpha');
+} elseif (request()->input('linkit') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empty($permissiontoadd)) {
+	$link = request()->input('link');
 	if ($link) {
 		if (substr($link, 0, 7) != 'http://' && substr($link, 0, 8) != 'https://' && substr($link, 0, 7) != 'file://' && substr($link, 0, 7) != 'davs://') {
 			$link = 'http://'.$link;
@@ -147,7 +147,7 @@ if (GETPOST('sendit', 'alpha') && getDolGlobalString('MAIN_UPLOAD_DOC') && !empt
 // Delete file/link
 if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissiontoadd)) {
 	$urlfile = GETPOST('urlfile', 'alpha', 0, null, null, 1);
-	if (GETPOST('section', 'alpha')) {
+	if (request()->input('section')) {
 		// For a delete from the ECM module, upload_dir is ECM root dir and urlfile contains relative path from upload_dir
 		$file = $upload_dir.(preg_match('/\/$/', $upload_dir) ? '' : '/').$urlfile;
 	} else { // For a delete from the file manager into another module, or from documents pages, upload_dir contains already path to file from module dir, so we clean path into urlfile.
@@ -157,7 +157,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 			$fileold = $upload_dirold."/".$urlfile;
 		}
 	}
-	$linkid = GETPOSTINT('linkid');
+	$linkid = request()->integer('linkid', 0);
 	if ($urlfile) {
 		// delete of a file
 		$dir = dirname($file).'/'; // Path to the folder containing the original image
@@ -209,24 +209,24 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 			header('Location: '.$backtopage);
 			exit;
 		} else {
-			$tmpurl = $_SERVER["PHP_SELF"].'?id='.$object->id.(GETPOST('section_dir', 'alpha') ? '&section_dir='.urlencode(GETPOST('section_dir', 'alpha')) : '').(!empty($withproject) ? '&withproject=1' : '');
+			$tmpurl = $_SERVER["PHP_SELF"].'?id='.$object->id.(request()->input('section_dir') ? '&section_dir='.urlencode(request()->input('section_dir')) : '').(!empty($withproject) ? '&withproject=1' : '');
 			header('Location: '.$tmpurl);
 			exit;
 		}
 	}
-} elseif ($action == 'confirm_updateline' && GETPOST('save', 'alpha') && GETPOST('link', 'alpha') && !empty($permissiontoadd)) {
+} elseif ($action == 'confirm_updateline' && request()->input('save') && request()->input('link') && !empty($permissiontoadd)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
 
 	$link = new Link($db);
-	$f = $link->fetch(GETPOSTINT('linkid'));
+	$f = $link->fetch(request()->integer('linkid', 0));
 	if ($f) {
-		$link->url = GETPOST('link', 'alpha');
+		$link->url = request()->input('link');
 		if (substr($link->url, 0, 7) != 'http://' && substr($link->url, 0, 8) != 'https://' && substr($link->url, 0, 7) != 'file://') {
 			$link->url = 'http://'.$link->url;
 		}
-		$link->label = GETPOST('label', 'alphanohtml');
+		$link->label = request()->input('label');
 
-		$shareenabled = GETPOST('shareenabled', 'alpha');
+		$shareenabled = request()->input('shareenabled');
 		if ($shareenabled) {
 			require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 			$link->share = getRandomPassword(true);
@@ -240,11 +240,11 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 	} else {
 		//error fetching
 	}
-} elseif ($action == 'renamefile' && GETPOST('renamefilesave', 'alpha') && !empty($permissiontoadd)) {
+} elseif ($action == 'renamefile' && request()->input('renamefilesave') && !empty($permissiontoadd)) {
 	// For documents pages, upload_dir contains already the path to the file from module dir
 	if (!empty($upload_dir)) {
-		$filenamefrom = dol_sanitizeFileName(GETPOST('renamefilefrom', 'alpha'), '_', 0); // Do not remove accents
-		$filenameto = dol_sanitizeFileName(GETPOST('renamefileto', 'alpha'), '_', 0); // Do not remove accents
+		$filenamefrom = dol_sanitizeFileName(request()->input('renamefilefrom'), '_', 0); // Do not remove accents
+		$filenameto = dol_sanitizeFileName(request()->input('renamefileto'), '_', 0); // Do not remove accents
 
 		// We apply dol_string_nohtmltag also to clean file names (this remove duplicate spaces) because
 		// this function is also applied when we upload and when we make try to download file (by the GETPOST(filename, 'alphanohtml') call).
@@ -289,10 +289,10 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 				$destpath = $upload_dir.'/'.$filenameto;
 				/* disabled. Too many bugs. All files of an object must remain into directory of object. link with event should be done in llx_ecm_files with column agenda_id.
 				if ($modulepart == "ticket" && !dol_is_file($srcpath)) {
-					$srcbis = $conf->agenda->dir_output.'/'.GETPOST('section_dir').$filenamefrom;
+					$srcbis = $conf->agenda->dir_output.'/'.request()->input('section_dir').$filenamefrom;
 					if (dol_is_file($srcbis)) {
 						$srcpath = $srcbis;
-						$destpath = $conf->agenda->dir_output.'/'.GETPOST('section_dir').$filenameto;
+						$destpath = $conf->agenda->dir_output.'/'.request()->input('section_dir').$filenameto;
 					}
 				}*/
 
@@ -312,7 +312,7 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 							// When we rename a file from the file manager in ecm, we must not regenerate thumbs (not a problem, we do pass here)
 							// When we rename a file from the website module, we must not regenerate thumbs (module = medias in such a case)
 							// but when we rename from a tab "Documents", we must regenerate thumbs
-							if (GETPOST('modulepart', 'aZ09') == 'medias') {
+							if (request()->input('modulepart') == 'medias') {
 								$generatethumbs = 0;
 							}
 
@@ -341,12 +341,12 @@ if ($action == 'confirm_deletefile' && $confirm == 'yes' && !empty($permissionto
 	}
 
 	// Update properties in ECM table
-	if (GETPOSTINT('ecmfileid') > 0) {
-		$shareenabled = GETPOST('shareenabled', 'alpha');
+	if (request()->integer('ecmfileid', 0) > 0) {
+		$shareenabled = request()->input('shareenabled');
 
 		include_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmfiles.class.php';
 		$ecmfile = new EcmFiles($db);
-		$result = $ecmfile->fetch(GETPOSTINT('ecmfileid'));
+		$result = $ecmfile->fetch(request()->integer('ecmfileid', 0));
 		if ($result > 0) {
 			if ($shareenabled) {
 				if (empty($ecmfile->share)) {

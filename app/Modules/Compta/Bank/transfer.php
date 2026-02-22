@@ -47,7 +47,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'multicurrency'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $hookmanager->initHooks(array('banktransfer'));
 
@@ -56,7 +56,7 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 if (!$user->hasRight('banque', 'transfer')) {
-	accessforbidden();
+	abort(403);
 }
 
 $MAXLINESFORTRANSFERT = 20;

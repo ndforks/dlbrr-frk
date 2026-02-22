@@ -47,7 +47,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('banks', 'categories', 'withdrawals'));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -204,7 +204,7 @@ if ($resql) {
 	}
 	print "</table></div><br>";
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -267,7 +267,7 @@ if ($result) {
 	print "</table></div><br>";
 	$db->free($result);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

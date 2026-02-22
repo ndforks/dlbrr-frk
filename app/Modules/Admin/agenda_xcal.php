@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other", "agenda"));
 
-$actionsave = GETPOST('save', 'alpha');
+$actionsave = request()->input('save');
 
 // Get value in setup
 $MAIN_AGENDA_XCAL_EXPORTKEY = getDolGlobalString('MAIN_AGENDA_XCAL_EXPORTKEY');
@@ -58,17 +58,17 @@ $MAIN_AGENDA_EXPORT_CACHE = getDolGlobalInt('MAIN_AGENDA_EXPORT_CACHE');
 $AGENDA_EXPORT_FIX_TZ = getDolGlobalString('AGENDA_EXPORT_FIX_TZ');
 
 // Overwrite with post values
-if (GETPOSTISSET('MAIN_AGENDA_XCAL_EXPORTKEY')) {
-	$MAIN_AGENDA_XCAL_EXPORTKEY = trim(GETPOST('MAIN_AGENDA_XCAL_EXPORTKEY', 'alpha'));
+if (request()->has('MAIN_AGENDA_XCAL_EXPORTKEY')) {
+	$MAIN_AGENDA_XCAL_EXPORTKEY = trim(request()->input('MAIN_AGENDA_XCAL_EXPORTKEY'));
 }
-if (GETPOSTISSET('MAIN_AGENDA_EXPORT_PAST_DELAY')) {
-	$MAIN_AGENDA_EXPORT_PAST_DELAY = GETPOSTINT('MAIN_AGENDA_EXPORT_PAST_DELAY');
+if (request()->has('MAIN_AGENDA_EXPORT_PAST_DELAY')) {
+	$MAIN_AGENDA_EXPORT_PAST_DELAY = request()->integer('MAIN_AGENDA_EXPORT_PAST_DELAY', 0);
 }
-if (GETPOSTISSET('MAIN_AGENDA_EXPORT_CACHE')) {
-	$MAIN_AGENDA_EXPORT_CACHE = GETPOSTINT('MAIN_AGENDA_EXPORT_CACHE');
+if (request()->has('MAIN_AGENDA_EXPORT_CACHE')) {
+	$MAIN_AGENDA_EXPORT_CACHE = request()->integer('MAIN_AGENDA_EXPORT_CACHE', 0);
 }
-if (GETPOSTISSET('AGENDA_EXPORT_FIX_TZ')) {
-	$AGENDA_EXPORT_FIX_TZ = trim(GETPOST('AGENDA_EXPORT_FIX_TZ', 'alpha'));
+if (request()->has('AGENDA_EXPORT_FIX_TZ')) {
+	$AGENDA_EXPORT_FIX_TZ = trim(request()->input('AGENDA_EXPORT_FIX_TZ'));
 }
 
 // Sauvegardes parameters

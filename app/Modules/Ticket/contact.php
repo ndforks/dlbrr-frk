@@ -54,17 +54,17 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array('companies', 'ticket'));
 
 // Get parameters
-$socid = GETPOSTINT("socid");
-$action = GETPOST("action", 'alpha');
-$track_id = GETPOST("track_id", 'alpha');
-$id = GETPOSTINT("id");
-$ref = GETPOST('ref', 'alpha');
+$socid = request()->integer('socid', 0);
+$action = request()->input('action');
+$track_id = request()->input('track_id');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
-$type = GETPOST('type', 'alpha');
-$source = GETPOST('source', 'alpha');
+$type = request()->input('type');
+$source = request()->input('source');
 
-$ligne = GETPOSTINT('ligne');
-$lineid = GETPOSTINT('lineid');
+$ligne = request()->integer('ligne', 0);
+$lineid = request()->integer('lineid', 0);
 
 
 // Store current page url
@@ -77,7 +77,7 @@ if ($id > 0 || $ref || $track_id) {
 }
 
 // Security check
-$id = GETPOSTINT("id");
+$id = request()->integer('id', 0);
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
@@ -85,11 +85,11 @@ $result = restrictedArea($user, 'ticket', $object->id, '');
 
 // restrict access for externals users
 if ($user->socid > 0 && ($object->fk_soc != $user->socid)) {
-	accessforbidden();
+	abort(403);
 }
 // or for unauthorized internals users
 if (!$user->socid && (getDolGlobalString('TICKET_LIMIT_VIEW_ASSIGNED_ONLY') && $object->fk_user_assign != $user->id) && !$user->hasRight('ticket', 'manage')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('ticket', 'write');
@@ -109,8 +109,8 @@ if ($action == 'addcontact' && $user->hasRight('ticket', 'write')) {
 	$result = $object->fetch($id, '', $track_id);
 
 	if ($result > 0 && ($id > 0 || (!empty($track_id)))) {
-		$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-		$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
+		$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+		$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
 
 		$codecontact = dol_getIdFromCode($db, $typeid, 'c_type_contact', 'rowid', 'code');
 		if ($codecontact == 'SUPPORTTEC') {
@@ -133,7 +133,7 @@ if ($action == 'addcontact' && $user->hasRight('ticket', 'write')) {
 		}
 
 		if (empty($error)) {
-			$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+			$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 		}
 	}
 
@@ -183,9 +183,9 @@ if ($action == 'deletecontact' && $user->hasRight('ticket', 'write')) {
 
 // Set parent company
 if ($action == 'set_thirdparty' && $user->hasRight('ticket', 'write')) {
-	if ($object->fetch(GETPOSTINT('id'), '', GETPOST('track_id', 'alpha')) >= 0) {
-		$result = $object->setCustomer(GETPOSTINT('editcustomer'));
-		$url = $_SERVER["PHP_SELF"].'?track_id='.GETPOST('track_id', 'alpha');
+	if ($object->fetch(request()->integer('id', 0), '', request()->input('track_id')) >= 0) {
+		$result = $object->setCustomer(request()->integer('editcustomer', 0));
+		$url = $_SERVER["PHP_SELF"].'?track_id='.request()->input('track_id');
 		header("Location: ".$url);
 		exit();
 	}

@@ -49,17 +49,17 @@ require_once DOL_DOCUMENT_ROOT."/product/stock/class/entrepot.class.php";
 
 $warehouse = new Entrepot($db);
 
-$action = GETPOST("action", "alpha");
-$barcode = GETPOST("barcode", "aZ09");
-$product = GETPOST("product");
+$action = request()->input('action');
+$barcode = request()->input('barcode');
+$product = request()->input('product');
 $response = "";
 
-$fk_entrepot = GETPOSTINT("fk_entrepot");
-$fk_inventory = GETPOSTINT("fk_inventory");
-$fk_product = GETPOSTINT("fk_product");
-$reelqty = GETPOSTINT("reelqty");
-$batch = GETPOST("batch", "aZ09");
-$mode = GETPOST("mode", "aZ");
+$fk_entrepot = request()->integer('fk_entrepot', 0);
+$fk_inventory = request()->integer('fk_inventory', 0);
+$fk_product = request()->integer('fk_product', 0);
+$reelqty = request()->integer('reelqty', 0);
+$batch = request()->input('batch');
+$mode = request()->input('mode');
 
 $warehousefound = 0;
 $warehouseid = 0;

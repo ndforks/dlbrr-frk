@@ -47,23 +47,23 @@ require_once DOL_DOCUMENT_ROOT .'/fourn/class/fournisseur.class.php';
 $langs->loadLangs(array('products', 'suppliers'));
 
 // Get Parameters
-$action     = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
-$massaction = GETPOST('massaction', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode       = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'create'/'add', 'edit'/'update', 'view', ...
+$massaction = request()->input('massaction');
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$optioncss = request()->input('optioncss');
+$mode       = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
 
-$sref = GETPOST('sref', 'alphanohtml');
-$sRefSupplier = GETPOST('srefsupplier');
-$snom = GETPOST('snom', 'alphanohtml');
-$type = GETPOST('type', 'alphanohtml');
+$sref = request()->input('sref');
+$sRefSupplier = request()->input('srefsupplier');
+$snom = request()->input('snom');
+$type = request()->input('type');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -77,19 +77,19 @@ if (!$sortorder) {
 	$sortorder = "ASC";
 }
 
-$fourn_id = GETPOST('fourn_id', 'intcomma');
+$fourn_id = request()->input('fourn_id');
 if ($user->socid) {
 	$fourn_id = $user->socid;
 }
 
-$catid = GETPOST('catid', 'intcomma');
+$catid = request()->input('catid');
 
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
 $hookmanager->initHooks(array('supplierpricelist'));
 $extrafields = new ExtraFields($db);
 
 if (!$user->hasRight("produit", "lire") && !$user->hasRight("service", "lire")) {
-	accessforbidden();
+	abort(403);
 }
 
 // Permissions
@@ -100,11 +100,11 @@ $permissiontoadd = ($user->hasRight('product', 'read') || $user->hasRight('servi
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -120,7 +120,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$sref = '';
 		$sRefSupplier = '';
 		$snom = '';
@@ -175,8 +175,8 @@ $sql .= " WHERE p.entity IN (".getEntity('product').")";
 if ($sRefSupplier) {
 	$sql .= natural_search('ppf.ref_fourn', $sRefSupplier);
 }
-if (GETPOST('type')) {
-	$sql .= " AND p.fk_product_type = ".GETPOSTINT('type');
+if (request()->input('type')) {
+	$sql .= " AND p.fk_product_type = ".request()->integer('type', 0);
 }
 if ($sref) {
 	$sql .= natural_search('p.ref', $sref);
@@ -210,7 +210,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -229,7 +229,7 @@ if ($limit) {
 dol_syslog("fourn/product/list.php:", LOG_DEBUG);
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -237,7 +237,7 @@ $num = $db->num_rows($resql);
 
 $i = 0;
 $help_url = '';
-if ($num == 1 && (GETPOST("mode") == 'search')) {
+if ($num == 1 && (request()->input('mode') == 'search')) {
 	$objp = $db->fetch_object($resql);
 	header("Location: ".DOL_URL_ROOT."/product/card.php?id=".$objp->rowid);
 	exit;
@@ -293,7 +293,7 @@ $arrayofmassactions = array(
 if (!empty($permissiontodelete)) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

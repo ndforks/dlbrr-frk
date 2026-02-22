@@ -50,60 +50,60 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
 
 $langs->loadLangs(array("sendings", "receptions", 'companies', 'bills', 'orders'));
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'shipmentlist'; // To manage different context of search
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'shipmentlist'; // To manage different context of search
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 
-$action = GETPOST('action', 'alpha');
-$massaction = GETPOST('massaction', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$show_files = GETPOSTINT('show_files');
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$toselect = request()->input('toselect');
+$show_files = request()->integer('show_files', 0);
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
 
-$search_ref_rcp = GETPOST("search_ref_rcp");
-$search_ref_liv = GETPOST('search_ref_liv');
-$search_ref_supplier = GETPOST('search_ref_supplier');
-$search_company = GETPOST("search_company");
-$search_town = GETPOST('search_town', 'alpha');
-$search_zip = GETPOST('search_zip', 'alpha');
-$search_state = GETPOST("search_state");
-$search_country = GETPOST("search_country", 'aZ09');
-$search_type_thirdparty = GETPOST("search_type_thirdparty", 'intcomma');
-$search_date_delivery_startday = GETPOSTINT('search_date_delivery_startday');
-$search_date_delivery_startmonth = GETPOSTINT('search_date_delivery_startmonth');
-$search_date_delivery_startyear = GETPOSTINT('search_date_delivery_startyear');
-$search_date_delivery_endday = GETPOSTINT('search_date_delivery_endday');
-$search_date_delivery_endmonth = GETPOSTINT('search_date_delivery_endmonth');
-$search_date_delivery_endyear = GETPOSTINT('search_date_delivery_endyear');
+$search_ref_rcp = request()->input('search_ref_rcp');
+$search_ref_liv = request()->input('search_ref_liv');
+$search_ref_supplier = request()->input('search_ref_supplier');
+$search_company = request()->input('search_company');
+$search_town = request()->input('search_town');
+$search_zip = request()->input('search_zip');
+$search_state = request()->input('search_state');
+$search_country = request()->input('search_country');
+$search_type_thirdparty = request()->input('search_type_thirdparty');
+$search_date_delivery_startday = request()->integer('search_date_delivery_startday', 0);
+$search_date_delivery_startmonth = request()->integer('search_date_delivery_startmonth', 0);
+$search_date_delivery_startyear = request()->integer('search_date_delivery_startyear', 0);
+$search_date_delivery_endday = request()->integer('search_date_delivery_endday', 0);
+$search_date_delivery_endmonth = request()->integer('search_date_delivery_endmonth', 0);
+$search_date_delivery_endyear = request()->integer('search_date_delivery_endyear', 0);
 $search_date_delivery_start = dol_mktime(0, 0, 0, $search_date_delivery_startmonth, $search_date_delivery_startday, $search_date_delivery_startyear);	// Use tzserver
 $search_date_delivery_end = dol_mktime(23, 59, 59, $search_date_delivery_endmonth, $search_date_delivery_endday, $search_date_delivery_endyear);
-$search_date_create_startday = GETPOSTINT('search_date_create_startday');
-$search_date_create_startmonth = GETPOSTINT('search_date_create_startmonth');
-$search_date_create_startyear = GETPOSTINT('search_date_create_startyear');
-$search_date_create_endday = GETPOSTINT('search_date_create_endday');
-$search_date_create_endmonth = GETPOSTINT('search_date_create_endmonth');
-$search_date_create_endyear = GETPOSTINT('search_date_create_endyear');
+$search_date_create_startday = request()->integer('search_date_create_startday', 0);
+$search_date_create_startmonth = request()->integer('search_date_create_startmonth', 0);
+$search_date_create_startyear = request()->integer('search_date_create_startyear', 0);
+$search_date_create_endday = request()->integer('search_date_create_endday', 0);
+$search_date_create_endmonth = request()->integer('search_date_create_endmonth', 0);
+$search_date_create_endyear = request()->integer('search_date_create_endyear', 0);
 $search_date_create_start = dol_mktime(0, 0, 0, $search_date_create_startmonth, $search_date_create_startday, $search_date_create_startyear);	// Use tzserver
 $search_date_create_end = dol_mktime(23, 59, 59, $search_date_create_endmonth, $search_date_create_endday, $search_date_create_endyear);
-$search_billed = GETPOST("search_billed", 'intcomma');
-$search_status = GETPOST('search_status', 'intcomma');
-$search_all = GETPOST('search_all', 'alphanohtml');
-$search_note_private = GETPOST('search_note_private', 'alpha');
-$search_note_public = GETPOST('search_note_public', 'alpha');
+$search_billed = request()->input('search_billed');
+$search_status = request()->input('search_status');
+$search_all = request()->input('search_all');
+$search_note_private = request()->input('search_note_private');
+$search_note_public = request()->input('search_note_public');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortfield) {
 	$sortfield = "e.ref";
 }
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -161,7 +161,7 @@ $arrayfields = dol_sort_array($arrayfields, 'position');
 $error = 0;
 
 // Security check
-$receptionid = GETPOSTINT('id');
+$receptionid = request()->integer('id', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -172,11 +172,11 @@ $result = restrictedArea($user, 'reception', $receptionid, '');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_createbills') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_createbills') {
 	$massaction = '';
 }
 
@@ -189,7 +189,7 @@ if ($reshook < 0) {
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_ref_supplier = '';
 	$search_ref_rcp = '';
 	$search_ref_liv = '';
@@ -232,9 +232,9 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 
 	if ($massaction == 'confirm_createbills' && ($user->hasRight("fournisseur", "facture", "creer") || $user->hasRight("supplier_invoice", "creer"))) {
-		$receptions = GETPOST('toselect', 'array:int');
-		$createbills_onebythird = GETPOSTINT('createbills_onebythird');
-		$validate_invoices = GETPOSTINT('validate_invoices');
+		$receptions = request()->input('toselect');
+		$createbills_onebythird = request()->integer('createbills_onebythird', 0);
+		$validate_invoices = request()->integer('validate_invoices', 0);
 
 		$errors = array();
 
@@ -373,7 +373,7 @@ if (empty($reshook)) {
 					$objecttmp->ref_supplier = $langs->trans("Reception").' '.dol_print_date(dol_now(), 'dayhourlog').'-'.$rcp->socid;
 				}
 
-				$datefacture = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+				$datefacture = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 				if (empty($datefacture)) {
 					$datefacture = dol_now();
 				}
@@ -612,8 +612,8 @@ if (empty($reshook)) {
 			$db->rollback();
 
 			$action = 'create';
-			$_GET["origin"] = GETPOST("origin", 'alpha');
-			$_GET["originid"] = GETPOSTINT("originid");
+			$_GET["origin"] = request()->input('origin');
+			$_GET["originid"] = request()->integer('originid', 0);
 			setEventMessages($object->error, $errors, 'errors');
 			$error++;
 		}
@@ -765,7 +765,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -784,7 +784,7 @@ if ($limit) {
 //print $sql;
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 

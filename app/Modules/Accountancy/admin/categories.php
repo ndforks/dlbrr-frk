@@ -44,23 +44,23 @@ $error = 0;
 // Load translation files required by the page
 $langs->loadLangs(array("bills", "accountancy", "compta"));
 
-$id = GETPOSTINT('id');
-$cancel = GETPOST('cancel', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cat_id = GETPOSTINT('account_category');
-$selectcpt = GETPOST('cpt_bk', 'array');
-$cpt_id = GETPOSTINT('cptid');
+$id = request()->integer('id', 0);
+$cancel = request()->input('cancel');
+$action = request()->input('action');
+$cat_id = request()->integer('account_category', 0);
+$selectcpt = request()->input('cpt_bk');
+$cpt_id = request()->integer('cptid', 0);
 
 if ($cat_id == 0) {
 	$cat_id = null;
 }
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -77,7 +77,7 @@ if (empty($sortorder)) {
 
 // Security check
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
 $accountingcategory = new AccountancyCategory($db);
@@ -174,7 +174,7 @@ if (!empty($cat_id)) {
 
 	if (is_array($accountingcategory->lines_cptbk) && count($accountingcategory->lines_cptbk) > 0) {
 		print img_picto($langs->trans("AccountingAccount"), 'accounting_account', 'class="pictofixedwidth"');
-		print $form->multiselectarray('cpt_bk', $arraykeyvalue, GETPOST('cpt_bk', 'array'), 0, 0, '', 0, "80%", '', '', $langs->transnoentitiesnoconv("AddAccountFromBookKeepingWithNoCategories"));
+		print $form->multiselectarray('cpt_bk', $arraykeyvalue, request()->input('cpt_bk'), 0, 0, '', 0, "80%", '', '', $langs->transnoentitiesnoconv("AddAccountFromBookKeepingWithNoCategories"));
 		print '<input type="submit" class="button button-add small" id="" class="action-delete" value="'.$langs->trans("Add").'"> ';
 	}
 }

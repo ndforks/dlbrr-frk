@@ -44,7 +44,7 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT."/core/lib/takepos.lib.php";
 require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
 
-$terminal = GETPOSTINT('terminal');
+$terminal = request()->integer('terminal', 0);
 // If socid provided by ajax company selector
 if (GETPOST('CASHDESK_ID_THIRDPARTY'.$terminal.'_id', 'alpha')) {
 	$_GET['CASHDESK_ID_THIRDPARTY'.$terminal] = GETPOST('CASHDESK_ID_THIRDPARTY'.$terminal.'_id', 'alpha');
@@ -54,7 +54,7 @@ if (GETPOST('CASHDESK_ID_THIRDPARTY'.$terminal.'_id', 'alpha')) {
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "cashdesk", "printing", "receiptprinter"));
@@ -80,15 +80,15 @@ $terminaltouse = $terminal;
 
 $error = 0;
 
-if (GETPOST('action', 'alpha') == 'set') {
+if (request()->input('action') == 'set') {
 	$db->begin();
 
 	$res = dolibarr_set_const($db, "TAKEPOS_TERMINAL_NAME_".$terminaltouse, (!empty(GETPOST('terminalname'.$terminaltouse, 'restricthtml')) ? GETPOST('terminalname'.$terminaltouse, 'restricthtml') : $langs->trans("TerminalName", $terminaltouse)), 'chaine', 0, '', $conf->entity);
 
-	$res = dolibarr_set_const($db, "CASHDESK_ID_THIRDPARTY".$terminaltouse, (GETPOSTINT('socid') > 0 ? GETPOSTINT('socid') : ''), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "CASHDESK_ID_THIRDPARTY".$terminaltouse, (request()->integer('socid', 0) > 0 ? request()->integer('socid', 0) : ''), 'chaine', 0, '', $conf->entity);
 
-	if (GETPOSTISSET('projectid')) {
-		$res = dolibarr_set_const($db, "CASHDESK_ID_PROJECT".$terminaltouse, (GETPOSTINT('projectid') > 0 ? GETPOSTINT('projectid') : ''), 'chaine', 0, '', $conf->entity);
+	if (request()->has('projectid')) {
+		$res = dolibarr_set_const($db, "CASHDESK_ID_PROJECT".$terminaltouse, (request()->integer('projectid', 0) > 0 ? request()->integer('projectid', 0) : ''), 'chaine', 0, '', $conf->entity);
 	}
 	if (GETPOSTISSET('CASHDESK_ID_BANKACCOUNT_CASH'.$terminaltouse)) {
 		$res = dolibarr_set_const($db, "CASHDESK_ID_BANKACCOUNT_CASH".$terminaltouse, (GETPOST('CASHDESK_ID_BANKACCOUNT_CASH'.$terminaltouse, 'alpha') > 0 ? GETPOST('CASHDESK_ID_BANKACCOUNT_CASH'.$terminaltouse, 'alpha') : ''), 'chaine', 0, '', $conf->entity);
@@ -155,7 +155,7 @@ if (GETPOST('action', 'alpha') == 'set') {
 		$res = dolibarr_set_const($db, 'TAKEPOS_FOOTER'.$terminaltouse, GETPOST('TAKEPOS_FOOTER'.$terminaltouse, 'restricthtml'), 'chaine', 0, '', $conf->entity);
 	}
 
-	dol_syslog("admin/terminal.php: level ".GETPOST('level', 'alpha'));
+	dol_syslog("admin/terminal.php: level ".request()->input('level'));
 
 	if (!($res > 0)) {
 		$error++;
@@ -253,14 +253,14 @@ if (isModEnabled("bank")) {
 		print '<td>';
 		$service = 'StripeTest';
 		$servicestatus = 0;
-		if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+		if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 			$service = 'StripeLive';
 			$servicestatus = 1;
 		}
 		global $stripearrayofkeysbyenv;
 		$site_account = $stripearrayofkeysbyenv[$servicestatus]['secret_key'];
 		\Stripe\Stripe::setApiKey($site_account);
-		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+		if (isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 			$service = 'StripeTest';
 			$servicestatus = '0';
 			dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning');

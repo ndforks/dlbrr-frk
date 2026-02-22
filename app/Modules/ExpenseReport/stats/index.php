@@ -46,15 +46,15 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
 $hookmanager->initHooks(array('expensereportstats', 'globalcard'));
 
-$mode = GETPOSTISSET("mode") ? GETPOST("mode", 'aZ09') : 'customer';
-$object_status = GETPOST('object_status', 'intcomma');
+$mode = request()->has('mode') ? request()->input('mode') : 'customer';
+$object_status = request()->input('object_status');
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 if ($socid < 0) {
 	$socid = 0;
 }
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
 if ($user->socid > 0) {
@@ -73,7 +73,7 @@ if ($reshook < 0) {
 }
 
 $nowyear = dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOST('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->input('year') > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 
@@ -262,7 +262,7 @@ print '</td></tr>';
 // Status
 print '<tr><td class="left">'.$langs->trans("Status").'</td><td class="left">';
 $liststatus = $tmpexpensereport->labelStatus;
-print $form->selectarray('object_status', $liststatus, GETPOST('object_status', 'intcomma'), -4, 0, 0, '', 1);
+print $form->selectarray('object_status', $liststatus, request()->input('object_status'), -4, 0, 0, '', 1);
 print '</td></tr>';
 // Year
 print '<tr><td>';

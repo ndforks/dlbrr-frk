@@ -49,11 +49,11 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/paymentexpensereport.class.
 // Load translation files required by the page
 $langs->loadLangs(array("other", "compta", "banks", "bills", "companies", "product", "trips", "admin", "accountancy"));
 
-$modecompta = (GETPOST('modecompta', 'alpha') ? GETPOST('modecompta', 'alpha') : getDolGlobalString('ACCOUNTING_MODE'));
+$modecompta = (request()->input('modecompta') ? request()->input('modecompta') : getDolGlobalString('ACCOUNTING_MODE'));
 
 // Date range
-$year = GETPOSTINT("year");
-$month = GETPOSTINT("month");
+$year = request()->integer('year', 0);
+$month = request()->integer('month', 0);
 if (empty($year)) {
 	$year_current = dol_print_date(dol_now(), '%Y');
 	$month_current = dol_print_date(dol_now(), '%m');
@@ -63,20 +63,20 @@ if (empty($year)) {
 	$month_current = dol_print_date(dol_now(), '%m');
 	$year_start = $year;
 }
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT("date_startmonth"), GETPOSTINT("date_startday"), GETPOSTINT("date_startyear"), 'tzserver');	// We use timezone of server so report is same from everywhere
-$date_end = dol_mktime(23, 59, 59, GETPOSTINT("date_endmonth"), GETPOSTINT("date_endday"), GETPOSTINT("date_endyear"), 'tzserver');		// We use timezone of server so report is same from everywhere
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_startmonth', 0), request()->integer('date_startday', 0), request()->integer('date_startyear', 0), 'tzserver');	// We use timezone of server so report is same from everywhere
+$date_end = dol_mktime(23, 59, 59, request()->integer('date_endmonth', 0), request()->integer('date_endday', 0), request()->integer('date_endyear', 0), 'tzserver');		// We use timezone of server so report is same from everywhere
 
 // Quarter
 $q = '';
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q");
+	$q = request()->integer('q', 0);
 	if (empty($q)) {
 		// We define date_start and date_end
-		$month_start = GETPOST("month") ? GETPOST("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		$month_start = request()->input('month') ? request()->input('month') : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
 		$year_end = $year_start;
 		$month_end = $month_start;
-		if (!GETPOST("month")) {	// If month not forced
-			if (!GETPOST('year') && $month_start > $month_current) {
+		if (!request()->input('month')) {	// If month not forced
+			if (!request()->input('year') && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
 			}
@@ -120,7 +120,7 @@ if ($tmp_date_end < $date_end || $date_end < $date_start) {
 	$date_end = $tmp_date_end;
 }
 
-$min = price2num(GETPOST("min", "alpha"));
+$min = price2num(request()->input('min'));
 if (empty($min)) {
 	$min = 0;
 }
@@ -128,15 +128,15 @@ if (empty($min)) {
 // Define modetax (0 or 1)
 // 0=normal, 1=option vat for services is on debit, 2=option on payments for products
 $modetax = !getDolGlobalString('TAX_MODE') ? 0 : $conf->global->TAX_MODE;
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }

@@ -41,15 +41,15 @@ require_once DOL_DOCUMENT_ROOT.'/product/dynamic_price/class/price_global_variab
 // Load translation files required by the page
 $langs->load("products");
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$save = GETPOST('save', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$selection = GETPOSTINT('selection');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$save = request()->input('save');
+$cancel = request()->input('cancel');
+$selection = request()->integer('selection', 0);
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 //Objects
@@ -76,9 +76,9 @@ if ($action == 'edit_updater') {
 if (!empty($action) && empty($cancel)) {
 	//Global variable actions
 	if ($action == 'create_variable' || $action == 'edit_variable') {
-		$price_globals->code = GETPOSTISSET('code') ? GETPOST('code', 'alpha') : $price_globals->code;
-		$price_globals->description = GETPOSTISSET('description') ? GETPOST('description', 'restricthtml') : $price_globals->description;
-		$price_globals->value = GETPOSTISSET('value') ? GETPOSTINT('value') : $price_globals->value;
+		$price_globals->code = request()->has('code') ? request()->input('code') : $price_globals->code;
+		$price_globals->description = request()->has('description') ? request()->input('description') : $price_globals->description;
+		$price_globals->value = request()->has('value') ? request()->integer('value', 0) : $price_globals->value;
 		//Check if record already exists only when saving
 		if (!empty($save)) {
 			foreach ($price_globals->listGlobalVariables() as $entry) {
@@ -114,11 +114,11 @@ if (!empty($action) && empty($cancel)) {
 
 	//Updaters actions
 	if ($action == 'create_updater' || $action == 'edit_updater') {
-		$price_updaters->type = GETPOSTISSET('type') ? GETPOSTINT('type') : $price_updaters->type;
-		$price_updaters->description = GETPOSTISSET('description') ? GETPOST('description', 'restricthtml') : $price_updaters->description;
-		$price_updaters->parameters = GETPOSTISSET('parameters') ? GETPOST('parameters', 'alphanohtml') : $price_updaters->parameters;
-		$price_updaters->fk_variable = GETPOSTISSET('fk_variable') ? GETPOSTINT('fk_variable') : $price_updaters->fk_variable;
-		$price_updaters->update_interval = GETPOSTISSET('update_interval') ? GETPOSTINT('update_interval') : $price_updaters->update_interval;
+		$price_updaters->type = request()->has('type') ? request()->integer('type', 0) : $price_updaters->type;
+		$price_updaters->description = request()->has('description') ? request()->input('description') : $price_updaters->description;
+		$price_updaters->parameters = request()->has('parameters') ? request()->input('parameters') : $price_updaters->parameters;
+		$price_updaters->fk_variable = request()->has('fk_variable') ? request()->integer('fk_variable', 0) : $price_updaters->fk_variable;
+		$price_updaters->update_interval = request()->has('update_interval') ? request()->integer('update_interval', 0) : $price_updaters->update_interval;
 	}
 	if ($action == 'create_updater' && !empty($save)) {
 		//Verify if process() works

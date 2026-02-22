@@ -41,12 +41,12 @@ require_once DOL_DOCUMENT_ROOT.'/dav/dav.lib.php';
 $langs->loadLangs(array("admin", "other", "agenda"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
 if (empty($action)) {
 	$action = 'edit';

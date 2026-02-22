@@ -39,16 +39,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/agenda.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'other', 'agenda'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$search_event = GETPOST('search_event', 'alpha');
+$search_event = request()->input('search_event');
 
 // Get list of triggers available
 $triggers = array();
@@ -71,7 +71,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 //$triggers = dol_sort_array($triggers, 'code', 'asc', 0, 0, 1);
@@ -83,12 +83,12 @@ if ($resql) {
 $error = 0;
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_event = '';
 	$action = '';
 }
 
-if (GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {	// To avoid the save when we click on search
+if (request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {	// To avoid the save when we click on search
 	$action = '';
 }
 

@@ -44,16 +44,16 @@ $langs->loadLangs(array("admin", "assets"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'asset';
 
 $arrayofparameters = array(
@@ -77,9 +77,9 @@ $myTmpObjects = [
 	'asset' => array('label' => 'Asset', 'includerefgeneration' => 1, 'includedocgeneration' => 0, 'class' => 'Asset')
 ];
 
-$tmpobjectkey = GETPOST('object', 'aZ09');
+$tmpobjectkey = request()->input('object');
 if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
-	accessforbidden('Bad value for object. Hack attempt ?');
+	abort(403);
 }
 
 
@@ -90,8 +90,8 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'alpha');
-	$mask = GETPOST('mask', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$mask = request()->input('mask');
 
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $mask, 'chaine', 0, '', $conf->entity);
@@ -106,7 +106,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen' && $tmpobjectkey) {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$className = $myTmpObjects[$tmpobjectkey]['class'];
 	$tmpobject = new $className($db);
@@ -342,7 +342,7 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print "<table class=\"noborder\" width=\"100%\">\n";

@@ -48,15 +48,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('errors', 'admin', 'modulebuilder', 'exports'));
 
-$mode = GETPOST('mode', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
+$mode = request()->input('mode');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
 if (empty($mode)) {
 	$mode = 'desc';
 }
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 

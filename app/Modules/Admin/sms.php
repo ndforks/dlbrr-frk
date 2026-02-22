@@ -38,11 +38,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "admin", "products", "sms", "other", "errors"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $substitutionarrayfortest = array(
@@ -59,11 +59,11 @@ $substitutionarrayfortest = array(
  */
 
 if ($action == 'update' && !$cancel) {
-	dolibarr_set_const($db, "MAIN_DISABLE_ALL_SMS", GETPOST("MAIN_DISABLE_ALL_SMS", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_DISABLE_ALL_SMS", request()->input('MAIN_DISABLE_ALL_SMS'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_SMS_SENDMODE", GETPOST("MAIN_SMS_SENDMODE", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_SMS_SENDMODE", request()->input('MAIN_SMS_SENDMODE'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_SMS_FROM", GETPOST("MAIN_SMS_FROM", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_SMS_FROM", request()->input('MAIN_SMS_FROM'), 'chaine', 0, '', $conf->entity);
 
 	header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
 	exit;
@@ -75,19 +75,19 @@ if ($action == 'send' && !$cancel) {
 	$error = 0;
 
 	$smsfrom = '';
-	if (GETPOST("fromsms", 'alphanohtml')) {
-		$smsfrom = GETPOST("fromsms", 'alphanohtml');
+	if (request()->input('fromsms')) {
+		$smsfrom = request()->input('fromsms');
 	}
 	if (empty($smsfrom)) {
-		$smsfrom = GETPOST("fromname", 'alphanohtml');
+		$smsfrom = request()->input('fromname');
 	}
-	$sendto     = GETPOST("sendto", 'alphanohtml');
-	$body       = GETPOST('message', 'alphanohtml');
-	$deliveryreceipt = GETPOSTINT("deliveryreceipt");
-	$deferred   = GETPOSTINT('deferred');
-	$priority   = GETPOSTINT('priority');
-	$class      = GETPOSTINT('class');
-	$errors_to  = GETPOST("errorstosms", 'alphanohtml');
+	$sendto     = request()->input('sendto');
+	$body       = request()->input('message');
+	$deliveryreceipt = request()->integer('deliveryreceipt', 0);
+	$deferred   = request()->integer('deferred', 0);
+	$priority   = request()->integer('priority', 0);
+	$class      = request()->integer('class', 0);
+	$errors_to  = request()->input('errorstosms');
 
 	// Create form object
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formsms.class.php';
@@ -277,12 +277,12 @@ if ($action == 'edit') {
 		$formsms = new FormSms($db);
 		$formsms->fromtype = 'user';
 		$formsms->fromid = $user->id;
-		$formsms->fromsms = (GETPOSTISSET('fromsms') ? GETPOST('fromsms') : getDolGlobalString('MAIN_SMS_FROM', $user->user_mobile));
+		$formsms->fromsms = (request()->has('fromsms') ? request()->input('fromsms') : getDolGlobalString('MAIN_SMS_FROM', $user->user_mobile));
 		$formsms->withfromreadonly = 0;
 		$formsms->withsubstit = 0;
 		$formsms->withfrom = 1;
-		$formsms->withto = (GETPOSTISSET('sendto') ? GETPOST('sendto') : ($user->user_mobile ? $user->user_mobile : 1));
-		$formsms->withbody = (GETPOSTISSET('message') ? (!GETPOST('message') ? 1 : GETPOST('message')) : $langs->trans("ThisIsATestMessage"));
+		$formsms->withto = (request()->has('sendto') ? request()->input('sendto') : ($user->user_mobile ? $user->user_mobile : 1));
+		$formsms->withbody = (request()->has('message') ? (!request()->input('message') ? 1 : request()->input('message')) : $langs->trans("ThisIsATestMessage"));
 		$formsms->withbodyreadonly = 0;
 		$formsms->withcancel = 1;
 		// Tableau des substitutions

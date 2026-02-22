@@ -52,7 +52,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/public.lib.php';
 
 // Security check
 if (!isModEnabled('bookcal')) {
-	httponly_accessforbidden('Module Bookcal isn\'t enabled');
+	httponly_abort(403);
 }
 
 /**
@@ -65,21 +65,21 @@ if (!isModEnabled('bookcal')) {
 
 $langs->loadLangs(array("main", "other", "dict", "agenda", "errors", "companies"));
 
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$id_availability = GETPOSTINT('id_availability');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$id_availability = request()->integer('id_availability', 0);
 
-$year = GETPOSTINT("year") ? GETPOSTINT("year") : idate("Y");
-$month = GETPOSTINT("month") ? GETPOSTINT("month") : idate("m");
-$week = GETPOSTINT("week") ? GETPOSTINT("week") : idate("W");
-$day = GETPOSTINT("day") ? GETPOSTINT("day") : idate("d");
-$dateselect = dol_mktime(0, 0, 0, GETPOSTINT('dateselectmonth'), GETPOSTINT('dateselectday'), GETPOSTINT('dateselectyear'), 'tzuserrel');
+$year = request()->integer('year', 0) ? request()->integer('year', 0) : idate("Y");
+$month = request()->integer('month', 0) ? request()->integer('month', 0) : idate("m");
+$week = request()->integer('week', 0) ? request()->integer('week', 0) : idate("W");
+$day = request()->integer('day', 0) ? request()->integer('day', 0) : idate("d");
+$dateselect = dol_mktime(0, 0, 0, request()->integer('dateselectmonth', 0), request()->integer('dateselectday', 0), request()->integer('dateselectyear', 0), 'tzuserrel');
 if ($dateselect > 0) {
-	$day = GETPOSTINT('dateselectday');
-	$month = GETPOSTINT('dateselectmonth');
-	$year = GETPOSTINT('dateselectyear');
+	$day = request()->integer('dateselectday', 0);
+	$month = request()->integer('dateselectmonth', 0);
+	$year = request()->integer('dateselectyear', 0);
 }
-$backtopage = GETPOST("backtopage", "alpha");
+$backtopage = request()->input('backtopage');
 
 $object = new Calendar($db);
 $result = $object->fetch($id);
@@ -118,12 +118,12 @@ if ($next_day < 6) {
 }
 $lastdaytoshow = dol_mktime(0, 0, 0, $next_month, $next_day, $next_year, 'tzuserrel');
 
-$datechosen = GETPOST('datechosen', 'alpha');
-$datetimechosen = GETPOSTINT('datetimechosen');
+$datechosen = request()->input('datechosen');
+$datetimechosen = request()->integer('datetimechosen', 0);
 $isdatechosen = false;
-$timebooking = GETPOST("timebooking");
-$datetimebooking = GETPOSTINT("datetimebooking");
-$durationbooking = GETPOSTINT("durationbooking");
+$timebooking = request()->input('timebooking');
+$datetimebooking = request()->integer('datetimebooking', 0);
+$durationbooking = request()->integer('durationbooking', 0);
 $errmsg = '';
 
 /**
@@ -172,15 +172,15 @@ if ($action == 'add') {	// Test on permission not required here (anonymous actio
 
 	$db->begin();
 
-	if (!GETPOST("lastname")) {
+	if (!request()->input('lastname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Lastname"))."<br>\n";
 	}
-	if (!GETPOST("firstname")) {
+	if (!request()->input('firstname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Firstname"))."<br>\n";
 	}
-	if (!GETPOST("email")) {
+	if (!request()->input('email')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Email"))."<br>\n";
 	}
@@ -188,9 +188,9 @@ if ($action == 'add') {	// Test on permission not required here (anonymous actio
 	if (!$error) {
 		$sql = "SELECT s.rowid";
 		$sql .= " FROM ".MAIN_DB_PREFIX."socpeople as s";
-		$sql .= " WHERE s.lastname = '".$db->escape(GETPOST("lastname"))."'";
-		$sql .= " AND s.firstname = '".$db->escape(GETPOST("firstname"))."'";
-		$sql .= " AND s.email = '".$db->escape(GETPOST("email"))."'";
+		$sql .= " WHERE s.lastname = '".$db->escape(request()->input('lastname'))."'";
+		$sql .= " AND s.firstname = '".$db->escape(request()->input('firstname'))."'";
+		$sql .= " AND s.email = '".$db->escape(request()->input('email'))."'";
 		$resql = $db->query($sql);
 
 		if ($resql) {
@@ -200,9 +200,9 @@ if ($action == 'add') {	// Test on permission not required here (anonymous actio
 				$idcontact = $obj->rowid;
 				$contact->fetch($idcontact);
 			} else {
-				$contact->lastname = GETPOST("lastname");
-				$contact->firstname = GETPOST("firstname");
-				$contact->email = GETPOST("email");
+				$contact->lastname = request()->input('lastname');
+				$contact->firstname = request()->input('firstname');
+				$contact->email = request()->input('email');
 				$contact->ip = getUserRemoteIP();
 
 				if (checkNbPostsForASpeceificIp($contact, $nb_post_max) <= 0) {
@@ -223,14 +223,14 @@ if ($action == 'add') {	// Test on permission not required here (anonymous actio
 	}
 
 	if (!$error) {
-		$dateend = dol_time_plus_duree(GETPOSTINT("datetimebooking"), GETPOSTINT("durationbooking"), 'i');
+		$dateend = dol_time_plus_duree(request()->integer('datetimebooking', 0), request()->integer('durationbooking', 0), 'i');
 
 		$actioncomm->label = $langs->trans("BookcalBookingTitle");
 		$actioncomm->type = 'AC_RDV';
 		$actioncomm->type_id = 5;
-		$actioncomm->datep = GETPOSTINT("datetimebooking");
+		$actioncomm->datep = request()->integer('datetimebooking', 0);
 		$actioncomm->datef = $dateend;
-		$actioncomm->note_private = GETPOST("description");
+		$actioncomm->note_private = request()->input('description');
 		$actioncomm->percentage = -1;
 		$actioncomm->fk_bookcal_calendar = $id;
 		$actioncomm->userownerid = $calendar->visibility;
@@ -305,7 +305,7 @@ if ($action == 'afteradd') {
 	print '<h2>';
 	print $langs->trans("BookingSuccessfullyBooked");
 	print '</h2>';
-	print $langs->trans("BookingReservationHourAfter", dol_print_date(GETPOSTINT("datetimebooking"), "dayhourtext"));
+	print $langs->trans("BookingReservationHourAfter", dol_print_date(request()->integer('datetimebooking', 0), "dayhourtext"));
 } else {
 	$param = '';
 
@@ -362,17 +362,17 @@ if ($action == 'afteradd') {
 		print '<input type="hidden" name="durationbooking" value="'.$durationbooking.'">';
 
 		// Lastname
-		print '<tr><td><input autofocus type="text" name="lastname" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Lastname").'*').'" value="'.dol_escape_htmltag(GETPOST('lastname')).'"></td></tr>'."\n";
+		print '<tr><td><input autofocus type="text" name="lastname" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Lastname").'*').'" value="'.dol_escape_htmltag(request()->input('lastname')).'"></td></tr>'."\n";
 		// Firstname
-		print '<tr><td><input type="text" name="firstname" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Firstname").'*').'" value="'.dol_escape_htmltag(GETPOST('firstname')).'"></td></tr>'."\n";
+		print '<tr><td><input type="text" name="firstname" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Firstname").'*').'" value="'.dol_escape_htmltag(request()->input('firstname')).'"></td></tr>'."\n";
 		// EMail
-		print '<tr><td><input type="email" name="email" maxlength="255" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Email").'*').'" value="'.dol_escape_htmltag(GETPOST('email')).'"></td></tr>'."\n";
+		print '<tr><td><input type="email" name="email" maxlength="255" class="minwidth150" placeholder="'.dol_escape_htmltag($langs->trans("Email").'*').'" value="'.dol_escape_htmltag(request()->input('email')).'"></td></tr>'."\n";
 
 		// Comments
 		print '<tr>';
 		print '<td class="tdtop">';
 		print $langs->trans("Message");
-		print '<textarea name="description" id="description" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_4.'">'.dol_escape_htmltag(GETPOST('description', 'restricthtml'), 0, 1).'</textarea></td>';
+		print '<textarea name="description" id="description" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_4.'">'.dol_escape_htmltag(request()->input('description'), 0, 1).'</textarea></td>';
 		print '</tr>'."\n";
 		print '</table>'."\n";
 		print '<div class="center">';

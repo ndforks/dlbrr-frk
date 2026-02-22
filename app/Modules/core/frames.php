@@ -47,17 +47,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/menubase.class.php';
 $langs->load("other");
 
 
-$mainmenu = GETPOST('mainmenu', "aZ09");
-$leftmenu = GETPOST('leftmenu', "aZ09");
-$idmenu = GETPOSTINT('idmenu');
-$theme = GETPOST('theme', 'aZ09');
-$codelang = GETPOST('lang', 'aZ09');
+$mainmenu = request()->input('mainmenu');
+$leftmenu = request()->input('leftmenu');
+$idmenu = request()->integer('idmenu', 0);
+$theme = request()->input('theme');
+$codelang = request()->input('lang');
 
 $menu = new Menubase($db);
 $menu->fetch($idmenu);
 
 if (!$menu->id || empty($menu->showtopmenuinframe)) {
-	accessforbidden('Parameter idmenu is wrong. Must be the ID of a menu entry allowed to be output into a frame');
+	abort(403);
 }
 
 
@@ -67,7 +67,7 @@ if (!$menu->id || empty($menu->showtopmenuinframe)) {
  */
 
 // The content of the top frame
-if (GETPOST('top')) {
+if (request()->input('top')) {
 	top_htmlhead("", "");
 
 	print '<body id="mainbody">'."\n";

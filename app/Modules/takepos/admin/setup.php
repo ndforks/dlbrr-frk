@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/takepos.lib.php";
 require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 // If socid provided by ajax company selector
-if (GETPOST('CASHDESK_ID_THIRDPARTY_id', 'alpha')) {
-	$_GET['CASHDESK_ID_THIRDPARTY'] = GETPOST('CASHDESK_ID_THIRDPARTY_id', 'alpha');
-	$_POST['CASHDESK_ID_THIRDPARTY'] = GETPOST('CASHDESK_ID_THIRDPARTY_id', 'alpha');
-	$_REQUEST['CASHDESK_ID_THIRDPARTY'] = GETPOST('CASHDESK_ID_THIRDPARTY_id', 'alpha');
+if (request()->input('CASHDESK_ID_THIRDPARTY_id')) {
+	$_GET['CASHDESK_ID_THIRDPARTY'] = request()->input('CASHDESK_ID_THIRDPARTY_id');
+	$_POST['CASHDESK_ID_THIRDPARTY'] = request()->input('CASHDESK_ID_THIRDPARTY_id');
+	$_REQUEST['CASHDESK_ID_THIRDPARTY'] = request()->input('CASHDESK_ID_THIRDPARTY_id');
 }
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "cashdesk"));
@@ -71,7 +71,7 @@ if ($resql) {
 	}
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $error = 0;
 
@@ -83,22 +83,22 @@ $error = 0;
 if ($action == 'set') {
 	$db->begin();
 
-	$res = dolibarr_set_const($db, "TAKEPOS_ROOT_CATEGORY_ID", GETPOST('TAKEPOS_ROOT_CATEGORY_ID', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_SUPPLEMENTS_CATEGORY", GETPOST('TAKEPOS_SUPPLEMENTS_CATEGORY', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_NUMPAD", GETPOST('TAKEPOS_NUMPAD', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_SORTPRODUCTFIELD", GETPOST('TAKEPOS_SORTPRODUCTFIELD', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_NUM_TERMINALS", GETPOST('TAKEPOS_NUM_TERMINALS', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_ADDON", GETPOST('TAKEPOS_ADDON', 'alpha'), 'int', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_EMAIL_TEMPLATE_INVOICE", GETPOST('TAKEPOS_EMAIL_TEMPLATE_INVOICE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_ROOT_CATEGORY_ID", request()->input('TAKEPOS_ROOT_CATEGORY_ID'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_SUPPLEMENTS_CATEGORY", request()->input('TAKEPOS_SUPPLEMENTS_CATEGORY'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_NUMPAD", request()->input('TAKEPOS_NUMPAD'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_SORTPRODUCTFIELD", request()->input('TAKEPOS_SORTPRODUCTFIELD'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_NUM_TERMINALS", request()->input('TAKEPOS_NUM_TERMINALS'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_ADDON", request()->input('TAKEPOS_ADDON'), 'int', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_EMAIL_TEMPLATE_INVOICE", request()->input('TAKEPOS_EMAIL_TEMPLATE_INVOICE'), 'chaine', 0, '', $conf->entity);
 	if (getDolGlobalInt('TAKEPOS_ENABLE_SUMUP')) {
-		$res = dolibarr_set_const($db, "TAKEPOS_SUMUP_AFFILIATE", GETPOST('TAKEPOS_SUMUP_AFFILIATE', 'alpha'), 'chaine', 0, '', $conf->entity);
-		$res = dolibarr_set_const($db, "TAKEPOS_SUMUP_APPID", GETPOST('TAKEPOS_SUMUP_APPID', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, "TAKEPOS_SUMUP_AFFILIATE", request()->input('TAKEPOS_SUMUP_AFFILIATE'), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, "TAKEPOS_SUMUP_APPID", request()->input('TAKEPOS_SUMUP_APPID'), 'chaine', 0, '', $conf->entity);
 	}
 	if (isModEnabled('barcode')) {
-		$res = dolibarr_set_const($db, 'TAKEPOS_BARCODE_RULE_TO_INSERT_PRODUCT', GETPOST('TAKEPOS_BARCODE_RULE_TO_INSERT_PRODUCT', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, 'TAKEPOS_BARCODE_RULE_TO_INSERT_PRODUCT', request()->input('TAKEPOS_BARCODE_RULE_TO_INSERT_PRODUCT'), 'chaine', 0, '', $conf->entity);
 	}
 
-	dol_syslog("admin/cashdesk: level ".GETPOST('level', 'alpha'));
+	dol_syslog("admin/cashdesk: level ".request()->input('level'));
 
 	if ($res <= 0) {
 		$error++;
@@ -110,8 +110,8 @@ if ($action == 'set') {
 		$db->rollback();
 	}
 } elseif ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskvalue = GETPOST('maskvalue', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskvalue = request()->input('maskvalue');
 	$res = 1;
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -120,7 +120,7 @@ if ($action == 'set') {
 		$error++;
 	}
 } elseif ($action == 'setrefmod') {
-	$value = GETPOST('value', 'alpha');
+	$value = request()->input('value');
 	dolibarr_set_const($db, "TAKEPOS_REF_ADDON", $value, 'chaine', 0, '', $conf->entity);
 }
 

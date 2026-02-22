@@ -45,11 +45,11 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array("compta", "banks", "bills", "users", "accountancy"));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }

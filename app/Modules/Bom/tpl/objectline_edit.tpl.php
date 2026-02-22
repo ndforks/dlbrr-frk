@@ -165,12 +165,12 @@ if ($filtertype != 1) { // Product
 if ($filtertype != 1 || getDolGlobalString('STOCK_SUPPORTS_SERVICES')) { // Product or stock support for Services is active
 	// Qty frozen
 	$coldisplay++;
-	print '<td class="nobottom linecolqtyfrozen right"><input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"' . (GETPOSTISSET("qty_frozen") ? (GETPOSTINT('qty_frozen') ? ' checked="checked"' : '') : ($line->qty_frozen ? ' checked="checked"' : '')) . '>';
+	print '<td class="nobottom linecolqtyfrozen right"><input type="checkbox" name="qty_frozen" id="qty_frozen" class="flat right" value="1"' . (request()->has('qty_frozen') ? (request()->integer('qty_frozen', 0) ? ' checked="checked"' : '') : ($line->qty_frozen ? ' checked="checked"' : '')) . '>';
 	print '</td>';
 
 	// Disable stock change
 	$coldisplay++;
-	print '<td class="nobottom linecoldisablestockchange right"><input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"' . (GETPOSTISSET('disablestockchange') ? (GETPOSTINT("disable_stock_change") ? ' checked="checked"' : '') : ($line->disable_stock_change ? ' checked="checked"' : '')) . '">';
+	print '<td class="nobottom linecoldisablestockchange right"><input type="checkbox" name="disable_stock_change" id="disable_stock_change" class="flat right" value="1"' . (request()->has('disablestockchange') ? (request()->integer('disable_stock_change', 0) ? ' checked="checked"' : '') : ($line->disable_stock_change ? ' checked="checked"' : '')) . '">';
 	print '</td>';
 
 	// Efficiency

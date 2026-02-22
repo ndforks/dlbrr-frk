@@ -50,15 +50,15 @@ require_once DOL_DOCUMENT_ROOT.'/fichinter/class/fichinter.class.php';
 $langs->loadLangs(array('admin', 'errors', 'interventions', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'ficheinter';
 
 
@@ -70,8 +70,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskvalue = GETPOST('maskvalue', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskvalue = request()->input('maskvalue');
 
 	$res = 0;
 
@@ -89,7 +89,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') { // For Intervention card
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$inter = new Fichinter($db);
 	$inter->initAsSpecimen();
@@ -152,7 +152,7 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "FICHEINTER_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'set_FICHINTER_FREE_TEXT') {
-	$freetext = GETPOST('FICHINTER_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('FICHINTER_FREE_TEXT'); // No alpha here, we want exact string
 	$res = dolibarr_set_const($db, "FICHINTER_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -165,7 +165,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FICHINTER_DRAFT_WATERMARK') {
-	$draft = GETPOST('FICHINTER_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('FICHINTER_DRAFT_WATERMARK');
 	$res = dolibarr_set_const($db, "FICHINTER_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -178,7 +178,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FICHINTER_PRINT_PRODUCTS') {
-	$val = GETPOST('FICHINTER_PRINT_PRODUCTS', 'alpha');
+	$val = request()->input('FICHINTER_PRINT_PRODUCTS');
 	$res = dolibarr_set_const($db, "FICHINTER_PRINT_PRODUCTS", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -191,7 +191,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FICHINTER_USE_SERVICE_DURATION') {
-	$val = GETPOST('FICHINTER_USE_SERVICE_DURATION', 'alpha');
+	$val = request()->input('FICHINTER_USE_SERVICE_DURATION');
 	$res = dolibarr_set_const($db, "FICHINTER_USE_SERVICE_DURATION", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -204,7 +204,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FICHINTER_WITHOUT_DURATION') {
-	$val = GETPOST('FICHINTER_WITHOUT_DURATION', 'alpha');
+	$val = request()->input('FICHINTER_WITHOUT_DURATION');
 	$res = dolibarr_set_const($db, "FICHINTER_WITHOUT_DURATION", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -217,7 +217,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'set_FICHINTER_DATE_WITHOUT_HOUR') {
-	$val = GETPOST('FICHINTER_DATE_WITHOUT_HOUR', 'alpha');
+	$val = request()->input('FICHINTER_DATE_WITHOUT_HOUR');
 	$res = dolibarr_set_const($db, "FICHINTER_DATE_WITHOUT_HOUR", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -230,7 +230,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == "set_FICHINTER_ALLOW_ONLINE_SIGN") {
-	$val = GETPOST('FICHINTER_ALLOW_ONLINE_SIGN', 'alpha');
+	$val = request()->input('FICHINTER_ALLOW_ONLINE_SIGN');
 	$res = dolibarr_set_const($db, "FICHINTER_ALLOW_ONLINE_SIGN", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -243,7 +243,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == "set_FICHINTER_ALLOW_EXTERNAL_DOWNLOAD") {
-	$val = GETPOST('FICHINTER_ALLOW_EXTERNAL_DOWNLOAD', 'alpha');
+	$val = request()->input('FICHINTER_ALLOW_EXTERNAL_DOWNLOAD');
 	$res = dolibarr_set_const($db, "FICHINTER_ALLOW_EXTERNAL_DOWNLOAD", ($val == 'on' ? 1 : 0), 'bool', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -408,7 +408,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

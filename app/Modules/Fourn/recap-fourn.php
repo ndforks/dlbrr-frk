@@ -43,7 +43,7 @@ require_once DOL_DOCUMENT_ROOT . '/fourn/class/paiementfourn.class.php';
 $langs->loadLangs(array('bills', 'companies'));
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
@@ -53,10 +53,10 @@ if ($user->socid > 0) {
 $hookmanager->initHooks(array('supplierbalencelist', 'globalcard'));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -197,11 +197,11 @@ if ($socid > 0) {
 
 					$db->free($resqlp);
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (empty($TData)) {
@@ -279,7 +279,7 @@ if ($socid > 0) {
 		print "</table>";
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

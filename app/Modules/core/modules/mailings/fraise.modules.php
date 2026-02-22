@@ -253,29 +253,29 @@ class mailing_fraise extends MailingTargets
 		$cibles = array();
 		$now = dol_now();
 
-		$dateendsubscriptionafter = dol_mktime(GETPOSTINT('subscriptionafterhour'), GETPOSTINT('subscriptionaftermin'), GETPOSTINT('subscriptionaftersec'), GETPOSTINT('subscriptionaftermonth'), GETPOSTINT('subscriptionafterday'), GETPOSTINT('subscriptionafteryear'));
-		$dateendsubscriptionbefore = dol_mktime(GETPOSTINT('subscriptionbeforehour'), GETPOSTINT('subscriptionbeforemin'), GETPOSTINT('subscriptionbeforesec'), GETPOSTINT('subscriptionbeforemonth'), GETPOSTINT('subscriptionbeforeday'), GETPOSTINT('subscriptionbeforeyear'));
+		$dateendsubscriptionafter = dol_mktime(request()->integer('subscriptionafterhour', 0), request()->integer('subscriptionaftermin', 0), request()->integer('subscriptionaftersec', 0), request()->integer('subscriptionaftermonth', 0), request()->integer('subscriptionafterday', 0), request()->integer('subscriptionafteryear', 0));
+		$dateendsubscriptionbefore = dol_mktime(request()->integer('subscriptionbeforehour', 0), request()->integer('subscriptionbeforemin', 0), request()->integer('subscriptionbeforesec', 0), request()->integer('subscriptionbeforemonth', 0), request()->integer('subscriptionbeforeday', 0), request()->integer('subscriptionbeforeyear', 0));
 
 		// La requete doit retourner: id, email, fk_contact, name, firstname
 		$sql = "SELECT a.rowid as id, a.email as email, null as fk_contact, ";
 		$sql .= " a.lastname, a.firstname,";
 		$sql .= " a.datefin, a.civility as civility_id, a.login, a.societe"; // Other fields
 		$sql .= " FROM ".MAIN_DB_PREFIX."adherent as a";
-		if (GETPOSTINT('filter_category') > 0) {
+		if (request()->integer('filter_category', 0) > 0) {
 			$sql .= " INNER JOIN ".MAIN_DB_PREFIX."categorie_member as cm ON cm.fk_member = a.rowid";
-			$sql .= " INNER JOIN ".MAIN_DB_PREFIX."categorie as c ON c.rowid = cm.fk_categorie AND c.rowid = ".(GETPOSTINT('filter_category'));
+			$sql .= " INNER JOIN ".MAIN_DB_PREFIX."categorie as c ON c.rowid = cm.fk_categorie AND c.rowid = ".(request()->integer('filter_category', 0));
 		}
 		$sql .= " , ".MAIN_DB_PREFIX."adherent_type as ta";
 		$sql .= " WHERE a.entity IN (".getEntity('member').") AND a.email <> ''"; // Note that null != '' is false
 		$sql .= " AND a.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing=".((int) $mailing_id).")";
 		// Filter on status
-		if (GETPOST("filter", 'aZ09') == 'draft') {
+		if (request()->input('filter') == 'draft') {
 			$sql .= " AND a.statut = -1";
-		} elseif (GETPOST("filter", 'aZ09') == '1a') {
+		} elseif (request()->input('filter') == '1a') {
 			$sql .= " AND a.statut=1 AND (a.datefin >= '".$this->db->idate($now)."' OR ta.subscription = 0)";
-		} elseif (GETPOST("filter", 'aZ09') == '1b') {
+		} elseif (request()->input('filter') == '1b') {
 			$sql .= " AND a.statut=1 AND ((a.datefin IS NULL or a.datefin < '".$this->db->idate($now)."') AND ta.subscription = 1)";
-		} elseif (GETPOST("filter", 'aZ09') === '0') {
+		} elseif (request()->input('filter') === '0') {
 			$sql .= " AND a.statut=0";
 		}
 		// Filter on date
@@ -287,8 +287,8 @@ class mailing_fraise extends MailingTargets
 		}
 		$sql .= " AND a.fk_adherent_type = ta.rowid";
 		// Filter on type
-		if (GETPOSTINT('filter_type') > 0) {
-			$sql .= " AND ta.rowid = ".(GETPOSTINT('filter_type'));
+		if (request()->integer('filter_type', 0) > 0) {
+			$sql .= " AND ta.rowid = ".(request()->integer('filter_type', 0));
 		}
 		if (empty($this->evenunsubscribe)) {
 			$sql .= " AND NOT EXISTS (SELECT rowid FROM ".MAIN_DB_PREFIX."mailing_unsubscribe as mu WHERE mu.email = a.email and mu.entity = ".((int) $conf->entity).")";

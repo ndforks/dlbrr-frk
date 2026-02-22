@@ -45,10 +45,10 @@ require_once DOL_DOCUMENT_ROOT.'/contact/class/contact.class.php';
  * @var User $user
  */
 
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 $object = new Contact($db);
 if ($id > 0) {
@@ -60,11 +60,11 @@ if (empty($object->thirdparty)) {
 $socid = !empty($object->thirdparty->id) ? $object->thirdparty->id : null;
 
 // Sort & Order fields
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -79,21 +79,21 @@ if (!$sortfield) {
 }
 
 // Search fields
-$sref = GETPOST("sref");
-$sprod_fulldescr = GETPOST("sprod_fulldescr");
-$month = GETPOSTINT('month');
-$year = GETPOSTINT('year');
+$sref = request()->input('sref');
+$sprod_fulldescr = request()->input('sprod_fulldescr');
+$month = request()->integer('month', 0);
+$year = request()->integer('year', 0);
 
 // Clean up on purge search criteria ?
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$sref = '';
 	$sprod_fulldescr = '';
 	$year = '';
 	$month = '';
 }
 // Customer or supplier selected in drop box
-$thirdTypeSelect = GETPOST("third_select_id");
-$type_element = GETPOSTISSET('type_element') ? GETPOST('type_element') : '';
+$thirdTypeSelect = request()->input('third_select_id');
+$type_element = request()->has('type_element') ? request()->input('type_element') : '';
 
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "bills", "orders", "suppliers", "propal", "interventions", "contracts", "products"));
@@ -129,7 +129,7 @@ $help_url = 'EN:Module_Third_Parties|FR:Module_Tiers|ES:Empresas';
 llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-societe page-contact-card_consumption');
 
 if (empty($id)) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -357,10 +357,10 @@ if (!empty($sql_select)) {
 	}
 	if ($sprod_fulldescr) {
 		$sql .= " AND (d.description LIKE '%".$db->escape($sprod_fulldescr)."%'";
-		if (GETPOST('type_element') != 'fichinter') {
+		if (request()->input('type_element') != 'fichinter') {
 			$sql .= " OR p.ref LIKE '%".$db->escape($sprod_fulldescr)."%'";
 		}
-		if (GETPOST('type_element') != 'fichinter') {
+		if (request()->input('type_element') != 'fichinter') {
 			$sql .= " OR p.label LIKE '%".$db->escape($sprod_fulldescr)."%'";
 		}
 		$sql .= ")";
@@ -383,7 +383,7 @@ if (empty($elementTypeArray) && !$object->thirdparty->client && !$object->thirdp
 }
 
 // Define type of elements
-$typeElementString = $form->selectarray("type_element", $elementTypeArray, GETPOST('type_element'), $showempty, 0, 0, '', 0, 0, $disabled, '', 'maxwidth150onsmartphone');
+$typeElementString = $form->selectarray("type_element", $elementTypeArray, request()->input('type_element'), $showempty, 0, 0, '', 0, 0, $disabled, '', 'maxwidth150onsmartphone');
 $button = '<input type="submit" class="button small" name="button_third" value="'.dol_escape_htmltag($langs->trans("Search")).'" title="'.dol_escape_htmltag($langs->trans("Search")).'">';
 
 $param = '';
@@ -401,7 +401,7 @@ $num = 0;
 if ($sql_select && $documentstatic !== null) {
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$num = $db->num_rows($resql);
@@ -535,8 +535,8 @@ if ($sql_select && $documentstatic !== null) {
 
 				$outputlangs = $langs;
 				$newlang = '';
-				if (empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (empty($newlang) && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (empty($newlang)) {
 					$newlang = $object->default_lang;

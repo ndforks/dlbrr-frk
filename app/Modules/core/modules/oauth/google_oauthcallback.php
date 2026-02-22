@@ -61,10 +61,10 @@ $urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domai
 
 $langs->load("oauth");
 
-$action = GETPOST('action', 'aZ09');
-$backtourl = GETPOST('backtourl', 'alpha');
-$keyforprovider = GETPOST('keyforprovider', 'aZ09');
-if (!GETPOSTISSET('keyforprovider') && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (GETPOST('code') || $action == 'delete')) {
+$action = request()->input('action');
+$backtourl = request()->input('backtourl');
+$keyforprovider = request()->input('keyforprovider');
+if (!request()->has('keyforprovider') && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (request()->input('code') || $action == 'delete')) {
 	// If we are coming from the Oauth page
 	$keyforprovider = $_SESSION["oauthkeyforproviderbeforeoauthjump"];
 }
@@ -100,7 +100,7 @@ $credentials = new Credentials(
 	$currentUri->getAbsoluteUri()
 );
 
-$state = GETPOST('state');
+$state = request()->input('state');
 $statewithscopeonly = '';
 $statewithanticsrfonly = '';
 
@@ -114,7 +114,7 @@ if ($state) {
 
 // Add a test to check that the state parameter is provided into URL when we make the first call to ask the redirect or when we receive the callback
 // but not when callback was ok and we recall the page
-if ($action != 'delete' && !GETPOST('afteroauthloginreturn') && (empty($statewithscopeonly) || empty($requestedpermissionsarray))) {
+if ($action != 'delete' && !request()->input('afteroauthloginreturn') && (empty($statewithscopeonly) || empty($requestedpermissionsarray))) {
 	dol_syslog("state or statewithscopeonly and/or requestedpermissionsarray are empty");
 	setEventMessages($langs->trans('ScopeUndefined'), null, 'errors');
 	if (empty($backtourl)) {
@@ -142,10 +142,10 @@ $apiService->setAccessType('offline');
 
 
 if (!getDolGlobalString($keyforparamid)) {
-	accessforbidden('Setup of service '.$keyforparamid.' is not complete. Customer ID is missing');
+	abort(403);
 }
 if (!getDolGlobalString($keyforparamsecret)) {
-	accessforbidden('Setup of service '.$keyforparamid.' is not complete. Secret key is missing');
+	abort(403);
 }
 
 
@@ -153,8 +153,8 @@ if (!getDolGlobalString($keyforparamsecret)) {
  * Actions
  */
 
-if ($action == 'delete' && (!empty($user->admin) || $user->id == GETPOSTINT('userid'))) {
-	$storage->userid = GETPOSTINT('userid');
+if ($action == 'delete' && (!empty($user->admin) || $user->id == request()->integer('userid', 0))) {
+	$storage->userid = request()->integer('userid', 0);
 	$storage->clearToken('Google');
 
 	setEventMessages($langs->trans('TokenDeleted'), null, 'mesgs');
@@ -164,7 +164,7 @@ if ($action == 'delete' && (!empty($user->admin) || $user->id == GETPOSTINT('use
 }
 
 
-if (!GETPOST('code')) {
+if (!request()->input('code')) {
 	dol_syslog("Page is called without the 'code' parameter defined");
 
 	// If we enter this page without 'code' parameter, it means we click on the link from login page ($forlogin is set) or from setup page and we want to get the redirect
@@ -201,8 +201,8 @@ if (!GETPOST('code')) {
 		// TODO Add param hd. What is it for ?
 		//$url .= 'hd=xxx';
 
-		if (GETPOST('username')) {
-			$url .= '&login_hint='.urlencode(GETPOST('username'));
+		if (request()->input('username')) {
+			$url .= '&login_hint='.urlencode(request()->input('username'));
 		}
 
 		// Check that the redirect_uri that will be used is same than url of current domain
@@ -226,12 +226,12 @@ if (!GETPOST('code')) {
 
 	//var_dump($url);exit;
 
-	// we go on oauth provider authorization page, we will then go back on this page but into the other branch of the if (!GETPOST('code'))
+	// we go on oauth provider authorization page, we will then go back on this page but into the other branch of the if (!request()->input('code'))
 	header('Location: '.$url);
 	exit();
 } else {
 	// We are coming from the return of an OAuth2 provider page.
-	dol_syslog(basename(__FILE__)." We are coming from the oauth provider page keyforprovider=".$keyforprovider." code=".dol_trunc(GETPOST('code'), 5));
+	dol_syslog(basename(__FILE__)." We are coming from the oauth provider page keyforprovider=".$keyforprovider." code=".dol_trunc(request()->input('code'), 5));
 
 	// We must validate that the $state is the same than the one into $_SESSION['oauthstateanticsrf'], return error if not.
 	if (isset($_SESSION['oauthstateanticsrf']) && $state != $_SESSION['oauthstateanticsrf']) {
@@ -253,7 +253,7 @@ if (!GETPOST('code')) {
 			try {
 				// This requests the token from the received OAuth code (call of the https://oauth2.googleapis.com/token endpoint)
 				// Result is stored into object managed by class DoliStorage into includes/OAuth/Common/Storage/DoliStorage.php and into database table llx_oauth_token
-				$token = $apiService->requestAccessToken(GETPOST('code'), $state);
+				$token = $apiService->requestAccessToken(request()->input('code'), $state);
 			} catch (Exception $e) {
 				dol_syslog("Failed to get token with requestAccessToken: ".$e->getMessage(), LOG_ERR);
 				setEventMessages("Failed to get token with requestAccessToken: ".$e->getMessage(), null, 'errors');

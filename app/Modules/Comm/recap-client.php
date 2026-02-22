@@ -43,7 +43,7 @@ if (isModEnabled('invoice')) {
 }
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 $id = 0;
 if ($user->socid > 0) {
 	$action = '';
@@ -87,7 +87,7 @@ if ($socid > 0) {
 
 	print $langs->trans("FeatureNotYetAvailable");
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

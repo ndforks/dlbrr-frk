@@ -46,28 +46,28 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $langs->loadLangs(array('resource', 'companies', 'other', 'main'));
 
 // Get parameters
-$action					= GETPOST('action', 'aZ09');
-$cancel					= GETPOST('cancel', 'alpha');
-$backtopage				= GETPOST('backtopage', 'alpha');
+$action					= request()->input('action');
+$cancel					= request()->input('cancel');
+$backtopage				= request()->input('backtopage');
 
-$id						= GETPOSTINT('id');
-$ref					= GETPOST('ref', 'alpha');
-$address				= GETPOST('address', 'alpha');
-$zip					= GETPOST('zipcode', 'alpha');
-$town					= GETPOST('town', 'alpha');
-$country_id				= GETPOSTINT('country_id');
-$state_id				= GETPOSTINT('state_id');
-$description			= GETPOST('description', 'restricthtml');
-$phone					= GETPOST('phone', 'alpha');
-$email					= GETPOST('email', 'alpha');
-$max_users				= GETPOSTINT('max_users');
-$url					= GETPOST('url', 'alpha');
-$confirm				= GETPOST('confirm', 'aZ09');
-$fk_code_type_resource	= GETPOST('fk_code_type_resource', 'aZ09');
+$id						= request()->integer('id', 0);
+$ref					= request()->input('ref');
+$address				= request()->input('address');
+$zip					= request()->input('zipcode');
+$town					= request()->input('town');
+$country_id				= request()->integer('country_id', 0);
+$state_id				= request()->integer('state_id', 0);
+$description			= request()->input('description');
+$phone					= request()->input('phone');
+$email					= request()->input('email');
+$max_users				= request()->integer('max_users', 0);
+$url					= request()->input('url');
+$confirm				= request()->input('confirm');
+$fk_code_type_resource	= request()->input('fk_code_type_resource');
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $object = new Dolresource($db);
@@ -255,7 +255,7 @@ if ($action == 'create' || $object->fetch($id, $ref) > 0) {
 
 	if ($action == 'create' || $action == 'edit') {
 		if (!$user->hasRight('resource', 'write')) {
-			accessforbidden('', 0);
+			abort(403);
 		}
 
 		if (!empty($conf->use_javascript_ajax)) {
@@ -300,34 +300,34 @@ if ($action == 'create' || $object->fetch($id, $ref) > 0) {
 		// Address
 		print '<tr><td class="tdtop">'.$form->editfieldkey('Address', 'address', '', $object, 0).'</td>';
 		print '<td><textarea name="address" id="address" class="quatrevingtpercent" rows="3" wrap="soft">';
-		print dol_escape_htmltag(GETPOSTISSET('address') ? GETPOST('address') : $object->address, 0, 1);
+		print dol_escape_htmltag(request()->has('address') ? request()->input('address') : $object->address, 0, 1);
 		print '</textarea>';
 		print $form->widgetForTranslation("address", $object, (bool) $permissiontoadd, 'textarea', 'alphanohtml', 'quatrevingtpercent');
 		print '</td></tr>';
 
 		// Zip
 		print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
-		print $formresource->select_ziptown(GETPOSTISSET('zipcode') ? GETPOST('zipcode') : $object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 0, '', 'maxwidth100');
+		print $formresource->select_ziptown(request()->has('zipcode') ? request()->input('zipcode') : $object->zip, 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 0, '', 'maxwidth100');
 		print '</td>';
 		print '</tr>';
 
 		// Town
 		print '<tr>';
 		print '<td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
-		print $formresource->select_ziptown(GETPOSTISSET('town') ? GETPOST('town') : $object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+		print $formresource->select_ziptown(request()->has('town') ? request()->input('town') : $object->town, 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 		print $form->widgetForTranslation("town", $object, (bool) $permissiontoadd, 'string', 'alphanohtml', 'maxwidth100 quatrevingtpercent');
 		print '</td></tr>';
 
 		// Origin country
 		print '<tr><td>'.$langs->trans("CountryOrigin").'</td><td>';
-		print $form->select_country(GETPOSTISSET('country_id') ? (string) GETPOSTINT('country_id') : (string) $object->country_id, 'country_id');
+		print $form->select_country(request()->has('country_id') ? (string) request()->integer('country_id', 0) : (string) $object->country_id, 'country_id');
 		if ($user->admin) {
 			print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 		}
 		print '</td></tr>';
 
 		// State
-		$countryid = GETPOSTISSET('country_id') ? GETPOSTINT('country_id') : $object->country_id;
+		$countryid = request()->has('country_id') ? request()->integer('country_id', 0) : $object->country_id;
 		if (!getDolGlobalString('SOCIETE_DISABLE_STATE') && $countryid > 0) {
 			if ((getDolGlobalInt('MAIN_SHOW_REGION_IN_STATE_SELECT') == 1 || getDolGlobalInt('MAIN_SHOW_REGION_IN_STATE_SELECT') == 2)) {
 				print '<tr><td>'.$form->editfieldkey('Region-State', 'state_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
@@ -348,28 +348,28 @@ if ($action == 'create' || $object->fetch($id, $ref) > 0) {
 		print '<td>'.$form->editfieldkey('Phone', 'phone', '', $object, 0).'</td>';
 		print '<td>';
 		print img_picto('', 'object_phoning', 'class="pictofixedwidth"');
-		print '<input type="tel" name="phone" id="phone" value="'.(GETPOSTISSET('phone') ? GETPOST('phone', 'alpha') : $object->phone).'"></td>';
+		print '<input type="tel" name="phone" id="phone" value="'.(request()->has('phone') ? request()->input('phone') : $object->phone).'"></td>';
 		print '</tr>';
 
 		// Email
 		print '<tr><td>'.$form->editfieldkey('EMail', 'email', '', $object, 0).'</td>';
 		print '<td>';
 		print img_picto('', 'object_email', 'class="pictofixedwidth"');
-		print '<input type="email" name="email" id="email" value="'.(GETPOSTISSET('email') ? GETPOST('email', 'alpha') : $object->email).'" spellcheck="false"></td>';
+		print '<input type="email" name="email" id="email" value="'.(request()->has('email') ? request()->input('email') : $object->email).'" spellcheck="false"></td>';
 		print '</tr>';
 
 		// Max users
 		print '<tr><td>'.$form->editfieldkey('MaxUsers', 'max_users', '', $object, 0, 'string', '', 0, 0, 'id', $langs->trans('MaxUsersResourceDesc')).'</td>';
 		print '<td>';
 		print img_picto('', 'object_user', 'class="pictofixedwidth"');
-		print '<input type="text" class="width75 right" name="max_users" id="max_users" value="'.(GETPOSTISSET('max_users') ? GETPOST('max_users', 'int') : ($object->max_users > 0 ? $object->max_users : '')).'"></td>';
+		print '<input type="text" class="width75 right" name="max_users" id="max_users" value="'.(request()->has('max_users') ? request()->input('max_users') : ($object->max_users > 0 ? $object->max_users : '')).'"></td>';
 		print '</tr>';
 
 		// URL
 		print '<tr><td>'.$form->editfieldkey('URL', 'url', '', $object, 0).'</td>';
 		print '<td>';
 		print img_picto('', 'object_url', 'class="pictofixedwidth"');
-		print '<input type="url" class="minwidth300" name="url" id="url" value="'.(GETPOSTISSET('url') ? GETPOST('url', 'alpha') : $object->url).'" spellcheck="false"></td>';
+		print '<input type="url" class="minwidth300" name="url" id="url" value="'.(request()->has('url') ? request()->input('url') : $object->url).'" spellcheck="false"></td>';
 		print '</tr>';
 
 		// Other attributes

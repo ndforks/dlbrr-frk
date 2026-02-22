@@ -49,42 +49,42 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 $langs->loadLangs(array('admin', 'banks', 'bills', 'blockedlog', 'other'));
 
 // Get Parameters
-$action      = GETPOST('action', 'aZ09');
-$confirm     = GETPOST('confirm', 'aZ09');	// Used by the actions_linkedfiles.inc.php
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : getDolDefaultContextPage(__FILE__); // To manage different context of search
-$backtopage  = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-$optioncss   = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$action      = request()->input('action');
+$confirm     = request()->input('confirm');	// Used by the actions_linkedfiles.inc.php
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : getDolDefaultContextPage(__FILE__); // To manage different context of search
+$backtopage  = request()->input('backtopage'); // Go back to a dedicated page
+$optioncss   = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-//$hmacexportkey = GETPOST('hmacexportkey', 'password');
-$withtab    = GETPOSTINT('withtab');
+//$hmacexportkey = request()->input('hmacexportkey');
+$withtab    = request()->integer('withtab', 0);
 
-$search_showonlyerrors = GETPOSTINT('search_showonlyerrors');
+$search_showonlyerrors = request()->integer('search_showonlyerrors', 0);
 if ($search_showonlyerrors < 0) {
 	$search_showonlyerrors = 0;
 }
 
-$search_startyear = GETPOSTINT('search_startyear');
-$search_startmonth = GETPOSTINT('search_startmonth');
-$search_startday = GETPOSTINT('search_startday');
-$search_endyear = GETPOSTINT('search_endyear');
-$search_endmonth = GETPOSTINT('search_endmonth');
-$search_endday = GETPOSTINT('search_endday');
-$search_id = GETPOST('search_id', 'alpha');
-$search_fk_user = GETPOST('search_fk_user', 'intcomma');
+$search_startyear = request()->integer('search_startyear', 0);
+$search_startmonth = request()->integer('search_startmonth', 0);
+$search_startday = request()->integer('search_startday', 0);
+$search_endyear = request()->integer('search_endyear', 0);
+$search_endmonth = request()->integer('search_endmonth', 0);
+$search_endday = request()->integer('search_endday', 0);
+$search_id = request()->input('search_id');
+$search_fk_user = request()->input('search_fk_user');
 $search_start = -1;
-if (GETPOST('search_startyear') != '') {
+if (request()->input('search_startyear') != '') {
 	$search_start = dol_mktime(0, 0, 0, $search_startmonth, $search_startday, $search_startyear);
 }
 $search_end = -1;
-if (GETPOST('search_endyear') != '') {
+if (request()->input('search_endyear') != '') {
 	$search_end = dol_mktime(23, 59, 59, $search_endmonth, $search_endday, $search_endyear);
 }
-$search_code = GETPOST('search_code', 'array:alpha');
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_amount = GETPOST('search_amount', 'alpha');
-$search_signature = GETPOST('search_signature', 'alpha');
+$search_code = request()->input('search_code');
+$search_ref = request()->input('search_ref');
+$search_amount = request()->input('search_amount');
+$search_signature = request()->input('search_signature');
 
-if (($search_start == -1 || empty($search_start)) && !GETPOSTISSET('search_startmonth') && !GETPOSTISSET('begin')) {
+if (($search_start == -1 || empty($search_start)) && !request()->has('search_startmonth') && !request()->has('begin')) {
 	$search_start = dol_time_plus_duree(dol_now(), -1, 'w');
 	$tmparray = dol_getdate($search_start);
 	$search_startday = $tmparray['mday'];
@@ -93,10 +93,10 @@ if (($search_start == -1 || empty($search_start)) && !GETPOSTISSET('search_start
 }
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -116,7 +116,7 @@ $block_static->loadTrackedEvents();
 
 // Access Control
 if ((!$user->admin && !$user->hasRight('blockedlog', 'read')) || !isModEnabled('blockedlog')) {
-	accessforbidden();
+	abort(403);
 }
 
 // We force also permission to write because it does not exists and we need it to upload a file
@@ -150,7 +150,7 @@ $fh = null;
  */
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_id = '';
 	$search_fk_user = '';
 	$search_start = -1;
@@ -179,7 +179,7 @@ if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is 
 	$firstid = '';
 	$periodnotcomplete = 0;
 
-	if (! (GETPOSTINT('yeartoexport') > 0)) {
+	if (! (request()->integer('yeartoexport', 0) > 0)) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Year")), null, "errors");
 		$action = '';
 		$error++;
@@ -191,8 +191,8 @@ if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is 
 	}
 	*/
 
-	$dates = dol_get_first_day(GETPOSTINT('yeartoexport'), GETPOSTINT('monthtoexport') > 0 ? GETPOSTINT('monthtoexport') : 1);
-	$datee = dol_get_last_day(GETPOSTINT('yeartoexport'), GETPOSTINT('monthtoexport') > 0 ? GETPOSTINT('monthtoexport') : 12);
+	$dates = dol_get_first_day(request()->integer('yeartoexport', 0), request()->integer('monthtoexport', 0) > 0 ? request()->integer('monthtoexport', 0) : 1);
+	$datee = dol_get_last_day(request()->integer('yeartoexport', 0), request()->integer('monthtoexport', 0) > 0 ? request()->integer('monthtoexport', 0) : 12);
 
 	if ($datee >= dol_now()) {
 		$periodnotcomplete = 1;
@@ -233,7 +233,7 @@ if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is 
 	$registrationnumber = getHashUniqueIdOfRegistration();
 	$secretkey = $registrationnumber;
 
-	$yearmonthtoexport = GETPOSTINT('yeartoexport').'-'.(GETPOSTINT('monthtoexport') > 0 ? sprintf("%02d", GETPOSTINT('monthtoexport')) : '');
+	$yearmonthtoexport = request()->integer('yeartoexport', 0).'-'.(request()->integer('monthtoexport', 0) > 0 ? sprintf("%02d", request()->integer('monthtoexport', 0)) : '');
 	$yearmonthdateofexport = dol_print_date(dol_now(), 'dayhourrfc', 'gmt');
 	$yearmonthdateofexportstandard = dol_print_date(dol_now(), 'dayhourlog', 'gmt');
 
@@ -715,7 +715,7 @@ if ($action == 'export' && $user->hasRight('blockedlog', 'read')) {		// read is 
 			$object->fullname = $user->getFullName($langs);
 
 			$object->label = 'Export unalterable logs';
-			$object->period = 'year='.GETPOSTINT('yeartoexport').(GETPOSTINT('monthtoexport') ? ' month='.GETPOSTINT('monthtoexport') : '');
+			$object->period = 'year='.request()->integer('yeartoexport', 0).(request()->integer('monthtoexport', 0) ? ' month='.request()->integer('monthtoexport', 0) : '');
 
 			$action = 'BLOCKEDLOG_EXPORT';
 
@@ -780,7 +780,7 @@ if (!isRegistrationDataSavedAndPushed()) {
 
 print load_fiche_titre($title.'<br>'.$texttop, $linkback, 'blockedlog', 0, '', '', $morehtmlcenter);
 
-$head = blockedlogadmin_prepare_head(GETPOST('withtab', 'alpha'));
+$head = blockedlogadmin_prepare_head(request()->input('withtab'));
 
 print dol_get_fiche_head($head, 'archives', '', -1);
 
@@ -798,9 +798,9 @@ if ($action == 'check' || $action == 'checkconfirmed') {
 	print '<br>';
 	print '<div class="formconsumeproduce">';
 
-	print '<b>'.$langs->trans("File").'</b> : '.GETPOST('urlfile').'<br>';
+	print '<b>'.$langs->trans("File").'</b> : '.request()->input('urlfile').'<br>';
 
-	$fullpath = $upload_dir.'/'.GETPOST('urlfile');
+	$fullpath = $upload_dir.'/'.request()->input('urlfile');
 
 	$handle = fopen($fullpath, "r");
 	$line = fgets($handle);
@@ -832,7 +832,7 @@ if ($action == 'check' || $action == 'checkconfirmed') {
 	$secretkey = $registrationnumber;
 
 	// Prepare to create a temporary file
-	$fullpathtmp = $upload_dir.'/temp/'.GETPOST('urlfile').'.tmp';
+	$fullpathtmp = $upload_dir.'/temp/'.request()->input('urlfile').'.tmp';
 
 	dol_mkdir($upload_dir.'/temp');
 	$result = dol_copy($fullpath, $fullpathtmp);
@@ -873,7 +873,7 @@ if ($action == 'check' || $action == 'checkconfirmed') {
 		print '<input type="text" name="inputregistrationnumber" placeholder="'.$langs->trans("FullRegistrationNumber").'">';
 	}
 	print '<br><br>';
-	print '<center><a class="button small nomarginleft" href="'.$_SERVER["PHP_SELF"].'?action=checkconfirmed&urlfile='.urlencode(GETPOST('urlfile')).'">'.$langs->trans("ControlFile").'</a></center>';
+	print '<center><a class="button small nomarginleft" href="'.$_SERVER["PHP_SELF"].'?action=checkconfirmed&urlfile='.urlencode(request()->input('urlfile')).'">'.$langs->trans("ControlFile").'</a></center>';
 
 	//<input type="text" name="inputregistrationnumber" placeholder="'.$langs->trans("RegistrationNumber").'">';
 
@@ -1049,7 +1049,7 @@ if ($action == 'check' || $action == 'checkconfirmed') {
 			}
 			fclose($handle);
 		} else {
-			print 'Failed to open file '.GETPOST('urlfile');
+			print 'Failed to open file '.request()->input('urlfile');
 		}
 
 		print '<br><br>';
@@ -1209,8 +1209,8 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 	if ($optioncss != '') {
 		$param .= '&optioncss='.urlencode($optioncss);
 	}
-	if (GETPOST('withtab', 'alpha')) {
-		$param .= '&withtab='.urlencode(GETPOST('withtab', 'alpha'));
+	if (request()->input('withtab')) {
+		$param .= '&withtab='.urlencode(request()->input('withtab'));
 	}
 
 	// Add $param from extra fields
@@ -1219,7 +1219,7 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 	if ($action == 'deletefile') {
 		$langs->load("companies"); // Need for string DeleteFile+ConfirmDeleteFiles
 		print $form->formconfirm(
-			$_SERVER["PHP_SELF"].'?urlfile='.urlencode(GETPOST("urlfile")).'&linkid='.GETPOSTINT('linkid').(empty($param) ? '' : $param),
+			$_SERVER["PHP_SELF"].'?urlfile='.urlencode(request()->input('urlfile')).'&linkid='.request()->integer('linkid', 0).(empty($param) ? '' : $param),
 			$langs->trans('DeleteFile'),
 			$langs->trans('ConfirmDeleteFile'),
 			'confirm_deletefile',
@@ -1238,20 +1238,20 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 
 	print '<span class="hideonsmartphone">'.$langs->trans("RestrictYearToExport").': </span>';
 	// Month
-	print $formother->select_month((string) GETPOSTINT('monthtoexport'), 'monthtoexport', $langs->trans("Month"), 0, 'minwidth50 maxwidth75imp valignmiddle', true);
-	print '<input type="text" name="yeartoexport" class="valignmiddle maxwidth75imp" value="'.GETPOST('yeartoexport').'" placeholder="'.$langs->trans("Year").'">';
+	print $formother->select_month((string) request()->integer('monthtoexport', 0), 'monthtoexport', $langs->trans("Month"), 0, 'minwidth50 maxwidth75imp valignmiddle', true);
+	print '<input type="text" name="yeartoexport" class="valignmiddle maxwidth75imp" value="'.request()->input('yeartoexport').'" placeholder="'.$langs->trans("Year").'">';
 
 	print ' ';
 
 	// Disabled, we will use the getHashUniqueIdOfRegistration() as secret HMAC
-	//print '<input type="text" name="hmacexportkey" class="valignmiddle minwidth150imp maxwidth300imp" required value="'.GETPOST('hmacexportkey').'" placeholder="'.$langs->trans("Password").'">';
+	//print '<input type="text" name="hmacexportkey" class="valignmiddle minwidth150imp maxwidth300imp" required value="'.request()->input('hmacexportkey').'" placeholder="'.$langs->trans("Password").'">';
 
 	print ' ';
 
-	print '<input type="hidden" name="withtab" value="'.GETPOST('withtab', 'alpha').'">';
+	print '<input type="hidden" name="withtab" value="'.request()->input('withtab').'">';
 	print '<input type="submit" name="downloadcsv" class="button" value="'.$langs->trans('DownloadLogCSV').'">';
 	/*if (getDolGlobalString('BLOCKEDLOG_USE_REMOTE_AUTHORITY')) {
-		print ' | <a href="?action=downloadblockchain'.(GETPOST('withtab', 'alpha') ? '&withtab='.GETPOST('withtab', 'alpha') : '').'">'.$langs->trans('DownloadBlockChain').'</a>';
+		print ' | <a href="?action=downloadblockchain'.(request()->input('withtab') ? '&withtab='.request()->input('withtab') : '').'">'.$langs->trans('DownloadBlockChain').'</a>';
 	}*/
 	print ' </div><br>';
 
@@ -1271,7 +1271,7 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 	print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 	print '<input type="hidden" name="page" value="'.$page.'">';
 	print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
-	print '<input type="hidden" name="withtab" value="'.GETPOST('withtab', 'alpha').'">';
+	print '<input type="hidden" name="withtab" value="'.request()->input('withtab').'">';
 
 	print '<div class="div-table-responsive">'; // You can use div-table-responsive-no-min if you don't need reserved height for your table
 	*/
@@ -1349,7 +1349,7 @@ if ($action != 'check' && $action != 'checkconfirmed') {
 }
 
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	print dol_get_fiche_end();
 }
 

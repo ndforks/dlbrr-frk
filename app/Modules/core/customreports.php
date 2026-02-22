@@ -59,35 +59,35 @@ if (!defined('USE_CUSTOM_REPORT_AS_INCLUDE')) {
 	require '../main.inc.php';
 
 	// Get parameters
-	$action     = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-	$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
+	$action     = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
+	$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
 
-	$mode = GETPOST('mode', 'alpha');
-	$objecttype = (string) GETPOST('objecttype', 'aZ09arobase');
-	$tabfamily  = GETPOST('tabfamily', 'aZ09');
+	$mode = request()->input('mode');
+	$objecttype = (string) request()->input('objecttype');
+	$tabfamily  = request()->input('tabfamily');
 
-	$search_measures = GETPOST('search_measures', 'array');
+	$search_measures = request()->input('search_measures');
 
-	//$search_xaxis = GETPOST('search_xaxis', 'array');
-	if (GETPOST('search_xaxis', 'alpha') && GETPOST('search_xaxis', 'alpha') != '-1') {
-		$search_xaxis = array(GETPOST('search_xaxis', 'alpha'));
+	//$search_xaxis = request()->input('search_xaxis');
+	if (request()->input('search_xaxis') && request()->input('search_xaxis') != '-1') {
+		$search_xaxis = array(request()->input('search_xaxis'));
 	}
-	//$search_groupby = GETPOST('search_groupby', 'array');
-	if (GETPOST('search_groupby', 'alpha') && GETPOST('search_groupby', 'alpha') != '-1') {
-		$search_groupby = array(GETPOST('search_groupby', 'alpha'));
+	//$search_groupby = request()->input('search_groupby');
+	if (request()->input('search_groupby') && request()->input('search_groupby') != '-1') {
+		$search_groupby = array(request()->input('search_groupby'));
 	}
 
 	'@phan-var-force string[] $search_groupby';
 
-	$search_yaxis = GETPOST('search_yaxis', 'array');
-	$search_graph = (string) GETPOST('search_graph', 'restricthtml');
+	$search_yaxis = request()->input('search_yaxis');
+	$search_graph = (string) request()->input('search_graph');
 
 	// Load variable for pagination
-	$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-	$sortfield = GETPOST('sortfield', 'aZ09comma');
-	$sortorder = GETPOST('sortorder', 'aZ09comma');
-	$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-	if (empty($page) || $page == -1 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha') || (empty($toselect) && $massaction === '0')) {
+	$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+	$sortfield = request()->input('sortfield');
+	$sortorder = request()->input('sortorder');
+	$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+	if (empty($page) || $page == -1 || request()->input('button_search') || request()->input('button_removefilter') || (empty($toselect) && $massaction === '0')) {
 		$page = 0;
 	}     // If $page is not defined, or '' or -1 or if we click on clear filters or if we select empty mass action
 	$offset = $limit * $page;
@@ -237,7 +237,7 @@ if ($objecttype) {
 $socid = 0;
 if ($user->socid > 0) {	// Protection if external user
 	//$socid = $user->socid;
-	accessforbidden('Access forbidden to external users');
+	abort(403);
 }
 
 // Fetch optionals attributes and labels
@@ -251,8 +251,8 @@ if (!empty($object->table_element)) {
 }
 
 $search_component_params = array('');
-$search_component_params_hidden = trim(GETPOST('search_component_params_hidden', 'alphanohtml'));
-$search_component_params_input = trim(GETPOST('search_component_params_input', 'alphanohtml'));
+$search_component_params_hidden = trim(request()->input('search_component_params_hidden'));
+$search_component_params_input = trim(request()->input('search_component_params_input'));
 //var_dump($search_component_params_hidden);
 //var_dump($search_component_params_input);
 
@@ -508,7 +508,7 @@ if (count($search_groupby)) {
 		//print $sql;
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		while ($obj = $db->fetch_object($resql)) {
@@ -662,7 +662,7 @@ if (!defined('MAIN_CUSTOM_REPORT_KEEP_GRAPH_ONLY')) {
 	        jQuery(document).ready(function() {
 	        	jQuery("#objecttype").change(function() {
 	        		console.log("Reload for "+jQuery("#objecttype").val());
-	                location.href = "'.$_SERVER["PHP_SELF"].'?objecttype="+jQuery("#objecttype").val()+"'.($tabfamily ? '&tabfamily='.urlencode($tabfamily) : '').(GETPOSTINT('show_search_component_params_hidden') ? '&show_search_component_params_hidden='.((int) GETPOSTINT('show_search_component_params_hidden')) : '').'";
+	                location.href = "'.$_SERVER["PHP_SELF"].'?objecttype="+jQuery("#objecttype").val()+"'.($tabfamily ? '&tabfamily='.urlencode($tabfamily) : '').(request()->integer('show_search_component_params_hidden', 0) ? '&show_search_component_params_hidden='.((int) request()->integer('show_search_component_params_hidden', 0)) : '').'";
 	        	});
 	        });
 	    </script>';
@@ -1290,7 +1290,7 @@ if ($mode == 'graph') {
 		}
 
 		$texttoshow = $langs->trans("NoRecordFound");
-		if (!GETPOSTISSET('search_measures') || !GETPOSTISSET('search_xaxis')) {
+		if (!request()->has('search_measures') || !request()->has('search_xaxis')) {
 			$texttoshow = $langs->trans("SelectYourGraphOptionsFirst");
 		}
 

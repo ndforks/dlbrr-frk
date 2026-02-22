@@ -50,12 +50,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/website2.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'alpha');
-$website_ref = GETPOST('website_ref');
-$page_id = GETPOST('page_id');
-$content = GETPOST('content', 'restricthtml');
-$element_id = GETPOST('element_id');
-$element_type = GETPOST('element_type');
+$action = request()->input('action');
+$website_ref = request()->input('website_ref');
+$page_id = request()->input('page_id');
+$content = request()->input('content');
+$element_id = request()->input('element_id');
+$element_type = request()->input('element_type');
 
 $usercanmodify = $user->hasRight('website', 'write');
 if (!$usercanmodify) {

@@ -39,16 +39,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/fiscalyear.class.php';
 $langs->loadLangs(array("admin", "compta"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha') ? GETPOST('ref', 'alpha') : GETPOST('label', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref') ? request()->input('ref') : request()->input('label');
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');					// if not set, a default page will be used
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');	// if not set, $backtopage will be used
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage = request()->input('backtopage');					// if not set, a default page will be used
+$backtopageforcancel = request()->input('backtopageforcancel');	// if not set, $backtopage will be used
+$dol_openinpopup = request()->input('dol_openinpopup');
 
 $error = 0;
 
@@ -70,17 +70,17 @@ foreach ($tmpstatus2label as $key => $val) {
 	$status2label[$key] = $langs->trans($val);
 }
 */
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT('fiscalyearmonth'), GETPOSTINT('fiscalyearday'), GETPOSTINT('fiscalyearyear'));
-$date_end = dol_mktime(0, 0, 0, GETPOSTINT('fiscalyearendmonth'), GETPOSTINT('fiscalyearendday'), GETPOSTINT('fiscalyearendyear'));
+$date_start = dol_mktime(0, 0, 0, request()->integer('fiscalyearmonth', 0), request()->integer('fiscalyearday', 0), request()->integer('fiscalyearyear', 0));
+$date_end = dol_mktime(0, 0, 0, request()->integer('fiscalyearendmonth', 0), request()->integer('fiscalyearendday', 0), request()->integer('fiscalyearendyear', 0));
 
 $permissiontoadd = $user->hasRight('accounting', 'fiscalyear', 'write');
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoadd) { // after this test $permissiontoadd is always true
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -103,13 +103,13 @@ if ($action == 'confirm_delete' && $confirm == "yes" /* && $permissiontoadd // a
 		setEventMessages($object->error, $object->errors, 'errors');
 	}
 } elseif ($action == 'add' /* && $permissiontoadd // always true */) {
-	if (!GETPOST('cancel', 'alpha')) {
+	if (!request()->input('cancel')) {
 		$error = 0;
 
 		$object->date_start = $date_start;
 		$object->date_end = $date_end;
-		$object->label = GETPOST('label', 'alpha');
-		$object->status = GETPOSTINT('status');
+		$object->label = request()->input('label');
+		$object->status = request()->integer('status', 0);
 		$object->datec = dol_now();
 
 		if (empty($object->date_start) && empty($object->date_end)) {
@@ -149,13 +149,13 @@ if ($action == 'confirm_delete' && $confirm == "yes" /* && $permissiontoadd // a
 	}
 } elseif ($action == 'update' /* && $permissiontoadd // always true */) {
 	// Update record
-	if (!GETPOST('cancel', 'alpha')) {
+	if (!request()->input('cancel')) {
 		$result = $object->fetch($id);
 
-		$object->date_start = GETPOST("fiscalyear") ? $date_start : '';
-		$object->date_end = GETPOST("fiscalyearend") ? $date_end : '';
-		$object->label = GETPOST('label', 'alpha');
-		$object->status = GETPOSTINT('status');
+		$object->date_start = request()->input('fiscalyear') ? $date_start : '';
+		$object->date_end = request()->input('fiscalyearend') ? $date_end : '';
+		$object->label = request()->input('label');
+		$object->status = request()->integer('status', 0);
 
 		$result = $object->update($user);
 		if ($result > 0) {
@@ -176,7 +176,7 @@ if ($action == 'confirm_delete' && $confirm == "yes" /* && $permissiontoadd // a
 } elseif ($action == 'reopen' /* && $permissiontoadd // always true */ && getDolGlobalString('ACCOUNTING_CAN_REOPEN_CLOSED_PERIOD')) {
 	$result = $object->fetch($id);
 
-	$object->status = GETPOSTINT('status');
+	$object->status = request()->integer('status', 0);
 	$result = $object->update($user);
 
 	if ($result > 0) {
@@ -216,7 +216,7 @@ if ($action == 'create') {
 
 	// Label
 	print '<tr><td class="titlefieldcreate fieldrequired">'.$langs->trans("Label").'</td><td>';
-	print '<input name="label" size="32" value="'.GETPOST('label', 'alpha').'">';
+	print '<input name="label" size="32" value="'.request()->input('label').'">';
 	print '</td></tr>';
 
 	// Date start
@@ -234,7 +234,7 @@ if ($action == 'create') {
 	print '<tr>';
 	print '<td class="fieldrequired">' . $langs->trans("Status") . '</td>';
 	print '<td class="valeur">';
-	print $form->selectarray('status', $status2label, GETPOST('status', 'int'));
+	print $form->selectarray('status', $status2label, request()->input('status'));
 	print '</td></tr>';
 	*/
 

@@ -54,7 +54,7 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/paymentexpensereport.class.
 // Load translation files required by the page
 $langs->loadLangs(array("other", "compta", "banks", "bills", "companies", "product", "trips", "admin"));
 
-$local = GETPOSTINT('localTaxType');
+$local = request()->integer('localTaxType', 0);
 
 include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
 /**
@@ -80,7 +80,7 @@ include DOL_DOCUMENT_ROOT.'/compta/tva/initdatesforvat.inc.php';
 @phan-var-force int $year_current
 ';
 
-$min = price2num(GETPOST("min", "alpha"));
+$min = price2num(request()->input('min'));
 if (empty($min)) {
 	$min = 0;
 }
@@ -90,22 +90,22 @@ if (empty($min)) {
 //$modetax = $conf->global->TAX_MODE;
 $calc = getDolGlobalString('MAIN_INFO_LOCALTAX_CALC').$local;
 $modetax = getDolGlobalInt('TAX_MODE');
-if (GETPOSTISSET("modetax")) {
-	$modetax = GETPOSTINT("modetax");
+if (request()->has('modetax')) {
+	$modetax = request()->integer('modetax', 0);
 }
 if (empty($modetax)) {
 	$modetax = 0;
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 $result = restrictedArea($user, 'tax', '', '', 'charges');
 
 if (empty($local)) {
-	accessforbidden('Parameter localTaxType is missing');
+	abort(403);
 }
 
 

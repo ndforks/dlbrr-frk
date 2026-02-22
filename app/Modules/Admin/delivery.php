@@ -49,15 +49,15 @@ require_once DOL_DOCUMENT_ROOT.'/delivery/class/delivery.class.php';
 $langs->loadLangs(array("admin", "sendings", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action  = GETPOST('action', 'alpha');
-$value   = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action  = request()->input('action');
+$value   = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label   = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label   = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'delivery';
 
 
@@ -88,8 +88,8 @@ if ($action == 'activate_delivery') {
 }
 
 if ($action == 'updateMask') {
-	$maskconstdelivery = GETPOST('maskconstdelivery', 'aZ09');
-	$maskdelivery = GETPOST('maskdelivery', 'alpha');
+	$maskconstdelivery = request()->input('maskconstdelivery');
+	$maskdelivery = request()->input('maskdelivery');
 
 	$res = 0;
 
@@ -109,7 +109,7 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'set_DELIVERY_FREE_TEXT') {
-	$free = GETPOST('DELIVERY_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$free = request()->input('DELIVERY_FREE_TEXT'); // No alpha here, we want exact string
 	$res = dolibarr_set_const($db, "DELIVERY_FREE_TEXT", $free, 'chaine', 0, '', $conf->entity);
 
 	if (!($res > 0)) {
@@ -124,7 +124,7 @@ if ($action == 'set_DELIVERY_FREE_TEXT') {
 }
 
 if ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$sending = new Delivery($db);
 	$sending->initAsSpecimen();
@@ -357,7 +357,7 @@ if (getDolGlobalString('MAIN_SUBMODULE_DELIVERY')) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '<table class="noborder centpercent">';

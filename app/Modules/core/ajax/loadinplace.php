@@ -47,10 +47,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
  * @var User $user
  */
 
-$field = GETPOST('field', 'alpha');
-$element = GETPOST('element', 'alpha');
-$table_element = GETPOST('table_element', 'alpha');
-$fk_element = GETPOST('fk_element', 'alpha');
+$field = request()->input('field');
+$element = request()->input('element');
+$table_element = request()->input('table_element');
+$fk_element = request()->input('fk_element');
 
 // Load object according to $id and $element
 $element_ref = '';
@@ -74,11 +74,11 @@ if ($usesublevelpermission && !$user->hasRight($module, $element)) {	// There is
 // Security check
 $result = restrictedArea($user, $object->module, $object, $object->table_element, $usesublevelpermission, 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 if (!$result) {
-	httponly_accessforbidden('Not allowed by restrictArea');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('MAIN_USE_JQUERY_JEDITABLE')) {
-	httponly_accessforbidden('Can be used only when option MAIN_USE_JQUERY_JEDITABLE is set');
+	httponly_abort(403);
 }
 
 
@@ -92,10 +92,10 @@ top_httphead();
 
 // Load original field value
 if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_element)) {
-	$ext_element	= GETPOST('ext_element', 'alpha');
+	$ext_element	= request()->input('ext_element');
 	$field = substr($field, 8); // remove prefix val_
-	$type = GETPOST('type', 'alpha');
-	$loadmethod		= (GETPOST('loadmethod', 'alpha') ? GETPOST('loadmethod', 'alpha') : 'getValueFrom');
+	$type = request()->input('type');
+	$loadmethod		= (request()->input('loadmethod') ? request()->input('loadmethod') : 'getValueFrom');
 
 	if ($element != 'order_supplier' && $element != 'invoice_supplier' && preg_match('/^([^_]+)_([^_]+)/i', $element, $regs)) {
 		$element = $regs[1];
@@ -124,7 +124,7 @@ if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_e
 	|| ($element == 'payment_supplier' && $user->hasRight('fournisseur', 'facture', 'lire'))) {
 		if ($type == 'select') {
 			$methodname = 'load_cache_'.$loadmethod;
-			$cachename = 'cache_'.GETPOST('loadmethod', 'alpha');
+			$cachename = 'cache_'.request()->input('loadmethod');
 
 			$form = new Form($db);
 			if (method_exists($form, $methodname)) {

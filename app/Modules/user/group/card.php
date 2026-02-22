@@ -64,14 +64,14 @@ if (getDolGlobalString('MAIN_USE_ADVANCED_PERMS')) {
 // Load translation files required by page
 $langs->loadLangs(array('users', 'other'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
-$confirm = GETPOST('confirm', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'groupcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'groupcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
 
-$userid = GETPOSTINT('user');
+$userid = request()->integer('user', 0);
 
 $object = new UserGroup($db);
 $extrafields = new ExtraFields($db);
@@ -90,7 +90,7 @@ $result = restrictedArea($user, 'user', $id, 'usergroup&usergroup', $feature2);
 
 // Users/Groups management only in master entity if transverse mode
 if (isModEnabled('multicompany') && $conf->entity > 1 && getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -133,13 +133,13 @@ if (empty($reshook)) {
 
 	// Action add group
 	if ($action == 'add' && $permissiontoedit) {
-		if (!GETPOST("nom", "alphanohtml")) {
+		if (!request()->input('nom')) {
 			setEventMessages($langs->trans("NameNotDefined"), null, 'errors');
 			$action = "create"; // Go back to create page
 		} else {
-			$object->name	= GETPOST("nom", 'alphanohtml');
-			$object->note	= dol_htmlcleanlastbr(trim(GETPOST("note", 'restricthtml')));
-			$object->color	= GETPOST("color", 'alphanohtml');
+			$object->name	= request()->input('nom');
+			$object->note	= dol_htmlcleanlastbr(trim(request()->input('note')));
+			$object->color	= request()->input('color');
 
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
@@ -151,7 +151,7 @@ if (empty($reshook)) {
 				$object->entity = 0;
 			} else {
 				if ($conf->entity == 1 && $user->admin && !$user->entity) {		// Same permissions test than the one used to show the combo of entities into the form
-					$object->entity = GETPOSTISSET("entity") ? GETPOST("entity") : $conf->entity;
+					$object->entity = request()->has('entity') ? request()->input('entity') : $conf->entity;
 				} else {
 					$object->entity = $conf->entity;
 				}
@@ -208,9 +208,9 @@ if (empty($reshook)) {
 
 		$object->oldcopy = clone $object;  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-		$object->name = GETPOST("nom", 'alphanohtml');
-		$object->note = dol_htmlcleanlastbr(trim(GETPOST("note", 'restricthtml')));
-		$object->color = GETPOST("color", 'alphanohtml');
+		$object->name = request()->input('nom');
+		$object->note = dol_htmlcleanlastbr(trim(request()->input('note')));
+		$object->color = request()->input('color');
 		$object->tms = dol_now();
 
 		// Fill array 'array_options' with data from add form
@@ -221,8 +221,8 @@ if (empty($reshook)) {
 
 		if (isModEnabled('multicompany') && getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
 			$object->entity = 0;
-		} elseif (GETPOSTISSET("entity")) {
-			$object->entity = GETPOSTINT("entity");
+		} elseif (request()->has('entity')) {
+			$object->entity = request()->integer('entity', 0);
 		}
 
 		$ret = $object->update();
@@ -292,7 +292,7 @@ if ($action == 'create') {
 
 	print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 	print '<td>';
-	print $formother->selectColor(GETPOSTISSET('color') ? GETPOST('color', 'alphanohtml') : $object->color, 'color', null, 1, array(), 'hideifnotset');
+	print $formother->selectColor(request()->has('color') ? request()->input('color') : $object->color, 'color', null, 1, array(), 'hideifnotset');
 	print '</td></tr>';
 
 	// Other attributes
@@ -554,7 +554,7 @@ if ($action == 'create') {
 
 			print '<tr><td>'.$langs->trans("ColorGroup").'</td>';
 			print '<td>';
-			print $formother->selectColor(GETPOSTISSET('color') ? GETPOST('color', 'alphanohtml') : $object->color, 'color', null, 1, array(), 'hideifnotset');
+			print $formother->selectColor(request()->has('color') ? request()->input('color') : $object->color, 'color', null, 1, array(), 'hideifnotset');
 			print '</td></tr>';
 
 			// Other attributes

@@ -248,7 +248,7 @@ function CreateFolder($resourceType, $currentFolder)
 	$sErrorMsg = '';
 
 	if (isset($_GET['NewFolderName'])) {
-		$sNewFolderName = GETPOST('NewFolderName');
+		$sNewFolderName = request()->input('NewFolderName');
 		$sNewFolderName = SanitizeFolderName($sNewFolderName);
 
 		if (strpos($sNewFolderName, '..') !== false) {

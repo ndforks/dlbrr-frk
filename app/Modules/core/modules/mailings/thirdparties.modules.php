@@ -89,69 +89,69 @@ class mailing_thirdparties extends MailingTargets
 
 		$addDescription = "";
 		$addFilter = "";
-		if (GETPOSTISSET("filter_client_thirdparties") && GETPOST("filter_client_thirdparties") != '-1') {
-			$addFilter .= " AND s.client=".(GETPOSTINT("filter_client_thirdparties"));
+		if (request()->has('filter_client_thirdparties') && request()->input('filter_client_thirdparties') != '-1') {
+			$addFilter .= " AND s.client=".(request()->integer('filter_client_thirdparties', 0));
 			$addDescription = $langs->trans('ProspectCustomer')."=";
-			if (GETPOST("filter_client_thirdparties") == 0) {
+			if (request()->input('filter_client_thirdparties') == 0) {
 				$addDescription .= $langs->trans('NorProspectNorCustomer');
-			} elseif (GETPOST("filter_client_thirdparties") == 1) {
+			} elseif (request()->input('filter_client_thirdparties') == 1) {
 				$addDescription .= $langs->trans('Customer');
-			} elseif (GETPOST("filter_client_thirdparties") == 2) {
+			} elseif (request()->input('filter_client_thirdparties') == 2) {
 				$addDescription .= $langs->trans('Prospect');
-			} elseif (GETPOST("filter_client_thirdparties") == 3) {
+			} elseif (request()->input('filter_client_thirdparties') == 3) {
 				$addDescription .= $langs->trans('ProspectCustomer');
 			} else {
-				$addDescription .= "Unknown status ".GETPOST("filter_client_thirdparties");
+				$addDescription .= "Unknown status ".request()->input('filter_client_thirdparties');
 			}
 		}
-		if (GETPOSTISSET("filter_supplier_thirdparties") && GETPOST("filter_supplier_thirdparties") != '-1') {
-			$addFilter .= " AND s.fournisseur = ".(GETPOSTINT("filter_supplier_thirdparties"));
+		if (request()->has('filter_supplier_thirdparties') && request()->input('filter_supplier_thirdparties') != '-1') {
+			$addFilter .= " AND s.fournisseur = ".(request()->integer('filter_supplier_thirdparties', 0));
 			$addDescription = $langs->trans('Supplier')."=";
-			if (GETPOST("filter_supplier_thirdparties") == 0) {
+			if (request()->input('filter_supplier_thirdparties') == 0) {
 				$addDescription .= $langs->trans('No');
-			} elseif (GETPOST("filter_supplier_thirdparties") == 1) {
+			} elseif (request()->input('filter_supplier_thirdparties') == 1) {
 				$addDescription .= $langs->trans('Yes');
 			} else {
-				$addDescription .= "Unknown status ".GETPOST("filter_supplier_thirdparties");
+				$addDescription .= "Unknown status ".request()->input('filter_supplier_thirdparties');
 			}
 		}
-		if (GETPOSTISSET("filter_status")) {
+		if (request()->has('filter_status')) {
 			if (strlen($addDescription) > 0) {
 				$addDescription .= ";";
 			}
 			$addDescription .= $langs->trans("Status")."=";
-			if (GETPOST("filter_status") == '1') {
+			if (request()->input('filter_status') == '1') {
 				$addFilter .= " AND s.status=1";
 				$addDescription .= $langs->trans("Enabled");
-			} elseif (GETPOST("filter_status") == '0') {
+			} elseif (request()->input('filter_status') == '0') {
 				$addFilter .= " AND s.status=0";
 				$addDescription .= $langs->trans("Disabled");
 			}
 		}
-		if (GETPOSTISSET("filter_status")) {
+		if (request()->has('filter_status')) {
 			if (strlen($addDescription) > 0) {
 				$addDescription .= ";";
 			}
 			$addDescription .= $langs->trans("Status")."=";
-			if (GETPOST("filter_status") == '1') {
+			if (request()->input('filter_status') == '1') {
 				$addFilter .= " AND s.status=1";
 				$addDescription .= $langs->trans("Enabled");
-			} elseif (GETPOST("filter_status") == '0') {
+			} elseif (request()->input('filter_status') == '0') {
 				$addFilter .= " AND s.status=0";
 				$addDescription .= $langs->trans("Disabled");
 			}
 		}
-		if (GETPOST('default_lang', 'alpha') && GETPOST('default_lang', 'alpha') != '-1') {
-			$addFilter .= " AND s.default_lang LIKE '".$this->db->escape(GETPOST('default_lang', 'alpha'))."%'";
+		if (request()->input('default_lang') && request()->input('default_lang') != '-1') {
+			$addFilter .= " AND s.default_lang LIKE '".$this->db->escape(request()->input('default_lang'))."%'";
 			$addDescription = $langs->trans('DefaultLang')."=";
 		}
-		if (GETPOST('filter_lang_thirdparties', 'alpha') && GETPOST('filter_lang_thirdparties', 'alpha') != '-1') {
-			$addFilter .= " AND s.default_lang LIKE '".$this->db->escape(GETPOST('filter_lang_thirdparties', 'alpha'))."%'";
+		if (request()->input('filter_lang_thirdparties') && request()->input('filter_lang_thirdparties') != '-1') {
+			$addFilter .= " AND s.default_lang LIKE '".$this->db->escape(request()->input('filter_lang_thirdparties'))."%'";
 			$addDescription = $langs->trans('DefaultLang')."=";
 		}
 
 		// Select the third parties from category
-		if (!GETPOST('filter_thirdparties') || GETPOST('filter_thirdparties') == '-1') {
+		if (!request()->input('filter_thirdparties') || request()->input('filter_thirdparties') == '-1') {
 			$sql = "SELECT s.rowid as id, s.email as email, s.nom as name, null as fk_contact, null as firstname, null as label";
 			$sql .= " FROM ".MAIN_DB_PREFIX."societe as s";
 			$sql .= " WHERE s.email <> ''";
@@ -169,8 +169,8 @@ class mailing_thirdparties extends MailingTargets
 			$sql .= " AND s.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing=".((int) $mailing_id).")";
 			$sql .= " AND cs.fk_soc = s.rowid";
 			$sql .= " AND c.rowid = cs.fk_categorie";
-			if (GETPOSTINT('filter_thirdparties') > 0) {
-				$sql .= " AND c.rowid=".(GETPOSTINT('filter_thirdparties'));
+			if (request()->integer('filter_thirdparties', 0) > 0) {
+				$sql .= " AND c.rowid=".(request()->integer('filter_thirdparties', 0));
 			}
 			if (empty($this->evenunsubscribe)) {
 				$sql .= " AND (SELECT count(*) FROM ".MAIN_DB_PREFIX."mailing_unsubscribe WHERE email = s.email) = 0";
@@ -184,8 +184,8 @@ class mailing_thirdparties extends MailingTargets
 			$sql .= " AND s.email NOT IN (SELECT email FROM ".MAIN_DB_PREFIX."mailing_cibles WHERE fk_mailing=".((int) $mailing_id).")";
 			$sql .= " AND cs.fk_soc = s.rowid";
 			$sql .= " AND c.rowid = cs.fk_categorie";
-			if (GETPOSTINT('filter_thirdparties') > 0) {
-				$sql .= " AND c.rowid=".(GETPOSTINT('filter_thirdparties'));
+			if (request()->integer('filter_thirdparties', 0) > 0) {
+				$sql .= " AND c.rowid=".(request()->integer('filter_thirdparties', 0));
 			}
 			if (empty($this->evenunsubscribe)) {
 				$sql .= " AND (SELECT count(*) FROM ".MAIN_DB_PREFIX."mailing_unsubscribe WHERE email = s.email) = 0";
@@ -387,7 +387,7 @@ class mailing_thirdparties extends MailingTargets
 			$formadmin = new FormAdmin($this->db);
 			$s .= img_picto($langs->trans("DefaultLang"), 'language', 'class="pictofixedwidth"');
 			//$s .= '<span class="opacitymedium">'.$langs->trans("DefaultLang").':</span> ';
-			$s .= $formadmin->select_language(GETPOST('filter_lang_thirdparties', 'aZ09'), 'filter_lang_thirdparties', 0, array(), $langs->trans("DefaultLang"), 0, 0, '', 0, 0, 0, array(), 1);
+			$s .= $formadmin->select_language(request()->input('filter_lang_thirdparties'), 'filter_lang_thirdparties', 0, array(), $langs->trans("DefaultLang"), 0, 0, '', 0, 0, 0, array(), 1);
 		}
 
 		return $s;

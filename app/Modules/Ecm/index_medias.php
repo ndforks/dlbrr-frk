@@ -45,28 +45,28 @@ require_once DOL_DOCUMENT_ROOT.'/ecm/class/ecmdirectory.class.php';
 $langs->loadLangs(array('ecm', 'companies', 'other', 'users', 'orders', 'propal', 'bills', 'contracts'));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$backtopage = request()->input('backtopage');
 
-$socid = GETPOSTINT('socid');
-$file_manager = GETPOST('file_manager', 'alpha');
-$section = GETPOSTINT('section') ? GETPOSTINT('section') : GETPOSTINT('section_id');
+$socid = request()->integer('socid', 0);
+$file_manager = request()->input('file_manager');
+$section = request()->integer('section', 0) ? request()->integer('section', 0) : request()->integer('section_id', 0);
 if (!$section) {
 	$section = 0;
 }
-$section_dir = GETPOST('section_dir', 'alpha');
-$overwritefile = GETPOSTINT('overwritefile');
+$section_dir = request()->input('section_dir');
+$overwritefile = request()->integer('overwritefile', 0);
 
 if (empty($action) && $file_manager) {
 	$action = 'file_manager';
 }
-$pageid  = GETPOSTINT('pageid');
+$pageid  = request()->integer('pageid', 0);
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -125,7 +125,7 @@ $websitekey = '';
  */
 
 $savbacktopage = $backtopage;
-$backtopage = $_SERVER["PHP_SELF"].'?file_manager=1&website='.urlencode((string) ($websitekey)).'&pageid='.urlencode((string) ($pageid)).(GETPOST('section_dir', 'alpha') ? '&section_dir='.urlencode((string) (GETPOST('section_dir', 'alpha'))) : ''); // used after a confirm_deletefile into actions_linkedfiles.inc.php
+$backtopage = $_SERVER["PHP_SELF"].'?file_manager=1&website='.urlencode((string) ($websitekey)).'&pageid='.urlencode((string) ($pageid)).(request()->input('section_dir') ? '&section_dir='.urlencode((string) (request()->input('section_dir'))) : ''); // used after a confirm_deletefile into actions_linkedfiles.inc.php
 if ($sortfield) {
 	$backtopage .= '&sortfield='.urlencode($sortfield);
 }
@@ -144,8 +144,8 @@ if ($action == 'renamefile') {	// Test on permission not required here. Must be 
 // Add directory
 if ($action == 'add' && $permissiontouploadfile) {
 	$ecmdir->ref = 'NOTUSEDYET';
-	$ecmdir->label = GETPOST("label");
-	$ecmdir->description = GETPOST("desc");
+	$ecmdir->label = request()->input('label');
+	$ecmdir->description = request()->input('desc');
 
 	$id = $ecmdir->create($user);
 	if ($id > 0) {
@@ -160,7 +160,7 @@ if ($action == 'add' && $permissiontouploadfile) {
 }
 
 // Remove directory
-if ($action == 'confirm_deletesection' && GETPOST('confirm', 'alpha') == 'yes' && $permissiontoadd) {
+if ($action == 'confirm_deletesection' && request()->input('confirm') == 'yes' && $permissiontoadd) {
 	$result = $ecmdir->delete($user);
 	setEventMessages($langs->trans("ECMSectionWasRemoved", $ecmdir->label), null, 'mesgs');
 

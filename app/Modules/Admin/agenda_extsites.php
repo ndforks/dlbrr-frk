@@ -44,14 +44,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array('agenda', 'admin', 'other'));
 
 $def = array();
-$action = GETPOST('action', 'alpha');
+$action = request()->input('action');
 
 if (!getDolGlobalString('AGENDA_EXT_NB')) {
 	$conf->global->AGENDA_EXT_NB = 5;
@@ -115,7 +115,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 } elseif ($action == 'save') {
 	$db->begin();
 
-	$disableext = GETPOST('AGENDA_DISABLE_EXT', 'alpha');
+	$disableext = request()->input('AGENDA_DISABLE_EXT');
 	$res = dolibarr_set_const($db, 'AGENDA_DISABLE_EXT', $disableext, 'chaine', 0, '', $conf->entity);
 
 	$i = 1;
@@ -166,7 +166,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 
 	// Save nb of agenda
 	if (!$error) {
-		$res = dolibarr_set_const($db, 'AGENDA_EXT_NB', GETPOSTINT('AGENDA_EXT_NB'), 'chaine', 0, '', $conf->entity);
+		$res = dolibarr_set_const($db, 'AGENDA_EXT_NB', request()->integer('AGENDA_EXT_NB', 0), 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}

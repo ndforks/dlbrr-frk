@@ -55,16 +55,16 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("commercial", "compta", "bills", "other", "accountancy", "errors"));
 
-$id_journal = GETPOSTINT('id_journal');
-$action = GETPOST('action', 'aZ09');
+$id_journal = request()->integer('id_journal', 0);
+$action = request()->input('action');
 
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startday = GETPOSTINT('date_startday');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endday = GETPOSTINT('date_endday');
-$date_endyear = GETPOSTINT('date_endyear');
-$in_bookkeeping = GETPOST('in_bookkeeping');
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$in_bookkeeping = request()->input('in_bookkeeping');
 if ($in_bookkeeping == '') {
 	$in_bookkeeping = 'notyet';
 }
@@ -76,13 +76,13 @@ $parameters = array();
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -135,7 +135,7 @@ if (getDolGlobalString('ACCOUNTANCY_JOURNAL_USE_CURRENT_MONTH')) {
 	$pastmonth += 1;
 }
 
-if (!GETPOSTISSET('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
+if (!request()->has('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
 	$date_start = dol_get_first_day((int) $pastmonthyear, (int) $pastmonth, false);
 	$date_end = dol_get_last_day((int) $pastmonthyear, (int) $pastmonth, false);
 }
@@ -371,7 +371,7 @@ if ($result) {
 			if ($resqlrevenuestamp) {
 				$num_rows_revenuestamp = $db->num_rows($resqlrevenuestamp);
 				if ($num_rows_revenuestamp > 1) {
-					dol_print_error($db, 'Failed 2 or more lines for the revenue stamp of your country. Check the dictionary of revenue stamp.');
+					abort(500, 'Failed 2 or more lines for the revenue stamp of your country. Check the dictionary of revenue stamp.');
 				} else {
 					$objrevenuestamp = $db->fetch_object($resqlrevenuestamp);
 					if ($objrevenuestamp) {
@@ -438,7 +438,7 @@ if ($result) {
 	);
 	$reshook = $hookmanager->executeHooks('processedJournalData', $parameters); // Note that $action and $object may have been modified by hook
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -459,7 +459,7 @@ foreach ($tabfac as $key => $val) {		// Loop on each invoice
 			$errorforinvoice[$key] = 'somelinesarenotbound';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 */
@@ -1128,7 +1128,7 @@ if (empty($action) || $action == 'view') {
 				print '</div>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

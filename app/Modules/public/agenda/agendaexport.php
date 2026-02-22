@@ -110,65 +110,65 @@ $agenda = new ActionComm($db);
 // Define format, type and filter
 $format = 'ical';
 $type = 'event';
-if (GETPOST("format", 'alpha')) {
-	$format = GETPOST("format", 'alpha');
+if (request()->input('format')) {
+	$format = request()->input('format');
 }
-if (GETPOST("type", 'alpha')) {
-	$type = GETPOST("type", 'alpha');
+if (request()->input('type')) {
+	$type = request()->input('type');
 }
 
 $filters = array();
-if (GETPOSTINT("year")) {
-	$filters['year'] = GETPOSTINT("year");
+if (request()->integer('year', 0)) {
+	$filters['year'] = request()->integer('year', 0);
 }
-if (GETPOSTINT("id")) {
-	$filters['id'] = GETPOSTINT("id");
+if (request()->integer('id', 0)) {
+	$filters['id'] = request()->integer('id', 0);
 }
-if (GETPOSTINT("idfrom")) {
-	$filters['idfrom'] = GETPOSTINT("idfrom");
+if (request()->integer('idfrom', 0)) {
+	$filters['idfrom'] = request()->integer('idfrom', 0);
 }
-if (GETPOSTINT("idto")) {
-	$filters['idto'] = GETPOSTINT("idto");
+if (request()->integer('idto', 0)) {
+	$filters['idto'] = request()->integer('idto', 0);
 }
-if (GETPOST("project", 'alpha')) {
-	$filters['project'] = GETPOST("project", 'alpha');
+if (request()->input('project')) {
+	$filters['project'] = request()->input('project');
 }
-if (GETPOST("logina", 'alpha')) {
-	$filters['logina'] = GETPOST("logina", 'alpha');
+if (request()->input('logina')) {
+	$filters['logina'] = request()->input('logina');
 }
-if (GETPOST("logint", 'alpha')) {
-	$filters['logint'] = GETPOST("logint", 'alpha');
+if (request()->input('logint')) {
+	$filters['logint'] = request()->input('logint');
 }
-if (GETPOST("notactiontype", 'alpha')) {	// deprecated
-	$filters['notactiontype'] = GETPOST("notactiontype", 'alpha');
+if (request()->input('notactiontype')) {	// deprecated
+	$filters['notactiontype'] = request()->input('notactiontype');
 }
-if (GETPOST("actiontype", 'alpha')) {
-	$filters['actiontype'] = GETPOST("actiontype", 'alpha');
+if (request()->input('actiontype')) {
+	$filters['actiontype'] = request()->input('actiontype');
 }
-if (GETPOST("actioncode", 'alpha')) {
-	$filters['actioncode'] = GETPOST("actioncode", 'alpha');
+if (request()->input('actioncode')) {
+	$filters['actioncode'] = request()->input('actioncode');
 }
-if (GETPOSTINT("notolderthan")) {
-	$filters['notolderthan'] = GETPOSTINT("notolderthan");
+if (request()->integer('notolderthan', 0)) {
+	$filters['notolderthan'] = request()->integer('notolderthan', 0);
 } else {
 	$filters['notolderthan'] = getDolGlobalInt('MAIN_AGENDA_EXPORT_PAST_DELAY', 100);
 }
 // Max security limit by default to 1000
-if (GETPOSTINT("limit")) {
-	$filters['limit'] = GETPOSTINT("limit");
+if (request()->integer('limit', 0)) {
+	$filters['limit'] = request()->integer('limit', 0);
 } else {
 	$filters['limit'] = 1000;
 }
-if (GETPOST("module", 'alpha')) {
-	$filters['module'] = GETPOST("module", 'alpha');
+if (request()->input('module')) {
+	$filters['module'] = request()->input('module');
 }
-if (GETPOST("status", "intcomma")) {
-	$filters['status'] = GETPOST("status", "intcomma");
+if (request()->input('status')) {
+	$filters['status'] = request()->input('status');
 }
 
 // Security check
 if (!isModEnabled('agenda')) {
-	httponly_accessforbidden('Module Agenda not enabled');
+	httponly_abort(403);
 }
 
 
@@ -204,7 +204,7 @@ if ($reshook < 0) {
 	llxFooterVierge();
 } elseif (empty($reshook)) {
 	// Check exportkey
-	if (!GETPOST("exportkey") || getDolGlobalString('MAIN_AGENDA_XCAL_EXPORTKEY') != GETPOST("exportkey")) {
+	if (!request()->input('exportkey') || getDolGlobalString('MAIN_AGENDA_XCAL_EXPORTKEY') != request()->input('exportkey')) {
 		$user->loadRights();
 
 		top_httphead();
@@ -296,7 +296,7 @@ if (getDolGlobalString('MAIN_AGENDA_EXPORT_CACHE')) {
 	$cachedelay = getDolGlobalString('MAIN_AGENDA_EXPORT_CACHE');
 }
 
-$exportholidays = GETPOSTINT('includeholidays');
+$exportholidays = request()->integer('includeholidays', 0);
 
 // Build file
 if ($format == 'ical' || $format == 'vcal') {
@@ -308,13 +308,13 @@ if ($format == 'ical' || $format == 'vcal') {
 	$result = $agenda->build_exportfile($format, $type, $cachedelay, $filename, $filters, $exportholidays);
 	if ($result >= 0) {
 		$attachment = true;
-		if (GETPOSTISSET("attachment")) {
-			$attachment = GETPOST("attachment");
+		if (request()->has('attachment')) {
+			$attachment = request()->input('attachment');
 		}
 		//$attachment = false;
 		$contenttype = 'text/calendar';
-		if (GETPOSTISSET("contenttype")) {
-			$contenttype = GETPOST("contenttype");
+		if (request()->has('contenttype')) {
+			$contenttype = request()->input('contenttype');
 		}
 		//$contenttype='text/plain';
 		$outputencoding = 'UTF-8';
@@ -356,13 +356,13 @@ if ($format == 'rss') {
 	$result = $agenda->build_exportfile($format, $type, $cachedelay, $filename, $filters, $exportholidays);
 	if ($result >= 0) {
 		$attachment = false;
-		if (GETPOSTISSET("attachment")) {
-			$attachment = GETPOST("attachment");
+		if (request()->has('attachment')) {
+			$attachment = request()->input('attachment');
 		}
 		//$attachment = false;
 		$contenttype = 'application/rss+xml';
-		if (GETPOSTISSET("contenttype")) {
-			$contenttype = GETPOST("contenttype");
+		if (request()->has('contenttype')) {
+			$contenttype = request()->input('contenttype');
 		}
 		//$contenttype='text/plain';
 		$outputencoding = 'UTF-8';

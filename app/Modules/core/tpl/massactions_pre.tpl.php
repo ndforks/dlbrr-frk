@@ -83,7 +83,7 @@ if ($massaction == 'predelete') {
 
 if ($massaction == 'preclonetasks') {
 	$selected = '';
-	foreach (GETPOST('toselect') as $tmpselected) {
+	foreach (request()->input('toselect') as $tmpselected) {
 		$selected .= '&selected[]=' . $tmpselected;
 	}
 	$formquestion = array(
@@ -227,7 +227,7 @@ if ($massaction == 'presend') {
 	$listofselectedrecipientobjid = array();
 	$listofselectedref = array();
 
-	if (!GETPOST('cancel', 'alpha')) {
+	if (!request()->input('cancel')) {
 		foreach ($arrayofselected as $toselectid) {
 			$result = $objecttmp->fetch($toselectid);
 			if ($result > 0) {
@@ -259,7 +259,7 @@ if ($massaction == 'presend') {
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 	$formmail = new FormMail($db);
 	$formmail->withform = -1;
-	$formmail->fromtype = (GETPOST('fromtype') ? GETPOST('fromtype') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
+	$formmail->fromtype = (request()->input('fromtype') ? request()->input('fromtype') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
 
 	if ($formmail->fromtype === 'user') {
 		$formmail->fromid = $user->id;
@@ -295,12 +295,12 @@ if ($massaction == 'presend') {
 	}
 
 
-	$formmail->withoptiononeemailperrecipient = ((count($listofselectedref) == 1 && count(reset($listofselectedref)) == 1) || empty($liste)) ? 0 : (GETPOSTINT('oneemailperrecipient') ? 1 : -1);
+	$formmail->withoptiononeemailperrecipient = ((count($listofselectedref) == 1 && count(reset($listofselectedref)) == 1) || empty($liste)) ? 0 : (request()->integer('oneemailperrecipient', 0) ? 1 : -1);
 	if (in_array($objecttmp->element, array('conferenceorboothattendee'))) {
 		$formmail->withoptiononeemailperrecipient = 0;
 	}
 
-	$formmail->withto = empty($liste) ? (GETPOST('sendto', 'alpha') ? GETPOST('sendto', 'alpha') : array()) : $liste;
+	$formmail->withto = empty($liste) ? (request()->input('sendto') ? request()->input('sendto') : array()) : $liste;
 	$formmail->withtofree = empty($liste) ? 1 : 0;
 	$formmail->withtocc = 1;
 	$formmail->withtoccc = getDolGlobalString('MAIN_EMAIL_USECCC');
@@ -351,7 +351,7 @@ if ($massaction == 'presend') {
 	// Tableau des parameters complementaires du post
 	$formmail->param['action'] = $action;
 	$formmail->param['models'] = $modelmail;	// the filter to know which kind of template emails to show. 'none' means no template suggested.
-	$formmail->param['models_id'] = GETPOSTINT('modelmailselected') ? GETPOSTINT('modelmailselected') : '-1';
+	$formmail->param['models_id'] = request()->integer('modelmailselected', 0) ? request()->integer('modelmailselected', 0) : '-1';
 	$formmail->param['id'] = implode(',', $arrayofselected);
 	// $formmail->param['returnurl']=$_SERVER["PHP_SELF"].'?id='.$object->id;
 	if (getDolGlobalString('MAILING_LIMIT_SENDBYWEB') && count($listofselectedrecipientobjid) > $conf->global->MAILING_LIMIT_SENDBYWEB) {
@@ -386,7 +386,7 @@ if ($massaction == 'edit_extrafields') {
 
 		$formquestion[] = array(
 			'type' => 'other',
-			'value' => $form->selectarray('extrafield-key-to-update', $extrafields_list, GETPOST('extrafield-key-to-update'), 1)
+			'value' => $form->selectarray('extrafield-key-to-update', $extrafields_list, request()->input('extrafield-key-to-update'), 1)
 		);
 
 

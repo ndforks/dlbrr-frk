@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT."/knowledgemanagement/class/knowledgerecord.class
 $langs->loadLangs(array("admin", "knowledgemanagement"));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'knowledgemanagement';
 
 $arrayofparameters = array(
@@ -66,7 +66,7 @@ $setupnotempty = 0;
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 if (!getDolGlobalString('KNOWLEDGEMANAGEMENT_KNOWLEDGERECORD_ADDON')) {
@@ -78,9 +78,9 @@ $myTmpObjects = array();
 // TODO Scan list of objects to fill this array
 $myTmpObjects['knowledgemanagement'] = array('label' => 'KnowledgeManagement', 'includerefgeneration' => 1, 'includedocgeneration' => 0, 'class' => 'KnowledgeRecord');
 
-$tmpobjectkey = GETPOST('object', 'aZ09');
+$tmpobjectkey = request()->input('object');
 if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
-	accessforbidden('Bad value for object. Hack attempt ?');
+	abort(403);
 }
 
 
@@ -91,8 +91,8 @@ if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskdata = GETPOST('maskKnowledgeRecord', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskdata = request()->input('maskKnowledgeRecord');
 
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskdata, 'chaine', 0, '', $conf->entity);
@@ -107,7 +107,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen' && $tmpobjectkey) {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$className = $myTmpObjects[$tmpobjectkey]['class'];
 	$tmpobject = new $className($db);
@@ -154,7 +154,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'del') {
 	$ret = delDocumentModel($value, $type);
 	if ($ret > 0) {
-		$tmpobjectkey = GETPOST('object', 'aZ09');
+		$tmpobjectkey = request()->input('object');
 		if (!empty($tmpobjectkey)) {
 			$constforval = 'KNOWLEDGEMANAGEMENT_'.strtoupper($tmpobjectkey).'_ADDON_PDF';
 			if (getDolGlobalString($constforval) == "$value") {
@@ -491,7 +491,7 @@ foreach ($myTmpObjects as $myTmpObjectKey => $myTmpObjectArray) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print "<table class=\"noborder\" width=\"100%\">\n";

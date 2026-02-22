@@ -156,8 +156,8 @@ if (GETPOST('roworder', 'alpha', 3) && GETPOST('table_element_line', 'aZ09', 3)
 		// If we are here, it is a hack attempt, so we report a warning.
 		print 'Bad permission to modify position of lines for object in table '.$table_element_line;
 		dol_syslog('Bad permission to modify position of lines for object in table='.$table_element_line.', fk_element='.$fk_element, LOG_WARNING);
-		//accessforbidden('Bad permission to modify position of lines for object in table '.$table_element_line);
-		httponly_accessforbidden('Bad permission to modify position of lines for object in table '.$table_element_line);
+		//abort(403);
+		httponly_abort(403);
 	}
 
 	$rowordertab = explode(',', $roworder);

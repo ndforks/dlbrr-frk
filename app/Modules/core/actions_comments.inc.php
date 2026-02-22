@@ -49,12 +49,12 @@ $comment = new Comment($db);
  */
 
 if ($action == 'addcomment') {
-	$description = GETPOST('comment_description', 'restricthtml');
+	$description = request()->input('comment_description');
 	if (!empty($description)) {
 		$comment->description = $description;
 		$comment->datec = dol_now();
-		$comment->fk_element = GETPOSTINT('id');
-		$comment->element_type = GETPOST('comment_element_type', 'alpha');
+		$comment->fk_element = request()->integer('id', 0);
+		$comment->element_type = request()->input('comment_element_type');
 		$comment->fk_user_author = $user->id;
 		$comment->entity = $conf->entity;
 		if ($comment->create($user) > 0) {
@@ -69,7 +69,7 @@ if ($action == 'addcomment') {
 }
 if ($action === 'updatecomment') {
 	if ($comment->fetch($idcomment) >= 0) {
-		$comment->description = GETPOST('comment_description', 'restricthtml');
+		$comment->description = request()->input('comment_description');
 		if ($comment->update($user) > 0) {
 			setEventMessages($langs->trans("CommentAdded"), null, 'mesgs');
 			header('Location: '.$varpage.'?id='.$id.($withproject ? '&withproject=1#comment' : ''));

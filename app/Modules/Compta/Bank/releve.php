@@ -60,17 +60,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("banks", "categories", "companies", "bills", "trips", "donations", "loan", "salaries"));
 
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('account') ? GETPOSTINT('account') : GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$dvid = GETPOST('dvid', 'alpha');
-$numref = GETPOST('num', 'alpha');
-$ve = GETPOST("ve", 'alpha');
-$brref = GETPOST('brref', 'alpha');
-$oldbankreceipt = GETPOST('oldbankreceipt', 'alpha');
-$newbankreceipt = GETPOST('newbankreceipt', 'alpha');
-$rel = GETPOST("rel", 'alphanohtml');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$id = request()->integer('account', 0) ? request()->integer('account', 0) : request()->integer('id', 0);
+$ref = request()->input('ref');
+$dvid = request()->input('dvid');
+$numref = request()->input('num');
+$ve = request()->input('ve');
+$brref = request()->input('brref');
+$oldbankreceipt = request()->input('oldbankreceipt');
+$newbankreceipt = request()->input('newbankreceipt');
+$rel = request()->input('rel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('bankaccountstatement', 'globalcard'));
@@ -86,11 +86,11 @@ if ($user->hasRight('banque', 'consolidate') && $action == 'dvprev' && !empty($d
 }
 
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -149,7 +149,7 @@ if ($resql) {
 		$foundprevious = $obj->num;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 // Search next receipt
 $sql = "SELECT b.num_releve as num";
@@ -171,7 +171,7 @@ if ($resql) {
 		$foundnext = $obj->num;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 $sql = "SELECT b.rowid, b.dateo as do, b.datev as dv,";
@@ -213,7 +213,7 @@ if ($action == 'confirm_editbankreceipt' && !empty($oldbankreceipt) && !empty($n
 			$error++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Update bank receipt name
@@ -223,7 +223,7 @@ if ($action == 'confirm_editbankreceipt' && !empty($oldbankreceipt) && !empty($n
 
 		$resql = $db->query($sqlupdate);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -438,7 +438,7 @@ if (empty($numref)) {
 
 		print "\n</div>\n";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } else {
 	/**
@@ -691,7 +691,7 @@ if (empty($numref)) {
 						$ii++;
 					}
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 
@@ -719,7 +719,7 @@ if (empty($numref)) {
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Line Total

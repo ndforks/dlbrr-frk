@@ -46,12 +46,12 @@ $form = new Form($db);
 // List of supported format
 $type2label = ExtraFields::getListOfTypesLabels();
 
-$action = GETPOST('action', 'aZ09');
-$attrname = GETPOST('attrname', 'alpha');
+$action = request()->input('action');
+$attrname = request()->input('attrname');
 $elementtype = 'salary'; //Must be the $table_element of the class that manage extrafield
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

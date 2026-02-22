@@ -44,30 +44,30 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "cron", "bills", "members"));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$confirm = GETPOST('confirm', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'cronjoblist'; // To manage different context of search
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'aZ09');
+$action = request()->input('action');
+$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$confirm = request()->input('confirm');
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'cronjoblist'; // To manage different context of search
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
 //Search criteria
-$search_status = GETPOST('search_status', 'intcomma');
-$search_label = GETPOST("search_label", 'alpha');
-$search_module_name = GETPOST("search_module_name", 'alpha');
-$search_lastresult = GETPOST("search_lastresult", "alphawithlgt");
-$search_processing = GETPOST("search_processing", 'int');
-$securitykey = GETPOST('securitykey', 'alpha');
+$search_status = request()->input('search_status');
+$search_label = request()->input('search_label');
+$search_module_name = request()->input('search_module_name');
+$search_lastresult = request()->input('search_lastresult');
+$search_processing = request()->input('search_processing');
+$securitykey = request()->input('securitykey');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -144,7 +144,7 @@ $permissiontoexecute = $user->hasRight('cron', 'execute');
 
 // Security
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 // after this test $permissiontoread is always true and never can't be false
 
@@ -156,11 +156,11 @@ $error = 0;
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -175,7 +175,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_label = '';
 		$search_status = -1;
 		$search_lastresult = '';
@@ -183,8 +183,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -356,7 +356,7 @@ if ($search_status >= 0 && $search_status < 2 && $search_status != '') {
 if ($search_lastresult != '') {
 	$sql .= natural_search("t.lastresult", $search_lastresult, 1);
 }
-if (GETPOSTISSET('search_processing')) {
+if (request()->has('search_processing')) {
 	$sql .= " AND t.processing = ".((int) $search_processing);
 }
 // Manage filter
@@ -385,7 +385,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 	if ($resql) {
 		$nbtotalofrecords = $db->num_rows($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -403,7 +403,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -459,7 +459,7 @@ $arrayofmassactions = array(
 if ($user->hasRight('cron', 'delete')) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

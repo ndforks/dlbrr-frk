@@ -621,7 +621,7 @@ function dolibarr_del_const($db, $name, $entity = 1)
 		$conf->global->$name = '';
 		return 1;
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -1;
 	}
 }
@@ -683,7 +683,7 @@ function dolibarr_set_const($db, $name, $value, $type = 'chaine', $visible = 0, 
 
 	// Check parameters
 	if (empty($name)) {
-		dol_print_error($db, "Error: Call to function dolibarr_set_const with wrong parameters");
+		abort(500, "Error: Call to function dolibarr_set_const with wrong parameters");
 		exit;
 	}
 	if (! is_object($hookmanager)) {
@@ -929,7 +929,7 @@ function security_prepare_head()
 			$nbPerms = $obj->nb;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (getDolGlobalString('MAIN_SECURITY_USE_DEFAULT_PERMISSIONS')) {
@@ -2010,7 +2010,7 @@ function addDocumentModel($name, $type, $label = '', $description = '')
 		$db->commit();
 		return 1;
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 		return -1;
 	}
@@ -2040,7 +2040,7 @@ function delDocumentModel($name, $type)
 		$db->commit();
 		return 1;
 	} else {
-		dol_print_error($db);
+		abort(500);
 		$db->rollback();
 		return -1;
 	}

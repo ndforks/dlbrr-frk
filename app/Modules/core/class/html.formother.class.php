@@ -1359,7 +1359,7 @@ class FormOther
 	        			async: false
 	        		});
 	        		// We force reload to be sure to get all boxes into list
-	        		window.location.search=\'mainmenu='.GETPOST("mainmenu", "aZ09").'&leftmenu='.GETPOST('leftmenu', "aZ09").'&action=delbox&token='.newToken().'\';
+	        		window.location.search=\'mainmenu='.request()->input('mainmenu').'&leftmenu='.request()->input('leftmenu').'&action=delbox&token='.newToken().'\';
 	        	}
 	        	else
 	        	{
@@ -1381,7 +1381,7 @@ class FormOther
 	    				jQuery.ajax({
 	    					url: \''.DOL_URL_ROOT.'/core/ajax/box.php?boxorder=\'+boxorder+\'&boxid=\'+boxid+\'&zone='.$areacode.'&userid='.$user->id.'\'
 	    		        }).done(function() {
-	        				window.location.search=\'mainmenu='.GETPOST("mainmenu", "aZ09").'&leftmenu='.GETPOST('leftmenu', "aZ09").'\';
+	        				window.location.search=\'mainmenu='.request()->input('mainmenu').'&leftmenu='.request()->input('leftmenu').'\';
 						});
 	                }
 	        	});';

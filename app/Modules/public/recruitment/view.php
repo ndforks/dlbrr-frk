@@ -63,20 +63,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $langs->loadLangs(array("companies", "other", "recruitment", "mails"));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$email = GETPOST('email', 'alpha');
-$firstname = GETPOST('firstname', 'alpha');
-$lastname = GETPOST('lastname', 'alpha');
-$birthday = GETPOST('birthday', 'alpha');
-$phone = GETPOST('phone', 'alpha');
-$message = GETPOST('message', 'alpha');
-$SECUREKEY = GETPOST("securekey");
-$requestedremuneration = GETPOST('requestedremuneration', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$email = request()->input('email');
+$firstname = request()->input('firstname');
+$lastname = request()->input('lastname');
+$birthday = request()->input('birthday');
+$phone = request()->input('phone');
+$message = request()->input('message');
+$SECUREKEY = request()->input('securekey');
+$requestedremuneration = request()->input('requestedremuneration');
 
-$ref = GETPOST('ref', 'alpha');
+$ref = request()->input('ref');
 
-if (GETPOST('btn_view')) {
+if (request()->input('btn_view')) {
 	unset($_SESSION['email_customer']);
 }
 if (isset($_SESSION['email_customer'])) {
@@ -99,7 +99,7 @@ $backtopage = $urlwithroot.'/public/recruitment/index.php';
 
 // Security check
 if (!isModEnabled("recruitment")) {
-	httponly_accessforbidden('Module Recruitment not enabled');
+	httponly_abort(403);
 }
 
 $object->fetch(0, $ref);
@@ -208,7 +208,7 @@ if ($action == "dosubmit") {	// Test on permission not required here (anonymous 
 				setEventMessages($langs->trans("ErrorRecruitmmentCandidatureAlreadyExists", $email), null, 'errors');
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 			$error++;
 		}
 	} else {
@@ -218,13 +218,13 @@ if ($action == "dosubmit") {	// Test on permission not required here (anonymous 
 	if (!$error) {	// Test on permission not required here (anonymous action protected by mitigation of /public/... urls)
 		$candidature = new RecruitmentCandidature($db);
 
-		$candidature->firstname = GETPOST('firstname', 'alpha');
-		$candidature->lastname = GETPOST('lastname', 'alpha');
-		$candidature->email = GETPOST('email', 'alpha');
-		$candidature->phone = GETPOST('phone', 'alpha');
-		$candidature->date_birth = GETPOST('birthday', 'alpha');
-		$candidature->requestedremuneration = GETPOST('requestedremuneration', 'alpha');
-		$candidature->description = GETPOST('message', 'alpha');
+		$candidature->firstname = request()->input('firstname');
+		$candidature->lastname = request()->input('lastname');
+		$candidature->email = request()->input('email');
+		$candidature->phone = request()->input('phone');
+		$candidature->date_birth = request()->input('birthday');
+		$candidature->requestedremuneration = request()->input('requestedremuneration');
+		$candidature->description = request()->input('message');
 		$candidature->fk_recruitmentjobposition = $object->id;
 
 		$candidature->ip = getUserRemoteIP();
@@ -315,8 +315,8 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dosubmit">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
-print '<input type="hidden" name="suffix" value="'.GETPOST("suffix", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
+print '<input type="hidden" name="suffix" value="'.request()->input('suffix').'">'."\n";
 print '<input type="hidden" name="securekey" value="'.$SECUREKEY.'">'."\n";
 print '<input type="hidden" name="entity" value="'.$entity.'" />';
 print "\n";

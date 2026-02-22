@@ -77,7 +77,7 @@ if (is_numeric($fk_element)) {
 }
 $object = fetchObjectByElement($id, $element, $element_ref);
 if (! is_object($object)) {
-	httponly_accessforbidden('Not allowed, bad combination of parameters for fetchObjectByElement');
+	httponly_abort(403);
 }
 
 $module = $object->module;
@@ -91,7 +91,7 @@ print 'object->id='.$object->id.' - object->module='.$object->module.' - object-
 // Security check
 $result = restrictedArea($user, $object->module, $object, $object->table_element, $usesublevelpermission, 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 if (!$result) {
-	httponly_accessforbidden('Not allowed by restrictArea');
+	httponly_abort(403);
 }
 
 
@@ -169,7 +169,7 @@ if (!empty($field) && !empty($element) && !empty($table_element) && !empty($fk_e
 		$feature = 'fournisseur';
 		$feature2 = 'facture';
 	}
-	//var_dump(GETPOST('action','aZ09'));
+	//var_dump(request()->input('action'));
 	//var_dump($newelement.'-'.$subelement."-".$feature."-".$object_id);
 	$check_access = restrictedArea($user, $feature, $object_id, '', (string) $feature2);
 	//var_dump($user->rights);

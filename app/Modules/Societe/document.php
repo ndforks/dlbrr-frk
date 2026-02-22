@@ -48,15 +48,15 @@ $langs->loadLangs(array("companies", "other"));
 
 
 // Get parameters
-$action 	= GETPOST('action', 'aZ09');
-$confirm 	= GETPOST('confirm');
-$id 		= (GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id'));
-$ref 		= GETPOST('ref', 'alpha');
+$action 	= request()->input('action');
+$confirm 	= request()->input('confirm');
+$id 		= (request()->integer('socid', 0) ? request()->integer('socid', 0) : request()->integer('id', 0));
+$ref 		= request()->input('ref');
 
-$limit 		= GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield 	= GETPOST('sortfield', 'aZ09comma');
-$sortorder 	= GETPOST('sortorder', 'aZ09comma');
-$page 		= GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit 		= request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield 	= request()->input('sortfield');
+$sortorder 	= request()->input('sortorder');
+$page 		= request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
 if (empty($page) || $page == -1) {
 	$page = 0;
@@ -103,7 +103,7 @@ if ($user->socid > 0) {
 $result = restrictedArea($user, 'societe', $object->id, '&societe');
 
 if (empty($object->id) || $upload_dir === null) {
-	accessforbidden();
+	abort(403);
 }
 
 

@@ -55,10 +55,10 @@ include_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$lang = GETPOST('lang', 'aZ09');
+$action = request()->input('action');
+$lang = request()->input('lang');
 
-$type = GETPOST('type');
+$type = request()->input('type');
 
 if (!$user->hasRight('categorie', 'lire')) {
 	restrictedArea($user, 'categorie');
@@ -99,7 +99,7 @@ if ($action == "getCategories") {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	*/
 	foreach ($cate_arbo as $categ) {

@@ -53,35 +53,35 @@ if (getDolGlobalString('MAIN_SECURITY_DISABLEFORGETPASSLINK')) {
 	exit;
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $mode = $dolibarr_main_authentication;
 if (!$mode) {
 	$mode = 'http';
 }
 
-$username = GETPOST('username', 'alphanohtml');
-$passworduidhash = GETPOST('passworduidhash', 'alpha');
-$setnewpassword = GETPOST('setnewpassword', 'aZ09');
+$username = request()->input('username');
+$passworduidhash = request()->input('passworduidhash');
+$setnewpassword = request()->input('setnewpassword');
 
-$conf->entity = (GETPOSTINT('entity') ? GETPOSTINT('entity') : 1);
+$conf->entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : 1);
 
 // Instantiate hooks of thirdparty module only if not already define
 $hookmanager->initHooks(array('passwordforgottenpage'));
 
 
-if (GETPOST('dol_hide_leftmenu', 'alpha') || !empty($_SESSION['dol_hide_leftmenu'])) {
+if (request()->input('dol_hide_leftmenu') || !empty($_SESSION['dol_hide_leftmenu'])) {
 	$conf->dol_hide_leftmenu = 1;
 }
-if (GETPOST('dol_hide_topmenu', 'alpha') || !empty($_SESSION['dol_hide_topmenu'])) {
+if (request()->input('dol_hide_topmenu') || !empty($_SESSION['dol_hide_topmenu'])) {
 	$conf->dol_hide_topmenu = 1;
 }
-if (GETPOST('dol_optimize_smallscreen', 'alpha') || !empty($_SESSION['dol_optimize_smallscreen'])) {
+if (request()->input('dol_optimize_smallscreen') || !empty($_SESSION['dol_optimize_smallscreen'])) {
 	$conf->dol_optimize_smallscreen = 1;
 }
-if (GETPOST('dol_no_mouse_hover', 'alpha') || !empty($_SESSION['dol_no_mouse_hover'])) {
+if (request()->input('dol_no_mouse_hover') || !empty($_SESSION['dol_no_mouse_hover'])) {
 	$conf->dol_no_mouse_hover = 1;
 }
-if (GETPOST('dol_use_jmobile', 'alpha') || !empty($_SESSION['dol_use_jmobile'])) {
+if (request()->input('dol_use_jmobile') || !empty($_SESSION['dol_use_jmobile'])) {
 	$conf->dol_use_jmobile = 1;
 }
 
@@ -129,7 +129,7 @@ if (empty($reshook)) {
 	// Action to set a temporary password and send email for reset
 	if ($action == 'buildnewpassword' && $username) {	// Test on permission not required here. This action is done anonymously.
 		$sessionkey = 'dol_antispam_value';
-		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(GETPOST('code'))));
+		$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(request()->input('code'))));
 
 		// Verify code
 		if (!$ok) {
@@ -264,7 +264,7 @@ if (!$disabled) {
 }
 
 // Execute hook getPasswordForgottenPageOptions (for table)
-$parameters = array('entity' => GETPOSTINT('entity'));
+$parameters = array('entity' => request()->integer('entity', 0));
 $hookmanager->executeHooks('getPasswordForgottenPageOptions', $parameters); // Note that $action and $object may have been modified by some hooks
 if (is_array($hookmanager->resArray) && !empty($hookmanager->resArray)) {
 	$morelogincontent = $hookmanager->resArray; // (deprecated) For compatibility
@@ -273,7 +273,7 @@ if (is_array($hookmanager->resArray) && !empty($hookmanager->resArray)) {
 }
 
 // Execute hook getPasswordForgottenPageExtraOptions (eg for js)
-$parameters = array('entity' => GETPOSTINT('entity'));
+$parameters = array('entity' => request()->integer('entity', 0));
 $reshook = $hookmanager->executeHooks('getPasswordForgottenPageExtraOptions', $parameters); // Note that $action and $object may have been modified by some hooks.
 $moreloginextracontent = $hookmanager->resPrint;
 

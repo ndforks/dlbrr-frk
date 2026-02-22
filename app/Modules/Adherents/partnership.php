@@ -46,15 +46,15 @@ require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
 $langs->loadLangs(array("companies","members","partnership", "other"));
 
 // Get parameters
-$id = GETPOSTINT('rowid') ? GETPOSTINT('rowid') : GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'partnershipcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-//$lineid   = GETPOST('lineid', 'int');
+$id = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'partnershipcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+//$lineid   = request()->input('lineid');
 
 $object = new Adherent($db);
 if ($id > 0) {
@@ -74,7 +74,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 
 foreach ($object->fields as $key => $val) {
@@ -96,19 +96,19 @@ $upload_dir = $conf->partnership->multidir_output[isset($object->entity) ? $obje
 
 
 if (getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR') != 'member') {
-	accessforbidden('Partnership module is not activated for members');
+	abort(403);
 }
 if (!isModEnabled('partnership')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 if ($action == 'edit' && empty($permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 if (($action == 'update' || $action == 'edit') && $object->status != $object::STATUS_DRAFT) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -126,8 +126,8 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-$date_start = dol_mktime(0, 0, 0, GETPOSTINT('date_partnership_startmonth'), GETPOSTINT('date_partnership_startday'), GETPOSTINT('date_partnership_startyear'));
-$date_end = dol_mktime(0, 0, 0, GETPOSTINT('date_partnership_endmonth'), GETPOSTINT('date_partnership_endday'), GETPOSTINT('date_partnership_endyear'));
+$date_start = dol_mktime(0, 0, 0, request()->integer('date_partnership_startmonth', 0), request()->integer('date_partnership_startday', 0), request()->integer('date_partnership_startyear', 0));
+$date_end = dol_mktime(0, 0, 0, request()->integer('date_partnership_endmonth', 0), request()->integer('date_partnership_endday', 0), request()->integer('date_partnership_endyear', 0));
 
 if (empty($reshook)) {
 	$error = 0;

@@ -44,11 +44,11 @@ require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("partnership", "companies", "other", "mails"));
 
-$id     = (GETPOST('id') ? GETPOSTINT('id') : GETPOSTINT('facid')); // For backward compatibility
-$ref    = GETPOST('ref', 'alpha');
-$lineid = GETPOSTINT('lineid');
-$socid  = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
+$id     = (request()->input('id') ? request()->integer('id', 0) : request()->integer('facid', 0)); // For backward compatibility
+$ref    = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$socid  = request()->integer('socid', 0);
+$action = request()->input('action');
 
 // Initialize a technical objects
 $object = new Partnership($db);
@@ -66,20 +66,20 @@ $permission = $user->hasRight('partnership', 'write');
 $managedfor = getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR', 'thirdparty');
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'partnership', $object->id);
 if (empty($conf->partnership->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_member > 0) && $managedfor == 'member') {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_soc > 0) && $managedfor == 'thirdparty') {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -89,9 +89,9 @@ if ($object->id > 0 && !($object->fk_soc > 0) && $managedfor == 'thirdparty') {
  */
 
 if ($action == 'addcontact' && $permission) {
-	$contactid = (GETPOST('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-	$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-	$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+	$contactid = (request()->input('userid') ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+	$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+	$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 
 	if ($result >= 0) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
@@ -106,7 +106,7 @@ if ($action == 'addcontact' && $permission) {
 	}
 } elseif ($action == 'swapstatut' && $permission) {
 	// Toggle the status of a contact
-	$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+	$result = $object->swapContactStatus(request()->integer('ligne', 0));
 } elseif ($action == 'deletecontact' && $permission) {
 	// Deletes a contact
 	$result = $object->delete_contact($lineid);
@@ -115,7 +115,7 @@ if ($action == 'addcontact' && $permission) {
 		header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

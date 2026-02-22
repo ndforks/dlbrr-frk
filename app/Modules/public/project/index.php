@@ -74,9 +74,9 @@ $langs->loadLangs(array("other", "dict", "bills", "companies", "errors", "paypal
 
 $errmsg = '';
 $error = 0;
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$securekeyreceived = GETPOST("securekey", 'alpha');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY').'conferenceorbooth'.((int) $id), 'md5');
 
 if ($securekeytocompare != $securekeyreceived) {
@@ -104,7 +104,7 @@ $user->loadDefaultValues();
 
 // Security check
 if (empty($conf->project->enabled)) {
-	httponly_accessforbidden('Module Project not enabled');
+	httponly_abort(403);
 }
 
 
@@ -190,17 +190,17 @@ function llxFooterVierge()  // @phan-suppress-current-line PhanRedefineFunction
  * Actions
  */
 
-if (GETPOST('suggestbooth')) {
+if (request()->input('suggestbooth')) {
 	header("Location: ".dol_buildpath('/public/project/suggestbooth.php', 1).'?id='.$id."&securekey=".$securekeyreceived);
 	exit;
 }
 
-if (GETPOST('suggestconference')) {
+if (request()->input('suggestconference')) {
 	header("Location: ".dol_buildpath('/public/project/suggestconference.php', 1).'?id='.$id."&securekey=".$securekeyreceived);
 	exit;
 }
 
-if (GETPOST('viewandvote')) {
+if (request()->input('viewandvote')) {
 	header("Location: ".dol_buildpath('/public/project/viewandvote.php', 1).'?id='.$id."&securekey=".$securekeyreceived);
 	exit;
 }
@@ -231,12 +231,12 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dopayment">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
 //print '<input type="hidden" name="suffix" value="'.dol_escape_htmltag($suffix).'">'."\n";
 print '<input type="hidden" name="id" value="'.dol_escape_htmltag((string) $id).'">'."\n";
 print '<input type="hidden" name="securekey" value="'.dol_escape_htmltag($securekeyreceived).'">'."\n";
 print '<input type="hidden" name="e" value="'.$entity.'" />';
-//print '<input type="hidden" name="forcesandbox" value="'.GETPOSTINT('forcesandbox').'" />';
+//print '<input type="hidden" name="forcesandbox" value="'.request()->integer('forcesandbox', 0).'" />';
 print "\n";
 
 

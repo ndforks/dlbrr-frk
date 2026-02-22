@@ -41,27 +41,27 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("accountancy", "admin", "bills", "compta", "errors", "hrm", "salaries"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$massaction = GETPOST('massaction', 'aZ09');
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'aZ'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$massaction = request()->input('massaction');
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode'); // The output mode ('list', 'kanban', 'hierarchy', 'calendar', ...)
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
 
-$id = GETPOSTINT('id');
-$rowid = GETPOSTINT('rowid');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
 
-$search_subaccount = GETPOST('search_subaccount', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$search_type = GETPOST('search_type', 'intcomma');
+$search_subaccount = request()->input('search_subaccount');
+$search_label = request()->input('search_label');
+$search_type = request()->input('search_type');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -88,10 +88,10 @@ if (getDolGlobalInt('MAIN_FEATURES_LEVEL') < 2) {
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'chartofaccount')) { // after this test, $user->hasRight('accounting', 'chartofaccount') is always valid
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -99,11 +99,11 @@ if (!$user->hasRight('accounting', 'chartofaccount')) { // after this test, $use
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha')) {
+if (!request()->input('confirmmassaction')) {
 	$massaction = '';
 }
 
@@ -120,7 +120,7 @@ if (empty($reshook)) {
 
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$search_subaccount = "";
 		$search_label = "";
 		$search_type = "";
@@ -577,7 +577,7 @@ if ($resql) {
 
 	print '</form>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

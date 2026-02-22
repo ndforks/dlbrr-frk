@@ -49,7 +49,7 @@ $urlwithouturlroot = preg_replace('/'.preg_quote(DOL_URL_ROOT, '/').'$/i', '', t
 $urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domain name found into config file
 
 if (!isModEnabled('takepos')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 
 
@@ -59,8 +59,8 @@ if (!isModEnabled('takepos')) {
 
 // The buildBarCode does not include the http headers but this is a page that just return an image.
 
-if (GETPOSTISSET("key")) {
-	$key = GETPOST('key');
+if (request()->has('key')) {
+	$key = request()->input('key');
 	$module = new modTcpdfbarcode();
 	$result = $module->buildBarCode($urlwithroot."/takepos/public/auto_order.php?key=".urlencode($key), 'QRCODE', 'Y');
 } else {

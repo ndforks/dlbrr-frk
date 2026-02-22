@@ -198,32 +198,32 @@ class pdf_standard_movementstock extends ModelePDFMovement
 		 * TODO: get from object
 		 */
 
-		$id = GETPOSTINT('id');
-		$ref = GETPOST('ref', 'alpha');
-		$msid = GETPOSTINT('msid');
-		$product_id = GETPOST("product_id");
-		$action = GETPOST('action', 'aZ09');
-		$cancel = GETPOST('cancel', 'alpha');
-		$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'movementlist';
+		$id = request()->integer('id', 0);
+		$ref = request()->input('ref');
+		$msid = request()->integer('msid', 0);
+		$product_id = request()->input('product_id');
+		$action = request()->input('action');
+		$cancel = request()->input('cancel');
+		$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'movementlist';
 
-		$idproduct = GETPOSTINT('idproduct');
-		$year = GETPOSTINT("year");
-		$month = GETPOSTINT("month");
-		$search_ref = GETPOST('search_ref', 'alpha');
-		$search_movement = GETPOST("search_movement");
-		$search_product_ref = trim(GETPOST("search_product_ref"));
-		$search_product = trim(GETPOST("search_product"));
-		$search_warehouse = trim(GETPOST("search_warehouse"));
-		$search_inventorycode = trim(GETPOST("search_inventorycode"));
-		$search_user = trim(GETPOST("search_user"));
-		$search_batch = trim(GETPOST("search_batch"));
-		$search_qty = trim(GETPOST("search_qty"));
-		$search_type_mouvement = GETPOST('search_type_mouvement', "intcomma");
+		$idproduct = request()->integer('idproduct', 0);
+		$year = request()->integer('year', 0);
+		$month = request()->integer('month', 0);
+		$search_ref = request()->input('search_ref');
+		$search_movement = request()->input('search_movement');
+		$search_product_ref = trim(request()->input('search_product_ref'));
+		$search_product = trim(request()->input('search_product'));
+		$search_warehouse = trim(request()->input('search_warehouse'));
+		$search_inventorycode = trim(request()->input('search_inventorycode'));
+		$search_user = trim(request()->input('search_user'));
+		$search_batch = trim(request()->input('search_batch'));
+		$search_qty = trim(request()->input('search_qty'));
+		$search_type_mouvement = request()->input('search_type_mouvement');
 
-		$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-		$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-		$sortfield = GETPOST('sortfield', 'aZ09comma');
-		$sortorder = GETPOST('sortorder', 'aZ09comma');
+		$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+		$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+		$sortfield = request()->input('sortfield');
+		$sortorder = request()->input('sortorder');
 		if (empty($page) || $page == -1) {
 			$page = 0;
 		}     // If $page is not defined, or '' or -1
@@ -235,7 +235,7 @@ class pdf_standard_movementstock extends ModelePDFMovement
 			$sortorder = "DESC";
 		}
 
-		$pdluoid = GETPOSTINT('pdluoid');
+		$pdluoid = request()->integer('pdluoid', 0);
 
 		// Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 		$hookmanager->initHooks(array('movementlist'));

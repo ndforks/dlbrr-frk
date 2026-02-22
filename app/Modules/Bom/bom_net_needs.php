@@ -43,14 +43,14 @@ require_once DOL_DOCUMENT_ROOT.'/bom/lib/bom.lib.php';
 $langs->loadLangs(array("mrp", "other", "stocks"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$lineid = GETPOSTINT('lineid');
-$ref    = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm  = GETPOST('confirm', 'alpha');
-$cancel   = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'bomnet_needs'; // To manage different context of search
-$backtopage  = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$lineid = request()->integer('lineid', 0);
+$ref    = request()->input('ref');
+$action = request()->input('action');
+$confirm  = request()->input('confirm');
+$cancel   = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'bomnet_needs'; // To manage different context of search
+$backtopage  = request()->input('backtopage');
 
 
 // Initialize a technical objects
@@ -68,7 +68,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -88,7 +88,7 @@ if ($object->id > 0) {
 
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, 'bom', $object->id, $object->table_element, '', '', 'rowid', $isdraft);

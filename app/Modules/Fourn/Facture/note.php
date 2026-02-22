@@ -47,9 +47,9 @@ if (isModEnabled('project')) {
 
 $langs->loadLangs(array("bills", "companies"));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('facid'));
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('facid', 0));
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 // Security check
 if ($user->socid) {
@@ -82,10 +82,10 @@ if (empty($reshook)) {
 
 // Set label
 if ($action == 'setlabel' && ($user->hasRight("fournisseur", "facture", "creer") || $user->hasRight("supplier_invoice", "creer"))) {
-	$object->label = GETPOST('label');
+	$object->label = request()->input('label');
 	$result = $object->update($user);
 	if ($result < 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

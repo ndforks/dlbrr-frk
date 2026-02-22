@@ -42,7 +42,7 @@ $langs->loadLangs(array('banks', 'categories'));
 
 // Security Check Access Control
 if (!$user->hasRight('banque', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 

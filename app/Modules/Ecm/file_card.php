@@ -45,13 +45,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 // Load translation files required by page
 $langs->loadLangs(array('ecm', 'companies', 'other', 'users', 'orders', 'propal', 'bills', 'contracts', 'categories'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$module = GETPOST('module', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$module = request()->input('module');
 
 // Get parameters
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 
 // Security check
 if ($user->socid > 0) {
@@ -59,10 +59,10 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -76,12 +76,12 @@ if (!$sortfield) {
 	$sortfield = "label";
 }
 
-$section = GETPOST("section", 'alpha');
+$section = request()->input('section');
 if (!$section) {
 	dol_print_error(null, 'Error, section parameter missing');
 	exit;
 }
-$urlfile = (string) dol_sanitizePathName(GETPOST("urlfile"), '_', 0);
+$urlfile = (string) dol_sanitizePathName(request()->input('urlfile'), '_', 0);
 if (!$urlfile) {
 	dol_print_error(null, "ErrorParamNotDefined");
 	exit;
@@ -89,7 +89,7 @@ if (!$urlfile) {
 
 // Load ecm object
 $ecmdir = new EcmDirectory($db);
-$result = $ecmdir->fetch(GETPOSTINT("section"));
+$result = $ecmdir->fetch(request()->integer('section', 0));
 if (!($result > 0)) {
 	dol_print_error($db, $ecmdir->error);
 	exit;
@@ -121,7 +121,7 @@ $permissiontoadd = $user->hasRight('ecm', 'setup');
 $permissiontoupload = $user->hasRight('ecm', 'upload');
 
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -144,9 +144,9 @@ if ($cancel) {
 if ($action == 'update' && $permissiontoadd) {
 	$error = 0;
 
-	$oldlabel = GETPOST('urlfile', 'alpha');
-	$newlabel = dol_sanitizeFileName(GETPOST('label', 'alpha'), '_', 0);
-	$shareenabled = GETPOST('shareenabled', 'alpha');
+	$oldlabel = request()->input('urlfile');
+	$newlabel = dol_sanitizeFileName(request()->input('label'), '_', 0);
+	$shareenabled = request()->input('shareenabled');
 
 	//$db->begin();
 

@@ -62,7 +62,7 @@ $value_public = $object->note_public;
 $value_private = $object->note_private;
 if (getDolGlobalString('MAIN_AUTO_TIMESTAMP_IN_PUBLIC_NOTES')) {
 	$stringtoadd = dol_print_date(dol_now(), 'dayhour').' '.$user->getFullName($langs).' --';
-	if (GETPOST('action', 'aZ09') == 'edit'.$note_public) {
+	if (request()->input('action') == 'edit'.$note_public) {
 		$value_public = dol_concatdesc($value_public, ($value_public ? "\n" : "")."-- ".$stringtoadd);
 		if (dol_textishtml($value_public)) {
 			$value_public .= "<br>\n";
@@ -73,7 +73,7 @@ if (getDolGlobalString('MAIN_AUTO_TIMESTAMP_IN_PUBLIC_NOTES')) {
 }
 if (getDolGlobalString('MAIN_AUTO_TIMESTAMP_IN_PRIVATE_NOTES')) {
 	$stringtoadd = dol_print_date(dol_now(), 'dayhour').' '.$user->getFullName($langs).' --';
-	if (GETPOST('action', 'aZ09') == 'edit'.$note_private) {
+	if (request()->input('action') == 'edit'.$note_private) {
 		$value_private = dol_concatdesc($value_private, ($value_private ? "\n" : "")."-- ".$stringtoadd);
 		if (dol_textishtml($value_private)) {
 			$value_private .= "<br>\n";
@@ -137,7 +137,7 @@ if (isModEnabled('fckeditor') && getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVA
 print '<!-- BEGIN PHP TEMPLATE NOTES -->'."\n";
 print '<div class="tagtable border table-border tableforfield centpercent">'."\n";
 print '<div class="tagtr table-border-row">'."\n";
-$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_public);
+$editmode = (request()->input('action') == 'edit'.$note_public);
 print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
 print $form->editfieldkey((empty($textNotePub) ? "NotePublic" : $textNotePub), $note_public, (string) $value_public, $object, $permission, $typeofdatapub, $moreparam, 0, 0);
 print '</div>'."\n";
@@ -148,7 +148,7 @@ print '</div>'."\n";
 if (empty($user->socid)) {
 	// Private notes (always hidden to external users)
 	print '<div class="tagtr table-border-row">'."\n";
-	$editmode = (GETPOST('action', 'aZ09') == 'edit'.$note_private);
+	$editmode = (request()->input('action') == 'edit'.$note_private);
 	print '<div class="tagtd tagtdnote tdtop'.($editmode ? '' : ' sensiblehtmlcontent').' table-key-border-col'.(empty($cssclass) ? '' : ' '.$cssclass).'"'.($colwidth ? ' style="width: '.$colwidth.'%"' : '').'>'."\n";
 	print $form->editfieldkey((empty($textNotePrive) ? "NotePrivate" : $textNotePrive), $note_private, (string) $value_private, $object, $permission, $typeofdatapriv, $moreparam, 0, 0);
 	print '</div>'."\n";

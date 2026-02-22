@@ -46,18 +46,18 @@ $langs->loadLangs(array("admin", "trips", "errors", "other", "dict"));
 
 $error = 0;
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
-$ikoffset = (float) price2num(GETPOST('ikoffset', 'alpha'));
-$coef = (float) price2num(GETPOST('coef', 'alpha'));
-$fk_c_exp_tax_cat = GETPOSTINT('fk_c_exp_tax_cat');
-$fk_range = GETPOSTINT('fk_range');
+$id = request()->integer('id', 0);
+$ikoffset = (float) price2num(request()->input('ikoffset'));
+$coef = (float) price2num(request()->input('coef'));
+$fk_c_exp_tax_cat = request()->integer('fk_c_exp_tax_cat', 0);
+$fk_range = request()->integer('fk_range', 0);
 
 $expIk = new ExpenseReportIk($db);
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

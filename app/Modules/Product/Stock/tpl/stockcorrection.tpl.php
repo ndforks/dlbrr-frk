@@ -62,7 +62,7 @@ if (empty($id)) {
 	$id = $object->id;
 }
 
-$pdluoid = GETPOSTINT('pdluoid');
+$pdluoid = request()->integer('pdluoid', 0);
 
 $pdluo = new Productbatch($db);
 
@@ -164,7 +164,7 @@ if ($object->element == 'product') {
 	/** @var Product $object */
 	print '<td class="fieldrequired">'.$langs->trans("Warehouse").'</td>';
 	print '<td>';
-	$ident = (GETPOST("dwid") ? GETPOSTINT("dwid") : (GETPOST('id_entrepot') ? GETPOSTINT('id_entrepot') : ($object->element == 'product' && $object->fk_default_warehouse ? $object->fk_default_warehouse : 'ifone')));
+	$ident = (request()->input('dwid') ? request()->integer('dwid', 0) : (request()->input('id_entrepot') ? request()->integer('id_entrepot', 0) : ($object->element == 'product' && $object->fk_default_warehouse ? $object->fk_default_warehouse : 'ifone')));
 	if (empty($ident) && getDolGlobalString('MAIN_DEFAULT_WAREHOUSE')) {
 		$ident = getDolGlobalString('MAIN_DEFAULT_WAREHOUSE');
 	}
@@ -176,7 +176,7 @@ if ($object->element == 'stockmouvement') {
 	print '<td class="fieldrequired">'.$langs->trans("Product").'</td>';
 	print '<td>';
 	print img_picto('', 'product');
-	$form->select_produits(GETPOSTINT('product_id'), 'product_id', (!getDolGlobalString('STOCK_SUPPORTS_SERVICES') ? '0' : ''), 0, 0, -1, 2, '', 0, array(), 0, 1, 0, 'maxwidth500');
+	$form->select_produits(request()->integer('product_id', 0), 'product_id', (!getDolGlobalString('STOCK_SUPPORTS_SERVICES') ? '0' : ''), 0, 0, -1, 2, '', 0, array(), 0, 1, 0, 'maxwidth500');
 	print '</td>';
 }
 print '<td class="fieldrequired">'.$langs->trans("NumberOfUnit").'</td>';
@@ -185,11 +185,11 @@ if ($object->element == 'product' || $object->element == 'stockmouvement') {
 	/** @var Product|MouvementStock $object */
 	print '<select name="mouvement" id="mouvement" class="minwidth100 valignmiddle">';
 	print '<option value="0">'.$langs->trans("Add").'</option>';
-	print '<option value="1"'.(GETPOST('mouvement') ? ' selected="selected"' : '').'>'.$langs->trans("Delete").'</option>';
+	print '<option value="1"'.(request()->input('mouvement') ? ' selected="selected"' : '').'>'.$langs->trans("Delete").'</option>';
 	print '</select>';
 	print ajax_combobox("mouvement");
 }
-print '<input name="nbpiece" id="nbpiece" class="center valignmiddle maxwidth75" value="'.GETPOST("nbpiece").'">';
+print '<input name="nbpiece" id="nbpiece" class="center valignmiddle maxwidth75" value="'.request()->input('nbpiece').'">';
 print '</td>';
 print '</tr>';
 
@@ -199,7 +199,7 @@ if (getDolGlobalString('PRODUIT_SOUSPRODUITS') && $object->element == 'product' 
 	print '<tr>';
 	print '<td></td>';
 	print '<td colspan="3">';
-	print '<input type="checkbox" name="disablesubproductstockchange" id="disablesubproductstockchange" value="1"'.(GETPOST('disablesubproductstockchange') ? ' checked="checked"' : '').'">';
+	print '<input type="checkbox" name="disablesubproductstockchange" id="disablesubproductstockchange" value="1"'.(request()->input('disablesubproductstockchange') ? ' checked="checked"' : '').'">';
 	print ' <label for="disablesubproductstockchange">'.$langs->trans("DisableStockChangeOfSubProduct").'</label>';
 	print '</td>';
 	print '</tr>';
@@ -215,10 +215,10 @@ if (isModEnabled('productbatch') &&
 	print '<td'.($object->element == 'stockmouvement' ? '' : ' class="fieldrequired"').'>'.$langs->trans("batch_number").'</td><td colspan="3">';
 	if ($pdluoid > 0) {
 		// If form was opened for a specific pdluoid, field is disabled
-		print '<input type="text" name="batch_number_bis" size="40" disabled="disabled" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
-		print '<input type="hidden" name="batch_number" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
+		print '<input type="text" name="batch_number_bis" size="40" disabled="disabled" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
+		print '<input type="hidden" name="batch_number" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
 	} else {
-		print img_picto('', 'barcode', 'class="pictofixedwidth"').'<input type="text" id="batch_number" name="batch_number" class="minwidth300" value="'.(GETPOST('batch_number') ? GETPOST('batch_number') : $pdluo->batch).'">';
+		print img_picto('', 'barcode', 'class="pictofixedwidth"').'<input type="text" id="batch_number" name="batch_number" class="minwidth300" value="'.(request()->input('batch_number') ? request()->input('batch_number') : $pdluo->batch).'">';
 	}
 	print '</td>';
 	print '</tr>';
@@ -227,7 +227,7 @@ if (isModEnabled('productbatch') &&
 	if (!getDolGlobalString('PRODUCT_DISABLE_SELLBY')) {
 		// print '<td'.($sellByCss ? ' class="'.$sellByCss.'"' : '').'>'.$langs->trans("SellByDate").'</td><td>';
 		print '<td>'.$langs->trans("SellByDate").'</td><td>';
-		$sellbyselected = dol_mktime(0, 0, 0, GETPOSTINT('sellbymonth'), GETPOSTINT('sellbyday'), GETPOSTINT('sellbyyear'));
+		$sellbyselected = dol_mktime(0, 0, 0, request()->integer('sellbymonth', 0), request()->integer('sellbyday', 0), request()->integer('sellbyyear', 0));
 		// If form was opened for a specific pdluoid, field is disabled
 		print $form->selectDate(($pdluo->id > 0 ? $pdluo->sellby : $sellbyselected), 'sellby', 0, 0, 1, "", 1, 0, ($pdluoid > 0 ? 1 : 0));
 		print '</td>';
@@ -235,7 +235,7 @@ if (isModEnabled('productbatch') &&
 	if (!getDolGlobalString('PRODUCT_DISABLE_EATBY')) {
 		// print '<td'.($eatByCss ? ' class="'.$eatByCss.'"' : '').'>'.$langs->trans("EatByDate").'</td><td>';
 		print '<td>'.$langs->trans("EatByDate").'</td><td>';
-		$eatbyselected = dol_mktime(0, 0, 0, GETPOSTINT('eatbymonth'), GETPOSTINT('eatbyday'), GETPOSTINT('eatbyyear'));
+		$eatbyselected = dol_mktime(0, 0, 0, request()->integer('eatbymonth', 0), request()->integer('eatbyday', 0), request()->integer('eatbyyear', 0));
 		// If form was opened for a specific pdluoid, field is disabled
 		print $form->selectDate(($pdluo->id > 0 ? $pdluo->eatby : $eatbyselected), 'eatby', 0, 0, 1, "", 1, 0, ($pdluoid > 0 ? 1 : 0));
 		print '</td>';
@@ -246,7 +246,7 @@ if (isModEnabled('productbatch') &&
 // Purchase price and project
 print '<tr>';
 print '<td>'.$langs->trans("UnitPurchaseValue").'</td>';
-print '<td colspan="'.(isModEnabled('project') ? '1' : '3').'"><input name="unitprice" id="unitprice" size="10" value="'.GETPOST("unitprice").'"></td>';
+print '<td colspan="'.(isModEnabled('project') ? '1' : '3').'"><input name="unitprice" id="unitprice" size="10" value="'.request()->input('unitprice').'"></td>';
 if (isModEnabled('project')) {
 	print '<td>'.$langs->trans('Project').'</td>';
 	print '<td>';
@@ -257,7 +257,7 @@ if (isModEnabled('project')) {
 print '</tr>';
 
 // Label for movement of id of inventory
-$valformovementlabel = ((GETPOST("label") && (GETPOST('label') != $langs->trans("MovementCorrectStock", ''))) ? GETPOST("label") : $langs->trans("MovementCorrectStock", $productref));
+$valformovementlabel = ((request()->input('label') && (request()->input('label') != $langs->trans("MovementCorrectStock", ''))) ? request()->input('label') : $langs->trans("MovementCorrectStock", $productref));
 print '<tr>';
 print '<td>'.$langs->trans("MovementLabel").'</td>';
 print '<td>';
@@ -265,7 +265,7 @@ print '<input type="text" name="label" class="minwidth400" value="'.dol_escape_h
 print '</td>';
 print '<td>'.$langs->trans("InventoryCode").'</td>';
 print '<td>';
-print '<input class="maxwidth100onsmartphone" name="inventorycode" id="inventorycode" value="'.(GETPOSTISSET("inventorycode") ? GETPOST("inventorycode", 'alpha') : dol_print_date(dol_now(), '%Y%m%d%H%M%S')).'">';
+print '<input class="maxwidth100onsmartphone" name="inventorycode" id="inventorycode" value="'.(request()->has('inventorycode') ? request()->input('inventorycode') : dol_print_date(dol_now(), '%Y%m%d%H%M%S')).'">';
 print '</td>';
 print '</tr>';
 

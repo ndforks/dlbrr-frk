@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "products", "admin", "mails", "other", "errors"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$trackid = GETPOST('trackid');
+$trackid = request()->input('trackid');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $usersignature = $user->signature;
@@ -86,49 +86,49 @@ complete_substitutions_array($substitutionarrayfortest, $langs);
 $error = 0;
 
 if ($action == 'update' && !$cancel) {
-	if (!GETPOST("MAIN_MAIL_EMAIL_FROM", 'alphanohtml')) {
+	if (!request()->input('MAIN_MAIL_EMAIL_FROM')) {
 		$error++;
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("MAIN_MAIL_EMAIL_FROM")), null, 'errors');
 		$action = 'edit';
 	}
-	if (!$error && !isValidEmail(GETPOST("MAIN_MAIL_EMAIL_FROM", 'alphanohtml'))) {
+	if (!$error && !isValidEmail(request()->input('MAIN_MAIL_EMAIL_FROM'))) {
 		$error++;
-		setEventMessages($langs->trans("ErrorBadEMail", GETPOST("MAIN_MAIL_EMAIL_FROM", 'alphanohtml')), null, 'errors');
+		setEventMessages($langs->trans("ErrorBadEMail", request()->input('MAIN_MAIL_EMAIL_FROM')), null, 'errors');
 		$action = 'edit';
 	}
 
 	if (!$error) {
-		dolibarr_set_const($db, "MAIN_DISABLE_ALL_MAILS", GETPOSTINT("MAIN_DISABLE_ALL_MAILS"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_FORCE_SENDTO", GETPOST("MAIN_MAIL_FORCE_SENDTO", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_ENABLED_USER_DEST_SELECT", GETPOSTINT("MAIN_MAIL_ENABLED_USER_DEST_SELECT"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, 'MAIN_MAIL_NO_WITH_TO_SELECTED', GETPOSTINT('MAIN_MAIL_NO_WITH_TO_SELECTED'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_DISABLE_ALL_MAILS", request()->integer('MAIN_DISABLE_ALL_MAILS', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_FORCE_SENDTO", request()->input('MAIN_MAIL_FORCE_SENDTO'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_ENABLED_USER_DEST_SELECT", request()->integer('MAIN_MAIL_ENABLED_USER_DEST_SELECT', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'MAIN_MAIL_NO_WITH_TO_SELECTED', request()->integer('MAIN_MAIL_NO_WITH_TO_SELECTED', 0), 'chaine', 0, '', $conf->entity);
 		// Send mode parameters
-		dolibarr_set_const($db, "MAIN_MAIL_SENDMODE", GETPOST("MAIN_MAIL_SENDMODE", 'aZ09'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT", GETPOSTINT("MAIN_MAIL_SMTP_PORT"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER", GETPOST("MAIN_MAIL_SMTP_SERVER", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID", GETPOST("MAIN_MAIL_SMTPS_ID", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		if (GETPOSTISSET("MAIN_MAIL_SMTPS_PW")) {
-			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW", GETPOST("MAIN_MAIL_SMTPS_PW", 'password'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_SENDMODE", request()->input('MAIN_MAIL_SENDMODE'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_SMTP_PORT", request()->integer('MAIN_MAIL_SMTP_PORT', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_SMTP_SERVER", request()->input('MAIN_MAIL_SMTP_SERVER'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_SMTPS_ID", request()->input('MAIN_MAIL_SMTPS_ID'), 'chaine', 0, '', $conf->entity);
+		if (request()->has('MAIN_MAIL_SMTPS_PW')) {
+			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_PW", request()->input('MAIN_MAIL_SMTPS_PW'), 'chaine', 0, '', $conf->entity);
 		}
-		if (GETPOSTISSET("MAIN_MAIL_SMTPS_AUTH_TYPE")) {
-			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE", GETPOST("MAIN_MAIL_SMTPS_AUTH_TYPE", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		if (request()->has('MAIN_MAIL_SMTPS_AUTH_TYPE')) {
+			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_AUTH_TYPE", request()->input('MAIN_MAIL_SMTPS_AUTH_TYPE'), 'chaine', 0, '', $conf->entity);
 		}
-		if (GETPOSTISSET("MAIN_MAIL_SMTPS_OAUTH_SERVICE")) {
-			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE", GETPOST("MAIN_MAIL_SMTPS_OAUTH_SERVICE", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		if (request()->has('MAIN_MAIL_SMTPS_OAUTH_SERVICE')) {
+			dolibarr_set_const($db, "MAIN_MAIL_SMTPS_OAUTH_SERVICE", request()->input('MAIN_MAIL_SMTPS_OAUTH_SERVICE'), 'chaine', 0, '', $conf->entity);
 		}
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS", GETPOSTINT("MAIN_MAIL_EMAIL_TLS"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS", GETPOSTINT("MAIN_MAIL_EMAIL_STARTTLS"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED", GETPOSTINT("MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED"), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_TLS", request()->integer('MAIN_MAIL_EMAIL_TLS', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_STARTTLS", request()->integer('MAIN_MAIL_EMAIL_STARTTLS', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED", request()->integer('MAIN_MAIL_EMAIL_SMTP_ALLOW_SELF_SIGNED', 0), 'chaine', 0, '', $conf->entity);
 
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_ENABLED", GETPOSTINT("MAIN_MAIL_EMAIL_DKIM_ENABLED"), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_DOMAIN", GETPOST("MAIN_MAIL_EMAIL_DKIM_DOMAIN", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_SELECTOR", GETPOST("MAIN_MAIL_EMAIL_DKIM_SELECTOR", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_PRIVATE_KEY", GETPOST("MAIN_MAIL_EMAIL_DKIM_PRIVATE_KEY", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_ENABLED", request()->integer('MAIN_MAIL_EMAIL_DKIM_ENABLED', 0), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_DOMAIN", request()->input('MAIN_MAIL_EMAIL_DKIM_DOMAIN'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_SELECTOR", request()->input('MAIN_MAIL_EMAIL_DKIM_SELECTOR'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_DKIM_PRIVATE_KEY", request()->input('MAIN_MAIL_EMAIL_DKIM_PRIVATE_KEY'), 'chaine', 0, '', $conf->entity);
 		// Content parameters
-		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM", GETPOST("MAIN_MAIL_EMAIL_FROM", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_ERRORS_TO", GETPOST("MAIN_MAIL_ERRORS_TO", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "MAIN_MAIL_AUTOCOPY_TO", GETPOST("MAIN_MAIL_AUTOCOPY_TO", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, 'MAIN_MAIL_DEFAULT_FROMTYPE', GETPOST('MAIN_MAIL_DEFAULT_FROMTYPE', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_EMAIL_FROM", request()->input('MAIN_MAIL_EMAIL_FROM'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_ERRORS_TO", request()->input('MAIN_MAIL_ERRORS_TO'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "MAIN_MAIL_AUTOCOPY_TO", request()->input('MAIN_MAIL_AUTOCOPY_TO'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, 'MAIN_MAIL_DEFAULT_FROMTYPE', request()->input('MAIN_MAIL_DEFAULT_FROMTYPE'), 'chaine', 0, '', $conf->entity);
 
 
 		header("Location: ".$_SERVER["PHP_SELF"]."?mainmenu=home&leftmenu=setup");
@@ -148,14 +148,14 @@ $actiontypecode = ''; // Not an event for agenda
 $triggersendname = ''; // Disable triggers
 $paramname = 'id';
 $mode = 'emailfortest';
-$trackid = ($action == 'send' ? GETPOST('trackid', 'aZ09') : $action);
+$trackid = ($action == 'send' ? request()->input('trackid') : $action);
 $sendcontext = 'standard';
 include DOL_DOCUMENT_ROOT.'/core/actions_sendmails.inc.php';
 
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'test') {
+if ($action == 'presend' && request()->input('trackid') == 'test') {
 	$action = 'test';
 }
-if ($action == 'presend' && GETPOST('trackid', 'alphanohtml') == 'testhtml') {
+if ($action == 'presend' && request()->input('trackid') == 'testhtml') {
 	$action = 'testhtml';
 }
 
@@ -943,7 +943,7 @@ if ($action == 'edit') {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '<tr class="oddeven"><td>'.$langs->trans('MAIN_MAIL_DEFAULT_FROMTYPE').'</td>';
@@ -1192,19 +1192,19 @@ if ($action == 'edit') {
 		include_once DOL_DOCUMENT_ROOT.'/core/class/html.formmail.class.php';
 		$formmail = new FormMail($db);
 		$formmail->trackid = (($action == 'testhtml') ? "testhtml" : "test");
-		$formmail->fromname = (GETPOSTISSET('fromname') ? GETPOST('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
-		$formmail->frommail = (GETPOSTISSET('frommail') ? GETPOST('frommail') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->fromname = (request()->has('fromname') ? request()->input('fromname') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
+		$formmail->frommail = (request()->has('frommail') ? request()->input('frommail') : getDolGlobalString('MAIN_MAIL_EMAIL_FROM'));
 		$formmail->fromid = $user->id;
 		$formmail->fromalsorobot = 1;
-		$formmail->fromtype = (GETPOSTISSET('fromtype') ? GETPOST('fromtype', 'aZ09') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
+		$formmail->fromtype = (request()->has('fromtype') ? request()->input('fromtype') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
 		$formmail->withfromreadonly = 1;
 		$formmail->withsubstit = 1;
 		$formmail->withfrom = 1;
 		$formmail->witherrorsto = 1;
-		$formmail->withto = (GETPOSTISSET('sendto') ? GETPOST('sendto', 'restricthtml') : ($user->email ? $user->email : 1));
-		$formmail->withtocc = (GETPOSTISSET('sendtocc') ? GETPOST('sendtocc', 'restricthtml') : 1); // ! empty to keep field if empty
-		$formmail->withtoccc = (GETPOSTISSET('sendtoccc') ? GETPOST('sendtoccc', 'restricthtml') : 1); // ! empty to keep field if empty
-		$formmail->withtopic = (GETPOSTISSET('subject') ? GETPOST('subject') : $langs->trans("Test"));
+		$formmail->withto = (request()->has('sendto') ? request()->input('sendto') : ($user->email ? $user->email : 1));
+		$formmail->withtocc = (request()->has('sendtocc') ? request()->input('sendtocc') : 1); // ! empty to keep field if empty
+		$formmail->withtoccc = (request()->has('sendtoccc') ? request()->input('sendtoccc') : 1); // ! empty to keep field if empty
+		$formmail->withtopic = (request()->has('subject') ? request()->input('subject') : $langs->trans("Test"));
 		$formmail->withtopicreadonly = 0;
 		$formmail->withfile = 2;
 
@@ -1212,7 +1212,7 @@ if ($action == 'edit') {
 		$formmail->withlayout = 'emailing';		// Note: MAIN_EMAIL_USE_LAYOUT must be set
 		$formmail->withaiprompt = ($action == 'testhtml' ? 'html' : 'text');	// Note: Module AI must be enabled
 
-		$formmail->withbody = (GETPOSTISSET('message') ? GETPOST('message', 'restricthtml') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
+		$formmail->withbody = (request()->has('message') ? request()->input('message') : ($action == 'testhtml' ? $langs->transnoentities("PredefinedMailTestHtml") : $langs->transnoentities("PredefinedMailTest")));
 		$formmail->withbodyreadonly = 0;
 		$formmail->withcancel = 1;
 		$formmail->withdeliveryreceipt = 1;
@@ -1227,7 +1227,7 @@ if ($action == 'edit') {
 		$formmail->param["returnurl"] = $_SERVER["PHP_SELF"];
 
 		// Init list of files
-		if (GETPOST("mode", "aZ09") == 'init') {
+		if (request()->input('mode') == 'init') {
 			$formmail->clear_attached_files();
 		}
 

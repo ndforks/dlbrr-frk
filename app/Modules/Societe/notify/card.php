@@ -43,11 +43,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/triggers/interface_50_modNotification_Noti
 
 $langs->loadLangs(array("companies", "mails", "admin", "other", "errors"));
 
-$socid     = GETPOSTINT("socid");
-$action    = GETPOST('action', 'aZ09');
-$contactid = GETPOST('contactid', 'alpha'); // May be an int or 'thirdparty'
-$actionid  = GETPOSTINT('actionid');
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$socid     = request()->integer('socid', 0);
+$action    = request()->input('action');
+$contactid = request()->input('contactid'); // May be an int or 'thirdparty'
+$actionid  = request()->integer('actionid', 0);
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
 // Security check
 if ($user->socid) {
@@ -59,10 +59,10 @@ $hookmanager->initHooks(array('thirdpartynotification', 'globalcard'));
 
 $result = restrictedArea($user, 'societe', '', '');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
@@ -88,7 +88,7 @@ $permissiontoadd = $user->hasRight('societe', 'lire');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 }
 
@@ -124,10 +124,10 @@ if (empty($reshook)) {
 
 				if (!$db->query($sql)) {
 					$error++;
-					dol_print_error($db);
+					abort(500);
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (!$error) {
@@ -141,7 +141,7 @@ if (empty($reshook)) {
 
 	// Remove a notification
 	if ($action == 'delete' && $permissiontoadd) {
-		$sql = "DELETE FROM ".MAIN_DB_PREFIX."notify_def where rowid = ".GETPOSTINT('actid');
+		$sql = "DELETE FROM ".MAIN_DB_PREFIX."notify_def where rowid = ".request()->integer('actid', 0);
 		$db->query($sql);
 	}
 }
@@ -268,7 +268,7 @@ if ($result > 0) {
 	if ($resql) {
 		$nbtotalofrecords = $db->num_rows($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$param = "&socid=".$socid;
@@ -424,7 +424,7 @@ if ($result > 0) {
 	if ($resql) {
 		$num = $db->num_rows($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$param = '&socid='.$object->id;

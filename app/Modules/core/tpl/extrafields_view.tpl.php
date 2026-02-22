@@ -229,7 +229,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 
 			$isdraft = ((isset($object->statut) && $object->statut == 0) || (isset($object->status) && $object->status == 0));
 			if (($isdraft || !empty($extrafields->attributes[$object->table_element]['alwayseditable'][$tmpkeyextra]))
-				&& $permtoeditextrafield && $enabled != 5 && ($action != 'edit_extras' || GETPOST('attribute') != $tmpkeyextra)
+				&& $permtoeditextrafield && $enabled != 5 && ($action != 'edit_extras' || request()->input('attribute') != $tmpkeyextra)
 				&& empty($extrafields->attributes[$object->table_element]['computed'][$tmpkeyextra])) {
 				$fieldid = empty($forcefieldid) ? 'id' : $forcefieldid;
 				$valueid = empty($forceobjectid) ? $object->id : $forceobjectid;
@@ -299,7 +299,7 @@ if (empty($reshook) && !empty($object->table_element) && isset($extrafields->att
 			}
 
 			// TODO Improve element and rights detection
-			if ($action == 'edit_extras' && $permtoeditextrafield && GETPOST('attribute', 'restricthtml') == $tmpkeyextra) {
+			if ($action == 'edit_extras' && $permtoeditextrafield && request()->input('attribute') == $tmpkeyextra) {
 				// Show the extrafield in create or edit mode
 				$fieldid = 'id';
 				if ($object->table_element == 'societe') {

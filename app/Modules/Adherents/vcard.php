@@ -40,8 +40,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alphanohtml');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 $object = new Adherent($db);
 

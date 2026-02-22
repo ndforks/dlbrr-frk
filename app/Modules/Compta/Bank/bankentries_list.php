@@ -70,46 +70,46 @@ require_once DOL_DOCUMENT_ROOT.'/compta/paiement/cheque/class/remisecheque.class
 // Load translation files required by the page
 $langs->loadLangs(array("banks", "bills", "categories", "companies", "margins", "salaries", "loan", "donations", "trips", "members", "compta", "accountancy"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 $contextpage = 'bankentrieslist';
-$massaction = GETPOST('massaction', 'alpha');
-$optioncss = GETPOST('optioncss', 'aZ09');
-$mode = GETPOST('mode', 'aZ');
+$massaction = request()->input('massaction');
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
-$dateop = dol_mktime(12, 0, 0, GETPOSTINT("opmonth"), GETPOSTINT("opday"), GETPOSTINT("opyear"));
-$search_debit = GETPOST("search_debit", 'alpha');
-$search_credit = GETPOST("search_credit", 'alpha');
-$search_type = GETPOST("search_type", 'alpha');
-$search_account = GETPOST("search_account", 'int') ? GETPOST("search_account", 'int') : GETPOST("account", 'int');
-$search_accountancy_code = GETPOST('search_accountancy_code', 'alpha') ? GETPOST('search_accountancy_code', 'alpha') : GETPOST('accountancy_code', 'alpha');
-$search_bid = GETPOST("search_bid", 'int') ? GETPOST("search_bid", 'int') : GETPOST("bid", 'int');		// Category id
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_description = GETPOST("search_description", 'alpha');
-$search_dt_start = dol_mktime(0, 0, 0, GETPOSTINT('search_start_dtmonth'), GETPOSTINT('search_start_dtday'), GETPOSTINT('search_start_dtyear'));
-$search_dt_end = dol_mktime(0, 0, 0, GETPOSTINT('search_end_dtmonth'), GETPOSTINT('search_end_dtday'), GETPOSTINT('search_end_dtyear'));
-$search_dv_start = dol_mktime(0, 0, 0, GETPOSTINT('search_start_dvmonth'), GETPOSTINT('search_start_dvday'), GETPOSTINT('search_start_dvyear'));
-$search_dv_end = dol_mktime(0, 0, 0, GETPOSTINT('search_end_dvmonth'), GETPOSTINT('search_end_dvday'), GETPOSTINT('search_end_dvyear'));
-$search_thirdparty_user = GETPOST("search_thirdparty", 'alpha') ? GETPOST("search_thirdparty", 'alpha') : GETPOST("thirdparty", 'alpha');
-$search_req_nb = GETPOST("req_nb", 'alpha');
-$search_num_releve = GETPOST("search_num_releve", 'alpha');
-$search_conciliated = GETPOST("search_conciliated", 'int');
-$search_fk_bordereau = GETPOST("search_fk_bordereau", 'int');
-$optioncss = GETPOST('optioncss', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$num_releve = GETPOST("num_releve", "alpha");
+$dateop = dol_mktime(12, 0, 0, request()->integer('opmonth', 0), request()->integer('opday', 0), request()->integer('opyear', 0));
+$search_debit = request()->input('search_debit');
+$search_credit = request()->input('search_credit');
+$search_type = request()->input('search_type');
+$search_account = request()->input('search_account') ? request()->input('search_account') : request()->input('account');
+$search_accountancy_code = request()->input('search_accountancy_code') ? request()->input('search_accountancy_code') : request()->input('accountancy_code');
+$search_bid = request()->input('search_bid') ? request()->input('search_bid') : request()->input('bid');		// Category id
+$search_ref = request()->input('search_ref');
+$search_description = request()->input('search_description');
+$search_dt_start = dol_mktime(0, 0, 0, request()->integer('search_start_dtmonth', 0), request()->integer('search_start_dtday', 0), request()->integer('search_start_dtyear', 0));
+$search_dt_end = dol_mktime(0, 0, 0, request()->integer('search_end_dtmonth', 0), request()->integer('search_end_dtday', 0), request()->integer('search_end_dtyear', 0));
+$search_dv_start = dol_mktime(0, 0, 0, request()->integer('search_start_dvmonth', 0), request()->integer('search_start_dvday', 0), request()->integer('search_start_dvyear', 0));
+$search_dv_end = dol_mktime(0, 0, 0, request()->integer('search_end_dvmonth', 0), request()->integer('search_end_dvday', 0), request()->integer('search_end_dvyear', 0));
+$search_thirdparty_user = request()->input('search_thirdparty') ? request()->input('search_thirdparty') : request()->input('thirdparty');
+$search_req_nb = request()->input('req_nb');
+$search_num_releve = request()->input('search_num_releve');
+$search_conciliated = request()->input('search_conciliated');
+$search_fk_bordereau = request()->input('search_fk_bordereau');
+$optioncss = request()->input('optioncss');
+$toselect = request()->input('toselect');
+$num_releve = request()->input('num_releve');
 if (empty($dateop)) {
 	$dateop = -1;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -198,11 +198,11 @@ if ($fieldvalue) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -214,7 +214,7 @@ if ($reshook < 0) {
 
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_dt_start = '';
 	$search_dt_end = '';
 	$search_dv_start = '';
@@ -247,29 +247,29 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_massactions.inc.php';
 }
 
-$rowids = GETPOST('rowid', 'array:int');
+$rowids = request()->input('rowid');
 
 // Conciliation
-if ((GETPOST('confirm_savestatement', 'alpha') || GETPOST('confirm_reconcile', 'alpha'))
-	&& (GETPOST("num_releve", "alpha") || !empty($rowids))
+if ((request()->input('confirm_savestatement') || request()->input('confirm_reconcile'))
+	&& (request()->input('num_releve') || !empty($rowids))
 	&& $user->hasRight('banque', 'consolidate')
-	&& (!GETPOSTISSET('pageplusone') || (GETPOST('pageplusone') == GETPOST('pageplusoneold')))) {
+	&& (!request()->has('pageplusone') || (request()->input('pageplusone') == request()->input('pageplusoneold')))) {
 	$error = 0;
 
 	// Definition, nettoyage parameters
-	$num_releve = GETPOST("num_releve", "alpha");
+	$num_releve = request()->input('num_releve');
 
 	if ($num_releve) {
 		$bankline = new AccountLine($db);
 
-		$rowids = GETPOST('rowid', 'array:int');
+		$rowids = request()->input('rowid');
 
 		if (!empty($rowids) && is_array($rowids)) {
 			foreach ($rowids as $row) {
 				if ($row > 0) {
 					$result = $bankline->fetch($row);
-					$bankline->num_releve = $num_releve; // GETPOST("num_releve");
-					$result = $bankline->update_conciliation($user, GETPOSTINT("cat"), GETPOST('confirm_reconcile', 'alpha') ? 1 : 0); // If we confirm_reconcile, we set flag 'rappro' to 1.
+					$bankline->num_releve = $num_releve; // request()->input('num_releve');
+					$result = $bankline->update_conciliation($user, request()->integer('cat', 0), request()->input('confirm_reconcile') ? 1 : 0); // If we confirm_reconcile, we set flag 'rappro' to 1.
 					if ($result < 0) {
 						setEventMessages($bankline->error, $bankline->errors, 'errors');
 						$error++;
@@ -315,16 +315,16 @@ if ((GETPOST('confirm_savestatement', 'alpha') || GETPOST('confirm_reconcile', '
 			$param .= '&search_description='.urlencode($search_description);
 		}
 		if (dol_strlen($search_dt_start) > 0) {
-			$param .= '&search_start_dtmonth='.GETPOSTINT('search_start_dtmonth').'&search_start_dtday='.GETPOSTINT('search_start_dtday').'&search_start_dtyear='.GETPOSTINT('search_start_dtyear');
+			$param .= '&search_start_dtmonth='.request()->integer('search_start_dtmonth', 0).'&search_start_dtday='.request()->integer('search_start_dtday', 0).'&search_start_dtyear='.request()->integer('search_start_dtyear', 0);
 		}
 		if (dol_strlen($search_dt_end) > 0) {
-			$param .= '&search_end_dtmonth='.GETPOSTINT('search_end_dtmonth').'&search_end_dtday='.GETPOSTINT('search_end_dtday').'&search_end_dtyear='.GETPOSTINT('search_end_dtyear');
+			$param .= '&search_end_dtmonth='.request()->integer('search_end_dtmonth', 0).'&search_end_dtday='.request()->integer('search_end_dtday', 0).'&search_end_dtyear='.request()->integer('search_end_dtyear', 0);
 		}
 		if (dol_strlen($search_dv_start) > 0) {
-			$param .= '&search_start_dvmonth='.GETPOSTINT('search_start_dvmonth').'&search_start_dvday='.GETPOSTINT('search_start_dvday').'&search_start_dvyear='.GETPOSTINT('search_start_dvyear');
+			$param .= '&search_start_dvmonth='.request()->integer('search_start_dvmonth', 0).'&search_start_dvday='.request()->integer('search_start_dvday', 0).'&search_start_dvyear='.request()->integer('search_start_dvyear', 0);
 		}
 		if (dol_strlen($search_dv_end) > 0) {
-			$param .= '&search_end_dvmonth='.GETPOSTINT('search_end_dvmonth').'&search_end_dvday='.GETPOSTINT('search_end_dvday').'&search_end_dvyear='.GETPOSTINT('search_end_dvyear');
+			$param .= '&search_end_dvmonth='.request()->integer('search_end_dvmonth', 0).'&search_end_dvday='.request()->integer('search_end_dvday', 0).'&search_end_dvyear='.request()->integer('search_end_dvyear', 0);
 		}
 		if ($search_type) {
 			$param .= '&search_type='.urlencode($search_type);
@@ -342,23 +342,23 @@ if ((GETPOST('confirm_savestatement', 'alpha') || GETPOST('confirm_reconcile', '
 }
 
 
-if (GETPOST('save') && !$cancel && $user->hasRight('banque', 'modifier')) {
+if (request()->input('save') && !$cancel && $user->hasRight('banque', 'modifier')) {
 	$error = 0;
 
-	if (price2num(GETPOST("addcredit")) > 0) {
-		$amount = price2num(GETPOST("addcredit"));
+	if (price2num(request()->input('addcredit')) > 0) {
+		$amount = price2num(request()->input('addcredit'));
 	} else {
-		$amount = price2num(-1 * (float) price2num(GETPOST("adddebit")));
+		$amount = price2num(-1 * (float) price2num(request()->input('adddebit')));
 	}
 
-	$operation = GETPOST("operation", 'alpha');
-	$num_chq   = GETPOST("num_chq", 'alpha');
-	$label     = GETPOST("label", 'alpha');
-	$cat1      = GETPOST("cat1", 'alpha');
+	$operation = request()->input('operation');
+	$num_chq   = request()->input('num_chq');
+	$label     = request()->input('label');
+	$cat1      = request()->input('cat1');
 
 	$bankaccountid = $id;
-	if (GETPOSTINT('add_account') > 0) {
-		$bankaccountid = GETPOSTINT('add_account');
+	if (request()->integer('add_account', 0) > 0) {
+		$bankaccountid = request()->integer('add_account', 0);
 	}
 	if (!$dateop) {
 		$error++;
@@ -404,7 +404,7 @@ if (GETPOST('save') && !$cancel && $user->hasRight('banque', 'modifier')) {
 
 if ($action == 'confirm_deleteonreconcile' && $confirm == 'yes' && $user->hasRight('banque', 'modifier')) {
 	$accline = new AccountLine($db);
-	$result = $accline->fetch(GETPOSTINT("rowid"));
+	$result = $accline->fetch(request()->integer('rowid', 0));
 	$result = $accline->delete($user);
 	if ($result <= 0) {
 		setEventMessages($accline->error, $accline->errors, 'errors');
@@ -417,7 +417,7 @@ if ($action == 'confirm_deleteonreconcile' && $confirm == 'yes' && $user->hasRig
 
 if ($action == 'confirm_delete' && $confirm == 'yes' && $user->hasRight('banque', 'modifier')) {
 	$accline = new AccountLine($db);
-	$result = $accline->fetch(GETPOSTINT("rowid"));
+	$result = $accline->fetch(request()->integer('rowid', 0));
 	$result = $accline->delete($user);
 	if ($result <= 0) {
 		setEventMessages($accline->error, $accline->errors, 'errors');
@@ -508,22 +508,22 @@ if ($search_bid > 0) {	// Category id
 	$param .= '&search_bid='.((int) $search_bid);
 }
 if (dol_strlen($search_dt_start) > 0) {
-	$param .= '&search_start_dtmonth='.GETPOSTINT('search_start_dtmonth').'&search_start_dtday='.GETPOSTINT('search_start_dtday').'&search_start_dtyear='.GETPOSTINT('search_start_dtyear');
+	$param .= '&search_start_dtmonth='.request()->integer('search_start_dtmonth', 0).'&search_start_dtday='.request()->integer('search_start_dtday', 0).'&search_start_dtyear='.request()->integer('search_start_dtyear', 0);
 }
 if (dol_strlen($search_dt_end) > 0) {
-	$param .= '&search_end_dtmonth='.GETPOSTINT('search_end_dtmonth').'&search_end_dtday='.GETPOSTINT('search_end_dtday').'&search_end_dtyear='.GETPOSTINT('search_end_dtyear');
+	$param .= '&search_end_dtmonth='.request()->integer('search_end_dtmonth', 0).'&search_end_dtday='.request()->integer('search_end_dtday', 0).'&search_end_dtyear='.request()->integer('search_end_dtyear', 0);
 }
 if (dol_strlen($search_dv_start) > 0) {
-	$param .= '&search_start_dvmonth='.GETPOSTINT('search_start_dvmonth').'&search_start_dvday='.GETPOSTINT('search_start_dvday').'&search_start_dvyear='.GETPOSTINT('search_start_dvyear');
+	$param .= '&search_start_dvmonth='.request()->integer('search_start_dvmonth', 0).'&search_start_dvday='.request()->integer('search_start_dvday', 0).'&search_start_dvyear='.request()->integer('search_start_dvyear', 0);
 }
 if (dol_strlen($search_dv_end) > 0) {
-	$param .= '&search_end_dvmonth='.GETPOSTINT('search_end_dvmonth').'&search_end_dvday='.GETPOSTINT('search_end_dvday').'&search_end_dvyear='.GETPOSTINT('search_end_dvyear');
+	$param .= '&search_end_dvmonth='.request()->integer('search_end_dvmonth', 0).'&search_end_dvday='.request()->integer('search_end_dvday', 0).'&search_end_dvyear='.request()->integer('search_end_dvyear', 0);
 }
 if ($search_req_nb) {
 	$param .= '&req_nb='.urlencode($search_req_nb);
 }
-if (GETPOSTINT("search_thirdparty")) {
-	$param .= '&thirdparty='.urlencode((string) (GETPOSTINT("search_thirdparty")));
+if (request()->integer('search_thirdparty', 0)) {
+	$param .= '&thirdparty='.urlencode((string) (request()->integer('search_thirdparty', 0)));
 }
 if ($optioncss != '') {
 	$param .= '&optioncss='.urlencode($optioncss);
@@ -785,7 +785,7 @@ if ($resql) {
 	// Confirmation delete
 	if ($action == 'delete') {
 		$text = $langs->trans('ConfirmDeleteTransaction');
-		print $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$object->id.'&rowid='.GETPOSTINT("rowid"), $langs->trans('DeleteTransaction'), $text, 'confirm_delete', null, '', 1);
+		print $form->formconfirm($_SERVER['PHP_SELF'].'?id='.$object->id.'&rowid='.request()->integer('rowid', 0), $langs->trans('DeleteTransaction'), $text, 'confirm_delete', null, '', 1);
 	}
 
 	// Lines of title fields
@@ -804,8 +804,8 @@ if ($resql) {
 	print '<input type="hidden" name="page" value="'.$page.'">';
 	print '<input type="hidden" name="id" value="'.$id.'">';
 	print '<input type="hidden" name="ref" value="'.$ref.'">';
-	if (GETPOSTINT('bid')) {
-		print '<input type="hidden" name="bid" value="'.GETPOSTINT("bid").'">';
+	if (request()->integer('bid', 0)) {
+		print '<input type="hidden" name="bid" value="'.request()->integer('bid', 0).'">';
 	}
 
 	// Form to add a transaction with no invoice
@@ -834,10 +834,10 @@ if ($resql) {
 
 		print '<tr>';
 		print '<td>';
-		print '<input name="label" class="flat minwidth200" type="text" value="'.GETPOST("label", "alpha").'">';
+		print '<input name="label" class="flat minwidth200" type="text" value="'.request()->input('label').'">';
 		if (is_array($options) && count($options)) {
 			print '<br>'.$langs->trans("Rubrique").': ';
-			print Form::selectarray('cat1', $options, GETPOST('cat1'), 1);
+			print Form::selectarray('cat1', $options, request()->input('cat1'), 1);
 		}
 		print '</td>';
 		print '<td class="nowrap">';
@@ -845,19 +845,19 @@ if ($resql) {
 		print '</td>';
 		print '<td>&nbsp;</td>';
 		print '<td class="nowrap">';
-		print $form->select_types_paiements((GETPOST('operation') ? GETPOST('operation') : ($object->type == Account::TYPE_CASH ? 'LIQ' : '')), 'operation', '1,2', 2, 1, 0, 0, 1, '', 1);
+		print $form->select_types_paiements((request()->input('operation') ? request()->input('operation') : ($object->type == Account::TYPE_CASH ? 'LIQ' : '')), 'operation', '1,2', 2, 1, 0, 0, 1, '', 1);
 		print '</td>';
 		print '<td>';
-		print '<input name="num_chq" class="flat" type="text" size="4" value="'.GETPOST("num_chq", "alpha").'">';
+		print '<input name="num_chq" class="flat" type="text" size="4" value="'.request()->input('num_chq').'">';
 		print '</td>';
 		//if (! $search_account > 0)
 		//{
 		print '<td class=right>';
-		print $form->select_comptes(GETPOSTINT('add_account') ? GETPOSTINT('add_account') : $search_account, 'add_account', 0, '', 1, ($id > 0 || !empty($ref) ? ' disabled="disabled"' : ''), 0, '', 1);
+		print $form->select_comptes(request()->integer('add_account', 0) ? request()->integer('add_account', 0) : $search_account, 'add_account', 0, '', 1, ($id > 0 || !empty($ref) ? ' disabled="disabled"' : ''), 0, '', 1);
 		print '</td>';
 		//}
-		print '<td class="right"><input name="adddebit" class="flat" type="text" size="4" value="'.GETPOST("adddebit", "alpha").'"></td>';
-		print '<td class="right"><input name="addcredit" class="flat" type="text" size="4" value="'.GETPOST("addcredit", "alpha").'"></td>';
+		print '<td class="right"><input name="adddebit" class="flat" type="text" size="4" value="'.request()->input('adddebit').'"></td>';
+		print '<td class="right"><input name="addcredit" class="flat" type="text" size="4" value="'.request()->input('addcredit').'"></td>';
 		/*if (isModEnabled('accounting'))
 		{
 			print '<td class="center">';
@@ -970,7 +970,7 @@ if ($resql) {
 		print '<div class="valignmiddle inline-block" style="padding-right: 20px;">';
 		if (getDolGlobalInt('NW_RECEIPTNUMBERFORMAT')) {
 			print '<strong>'.$langs->trans("InputReceiptNumber").'</strong>: ';
-			print '<input class="flat width100 center" id="num_releve" list="num_releve_list" name="num_releve" type="text" value="'.(GETPOST('num_releve') ? GETPOST('num_releve') : '').'">';
+			print '<input class="flat width100 center" id="num_releve" list="num_releve_list" name="num_releve" type="text" value="'.(request()->input('num_releve') ? request()->input('num_releve') : '').'">';
 		} else {
 			$texttoshow = $langs->trans("InputReceiptNumber").': ';
 			$yyyy = dol_substr($langs->transnoentitiesnoconv("Year"), 0, 1).substr($langs->transnoentitiesnoconv("Year"), 0, 1).substr($langs->transnoentitiesnoconv("Year"), 0, 1).substr($langs->transnoentitiesnoconv("Year"), 0, 1);
@@ -984,7 +984,7 @@ if ($resql) {
 				$texttoshow .= $langs->trans("InputReceiptNumberBis");
 			}
 			print $texttoshow;
-			print '<input class="flat width100 center" pattern="[0-9]+" title="'.dol_escape_htmltag($texttoshow.': '.$placeholder2).'" id="num_releve" list="num_releve_list" name="num_releve" placeholder="'.dol_escape_htmltag($placeholder).'" type="text" value="'.(GETPOSTINT('num_releve') ? GETPOSTINT('num_releve') : '').'">'; // The only default value is value we just entered
+			print '<input class="flat width100 center" pattern="[0-9]+" title="'.dol_escape_htmltag($texttoshow.': '.$placeholder2).'" id="num_releve" list="num_releve_list" name="num_releve" placeholder="'.dol_escape_htmltag($placeholder).'" type="text" value="'.(request()->integer('num_releve', 0) ? request()->integer('num_releve', 0) : '').'">'; // The only default value is value we just entered
 		}
 
 		// Output last values into combo list.
@@ -999,7 +999,7 @@ if ($resql) {
 		print '</div>';
 		if (is_array($options) && count($options)) {
 			print $langs->trans("EventualyAddCategory").': ';
-			print Form::selectarray('cat', $options, GETPOST('cat'), 1);
+			print Form::selectarray('cat', $options, request()->input('cat'), 1);
 		}
 		print '<br><div style="margin-top: 5px;"><span class="opacitymedium">'.$langs->trans("ThenCheckLinesAndConciliate").'</span> ';
 		print '<input type="submit" class="button" name="confirm_reconcile" value="'.$langs->trans("Conciliate").'">';
@@ -1357,7 +1357,7 @@ if ($resql) {
 					}
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			$balancecalculated = true;
@@ -1984,7 +1984,7 @@ if ($resql) {
 	print '</form>';
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

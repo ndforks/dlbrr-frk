@@ -51,17 +51,17 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 $MAXAGENDA = getDolGlobalString('AGENDA_EXT_NB', 5);
 $DELAYFORCACHE = 300;	// 300 seconds
 
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode = GETPOST('mode', 'aZ09');
+$action = request()->input('action');
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode = request()->input('mode');
 if (empty($mode) && preg_match('/show_/', $action)) {
 	$mode = $action;	// For backward compatibility
 }
 
-$disabledefaultvalues = GETPOSTINT('disabledefaultvalues');
+$disabledefaultvalues = request()->integer('disabledefaultvalues', 0);
 
-$check_holiday = GETPOSTINT('check_holiday');
-$check_birthday = !empty($conf->use_javascript_ajax) ? GETPOSTINT("check_birthday") : 1;
+$check_holiday = request()->integer('check_holiday', 0);
+$check_birthday = !empty($conf->use_javascript_ajax) ? request()->integer('check_birthday', 0) : 1;
 $filter = GETPOST("search_filter", 'alpha', 3) ? GETPOST("search_filter", 'alpha', 3) : GETPOST("filter", 'alpha', 3);
 $filtert = GETPOST("search_filtert", "intcomma", 3) ? GETPOST("search_filtert", "intcomma", 3) : GETPOST("filtert", "intcomma", 3);
 $usergroup = GETPOST("search_usergroup", "intcomma", 3) ? GETPOST("search_usergroup", "intcomma", 3) : GETPOST("usergroup", "intcomma", 3);
@@ -78,11 +78,11 @@ if (empty($filtert)) {
 $newparam = '';
 
 // Pagination parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -95,7 +95,7 @@ if (!$sortfield) {
 }
 
 // Security check
-$socid = GETPOSTINT("search_socid") ? GETPOSTINT("search_socid") : GETPOSTINT("socid");
+$socid = request()->integer('search_socid', 0) ? request()->integer('search_socid', 0) : request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -105,7 +105,7 @@ if ($socid < 0) {
 
 $canedit = 1;
 if (!$user->hasRight('agenda', 'myactions', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('agenda', 'allactions', 'read')) {
 	$canedit = 0;
@@ -114,58 +114,58 @@ if (!$user->hasRight('agenda', 'allactions', 'read') || $filter == 'mine') {  //
 	$filtert = (string) $user->id;
 }
 
-$resourceid = GETPOSTINT("search_resourceid");
-$year = GETPOSTINT("year") ? GETPOSTINT("year") : date("Y");
-$month = GETPOSTINT("month") ? GETPOSTINT("month") : date("m");
-$week = GETPOSTINT("week") ? GETPOSTINT("week") : date("W");
-$day = GETPOSTINT("day") ? GETPOSTINT("day") : date("d");
-$pid = GETPOSTISSET("search_projectid") ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
-$status = GETPOSTISSET("search_status") ? GETPOST("search_status", 'aZ09') : GETPOST("status", 'aZ09'); // status may be 0, 50, 100, 'todo', 'na' or -1
-$type = GETPOSTISSET("search_type") ? GETPOST("search_type", 'aZ09') : GETPOST("type", 'aZ09');
-$maxprint = GETPOSTISSET("maxprint") ? GETPOSTINT("maxprint") : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
+$resourceid = request()->integer('search_resourceid', 0);
+$year = request()->integer('year', 0) ? request()->integer('year', 0) : date("Y");
+$month = request()->integer('month', 0) ? request()->integer('month', 0) : date("m");
+$week = request()->integer('week', 0) ? request()->integer('week', 0) : date("W");
+$day = request()->integer('day', 0) ? request()->integer('day', 0) : date("d");
+$pid = request()->has('search_projectid') ? GETPOSTINT("search_projectid", 3) : GETPOSTINT("projectid", 3);
+$status = request()->has('search_status') ? request()->input('search_status') : request()->input('status'); // status may be 0, 50, 100, 'todo', 'na' or -1
+$type = request()->has('search_type') ? request()->input('search_type') : request()->input('type');
+$maxprint = request()->has('maxprint') ? request()->integer('maxprint', 0) : getDolGlobalInt('AGENDA_MAX_EVENTS_DAY_VIEW', 3);
 
-$dateselect = dol_mktime(0, 0, 0, GETPOSTINT('dateselectmonth'), GETPOSTINT('dateselectday'), GETPOSTINT('dateselectyear'));
+$dateselect = dol_mktime(0, 0, 0, request()->integer('dateselectmonth', 0), request()->integer('dateselectday', 0), request()->integer('dateselectyear', 0));
 if ($dateselect > 0) {
-	$day = GETPOSTINT('dateselectday');
-	$month = GETPOSTINT('dateselectmonth');
-	$year = GETPOSTINT('dateselectyear');
+	$day = request()->integer('dateselectday', 0);
+	$month = request()->integer('dateselectmonth', 0);
+	$year = request()->integer('dateselectyear', 0);
 }
 
 // Set actioncode (this code must be same for setting actioncode into peruser, listacton and index)
-if (GETPOST('search_actioncode', 'array:aZ09')) {
+if (request()->input('search_actioncode')) {
 	$actioncode = GETPOST('search_actioncode', 'array:aZ09', 3);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (GETPOST("search_actioncode") == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
+	$actioncode = GETPOST("search_actioncode", "alpha", 3) ? GETPOST("search_actioncode", "alpha", 3) : (request()->input('search_actioncode') == '0' ? '0' : ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE')));
 }
 if (is_scalar($actioncode) && $actioncode == '-1') {
 	$actioncode = '';
 }
 
-if ($status == '' && !GETPOSTISSET('search_status')) {
+if ($status == '' && !request()->has('search_status')) {
 	$status = ((!getDolGlobalString('AGENDA_DEFAULT_FILTER_STATUS') || $disabledefaultvalues) ? '' : getDolGlobalString('AGENDA_DEFAULT_FILTER_STATUS'));
 }
 
 $defaultview = getDolGlobalString('AGENDA_DEFAULT_VIEW', 'show_month');	// default for app
 $defaultview = getDolUserString('AGENDA_DEFAULT_VIEW', $defaultview);	// default for user
-if (empty($mode) && !GETPOSTISSET('mode')) {
+if (empty($mode) && !request()->has('mode')) {
 	$mode = $defaultview;
 }
 if ($mode == 'default') {	// When action is default, we want a calendar view and not the list
 	$mode = (($defaultview != 'show_list') ? $defaultview : 'show_month');
 }
-if (GETPOST('viewcal') && GETPOST('mode') != 'show_day' && GETPOST('mode') != 'show_week') {
+if (request()->input('viewcal') && request()->input('mode') != 'show_day' && request()->input('mode') != 'show_week') {
 	$mode = 'show_month';
 	$day = '';
 } // View by month
-if (GETPOST('viewweek') || GETPOST('mode') == 'show_week') {
+if (request()->input('viewweek') || request()->input('mode') == 'show_week') {
 	$mode = 'show_week';
 	$week = ($week ? $week : date("W"));
 	$day = ($day ? $day : date("d"));
 } // View by week
-if (GETPOST('viewday') || GETPOST('mode') == 'show_day') {
+if (request()->input('viewday') || request()->input('mode') == 'show_day') {
 	$mode = 'show_day';
 	$day = ($day ? $day : date("d"));
 } // View by day
@@ -190,7 +190,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/redirect_if_setup_not_complete.inc.php';
  * Actions
  */
 
-if (GETPOST("viewlist", 'alpha') || $mode == 'show_list') {
+if (request()->input('viewlist') || $mode == 'show_list') {
 	$param = '';
 	if (is_array($_POST)) {
 		foreach ($_POST as $key => $val) {
@@ -208,7 +208,7 @@ if (GETPOST("viewlist", 'alpha') || $mode == 'show_list') {
 	exit;
 }
 
-if (GETPOST("viewperuser", 'alpha') || $mode == 'show_peruser') {
+if (request()->input('viewperuser') || $mode == 'show_peruser') {
 	$param = '';
 	if (is_array($_POST)) {
 		foreach ($_POST as $key => $val) {
@@ -414,7 +414,7 @@ if ($status == 'todo') {
 */
 
 $param = '';
-if ($actioncode || GETPOSTISSET('search_actioncode')) {
+if ($actioncode || request()->has('search_actioncode')) {
 	if (is_array($actioncode)) {
 		foreach ($actioncode as $str_action) {
 			$param .= "&search_actioncode[]=".urlencode($str_action);
@@ -426,7 +426,7 @@ if ($actioncode || GETPOSTISSET('search_actioncode')) {
 if ($resourceid > 0) {
 	$param .= "&search_resourceid=".urlencode((string) ($resourceid));
 }
-if ($status || GETPOSTISSET('status') || GETPOSTISSET('search_status')) {
+if ($status || request()->has('status') || request()->has('search_status')) {
 	$param .= "&search_status=".urlencode($status);
 }
 if ($filter) {
@@ -619,7 +619,7 @@ if (isModEnabled("bookcal")) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -702,7 +702,7 @@ if (!empty($conf->use_javascript_ajax)) {	// If javascript on
 	}
 
 	// Birthdays
-	$s .= '<div class="nowrap inline-block minheight30"><input type="checkbox" id="check_birthday" name="check_birthday" class="marginleftonly check_birthday" value="1" '. (GETPOSTINT('check_birthday') ? ' checked' : '') .'><label for="check_birthday" class="labelcalendar"> <span class="check_birthday_text">'.$langs->trans("AgendaShowBirthdayEvents").'</span></label> &nbsp; </div>';
+	$s .= '<div class="nowrap inline-block minheight30"><input type="checkbox" id="check_birthday" name="check_birthday" class="marginleftonly check_birthday" value="1" '. (request()->integer('check_birthday', 0) ? ' checked' : '') .'><label for="check_birthday" class="labelcalendar"> <span class="check_birthday_text">'.$langs->trans("AgendaShowBirthdayEvents").'</span></label> &nbsp; </div>';
 
 	// Bookcal Calendar
 	if (isModEnabled("bookcal")) {
@@ -1072,7 +1072,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 //var_dump($eventarray);
 
@@ -1150,7 +1150,7 @@ if ($check_birthday) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -2152,10 +2152,10 @@ function show_day_events($db, $day, $month, $year, $monthshown, $style, &$eventa
 					if ($maxprint && $ireallyshown >= $maxprint) {
 						$morecss = 'showifmore';
 					}
-					if ($event->type == 'birthdate' && !GETPOST('check_birthday')) {
+					if ($event->type == 'birthdate' && !request()->input('check_birthday')) {
 						$morecss = 'hidden';
 					}
-					if ($event->type == 'holiday' && !GETPOST('check_holiday')) {
+					if ($event->type == 'holiday' && !request()->input('check_holiday')) {
 						$morecss = 'hidden';
 					}
 					/* I comment this because it hides event recorded from bookcal online page

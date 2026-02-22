@@ -42,10 +42,10 @@ require_once DOL_DOCUMENT_ROOT.'/recruitment/lib/recruitment.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "recruitment"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -56,7 +56,7 @@ $error = 0;
  */
 
 if ($action == 'setRECRUITMENT_ENABLE_PUBLIC_INTERFACE') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'RECRUITMENT_ENABLE_PUBLIC_INTERFACE', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'RECRUITMENT_ENABLE_PUBLIC_INTERFACE', 0, 'chaine', 0, '', $conf->entity);
@@ -64,7 +64,7 @@ if ($action == 'setRECRUITMENT_ENABLE_PUBLIC_INTERFACE') {
 }
 
 if ($action == 'update') {
-	$public = GETPOST('RECRUITMENT_ENABLE_PUBLIC_INTERFACE');
+	$public = request()->input('RECRUITMENT_ENABLE_PUBLIC_INTERFACE');
 
 	$res = dolibarr_set_const($db, "RECRUITMENT_ENABLE_PUBLIC_INTERFACE", $public, 'chaine', 0, '', $conf->entity);
 

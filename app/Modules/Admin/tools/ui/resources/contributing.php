@@ -29,7 +29,7 @@ require '../../../../main.inc.php';
 
 // Protection if external user
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 // Includes
@@ -106,7 +106,7 @@ $documentation->showSidebar(); ?>
 				'',
 				'// Protection if external user',
 				'if ($user->socid > 0) {',
-				'	accessforbidden();',
+				'	abort(403);',
 				'}',
 				'',
 				'// Includes',

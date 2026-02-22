@@ -43,12 +43,12 @@ require_once DOL_DOCUMENT_ROOT."/opensurvey/lib/opensurvey.lib.php";
 
 // Security check
 if (!$user->hasRight('opensurvey', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Init vars
-$action = GETPOST('action', 'aZ09');
-$numsondage = GETPOST("id", 'alphanohtml');
+$action = request()->input('action');
+$numsondage = request()->input('id');
 
 $object = new Opensurveysondage($db);
 $result = $object->fetch('', $numsondage);
@@ -65,30 +65,30 @@ $nblines = $object->fetch_lines();
 $error = 0;
 
 // Return to the results
-if (GETPOST('cancel')) {
-	header('Location: results.php?id='.(GETPOSTISSET('id_sondage') ? GETPOST('id_sondage', 'aZ09') : GETPOST('id', 'alphanohtml')));
+if (request()->input('cancel')) {
+	header('Location: results.php?id='.(request()->has('id_sondage') ? request()->input('id_sondage') : request()->input('id')));
 	exit;
 }
 
 $nbcolonnes = substr_count($object->sujet, ',') + 1;
 
 // Add vote
-if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// boutonp for chrome, boutonp.x for firefox
-	if (GETPOST('nom')) {
+if (request()->input('boutonp') || request()->input('boutonp.x') || request()->input('boutonp_x')) {		// boutonp for chrome, boutonp.x for firefox
+	if (request()->input('nom')) {
 		$erreur_prenom = false;
 
 		$nouveauchoix = '';
 		for ($i = 0; $i < $nbcolonnes; $i++) {
-			if (GETPOSTISSET("choix$i") && GETPOST("choix$i") == '1') {
+			if (request()->has('choix$i') && request()->input('choix$i') == '1') {
 				$nouveauchoix .= "1";
-			} elseif (GETPOSTISSET("choix$i") && GETPOST("choix$i") == '2') {
+			} elseif (request()->has('choix$i') && request()->input('choix$i') == '2') {
 				$nouveauchoix .= "2";
 			} else { // else it's zéro
 				$nouveauchoix .= "0";
 			}
 		}
 
-		$nom = substr(GETPOST("nom", 'alphanohtml'), 0, 64);
+		$nom = substr(request()->input('nom'), 0, 64);
 
 		// Check if vote already exists
 		$sql = 'SELECT id_users, nom as name';
@@ -105,7 +105,7 @@ if (GETPOST("boutonp") || GETPOST("boutonp.x") || GETPOST("boutonp_x")) {		// bo
 			$sql .= " VALUES ('".$db->escape($nom)."', '".$db->escape($numsondage)."', '".$db->escape($nouveauchoix)."', '".$db->idate(dol_now())."')";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -131,14 +131,14 @@ for ($i = 0; $i < $nblines; $i++) {
 if ($testmodifier) {
 	// Security check
 	if (!$user->hasRight('opensurvey', 'write')) {
-		accessforbidden();
+		abort(403);
 	}
 
 	$nouveauchoix = '';
 	for ($i = 0; $i < $nbcolonnes; $i++) {
-		if (GETPOSTISSET("choix$i") && GETPOST("choix$i") == '1') {
+		if (request()->has('choix$i') && request()->input('choix$i') == '1') {
 			$nouveauchoix .= "1";
-		} elseif (GETPOSTISSET("choix$i") && GETPOST("choix$i") == '2') {
+		} elseif (request()->has('choix$i') && request()->input('choix$i') == '2') {
 			$nouveauchoix .= "2";
 		} else { // else it's zero
 			$nouveauchoix .= "0";
@@ -152,22 +152,22 @@ if ($testmodifier) {
 
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Add column (not for date)
-if (GETPOST("ajoutercolonne") && GETPOST('nouvellecolonne') && $object->format == "A") {
+if (request()->input('ajoutercolonne') && request()->input('nouvellecolonne') && $object->format == "A") {
 	// Security check
 	if (!$user->hasRight('opensurvey', 'write')) {
-		accessforbidden();
+		abort(403);
 	}
 
 	$nouveauxsujets = $object->sujet;
 
 	// We add the value to the end of all subjects already entered
 	$nouveauxsujets .= ',';
-	$nouveauxsujets .= str_replace(array(",", "@"), " ", GETPOST("nouvellecolonne")).(!GETPOST("typecolonne") ? '' : '@'.GETPOST("typecolonne"));
+	$nouveauxsujets .= str_replace(array(",", "@"), " ", request()->input('nouvellecolonne')).(!request()->input('typecolonne') ? '' : '@'.request()->input('typecolonne'));
 
 	// update with new subjects in database
 	$sql = 'UPDATE '.MAIN_DB_PREFIX."opensurvey_sondage";
@@ -175,7 +175,7 @@ if (GETPOST("ajoutercolonne") && GETPOST('nouvellecolonne') && $object->format =
 	$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 	$resql = $db->query($sql);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	} else {
 		header('Location: results.php?id='.$object->id_sondage);
 		exit;
@@ -183,42 +183,42 @@ if (GETPOST("ajoutercolonne") && GETPOST('nouvellecolonne') && $object->format =
 }
 
 // Add column (with format date)
-if (GETPOSTISSET("ajoutercolonne") && $object->format == "D") {
+if (request()->has('ajoutercolonne') && $object->format == "D") {
 	// Security check
 	if (!$user->hasRight('opensurvey', 'write')) {
-		accessforbidden();
+		abort(403);
 	}
 
 	$nouveauxsujets = $object->sujet;
 
-	if (GETPOSTISSET("nouveaujour") && GETPOST("nouveaujour") != "vide" &&
-		GETPOSTISSET("nouveaumois") && GETPOST("nouveaumois") != "vide" &&
-		GETPOSTISSET("nouvelleannee") && GETPOST("nouvelleannee") != "vide") {
-		$nouvelledate = dol_mktime(0, 0, 0, GETPOSTINT("nouveaumois"), GETPOSTINT("nouveaujour"), GETPOSTINT("nouvelleannee"));
+	if (request()->has('nouveaujour') && request()->input('nouveaujour') != "vide" &&
+		request()->has('nouveaumois') && request()->input('nouveaumois') != "vide" &&
+		request()->has('nouvelleannee') && request()->input('nouvelleannee') != "vide") {
+		$nouvelledate = dol_mktime(0, 0, 0, request()->integer('nouveaumois', 0), request()->integer('nouveaujour', 0), request()->integer('nouvelleannee', 0));
 
-		if (GETPOSTISSET("nouvelleheuredebut") && GETPOST("nouvelleheuredebut") != "vide") {
+		if (request()->has('nouvelleheuredebut') && request()->input('nouvelleheuredebut') != "vide") {
 			$nouvelledate .= "@";
-			$nouvelledate .= GETPOST("nouvelleheuredebut");
+			$nouvelledate .= request()->input('nouvelleheuredebut');
 			$nouvelledate .= "h";
 
-			if (GETPOST("nouvelleminutedebut") != "vide") {
-				$nouvelledate .= GETPOST("nouvelleminutedebut");
+			if (request()->input('nouvelleminutedebut') != "vide") {
+				$nouvelledate .= request()->input('nouvelleminutedebut');
 			}
 		}
 
-		if (GETPOSTISSET("nouvelleheurefin") && GETPOST("nouvelleheurefin") != "vide") {
+		if (request()->has('nouvelleheurefin') && request()->input('nouvelleheurefin') != "vide") {
 			$nouvelledate .= "-";
-			$nouvelledate .= GETPOST("nouvelleheurefin");
+			$nouvelledate .= request()->input('nouvelleheurefin');
 			$nouvelledate .= "h";
 
-			if (GETPOST("nouvelleminutefin") != "vide") {
-				$nouvelledate .= GETPOST("nouvelleminutefin");
+			if (request()->input('nouvelleminutefin') != "vide") {
+				$nouvelledate .= request()->input('nouvelleminutefin');
 			}
 		}
 
-		if (GETPOST("nouvelleheuredebut") == "vide" || (GETPOSTISSET("nouvelleheuredebut") && GETPOSTISSET("nouvelleheurefin")
-			&& (GETPOST("nouvelleheuredebut") < GETPOST("nouvelleheurefin") || (GETPOST("nouvelleheuredebut") == GETPOST("nouvelleheurefin")
-				&& (GETPOST("nouvelleminutedebut") < GETPOST("nouvelleminutefin")))))) {
+		if (request()->input('nouvelleheuredebut') == "vide" || (request()->has('nouvelleheuredebut') && request()->has('nouvelleheurefin')
+			&& (request()->input('nouvelleheuredebut') < request()->input('nouvelleheurefin') || (request()->input('nouvelleheuredebut') == request()->input('nouvelleheurefin')
+				&& (request()->input('nouvelleminutedebut') < request()->input('nouvelleminutefin')))))) {
 			$erreur_ajout_date = false;
 		} else {
 			$erreur_ajout_date = "yes";
@@ -262,7 +262,7 @@ if (GETPOSTISSET("ajoutercolonne") && $object->format == "D") {
 			$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			} else {
 				header('Location: results.php?id='.$object->id_sondage);
 			}
@@ -273,7 +273,7 @@ if (GETPOSTISSET("ajoutercolonne") && $object->format == "D") {
 			$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 			$resql = $db->query($sql);
 			if (!$resql) {
-				dol_print_error($db);
+				abort(500);
 			} else {
 				$num = $db->num_rows($resql);
 				$compteur = 0;
@@ -295,7 +295,7 @@ if (GETPOSTISSET("ajoutercolonne") && $object->format == "D") {
 					$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 					$resql = $db->query($sql);
 					if (!$resql) {
-						dol_print_error($db);
+						abort(500);
 					}
 					$compteur++;
 				}
@@ -312,7 +312,7 @@ for ($i = 0; $i < $nblines; $i++) {
 	if (GETPOST("effaceligne".$i) || GETPOST("effaceligne".$i."_x") || GETPOST("effaceligne".$i.".x")) {	// effacelignei for chrome, effacelignei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
-			accessforbidden();
+			abort(403);
 		}
 
 		$compteur = 0;
@@ -324,7 +324,7 @@ for ($i = 0; $i < $nblines; $i++) {
 		$sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$num = $db->num_rows($resql);
 		while ($compteur < $num) {
@@ -347,7 +347,7 @@ for ($i = 0; $i < $nbcolonnes; $i++) {
 		&& $nbcolonnes > 1) {	// effacecolonnei for chrome, effacecolonnei_x for firefox
 		// Security check
 		if (!$user->hasRight('opensurvey', 'write')) {
-			accessforbidden();
+			abort(403);
 		}
 
 		$db->begin();
@@ -374,7 +374,7 @@ for ($i = 0; $i < $nbcolonnes; $i++) {
 		$sql .= " SET sujet = '".$db->escape($nouveauxsujets)."' WHERE id_sondage = '".$db->escape($numsondage)."'";
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Clean current answer to remove deleted columns
@@ -385,7 +385,7 @@ for ($i = 0; $i < $nbcolonnes; $i++) {
 		dol_syslog('sql='.$sql);
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 			exit;
 		}
 		$num = $db->num_rows($resql);
@@ -459,7 +459,7 @@ $toutsujet = str_replace("°", "'", $toutsujet);
 
 print '<form name="formulaire4" action="#" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="id" value="'.GETPOST('id').'">';
+print '<input type="hidden" name="id" value="'.request()->input('id').'">';
 
 $head = opensurvey_prepare_head($object);
 
@@ -585,16 +585,16 @@ print '</div>';
 
 
 // Show form to add a new field/column
-if (GETPOST('ajoutsujet')) {
+if (request()->input('ajoutsujet')) {
 	// Security check
 	if (!$user->hasRight('opensurvey', 'write')) {
-		accessforbidden();
+		abort(403);
 	}
 
 	print '<form name="formulaire" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 	print '<input type="hidden" name="token" value="'.newToken().'">';
-	print '<input type="hidden" name="backtopage" value="'.GETPOST('backtopage', 'alpha').'">';
-	print '<input type="hidden" name="id" value="'.GETPOST('id', 'alpha').'">';
+	print '<input type="hidden" name="backtopage" value="'.request()->input('backtopage').'">';
+	print '<input type="hidden" name="id" value="'.request()->input('id').'">';
 	print '<input type="hidden" name="ajoutsujet" value="1">';
 
 	print '<div class="center">'."\n";
@@ -605,7 +605,7 @@ if (GETPOST('ajoutsujet')) {
 		print $langs->trans("AddNewColumn").':<br><br>';
 		print $langs->trans("Title").' <input type="text" name="nouvellecolonne" size="40"><br>';
 		$tmparray = array('checkbox' => $langs->trans("CheckBox"), 'yesno' => $langs->trans("YesNoList"), 'foragainst' => $langs->trans("PourContreList"));
-		print $langs->trans("Type").' '.$form->selectarray("typecolonne", $tmparray, GETPOST('typecolonne')).'<br><br>';
+		print $langs->trans("Type").' '.$form->selectarray("typecolonne", $tmparray, request()->input('typecolonne')).'<br><br>';
 		print '<input type="submit" class="button" name="ajoutercolonne" value="'.dol_escape_htmltag($langs->trans("Add")).'">';
 		print '<input type="hidden" name="id_sondage" value="'.dol_escape_htmltag($object->id_sondage).'">';
 		print ' &nbsp; &nbsp; ';
@@ -836,7 +836,7 @@ $sql .= " WHERE id_sondage = '".$db->escape($numsondage)."'";
 dol_syslog('sql='.$sql);
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 $num = $db->num_rows($resql);
@@ -1125,7 +1125,7 @@ if ($nbofcheckbox >= 2) {
 }
 
 // S'il a oublié de remplir un nom
-if (GETPOSTISSET("boutonp") && GETPOST("nom") == "") {
+if (request()->has('boutonp') && request()->input('nom') == "") {
 	setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Name")), null, 'errors');
 }
 

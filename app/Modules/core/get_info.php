@@ -49,8 +49,8 @@ require_once '../main.inc.php';
  * @var User $user
  */
 
-if (GETPOST('lang', 'aZ09')) {
-	$langs->setDefaultLang(GETPOST('lang', 'aZ09')); // If language was forced on URL by the main.inc.php
+if (request()->input('lang')) {
+	$langs->setDefaultLang(request()->input('lang')); // If language was forced on URL by the main.inc.php
 }
 
 $langs->load("main");
@@ -158,7 +158,7 @@ if (isModEnabled('modulebuilder')) {
 }
 
 // Logout link
-if (GETPOSTINT('withlogout')) {
+if (request()->integer('withlogout', 0)) {
 	$toprightmenu .= $form->textwithtooltip('', $logouthtmltext, 2, 1, $logouttext, 'login_block_elem', 2);
 }
 

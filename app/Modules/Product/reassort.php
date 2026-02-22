@@ -47,22 +47,22 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'stocks'));
 
-$action = GETPOST('action', 'aZ09');
-$sref = GETPOST("sref", 'alpha');
-$snom = GETPOST("snom", 'alpha');
-$sall = trim(GETPOST('search_all', 'alphanohtml'));
-$type = GETPOSTISSET('type') ? GETPOSTINT('type') : Product::TYPE_PRODUCT;
-$search_barcode = GETPOST("search_barcode", 'alpha');
-$search_toolowstock = GETPOST('search_toolowstock');
-$tosell = GETPOST("tosell");
-$tobuy = GETPOST("tobuy");
-$fourn_id = GETPOSTINT("fourn_id");
-$sbarcode = GETPOSTINT("sbarcode");
-$search_stock_physique = GETPOST('search_stock_physique', 'alpha');
+$action = request()->input('action');
+$sref = request()->input('sref');
+$snom = request()->input('snom');
+$sall = trim(request()->input('search_all'));
+$type = request()->has('type') ? request()->integer('type', 0) : Product::TYPE_PRODUCT;
+$search_barcode = request()->input('search_barcode');
+$search_toolowstock = request()->input('search_toolowstock');
+$tosell = request()->input('tosell');
+$tobuy = request()->input('tobuy');
+$fourn_id = request()->integer('fourn_id', 0);
+$sbarcode = request()->integer('sbarcode', 0);
+$search_stock_physique = request()->input('search_stock_physique');
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page < 0) {
 	$page = 0;
 }
@@ -72,22 +72,22 @@ if (!$sortfield) {
 if (!$sortorder) {
 	$sortorder = "ASC";
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
 $offset = $limit * $page;
 
 // Load sale and categ filters
-$search_sale = GETPOST("search_sale");
-if (GETPOSTISSET('catid')) {
-	$search_categ = GETPOSTINT('catid');
+$search_sale = request()->input('search_sale');
+if (request()->has('catid')) {
+	$search_categ = request()->integer('catid', 0);
 } else {
-	$search_categ = GETPOSTINT('search_categ');
+	$search_categ = request()->integer('search_categ', 0);
 }
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-$canvas = GETPOST("canvas");
+$canvas = request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
@@ -122,7 +122,7 @@ $object = new Product($db);
  * Actions
  */
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$sref = "";
 	$snom = "";
 	$sall = "";
@@ -341,7 +341,7 @@ if ($resql) {
 
 	$i = 0;
 
-	if ($num == 1 && GETPOST('autojumpifoneonly') && ($sall || $snom || $sref)) {
+	if ($num == 1 && request()->input('autojumpifoneonly') && ($sall || $snom || $sref)) {
 		$objp = $db->fetch_object($resql);
 		header("Location: card.php?id=$objp->rowid");
 		exit;
@@ -667,7 +667,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

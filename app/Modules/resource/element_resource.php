@@ -52,9 +52,9 @@ if (isModEnabled("product") || isModEnabled("service")) {
 $langs->loadLangs(array('resource', 'other', 'interventions'));
 
 /*
-$sortorder = GETPOST('sortorder','alpha');
-$sortfield = GETPOST('sortfield','alpha');
-$page = GETPOST('page','int');
+$sortorder = request()->input('sortorder');
+$sortfield = request()->input('sortfield');
+$page = request()->input('page');
 */
 
 $object = new Dolresource($db);
@@ -63,20 +63,20 @@ $hookmanager->initHooks(array('element_resource'));
 $object->available_resources = array('dolresource');
 
 // Get parameters
-$id                     = GETPOSTINT('id'); // resource id
-$element_id             = GETPOSTINT('element_id'); // element_id
-$element_ref            = GETPOST('ref', 'alpha'); // element ref
-$element                = GETPOST('element', 'alpha'); // element_type
-$action                 = GETPOST('action', 'alpha');
-$mode                   = GETPOST('mode', 'alpha');
-$lineid                 = GETPOSTINT('lineid');
-$resource_id            = GETPOSTINT('fk_resource');
-$resource_type          = GETPOST('resource_type', 'alpha');
-$busy                   = GETPOSTINT('busy');
-$mandatory              = GETPOSTINT('mandatory');
-$cancel                 = GETPOST('cancel', 'alpha');
-$confirm                = GETPOST('confirm', 'alpha');
-$socid                  = GETPOSTINT('socid');
+$id                     = request()->integer('id', 0); // resource id
+$element_id             = request()->integer('element_id', 0); // element_id
+$element_ref            = request()->input('ref'); // element ref
+$element                = request()->input('element'); // element_type
+$action                 = request()->input('action');
+$mode                   = request()->input('mode');
+$lineid                 = request()->integer('lineid', 0);
+$resource_id            = request()->integer('fk_resource', 0);
+$resource_type          = request()->input('resource_type');
+$busy                   = request()->integer('busy', 0);
+$mandatory              = request()->integer('mandatory', 0);
+$cancel                 = request()->input('cancel');
+$confirm                = request()->input('confirm');
+$socid                  = request()->integer('socid', 0);
 
 if (empty($mandatory)) {
 	$mandatory = 0;
@@ -91,7 +91,7 @@ if ($socid > 0) { // Special for thirdparty
 }
 
 if (!$user->hasRight('resource', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Permission is not permission on resources. We just make link here on objects.

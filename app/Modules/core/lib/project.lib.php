@@ -115,7 +115,7 @@ function project_prepare_head(Project $project, $moreparam = '')
 					dol_setcache($cachekey, $nbTimeSpent, 120);	// If setting cache fails, this is not a problem, so we do not test result.
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -402,13 +402,13 @@ function task_prepare_head($object)
 	$h = 0;
 	$head = array();
 
-	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/task.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
+	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/task.php?id='.$object->id.(request()->input('withproject') ? '&withproject=1' : '');
 	$head[$h][1] = $langs->trans("Task");
 	$head[$h][2] = 'task_task';
 	$h++;
 
 	$nbContact = count($object->liste_contact(-1, 'internal')) + count($object->liste_contact(-1, 'external'));
-	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/contact.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
+	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/contact.php?id='.$object->id.(request()->input('withproject') ? '&withproject=1' : '');
 	$head[$h][1] = $langs->trans("TaskRessourceLinks");
 	if ($nbContact > 0) {
 		$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbContact.'</span>';
@@ -430,10 +430,10 @@ function task_prepare_head($object)
 			$nbTimeSpent = 1;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
-	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/time.php?id='.urlencode((string) $object->id).(GETPOST('withproject') ? '&withproject=1' : '');
+	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/time.php?id='.urlencode((string) $object->id).(request()->input('withproject') ? '&withproject=1' : '');
 	$head[$h][1] = $langs->trans("TimeSpent");
 	if ($nbTimeSpent > 0) {
 		$head[$h][1] .= '<span class="badge marginleftonlyshort">...</span>';
@@ -455,7 +455,7 @@ function task_prepare_head($object)
 		if (!empty($object->note_public)) {
 			$nbNote++;
 		}
-		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/note.php?id='.urlencode((string) $object->id).(GETPOST('withproject') ? '&withproject=1' : '');
+		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/note.php?id='.urlencode((string) $object->id).(request()->input('withproject') ? '&withproject=1' : '');
 		$head[$h][1] = $langs->trans('Notes');
 		if ($nbNote > 0) {
 			$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbNote.'</span>';
@@ -464,7 +464,7 @@ function task_prepare_head($object)
 		$h++;
 	}
 
-	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
+	$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/document.php?id='.$object->id.(request()->input('withproject') ? '&withproject=1' : '');
 	$filesdir = $conf->project->multidir_output[$object->entity ?? $conf->entity]."/".dol_sanitizeFileName($object->project->ref).'/'.dol_sanitizeFileName($object->ref);
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 	include_once DOL_DOCUMENT_ROOT.'/core/class/link.class.php';
@@ -480,7 +480,7 @@ function task_prepare_head($object)
 	// Manage discussion
 	if (getDolGlobalString('PROJECT_ALLOW_COMMENT_ON_TASK')) {
 		$nbComments = $object->getNbComments();
-		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/comment.php?id='.$object->id.(GETPOST('withproject') ? '&withproject=1' : '');
+		$head[$h][0] = DOL_URL_ROOT.'/projet/tasks/comment.php?id='.$object->id.(request()->input('withproject') ? '&withproject=1' : '');
 		$head[$h][1] = $langs->trans("CommentLink");
 		if ($nbComments > 0) {
 			$head[$h][1] .= '<span class="badge marginleftonlyshort">'.$nbComments.'</span>';
@@ -2666,7 +2666,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 		$sql .= " AND p.fk_statut = ".(int) $status;
 	}
 	if (getDolGlobalString('PROJECT_LIMIT_YEAR_RANGE')) {
-		$project_year_filter = GETPOST("project_year_filter", 'alpha');	// '*' seems allowed
+		$project_year_filter = request()->input('project_year_filter');	// '*' seems allowed
 		//Check if empty or invalid year. Wildcard ignores the sql check
 		if ($project_year_filter != "*") {
 			if (empty($project_year_filter) || !is_numeric($project_year_filter)) {
@@ -2692,7 +2692,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	if (empty($arrayidofprojects)) {
 		$arrayidofprojects[0] = -1;
@@ -2919,7 +2919,7 @@ function print_projecttasks_array($db, $form, $socid, $projectsListId, $mytasks 
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print "</table>";

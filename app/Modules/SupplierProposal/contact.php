@@ -49,9 +49,9 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.commande.dispatch.class
 // Load translation files required by the page
 $langs->loadLangs(array("propal", "supplier_proposal", "facture", "orders", "sendings", "companies"));
 
-$id		= GETPOSTINT('id');
-$ref	= GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id		= request()->integer('id', 0);
+$ref	= request()->input('ref');
+$action = request()->input('action');
 
 // Security check
 if ($user->socid) {
@@ -85,9 +85,9 @@ if (empty($reshook)) {
 		$result = $object->fetch($id);
 
 		if ($result > 0 && $id > 0) {
-			$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-			$typeid = (GETPOSTINT('typecontact') ? GETPOSTINT('typecontact') : GETPOSTINT('type'));
-			$result = $object->add_contact($contactid, $typeid, GETPOST("source"));
+			$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+			$typeid = (request()->integer('typecontact', 0) ? request()->integer('typecontact', 0) : request()->integer('type', 0));
+			$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 		}
 
 		if ($result >= 0) {
@@ -104,14 +104,14 @@ if (empty($reshook)) {
 	} elseif ($action == 'swapstatut' && $permissiontoedit) {
 		// Toggle the status of a contact
 		if ($object->fetch($id)) {
-			$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+			$result = $object->swapContactStatus(request()->integer('ligne', 0));
 		} else {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'deletecontact' && $permissiontoedit) {
 		// Deleting a contact
 		$object->fetch($id);
-		$result = $object->delete_contact(GETPOSTINT("lineid"));
+		$result = $object->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);

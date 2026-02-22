@@ -61,27 +61,27 @@ require_once DOL_DOCUMENT_ROOT.'/admin/remotestore/class/externalModules.class.p
 // Load translation files required by the page
 $langs->loadLangs(array("errors", "admin", "modulebuilder"));
 
-$action = GETPOST('action', 'aZ09');
-$page = GETPOSTINT('page');
-$page_y = GETPOSTINT('page_y');
-$optioncss = GETPOST('optioncss', 'aZ09');
-$sortfield = GETPOST('sortfield', 'aZ09');
-$sortorder = GETPOST('sortorder', 'aZ09');
+$action = request()->input('action');
+$page = request()->integer('page', 0);
+$page_y = request()->integer('page_y', 0);
+$optioncss = request()->input('optioncss');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 
-$mode = GETPOST('mode', 'alpha');
-$value = GETPOST('value', 'alpha');
-$search_keyword = GETPOST('search_keyword', 'alpha');
-$search_status = GETPOST('search_status', 'alpha');
-$search_nature = GETPOST('search_nature', 'alpha');
-$search_version = GETPOST('search_version', 'alpha');
+$mode = request()->input('mode');
+$value = request()->input('value');
+$search_keyword = request()->input('search_keyword');
+$search_status = request()->input('search_status');
+$search_nature = request()->input('search_nature');
+$search_version = request()->input('search_version');
 
 
 // For remotestore search
 $options              		= array();
 $options['per_page']  		= 11;
-$options['no_page']   		= (GETPOSTINT('no_page') ? GETPOSTINT('no_page') : 1);
-$options['categorie'] 		= (GETPOSTINT('categorie') ? GETPOSTINT('categorie') : 0);
-$options['search']    		= GETPOST('search_keyword', 'alpha');
+$options['no_page']   		= (request()->integer('no_page', 0) ? request()->integer('no_page', 0) : 1);
+$options['categorie'] 		= (request()->integer('categorie', 0) ? request()->integer('categorie', 0) : 0);
+$options['search']    		= request()->input('search_keyword');
 
 // If it is a new search, we reset page to 1
 if (GETPOST('buttonsubmit', 'alphanohtml', 2)) {
@@ -94,7 +94,7 @@ $options['search_source_dolistore']	= getDolGlobalInt('MAIN_ENABLE_EXTERNALMODUL
 $options['search_source_github']	= getDolGlobalInt('MAIN_ENABLE_EXTERNALMODULES_COMMUNITY');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $familyinfo = array(
@@ -113,7 +113,7 @@ $familyinfo = array(
 );
 
 $param = '';
-if (!GETPOST('buttonreset', 'alpha')) {
+if (!request()->input('buttonreset')) {
 	if ($search_keyword) {
 		$param .= '&search_keyword='.urlencode($search_keyword);
 	}
@@ -163,7 +163,7 @@ $remotestore = new ExternalModules($debug);
 
 if ($mode == 'marketplace') {
 	// Make remote calls
-	if (GETPOSTINT('dol_resetcache')) {
+	if (request()->integer('dol_resetcache', 0)) {
 		dol_delete_file($remotestore->cache_file);
 	}
 	$remotestore->loadRemoteSources(false);
@@ -187,8 +187,8 @@ if ($reshook < 0) {
 }
 
 // if we set another view list mode, we keep it (till we change one more time)
-if (GETPOSTISSET('mode')) {
-	$mode = GETPOST('mode', 'alpha');
+if (request()->has('mode')) {
+	$mode = request()->input('mode');
 	if ($mode == 'common' && !getDolGlobalString('MAIN_MODULE_SETUP_ON_LIST_BY_DEFAULT')) {
 		dolibarr_set_const($db, "MAIN_MODULE_SETUP_ON_LIST_BY_DEFAULT", $mode, 'chaine', 0, '', $conf->entity);
 	}
@@ -196,7 +196,7 @@ if (GETPOSTISSET('mode')) {
 	$mode = getDolGlobalString('MAIN_MODULE_SETUP_ON_LIST_BY_DEFAULT', 'commonkanban');
 }
 
-if (GETPOST('buttonreset', 'alpha')) {
+if (request()->input('buttonreset')) {
 	$search_keyword = '';
 	$search_status = '';
 	$search_nature = '';
@@ -309,7 +309,7 @@ if ($action == 'install' && $allowonlineinstall) {
 
 				// Check if module is in the remote malware list
 				if (!$error) {
-					if (GETPOST('checkforcompliance') == 'on') {
+					if (request()->input('checkforcompliance') == 'on') {
 						try {
 							$res = include_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
 							$dolibarrmodule = new DolibarrModules($db);
@@ -407,7 +407,7 @@ if ($action == 'install' && $allowonlineinstall) {
 		setEventMessages($message, null, 'warnings');
 	}
 } elseif ($action == 'install' && !$allowonlineinstall) {
-	httponly_accessforbidden("You try to bypass the protection to disallow deployment of an external module. Hack attempt ?");
+	httponly_abort(403);
 }
 
 if ($action == 'set' && $user->admin) {
@@ -440,13 +440,13 @@ if ($action == 'set' && $user->admin) {
 					setEventMessages($msg, null, 'warnings');
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 	header("Location: ".$_SERVER["PHP_SELF"]."?mode=".$mode.$param.($page_y ? '&page_y='.$page_y : ''));
 	exit;
-} elseif ($action == 'reset' && $user->admin && GETPOST('confirm') == 'yes') {
+} elseif ($action == 'reset' && $user->admin && request()->input('confirm') == 'yes') {
 	$result = unActivateModule($value);
 	dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 	if ($result) {
@@ -454,7 +454,7 @@ if ($action == 'set' && $user->admin) {
 	}
 	header("Location: ".$_SERVER["PHP_SELF"]."?mode=".$mode.$param.($page_y ? '&page_y='.$page_y : ''));
 	exit;
-} elseif (getDolGlobalInt("MAIN_FEATURES_LEVEL") > 1 && $action == 'reload' && $user->admin && GETPOST('confirm') == 'yes') {
+} elseif (getDolGlobalInt("MAIN_FEATURES_LEVEL") > 1 && $action == 'reload' && $user->admin && request()->input('confirm') == 'yes') {
 	$result = unActivateModule($value, 0, 'newboxdefonly');		// unactivate all module features but for widget, we reload only definition and we do not change position or setup
 	dolibarr_set_const($db, "MAIN_IHM_PARAMS_REV", getDolGlobalInt('MAIN_IHM_PARAMS_REV') + 1, 'chaine', 0, '', $conf->entity);
 	if ($result) {
@@ -479,7 +479,7 @@ if ($action == 'set' && $user->admin) {
 					setEventMessages($msg, null, 'warnings');
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
@@ -679,7 +679,7 @@ if ($action == 'reset_confirm' && $user->admin) {
 		}
 
 		$form = new Form($db);
-		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?value='.$value.'&mode='.$mode.$param, $langs->trans('ConfirmUnactivation'), $langs->trans(GETPOST('confirm_message_code')), 'reset', '', 'no', 1, 300, 550);
+		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?value='.$value.'&mode='.$mode.$param, $langs->trans('ConfirmUnactivation'), $langs->trans(request()->input('confirm_message_code')), 'reset', '', 'no', 1, 300, 550);
 	}
 }
 
@@ -692,7 +692,7 @@ if ($action == 'reload_confirm' && $user->admin) {
 		}
 
 		$form = new Form($db);
-		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?value='.$value.'&mode='.$mode.$param, $langs->trans('ConfirmReload'), $langs->trans(GETPOST('confirm_message_code')), 'reload', '', 'no', 1);
+		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?value='.$value.'&mode='.$mode.$param, $langs->trans('ConfirmReload'), $langs->trans(request()->input('confirm_message_code')), 'reload', '', 'no', 1);
 	}
 }
 

@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountancyreport.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills', 'donation', 'salaries', 'accountancy'));
 
-$id_report = GETPOSTINT('id_report');
+$id_report = request()->integer('id_report', 0);
 if ($id_report <= 0) {
 	$id_report = 1;
 }
@@ -54,21 +54,21 @@ if ($id_report <= 0) {
 $error = 0;
 
 $mesg = '';
-$action = GETPOST('action', 'aZ09');
-$cat_id = GETPOST('account_category');
-$selectcpt = GETPOST('cpt_bk');
-$id = GETPOSTINT('id');
-$rowid = GETPOSTINT('rowid');
-$cancel = GETPOST('cancel', 'alpha');
-$showaccountdetail = GETPOST('showaccountdetail', 'aZ09') ? GETPOST('showaccountdetail', 'aZ09') : 'no';
+$action = request()->input('action');
+$cat_id = request()->input('account_category');
+$selectcpt = request()->input('cpt_bk');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
+$cancel = request()->input('cancel');
+$showaccountdetail = request()->input('showaccountdetail') ? request()->input('showaccountdetail') : 'no';
 
 
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startday = GETPOSTINT('date_startday');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endday = GETPOSTINT('date_endday');
-$date_endyear = GETPOSTINT('date_endyear');
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
 
 $nbofyear = 1;
 
@@ -76,7 +76,7 @@ $nbofyear = 1;
 //$conf->global->SOCIETE_FISCAL_MONTH_START = 7;
 
 // Date range
-$year = GETPOSTINT('year');		// year with current month, is the month of the period we must show
+$year = request()->integer('year', 0);		// year with current month, is the month of the period we must show
 if (empty($year)) {
 	$year_current = (int) dol_print_date(dol_now('gmt'), "%Y", 'gmt');
 	$month_current = (int) dol_print_date(dol_now(), "%m");
@@ -91,13 +91,13 @@ $date_end = dol_mktime(23, 59, 59, $date_endmonth, $date_endday, $date_endyear);
 
 // We define date_start and date_end
 if (empty($date_start) || empty($date_end)) { // We define date_start and date_end
-	$q = GETPOSTINT("q") ? GETPOSTINT("q") : 0;
+	$q = request()->integer('q', 0) ? request()->integer('q', 0) : 0;
 	if ($q == 0) {
 		// We define date_start and date_end
 		$year_end = $year_start + ($nbofyear - 1);
-		$month_start = GETPOSTINT("month") ? GETPOSTINT("month") : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
+		$month_start = request()->integer('month', 0) ? request()->integer('month', 0) : getDolGlobalInt('SOCIETE_FISCAL_MONTH_START', 1);
 		$date_startmonth = $month_start;
-		if (!GETPOST('month')) {
+		if (!request()->input('month')) {
 			if (!$year && $month_start > $month_current) {
 				$year_start--;
 				$year_end--;
@@ -163,14 +163,14 @@ $modecompta = getDolGlobalString('ACCOUNTING_MODE');
 if (isModEnabled('accounting')) {
 	$modecompta = 'BOOKKEEPING';
 }
-if (GETPOST("modecompta", 'alpha')) {
-	$modecompta = GETPOST("modecompta", 'alpha');
+if (request()->input('modecompta')) {
+	$modecompta = request()->input('modecompta');
 }
 
 $AccCat = new AccountancyCategory($db);
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid > 0) {
 	$socid = $user->socid;
 }
@@ -218,7 +218,7 @@ $textnextyear = ' &nbsp; <a href="'.$_SERVER["PHP_SELF"].'?year='.($start_year +
 if ($modecompta == "CREANCES-DETTES") {
 	$name = $langs->trans("AnnualByAccountDueDebtMode");
 	$calcmode = $langs->trans("CalcModeDebt");
-	$calcmode .= '<br>('.$langs->trans("SeeReportInInputOutputMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$start_year.(GETPOST("month") > 0 ? '&month='.GETPOST("month") : '').'&modecompta=RECETTES-DEPENSES">', '</a>').')';
+	$calcmode .= '<br>('.$langs->trans("SeeReportInInputOutputMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$start_year.(request()->input('month') > 0 ? '&month='.request()->input('month') : '').'&modecompta=RECETTES-DEPENSES">', '</a>').')';
 	if (isModEnabled('accounting')) {
 		$calcmode .= '<br>('.$langs->trans("SeeReportInBookkeepingMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$start_year.'&modecompta=BOOKKEEPING">', '</a>').')';
 	}
@@ -238,7 +238,7 @@ if ($modecompta == "CREANCES-DETTES") {
 } elseif ($modecompta == "RECETTES-DEPENSES") {
 	$name = $langs->trans("AnnualByAccountInputOutputMode");
 	$calcmode = $langs->trans("CalcModePayment");
-	$calcmode .= '<br>('.$langs->trans("SeeReportInDueDebtMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$year.(GETPOST("month") > 0 ? '&month='.GETPOST("month") : '').'&modecompta=CREANCES-DETTES">', '</a>').')';
+	$calcmode .= '<br>('.$langs->trans("SeeReportInDueDebtMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$year.(request()->input('month') > 0 ? '&month='.request()->input('month') : '').'&modecompta=CREANCES-DETTES">', '</a>').')';
 	if (isModEnabled('accounting')) {
 		$calcmode .= '<br>('.$langs->trans("SeeReportInBookkeepingMode", '<a href="'.$_SERVER["PHP_SELF"].'?year='.$year.'&modecompta=BOOKKEEPING">', '</a>').')';
 	}

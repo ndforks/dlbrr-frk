@@ -484,10 +484,10 @@ class Documentation
 				/*
 				if ($summary_link[0] == '#') {
 					$tmp_summary_link = $menu['url'];
-					if (GETPOSTINT('hidenavmenu')) {
+					if (request()->integer('hidenavmenu', 0)) {
 						$tmp_summary_link .= (strpos($tmp_summary_link, '?') === false ? '?' : '&').'hidenavmenu=1';
 					}
-					if (GETPOSTINT('displayMode')) {
+					if (request()->integer('displayMode', 0)) {
 						$tmp_summary_link .= (strpos($tmp_summary_link, '?') === false ? '?' : '&').'displayMode=1';
 					}
 					$summary_link = $tmp_summary_link;

@@ -43,16 +43,16 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/company.lib.php';
 // Load translation files required by the page
 $langs->load("orders");
 
-$id     = GETPOSTINT('id');
-$ref    = GETPOST('ref', 'alpha');
-$socid  = GETPOSTINT('socid');
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ09');
+$id     = request()->integer('id', 0);
+$ref    = request()->input('ref');
+$socid  = request()->integer('socid', 0);
+$action = request()->input('action');
+$contextpage = request()->input('contextpage');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST("sortfield", "aZ09comma");
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 $page = is_numeric($page) ? $page : 0;
 $page = $page == -1 ? 0 : $page;
 if (!$sortfield) {
@@ -73,11 +73,11 @@ if (GETPOSTISARRAY('actioncode')) {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
 
 $hookmanager->initHooks(array('orderagenda', 'globalcard'));
 
@@ -99,7 +99,7 @@ $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, 'commande', $id, '', '', 'fk_soc', 'rowid', $isdraft);
 
 if (!$user->hasRight('commande', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -127,7 +127,7 @@ if ($reshook < 0) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 	$actioncode = '';
 	$search_agenda_label = '';
 }

@@ -48,9 +48,9 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array("suppliers", "orders", "companies", "stocks"));
 
 // Get Parameters
-$id = GETPOSTINT('facid') ? GETPOSTINT('facid') : GETPOSTINT('id');
-$ref = GETPOST('ref');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('facid', 0) ? request()->integer('facid', 0) : request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 // Security check
 if ($user->socid) {

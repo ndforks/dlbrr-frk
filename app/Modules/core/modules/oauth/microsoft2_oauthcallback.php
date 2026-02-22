@@ -44,10 +44,10 @@ $urlwithroot = $urlwithouturlroot.DOL_URL_ROOT; // This is to use external domai
 //$urlwithroot=DOL_MAIN_URL_ROOT;					// This is to use same domain name than current
 
 
-$action = GETPOST('action', 'aZ09');
-$backtourl = GETPOST('backtourl', 'alpha');
-$keyforprovider = GETPOST('keyforprovider', 'aZ09');
-if (empty($keyforprovider) && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (GETPOST('code') || $action == 'delete')) {
+$action = request()->input('action');
+$backtourl = request()->input('backtourl');
+$keyforprovider = request()->input('keyforprovider');
+if (empty($keyforprovider) && !empty($_SESSION["oauthkeyforproviderbeforeoauthjump"]) && (request()->input('code') || $action == 'delete')) {
 	$keyforprovider = $_SESSION["oauthkeyforproviderbeforeoauthjump"];
 }
 $genericstring = 'MICROSOFT2';
@@ -90,7 +90,7 @@ $credentials = new Credentials(
 );
 
 
-$state = GETPOST('state');
+$state = request()->input('state');
 
 $requestedpermissionsarray = array();
 if ($state) {
@@ -132,13 +132,13 @@ if (empty($apiService)) {
 $langs->load("oauth");
 
 if (!getDolGlobalString($keyforparamid)) {
-	accessforbidden('Setup of service is not complete. Customer ID is missing');
+	abort(403);
 }
 if (!getDolGlobalString($keyforparamsecret)) {
-	accessforbidden('Setup of service is not complete. Secret key is missing');
+	abort(403);
 }
 if (!getDolGlobalString($keyforparamtenant)) {
-	accessforbidden('Setup of service is not complete. Tenant/Annuary ID key is missing');
+	abort(403);
 }
 
 
@@ -146,8 +146,8 @@ if (!getDolGlobalString($keyforparamtenant)) {
  * Actions
  */
 
-if ($action == 'delete' && (!empty($user->admin) || $user->id == GETPOSTINT('userid'))) {
-	$storage->userid = GETPOSTINT('userid');
+if ($action == 'delete' && (!empty($user->admin) || $user->id == request()->integer('userid', 0))) {
+	$storage->userid = request()->integer('userid', 0);
 	$storage->clearToken($genericstring);
 
 	setEventMessages($langs->trans('TokenDeleted'), null, 'mesgs');
@@ -163,24 +163,24 @@ if ($action == 'delete' && (!empty($user->admin) || $user->id == GETPOSTINT('use
 //dol_syslog("GET=".join(',', $_GET));
 
 
-if (GETPOST('code') || GETPOST('error')) {     // We are coming from oauth provider page
+if (request()->input('code') || request()->input('error')) {     // We are coming from oauth provider page
 	// We should have
 	//$_GET=array('code' => string 'aaaaaaaaaaaaaa' (length=20), 'state' => string 'user,public_repo' (length=16))
 
-	dol_syslog(basename(__FILE__)." We are coming from the oauth provider page code=".dol_trunc(GETPOST('code'), 5)." error=".GETPOST('error'));
+	dol_syslog(basename(__FILE__)." We are coming from the oauth provider page code=".dol_trunc(request()->input('code'), 5)." error=".request()->input('error'));
 
 	// This was a callback request from service, get the token
 	try {
 		//var_dump($state);
 		//var_dump($apiService);      // OAuth\OAuth2\Service\Microsoft
 
-		if (GETPOST('error')) {
-			setEventMessages(GETPOST('error').' '.GETPOST('error_description'), null, 'errors');
+		if (request()->input('error')) {
+			setEventMessages(request()->input('error').' '.request()->input('error_description'), null, 'errors');
 		} else {
-			//print GETPOST('code');exit;
+			//print request()->input('code');exit;
 
-			//$token = $apiService->requestAccessToken(GETPOST('code'), $state);
-			$token = $apiService->requestAccessToken(GETPOST('code'));
+			//$token = $apiService->requestAccessToken(request()->input('code'), $state);
+			$token = $apiService->requestAccessToken(request()->input('code'));
 			// Microsoft is a service that does not need state to be stored as second parameter of requestAccessToken
 
 			//print $token->getAccessToken().'<br><br>';

@@ -48,19 +48,19 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('projects', 'companies'));
 
-$id = GETPOSTINT('id');
-$idcomment = GETPOSTINT('idcomment');
+$id = request()->integer('id', 0);
+$idcomment = request()->integer('idcomment', 0);
 $ref = GETPOST("ref", 'alpha', 1); // task ref
-$objectref = GETPOST("taskref", 'alpha'); // task ref
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$withproject = GETPOSTINT('withproject');
+$objectref = request()->input('taskref'); // task ref
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$withproject = request()->integer('withproject', 0);
 
 // Security check
 $socid = 0;
 //if ($user->socid > 0) $socid = $user->socid;    // For external user, no check is done on company because readability is managed by public status of project and assignment.
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context

@@ -290,7 +290,7 @@ function dolSavePageContent($filetpl, Website $object, WebsitePage $objectpage, 
 							}
 						}
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 
 					// Add myself

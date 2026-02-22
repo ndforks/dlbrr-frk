@@ -48,16 +48,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ajax.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("mails", "admin"));
 
-$action = GETPOST('action', 'aZ09');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$mode       = GETPOST('mode', 'aZ'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)
+$action = request()->input('action');
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$mode       = request()->input('mode'); // The display mode ('list', 'kanban', 'hierarchy', 'calendar', 'gantt', ...)
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -71,13 +71,13 @@ if (!$sortorder) {
 	$sortorder = "DESC,ASC";
 }
 
-$id = GETPOSTINT('id');
-$rowid = GETPOSTINT('rowid');
-$search_lastname = GETPOST("search_lastname", 'alphanohtml');
-$search_firstname = GETPOST("search_firstname", 'alphanohtml');
-$search_email = GETPOST("search_email", 'alphanohtml');
-$search_other = GETPOST("search_other", 'alphanohtml');
-$search_dest_status = GETPOST('search_dest_status', 'int');
+$id = request()->integer('id', 0);
+$rowid = request()->integer('rowid', 0);
+$search_lastname = request()->input('search_lastname');
+$search_firstname = request()->input('search_firstname');
+$search_email = request()->input('search_email');
+$search_other = request()->input('search_other');
+$search_dest_status = request()->input('search_dest_status');
 
 // Search modules dirs
 $modulesdir = dolGetModulesDirs('/mailings');
@@ -103,10 +103,10 @@ if (version_compare(phpversion(), '7.0', '>=')) {
 
 // Security check
 if (!$user->hasRight('mailing', 'lire') || (!getDolGlobalString('EXTERNAL_USERS_ARE_AUTHORIZED') && $user->socid > 0)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($action) && empty($object->id)) {
-	accessforbidden('Object not found');
+	abort(403);
 }
 
 $permissiontoread = $user->hasRight('mailing', 'lire');
@@ -118,16 +118,16 @@ $permissiontodelete = $user->hasRight('mailing', 'supprimer');
 /*
  * Actions
  */
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha')) {
+if (!request()->input('confirmmassaction')) {
 	$massaction = '';
 }
 
 if ($action == 'add' && $permissiontocreate) {		// Add recipients
-	$module = GETPOST("module", 'alpha');
+	$module = request()->input('module');
 	$result = -1;
 	$obj = null;
 
@@ -178,7 +178,7 @@ if ($action == 'add' && $permissiontocreate) {		// Add recipients
 	}
 }
 
-if (GETPOSTINT('clearlist') && $permissiontocreate) {
+if (request()->integer('clearlist', 0) && $permissiontocreate) {
 	// Loading Class
 	$obj = new MailingTargets($db);
 	$obj->clear_target($id);
@@ -188,7 +188,7 @@ if (GETPOSTINT('clearlist') && $permissiontocreate) {
 	*/
 }
 
-if (GETPOSTINT('exportcsv') && $permissiontoread) {	// @phpstan-ignore-line
+if (request()->integer('exportcsv', 0) && $permissiontoread) {	// @phpstan-ignore-line
 	$completefilename = 'targets_emailing'.$object->id.'_'.dol_print_date(dol_now(), 'dayhourlog').'.csv';
 	header('Content-Type: text/csv');
 	header('Content-Disposition: attachment;filename='.$completefilename);
@@ -222,7 +222,7 @@ if (GETPOSTINT('exportcsv') && $permissiontoread) {	// @phpstan-ignore-line
 
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	exit;
 }
@@ -242,7 +242,7 @@ if ($action == 'delete' && $permissiontocreate) {
 			exit;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -274,7 +274,7 @@ if ($action == "confirm_reset_target" && $permissiontocreate) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_lastname = '';
 	$search_firstname = '';
 	$search_email = '';
@@ -288,19 +288,19 @@ if (($action == 'settitle' || $action == 'setemail_from' || $action == 'setreply
 	$upload_dir = $conf->mailing->dir_output."/".get_exdir($object->id, getDolGlobalInt('MAILING_USE_NEW_PATH_FOR_FILES') ? 0 : 2, 0, 1, $object, 'mailing');
 
 	if ($action == 'settitle') {					// Test on permission already done
-		$object->title = trim(GETPOST('title', 'alpha'));
+		$object->title = trim(request()->input('title'));
 	} elseif ($action == 'setemail_from') {			// Test on permission already done
-		$object->email_from = trim(GETPOST('email_from', 'alphawithlgt')); // Must allow 'name <email>'
+		$object->email_from = trim(request()->input('email_from')); // Must allow 'name <email>'
 	} elseif ($action == 'setemail_replyto') {		// Test on permission already done
-		$object->email_replyto = trim(GETPOST('email_replyto', 'alphawithlgt')); // Must allow 'name <email>'
+		$object->email_replyto = trim(request()->input('email_replyto')); // Must allow 'name <email>'
 	} elseif ($action == 'setemail_errorsto') {		// Test on permission already done
-		$object->email_errorsto = trim(GETPOST('email_errorsto', 'alphawithlgt')); // Must allow 'name <email>'
+		$object->email_errorsto = trim(request()->input('email_errorsto')); // Must allow 'name <email>'
 	} elseif ($action == 'settitle' && empty($object->title)) {		// Test on permission already done
 		$mesg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailTitle"));
 	} elseif ($action == 'setfrom' && empty($object->email_from)) {	// Test on permission already done
 		$mesg = $langs->trans("ErrorFieldRequired", $langs->transnoentities("MailFrom"));
 	} elseif ($action == 'setevenunsubscribe') {	// Test on permission already done
-		$object->evenunsubscribe = (GETPOST('evenunsubscribe') ? 1 : 0);
+		$object->evenunsubscribe = (request()->input('evenunsubscribe') ? 1 : 0);
 	}
 
 	if (!$mesg) {
@@ -502,7 +502,7 @@ if ($object->fetch($id) >= 0) {
 
 	$newcardbutton = '';
 	$allowaddtarget = ($object->status == $object::STATUS_DRAFT);
-	if (GETPOST('allowaddtarget')) {
+	if (request()->input('allowaddtarget')) {
 		$allowaddtarget = 1;
 	}
 	if (!$allowaddtarget) {
@@ -1032,7 +1032,7 @@ if ($object->fetch($id) >= 0) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print "\n<!-- End list of selected targets -->\n";

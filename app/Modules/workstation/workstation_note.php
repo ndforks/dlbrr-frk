@@ -42,11 +42,11 @@ require_once DOL_DOCUMENT_ROOT.'/workstation/lib/workstation_workstation.lib.php
 $langs->loadLangs(array('mrp', 'companies'));
 
 // Get parameters
-$id         = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
-$action     = GETPOST('action', 'aZ09');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id         = request()->integer('id', 0);
+$ref        = request()->input('ref');
+$action     = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new Workstation($db);

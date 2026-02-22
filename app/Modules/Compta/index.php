@@ -64,8 +64,8 @@ if (isModEnabled('order')) {
 }
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$bid = GETPOSTINT('bid');
+$action = request()->input('action');
+$bid = request()->integer('bid', 0);
 
 // Security check
 $socid = '';
@@ -290,7 +290,7 @@ if (isModEnabled('invoice') && $user->hasRight('facture', 'lire')) {
 		print '</table></div><br>';
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -420,7 +420,7 @@ if ((isModEnabled('fournisseur') && !getDolGlobalString('MAIN_USE_NEW_SUPPLIERMO
 		}
 		print '</table></div><br>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -520,7 +520,7 @@ if (isModEnabled('don') && $user->hasRight('don', 'lire')) {
 		}
 		print '</table></div><br>';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -613,7 +613,7 @@ if (isModEnabled('tax') && $user->hasRight('tax', 'charges', 'lire')) {
 			print "</table></div><br>";
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -767,7 +767,7 @@ if (isModEnabled('invoice') && isModEnabled('order') && $user->hasRight("command
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

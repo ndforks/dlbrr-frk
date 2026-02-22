@@ -51,14 +51,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Activate Production mode
 if ($action == 'setproductionmode') {
-	$status = GETPOST('status', 'alpha');
+	$status = request()->input('status');
 
 	if (dolibarr_set_const($db, 'API_PRODUCTION_MODE', $status, 'chaine', 0, '', 0) > 0) {
 		$error = 0;
@@ -83,27 +83,27 @@ if ($action == 'setproductionmode') {
 			exit;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 // Disable compression mode
 if ($action == 'setdisablecompression') {
-	if (dolibarr_set_const($db, 'API_DISABLE_COMPRESSION', GETPOSTINT('status'), 'chaine', 0, '', 0) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'API_DISABLE_COMPRESSION', request()->integer('status', 0), 'chaine', 0, '', 0) <= 0) {
+		abort(500);
 	}
 }
 
 // Disable compression mode
 if ($action == 'setenablecount' && !empty($dolibarr_api_count_always_enabled)) {
-	if (dolibarr_set_const($db, 'API_ENABLE_COUNT_CALLS', GETPOSTINT('status'), 'chaine', 0, '', 0) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'API_ENABLE_COUNT_CALLS', request()->integer('status', 0), 'chaine', 0, '', 0) <= 0) {
+		abort(500);
 	}
 }
 
 if ($action == 'save') {
-	if (dolibarr_set_const($db, 'API_RESTRICT_ON_IP', GETPOST('API_RESTRICT_ON_IP', 'alpha')) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'API_RESTRICT_ON_IP', request()->input('API_RESTRICT_ON_IP')) <= 0) {
+		abort(500);
 	}
 }
 

@@ -411,7 +411,7 @@ function dol_dir_list_in_database($path, $filter = "", $excludefilter = null, $s
 
 		return $file_list;
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return array();
 	}
 }
@@ -2191,9 +2191,9 @@ function dol_add_file_process($upload_dir, $allowoverwrite = 0, $updatesessionor
 		$linkObject = new Link($db);
 		$linkObject->entity = $conf->entity;
 		$linkObject->url = $link;
-		$linkObject->objecttype = GETPOST('objecttype', 'alpha');
-		$linkObject->objectid = GETPOSTINT('objectid');
-		$linkObject->label = GETPOST('label', 'alpha');
+		$linkObject->objecttype = request()->input('objecttype');
+		$linkObject->objectid = request()->integer('objectid', 0);
+		$linkObject->label = request()->input('label');
 		$res = $linkObject->create($user);
 
 		if ($res > 0) {

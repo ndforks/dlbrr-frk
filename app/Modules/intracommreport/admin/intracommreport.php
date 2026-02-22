@@ -44,11 +44,11 @@ $langs->loadLangs(array("admin", "intracommreport"));
 
 // Access Control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Parameters INTRACOMMREPORT_* and others
 $list_DEB = array(
@@ -79,11 +79,11 @@ if ($action == 'update') {
 			}
 		}
 
-		dolibarr_set_const($db, "INTRACOMMREPORT_TYPE_ACTEUR", GETPOST("INTRACOMMREPORT_TYPE_ACTEUR", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "INTRACOMMREPORT_ROLE_ACTEUR", GETPOST("INTRACOMMREPORT_ROLE_ACTEUR", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTION", GETPOST("INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTION", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION", GETPOST("INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION", 'alpha'), 'chaine', 0, '', $conf->entity);
-		dolibarr_set_const($db, "INTRACOMMREPORT_CATEG_FRAISDEPORT", GETPOST("INTRACOMMREPORT_CATEG_FRAISDEPORT", 'alpha'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "INTRACOMMREPORT_TYPE_ACTEUR", request()->input('INTRACOMMREPORT_TYPE_ACTEUR'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "INTRACOMMREPORT_ROLE_ACTEUR", request()->input('INTRACOMMREPORT_ROLE_ACTEUR'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTION", request()->input('INTRACOMMREPORT_NIV_OBLIGATION_INTRODUCTION'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION", request()->input('INTRACOMMREPORT_NIV_OBLIGATION_EXPEDITION'), 'chaine', 0, '', $conf->entity);
+		dolibarr_set_const($db, "INTRACOMMREPORT_CATEG_FRAISDEPORT", request()->input('INTRACOMMREPORT_CATEG_FRAISDEPORT'), 'chaine', 0, '', $conf->entity);
 
 		if ($error) {
 			setEventMessages($langs->trans("Error"), null, 'errors');

@@ -269,7 +269,7 @@ class mod_facture_terre extends ModeleNumRefFactures
 					$ref = $obj->ref;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			return $ref;

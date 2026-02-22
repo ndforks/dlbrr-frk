@@ -49,7 +49,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/dolgraph.class.php';
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width');
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
-$mode = GETPOSTISSET("mode") ? GETPOST("mode", 'aZ09') : 'customer';
+$mode = request()->has('mode') ? request()->input('mode') : 'customer';
 
 $hookmanager->initHooks(array('orderstats', 'globalcard'));
 
@@ -60,25 +60,25 @@ if (getDolGlobalInt('MAIN_NEED_EXPORT_PERMISSION_TO_READ_STATISTICS')) {
 	$usercanreadsupplierstatistic = $user->hasRight('fournisseur', 'commande', 'export');
 }
 if ($mode == 'customer' && !$usercanreadcustumerstatistic) {
-	accessforbidden();
+	abort(403);
 }
 if ($mode == 'supplier' && !$usercanreadsupplierstatistic) {
-	accessforbidden();
+	abort(403);
 }
 
 if ($mode == 'supplier') {
-	$object_status = GETPOST('object_status', 'array:int');
+	$object_status = request()->input('object_status');
 	$object_status = implode(',', $object_status);
 } else {
-	$object_status = GETPOST('object_status', 'intcomma');
+	$object_status = request()->input('object_status');
 }
 
 
-$typent_id = GETPOSTINT('typent_id');
-$categ_id = GETPOSTINT('categ_id');
-$select_categ_comande_id=GETPOST('select_categ_comande_id', 'array');
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$typent_id = request()->integer('typent_id', 0);
+$categ_id = request()->integer('categ_id', 0);
+$select_categ_comande_id=request()->input('select_categ_comande_id');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 // Security check
 if ($user->socid > 0) {
 	$action = '';
@@ -92,7 +92,7 @@ if ($reshook < 0) {
 }
 
 $nowyear = (int) dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOSTINT('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->integer('year', 0) > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalInt('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalInt('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 
@@ -383,7 +383,7 @@ if (isModEnabled('category')) {
 	print '<tr><td>'.$cat_label.'</td><td>';
 	$cate_arbo = $form->select_all_categories($cat_type, '', 'parent', 0, 0, 1);
 	print img_picto('', 'category', 'class="pictofixedwidth"');
-	print $form->multiselectarray('select_categ_comande_id', $cate_arbo, GETPOST('select_categ_comande_id', 'array'), 0, 0, 'widthcentpercentminusx maxwidth300');
+	print $form->multiselectarray('select_categ_comande_id', $cate_arbo, request()->input('select_categ_comande_id'), 0, 0, 'widthcentpercentminusx maxwidth300');
 	//print $formother->select_categories($cat_type, $categ_id, 'categ_id', true);
 	print '</td></tr>';
 }
@@ -401,7 +401,7 @@ if ($mode == 'customer') {
 		Commande::STATUS_CLOSED => $langs->trans("StatusOrderDelivered"),
 		Commande::STATUS_CANCELED => $langs->trans("StatusOrderCanceled")
 	);
-	print $form->selectarray('object_status', $liststatus, GETPOST('object_status', 'intcomma'), -4);
+	print $form->selectarray('object_status', $liststatus, request()->input('object_status'), -4);
 }
 if ($mode == 'supplier') {
 	$formorder->selectSupplierOrderStatus((strstr($object_status, ',') ? -1 : $object_status), 0, 'object_status');

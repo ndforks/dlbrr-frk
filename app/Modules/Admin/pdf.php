@@ -51,11 +51,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/pdf.lib.php';
 $langs->loadLangs(array('admin', 'companies', 'languages', 'members', 'other', 'products', 'stocks', 'trips'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 
 /*
@@ -67,142 +67,142 @@ if ($cancel) {
 }
 
 if ($action == 'update') {
-	if (GETPOSTISSET('MAIN_PDF_FORMAT')) {
-		dolibarr_set_const($db, "MAIN_PDF_FORMAT", GETPOST("MAIN_PDF_FORMAT"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_FORMAT')) {
+		dolibarr_set_const($db, "MAIN_PDF_FORMAT", request()->input('MAIN_PDF_FORMAT'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_PDF_MARGIN_LEFT')) {
-		dolibarr_set_const($db, "MAIN_PDF_MARGIN_LEFT", GETPOST("MAIN_PDF_MARGIN_LEFT"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MARGIN_LEFT')) {
+		dolibarr_set_const($db, "MAIN_PDF_MARGIN_LEFT", request()->input('MAIN_PDF_MARGIN_LEFT'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_MARGIN_RIGHT')) {
-		dolibarr_set_const($db, "MAIN_PDF_MARGIN_RIGHT", GETPOST("MAIN_PDF_MARGIN_RIGHT"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MARGIN_RIGHT')) {
+		dolibarr_set_const($db, "MAIN_PDF_MARGIN_RIGHT", request()->input('MAIN_PDF_MARGIN_RIGHT'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_MARGIN_TOP')) {
-		dolibarr_set_const($db, "MAIN_PDF_MARGIN_TOP", GETPOST("MAIN_PDF_MARGIN_TOP"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MARGIN_TOP')) {
+		dolibarr_set_const($db, "MAIN_PDF_MARGIN_TOP", request()->input('MAIN_PDF_MARGIN_TOP'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_MARGIN_BOTTOM')) {
-		dolibarr_set_const($db, "MAIN_PDF_MARGIN_BOTTOM", GETPOST("MAIN_PDF_MARGIN_BOTTOM"), 'chaine', 0, '', $conf->entity);
-	}
-
-	if (GETPOSTISSET('MAIN_PROFID1_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID1_IN_ADDRESS", GETPOST("MAIN_PROFID1_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PROFID2_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID2_IN_ADDRESS", GETPOST("MAIN_PROFID2_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PROFID3_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID3_IN_ADDRESS", GETPOST("MAIN_PROFID3_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PROFID4_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID4_IN_ADDRESS", GETPOST("MAIN_PROFID4_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PROFID5_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID5_IN_ADDRESS", GETPOST("MAIN_PROFID5_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PROFID6_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_PROFID6_IN_ADDRESS", GETPOST("MAIN_PROFID6_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MARGIN_BOTTOM')) {
+		dolibarr_set_const($db, "MAIN_PDF_MARGIN_BOTTOM", request()->input('MAIN_PDF_MARGIN_BOTTOM'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_PDF_NO_SENDER_FRAME')) {
-		dolibarr_set_const($db, "MAIN_PDF_NO_SENDER_FRAME", GETPOST("MAIN_PDF_NO_SENDER_FRAME"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PROFID1_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID1_IN_ADDRESS", request()->input('MAIN_PROFID1_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_PDF_NO_RECIPENT_FRAME')) {
-		dolibarr_set_const($db, "MAIN_PDF_NO_RECIPENT_FRAME", GETPOST("MAIN_PDF_NO_RECIPENT_FRAME"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PROFID2_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID2_IN_ADDRESS", request()->input('MAIN_PROFID2_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PROFID3_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID3_IN_ADDRESS", request()->input('MAIN_PROFID3_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PROFID4_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID4_IN_ADDRESS", request()->input('MAIN_PROFID4_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PROFID5_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID5_IN_ADDRESS", request()->input('MAIN_PROFID5_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PROFID6_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_PROFID6_IN_ADDRESS", request()->input('MAIN_PROFID6_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
 	}
 
-	/*if (GETPOSTISSET('MAIN_PDF_HIDE_SENDER_NAME')) {
-		dolibarr_set_const($db, "MAIN_PDF_HIDE_SENDER_NAME", GETPOST("MAIN_PDF_HIDE_SENDER_NAME"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_NO_SENDER_FRAME')) {
+		dolibarr_set_const($db, "MAIN_PDF_NO_SENDER_FRAME", request()->input('MAIN_PDF_NO_SENDER_FRAME'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PDF_NO_RECIPENT_FRAME')) {
+		dolibarr_set_const($db, "MAIN_PDF_NO_RECIPENT_FRAME", request()->input('MAIN_PDF_NO_RECIPENT_FRAME'), 'chaine', 0, '', $conf->entity);
+	}
+
+	/*if (request()->has('MAIN_PDF_HIDE_SENDER_NAME')) {
+		dolibarr_set_const($db, "MAIN_PDF_HIDE_SENDER_NAME", request()->input('MAIN_PDF_HIDE_SENDER_NAME'), 'chaine', 0, '', $conf->entity);
 	}*/
 
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT", GETPOST("MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT", request()->input('MAIN_GENERATE_DOCUMENTS_WITHOUT_VAT'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_TVAINTRA_NOT_IN_ADDRESS')) {
-		dolibarr_set_const($db, "MAIN_TVAINTRA_NOT_IN_ADDRESS", GETPOST("MAIN_TVAINTRA_NOT_IN_ADDRESS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_TVAINTRA_NOT_IN_ADDRESS')) {
+		dolibarr_set_const($db, "MAIN_TVAINTRA_NOT_IN_ADDRESS", request()->input('MAIN_TVAINTRA_NOT_IN_ADDRESS'), 'chaine', 0, '', $conf->entity);
 	}
 
 	if (isModEnabled('project')) {
-		if (GETPOST('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'no') {
+		if (request()->input('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'no') {
 			dolibarr_del_const($db, "PDF_SHOW_PROJECT", $conf->entity);
 			dolibarr_del_const($db, "PDF_SHOW_PROJECT_TITLE", $conf->entity);
-		} elseif (GETPOST('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'showprojectref') {
-			dolibarr_set_const($db, "PDF_SHOW_PROJECT", GETPOST("PDF_SHOW_PROJECT_REF_OR_LABEL"), 'chaine', 0, '', $conf->entity);
+		} elseif (request()->input('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'showprojectref') {
+			dolibarr_set_const($db, "PDF_SHOW_PROJECT", request()->input('PDF_SHOW_PROJECT_REF_OR_LABEL'), 'chaine', 0, '', $conf->entity);
 			dolibarr_del_const($db, "PDF_SHOW_PROJECT_TITLE", $conf->entity);
-		} elseif (GETPOST('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'showprojectlabel') {
+		} elseif (request()->input('PDF_SHOW_PROJECT_REF_OR_LABEL') == 'showprojectlabel') {
 			dolibarr_del_const($db, "PDF_SHOW_PROJECT", $conf->entity);
-			dolibarr_set_const($db, "PDF_SHOW_PROJECT_TITLE", GETPOST("PDF_SHOW_PROJECT_REF_OR_LABEL"), 'chaine', 0, '', $conf->entity);
+			dolibarr_set_const($db, "PDF_SHOW_PROJECT_TITLE", request()->input('PDF_SHOW_PROJECT_REF_OR_LABEL'), 'chaine', 0, '', $conf->entity);
 		}
 	}
 
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS", GETPOST("MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS", request()->input('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_HIDE_DESC')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_DESC", GETPOST("MAIN_GENERATE_DOCUMENTS_HIDE_DESC"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_HIDE_DESC')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_DESC", request()->input('MAIN_GENERATE_DOCUMENTS_HIDE_DESC'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_HIDE_REF')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_REF", GETPOST("MAIN_GENERATE_DOCUMENTS_HIDE_REF"), 'chaine', 0, '', $conf->entity);
-	}
-
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE", GETPOST("MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_HIDE_REF')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_HIDE_REF", request()->input('MAIN_GENERATE_DOCUMENTS_HIDE_REF'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_DOCUMENTS_LOGO_HEIGHT')) {
-		dolibarr_set_const($db, "MAIN_DOCUMENTS_LOGO_HEIGHT", GETPOSTINT("MAIN_DOCUMENTS_LOGO_HEIGHT"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PDF_FRAME_CORNER_RADIUS')) {
-		dolibarr_set_const($db, "MAIN_PDF_FRAME_CORNER_RADIUS", GETPOSTINT("MAIN_PDF_FRAME_CORNER_RADIUS"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_INVERT_SENDER_RECIPIENT')) {
-		dolibarr_set_const($db, "MAIN_INVERT_SENDER_RECIPIENT", GETPOST("MAIN_INVERT_SENDER_RECIPIENT"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PDF_USE_ISO_LOCATION')) {
-		dolibarr_set_const($db, "MAIN_PDF_USE_ISO_LOCATION", GETPOST("MAIN_PDF_USE_ISO_LOCATION"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PDF_NO_CUSTOMER_CODE')) {
-		dolibarr_set_const($db, "MAIN_PDF_NO_CUSTOMER_CODE", GETPOST("MAIN_PDF_NO_CUSTOMER_CODE"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE", request()->input('MAIN_GENERATE_DOCUMENTS_SHOW_PRODUCT_BARCODE'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS')) {
-		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS", GETPOST("MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_DOCUMENTS_LOGO_HEIGHT')) {
+		dolibarr_set_const($db, "MAIN_DOCUMENTS_LOGO_HEIGHT", request()->integer('MAIN_DOCUMENTS_LOGO_HEIGHT', 0), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PDF_FRAME_CORNER_RADIUS')) {
+		dolibarr_set_const($db, "MAIN_PDF_FRAME_CORNER_RADIUS", request()->integer('MAIN_PDF_FRAME_CORNER_RADIUS', 0), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_INVERT_SENDER_RECIPIENT')) {
+		dolibarr_set_const($db, "MAIN_INVERT_SENDER_RECIPIENT", request()->input('MAIN_INVERT_SENDER_RECIPIENT'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PDF_USE_ISO_LOCATION')) {
+		dolibarr_set_const($db, "MAIN_PDF_USE_ISO_LOCATION", request()->input('MAIN_PDF_USE_ISO_LOCATION'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('MAIN_PDF_NO_CUSTOMER_CODE')) {
+		dolibarr_set_const($db, "MAIN_PDF_NO_CUSTOMER_CODE", request()->input('MAIN_PDF_NO_CUSTOMER_CODE'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('MAIN_PDF_MAIN_HIDE_SECOND_TAX')) {
-		dolibarr_set_const($db, "MAIN_PDF_MAIN_HIDE_SECOND_TAX", GETPOST("MAIN_PDF_MAIN_HIDE_SECOND_TAX"), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('MAIN_PDF_MAIN_HIDE_THIRD_TAX')) {
-		dolibarr_set_const($db, "MAIN_PDF_MAIN_HIDE_THIRD_TAX", GETPOST("MAIN_PDF_MAIN_HIDE_THIRD_TAX"), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS')) {
+		dolibarr_set_const($db, "MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS", request()->input('MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('PDF_USE_ALSO_LANGUAGE_CODE')) {
-		dolibarr_set_const($db, "PDF_USE_ALSO_LANGUAGE_CODE", GETPOST('PDF_USE_ALSO_LANGUAGE_CODE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MAIN_HIDE_SECOND_TAX')) {
+		dolibarr_set_const($db, "MAIN_PDF_MAIN_HIDE_SECOND_TAX", request()->input('MAIN_PDF_MAIN_HIDE_SECOND_TAX'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('SHOW_SUBPRODUCT_REF_IN_PDF')) {
-		dolibarr_set_const($db, "SHOW_SUBPRODUCT_REF_IN_PDF", GETPOST('SHOW_SUBPRODUCT_REF_IN_PDF', 'alpha'), 'chaine', 0, '', $conf->entity);
-	}
-
-	if (GETPOSTISSET('PDF_SHOW_LINK_TO_ONLINE_PAYMENT')) {
-		dolibarr_set_const($db, "PDF_SHOW_LINK_TO_ONLINE_PAYMENT", GETPOST('PDF_SHOW_LINK_TO_ONLINE_PAYMENT', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MAIN_PDF_MAIN_HIDE_THIRD_TAX')) {
+		dolibarr_set_const($db, "MAIN_PDF_MAIN_HIDE_THIRD_TAX", request()->input('MAIN_PDF_MAIN_HIDE_THIRD_TAX'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('DOC_SHOW_FIRST_SALES_REP')) {
-		dolibarr_set_const($db, "DOC_SHOW_FIRST_SALES_REP", GETPOST('DOC_SHOW_FIRST_SALES_REP', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PDF_USE_ALSO_LANGUAGE_CODE')) {
+		dolibarr_set_const($db, "PDF_USE_ALSO_LANGUAGE_CODE", request()->input('PDF_USE_ALSO_LANGUAGE_CODE'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('SHOW_SUBPRODUCT_REF_IN_PDF')) {
+		dolibarr_set_const($db, "SHOW_SUBPRODUCT_REF_IN_PDF", request()->input('SHOW_SUBPRODUCT_REF_IN_PDF'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME')) {
-		dolibarr_set_const($db, "PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME", GETPOST('PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME', 'alpha'), 'chaine', 0, '', $conf->entity);
-	}
-	if (GETPOSTISSET('PDF_USE_A')) {
-		dolibarr_set_const($db, "PDF_USE_A", GETPOST('PDF_USE_A', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('PDF_SHOW_LINK_TO_ONLINE_PAYMENT')) {
+		dolibarr_set_const($db, "PDF_SHOW_LINK_TO_ONLINE_PAYMENT", request()->input('PDF_SHOW_LINK_TO_ONLINE_PAYMENT'), 'chaine', 0, '', $conf->entity);
 	}
 
-	if (GETPOSTISSET('PDF_BOLD_PRODUCT_LABEL')) {
-		dolibarr_set_const($db, "PDF_BOLD_PRODUCT_LABEL", GETPOST('PDF_BOLD_PRODUCT_LABEL', 'alpha'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('DOC_SHOW_FIRST_SALES_REP')) {
+		dolibarr_set_const($db, "DOC_SHOW_FIRST_SALES_REP", request()->input('DOC_SHOW_FIRST_SALES_REP'), 'chaine', 0, '', $conf->entity);
 	}
-	if (GETPOSTISSET('PDF_BOLD_PRODUCT_REF_AND_PERIOD')) {
-		dolibarr_set_const($db, "PDF_BOLD_PRODUCT_REF_AND_PERIOD", GETPOST('PDF_BOLD_PRODUCT_REF_AND_PERIOD', 'alpha'), 'chaine', 0, '', $conf->entity);
+
+	if (request()->has('PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME')) {
+		dolibarr_set_const($db, "PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME", request()->input('PDF_INCLUDE_ALIAS_IN_THIRDPARTY_NAME'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('PDF_USE_A')) {
+		dolibarr_set_const($db, "PDF_USE_A", request()->input('PDF_USE_A'), 'chaine', 0, '', $conf->entity);
+	}
+
+	if (request()->has('PDF_BOLD_PRODUCT_LABEL')) {
+		dolibarr_set_const($db, "PDF_BOLD_PRODUCT_LABEL", request()->input('PDF_BOLD_PRODUCT_LABEL'), 'chaine', 0, '', $conf->entity);
+	}
+	if (request()->has('PDF_BOLD_PRODUCT_REF_AND_PERIOD')) {
+		dolibarr_set_const($db, "PDF_BOLD_PRODUCT_REF_AND_PERIOD", request()->input('PDF_BOLD_PRODUCT_REF_AND_PERIOD'), 'chaine', 0, '', $conf->entity);
 	}
 
 	setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
@@ -523,7 +523,7 @@ print '<tr class="liste_titre"><td>'.$langs->trans("Parameter").'</td><td></td><
 print '<tr class="oddeven"><td>';
 print $form->textwithpicto($langs->trans("PDFIn2Languages"), $langs->trans("PDF_USE_ALSO_LANGUAGE_CODE"));
 print '</td><td>';
-$selected = GETPOSTISSET('PDF_USE_ALSO_LANGUAGE_CODE') ? GETPOST('PDF_USE_ALSO_LANGUAGE_CODE') : getDolGlobalString('PDF_USE_ALSO_LANGUAGE_CODE');
+$selected = request()->has('PDF_USE_ALSO_LANGUAGE_CODE') ? request()->input('PDF_USE_ALSO_LANGUAGE_CODE') : getDolGlobalString('PDF_USE_ALSO_LANGUAGE_CODE');
 print $formadmin->select_language($selected, 'PDF_USE_ALSO_LANGUAGE_CODE', 0, array(), 1);
 print '</td></tr>';
 

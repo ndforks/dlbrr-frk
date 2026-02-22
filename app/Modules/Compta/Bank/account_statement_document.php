@@ -42,11 +42,11 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'companies', 'other'));
 
-$id = (GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('account'));
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$numref = (GETPOST('num', 'alpha') ? GETPOST('num', 'alpha') : GETPOST('sectionid', 'alpha'));
+$id = (request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('account', 0));
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$numref = (request()->input('num') ? request()->input('num') : request()->input('sectionid'));
 
 // Security check
 if ($user->socid) {
@@ -58,11 +58,11 @@ if ($user->socid) {
 }
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -86,7 +86,7 @@ $result = restrictedArea($user, 'banque', $object->id, 'bank_account', '', '');
 
 // Define number of receipt to show (current, previous or next one ?)
 $found = false;
-if (GETPOST("rel") == 'prev') {
+if (request()->input('rel') == 'prev') {
 	// Searching value for num = previous bank statement number
 	$sql = "SELECT DISTINCT(b.num_releve) as num";
 	$sql .= " FROM ".MAIN_DB_PREFIX."bank as b";
@@ -104,7 +104,7 @@ if (GETPOST("rel") == 'prev') {
 			$found = true;
 		}
 	}
-} elseif (GETPOST("rel") == 'next') {
+} elseif (request()->input('rel') == 'next') {
 	// Searching value for num = next bank statement number
 	$sql = "SELECT DISTINCT(b.num_releve) as num";
 	$sql .= " FROM ".MAIN_DB_PREFIX."bank as b";
@@ -199,7 +199,7 @@ if ($id > 0 || !empty($ref)) {
 		$relativepathwithnofile = $id."/statement/".dol_sanitizeFileName($numref)."/";
 		include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } else {
 	header('Location: index.php');

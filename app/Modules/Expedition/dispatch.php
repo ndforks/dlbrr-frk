@@ -64,13 +64,13 @@ if ($is_mod_batch_enabled) {
 }
 
 // Security check
-$id = GETPOSTINT("id");
-$ref = GETPOST('ref');
-$lineid = GETPOSTINT('lineid');
-$action = GETPOST('action', 'aZ09');
-$fk_default_warehouse = GETPOSTINT('fk_default_warehouse');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$action = request()->input('action');
+$fk_default_warehouse = request()->integer('fk_default_warehouse', 0);
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 
 $error = 0;
 $errors = array();
@@ -83,8 +83,8 @@ $hookmanager->initHooks(array('expeditiondispatch'));
 
 // Recuperation de l'id de projet
 $projectid = 0;
-if (GETPOSTISSET("projectid")) {
-	$projectid = GETPOSTINT("projectid");
+if (request()->has('projectid')) {
+	$projectid = request()->integer('projectid', 0);
 }
 
 $object = new Expedition($db);
@@ -112,7 +112,7 @@ if ($id > 0 || !empty($ref)) {
 $result = restrictedArea($user, 'expedition', $object, '');
 
 if (!isModEnabled('stock')) {
-	accessforbidden('Module stock disabled');
+	abort(403);
 }
 
 $usercancreate = $user->hasRight('expedition', 'creer');
@@ -254,7 +254,7 @@ if (empty($reshook)) {
 										if ($resqlsearchdet) {
 											$objsearchdet = $db->fetch_object($resqlsearchdet);
 										} else {
-											dol_print_error($db);
+											abort(500);
 										}
 
 										if ($objsearchdet) {
@@ -279,7 +279,7 @@ if (empty($reshook)) {
 
 									$resql = $db->query($sql);
 									if (!$resql) {
-										dol_print_error($db);
+										abort(500);
 										$error++;
 									}
 								}
@@ -326,7 +326,7 @@ if (empty($reshook)) {
 							$entrepot = GETPOST($ent, 'int');
 							$qtymouv = price2num(GETPOST($qty, 'alpha'), 'MS') - $qtystart;
 							$price = price2num(GETPOST($pu), 'MU');
-							$comment = GETPOST('comment');
+							$comment = request()->input('comment');
 							$inventorycode = dol_print_date(dol_now(), 'dayhourlog');
 							$now = dol_now();
 							$eatby = '';
@@ -372,7 +372,7 @@ if (empty($reshook)) {
 			exit;
 		}
 	} elseif ($action == 'setdate_livraison' && $usercancreate) {
-		$datedelivery = dol_mktime(GETPOSTINT('liv_hour'), GETPOSTINT('liv_min'), 0, GETPOSTINT('liv_month'), GETPOSTINT('liv_day'), GETPOSTINT('liv_year'));
+		$datedelivery = dol_mktime(request()->integer('liv_hour', 0), request()->integer('liv_min', 0), 0, request()->integer('liv_month', 0), request()->integer('liv_day', 0), request()->integer('liv_year', 0));
 
 		$object->fetch($id);
 		$result = $object->setDeliveryDate($user, $datedelivery);
@@ -1403,7 +1403,7 @@ if ($object->id > 0 || !empty($object->ref)) {
 
 				$db->free($resql);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -1421,7 +1421,7 @@ if ($object->id > 0 || !empty($object->ref)) {
 				/*if (empty($conf->reception->enabled)) {
 					print $langs->trans("Comment").' : ';
 					print '<input type="text" class="minwidth400" maxlength="128" name="comment" value="';
-					print GETPOSTISSET("comment") ? GETPOST("comment") : $langs->trans("DispatchSupplierOrder", $object->ref);
+					print request()->has('comment') ? request()->input('comment') : $langs->trans("DispatchSupplierOrder", $object->ref);
 					// print ' / '.$object->ref_supplier; // Not yet available
 					print '" class="flat"><br>';
 

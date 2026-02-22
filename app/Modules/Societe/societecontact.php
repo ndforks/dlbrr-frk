@@ -48,17 +48,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formcompany.class.php';
 $langs->loadLangs(array('companies', 'orders'));
 
 // Get parameters
-$id = GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'thirdpartylist';
-$massaction = GETPOST('massaction', 'alpha');
-$optioncss 	= GETPOST('optioncss', 'alpha');
+$id = request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('socid', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'thirdpartylist';
+$massaction = request()->input('massaction');
+$optioncss 	= request()->input('optioncss');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "ASC";
 }
@@ -100,9 +100,9 @@ if (empty($reshook)) {
 		$result = $object->fetch($id);
 
 		if ($result > 0 && $id > 0) {
-			$contactid = (GETPOSTINT('userid') ? GETPOSTINT('userid') : GETPOSTINT('contactid'));
-			$typeid = (GETPOST('typecontact') ? GETPOST('typecontact') : GETPOST('type'));
-			$result = $object->add_contact($contactid, $typeid, GETPOST("source", 'aZ09'));
+			$contactid = (request()->integer('userid', 0) ? request()->integer('userid', 0) : request()->integer('contactid', 0));
+			$typeid = (request()->input('typecontact') ? request()->input('typecontact') : request()->input('type'));
+			$result = $object->add_contact($contactid, $typeid, request()->input('source'));
 		}
 
 		if ($result >= 0) {
@@ -119,20 +119,20 @@ if (empty($reshook)) {
 	} elseif ($action == 'swapstatut' && $user->hasRight('societe', 'creer')) {
 		// bascule du statut d'un contact
 		if ($object->fetch($id)) {
-			$result = $object->swapContactStatus(GETPOSTINT('ligne'));
+			$result = $object->swapContactStatus(request()->integer('ligne', 0));
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	} elseif ($action == 'deletecontact' && $user->hasRight('societe', 'creer')) {
 		// Efface un contact
 		$object->fetch($id);
-		$result = $object->delete_contact(GETPOSTINT("lineid"));
+		$result = $object->delete_contact(request()->integer('lineid', 0));
 
 		if ($result >= 0) {
 			header("Location: ".$_SERVER['PHP_SELF']."?id=".$object->id);
 			exit;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }

@@ -64,7 +64,7 @@ $tagidfortablednd = (empty($tagidfortablednd) ? 'tablelines' : $tagidfortablednd
 $filepath = (empty($filepath) ? '' : $filepath);
 $langs->load("subtotals");
 
-if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
+if (request()->input('action') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
 <div id="notification-message" hidden=""></div>
 <script>
 function openDialog() {

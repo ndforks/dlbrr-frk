@@ -49,17 +49,17 @@ $adht = new AdherentType($db);
 $object = new Subscription($db);
 $errmsg = '';
 
-$action = GETPOST("action", 'alpha');
-$rowid = GETPOSTINT("rowid") ? GETPOSTINT("rowid") : GETPOSTINT("id");
-$typeid = GETPOSTINT("typeid");
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm');
-$note = GETPOST('note', 'alpha');
-$typeid = GETPOSTINT('typeid');
-$amount = (float) price2num(GETPOST('amount', 'alpha'), 'MT');
+$action = request()->input('action');
+$rowid = request()->integer('rowid', 0) ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$typeid = request()->integer('typeid', 0);
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
+$note = request()->input('note');
+$typeid = request()->integer('typeid', 0);
+$amount = (float) price2num(request()->input('amount'), 'MT');
 
 if (!$user->hasRight('adherent', 'cotisation', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissionnote = $user->hasRight('adherent', 'cotisation', 'creer'); // Used by the include of actions_setnotes.inc.php
@@ -95,8 +95,8 @@ if ($user->hasRight('adherent', 'cotisation', 'creer') && $action == 'update' &&
 
 		$errmsg = '';
 
-		$newdatestart = dol_mktime(GETPOSTINT('datesubhour'), GETPOSTINT('datesubmin'), 0, GETPOSTINT('datesubmonth'), GETPOSTINT('datesubday'), GETPOSTINT('datesubyear'));
-		$newdateend = dol_mktime(GETPOSTINT('datesubendhour'), GETPOSTINT('datesubendmin'), 0, GETPOSTINT('datesubendmonth'), GETPOSTINT('datesubendday'), GETPOSTINT('datesubendyear'));
+		$newdatestart = dol_mktime(request()->integer('datesubhour', 0), request()->integer('datesubmin', 0), 0, request()->integer('datesubmonth', 0), request()->integer('datesubday', 0), request()->integer('datesubyear', 0));
+		$newdateend = dol_mktime(request()->integer('datesubendhour', 0), request()->integer('datesubendmin', 0), 0, request()->integer('datesubendmonth', 0), request()->integer('datesubendday', 0), request()->integer('datesubendyear', 0));
 
 		if ($object->fk_bank > 0) {
 			$accountline = new AccountLine($db);
@@ -224,7 +224,7 @@ if ($user->hasRight('adherent', 'cotisation', 'creer') && $action == 'edit') {
 	print '<tr>';
 	print '<td>'.$langs->trans("Type").'</td>';
 	print '<td class="valeur">';
-	print $form->selectarray("typeid", $adht->liste_array(), (GETPOSTISSET("typeid") ? GETPOST("typeid") : $object->fk_type));
+	print $form->selectarray("typeid", $adht->liste_array(), (request()->has('typeid') ? request()->input('typeid') : $object->fk_type));
 	print'</td></tr>';
 
 	// Date start subscription

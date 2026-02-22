@@ -56,16 +56,16 @@ require_once DOL_DOCUMENT_ROOT.'/stripe/class/stripe.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("main", "bills", "cashdesk", "banks"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : '0'); // $place is id of table for Bar or Restaurant
+$place = (request()->input('place') ? request()->input('place') : '0'); // $place is id of table for Bar or Restaurant
 
-$invoiceid = GETPOSTINT('invoiceid');
+$invoiceid = request()->integer('invoiceid', 0);
 
 $hookmanager->initHooks(array('takepospay'));
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -101,7 +101,7 @@ $stripeacc = null;
 if (isModEnabled('stripe')) {
 	$service = 'StripeTest';
 
-	if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOST('forcesandbox', 'alpha') */) {
+	if (getDolGlobalString('STRIPE_LIVE')/* && !request()->input('forcesandbox') */) {
 		$service = 'StripeLive';
 		$servicestatus = 1;
 	}
@@ -160,7 +160,7 @@ function fetchConnectionToken() {
 	}
 }
 
-if (isModEnabled('stripe') && isset($keyforstripeterminalbank) && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */)) {
+if (isModEnabled('stripe') && isset($keyforstripeterminalbank) && (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */)) {
 	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), [], 'warning', 1);
 }
 

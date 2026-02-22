@@ -32,8 +32,8 @@
 require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'admincompany'; // To manage different context of search
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'admincompany'; // To manage different context of search
 
 /**
  * @var Conf $conf
@@ -47,7 +47,7 @@ $contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'ad
 $langs->loadLangs(array('admin', 'companies'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 $listofnetworks = getArrayOfSocialNetworks();
 
@@ -63,7 +63,7 @@ $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action
 if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
-if (($action == 'update' && !GETPOST("cancel", 'alpha'))) {
+if (($action == 'update' && !request()->input('cancel'))) {
 	foreach ($listofnetworks as $key => $value) {
 		if (!empty($value['active'])) {
 			$networkconstname = 'MAIN_INFO_SOCIETE_'.strtoupper($key).'_URL';

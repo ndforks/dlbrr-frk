@@ -181,7 +181,7 @@ class FormCardWebPortal
 
 		$elementCardAccess = getDolGlobalString('WEBPORTAL_' . $elementEnUpper . '_CARD_ACCESS', 'hidden');
 		if ($elementCardAccess == 'hidden' || $id <= 0) {
-			accessforbidden();
+			abort(403);
 		}
 
 		$context = Context::getInstance();
@@ -193,15 +193,15 @@ class FormCardWebPortal
 		$langs->loadLangs(array('website', 'other'));
 
 		// Get parameters
-		//$id = $id > 0 ? $id : GETPOST('id', 'int');
-		$ref = GETPOST('ref', 'alpha');
-		$action = GETPOST('action', 'aZ09');
-		$confirm = GETPOST('confirm', 'alpha');
-		$cancel = GETPOST('cancel');
-		$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'webportal' . $elementEn . 'card'; // To manage different context of search
-		$backtopage = GETPOST('backtopage', 'alpha');                    // if not set, a default page will be used
-		$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');    // if not set, $backtopage will be used
-		$modal = GETPOSTINT('modal') == 1;
+		//$id = $id > 0 ? $id : request()->input('id');
+		$ref = request()->input('ref');
+		$action = request()->input('action');
+		$confirm = request()->input('confirm');
+		$cancel = request()->input('cancel');
+		$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'webportal' . $elementEn . 'card'; // To manage different context of search
+		$backtopage = request()->input('backtopage');                    // if not set, a default page will be used
+		$backtopageforcancel = request()->input('backtopageforcancel');    // if not set, $backtopage will be used
+		$modal = request()->integer('modal', 0) == 1;
 
 		// Initialize a technical objects
 		$object = new $objectclass($this->db);
@@ -245,10 +245,10 @@ class FormCardWebPortal
 
 		// Security check (enable the most restrictive one)
 		if (!isModEnabled('webportal')) {
-			accessforbidden();
+			abort(403);
 		}
 		if (!$permissiontoread) {
-			accessforbidden();
+			abort(403);
 		}
 
 		// set form card

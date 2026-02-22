@@ -59,19 +59,19 @@ $now = dol_now();
 $year = dol_print_date($now, '%Y');
 $month = dol_print_date($now, '%m');
 $day = dol_print_date($now, '%d');
-$forbarcode = GETPOST('forbarcode', 'alphanohtml');
-$fk_barcode_type = GETPOSTINT('fk_barcode_type');
-$mode = GETPOST('mode', 'aZ09');
-$modellabel = GETPOST("modellabel", 'aZ09'); // Doc template to use
-$numberofsticker = GETPOSTINT('numberofsticker');
+$forbarcode = request()->input('forbarcode');
+$fk_barcode_type = request()->integer('fk_barcode_type', 0);
+$mode = request()->input('mode');
+$modellabel = request()->input('modellabel'); // Doc template to use
+$numberofsticker = request()->integer('numberofsticker', 0);
 
-$label_product_ref_option = GETPOSTISSET('label_product_ref_option');
-$label_product_label_option = GETPOSTISSET('label_product_label_option');
+$label_product_ref_option = request()->has('label_product_ref_option');
+$label_product_label_option = request()->has('label_product_label_option');
 
 if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
-	$label_product_ref = (GETPOSTISSET('label_product_ref') ? GETPOST('label_product_ref', 'nohtml') : null);
+	$label_product_ref = (request()->has('label_product_ref') ? request()->input('label_product_ref') : null);
 } else {
-	$label_product_ref = (GETPOSTISSET('label_product_ref') ? GETPOST('label_product_ref', 'alpha') : null);
+	$label_product_ref = (request()->has('label_product_ref') ? request()->input('label_product_ref') : null);
 }
 
 if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
@@ -79,23 +79,23 @@ if (getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_REF_LABELS')) {
 } else {
 	$security_check = !getDolGlobalString('MAIN_SECURITY_ALLOW_UNSECURED_LABELS_WITH_HTML') ? 'alphanohtml' : 'restricthtml';
 }
-$label_product_label = (GETPOSTISSET('label_product_label') ? GETPOST('label_product_label', $security_check) : null);
+$label_product_label = (request()->has('label_product_label') ? GETPOST('label_product_label', $security_check) : null);
 
 $mesg = '';
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $producttmp = new Product($db);
 $thirdpartytmp = new Societe($db);
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 if (!isModEnabled('barcode')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 if (!$user->hasRight('barcode', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('printsheettools'));
@@ -117,10 +117,10 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	if (GETPOST('submitproduct')) {
+	if (request()->input('submitproduct')) {
 		$action = ''; // We reset because we don't want to build doc
-		if (GETPOSTINT('productid') > 0) {
-			$result = $producttmp->fetch(GETPOSTINT('productid'));
+		if (request()->integer('productid', 0) > 0) {
+			$result = $producttmp->fetch(request()->integer('productid', 0));
 			if ($result < 0) {
 				setEventMessage($producttmp->error, 'errors');
 			}
@@ -144,10 +144,10 @@ if (empty($reshook)) {
 			}
 		}
 	}
-	if (GETPOST('submitthirdparty')) {
+	if (request()->input('submitthirdparty')) {
 		$action = ''; // We reset because we don't want to build doc
-		if (GETPOSTINT('socid') > 0) {
-			$thirdpartytmp->fetch(GETPOSTINT('socid'));
+		if (request()->integer('socid', 0) > 0) {
+			$thirdpartytmp->fetch(request()->integer('socid', 0));
 			$forbarcode = $thirdpartytmp->barcode;
 			$fk_barcode_type = $thirdpartytmp->barcode_type_code;
 
@@ -179,8 +179,8 @@ if (empty($reshook)) {
 			$error++;
 		}
 
-		if (GETPOSTINT('productid') > 0) {
-			$result = $producttmp->fetch(GETPOSTINT('productid'));
+		if (request()->integer('productid', 0) > 0) {
+			$result = $producttmp->fetch(request()->integer('productid', 0));
 			if ($result < 0) {
 				setEventMessage($producttmp->error, 'errors');
 			}
@@ -307,12 +307,12 @@ if (empty($reshook)) {
 			if ($mode == 'label') {
 				$txtforsticker = "%PHOTO%"; // Photo will be barcode image, %BARCODE% possible when using TCPDF generator
 				$textleft = make_substitutions(getDolGlobalString('BARCODE_LABEL_LEFT_TEXT', $txtforsticker), $substitutionarray);
-				if ((GETPOSTINT('productid') > 0) && $label_product_ref_option) {
+				if ((request()->integer('productid', 0) > 0) && $label_product_ref_option) {
 					$textheader = $label_product_ref;
 				} else {
 					$textheader = make_substitutions(getDolGlobalString('BARCODE_LABEL_HEADER_TEXT'), $substitutionarray);
 				}
-				if ((GETPOSTINT('productid') > 0) && $label_product_label_option) {
+				if ((request()->integer('productid', 0) > 0) && $label_product_label_option) {
 					$textfooter = $label_product_label;
 				} else {
 					$textfooter = make_substitutions(getDolGlobalString('BARCODE_LABEL_FOOTER_TEXT'), $substitutionarray);
@@ -422,7 +422,7 @@ foreach (array_keys($_Avery_Labels) as $codecards) {
 	$arrayoflabels[$codecards] = $labeltoshow;
 }
 asort($arrayoflabels);
-print $form->selectarray('modellabel', $arrayoflabels, (GETPOST('modellabel') ? GETPOST('modellabel') : getDolGlobalString('ADHERENT_ETIQUETTE_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
+print $form->selectarray('modellabel', $arrayoflabels, (request()->input('modellabel') ? request()->input('modellabel') : getDolGlobalString('ADHERENT_ETIQUETTE_TYPE')), 1, 0, 0, '', 0, 0, 0, '', '', 1);
 print '</div></div>';
 
 // Number of stickers to print
@@ -430,7 +430,7 @@ print '	<div class="tagtr">';
 print '	<div class="tagtd">';
 print $langs->trans("NumberOfStickers").' &nbsp; ';
 print '</div><div class="tagtd maxwidthonsmartphone" style="overflow: hidden; white-space: nowrap;">';
-print '<input size="4" type="text" name="numberofsticker" value="'.(GETPOST('numberofsticker') ? GETPOSTINT('numberofsticker') : 10).'">';
+print '<input size="4" type="text" name="numberofsticker" value="'.(request()->input('numberofsticker') ? request()->integer('numberofsticker', 0) : 10).'">';
 print '</div></div>';
 
 print '</div>';
@@ -499,23 +499,23 @@ jQuery(document).ready(function() {
 </script>';
 
 // Checkbox to select from free text
-print '<input id="fillmanually" type="radio" '.((!GETPOST("selectorforbarcode") || GETPOST("selectorforbarcode") == 'fillmanually') ? 'checked ' : '').'name="selectorforbarcode" value="fillmanually" class="radiobarcodeselect"><label for="fillmanually"> '.$langs->trans("FillBarCodeTypeAndValueManually").'</label>';
+print '<input id="fillmanually" type="radio" '.((!request()->input('selectorforbarcode') || request()->input('selectorforbarcode') == 'fillmanually') ? 'checked ' : '').'name="selectorforbarcode" value="fillmanually" class="radiobarcodeselect"><label for="fillmanually"> '.$langs->trans("FillBarCodeTypeAndValueManually").'</label>';
 print '<br>';
 
 if ($user->hasRight('produit', 'lire') || $user->hasRight('service', 'lire')) {
-	print '<input id="fillfromproduct" type="radio" '.((GETPOST("selectorforbarcode") == 'fillfromproduct') ? 'checked ' : '').'name="selectorforbarcode" value="fillfromproduct" class="radiobarcodeselect"><label for="fillfromproduct"> '.$langs->trans("FillBarCodeTypeAndValueFromProduct").'</label>';
+	print '<input id="fillfromproduct" type="radio" '.((request()->input('selectorforbarcode') == 'fillfromproduct') ? 'checked ' : '').'name="selectorforbarcode" value="fillfromproduct" class="radiobarcodeselect"><label for="fillfromproduct"> '.$langs->trans("FillBarCodeTypeAndValueFromProduct").'</label>';
 	print '<br>';
 	print '<div class="showforproductselector">';
-	$form->select_produits(GETPOSTINT('productid'), 'productid', '', 0, 0, -1, 2, '', 0, array(), 0, '1', 0, 'minwidth400imp', 1);
+	$form->select_produits(request()->integer('productid', 0), 'productid', '', 0, 0, -1, 2, '', 0, array(), 0, '1', 0, 'minwidth400imp', 1);
 	print ' &nbsp; <input type="submit" class="button small" id="submitproduct" name="submitproduct" value="'.(dol_escape_htmltag($langs->trans("GetBarCode"))).'">';
 	print '</div>';
 }
 
 if ($user->hasRight('societe', 'lire')) {
-	print '<input id="fillfromthirdparty" type="radio" '.((GETPOST("selectorforbarcode") == 'fillfromthirdparty') ? 'checked ' : '').'name="selectorforbarcode" value="fillfromthirdparty" class="radiobarcodeselect"><label for="fillfromthirdparty"> '.$langs->trans("FillBarCodeTypeAndValueFromThirdParty").'</label>';
+	print '<input id="fillfromthirdparty" type="radio" '.((request()->input('selectorforbarcode') == 'fillfromthirdparty') ? 'checked ' : '').'name="selectorforbarcode" value="fillfromthirdparty" class="radiobarcodeselect"><label for="fillfromthirdparty"> '.$langs->trans("FillBarCodeTypeAndValueFromThirdParty").'</label>';
 	print '<br>';
 	print '<div class="showforthirdpartyselector">';
-	print $form->select_company(GETPOSTINT('socid'), 'socid', '', 'SelectThirdParty', 0, 0, array(), 0, 'minwidth300');
+	print $form->select_company(request()->integer('socid', 0), 'socid', '', 'SelectThirdParty', 0, 0, array(), 0, 'minwidth300');
 	print ' &nbsp; <input type="submit" id="submitthirdparty" name="submitthirdparty" class="button showforthirdpartyselector small" value="'.(dol_escape_htmltag($langs->trans("GetBarCode"))).'">';
 	print '</div>';
 }
@@ -554,28 +554,28 @@ print '</div></div>';
 if ($producttmp->id > 0) {
 	print '	<div class="tagtr">';
 	print '	<div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 500px;">';
-	print '<input id="label_product_ref_option" name="label_product_ref_option" type="checkbox" '.(GETPOSTISSET("label_product_ref_option") ? 'checked ' : '').' class="checkforselect"><label for="label_product_ref_option"> '.$langs->trans("BarcodeLabelProductRef").'</label>';
+	print '<input id="label_product_ref_option" name="label_product_ref_option" type="checkbox" '.(request()->has('label_product_ref_option') ? 'checked ' : '').' class="checkforselect"><label for="label_product_ref_option"> '.$langs->trans("BarcodeLabelProductRef").'</label>';
 	print '</div><div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 500px;">';
 	print '<input type="text" name="label_product_ref" id="label_product_ref" placeholder="'.$langs->trans("BarcodeLabelProductRefPlaceholder").'" value="'.$label_product_ref.'">';
 	print '</div></div>';
 	print '	<div class="tagtr">';
 	print '	<div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 500px;">';
-	print '<input id="label_product_label_option" name="label_product_label_option" type="checkbox" '.(GETPOSTISSET("label_product_label_option") ? 'checked ' : '').' class="checkforselect"><label for="label_product_label_option"> '.$langs->trans("BarcodeLabelProductLabel").'</label>';
+	print '<input id="label_product_label_option" name="label_product_label_option" type="checkbox" '.(request()->has('label_product_label_option') ? 'checked ' : '').' class="checkforselect"><label for="label_product_label_option"> '.$langs->trans("BarcodeLabelProductLabel").'</label>';
 	print '</div><div class="tagtd" style="overflow: hidden; white-space: nowrap; max-width: 500px;">';
 	print '<input type="text" name="label_product_label" id="label_product_label" placeholder="'.$langs->trans("BarcodeLabelProductLabelPlaceholder").'" value="'.$label_product_label.'">';
 	print '</div></div>';
 }
 
 /*
-$barcodestickersmask=GETPOST('barcodestickersmask');
+$barcodestickersmask=request()->input('barcodestickersmask');
 print '<br>'.$langs->trans("BarcodeStickersMask").':<br>';
-print '<textarea cols="40" type="text" name="barcodestickersmask" value="'.GETPOST('barcodestickersmask').'">'.$barcodestickersmask.'</textarea>';
+print '<textarea cols="40" type="text" name="barcodestickersmask" value="'.request()->input('barcodestickersmask').'">'.$barcodestickersmask.'</textarea>';
 print '<br>';
 */
 
 print '</div>';
 
-print '<br><input type="submit" class="button" id="submitformbarcodegen" '.(GETPOST("selectorforbarcode") ? '' : 'disabled ').'value="'.$langs->trans("BuildPageToPrint").'">';
+print '<br><input type="submit" class="button" id="submitformbarcodegen" '.(request()->input('selectorforbarcode') ? '' : 'disabled ').'value="'.$langs->trans("BuildPageToPrint").'">';
 
 print '</form>';
 print '<br>';

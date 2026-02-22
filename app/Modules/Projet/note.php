@@ -39,9 +39,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/project.lib.php';
 // Load translation files required by the page
 $langs->load('projects');
 
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 $mine = (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'mine') ? 1 : 0;
 

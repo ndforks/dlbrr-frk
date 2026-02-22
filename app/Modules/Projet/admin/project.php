@@ -49,15 +49,15 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/task.class.php';
 $langs->loadLangs(array('admin', 'errors', 'other', 'projects'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'project';
 
 
@@ -68,8 +68,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstproject = GETPOST('maskconstproject', 'aZ09');
-	$maskproject = GETPOST('maskproject', 'alpha');
+	$maskconstproject = request()->input('maskconstproject');
+	$maskproject = request()->input('maskproject');
 
 	if ($maskconstproject && preg_match('/_MASK$/', $maskconstproject)) {
 		$res = dolibarr_set_const($db, $maskconstproject, $maskproject, 'chaine', 0, '', $conf->entity);
@@ -87,8 +87,8 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'updateMaskTask') {
-	$maskconstmasktask = GETPOST('maskconsttask', 'aZ09');
-	$masktaskt = GETPOST('masktask', 'alpha');
+	$maskconstmasktask = request()->input('maskconsttask');
+	$masktaskt = request()->input('masktask');
 	$res = 0;
 	if ($maskconstmasktask && preg_match('/_MASK$/', $maskconstmasktask)) {
 		$res = dolibarr_set_const($db, $maskconstmasktask, $masktaskt, 'chaine', 0, '', $conf->entity);
@@ -104,7 +104,7 @@ if ($action == 'updateMaskTask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$project = new Project($db);
 	$project->initAsSpecimen();
@@ -140,7 +140,7 @@ if ($action == 'updateMaskTask') {
 		dol_syslog($langs->trans("ErrorModuleNotFound"), LOG_ERR);
 	}
 } elseif ($action == 'specimentask') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$project = new Project($db);
 	$project->initAsSpecimen();
@@ -233,24 +233,24 @@ if ($action == 'updateMaskTask') {
 
 	dolibarr_set_const($db, "PROJECT_TASK_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'updateoptions') {
-	if (GETPOST('PROJECT_USE_SEARCH_TO_SELECT')) {
-		$companysearch = GETPOST('activate_PROJECT_USE_SEARCH_TO_SELECT', 'alpha');
+	if (request()->input('PROJECT_USE_SEARCH_TO_SELECT')) {
+		$companysearch = request()->input('activate_PROJECT_USE_SEARCH_TO_SELECT');
 		if (dolibarr_set_const($db, "PROJECT_USE_SEARCH_TO_SELECT", $companysearch, 'chaine', 0, '', $conf->entity)) {
 			$conf->global->PROJECT_USE_SEARCH_TO_SELECT = $companysearch;
 		}
 	}
-	if (GETPOST('PROJECT_ALLOW_TO_LINK_FROM_OTHER_COMPANY')) {
-		$projectToSelect = GETPOST('projectToSelect', 'alpha');
+	if (request()->input('PROJECT_ALLOW_TO_LINK_FROM_OTHER_COMPANY')) {
+		$projectToSelect = request()->input('projectToSelect');
 		dolibarr_set_const($db, 'PROJECT_ALLOW_TO_LINK_FROM_OTHER_COMPANY', $projectToSelect, 'chaine', 0, '', $conf->entity); //Allow to disable this configuration if empty value
 	}
-	if (GETPOST('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
-		$timesheetFreezeDuration = GETPOST('timesheetFreezeDuration', 'alpha');
+	if (request()->input('PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS')) {
+		$timesheetFreezeDuration = request()->input('timesheetFreezeDuration');
 		dolibarr_set_const($db, 'PROJECT_TIMESHEET_PREVENT_AFTER_MONTHS', intval($timesheetFreezeDuration), 'chaine', 0, '', $conf->entity); //Allow to disable this configuration if empty value
 	}
 } elseif (preg_match('/^(set|del)_?([A-Z_]+)$/', $action, $reg)) {
 	// Set boolean (on/off) constants
 	if (!dolibarr_set_const($db, $reg[2], ($reg[1] === 'set' ? '1' : '0'), 'chaine', 0, '', $conf->entity) > 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -540,7 +540,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<div class="div-table-responsive-no-min">'; // You can use div-table-responsive-no-min if you don't need reserved height for your table
@@ -690,7 +690,7 @@ if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '<div class="div-table-responsive-no-min">'; // You can use div-table-responsive-no-min if you don't need reserved height for your table

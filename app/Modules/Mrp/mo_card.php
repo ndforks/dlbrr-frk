@@ -57,17 +57,17 @@ $langs->loadLangs(array('mrp', 'other'));
 
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'mocard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$TBomLineId = GETPOST('bomlineid', 'array:int');
-$lineid   = GETPOSTINT('lineid');
-$socid = GETPOSTINT("socid");
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'mocard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$TBomLineId = request()->input('bomlineid');
+$lineid   = request()->integer('lineid', 0);
+$socid = request()->integer('socid', 0);
 
 // Initialize a technical objects
 $object = new Mo($db);
@@ -83,7 +83,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -98,8 +98,8 @@ if (empty($action) && empty($id) && empty($ref)) {
 // Load object
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
-if (GETPOSTINT('fk_bom') > 0) {
-	$objectbom->fetch(GETPOSTINT('fk_bom'));
+if (request()->integer('fk_bom', 0) > 0) {
+	$objectbom->fetch(request()->integer('fk_bom', 0));
 
 	if ($action != 'add') {
 		// We force calling parameters if we are not in the submit of creation of MO
@@ -112,7 +112,7 @@ if (GETPOSTINT('fk_bom') > 0) {
 }
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'mrp', $object->id, 'mrp_mo', '', 'fk_soc', 'rowid', $isdraft);
@@ -188,7 +188,7 @@ if (empty($reshook)) {
 		header("Location: ".dol_buildpath('/mrp/mo_card.php?id='.((int) $mo_parent->id), 1));
 		exit;
 	} elseif ($action == 'confirm_cancel' && $confirm == 'yes' && !empty($permissiontoadd)) {
-		$also_cancel_consumed_and_produced_lines = (GETPOST('alsoCancelConsumedAndProducedLines', 'alpha') ? 1 : 0);
+		$also_cancel_consumed_and_produced_lines = (request()->input('alsoCancelConsumedAndProducedLines') ? 1 : 0);
 		$result = $object->cancel($user, 0, (bool) $also_cancel_consumed_and_produced_lines);
 		if ($result > 0) {
 			header("Location: " . dol_buildpath('/mrp/mo_card.php?id=' . $object->id, 1));
@@ -198,7 +198,7 @@ if (empty($reshook)) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'confirm_delete' && $confirm == 'yes' && !empty($permissiontodelete)) {
-		$also_cancel_consumed_and_produced_lines = (GETPOST('alsoCancelConsumedAndProducedLines', 'alpha') ? 1 : 0);
+		$also_cancel_consumed_and_produced_lines = (request()->input('alsoCancelConsumedAndProducedLines') ? 1 : 0);
 		$result = $object->delete($user, 0, (bool) $also_cancel_consumed_and_produced_lines);
 		if ($result > 0) {
 			header("Location: " . $backurlforlist);
@@ -208,7 +208,7 @@ if (empty($reshook)) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'settags' && isModEnabled('category') && $permissiontoadd) {
-		$result = $object->setCategories(GETPOST('categories', 'array'));
+		$result = $object->setCategories(request()->input('categories'));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -221,7 +221,7 @@ if (empty($reshook)) {
 		}
 
 		$error = 0;
-		$deleteChilds = GETPOST('deletechilds', 'aZ');
+		$deleteChilds = request()->input('deletechilds');
 
 		// Start the database transaction
 		$db->begin();
@@ -287,10 +287,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -310,8 +310,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -351,7 +351,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-mrp page-card');
 // Part to create
 if ($action == 'create') {
 	$titlelist = null;
-	if (GETPOSTINT('fk_bom') > 0) {
+	if (request()->integer('fk_bom', 0) > 0) {
 		$titlelist = $langs->trans("ToConsume");
 		if ($objectbom->bomtype == 1) {
 			$titlelist = $langs->trans("ToObtain");
@@ -754,7 +754,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		//$result = $object->getLinesArray();
 		$object->fetchLines();
 
-		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
     	<input type="hidden" name="token" value="' . newToken().'">
     	<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
     	<input type="hidden" name="mode" value="">
@@ -912,7 +912,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -953,7 +953,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

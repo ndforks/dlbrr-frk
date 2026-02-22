@@ -55,18 +55,18 @@ require_once DOL_DOCUMENT_ROOT.'/hrm/class/evaluationdet.class.php';
 $langs->loadLangs(array('hrm', 'companies', 'other'));
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'skillcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'skillcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$id = GETPOSTINT('id');
-$TSkillsToAdd = GETPOST('fk_skill', 'array');
-$objecttype = GETPOST('objecttype', 'alpha');
-$TNote = GETPOST('TNote', 'array');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$TSkillsToAdd = request()->input('fk_skill');
+$objecttype = request()->input('objecttype');
+$TNote = request()->input('TNote');
+$lineid = request()->integer('lineid', 0);
 
 if (empty($objecttype)) {
 	$objecttype = 'job';
@@ -83,7 +83,7 @@ if (in_array($objecttype, $TAuthorizedObjects)) {
 		$object = new User($db);
 	}
 } else {
-	accessforbidden('ErrorBadObjectType');
+	abort(403);
 }
 
 $hookmanager->initHooks(array('skilltab', 'globalcard')); // Note that conf->hooks_modules contains array
@@ -100,13 +100,13 @@ $permissiontoadd  = $user->hasRight('hrm', 'all', 'write'); // Used by the inclu
 
 // Security check (enable the most restrictive one)
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!isModEnabled('hrm')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -137,7 +137,7 @@ if (empty($reshook)) {
 
 	// update national_registration_number
 	if ($action == 'setnational_registration_number' && $permissiontoadd) {
-		$object->national_registration_number = (string) GETPOST('national_registration_number', 'alphanohtml');
+		$object->national_registration_number = (string) request()->input('national_registration_number');
 		$result = $object->update($user);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');

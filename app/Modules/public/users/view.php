@@ -53,14 +53,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
 $langs->loadLangs(array("companies", "other", "recruitment"));
 
 // Get parameters
-$action   = GETPOST('action', 'aZ09');
-$mode     = GETPOST('mode', 'aZ09');
-$cancel   = GETPOST('cancel', 'alpha');
+$action   = request()->input('action');
+$mode     = request()->input('mode');
+$cancel   = request()->input('cancel');
 $backtopage = '';
 
-$id = GETPOSTINT('id');
-$securekey = GETPOST('securekey', 'alpha');
-$suffix = GETPOST('suffix');
+$id = request()->integer('id', 0);
+$securekey = request()->input('securekey');
+$suffix = request()->input('suffix');
 
 $object = new User($db);
 $object->fetch($id, '', '', 1);
@@ -74,11 +74,11 @@ $urlwithroot = DOL_MAIN_URL_ROOT; // This is to use same domain name than curren
 global $conf;
 $encodedsecurekey = dol_hash($conf->file->instance_unique_id.'uservirtualcard'.$object->id.'-'.$object->login, 'md5');
 if ($encodedsecurekey != $securekey) {
-	httponly_accessforbidden('Bad value for securitykey or public profile not enabled');
+	httponly_abort(403);
 }
 
 if (!getDolUserInt('USER_ENABLE_PUBLIC', 0, $object)) {
-	httponly_accessforbidden('Bad value for securitykey or public profile not enabled');
+	httponly_abort(403);
 }
 
 
@@ -252,7 +252,7 @@ $arrayofjs = array();
 $arrayofcss = array();
 
 $replacemainarea = (empty($conf->dol_hide_leftmenu) ? '<div>' : '').'<div>';
-llxHeader($head, $object->getFullName($langs).' - '.$langs->trans("PublicVirtualCard"), '', '', 0, 0, $arrayofjs, $arrayofcss, '', 'onlinepaymentbody'.(GETPOST('mode') == 'preview' ? ' scalepreview cursorpointer virtualcardpreview' : ''), $replacemainarea, 1, 1);
+llxHeader($head, $object->getFullName($langs).' - '.$langs->trans("PublicVirtualCard"), '', '', 0, 0, $arrayofjs, $arrayofcss, '', 'onlinepaymentbody'.(request()->input('mode') == 'preview' ? ' scalepreview cursorpointer virtualcardpreview' : ''), $replacemainarea, 1, 1);
 
 print '
 <style>
@@ -309,7 +309,7 @@ $socialnetworksdict = getArrayOfSocialNetworks();
 
 
 // Show barcode
-$showbarcode = GETPOST('nobarcode') ? 0 : 1;
+$showbarcode = request()->input('nobarcode') ? 0 : 1;
 if ($showbarcode) {
 	$outdir = $conf->user->dir_temp;
 

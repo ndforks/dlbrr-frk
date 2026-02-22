@@ -45,15 +45,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/supplier_proposal.lib.php';
 $langs->loadLangs(array("admin", "errors", "other", "supplier_proposal"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'supplier_proposal';
 
 $error = 0;
@@ -66,8 +66,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstsupplier_proposal = GETPOST('maskconstsupplier_proposal', 'aZ09');
-	$masksupplier_proposal = GETPOST('masksupplier_proposal', 'alpha');
+	$maskconstsupplier_proposal = request()->input('maskconstsupplier_proposal');
+	$masksupplier_proposal = request()->input('masksupplier_proposal');
 
 	$res = 0;
 
@@ -87,7 +87,7 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$supplier_proposal = new SupplierProposal($db);
 	$supplier_proposal->initAsSpecimen();
@@ -124,7 +124,7 @@ if ($action == 'specimen') {
 }
 
 if ($action == 'set_SUPPLIER_PROPOSAL_DRAFT_WATERMARK') {
-	$draft = GETPOST('SUPPLIER_PROPOSAL_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('SUPPLIER_PROPOSAL_DRAFT_WATERMARK');
 
 	$res = dolibarr_set_const($db, "SUPPLIER_PROPOSAL_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
@@ -139,7 +139,7 @@ if ($action == 'set_SUPPLIER_PROPOSAL_DRAFT_WATERMARK') {
 }
 
 if ($action == 'set_SUPPLIER_PROPOSAL_FREE_TEXT') {
-	$freetext = GETPOST('SUPPLIER_PROPOSAL_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('SUPPLIER_PROPOSAL_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "SUPPLIER_PROPOSAL_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
@@ -372,7 +372,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

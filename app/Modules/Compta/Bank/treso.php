@@ -51,10 +51,10 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('banks', 'bills', 'categories', 'companies', 'salaries'));
 
 // Security check
-if (GETPOSTISSET("account") || GETPOSTISSET("ref")) {
-	$id = GETPOSTISSET("account") ? GETPOST("account") : (GETPOSTISSET("ref") ? GETPOST("ref") : '');
+if (request()->has('account') || request()->has('ref')) {
+	$id = request()->has('account') ? request()->input('account') : (request()->has('ref') ? request()->input('ref') : '');
 }
-$fieldid = GETPOSTISSET("ref") ? 'ref' : 'rowid';
+$fieldid = request()->has('ref') ? 'ref' : 'rowid';
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -64,8 +64,8 @@ $hookmanager->initHooks(array('banktreso', 'globalcard'));
 
 $result = restrictedArea($user, 'banque', $id, 'bank_account&bank_account', '', '', $fieldid);
 
-$vline = GETPOST('vline');
-$page = GETPOSTISSET("page") ? GETPOST("page") : 0;
+$vline = request()->input('vline');
+$page = request()->has('page') ? request()->input('page') : 0;
 
 /*
  * View
@@ -80,7 +80,7 @@ $vatstatic = new Tva($db);
 
 $form = new Form($db);
 
-if (GETPOST("account") || GETPOST("ref")) {
+if (request()->input('account') || request()->input('ref')) {
 	if ($vline) {
 		$viewline = $vline;
 	} else {
@@ -88,11 +88,11 @@ if (GETPOST("account") || GETPOST("ref")) {
 	}
 
 	$object = new Account($db);
-	if (GETPOSTINT("account")) {
-		$result = $object->fetch(GETPOSTINT("account"));
+	if (request()->integer('account', 0)) {
+		$result = $object->fetch(request()->integer('account', 0));
 	}
-	if (GETPOST("ref")) {
-		$result = $object->fetch(0, GETPOST("ref"));
+	if (request()->input('ref')) {
+		$result = $object->fetch(0, request()->input('ref'));
 		$id = $object->id;
 	}
 
@@ -372,7 +372,7 @@ if (GETPOST("account") || GETPOST("ref")) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// Other lines

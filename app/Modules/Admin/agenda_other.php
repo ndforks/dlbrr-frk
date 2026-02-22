@@ -44,20 +44,20 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/defaultvalues.class.php';
 require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'other', 'agenda', 'users'));
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$param = GETPOST('param', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$param = request()->input('param');
+$cancel = request()->input('cancel');
+$scandir = request()->input('scan_dir');
 $type = 'action';
 
 
@@ -78,7 +78,7 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -88,16 +88,16 @@ if (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 if ($action == 'set') {
-	$getDefaultFilter = GETPOST('AGENDA_DEFAULT_FILTER_TYPE');
+	$getDefaultFilter = request()->input('AGENDA_DEFAULT_FILTER_TYPE');
 	$defaultfilter = (is_array($getDefaultFilter)) ? implode(',', $getDefaultFilter) : $getDefaultFilter;
-	dolibarr_set_const($db, 'AGENDA_USE_EVENT_TYPE_DEFAULT', GETPOST('AGENDA_USE_EVENT_TYPE_DEFAULT'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_USE_EVENT_TYPE_DEFAULT', request()->input('AGENDA_USE_EVENT_TYPE_DEFAULT'), 'chaine', 0, '', $conf->entity);
 	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_TYPE', $defaultfilter, 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_STATUS', GETPOST('AGENDA_DEFAULT_FILTER_STATUS'), 'chaine', 0, '', $conf->entity);
-	dolibarr_set_const($db, 'AGENDA_DEFAULT_VIEW', GETPOST('AGENDA_DEFAULT_VIEW'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_FILTER_STATUS', request()->input('AGENDA_DEFAULT_FILTER_STATUS'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'AGENDA_DEFAULT_VIEW', request()->input('AGENDA_DEFAULT_VIEW'), 'chaine', 0, '', $conf->entity);
 
 	$defaultValues = new DefaultValues($db);
 	$result = $defaultValues->fetchAll('', '', 0, 0, "(t.page:=:'comm/action/card.php') AND (t.param:=:'complete') AND (t.user_id:=:0) AND (t.type:=:'createform') AND (t.entity:=:".((int) $conf->entity).")");
@@ -117,7 +117,7 @@ if ($action == 'set') {
 	$defaultValues->user_id = 0;
 	$defaultValues->page = 'comm/action/card.php';
 	$defaultValues->param = 'complete';
-	$defaultValues->value = GETPOST('AGENDA_EVENT_DEFAULT_STATUS');
+	$defaultValues->value = request()->input('AGENDA_EVENT_DEFAULT_STATUS');
 	$resultCreat = $defaultValues->create($user);
 	if ($resultCreat < 0) {
 		setEventMessages($defaultValues->error, $defaultValues->errors, 'errors');
@@ -125,7 +125,7 @@ if ($action == 'set') {
 		setEventMessages($langs->trans("RecordSaved"), null, 'mesgs');
 	}
 } elseif ($action == 'specimen') {  // For actioncomm
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$action = new ActionComm($db);
 	$action->initAsSpecimen();
@@ -232,7 +232,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 if (getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2) {

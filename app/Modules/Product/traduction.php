@@ -46,10 +46,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'languages'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -96,8 +96,8 @@ if (empty($reshook)) {
 		$action = '';
 	}
 
-	if ($action == 'delete' && GETPOST('langtodelete', 'alpha') && $usercancreate) {
-		$object->delMultiLangs(GETPOST('langtodelete', 'alpha'), $user);
+	if ($action == 'delete' && request()->input('langtodelete') && $usercancreate) {
+		$object->delMultiLangs(request()->input('langtodelete'), $user);
 		setEventMessages($langs->trans("RecordDeleted"), null, 'mesgs');
 		header('Location:'.$_SERVER['PHP_SELF'].'?id='.$id);
 		exit;
@@ -108,20 +108,20 @@ if (empty($reshook)) {
 		$current_lang = $langs->getDefaultLang();
 
 		// update de l'objet
-		if (GETPOST("forcelangprod") == $current_lang) {
-			$object->label = GETPOST("libelle");
-			$object->description = dol_htmlcleanlastbr(GETPOST("desc", 'restricthtml'));
-			$object->other = dol_htmlcleanlastbr(GETPOST("other", 'restricthtml'));
+		if (request()->input('forcelangprod') == $current_lang) {
+			$object->label = request()->input('libelle');
+			$object->description = dol_htmlcleanlastbr(request()->input('desc'));
+			$object->other = dol_htmlcleanlastbr(request()->input('other'));
 
 			$object->update($object->id, $user);
 		} else {
-			$object->multilangs[GETPOST("forcelangprod")]["label"] = GETPOST("libelle");
-			$object->multilangs[GETPOST("forcelangprod")]["description"] = dol_htmlcleanlastbr(GETPOST("desc", 'restricthtml'));
-			$object->multilangs[GETPOST("forcelangprod")]["other"] = dol_htmlcleanlastbr(GETPOST("other", 'restricthtml'));
+			$object->multilangs[request()->input('forcelangprod')]["label"] = request()->input('libelle');
+			$object->multilangs[request()->input('forcelangprod')]["description"] = dol_htmlcleanlastbr(request()->input('desc'));
+			$object->multilangs[request()->input('forcelangprod')]["other"] = dol_htmlcleanlastbr(request()->input('other'));
 		}
 
 		// save in database
-		if (GETPOST("forcelangprod")) {
+		if (request()->input('forcelangprod')) {
 			$result = $object->setMultiLangs($user);
 		} else {
 			$object->error = $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Language"));
@@ -167,7 +167,7 @@ if (empty($reshook)) {
 
 	// Delete translation
 	if ($action == 'vdelete' && $cancel != $langs->trans("Cancel") && $usercancreate) {
-		$langtodelete = GETPOST('langdel', 'alpha');
+		$langtodelete = request()->input('langdel');
 
 		$result = $object->delMultiLangs($langtodelete, $user);
 		if ($result > 0) {
@@ -188,11 +188,11 @@ if (empty($reshook)) {
 $title = $langs->trans('ProductServiceCard');
 $helpurl = '';
 $shortlabel = dol_trunc($object->label, 16);
-if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 	$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Translation');
 	$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 }
-if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 	$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Translation');
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
@@ -335,13 +335,13 @@ if ($action == 'add' && ($user->hasRight('produit', 'creer') || $user->hasRight(
 	print '<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="vadd">';
-	print '<input type="hidden" name="id" value="'.GETPOSTINT("id").'">';
+	print '<input type="hidden" name="id" value="'.request()->integer('id', 0).'">';
 
 	print dol_get_fiche_head();
 
 	print '<table class="border centpercent">';
 	print '<tr><td class="tdtop titlefieldcreate fieldrequired">'.$langs->trans('Language').'</td><td>';
-	print $formadmin->select_language(GETPOST('forcelangprod'), 'forcelangprod', 0, $object->multilangs, 1);
+	print $formadmin->select_language(request()->input('forcelangprod'), 'forcelangprod', 0, $object->multilangs, 1);
 	print '</td></tr>';
 	print '<tr><td class="tdtop fieldrequired">'.$langs->trans('Label').'</td><td><input name="libelle" size="40"></td></tr>';
 	print '<tr><td class="tdtop">'.$langs->trans('Description').'</td><td>';

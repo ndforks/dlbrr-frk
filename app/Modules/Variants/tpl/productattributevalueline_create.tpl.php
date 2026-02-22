@@ -68,7 +68,7 @@ $nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
 		<?php $coldisplay++; if ($nolinesbefore) {
 			echo $langs->trans('Ref') . ': ';
 		} ?>
-		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(GETPOSTISSET("line_ref") ? GETPOST("line_ref", 'alpha', 2) : ''); ?>" autofocus>
+		<input type="text" name="line_ref" id="line_ref" class="flat" value="<?php echo(request()->has('line_ref') ? GETPOST("line_ref", 'alpha', 2) : ''); ?>" autofocus>
 		<?php
 		if (is_object($hookmanager)) {
 			$parameters = array();
@@ -81,7 +81,7 @@ $nolinesbefore = (count($this->lines) == 0 || $forcetoshowtitlelines);
 	</td>
 
 	<td class="nobottom linecolvalue"><?php $coldisplay++; ?>
-		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(GETPOSTISSET("line_value") ? GETPOST("line_value", 'alpha', 2) : ''); ?>">
+		<input type="text" name="line_value" id="line_value" class="flat" value="<?php echo(request()->has('line_value') ? GETPOST("line_value", 'alpha', 2) : ''); ?>">
 	</td>
 
 	<td class="nobottom linecoledit center valignmiddle" colspan="<?php echo $colspan; ?>"><?php $coldisplay += $colspan; ?>

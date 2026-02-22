@@ -42,23 +42,23 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("recruitment", "boxes"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 $NBMAX = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
 $max = getDolGlobalInt('MAIN_SIZE_SHORTLIST_LIMIT', 5);
 $now = dol_now();
 
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if (!empty($user->socid) && $user->socid > 0) {
 	$action = '';
 	$socid = $user->socid;
 }
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 // if (! $user->hasRight('mymodule', 'myobject', 'read')) {
-// 	accessforbidden();
+// 	abort(403);
 // }
 restrictedArea($user, 'recruitment', 0, 'recruitment_recruitmentjobposition', 'recruitmentjobposition', '', 'rowid');
 
@@ -173,7 +173,7 @@ if ($conf->use_javascript_ajax) {
 
 		print "<br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$sql = "SELECT COUNT(t.rowid) as nb, status";
@@ -253,7 +253,7 @@ if ($conf->use_javascript_ajax) {
 
 		print "<br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -332,7 +332,7 @@ if (isModEnabled('recruitment') && $user->rights->recruitment->read) {
 	}
 	else
 	{
-		dol_print_error($db);
+		abort(500);
 	}
 }
 END MODULEBUILDER DRAFT MYOBJECT */
@@ -408,7 +408,7 @@ if (isModEnabled('recruitment') && $user->hasRight('recruitment', 'recruitmentjo
 		print "</div>";
 		print "<br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -474,7 +474,7 @@ if (isModEnabled('recruitment') && $user->hasRight('recruitment', 'recruitmentjo
 		print "</div>";
 		print "<br>";
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

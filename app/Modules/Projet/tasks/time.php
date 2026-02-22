@@ -62,55 +62,55 @@ if (isModEnabled('eventorganization')) {
 
 $langs->loadLangs($langsLoad);
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$toselect = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'timespentlist'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'timespentlist'; // To manage different context of search
+$backtopage = request()->input('backtopage'); // Go back to a dedicated page
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
-$id = GETPOSTINT('id');						// Id of task
-$ref = GETPOST('ref', 'alpha');				// Ref of task
-$projectid = GETPOSTINT('projectid');		// Id of project
-$lineid = GETPOSTINT('lineid');				// Id of time spent line
-$withproject = GETPOSTINT('withproject');
-$project_ref = GETPOST('project_ref', 'alpha');
-$tab = GETPOST('tab', 'aZ09');
+$id = request()->integer('id', 0);						// Id of task
+$ref = request()->input('ref');				// Ref of task
+$projectid = request()->integer('projectid', 0);		// Id of project
+$lineid = request()->integer('lineid', 0);				// Id of time spent line
+$withproject = request()->integer('withproject', 0);
+$project_ref = request()->input('project_ref');
+$tab = request()->input('tab');
 
-$search_day = GETPOSTINT('search_day');
-$search_month = GETPOSTINT('search_month');
-$search_year = GETPOSTINT('search_year');
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_day = request()->integer('search_day', 0);
+$search_month = request()->integer('search_month', 0);
+$search_year = request()->integer('search_year', 0);
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear); // Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_note = GETPOST('search_note', 'alpha');
-$search_duration = GETPOST('search_duration', 'alpha');
-$search_task_ref = GETPOST('search_task_ref', 'alpha');
-$search_task_label = GETPOST('search_task_label', 'alpha');
-$search_user = GETPOST('search_user', 'intcomma');
-$search_valuebilled = GETPOST('search_valuebilled', 'intcomma');
-$search_product_ref = GETPOST('search_product_ref', 'alpha');
-$search_company = GETPOST('$search_company', 'alpha');
-$search_company_alias = GETPOST('$search_company_alias', 'alpha');
-$search_project_ref = GETPOST('$search_project_ref', 'alpha');
-$search_project_label = GETPOST('$search_project_label', 'alpha');
-$search_timespent_starthour = GETPOSTINT("search_timespent_duration_starthour");
-$search_timespent_startmin = GETPOSTINT("search_timespent_duration_startmin");
-$search_timespent_endhour = GETPOSTINT("search_timespent_duration_endhour");
-$search_timespent_endmin = GETPOSTINT("search_timespent_duration_endmin");
+$search_note = request()->input('search_note');
+$search_duration = request()->input('search_duration');
+$search_task_ref = request()->input('search_task_ref');
+$search_task_label = request()->input('search_task_label');
+$search_user = request()->input('search_user');
+$search_valuebilled = request()->input('search_valuebilled');
+$search_product_ref = request()->input('search_product_ref');
+$search_company = request()->input('$search_company');
+$search_company_alias = request()->input('$search_company_alias');
+$search_project_ref = request()->input('$search_project_ref');
+$search_project_label = request()->input('$search_project_label');
+$search_timespent_starthour = request()->integer('search_timespent_duration_starthour', 0);
+$search_timespent_startmin = request()->integer('search_timespent_duration_startmin', 0);
+$search_timespent_endhour = request()->integer('search_timespent_duration_endhour', 0);
+$search_timespent_endmin = request()->integer('search_timespent_duration_endmin', 0);
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }        // If $page is not defined, or '' or -1
@@ -149,7 +149,7 @@ if ($id > 0 || $ref) {
 $socid = 0;
 //if ($user->socid > 0) $socid = $user->socid;	  // For external user, no check is done on company because readability is managed by public status of project and assignment.
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 if ($object->fk_project > 0) {
@@ -169,10 +169,10 @@ if ($object->fk_project > 0) {
 
 $error = 0;
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend' && $massaction != 'confirm_generateinvoice' && $massaction != 'confirm_generateinter') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend' && $massaction != 'confirm_generateinvoice' && $massaction != 'confirm_generateinter') {
 	$massaction = '';
 }
 
@@ -185,7 +185,7 @@ if ($reshook < 0) {
 include DOL_DOCUMENT_ROOT . '/core/actions_changeselectedfields.inc.php';
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_day = '';
 	$search_month = '';
 	$search_year = '';
@@ -218,13 +218,13 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 }
 
 if ($action == 'addtimespent' && $user->hasRight('projet', 'time')) {
-	$timespent_durationhour = GETPOSTINT('timespent_durationhour');
-	$timespent_durationmin = GETPOSTINT('timespent_durationmin');
+	$timespent_durationhour = request()->integer('timespent_durationhour', 0);
+	$timespent_durationmin = request()->integer('timespent_durationmin', 0);
 	if (empty($timespent_durationhour) && empty($timespent_durationmin)) {
 		setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Duration")), null, 'errors');
 		$error++;
 	}
-	if (!GETPOSTINT("userid")) {
+	if (!request()->integer('userid', 0)) {
 		$langs->load("errors");
 		setEventMessages($langs->trans('ErrorUserNotAssignedToTask'), null, 'errors');
 		$error++;
@@ -234,12 +234,12 @@ if ($action == 'addtimespent' && $user->hasRight('projet', 'time')) {
 		if ($id || $ref) {
 			$object->fetch($id, $ref);
 		} else {
-			if (!GETPOSTINT('taskid') || GETPOSTINT('taskid') < 0) {
+			if (!request()->integer('taskid', 0) || request()->integer('taskid', 0) < 0) {
 				setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Task")), null, 'errors');
 				$action = 'createtime';
 				$error++;
 			} else {
-				$object->fetch(GETPOSTINT('taskid'));
+				$object->fetch(request()->integer('taskid', 0));
 			}
 		}
 
@@ -251,21 +251,21 @@ if ($action == 'addtimespent' && $user->hasRight('projet', 'time')) {
 				$action = 'createtime';
 				$error++;
 			} else {
-				$object->timespent_note = GETPOST("timespent_note", 'alpha');
-				if (GETPOSTINT('progress') > 0) {
-					$object->progress = GETPOSTINT('progress'); // If progress is -1 (not defined), we do not change value
+				$object->timespent_note = request()->input('timespent_note');
+				if (request()->integer('progress', 0) > 0) {
+					$object->progress = request()->integer('progress', 0); // If progress is -1 (not defined), we do not change value
 				}
-				$object->timespent_duration = GETPOSTINT("timespent_durationhour") * 60 * 60; // We store duration in seconds
-				$object->timespent_duration += (GETPOSTINT('timespent_durationmin') ? GETPOSTINT('timespent_durationmin') : 0) * 60; // We store duration in seconds
-				if (GETPOST("timehour") != '' && GETPOST("timehour") >= 0) {    // If hour was entered
-					$object->timespent_date = dol_mktime(GETPOSTINT("timehour"), GETPOSTINT("timemin"), 0, GETPOSTINT("timemonth"), GETPOSTINT("timeday"), GETPOSTINT("timeyear"));
+				$object->timespent_duration = request()->integer('timespent_durationhour', 0) * 60 * 60; // We store duration in seconds
+				$object->timespent_duration += (request()->integer('timespent_durationmin', 0) ? request()->integer('timespent_durationmin', 0) : 0) * 60; // We store duration in seconds
+				if (request()->input('timehour') != '' && request()->input('timehour') >= 0) {    // If hour was entered
+					$object->timespent_date = dol_mktime(request()->integer('timehour', 0), request()->integer('timemin', 0), 0, request()->integer('timemonth', 0), request()->integer('timeday', 0), request()->integer('timeyear', 0));
 					$object->timespent_withhour = 1;
 				} else {
-					$object->timespent_date = dol_mktime(12, 0, 0, GETPOSTINT("timemonth"), GETPOSTINT("timeday"), GETPOSTINT("timeyear"));
+					$object->timespent_date = dol_mktime(12, 0, 0, request()->integer('timemonth', 0), request()->integer('timeday', 0), request()->integer('timeyear', 0));
 					$object->timespent_withhour = 0;
 				}
-				$object->timespent_fk_user = GETPOSTINT("userid");
-				$object->timespent_fk_product = GETPOSTINT("fk_product");
+				$object->timespent_fk_user = request()->integer('userid', 0);
+				$object->timespent_fk_product = request()->integer('fk_product', 0);
 
 				$result = $object->addTimeSpent($user);
 
@@ -283,17 +283,17 @@ if ($action == 'addtimespent' && $user->hasRight('projet', 'time')) {
 }
 
 if (($action == 'updateline' || $action == 'updatesplitline') && !$cancel && $user->hasRight('projet', 'lire')) {
-	if (!GETPOST("new_durationhour") && !GETPOST("new_durationmin")) {
+	if (!request()->input('new_durationhour') && !request()->input('new_durationmin')) {
 		setEventMessages($langs->trans('ErrorFieldRequired', $langs->transnoentitiesnoconv("Duration")), null, 'errors');
 		$error++;
 	}
 
 	//If timespent date is not provided in POST (for eg, because in list the column date is hidden) we keep the actual date
-	$timespent_date = dol_mktime(12, 0, 0, GETPOSTINT("timelinemonth"), GETPOSTINT("timelineday"), GETPOSTINT("timelineyear"));
+	$timespent_date = dol_mktime(12, 0, 0, request()->integer('timelinemonth', 0), request()->integer('timelineday', 0), request()->integer('timelineyear', 0));
 
 	if (!$error) {
-		if ($id && GETPOSTINT('taskid') != $id) {      // GETPOSTINT('taskid') is the id of new task
-			$id_temp = GETPOSTINT('taskid'); 	// should not overwrite $id
+		if ($id && request()->integer('taskid', 0) != $id) {      // request()->integer('taskid', 0) is the id of new task
+			$id_temp = request()->integer('taskid', 0); 	// should not overwrite $id
 
 			$object->fetchTimeSpent($lineid);
 
@@ -301,21 +301,21 @@ if (($action == 'updateline' || $action == 'updatesplitline') && !$cancel && $us
 
 			$object->fetch($id_temp, $ref);
 
-			$object->timespent_note = GETPOST("timespent_note_line", "alphanohtml");
-			$object->timespent_old_duration = GETPOSTINT("old_duration");
-			$object->timespent_duration = GETPOSTINT("new_durationhour") * 60 * 60; // We store duration in seconds
-			$object->timespent_duration += (GETPOSTINT("new_durationmin") ? GETPOSTINT('new_durationmin') : 0) * 60; // We store duration in seconds
-			if (GETPOST("timelinehour") != '' && GETPOST("timelinehour") >= 0 && !empty($timespent_date)) {    // If hour was entered
-				$object->timespent_date = dol_mktime(GETPOSTINT("timelinehour"), GETPOSTINT("timelinemin"), 0, GETPOSTINT("timelinemonth"), GETPOSTINT("timelineday"), GETPOSTINT("timelineyear"));
+			$object->timespent_note = request()->input('timespent_note_line');
+			$object->timespent_old_duration = request()->integer('old_duration', 0);
+			$object->timespent_duration = request()->integer('new_durationhour', 0) * 60 * 60; // We store duration in seconds
+			$object->timespent_duration += (request()->integer('new_durationmin', 0) ? request()->integer('new_durationmin', 0) : 0) * 60; // We store duration in seconds
+			if (request()->input('timelinehour') != '' && request()->input('timelinehour') >= 0 && !empty($timespent_date)) {    // If hour was entered
+				$object->timespent_date = dol_mktime(request()->integer('timelinehour', 0), request()->integer('timelinemin', 0), 0, request()->integer('timelinemonth', 0), request()->integer('timelineday', 0), request()->integer('timelineyear', 0));
 				$object->timespent_withhour = 1;
 			} elseif (!empty($timespent_date)) {
 				$object->timespent_date = $timespent_date;
 				$object->timespent_withhour = 0;
 			}
-			$object->timespent_fk_user = GETPOSTINT("userid_line");
-			$object->timespent_fk_product = GETPOSTINT("fk_product");
-			$object->timespent_invoiceid = GETPOSTINT("invoiceid");
-			$object->timespent_invoicelineid = GETPOSTINT("invoicelineid");
+			$object->timespent_fk_user = request()->integer('userid_line', 0);
+			$object->timespent_fk_product = request()->integer('fk_product', 0);
+			$object->timespent_invoiceid = request()->integer('invoiceid', 0);
+			$object->timespent_invoicelineid = request()->integer('invoicelineid', 0);
 
 			$result = 0;
 			if (in_array($object->timespent_fk_user, $childids) || $user->hasRight('projet', 'all', 'creer')) {
@@ -330,16 +330,16 @@ if (($action == 'updateline' || $action == 'updatesplitline') && !$cancel && $us
 		} else {
 			$object->fetch($id, $ref);	// $object is Task
 
-			$object->fetchTimeSpent(GETPOSTINT('lineid'));
+			$object->fetchTimeSpent(request()->integer('lineid', 0));
 
-			$object->timespent_note = GETPOST("timespent_note_line", "alphanohtml");
-			$object->timespent_old_duration = GETPOSTINT("old_duration");
-			$object->timespent_duration = GETPOSTINT("new_durationhour") * 60 * 60; // We store duration in seconds
-			$object->timespent_duration += (GETPOSTINT("new_durationmin") ? GETPOSTINT('new_durationmin') : 0) * 60; // We store duration in seconds
+			$object->timespent_note = request()->input('timespent_note_line');
+			$object->timespent_old_duration = request()->integer('old_duration', 0);
+			$object->timespent_duration = request()->integer('new_durationhour', 0) * 60 * 60; // We store duration in seconds
+			$object->timespent_duration += (request()->integer('new_durationmin', 0) ? request()->integer('new_durationmin', 0) : 0) * 60; // We store duration in seconds
 
-			if (GETPOST("timelinehour") != '' && GETPOST("timelinehour") >= 0) {    // If hour was entered
-				$object->timespent_date = dol_mktime(12, 0, 0, GETPOSTINT("timelinemonth"), GETPOSTINT("timelineday"), GETPOSTINT("timelineyear"));
-				$object->timespent_datehour = dol_mktime(GETPOSTINT("timelinehour"), GETPOSTINT("timelinemin"), 0, GETPOSTINT("timelinemonth"), GETPOSTINT("timelineday"), GETPOSTINT("timelineyear"));
+			if (request()->input('timelinehour') != '' && request()->input('timelinehour') >= 0) {    // If hour was entered
+				$object->timespent_date = dol_mktime(12, 0, 0, request()->integer('timelinemonth', 0), request()->integer('timelineday', 0), request()->integer('timelineyear', 0));
+				$object->timespent_datehour = dol_mktime(request()->integer('timelinehour', 0), request()->integer('timelinemin', 0), 0, request()->integer('timelinemonth', 0), request()->integer('timelineday', 0), request()->integer('timelineyear', 0));
 				$object->timespent_withhour = 1;
 			} elseif (!empty($timespent_date)) {
 				$object->timespent_date = $timespent_date;
@@ -347,10 +347,10 @@ if (($action == 'updateline' || $action == 'updatesplitline') && !$cancel && $us
 				$object->timespent_withhour = 0;
 			}
 
-			$object->timespent_fk_user = GETPOSTINT("userid_line");
-			$object->timespent_fk_product = GETPOSTINT("fk_product");
-			$object->timespent_invoiceid = GETPOSTINT("invoiceid");
-			$object->timespent_invoicelineid = GETPOSTINT("invoicelineid");
+			$object->timespent_fk_user = request()->integer('userid_line', 0);
+			$object->timespent_fk_product = request()->integer('fk_product', 0);
+			$object->timespent_invoiceid = request()->integer('invoiceid', 0);
+			$object->timespent_invoicelineid = request()->integer('invoicelineid', 0);
 
 			$result = 0;
 
@@ -371,7 +371,7 @@ if (($action == 'updateline' || $action == 'updatesplitline') && !$cancel && $us
 }
 
 if ($action == 'confirm_deleteline' && $confirm == "yes" && ($user->hasRight('projet', 'time') || $user->hasRight('projet', 'all', 'creer'))) {
-	$object->fetchTimeSpent(GETPOSTINT('lineid'));    // load properties like $object->timespent_xxx
+	$object->fetchTimeSpent(request()->integer('lineid', 0));    // load properties like $object->timespent_xxx
 
 	if (in_array($object->timespent_fk_user, $childids) || $user->hasRight('projet', 'all', 'creer')) {
 		$result = $object->delTimeSpent($user);    // delete line with $object->timespent_id
@@ -402,16 +402,16 @@ if (!empty($project_ref) && !empty($withproject)) {
 
 // To show all time lines for project
 $projectidforalltimes = 0;
-if (GETPOSTINT('projectid') > 0) {
-	$projectidforalltimes = GETPOSTINT('projectid');
+if (request()->integer('projectid', 0) > 0) {
+	$projectidforalltimes = request()->integer('projectid', 0);
 
 	$result = $projectstatic->fetch($projectidforalltimes);
 	if (!empty($projectstatic->socid)) {
 		$projectstatic->fetch_thirdparty();
 	}
 	$res = $projectstatic->fetch_optionals();
-} elseif (GETPOST('project_ref', 'alpha')) {
-	$projectstatic->fetch(0, GETPOST('project_ref', 'alpha'));
+} elseif (request()->input('project_ref')) {
+	$projectstatic->fetch(0, request()->input('project_ref'));
 	$projectidforalltimes = $projectstatic->id;
 	$withproject = 1;
 } elseif ($id > 0) {
@@ -441,14 +441,14 @@ if ($action == 'confirm_generateinvoice' && $user->hasRight('facture', 'creer'))
 		$tmptimespent = new Task($db);
 		$tmpproduct = new Product($db);
 		$fuser = new User($db);
-		$remiseproject = price2num(GETPOST('remiseprojet', 'alphanohtml'));
-		$condidproject = GETPOSTINT('condidproject');
+		$remiseproject = price2num(request()->input('remiseprojet'));
+		$condidproject = request()->integer('condidproject', 0);
 
 		$db->begin();
 
-		$idprod = GETPOSTINT('productid');
-		$generateinvoicemode = GETPOST('generateinvoicemode', 'alphanohtml');
-		$invoiceToUse = GETPOSTINT('invoiceid');
+		$idprod = request()->integer('productid', 0);
+		$generateinvoicemode = request()->input('generateinvoicemode');
+		$invoiceToUse = request()->integer('invoiceid', 0);
 
 		$prodDurationHoursBase = 1.0;
 		$product_data_cache = array();
@@ -482,7 +482,7 @@ if ($action == 'confirm_generateinvoice' && $user->hasRight('facture', 'creer'))
 		}
 
 		$tmpinvoice->socid = $projectstatic->thirdparty->id;
-		$tmpinvoice->date = dol_mktime(GETPOSTINT('rehour'), GETPOSTINT('remin'), GETPOSTINT('resec'), GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		$tmpinvoice->date = dol_mktime(request()->integer('rehour', 0), request()->integer('remin', 0), request()->integer('resec', 0), request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 		$tmpinvoice->fk_project = $projectstatic->id;
 		$tmpinvoice->cond_reglement_id = $condidproject;
 		$tmpinvoice->mode_reglement_id = $projectstatic->thirdparty->mode_reglement_id;
@@ -596,7 +596,7 @@ if ($action == 'confirm_generateinvoice' && $user->hasRight('facture', 'creer'))
 			} elseif ($generateinvoicemode == 'onelineperperiod') {    // One line for each time spent line
 				$arrayoftasks = array();
 
-				$withdetail = GETPOST('detail_time_duration', 'alpha');
+				$withdetail = request()->input('detail_time_duration');
 				foreach ($toselect as $key => $value) {
 					// Get userid, timepent
 					$object->fetchTimeSpent($value);
@@ -830,11 +830,11 @@ if ($action == 'confirm_generateinter' && $user->hasRight('fichinter', 'creer'))
 		$fuser = new User($db);
 
 		$db->begin();
-		$interToUse = GETPOSTINT('interid');
+		$interToUse = request()->integer('interid', 0);
 
 
 		$tmpinter->socid = $projectstatic->thirdparty->id;
-		$tmpinter->date = dol_mktime(GETPOSTINT('rehour'), GETPOSTINT('remin'), GETPOSTINT('resec'), GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		$tmpinter->date = dol_mktime(request()->integer('rehour', 0), request()->integer('remin', 0), request()->integer('resec', 0), request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 		$tmpinter->fk_project = $projectstatic->id;
 		$tmpinter->description = $projectstatic->title . (!empty($projectstatic->description) ? '-' . $projectstatic->label : '');
 
@@ -1007,25 +1007,25 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				print '</td>';
 				print '<td>';
 				if (getDolGlobalString('PROJECT_USE_OPPORTUNITIES')) {
-					print '<input type="checkbox" disabled name="usage_opportunity"' . (GETPOSTISSET('usage_opportunity') ? (GETPOST('usage_opportunity', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')) . '"> ';
+					print '<input type="checkbox" disabled name="usage_opportunity"' . (request()->has('usage_opportunity') ? (request()->input('usage_opportunity') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_opportunity ? ' checked="checked"' : '')) . '"> ';
 					$htmltext = $langs->trans("ProjectFollowOpportunity");
 					print $form->textwithpicto($langs->trans("ProjectFollowOpportunity"), $htmltext);
 					print '<br>';
 				}
 				if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
-					print '<input type="checkbox" disabled name="usage_task"' . (GETPOSTISSET('usage_task') ? (GETPOST('usage_task', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')) . '"> ';
+					print '<input type="checkbox" disabled name="usage_task"' . (request()->has('usage_task') ? (request()->input('usage_task') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_task ? ' checked="checked"' : '')) . '"> ';
 					$htmltext = $langs->trans("ProjectFollowTasks");
 					print $form->textwithpicto($langs->trans("ProjectFollowTasks"), $htmltext);
 					print '<br>';
 				}
 				if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_BILL_TIME_SPENT')) {
-					print '<input type="checkbox" disabled name="usage_bill_time"' . (GETPOSTISSET('usage_bill_time') ? (GETPOST('usage_bill_time', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')) . '"> ';
+					print '<input type="checkbox" disabled name="usage_bill_time"' . (request()->has('usage_bill_time') ? (request()->input('usage_bill_time') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_bill_time ? ' checked="checked"' : '')) . '"> ';
 					$htmltext = $langs->trans("ProjectBillTimeDescription");
 					print $form->textwithpicto($langs->trans("BillTime"), $htmltext);
 					print '<br>';
 				}
 				if (isModEnabled('eventorganization')) {
-					print '<input type="checkbox" disabled name="usage_organize_event"' . (GETPOSTISSET('usage_organize_event') ? (GETPOST('usage_organize_event', 'alpha') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')) . '"> ';
+					print '<input type="checkbox" disabled name="usage_organize_event"' . (request()->has('usage_organize_event') ? (request()->input('usage_organize_event') != '' ? ' checked="checked"' : '') : ($projectstatic->usage_organize_event ? ' checked="checked"' : '')) . '"> ';
 					$htmltext = $langs->trans("EventOrganizationDescriptionLong");
 					print $form->textwithpicto($langs->trans("ManageOrganizeEvent"), $htmltext);
 				}
@@ -1166,15 +1166,15 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 		$head = task_prepare_head($object);
 		print dol_get_fiche_head($head, 'task_time', $langs->trans("Task"), -1, 'projecttask', 0, '', 'reposition');
 
-		$param = (GETPOST('withproject') ? '&withproject=1' : '');
-		$linkback = GETPOST('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
+		$param = (request()->input('withproject') ? '&withproject=1' : '');
+		$linkback = request()->input('withproject') ? '<a href="'.DOL_URL_ROOT.'/projet/tasks.php?id='.$projectstatic->id.'">'.$langs->trans("BackToList").'</a>' : '';
 
 		if ($action == 'deleteline') {
-			$urlafterconfirm = $_SERVER["PHP_SELF"] . "?" . ($object->id > 0 ? "id=" . $object->id : 'projectid=' . $projectstatic->id) . '&lineid=' . GETPOSTINT("lineid") . $param;
+			$urlafterconfirm = $_SERVER["PHP_SELF"] . "?" . ($object->id > 0 ? "id=" . $object->id : 'projectid=' . $projectstatic->id) . '&lineid=' . request()->integer('lineid', 0) . $param;
 			$formconfirm .= $form->formconfirm($urlafterconfirm, $langs->trans("DeleteATimeSpent"), $langs->trans("ConfirmDeleteATimeSpent"), "confirm_deleteline", '', '', 1);
 		}
 
-		if (!GETPOST('withproject') || empty($projectstatic->id)) {
+		if (!request()->input('withproject') || empty($projectstatic->id)) {
 			$projectsListId = $projectstatic->getProjectsAuthorizedForUser($user, 0, 1);
 			$object->next_prev_filter = "fk_projet:IN:" . $db->sanitize($projectsListId);
 		} else {
@@ -1273,7 +1273,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 		print dol_get_fiche_end();
 	} else {
 		if ($action == 'deleteline') {
-			$urlafterconfirm = $_SERVER["PHP_SELF"] . "?" . ($projectstatic->id > 0 ? 'projectid=' . $projectstatic->id : ($object->id > 0 ? "id=" . $object->id : '')) . '&lineid=' . GETPOSTINT("lineid") . ($withproject ? '&withproject=1' : ''). "&contextpage=" . urlencode($contextpage).$param;
+			$urlafterconfirm = $_SERVER["PHP_SELF"] . "?" . ($projectstatic->id > 0 ? 'projectid=' . $projectstatic->id : ($object->id > 0 ? "id=" . $object->id : '')) . '&lineid=' . request()->integer('lineid', 0) . ($withproject ? '&withproject=1' : ''). "&contextpage=" . urlencode($contextpage).$param;
 			$formconfirm .= $form->formconfirm($urlafterconfirm, $langs->trans("DeleteATimeSpent"), $langs->trans("ConfirmDeleteATimeSpent"), "confirm_deleteline", '', '', 1);
 		}
 	}
@@ -1733,7 +1733,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				$objforcount = $db->fetch_object($resql);
 				$nbtotalofrecords = $objforcount->nbtotalofrecords;
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 
 			if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -1751,7 +1751,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 		$resql = $db->query($sql);
 		if (!$resql) {
-			dol_print_error($db);
+			abort(500);
 			exit;
 		}
 
@@ -1782,7 +1782,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		/*
@@ -1841,7 +1841,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			$nboftasks = 0;
 			if (empty($id)) {
 				print '<td class="maxwidthonsmartphone">';
-				$nboftasks = $formproject->selectTasks(-1, GETPOSTINT('taskid'), 'taskid', 0, 0, '1', 1, 0, 0, 'maxwidth300', (string) $projectstatic->id, 'progress');
+				$nboftasks = $formproject->selectTasks(-1, request()->integer('taskid', 0), 'taskid', 0, 0, '1', 1, 0, 0, 'maxwidth300', (string) $projectstatic->id, 'progress');
 				print '</td>';
 			}
 
@@ -1859,7 +1859,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				if ($projectstatic->public) {
 					$contactsofproject = array();
 				}
-				print $form->select_dolusers((GETPOSTINT('userid') ? GETPOSTINT('userid') : $userid), 'userid', 0, null, 0, '', $contactsofproject, '0', 0, 0, '', 0, $langs->trans("ResourceNotAssignedToProject"), 'minwidth150imp maxwidth200');
+				print $form->select_dolusers((request()->integer('userid', 0) ? request()->integer('userid', 0) : $userid), 'userid', 0, null, 0, '', $contactsofproject, '0', 0, 0, '', 0, $langs->trans("ResourceNotAssignedToProject"), 'minwidth150imp maxwidth200');
 			} else {
 				if ($nboftasks) {
 					print img_error($langs->trans('FirstAddRessourceToAllocateTime')) . ' ' . $langs->trans('FirstAddRessourceToAllocateTime');
@@ -1869,21 +1869,21 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 			// Note
 			print '<td>';
-			print '<textarea name="timespent_note" class="maxwidth100onsmartphone" rows="' . ROWS_2 . '">' . (GETPOST('timespent_note') ? GETPOST('timespent_note') : '') . '</textarea>';
+			print '<textarea name="timespent_note" class="maxwidth100onsmartphone" rows="' . ROWS_2 . '">' . (request()->input('timespent_note') ? request()->input('timespent_note') : '') . '</textarea>';
 			print '</td>';
 
 			// Duration - Time spent
 			print '<td class="nowraponall">';
-			$durationtouse = (GETPOST('timespent_duration') ? GETPOST('timespent_duration') : '');
-			if (GETPOSTISSET('timespent_durationhour') || GETPOSTISSET('timespent_durationmin')) {
-				$durationtouse = ((int) GETPOST('timespent_durationhour') * 3600 + (int) GETPOST('timespent_durationmin') * 60);
+			$durationtouse = (request()->input('timespent_duration') ? request()->input('timespent_duration') : '');
+			if (request()->has('timespent_durationhour') || request()->has('timespent_durationmin')) {
+				$durationtouse = ((int) request()->input('timespent_durationhour') * 3600 + (int) request()->input('timespent_durationmin') * 60);
 			}
 			print $form->select_duration('timespent_duration', $durationtouse, 0, 'text');
 			print '</td>';
 
 			// Progress declared
 			print '<td class="nowrap">';
-			print $formother->select_percent(GETPOST('progress') ? GETPOST('progress') : $object->progress, 'progress', 0, 5, 0, 100, 1);
+			print $formother->select_percent(request()->input('progress') ? request()->input('progress') : $object->progress, 'progress', 0, 5, 0, 100, 1);
 			print '</td>';
 
 			// Billed
@@ -1894,7 +1894,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				if (isModEnabled("service") && !empty($projectstatic->thirdparty) && $projectstatic->thirdparty->id > 0 && $projectstatic->usage_bill_time) {
 					print '<td class="nowraponall">';
 					print img_picto('', 'service');
-					print $form->select_produits((GETPOSTISSET('fk_product') ? GETPOSTINT("fk_product") : ''), 'fk_product', 1, 0, $projectstatic->thirdparty->price_level, 1, 2, '', 1, array(), $projectstatic->thirdparty->id, 'None', 0, 'maxwidth150', ($user->hasRight('produit', 'lire') ? 0 : 1), '', null, 1);
+					print $form->select_produits((request()->has('fk_product') ? request()->integer('fk_product', 0) : ''), 'fk_product', 1, 0, $projectstatic->thirdparty->price_level, 1, 2, '', 1, array(), $projectstatic->thirdparty->id, 'None', 0, 'maxwidth150', ($user->hasRight('produit', 'lire') ? 0 : 1), '', null, 1);
 					print '</td>';
 				}
 			}
@@ -2177,8 +2177,8 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// Action column
 			if (getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')) {
 				print '<td class="center nowraponall">';
-				if (($action == 'editline' || $action == 'splitline') && GETPOSTINT('lineid') == $task_time->rowid) {
-					print '<input type="hidden" name="lineid" value="' . GETPOSTINT('lineid') . '">';
+				if (($action == 'editline' || $action == 'splitline') && request()->integer('lineid', 0) == $task_time->rowid) {
+					print '<input type="hidden" name="lineid" value="' . request()->integer('lineid', 0) . '">';
 					if ($id) {
 						print '<input type="hidden" name="id" value="' . $id . '">';	// If you enable this, the edit will go beack to task view
 					}
@@ -2231,7 +2231,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// Date
 			if (!empty($arrayfields['t.element_date']['checked'])) {
 				print '<td class="nowrap">';
-				if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					if (empty($task_time->element_date_withhour)) {
 						print $form->selectDate(($date2 ? $date2 : $date1), 'timeline', 4, 3, 2, "timespent_date", 1, 0);
 					} else {
@@ -2329,8 +2329,8 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			if (!empty($arrayfields['t.element_ref']['checked'])) {
 				if ((empty($id) && empty($ref)) || !empty($projectidforalltimes)) {   // Not a dedicated task
 					print '<td class="nowrap">';
-					if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
-						$formproject->selectTasks(-1, GETPOSTINT('taskid') ? GETPOSTINT('taskid') : $task_time->fk_element, 'taskid', 0, 0, '1', 1, 0, 0, 'maxwidth250', (string) $projectstatic->id, '');
+					if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
+						$formproject->selectTasks(-1, request()->integer('taskid', 0) ? request()->integer('taskid', 0) : $task_time->fk_element, 'taskid', 0, 0, '1', 1, 0, 0, 'maxwidth250', (string) $projectstatic->id, '');
 					} else {
 						$tasktmp->id = $task_time->fk_element;
 						$tasktmp->ref = $task_time->ref;
@@ -2368,7 +2368,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// User
 			if (!empty($arrayfields['author']['checked'])) {
 				print '<td class="tdoverflowmax125">';
-				if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					// Here $object is task. TODO Add a cache
 					if (empty($object->id)) {
 						$object->fetch($task_time->fk_element);
@@ -2401,7 +2401,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 			// Note
 			if (!empty($arrayfields['t.note']['checked'])) {
-				if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					print '<td class="small">';
 					print '<textarea name="timespent_note_line" class="centpercentimp" rows="' . ROWS_2 . '">' . dol_escape_htmltag($task_time->note, 0, 1) . '</textarea>';
 					print '</td>';
@@ -2413,7 +2413,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				if (!$i) {
 					$totalarray['nbfield']++;
 				}
-			} elseif ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+			} elseif ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 				print '<input type="hidden" name="timespent_note_line" value="' . dol_escape_htmltag($task_time->note, 0, 1) . '">';
 			}
 
@@ -2430,7 +2430,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// Time spent - Duration
 			if (!empty($arrayfields['t.element_duration']['checked'])) {
 				print '<td class="right nowraponall">';
-				if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					print '<input type="hidden" name="old_duration" value="'.$task_time->element_duration.'">';
 					print $form->select_duration('new_duration', $task_time->element_duration, 0, 'text');
 				} else {
@@ -2461,7 +2461,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// Product
 			if (!empty($arrayfields['t.fk_product']['checked'])) {
 				print '<td class="nowraponall">';
-				if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					print img_picto('', 'service');
 					print $form->select_produits($task_time->fk_product, 'fk_product', 1, 0, $projectstatic->thirdparty->price_level, 1, 2, '', 1, array(), $projectstatic->thirdparty->id, 'None', 0, 'maxwidth500',  ($user->hasRight('produit', 'lire') ? 0 : 1), '', null, 1);
 				} elseif (!empty($task_time->fk_product)) {
@@ -2519,7 +2519,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 							$result = $tmpinvoice->fetch($task_time->invoice_id);
 							if ($result > 0) {
 								if ($user->hasRight('facture', 'lire')) {
-									if ($action == 'editline' && GETPOSTINT('lineid') == $task_time->rowid) {
+									if ($action == 'editline' && request()->integer('lineid', 0) == $task_time->rowid) {
 										print $formproject->selectInvoiceAndLine($task_time->invoice_id, $task_time->invoice_line_id, 'invoiceid', 'invoicelineid', 'maxwidth500', array('p.rowid' => $projectstatic->id));
 									} else {
 										print $tmpinvoice->getNomUrl(1);
@@ -2568,8 +2568,8 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 			// Action column
 			if (!getDolGlobalString('MAIN_CHECKBOX_LEFT_COLUMN')) {
 				print '<td class="center nowraponall">';
-				if (($action == 'editline' || $action == 'splitline') && GETPOSTINT('lineid') == $task_time->rowid) {
-					print '<input type="hidden" name="lineid" value="'.GETPOSTINT('lineid').'">';
+				if (($action == 'editline' || $action == 'splitline') && request()->integer('lineid', 0) == $task_time->rowid) {
+					print '<input type="hidden" name="lineid" value="'.request()->integer('lineid', 0).'">';
 					print '<input type="submit" class="button buttongen smallpaddingimp margintoponlyshort marginbottomonlyshort button-save" name="save" value="'.$langs->trans("Save").'">';
 					print '<br>';
 					print '<input type="submit" class="button buttongen smallpaddingimp margintoponlyshort marginbottomonlyshort button-cancel" name="cancel" value="'.$langs->trans("Cancel").'">';
@@ -2621,7 +2621,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 
 			// Add the lines for the split feature
 
-			if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+			if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 				print '<!-- first line -->';
 				print '<tr class="oddeven">';
 
@@ -2633,7 +2633,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Date
 				if (!empty($arrayfields['t.element_date']['checked'])) {
 					print '<td class="nowrap">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						if (empty($task_time->element_date_withhour)) {
 							print $form->selectDate(($date2 ? $date2 : $date1), 'timeline', 3, 3, 2, "timespent_date", 1, 0);
 						} else {
@@ -2689,7 +2689,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// User
 				if (!empty($arrayfields['author']['checked'])) {
 					print '<td class="nowraponall">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						if (empty($object->id)) {
 							$idTask = (!empty($id)) ? $id : $task_time->fk_element;
 							$object->fetch($idTask);
@@ -2718,13 +2718,13 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Note
 				if (!empty($arrayfields['t.note']['checked'])) {
 					print '<td class="tdoverflowmax300">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						print '<textarea name="timespent_note_line" class="centpercentimp" rows="' . ROWS_2 . '">' . dol_escape_htmltag($task_time->note, 0, 1) . '</textarea>';
 					} else {
 						print dol_nl2br($task_time->note);
 					}
 					print '</td>';
-				} elseif ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				} elseif ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					print '<input type="hidden" name="timespent_note_line" rows="' . ROWS_2 . '" value="' . dol_escape_htmltag($task_time->note, 0, 1) . '">';
 				}
 
@@ -2737,7 +2737,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Time spent - duration
 				if (!empty($arrayfields['t.element_duration']['checked'])) {
 					print '<td class="right">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						print '<input type="hidden" name="old_duration" value="'.$task_time->element_duration.'">';
 						print $form->select_duration('new_duration', $task_time->element_duration, 0, 'text');
 					} else {
@@ -2804,7 +2804,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Date
 				if (!empty($arrayfields['t.element_date']['checked'])) {
 					print '<td class="nowraponall">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						if (empty($task_time->element_date_withhour)) {
 							print $form->selectDate(($date2 ? $date2 : $date1), 'timeline_2', 3, 3, 2, "timespent_date", 1, 0);
 						} else {
@@ -2860,7 +2860,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// User
 				if (!empty($arrayfields['author']['checked'])) {
 					print '<td class="nowraponall tdoverflowmax100">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						if (empty($object->id)) {
 							$idTask = (!empty($id)) ? $id : $task_time->fk_element;
 							$object->fetch($idTask);
@@ -2889,13 +2889,13 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Note
 				if (!empty($arrayfields['t.note']['checked'])) {
 					print '<td class="small tdoverflowmax300"">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						print '<textarea name="timespent_note_line_2" class="centpercentimp" rows="' . ROWS_2 . '">' . dol_escape_htmltag($task_time->note, 0, 1) . '</textarea>';
 					} else {
 						print dol_nl2br($task_time->note);
 					}
 					print '</td>';
-				} elseif ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+				} elseif ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 					print '<input type="hidden" name="timespent_note_line_2" value="' . dol_escape_htmltag($task_time->note, 0, 1) . '">';
 				}
 
@@ -2909,7 +2909,7 @@ if (($id > 0 || !empty($ref)) || $projectidforalltimes > 0 || $allprojectforuser
 				// Time spent - duration
 				if (!empty($arrayfields['t.element_duration']['checked'])) {
 					print '<td class="right">';
-					if ($action == 'splitline' && GETPOSTINT('lineid') == $task_time->rowid) {
+					if ($action == 'splitline' && request()->integer('lineid', 0) == $task_time->rowid) {
 						print '<input type="hidden" name="old_duration_2" value="0">';
 						print $form->select_duration('new_duration_2', 0, 0, 'text');
 					} else {

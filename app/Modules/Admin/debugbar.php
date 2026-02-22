@@ -38,14 +38,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other"));
 
 $error = 0;
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -56,8 +56,8 @@ $action = GETPOST('action', 'aZ09');
 if ($action == 'set') {
 	$db->begin();
 
-	$result1 = dolibarr_set_const($db, "DEBUGBAR_LOGS_LINES_NUMBER", GETPOSTINT('DEBUGBAR_LOGS_LINES_NUMBER'), 'chaine', 0, '', 0);
-	$result2 = dolibarr_set_const($db, "DEBUGBAR_USE_LOG_FILE", GETPOSTINT('DEBUGBAR_USE_LOG_FILE'), 'chaine', 0, '', 0);
+	$result1 = dolibarr_set_const($db, "DEBUGBAR_LOGS_LINES_NUMBER", request()->integer('DEBUGBAR_LOGS_LINES_NUMBER', 0), 'chaine', 0, '', 0);
+	$result2 = dolibarr_set_const($db, "DEBUGBAR_USE_LOG_FILE", request()->integer('DEBUGBAR_USE_LOG_FILE', 0), 'chaine', 0, '', 0);
 	if ($result1 < 0 || $result2 < 0) {
 		$error++;
 	}

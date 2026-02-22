@@ -51,15 +51,15 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/fieldsmanager.class.php';
  */
 
 // object id
-$objectid = GETPOST('objectid', 'aZ09');
+$objectid = request()->input('objectid');
 // 'module' or 'myobject@mymodule', 'mymodule_myobject'
-$objecttype = GETPOST('objecttype', 'aZ09arobase');
-$objectkey = GETPOST('objectkey', 'restricthtml');
-$search = GETPOST('search', 'restricthtml');
-$page = GETPOSTINT('page');
-$mode = GETPOST('mode', 'aZ09');
-$value = GETPOST('value', 'alphanohtml');
-$dependencyvalue = GETPOST('dependencyvalue', 'alphanohtml');
+$objecttype = request()->input('objecttype');
+$objectkey = request()->input('objectkey');
+$search = request()->input('search');
+$page = request()->integer('page', 0);
+$mode = request()->input('mode');
+$value = request()->input('value');
+$dependencyvalue = request()->input('dependencyvalue');
 $limit = 10;
 $element_ref = '';
 if (is_numeric($objectid)) {
@@ -71,7 +71,7 @@ if (is_numeric($objectid)) {
 // Load object according to $element
 $object = fetchObjectByElement($objectid, $objecttype, $element_ref);
 if (empty($object->element)) {
-	httponly_accessforbidden('Failed to get object with fetchObjectByElement(id=' . $objectid . ', objecttype=' . $objecttype . ')');
+	httponly_abort(403);');
 }
 
 $module = $object->module;

@@ -42,10 +42,10 @@ if (isModEnabled('project')) {
 
 $langs->load('donations');
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$projectid = (GETPOST('projectid') ? GETPOSTINT('projectid') : 0);
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$projectid = (request()->input('projectid') ? request()->integer('projectid', 0) : 0);
 
 $object = new Don($db);
 if ($id > 0 || $ref) {

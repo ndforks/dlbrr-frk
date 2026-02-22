@@ -80,9 +80,9 @@ $langs->loadLangs(array("main", "other", "dict", "bills", "companies", "errors",
 
 $errmsg = '';
 $error = 0;
-$action = GETPOST('action', 'aZ09');
-$id = GETPOST('id');
-$securekeyreceived = GETPOST("securekey");
+$action = request()->input('action');
+$id = request()->input('id');
+$securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY') . 'conferenceorbooth'.((int) $id), 'md5');
 
 if ($securekeytocompare != $securekeyreceived) {
@@ -107,7 +107,7 @@ if ($resultproject < 0) {
 
 // Security check
 if (!isModEnabled('eventorganization')) {
-	httponly_accessforbidden('Module Event organization not enabled');
+	httponly_abort(403);
 }
 
 
@@ -175,7 +175,7 @@ while ($i < $db->num_rows($result)) {
 */
 
 // Get vote result
-$idvote = GETPOSTINT("vote");
+$idvote = request()->integer('vote', 0);
 $hashedvote = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY').'vote'.$idvote);
 
 if ($idvote > 0) {
@@ -235,12 +235,12 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dopayment">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
 //print '<input type="hidden" name="suffix" value="'.dol_escape_htmltag($suffix).'">'."\n";
 print '<input type="hidden" name="id" value="'.dol_escape_htmltag($id).'">'."\n";
 print '<input type="hidden" name="securekey" value="'.dol_escape_htmltag($securekeyreceived).'">'."\n";
 print '<input type="hidden" name="e" value="'.$entity.'" />';
-//print '<input type="hidden" name="forcesandbox" value="'.GETPOSTINT('forcesandbox').'" />';
+//print '<input type="hidden" name="forcesandbox" value="'.request()->integer('forcesandbox', 0).'" />';
 print "\n";
 
 

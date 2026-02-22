@@ -55,7 +55,7 @@ if (isset($_SESSION['webportal_logged_member_account_id'])) {
 	unset($_SESSION['webportal_logged_member_account_id']);
 }
 
-if (GETPOST('noredirect')) {
+if (request()->input('noredirect')) {
 	return;
 }
 header("Location: " . $context->rootUrl); // Default behaviour is redirect to index.php page

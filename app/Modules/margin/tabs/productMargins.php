@@ -39,10 +39,10 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
 $langs->loadLangs(array("companies", "bills", "products", "margins"));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -53,11 +53,11 @@ if (!empty($user->socid)) {
 
 $object = new Product($db);
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -76,26 +76,26 @@ $hookmanager->initHooks(array('tabproductmarginlist'));
 $result = restrictedArea($user, 'produit|service', $fieldvalue, 'product&product', '', '', $fieldtype);
 
 if (!$user->hasRight('margins', 'liretous')) {
-	accessforbidden();
+	abort(403);
 }
 
 $search_invoice_date_start = '';
 $search_invoice_date_end = '';
-if (GETPOSTINT('search_invoice_date_start_month')) {
-	$search_invoice_date_start = dol_mktime(0, 0, 0, GETPOSTINT('search_invoice_date_start_month'), GETPOSTINT('search_invoice_date_start_day'), GETPOSTINT('search_invoice_date_start_year'));
+if (request()->integer('search_invoice_date_start_month', 0)) {
+	$search_invoice_date_start = dol_mktime(0, 0, 0, request()->integer('search_invoice_date_start_month', 0), request()->integer('search_invoice_date_start_day', 0), request()->integer('search_invoice_date_start_year', 0));
 }
-if (GETPOSTINT('search_invoice_date_end_month')) {
-	$search_invoice_date_end = dol_mktime(23, 59, 59, GETPOSTINT('search_invoice_date_end_month'), GETPOSTINT('search_invoice_date_end_day'), GETPOSTINT('search_invoice_date_end_year'));
+if (request()->integer('search_invoice_date_end_month', 0)) {
+	$search_invoice_date_end = dol_mktime(23, 59, 59, request()->integer('search_invoice_date_end_month', 0), request()->integer('search_invoice_date_end_day', 0), request()->integer('search_invoice_date_end_year', 0));
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$search_invoice_date_start = '';
 	$search_invoice_date_end = '';
 }
 
 // set default dates from fiscal year
-if (empty($search_invoice_date_start) && empty($search_invoice_date_end) && !GETPOSTISSET('restore_lastsearch_values')) {
+if (empty($search_invoice_date_start) && empty($search_invoice_date_end) && !request()->has('restore_lastsearch_values')) {
 	$query = "SELECT date_start, date_end";
 	$query .= " FROM ".MAIN_DB_PREFIX."accounting_fiscalyear";
 	$query .= " WHERE date_start < '".$db->idate(dol_now())."' and date_end > '".$db->idate(dol_now())."' limit 1";
@@ -139,11 +139,11 @@ if ($id > 0 || !empty($ref)) {
 	$title = $langs->trans('ProductServiceCard');
 	$help_url = '';
 	$shortlabel = dol_trunc($object->label, 16);
-	if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+	if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 		$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Card');
 		$help_url = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 	}
-	if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+	if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 		$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Card');
 		$help_url = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 	}
@@ -487,7 +487,7 @@ if ($id > 0 || !empty($ref)) {
 				print '</div>';
 				print '</form>';
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			$db->free($result);
 		}

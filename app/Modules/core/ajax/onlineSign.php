@@ -63,13 +63,13 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/files.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$signature = GETPOST('signaturebase64');
-$ref = GETPOST('ref', 'aZ09');
-$mode = GETPOST('mode', 'aZ09');    // 'proposal', ...
-$SECUREKEY = GETPOST("securekey"); // Secure key
-$online_sign_name = GETPOST("onlinesignname");
+$signature = request()->input('signaturebase64');
+$ref = request()->input('ref');
+$mode = request()->input('mode');    // 'proposal', ...
+$SECUREKEY = request()->input('securekey'); // Secure key
+$online_sign_name = request()->input('onlinesignname');
 
 $error = 0;
 $response = "";
@@ -89,7 +89,7 @@ if ($type == 'proposal') {
 }
 
 if (empty($SECUREKEY) || !dol_verifyHash($securekeyseed . $type . $ref . (!isModEnabled('multicompany') ? '' : $entity), $SECUREKEY, '0')) {
-	httponly_accessforbidden('Bad value for securitykey. Value provided ' . dol_escape_htmltag($SECUREKEY) . ' does not match expected value for ref=' . dol_escape_htmltag($ref), 403);
+	httponly_abort(403);. ' does not match expected value for ref=' . dol_escape_htmltag($ref), 403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context

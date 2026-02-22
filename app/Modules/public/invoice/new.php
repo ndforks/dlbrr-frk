@@ -70,10 +70,10 @@ if (isModEnabled('project') || isModEnabled('eventorganization')) {
 }
 
 // Init vars
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$ws = GETPOST('ws', 'aZ09'); // Website reference where the this public page is embedded or from where is called
-$paymentmethod = GETPOST('paymentmethod', 'aZ09'); // Payment method to use
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
+$ws = request()->input('ws'); // Website reference where the this public page is embedded or from where is called
+$paymentmethod = request()->input('paymentmethod'); // Payment method to use
 
 $errmsg = '';
 $num = 0;
@@ -93,15 +93,15 @@ $langs->loadLangs(array("main", "donations", "companies", "install", "other", "e
 
 // Security check
 if (!isModEnabled('invoice')) {
-	httponly_accessforbidden('Module invoice not enabled');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('PRODUCT_ID_FOR_FREE_AMOUNT_INVOICE')) {
-	httponly_accessforbidden('PRODUCT_ID_FOR_FREE_AMOUNT_INVOICE is not defined');
+	httponly_abort(403);
 }
 
 if (!getDolGlobalString('DONATION_INVOICE_MIN_AMOUNT')) {
-	httponly_accessforbidden('DONATION_INVOICE_MIN_AMOUNT is not defined');
+	httponly_abort(403);
 }
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
@@ -186,17 +186,17 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 	$error = 0;
 	$urlback = '';
 
-	$email = GETPOST("email", "aZ09arobase");
-	$firstname = GETPOST("firstname", "aZ09");
-	$lastname = GETPOST("lastname", "aZ09");
-	$societe = GETPOST("societe", "aZ09");
-	$idprof2 = GETPOST("idprof2", "aZ09");
-	$tva_intra = GETPOST("tva_intra", "aZ09");
-	$address = GETPOST("address");
-	$zipcode = GETPOST("zipcode", "aZ09");
-	$town = GETPOST("town", "aZ09");
-	$country_id = GETPOSTINT("country_id");
-	$amount = (float) GETPOST("amount", "int");
+	$email = request()->input('email');
+	$firstname = request()->input('firstname');
+	$lastname = request()->input('lastname');
+	$societe = request()->input('societe');
+	$idprof2 = request()->input('idprof2');
+	$tva_intra = request()->input('tva_intra');
+	$address = request()->input('address');
+	$zipcode = request()->input('zipcode');
+	$town = request()->input('town');
+	$country_id = request()->integer('country_id', 0);
+	$amount = (float) request()->input('amount');
 	$companyId = 0;
 	$productIdForFreeAmountInvoice = (int) getDolGlobalString('PRODUCT_ID_FOR_FREE_AMOUNT_INVOICE');
 
@@ -262,7 +262,7 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	// Check Captcha code if is enabled
 	$sessionkey = 'dol_antispam_value';
-	$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(GETPOST('code'))));
+	$ok = (array_key_exists($sessionkey, $_SESSION) && (strtolower($_SESSION[$sessionkey]) == strtolower(request()->input('code'))));
 	if (!$ok) {
 		$error++;
 		$langs->load("errors");
@@ -487,34 +487,34 @@ if (!$action || $action == 'create') {
 
 	// EMail
 	print '<tr id="tremail"><td class="fieldrequired minwidth300">'.$langs->trans("Email").'</td><td>';
-	print '<input type="email" name="email" maxlength="255" class="minwidth200" value="'.dol_escape_htmltag(GETPOST('email', "aZ09arobase")).'"></td></tr>'."\n";
+	print '<input type="email" name="email" maxlength="255" class="minwidth200" value="'.dol_escape_htmltag(request()->input('email')).'"></td></tr>'."\n";
 
 	// Company
 	print '<tr id="trcompany" class="trcompany"><td class="fieldrequired">'.$langs->trans("Company").'</td><td>';
 	print img_picto('', 'company', 'class="pictofixedwidth paddingright"');
-	print '<input type="text" name="societe" class="minwidth300" value="'.dol_escape_htmltag(GETPOST('societe')).'"></td></tr>'."\n";
+	print '<input type="text" name="societe" class="minwidth300" value="'.dol_escape_htmltag(request()->input('societe')).'"></td></tr>'."\n";
 
 	// Firstname
-	print '<tr id="trfirstname"><td class="classfortooltip">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('firstname')).'"></td></tr>'."\n";
+	print '<tr id="trfirstname"><td class="classfortooltip">'.$langs->trans("Firstname").'</td><td><input type="text" name="firstname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('firstname')).'"></td></tr>'."\n";
 
 	// Lastname
-	print '<tr id="trlastname"><td class="classfortooltip">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('lastname')).'"></td></tr>'."\n";
+	print '<tr id="trlastname"><td class="classfortooltip">'.$langs->trans("Lastname").'</td><td><input type="text" name="lastname" class="minwidth150" value="'.dol_escape_htmltag(request()->input('lastname')).'"></td></tr>'."\n";
 
 	// Address
 	print '<tr id="tradress"><td class="fieldrequired">'.$langs->trans("Address").'</td><td>'."\n";
-	print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+	print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('address'), 0, 1).'</textarea></td></tr>'."\n";
 
 	// Zip / Town
 	print '<tr id="trzip"><td class="fieldrequired">'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td><td>';
-	print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 1, '', 'width75');
+	print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 0, 1, '', 'width75');
 	print ' / ';
-	print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+	print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 	print '</td></tr>';
 
 	// Country
 	print '<tr id="trcountry"><td class="fieldrequired">'.$langs->trans('Country').'</td><td>';
 	print img_picto('', 'country', 'class="pictofixedwidth paddingright"');
-	$country_id = GETPOSTINT('country_id');
+	$country_id = request()->integer('country_id', 0);
 	if (!$country_id && !empty($conf->geoipmaxmind->enabled)) {
 		$country_code = dol_user_country();
 		//print $country_code;
@@ -531,15 +531,15 @@ if (!$action || $action == 'create') {
 	print '</td></tr>';
 
 	//Idprof2 (siret...)
-	print '<tr id="trsiret"><td class="fieldrequired">'.$langs->trans("companyBusinessNumber").'</td><td><input type="text" name="idprof2" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('idprof2')).'"></td></tr>'."\n";
+	print '<tr id="trsiret"><td class="fieldrequired">'.$langs->trans("companyBusinessNumber").'</td><td><input type="text" name="idprof2" class="minwidth150" value="'.dol_escape_htmltag(request()->input('idprof2')).'"></td></tr>'."\n";
 
 	//Tva_intra
-	print '<tr id="trtva"><td>'.$langs->trans("companyTIN").'</td><td><input type="text" name="tva_intra" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('tva_intra')).'"></td></tr>'."\n";
+	print '<tr id="trtva"><td>'.$langs->trans("companyTIN").'</td><td><input type="text" name="tva_intra" class="minwidth150" value="'.dol_escape_htmltag(request()->input('tva_intra')).'"></td></tr>'."\n";
 
 	print '<tr><td colspan="2"><hr></td></tr>';
 
 	// Amount
-	$amount = (float) (GETPOST('amount') ? price2num(GETPOST('amount', 'alpha'), 'MT', 2) : '');
+	$amount = (float) (request()->input('amount') ? price2num(request()->input('amount'), 'MT', 2) : '');
 
 	// - If a min is set, we take it into account
 	$amount = max(0, (float) $amount, (float) getDolGlobalInt("DONATION_INVOICE_MIN_AMOUNT"));

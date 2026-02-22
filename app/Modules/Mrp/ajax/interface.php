@@ -49,10 +49,10 @@ require '../../main.inc.php'; // Load $user and permissions
  * @var User $user
  */
 
-$warehouse_id = GETPOSTINT('warehouse_id');
-$batch = GETPOST('batch', 'alphanohtml');
-$fk_product = GETPOSTINT('product_id');
-$action = GETPOST('action', 'alphanohtml');
+$warehouse_id = request()->integer('warehouse_id', 0);
+$batch = request()->input('batch');
+$fk_product = request()->integer('product_id', 0);
+$action = request()->input('action');
 
 $result = restrictedArea($user, 'mrp');
 

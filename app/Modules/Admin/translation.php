@@ -41,35 +41,35 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 $langs->loadLangs(array("companies", "products", "admin", "sms", "other", "errors"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$id = GETPOSTINT('rowid');
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optionscss', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ09');
+$id = request()->integer('rowid', 0);
+$action = request()->input('action');
+$optioncss = request()->input('optionscss');
+$contextpage = request()->input('contextpage');
 
-$mode = GETPOST('mode', 'aZ09') ? GETPOST('mode', 'aZ09') : 'searchkey';
+$mode = request()->input('mode') ? request()->input('mode') : 'searchkey';
 
-$langcode = GETPOST('langcode', 'alphanohtml');
-$transkey = GETPOST('transkey', 'alphanohtml');
+$langcode = request()->input('langcode');
+$transkey = request()->input('transkey');
 if ($mode == 'searchkey') {
-	$transvalue = GETPOST('transvalue', 'alphanohtml');
+	$transvalue = request()->input('transvalue');
 } else {
-	$transvalue = GETPOST('transvalue', 'restricthtml');
+	$transvalue = request()->input('transvalue');
 }
 
 $entity = $conf->entity;
 if (isModEnabled('multicompany') && !$user->entity) {
-	$entity = GETPOST('entity', 'int');
+	$entity = request()->input('entity');
 }
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -92,11 +92,11 @@ $hookmanager->initHooks(array('admintranslation', 'globaladmin'));
  */
 $error = 0;
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && !empty($massaction) && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && !empty($massaction) && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -109,7 +109,7 @@ if ($reshook < 0) {
 include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 	$transkey = '';
 	$transvalue = '';
 	$toselect = array();
@@ -117,7 +117,7 @@ if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x'
 }
 
 if ($action == 'setMAIN_ENABLE_OVERWRITE_TRANSLATION') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		dolibarr_set_const($db, 'MAIN_ENABLE_OVERWRITE_TRANSLATION', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		dolibarr_set_const($db, 'MAIN_ENABLE_OVERWRITE_TRANSLATION', 0, 'chaine', 0, '', $conf->entity);
@@ -144,7 +144,7 @@ if ($action == 'update') {
 				$transkey
 			) . "', transvalue = '" . $db->escape($transvalue) . "', entity = '" . $db->escape(
 				$entity
-			) . "' WHERE rowid = " . ((int) GETPOST('rowid', 'int'));
+			) . "' WHERE rowid = " . ((int) request()->input('rowid'));
 
 		$result = $db->query($sql);
 		if ($result) {
@@ -210,7 +210,7 @@ if ($action == 'delete') {
 	if ($result) {
 		setEventMessages($langs->trans("RecordDeleted"), null, 'mesgs');
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -289,7 +289,7 @@ $head = translation_prepare_head();
 print dol_get_fiche_head($head, $mode, '', -1, '');
 
 
-$langcode = GETPOSTISSET('langcode') ? GETPOST('langcode') : $langs->defaultlang;
+$langcode = request()->has('langcode') ? request()->input('langcode') : $langs->defaultlang;
 
 $newlang = new Translate('', $conf);
 $newlang->setDefaultLang($langcode);
@@ -408,7 +408,7 @@ if ($mode == 'overwrite') {
 
 	// Lang
 	print '<td>';
-	print $formadmin->select_language(GETPOST('langcode'), 'langcode', 0, array(), 1, 0, $disablededit ? 1 : 0, 'minwidth100 maxwidth250', 1);
+	print $formadmin->select_language(request()->input('langcode'), 'langcode', 0, array(), 1, 0, $disablededit ? 1 : 0, 'minwidth100 maxwidth250', 1);
 	print '</td>'."\n";
 
 	// Trans key
@@ -459,7 +459,7 @@ if ($mode == 'overwrite') {
 
 			// Trans key
 			print '<td>';
-			if ($action == 'edit' && $obj->rowid == GETPOSTINT('rowid')) {
+			if ($action == 'edit' && $obj->rowid == request()->integer('rowid', 0)) {
 				print '<input type="text" class="quatrevingtpercent" name="transkey" value="'.dol_escape_htmltag($obj->transkey).'">';
 			} else {
 				print dol_escape_htmltag($obj->transkey);
@@ -473,7 +473,7 @@ if ($mode == 'overwrite') {
 			print '<input type="hidden" name="const['.$i.'][name]" value="'.$obj->transkey.'">';
 			print '<input type="text" id="value_'.$i.'" class="flat inputforupdate" size="30" name="const['.$i.'][value]" value="'.dol_escape_htmltag($obj->transvalue).'">';
 			*/
-			if ($action == 'edit' && $obj->rowid == GETPOSTINT('rowid')) {
+			if ($action == 'edit' && $obj->rowid == request()->integer('rowid', 0)) {
 				print '<input type="text" class="quatrevingtpercent" name="transvalue" value="'.dol_escape_htmltag($obj->transvalue).'">';
 			} else {
 				//print $obj->transkey.' '.$langsenfileonly->tab_translate[$obj->transkey];
@@ -490,7 +490,7 @@ if ($mode == 'overwrite') {
 			// Entity limit to superadmin
 			if (isModEnabled('multicompany') && empty($user->entity)) {
 				print '<td class="center">';
-				if ($action == 'edit' && $obj->rowid == GETPOSTINT('rowid')) {
+				if ($action == 'edit' && $obj->rowid == request()->integer('rowid', 0)) {
 					print '<input type="text" class="flat" size="1" name="entity" value="' . ((int) $obj->entity) . '">';
 				} else {
 					print dol_escape_htmltag($obj->entity);
@@ -501,7 +501,7 @@ if ($mode == 'overwrite') {
 			}
 
 			print '<td class="center">';
-			if ($action == 'edit' && $obj->rowid == GETPOSTINT('rowid')) {
+			if ($action == 'edit' && $obj->rowid == request()->integer('rowid', 0)) {
 				print '<input type="hidden" class="button" name="rowid" value="'.$obj->rowid.'">';
 				print '<input type="submit" class="button buttongen button-save" name="save" value="'.dol_escape_htmltag($langs->trans("Save")).'">';
 				print ' &nbsp; ';

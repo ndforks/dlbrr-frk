@@ -46,10 +46,10 @@ $langs->loadLangs(array('admin', 'loan'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Other parameters LOAN_*
 $list = array(

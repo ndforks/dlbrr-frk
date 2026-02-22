@@ -97,7 +97,7 @@ $hookmanager->initHooks(array('newpayment'));
 // Security check
 // No check on module enabled. Done later according to $validpaymentmethod
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Input are:
 // type ('invoice','order','contractline'),
@@ -106,27 +106,27 @@ $action = GETPOST('action', 'aZ09');
 // tag (a free text, required if type is empty)
 // currency (iso code)
 
-$suffix = GETPOST("suffix", 'aZ09');
-$amount = price2num(GETPOST("amount", 'alpha'));
-if (!GETPOST("currency", 'alpha')) {
+$suffix = request()->input('suffix');
+$amount = price2num(request()->input('amount'));
+if (!request()->input('currency')) {
 	$currency = getDolCurrency();
 } else {
-	$currency = GETPOST("currency", 'aZ09');
+	$currency = request()->input('currency');
 }
-$source = GETPOST("s", 'aZ09') ? GETPOST("s", 'aZ09') : GETPOST("source", 'aZ09');
-$getpostlang = GETPOST('lang', 'aZ09');
-$ws = GETPOST("ws", "aZ09"); // Website reference where the newpayment page is embedded or from where the newpayment page is called
+$source = request()->input('s') ? request()->input('s') : request()->input('source');
+$getpostlang = request()->input('lang');
+$ws = request()->input('ws'); // Website reference where the newpayment page is embedded or from where the newpayment page is called
 
 if (!$action) {
-	if (!GETPOST("amount", 'alpha') && !$source) {
+	if (!request()->input('amount') && !$source) {
 		print $langs->trans('ErrorBadParameters')." - amount or source";
 		exit;
 	}
-	if (is_numeric($amount) && !GETPOST("tag", 'alpha') && !$source) {
+	if (is_numeric($amount) && !request()->input('tag') && !$source) {
 		print $langs->trans('ErrorBadParameters')." - tag or source";
 		exit;
 	}
-	if ($source && !GETPOST("ref", 'alpha')) {
+	if ($source && !request()->input('ref')) {
 		print $langs->trans('ErrorBadParameters')." - ref";
 		exit;
 	}
@@ -143,7 +143,7 @@ if ($source == 'organizedeventregistration') {		// Test on permission not requir
 	// Finding the Attendee
 	$attendee = new ConferenceOrBoothAttendee($db);
 
-	$invoiceid = GETPOSTINT('ref');
+	$invoiceid = request()->integer('ref', 0);
 	$invoice = new Facture($db);
 
 	$resultinvoice = $invoice->fetch($invoiceid);
@@ -193,7 +193,7 @@ if ($source == 'organizedeventregistration') {		// Test on permission not requir
 	}
 } elseif ($source == 'boothlocation') {			// Test on permission not required here (anonymous action protected by mitigation of /public/... urls)
 	// Getting the amount to pay, the invoice, finding the thirdparty
-	$invoiceid = GETPOSTINT('ref');
+	$invoiceid = request()->integer('ref', 0);
 	$invoice = new Facture($db);
 	$resultinvoice = $invoice->fetch($invoiceid);
 	if ($resultinvoice <= 0) {
@@ -211,7 +211,7 @@ if ($source == 'organizedeventregistration') {		// Test on permission not requir
 }
 
 
-$paymentmethod = GETPOST('paymentmethod', 'alphanohtml') ? GETPOST('paymentmethod', 'alphanohtml') : ''; // Empty in most cases. Defined when a payment mode is forced
+$paymentmethod = request()->input('paymentmethod') ? request()->input('paymentmethod') : ''; // Empty in most cases. Defined when a payment mode is forced
 $validpaymentmethod = array();
 
 // Detect $paymentmethod
@@ -224,10 +224,10 @@ foreach ($_POST as $key => $val) {
 }
 
 // Complete urls for post treatment
-$ref = $REF = GETPOST('ref', 'alpha');
-$TAG = GETPOST("tag", 'alpha');
-$FULLTAG = GETPOST("fulltag", 'alpha'); // fulltag is tag with more information
-$SECUREKEY = GETPOST("securekey"); // Secure key
+$ref = $REF = request()->input('ref');
+$TAG = request()->input('tag');
+$FULLTAG = request()->input('fulltag'); // fulltag is tag with more information
+$SECUREKEY = request()->input('securekey'); // Secure key
 $PAYPAL_API_OK = "";
 $PAYPAL_API_KO = "";
 $PAYPAL_API_SANDBOX = "";
@@ -429,29 +429,29 @@ $mesg = '';
  */
 
 // First log into the dolibarr_payment.log file
-dol_syslog("--- newpayment.php action=".$action." paymentmethod=".$paymentmethod.' amount='.$amount.' newamount='.GETPOST("newamount", 'alpha'), LOG_DEBUG, 0, '_payment');
+dol_syslog("--- newpayment.php action=".$action." paymentmethod=".$paymentmethod.' amount='.$amount.' newamount='.request()->input('newamount'), LOG_DEBUG, 0, '_payment');
 
-dol_syslog("fulltag=".GETPOST("fulltag", 'alpha')." ws=".$ws." urlok=".$urlok, LOG_DEBUG, 0, '_payment');
+dol_syslog("fulltag=".request()->input('fulltag')." ws=".$ws." urlok=".$urlok, LOG_DEBUG, 0, '_payment');
 
 // Action dopayment is called after clicking/choosing the payment mode
 if ($action == 'dopayment') {	// Test on permission not required here (anonymous action protected by mitigation of /public/... urls)
 	if ($paymentmethod == 'paypal') {
-		$PAYPAL_API_PRICE = price2num(GETPOST("newamount", 'alpha'), 'MT');
+		$PAYPAL_API_PRICE = price2num(request()->input('newamount'), 'MT');
 		$PAYPAL_PAYMENT_TYPE = 'Sale';
 
 		// Vars that are used as global var later in print_paypal_redirect()
-		$origfulltag = GETPOST("fulltag", 'alpha');
-		$shipToName = GETPOST("shipToName", 'alpha');
-		$shipToStreet = GETPOST("shipToStreet", 'alpha');
-		$shipToCity = GETPOST("shipToCity", 'alpha');
-		$shipToState = GETPOST("shipToState", 'alpha');
-		$shipToCountryCode = GETPOST("shipToCountryCode", 'alpha');
-		$shipToZip = GETPOST("shipToZip", 'alpha');
-		$shipToStreet2 = GETPOST("shipToStreet2", 'alpha');
-		$phoneNum = GETPOST("phoneNum", 'alpha');
-		$email = GETPOST("email", 'alpha');
-		$desc = GETPOST("desc", 'alpha');
-		$thirdparty_id = GETPOSTINT('thirdparty_id');
+		$origfulltag = request()->input('fulltag');
+		$shipToName = request()->input('shipToName');
+		$shipToStreet = request()->input('shipToStreet');
+		$shipToCity = request()->input('shipToCity');
+		$shipToState = request()->input('shipToState');
+		$shipToCountryCode = request()->input('shipToCountryCode');
+		$shipToZip = request()->input('shipToZip');
+		$shipToStreet2 = request()->input('shipToStreet2');
+		$phoneNum = request()->input('phoneNum');
+		$email = request()->input('email');
+		$desc = request()->input('desc');
+		$thirdparty_id = request()->integer('thirdparty_id', 0);
 
 		// Special case for Paypal-Indonesia
 		if ($shipToCountryCode == 'ID' && !preg_match('/\-/', $shipToState)) {
@@ -513,11 +513,11 @@ if ($action == 'dopayment') {	// Test on permission not required here (anonymous
 	}
 
 	if ($paymentmethod == 'paybox') {
-		$PRICE = price2num(GETPOST("newamount"), 'MT');
+		$PRICE = price2num(request()->input('newamount'), 'MT');
 		$email = getDolGlobalString('ONLINE_PAYMENT_SENDEMAIL');
-		$thirdparty_id = GETPOSTINT('thirdparty_id');
+		$thirdparty_id = request()->integer('thirdparty_id', 0);
 
-		$origfulltag = GETPOST("fulltag", 'alpha');
+		$origfulltag = request()->input('fulltag');
 
 		// Securekey into back url useless for back url and we need an url lower than 150.
 		$urlok = preg_replace('/securekey=[^&]+&?/', '', $urlok);
@@ -549,8 +549,8 @@ if ($action == 'dopayment') {	// Test on permission not required here (anonymous
 	}
 
 	if ($paymentmethod == 'stripe') {
-		if (GETPOST('newamount', 'alpha')) {
-			$amount = price2num(GETPOST('newamount', 'alpha'), 'MT');
+		if (request()->input('newamount')) {
+			$amount = price2num(request()->input('newamount'), 'MT');
 		} else {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Amount")), null, 'errors');
 			$action = '';
@@ -576,13 +576,13 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 	dol_syslog("GET=".formatLogObject($_GET), LOG_DEBUG, 0, '_payment');
 	dol_syslog("POST=".formatLogObject($_POST), LOG_DEBUG, 0, '_payment');
 
-	$stripeToken = GETPOST("stripeToken", 'alpha');
-	$email = GETPOST("email", 'alpha');
-	$thirdparty_id = GETPOSTINT('thirdparty_id'); // Note that for payment following online registration for members, this is empty because thirdparty is created once payment is confirmed by paymentok.php
-	$dol_type = (GETPOST('s', 'alpha') ? GETPOST('s', 'alpha') : GETPOST('source', 'alpha'));
-	$dol_id = GETPOSTINT('dol_id');
-	$vatnumber = GETPOST('vatnumber', 'alpha');
-	$savesource = GETPOSTISSET('savesource') ? GETPOSTINT('savesource') : 1;
+	$stripeToken = request()->input('stripeToken');
+	$email = request()->input('email');
+	$thirdparty_id = request()->integer('thirdparty_id', 0); // Note that for payment following online registration for members, this is empty because thirdparty is created once payment is confirmed by paymentok.php
+	$dol_type = (request()->input('s') ? request()->input('s') : request()->input('source'));
+	$dol_id = request()->integer('dol_id', 0);
+	$vatnumber = request()->input('vatnumber');
+	$savesource = request()->has('savesource') ? request()->integer('savesource', 0) : 1;
 
 	dol_syslog("POST stripeToken = ".$stripeToken, LOG_DEBUG, 0, '_payment');
 	dol_syslog("POST email = ".$email, LOG_DEBUG, 0, '_payment');
@@ -613,7 +613,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 
 				$service = 'StripeTest';
 				$servicestatus = 0;
-				if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOSTINT('forcesandbox') */) {
+				if (getDolGlobalString('STRIPE_LIVE')/* && !request()->integer('forcesandbox', 0) */) {
 					$service = 'StripeLive';
 					$servicestatus = 1;
 				}
@@ -825,7 +825,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 	if (getDolGlobalInt('STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION')) {
 		$service = 'StripeTest';
 		$servicestatus = 0;
-		if (getDolGlobalString('STRIPE_LIVE')/* && !GETPOSTINT('forcesandbox') */) {
+		if (getDolGlobalString('STRIPE_LIVE')/* && !request()->integer('forcesandbox', 0) */) {
 			$service = 'StripeLive';
 			$servicestatus = 1;
 		}
@@ -835,7 +835,7 @@ if ($action == 'charge' && isModEnabled('stripe')) {	// Test on permission not r
 
 		// We go here if getDolGlobalString('STRIPE_USE_INTENT_WITH_AUTOMATIC_CONFIRMATION') is set.
 		// In such a case, payment is always ok when we call the "charge" action.
-		$paymentintent_id = GETPOST("paymentintent_id", "alpha");
+		$paymentintent_id = request()->input('paymentintent_id');
 
 		// Force to use the correct API key
 		global $stripearrayofkeysbyenv;
@@ -963,7 +963,7 @@ $conf->dol_hide_leftmenu = 1;
 $replacemainarea = (empty($conf->dol_hide_leftmenu) ? '<div>' : '').'<div>';
 llxHeader($head, $langs->trans("PaymentForm"), '', '', 0, 0, '', '', '', 'onlinepaymentbody', $replacemainarea);
 
-dol_syslog("newpayment.php show page source=".$source." paymentmethod=".$paymentmethod.' amount='.$amount.' newamount='.GETPOST("newamount", 'alpha')." ref=".$ref, LOG_DEBUG, 0, '_payment');
+dol_syslog("newpayment.php show page source=".$source." paymentmethod=".$paymentmethod.' amount='.$amount.' newamount='.request()->input('newamount')." ref=".$ref, LOG_DEBUG, 0, '_payment');
 dol_syslog("_SERVER[HTTP_X_FORWARDED_HOST] = ".(empty($_SERVER["HTTP_X_FORWARDED_HOST"]) ? '' : dol_escape_htmltag($_SERVER["HTTP_X_FORWARDED_HOST"])), LOG_DEBUG, 0, '_payment');
 dol_syslog("_SERVER[SERVER_NAME] = ".(empty($_SERVER["SERVER_NAME"]) ? '' : dol_escape_htmltag($_SERVER["SERVER_NAME"])), LOG_DEBUG, 0, '_payment');
 dol_syslog("_SERVER[SERVER_ADDR] = ".(empty($_SERVER["SERVER_ADDR"]) ? '' : dol_escape_htmltag($_SERVER["SERVER_ADDR"])), LOG_DEBUG, 0, '_payment');
@@ -981,10 +981,10 @@ if ($source && in_array($ref, array('member_ref', 'contractline_ref', 'invoice_r
 
 
 // Show sandbox warning
-if ((empty($paymentmethod) || $paymentmethod == 'paypal') && isModEnabled('paypal') && (getDolGlobalString('PAYPAL_API_SANDBOX')/* || GETPOSTINT('forcesandbox')*/)) {		// We can force sand box with param 'forcesandbox'
+if ((empty($paymentmethod) || $paymentmethod == 'paypal') && isModEnabled('paypal') && (getDolGlobalString('PAYPAL_API_SANDBOX')/* || request()->integer('forcesandbox', 0)*/)) {		// We can force sand box with param 'forcesandbox'
 	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Paypal'), array(), 'warning');
 }
-if ((empty($paymentmethod) || $paymentmethod == 'stripe') && isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || GETPOSTINT('forcesandbox')*/)) {
+if ((empty($paymentmethod) || $paymentmethod == 'stripe') && isModEnabled('stripe') && (!getDolGlobalString('STRIPE_LIVE')/* || request()->integer('forcesandbox', 0)*/)) {
 	dol_htmloutput_mesg($langs->trans('YouAreCurrentlyInSandboxMode', 'Stripe'), array(), 'warning');
 }
 
@@ -994,11 +994,11 @@ print '<div class="center">'."\n";
 print '<form id="dolpaymentform" class="center" name="paymentform" action="'.$_SERVER["PHP_SELF"].'" method="POST">'."\n";
 print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 print '<input type="hidden" name="action" value="dopayment">'."\n";
-print '<input type="hidden" name="tag" value="'.GETPOST("tag", 'alpha').'">'."\n";
+print '<input type="hidden" name="tag" value="'.request()->input('tag').'">'."\n";
 print '<input type="hidden" name="suffix" value="'.dol_escape_htmltag($suffix).'">'."\n";
 print '<input type="hidden" name="securekey" value="'.dol_escape_htmltag($SECUREKEY).'">'."\n";
 print '<input type="hidden" name="e" value="'.$entity.'" />';
-//print '<input type="hidden" name="forcesandbox" value="'.GETPOSTINT('forcesandbox').'" />';
+//print '<input type="hidden" name="forcesandbox" value="'.request()->integer('forcesandbox', 0).'" />';
 print '<input type="hidden" name="lang" value="'.$getpostlang.'">';
 print '<input type="hidden" name="ws" value="'.$ws.'">';
 print "\n";
@@ -1118,9 +1118,9 @@ if (!$source) {
 	dol_syslog("newpayment.php no source", LOG_DEBUG);
 
 	$found = true;
-	$tag = GETPOST("tag", 'alpha');
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	$tag = request()->input('tag');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = "TAG=".$tag;
 	}
@@ -1140,8 +1140,8 @@ if (!$source) {
 	}
 	print '</td><td class="CTableRow2">';
 	if (empty($amount) || !is_numeric($amount)) {
-		print '<input type="hidden" name="amount" value="'.price2num(GETPOST("amount", 'alpha'), 'MT').'">';
-		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(GETPOST("newamount", "alpha"), 'MT').'">';
+		print '<input type="hidden" name="amount" value="'.price2num(request()->input('amount'), 'MT').'">';
+		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(request()->input('newamount'), 'MT').'">';
 		// Currency
 		print ' <b>'.$langs->trans("Currency".$currency).'</b>';
 	} else {
@@ -1185,15 +1185,15 @@ if ($source == 'order') {
 
 	if ($action != 'dopayment') { // Do not change amount if we just click on first dopayment
 		$amount = $order->total_ttc;
-		if (GETPOST("amount", 'alpha')) {
-			$amount = GETPOST("amount", 'alpha');
+		if (request()->input('amount')) {
+			$amount = request()->input('amount');
 		}
 		$amount = price2num($amount);
 	}
 
 	$tag = '';
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'ORD='.$order->id.'.CUS='.$order->thirdparty->id;
 		if (!empty($TAG)) {
@@ -1224,8 +1224,8 @@ if ($source == 'order') {
 
 	// Object
 	$text = '<b>'.$langs->trans("PaymentOrderRef", $order->ref).'</b>';
-	if (GETPOST('desc', 'alpha')) {
-		$text = '<b>'.$langs->trans(GETPOST('desc', 'alpha')).'</b>';
+	if (request()->input('desc')) {
+		$text = '<b>'.$langs->trans(request()->input('desc')).'</b>';
 	}
 	print '<tr class="CTableRow2"><td class="CTableRow2">'.$langs->trans("Designation");
 	print '</td><td class="CTableRow2">'.$text;
@@ -1247,8 +1247,8 @@ if ($source == 'order') {
 	}
 	print '</td><td class="CTableRow2">';
 	if (empty($amount) || !is_numeric($amount)) {
-		print '<input type="hidden" name="amount" value="'.price2num(GETPOST("amount", 'alpha'), 'MT').'">';
-		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(GETPOST("newamount", "alpha"), 'MT').'">';
+		print '<input type="hidden" name="amount" value="'.price2num(request()->input('amount'), 'MT').'">';
+		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(request()->input('newamount'), 'MT').'">';
 		// Currency
 		print ' <b>'.$langs->trans("Currency".$currency).'</b>';
 	} else {
@@ -1293,8 +1293,8 @@ if ($source == 'order') {
 	print '<input type="hidden" name="email" value="'.$order->thirdparty->email.'">'."\n";
 	print '<input type="hidden" name="vatnumber" value="'.dol_escape_htmltag($order->thirdparty->tva_intra).'">'."\n";
 	$labeldesc = $langs->trans("Order").' '.$order->ref;
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -1322,14 +1322,14 @@ if ($source == 'invoice') {
 
 	if ($action != 'dopayment') { // Do not change amount if we just click on first dopayment
 		$amount = price2num($invoice->total_ttc - ($invoice->getSommePaiement() + $invoice->getSumCreditNotesUsed() + $invoice->getSumDepositsUsed()));
-		if (GETPOST("amount", 'alpha')) {
-			$amount = GETPOST("amount", 'alpha');
+		if (request()->input('amount')) {
+			$amount = request()->input('amount');
 		}
 		$amount = price2num($amount);
 	}
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'INV='.$invoice->id.'.CUS='.$invoice->thirdparty->id;
 		if (!empty($TAG)) {
@@ -1360,8 +1360,8 @@ if ($source == 'invoice') {
 
 	// Object
 	$text = '<b>'.$langs->trans("PaymentInvoiceRef", $invoice->ref).'</b>';
-	if (GETPOST('desc', 'alpha')) {
-		$text = '<b>'.$langs->trans(GETPOST('desc', 'alpha')).'</b>';
+	if (request()->input('desc')) {
+		$text = '<b>'.$langs->trans(request()->input('desc')).'</b>';
 	}
 	print '<tr class="CTableRow2"><td class="CTableRow2">'.$langs->trans("Designation");
 	print '</td><td class="CTableRow2">'.$text;
@@ -1386,8 +1386,8 @@ if ($source == 'invoice') {
 		print '<b>'.$langs->trans("CreditNote").'</b>';
 	} elseif (empty($object->paye)) {
 		if (empty($amount) || !is_numeric($amount)) {
-			print '<input type="hidden" name="amount" value="'.price2num(GETPOST("amount", 'alpha'), 'MT').'">';
-			print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(GETPOST("newamount", "alpha"), 'MT').'">';
+			print '<input type="hidden" name="amount" value="'.price2num(request()->input('amount'), 'MT').'">';
+			print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(request()->input('newamount'), 'MT').'">';
 			print ' <b>'.$langs->trans("Currency".$currency).'</b>';
 		} else {
 			print '<b class="amount">'.price($amount, 1, $langs, 1, -1, -1, $currency).'</b>';	// Price with currency
@@ -1443,8 +1443,8 @@ if ($source == 'invoice') {
 	print '<input type="hidden" name="email" value="'.$invoice->thirdparty->email.'">'."\n";
 	print '<input type="hidden" name="vatnumber" value="'.$invoice->thirdparty->tva_intra.'">'."\n";
 	$labeldesc = $langs->trans("Invoice").' '.$invoice->ref;
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -1506,14 +1506,14 @@ if ($source == 'contractline') {
 			}
 		}
 
-		if (GETPOST("amount", 'alpha')) {
-			$amount = GETPOST("amount", 'alpha');
+		if (request()->input('amount')) {
+			$amount = request()->input('amount');
 		}
 		$amount = price2num($amount);
 	}
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'COL='.$contractline->id.'.CON='.$contract->id.'.CUS='.$contract->thirdparty->id.'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 		if (!empty($TAG)) {
@@ -1524,8 +1524,8 @@ if ($source == 'contractline') {
 	$fulltag = dol_string_unaccent($fulltag);
 
 	$qty = 1;
-	if (GETPOST('qty')) {
-		$qty = price2num(GETPOST('qty', 'alpha'), 'MS');
+	if (request()->input('qty')) {
+		$qty = price2num(request()->input('qty'), 'MS');
 	}
 
 	// Creditor
@@ -1551,8 +1551,8 @@ if ($source == 'contractline') {
 	if ($contractline->date_end) {
 		$text .= '<br>'.$langs->trans("ExpiredSince").': '.dol_print_date($contractline->date_end);
 	}
-	if (GETPOST('desc', 'alpha')) {
-		$text = '<b>'.$langs->trans(GETPOST('desc', 'alpha')).'</b>';
+	if (request()->input('desc')) {
+		$text = '<b>'.$langs->trans(request()->input('desc')).'</b>';
 	}
 	print '<tr class="CTableRow2"><td class="CTableRow2">'.$langs->trans("Designation");
 	print '</td><td class="CTableRow2">'.$text;
@@ -1596,8 +1596,8 @@ if ($source == 'contractline') {
 	}
 	print '</td><td class="CTableRow2">';
 	if (empty($amount) || !is_numeric($amount)) {
-		print '<input type="hidden" name="amount" value="'.price2num(GETPOST("amount", 'alpha'), 'MT').'">';
-		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(GETPOST("newamount", "alpha"), 'MT').'">';
+		print '<input type="hidden" name="amount" value="'.price2num(request()->input('amount'), 'MT').'">';
+		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.price2num(request()->input('newamount'), 'MT').'">';
 		// Currency
 		print ' <b>'.$langs->trans("Currency".$currency).'</b>';
 	} else {
@@ -1642,8 +1642,8 @@ if ($source == 'contractline') {
 	print '<input type="hidden" name="email" value="'.$contract->thirdparty->email.'">'."\n";
 	print '<input type="hidden" name="vatnumber" value="'.$contract->thirdparty->tva_intra.'">'."\n";
 	$labeldesc = $langs->trans("Contract").' '.$contract->ref;
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -1678,8 +1678,8 @@ if ($source == 'member' || $source == 'membersubscription') {
 
 	if ($action != 'dopayment') { // Do not change amount if we just click on first dopayment
 		$amount = $member->last_subscription_amount;
-		if (GETPOST("amount", 'alpha')) {
-			$amount = price2num(GETPOST("amount", 'alpha'), 'MT', 2);
+		if (request()->input('amount')) {
+			$amount = price2num(request()->input('amount'), 'MT', 2);
 		}
 		// If amount still not defined, we take amount of the type of member
 		if (empty($amount)) {
@@ -1689,8 +1689,8 @@ if ($source == 'member' || $source == 'membersubscription') {
 		$amount = max(0, price2num($amount, 'MT'));
 	}
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'MEM='.$member->id.'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 		if (!empty($TAG)) {
@@ -1722,8 +1722,8 @@ if ($source == 'member' || $source == 'membersubscription') {
 
 	// Object
 	$text = '<b>'.$langs->trans("PaymentSubscription").'</b>';
-	if (GETPOST('desc', 'alpha')) {
-		$text = '<b>'.$langs->trans(GETPOST('desc', 'alpha')).'</b>';
+	if (request()->input('desc')) {
+		$text = '<b>'.$langs->trans(request()->input('desc')).'</b>';
 	}
 	print '<tr class="CTableRow2"><td class="CTableRow2">'.$langs->trans("Designation");
 	print '</td><td class="CTableRow2">'.$text;
@@ -1750,11 +1750,11 @@ if ($source == 'member' || $source == 'membersubscription') {
 		print '</td><td class="CTableRow2">'.price($member->last_subscription_amount);
 		print '</td></tr>'."\n";
 
-		if (empty($amount) && !GETPOST('newamount', 'alpha')) {
+		if (empty($amount) && !request()->input('newamount')) {
 			$_GET['newamount'] = $member->last_subscription_amount;
 			$_GET['amount'] = $member->last_subscription_amount;
 		}
-		if (!empty($member->last_subscription_amount) && !GETPOSTISSET('newamount') && is_numeric($amount)) {
+		if (!empty($member->last_subscription_amount) && !request()->has('newamount') && is_numeric($amount)) {
 			$amount = max($member->last_subscription_amount, $amount);
 		}
 	}
@@ -1766,7 +1766,7 @@ if ($source == 'member' || $source == 'membersubscription') {
 
 	if ($member->type) {
 		$oldtypeid = $member->typeid;
-		$newtypeid = (int) (GETPOSTISSET("typeid") ? GETPOSTINT("typeid") : $member->typeid);
+		$newtypeid = (int) (request()->has('typeid') ? request()->integer('typeid', 0) : $member->typeid);
 		if (getDolGlobalString('MEMBER_ALLOW_CHANGE_OF_TYPE')) {
 			$typeid = $newtypeid;
 			$adht->fetch($typeid);	// Reload with the new type id
@@ -1815,11 +1815,11 @@ if ($source == 'member' || $source == 'membersubscription') {
 		$amount = getDolGlobalString('MEMBER_NEWFORM_AMOUNT');
 	}
 	// - If an amount was posted from the form (for example from page with types of membership)
-	if ($caneditamount && GETPOSTISSET('amount') && GETPOSTFLOAT('amount', 'MT') > 0) {
+	if ($caneditamount && request()->has('amount') && GETPOSTFLOAT('amount', 'MT') > 0) {
 		$amount = GETPOSTFLOAT('amount', 'MT');
 	}
 	// - If a new amount was posted from the form
-	if ($caneditamount && GETPOSTISSET('newamount') && GETPOSTFLOAT('newamount', 'MT') > 0) {
+	if ($caneditamount && request()->has('newamount') && GETPOSTFLOAT('newamount', 'MT') > 0) {
 		$amount = GETPOSTFLOAT('newamount', 'MT');
 	}
 	// - If a min is set or an amount from the posted form, we take them into account
@@ -1837,8 +1837,8 @@ if ($source == 'member' || $source == 'membersubscription') {
 	$minimumamount = !getDolGlobalString('MEMBER_MIN_AMOUNT') ? $adht->amount : max(getDolGlobalString('MEMBER_MIN_AMOUNT'), $adht->amount, $amount);
 
 	if ($caneditamount && $action != 'dopayment') {
-		if (GETPOSTISSET('newamount')) {
-			print '<input type="text" class="width75" name="newamount" value="'.price(price2num(GETPOST('newamount'), '', 2), 1, $langs, 1, -1, -1).'">';
+		if (request()->has('newamount')) {
+			print '<input type="text" class="width75" name="newamount" value="'.price(price2num(request()->input('newamount'), '', 2), 1, $langs, 1, -1, -1).'">';
 		} else {
 			print '<input type="text" class="width75" name="newamount" value="'.price($amount, 1, $langs, 1, -1, -1).'">';
 		}
@@ -1887,8 +1887,8 @@ if ($source == 'member' || $source == 'membersubscription') {
 	}
 	print '<input type="hidden" name="email" value="'.$member->email.'">'."\n";
 	$labeldesc = $langs->trans("PaymentSubscription");
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -1914,16 +1914,16 @@ if ($source == 'donation') {
 	$object = $don;
 
 	if ($action != 'dopayment') { // Do not change amount if we just click on first dopayment
-		if (GETPOST("amount", 'alpha')) {
-			$amount = GETPOST("amount", 'alpha');
+		if (request()->input('amount')) {
+			$amount = request()->input('amount');
 		} else {
 			$amount = $don->getRemainToPay();
 		}
 		$amount = price2num($amount);
 	}
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'DON='.$don->ref.'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 		if (!empty($TAG)) {
@@ -1952,8 +1952,8 @@ if ($source == 'donation') {
 
 	// Object
 	$text = '<b>'.$langs->trans("PaymentDonation").'</b>';
-	if (GETPOST('desc', 'alpha')) {
-		$text = '<b>'.$langs->trans(GETPOST('desc', 'alpha')).'</b>';
+	if (request()->input('desc')) {
+		$text = '<b>'.$langs->trans(request()->input('desc')).'</b>';
 	}
 	print '<tr class="CTableRow2"><td class="CTableRow2">'.$langs->trans("Designation");
 	print '</td><td class="CTableRow2">'.$text;
@@ -1977,7 +1977,7 @@ if ($source == 'donation') {
 	print '</td><td class="CTableRow2">';
 	$valtoshow = '';
 	if (empty($amount) || !is_numeric($amount)) {
-		$valtoshow = price2num(GETPOST("newamount", 'alpha'), 'MT');
+		$valtoshow = price2num(request()->input('newamount'), 'MT');
 		// force default subscription amount to value defined into constant...
 		if (empty($valtoshow)) {
 			if (getDolGlobalString('DONATION_NEWFORM_EDITAMOUNT')) {
@@ -1992,11 +1992,11 @@ if ($source == 'donation') {
 		}
 	}
 	if (empty($amount) || !is_numeric($amount)) {
-		//$valtoshow=price2num(GETPOST("newamount",'alpha'),'MT');
+		//$valtoshow=price2num(request()->input('newamount'),'MT');
 		if (getDolGlobalString('DONATION_MIN_AMOUNT') && $valtoshow) {
 			$valtoshow = max(getDolGlobalString('DONATION_MIN_AMOUNT'), $valtoshow);
 		}
-		print '<input type="hidden" name="amount" value="'.price2num(GETPOST("amount", 'alpha'), 'MT').'">';
+		print '<input type="hidden" name="amount" value="'.price2num(request()->input('amount'), 'MT').'">';
 		print '<input class="flat maxwidth75" type="text" name="newamount" value="'.$valtoshow.'">';
 		// Currency
 		print ' <b>'.$langs->trans("Currency".$currency).'</b>';
@@ -2047,8 +2047,8 @@ if ($source == 'donation') {
 	}
 	print '<input type="hidden" name="email" value="'.$don->email.'">'."\n";
 	$labeldesc = $langs->trans("PaymentSubscription");
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -2059,8 +2059,8 @@ if ($source == 'organizedeventregistration' && is_object($thirdparty)) {
 	$found = true;
 	$langs->loadLangs(array("members", "eventorganization"));
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
 		$fulltag = 'ATT='.$attendee->id.'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 		if (!empty($TAG)) {
@@ -2139,8 +2139,8 @@ if ($source == 'organizedeventregistration' && is_object($thirdparty)) {
 	print '<input type="hidden" name="thirdparty_id" value="'.$thirdparty->id.'">'."\n";
 	print '<input type="hidden" name="email" value="'.$thirdparty->email.'">'."\n";
 	$labeldesc = $langs->trans("PaymentSubscription");
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -2151,10 +2151,10 @@ if ($source == 'boothlocation') {
 	$found = true;
 	$langs->load("members");
 
-	if (GETPOST('fulltag', 'alpha')) {
-		$fulltag = GETPOST('fulltag', 'alpha');
+	if (request()->input('fulltag')) {
+		$fulltag = request()->input('fulltag');
 	} else {
-		$fulltag = 'BOO='.GETPOST("booth").'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
+		$fulltag = 'BOO='.request()->input('booth').'.DAT='.dol_print_date(dol_now(), '%Y%m%d%H%M%S');
 		if (!empty($TAG)) {
 			$tag = $TAG;
 			$fulltag .= '.TAG='.$TAG;
@@ -2225,8 +2225,8 @@ if ($source == 'boothlocation') {
 	print '<input type="hidden" name="thirdparty_id" value="'.$thirdparty->id.'">'."\n";
 	print '<input type="hidden" name="email" value="'.$thirdparty->email.'">'."\n";
 	$labeldesc = $langs->trans("PaymentSubscription");
-	if (GETPOST('desc', 'alpha')) {
-		$labeldesc = GETPOST('desc', 'alpha');
+	if (request()->input('desc')) {
+		$labeldesc = request()->input('desc');
 	}
 	print '<input type="hidden" name="desc" value="'.dol_escape_htmltag($labeldesc).'">'."\n";
 }
@@ -2320,7 +2320,7 @@ if ($action != 'dopayment') {
 				if ($showbutton) {
 					// By default noidempotency is set to 1, to avoid the error "Keys for idempotant requests...". It means we can pay several times the same tag/ref.
 					// If STRIPE_USE_IDEMPOTENCY_BY_DEFAULT is set or param noidempotency=0 is added, then with add an idempotent key, so we must use a different tag/ref for each payment (if not we will get an error).
-					$noidempotency_key = (GETPOSTISSET('noidempotency') ? GETPOSTINT('noidempotency') : (getDolGlobalInt('STRIPE_USE_IDEMPOTENCY_BY_DEFAULT') ? 0 : 1));
+					$noidempotency_key = (request()->has('noidempotency') ? request()->integer('noidempotency', 0) : (getDolGlobalInt('STRIPE_USE_IDEMPOTENCY_BY_DEFAULT') ? 0 : 1));
 
 					print '<div class="button buttonpayment" id="div_dopayment_stripe">';
 					print '<span class="fa fa-credit-card"></span> ';
@@ -2419,7 +2419,7 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 	$stripecu = null;
 
 	// For Stripe
-	if (GETPOST('dopayment_stripe', 'alpha')) {
+	if (request()->input('dopayment_stripe')) {
 		// Personalized checkout
 		print '<style>
 		/**
@@ -2466,9 +2466,9 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 		print '<input type="hidden" name="e" value="'.$entity.'" />'."\n";
 		print '<input type="hidden" name="amount" value="'.$amount.'">'."\n";
 		print '<input type="hidden" name="currency" value="'.$currency.'">'."\n";
-		//print '<input type="hidden" name="forcesandbox" value="'.GETPOSTINT('forcesandbox').'" />';
-		print '<input type="hidden" name="email" value="'.GETPOST('email', 'alpha').'" />';
-		print '<input type="hidden" name="thirdparty_id" value="'.GETPOSTINT('thirdparty_id').'" />';
+		//print '<input type="hidden" name="forcesandbox" value="'.request()->integer('forcesandbox', 0).'" />';
+		print '<input type="hidden" name="email" value="'.request()->input('email').'" />';
+		print '<input type="hidden" name="thirdparty_id" value="'.request()->integer('thirdparty_id', 0).'" />';
 		print '<input type="hidden" name="lang" value="'.$getpostlang.'">';
 
 		// Make some check on amount: We accept an amount that is different to allow to pay an existing invoice partially or
@@ -2497,7 +2497,7 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 
 			$service = 'StripeLive';
 			$servicestatus = 1;
-			if (!getDolGlobalString('STRIPE_LIVE')/* || GETPOST('forcesandbox', 'alpha') */) {
+			if (!getDolGlobalString('STRIPE_LIVE')/* || request()->input('forcesandbox') */) {
 				$service = 'StripeTest';
 				$servicestatus = 0;
 			}
@@ -2513,7 +2513,7 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 
 				// By default noidempotency is set to 1, to avoid the error "Keys for idempotant requests...". It means we can pay several times the same tag/ref.
 				// If STRIPE_USE_IDEMPOTENCY_BY_DEFAULT is set or param noidempotency=0 is added, then with add an idempotent key, so we must use a different tag/ref for each payment (if not we will get an error).
-				$noidempotency_key = (GETPOSTISSET('noidempotency') ? GETPOSTINT('noidempotency') : (getDolGlobalInt('STRIPE_USE_IDEMPOTENCY_BY_DEFAULT') ? 0 : 1));
+				$noidempotency_key = (request()->has('noidempotency') ? request()->integer('noidempotency', 0) : (getDolGlobalInt('STRIPE_USE_IDEMPOTENCY_BY_DEFAULT') ? 0 : 1));
 
 				$paymentintent = $stripe->getPaymentIntent($amount, $currency, ($tag ? $tag : $fulltag), 'Stripe payment: '.$fulltag.(is_object($object) ? ' ref='.$object->ref : ''), $object, $stripecu, $stripeacc, $servicestatus, 0, 'automatic', false, null, 0, $noidempotency_key);
 				// The paymentintnent has status 'requires_payment_method' (even if paymentintent was already paid)
@@ -2639,8 +2639,8 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 					);
 					if ($stripecu) {
 						$arrayforcheckout['customer'] = $stripecu;
-					} elseif (GETPOST('email', 'alpha') && isValidEmail(GETPOST('email', 'alpha'))) {
-						$arrayforcheckout['customer_email'] = GETPOST('email', 'alpha');
+					} elseif (request()->input('email') && isValidEmail(request()->input('email'))) {
+						$arrayforcheckout['customer_email'] = request()->input('email');
 					}
 
 					dol_syslog("We create a stripe session with \Stripe\Checkout\Session::create for amountstripe=".$amountstripe);
@@ -2791,8 +2791,8 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 						payment_method_data: {
 							billing_details: {
 								name: 'test'
-								<?php if (GETPOST('email', 'alpha') || (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->email))) {
-									?>, email: '<?php echo dol_escape_js(GETPOST('email', 'alpha') ? GETPOST('email', 'alpha') : $object->thirdparty->email); ?>'<?php
+								<?php if (request()->input('email') || (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->email))) {
+									?>, email: '<?php echo dol_escape_js(request()->input('email') ? request()->input('email') : $object->thirdparty->email); ?>'<?php
 								} ?>
 								<?php if (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->phone)) {
 									?>, phone: '<?php echo dol_escape_js($object->thirdparty->phone); ?>'<?php
@@ -2885,8 +2885,8 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 						payment_method_data: {
 							billing_details: {
 								name: cardholderName.value
-								<?php if (GETPOST('email', 'alpha') || (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->email))) {
-									?>, email: '<?php echo dol_escape_js(GETPOST('email', 'alpha') ? GETPOST('email', 'alpha') : $object->thirdparty->email); ?>'<?php
+								<?php if (request()->input('email') || (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->email))) {
+									?>, email: '<?php echo dol_escape_js(request()->input('email') ? request()->input('email') : $object->thirdparty->email); ?>'<?php
 								} ?>
 								<?php if (is_object($object) && is_object($object->thirdparty) && !empty($object->thirdparty->phone)) {
 									?>, phone: '<?php echo dol_escape_js($object->thirdparty->phone); ?>'<?php
@@ -2947,8 +2947,8 @@ if (preg_match('/^dopayment/', $action)) {			// If we choose/clicked on the paym
 		'paymentmethod' => $paymentmethod,
 		'amount' => $amount,
 		'currency' => $currency,
-		'tag' => GETPOST("tag", 'alpha'),
-		'dopayment' => GETPOST('dopayment', 'alpha')
+		'tag' => request()->input('tag'),
+		'dopayment' => request()->input('dopayment')
 	];
 	// @phan-suppress-next-line PhanTypeMismatchArgumentNullable
 	$reshook = $hookmanager->executeHooks('doPayment', $parameters, $object, $action);

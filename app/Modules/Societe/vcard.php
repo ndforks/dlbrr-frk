@@ -42,7 +42,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/vcard.class.php';
 $company = new Societe($db);
 
 
-$socid = GETPOSTINT('id');
+$socid = request()->integer('id', 0);
 
 // Security check
 $result = restrictedArea($user, 'societe', $socid, '&societe');

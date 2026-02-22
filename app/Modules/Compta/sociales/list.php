@@ -48,45 +48,45 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'banks', 'bills', 'hrm', 'projects'));
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'sclist';
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$confirm = request()->input('confirm');
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'sclist';
+$mode = request()->input('mode');
 
 
-$search_ref = GETPOST('search_ref', 'alpha');
-$search_label = GETPOST('search_label', 'alpha');
-$search_typeid = GETPOST('search_typeid', 'int');
-$search_amount = GETPOST('search_amount', 'alpha');
-$search_status = GETPOST('search_status', 'intcomma');
-$search_date_startday = GETPOSTINT('search_date_startday');
-$search_date_startmonth = GETPOSTINT('search_date_startmonth');
-$search_date_startyear = GETPOSTINT('search_date_startyear');
-$search_date_endday = GETPOSTINT('search_date_endday');
-$search_date_endmonth = GETPOSTINT('search_date_endmonth');
-$search_date_endyear = GETPOSTINT('search_date_endyear');
+$search_ref = request()->input('search_ref');
+$search_label = request()->input('search_label');
+$search_typeid = request()->input('search_typeid');
+$search_amount = request()->input('search_amount');
+$search_status = request()->input('search_status');
+$search_date_startday = request()->integer('search_date_startday', 0);
+$search_date_startmonth = request()->integer('search_date_startmonth', 0);
+$search_date_startyear = request()->integer('search_date_startyear', 0);
+$search_date_endday = request()->integer('search_date_endday', 0);
+$search_date_endmonth = request()->integer('search_date_endmonth', 0);
+$search_date_endyear = request()->integer('search_date_endyear', 0);
 $search_date_start = dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_end = dol_mktime(23, 59, 59, $search_date_endmonth, $search_date_endday, $search_date_endyear);
-$search_date_limit_startday = GETPOSTINT('search_date_limit_startday');
-$search_date_limit_startmonth = GETPOSTINT('search_date_limit_startmonth');
-$search_date_limit_startyear = GETPOSTINT('search_date_limit_startyear');
-$search_date_limit_endday = GETPOSTINT('search_date_limit_endday');
-$search_date_limit_endmonth = GETPOSTINT('search_date_limit_endmonth');
-$search_date_limit_endyear = GETPOSTINT('search_date_limit_endyear');
+$search_date_limit_startday = request()->integer('search_date_limit_startday', 0);
+$search_date_limit_startmonth = request()->integer('search_date_limit_startmonth', 0);
+$search_date_limit_startyear = request()->integer('search_date_limit_startyear', 0);
+$search_date_limit_endday = request()->integer('search_date_limit_endday', 0);
+$search_date_limit_endmonth = request()->integer('search_date_limit_endmonth', 0);
+$search_date_limit_endyear = request()->integer('search_date_limit_endyear', 0);
 $search_date_limit_start = dol_mktime(0, 0, 0, $search_date_limit_startmonth, $search_date_limit_startday, $search_date_limit_startyear);
 $search_date_limit_end = dol_mktime(23, 59, 59, $search_date_limit_endmonth, $search_date_limit_endday, $search_date_limit_endyear);
-$search_project_ref = GETPOST('search_project_ref', 'alpha');
-$search_users = GETPOST('search_users', 'array:int');
-$search_type = GETPOST('search_type', 'alpha');
-$search_account = GETPOST('search_account', 'alpha');
+$search_project_ref = request()->input('search_project_ref');
+$search_users = request()->input('search_users');
+$search_type = request()->input('search_type');
+$search_account = request()->input('search_account');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST("sortorder", 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
 if (empty($page) || $page == -1) {
 	$page = 0; // If $page is not defined, or '' or -1
@@ -129,7 +129,7 @@ $permissiontoadd = $user->hasRight('tax', 'charges', 'creer');
 $permissiontodelete = $user->hasRight('tax', 'charges', 'supprimer');
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -151,7 +151,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// All tests are required to be compatible with all browsers
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) {
 		$search_ref = '';
 		$search_label = '';
 		$search_amount = '';
@@ -286,7 +286,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -304,7 +304,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	llxFooter();
 	$db->close();
 	exit;

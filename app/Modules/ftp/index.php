@@ -43,24 +43,24 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ftp.lib.php';
 $langs->loadLangs(array('companies', 'other'));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$section = GETPOST('section');
-$newfolder = GETPOST('newfolder');
+$action = request()->input('action');
+$section = request()->input('section');
+$newfolder = request()->input('newfolder');
 if (!$section) {
 	$section = '/';
 }
-$numero_ftp = GETPOST("numero_ftp");
+$numero_ftp = request()->input('numero_ftp');
 /* if (! $numero_ftp) $numero_ftp=1; */
-$file = GETPOST("file");
-$confirm = GETPOST('confirm');
+$file = request()->input('file');
+$confirm = request()->input('confirm');
 
 $upload_dir = $conf->ftp->dir_temp;
 $download_dir = $conf->ftp->dir_temp;
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -165,9 +165,9 @@ if ($action == 'addfolder' && $user->hasRight('ftp', 'write')) {
 // Action ajout d'un rep
 if ($action == 'add' && $user->hasRight('ftp', 'write')) {
 	$ecmdir = new EcmDirectory($db);
-	$ecmdir->ref                = GETPOST("ref");
-	$ecmdir->label              = GETPOST("label");
-	$ecmdir->description        = GETPOST("desc");
+	$ecmdir->ref                = request()->input('ref');
+	$ecmdir->label              = request()->input('label');
+	$ecmdir->description        = request()->input('desc');
 
 	$id = $ecmdir->create($user);
 	if ($id > 0) {
@@ -180,7 +180,7 @@ if ($action == 'add' && $user->hasRight('ftp', 'write')) {
 }
 
 // Remove 1 file
-if ($action == 'confirm_deletefile' && GETPOST('confirm') == 'yes' && $user->hasRight('ftp', 'write')) {
+if ($action == 'confirm_deletefile' && request()->input('confirm') == 'yes' && $user->hasRight('ftp', 'write')) {
 	// set up a connection or die
 	if (!$conn_id) {
 		$newsectioniso = mb_convert_encoding($section, 'ISO-8859-1');
@@ -208,7 +208,7 @@ if ($action == 'confirm_deletefile' && GETPOST('confirm') == 'yes' && $user->has
 }
 
 // Delete several lines at once
-if (GETPOST("const", 'array') && GETPOST("delete") && GETPOST("delete") == $langs->trans("Delete") && $user->hasRight('ftp', 'write')) {
+if (request()->input('const') && request()->input('delete') && request()->input('delete') == $langs->trans("Delete") && $user->hasRight('ftp', 'write')) {
 	// set up a connection or die
 	if (!$conn_id) {
 		$newsectioniso = mb_convert_encoding($section, 'ISO-8859-1');
@@ -219,7 +219,7 @@ if (GETPOST("const", 'array') && GETPOST("delete") && GETPOST("delete") == $lang
 	}
 
 	if ($conn_id && $ok && !$mesg) {
-		foreach (GETPOST('const', 'array') as $const) {
+		foreach (request()->input('const') as $const) {
 			if (isset($const["check"])) {	// Is checkbox checked
 				$langs->load("other");
 
@@ -301,8 +301,8 @@ if ($action == 'download' && $user->hasRight('ftp', 'read')) {
 
 			// Define mime type
 			$type = 'application/octet-stream';
-			if (GETPOSTISSET("type")) {
-				$type = GETPOST("type");
+			if (request()->has('type')) {
+				$type = request()->input('type');
 			} else {
 				$type = dol_mimetype($file);
 			}
@@ -387,12 +387,12 @@ if (!function_exists('ftp_connect')) {
 	if (!empty($ftp_server)) {
 		// Confirm remove file
 		if ($action == 'delete') {
-			print $form->formconfirm($_SERVER["PHP_SELF"].'?numero_ftp='.$numero_ftp.'&section='.urlencode(GETPOST('section')).'&file='.urlencode(GETPOST('file')), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile', GETPOST('file')), 'confirm_deletefile', '', '', 1);
+			print $form->formconfirm($_SERVER["PHP_SELF"].'?numero_ftp='.$numero_ftp.'&section='.urlencode(request()->input('section')).'&file='.urlencode(request()->input('file')), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile', request()->input('file')), 'confirm_deletefile', '', '', 1);
 		}
 
 		// Generate for to confirm deletion of a category line
 		if ($action == 'delete_section') {
-			print $form->formconfirm($_SERVER["PHP_SELF"].'?numero_ftp='.$numero_ftp.'&section='.urlencode(GETPOST('section')).'&file='.urlencode(GETPOST('file')), $langs->trans('DeleteSection'), $langs->trans('ConfirmDeleteSection', GETPOST('file')), 'confirm_deletesection', '', '', 1);
+			print $form->formconfirm($_SERVER["PHP_SELF"].'?numero_ftp='.$numero_ftp.'&section='.urlencode(request()->input('section')).'&file='.urlencode(request()->input('file')), $langs->trans('DeleteSection'), $langs->trans('ConfirmDeleteSection', request()->input('file')), 'confirm_deletesection', '', '', 1);
 		}
 
 		print $langs->trans("Server").': <b>'.$ftp_server.'</b><br>';

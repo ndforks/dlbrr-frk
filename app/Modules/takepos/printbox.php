@@ -52,12 +52,12 @@ global $langs, $db;
 
 $langs->loadLangs(array("bills", "cashdesk"));
 
-$facid = GETPOSTINT('facid');
+$facid = request()->integer('facid', 0);
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 

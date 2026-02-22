@@ -56,16 +56,16 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09'); // set or del
-$name = GETPOST('name', 'alpha');
-$entity = GETPOSTINT('entity');
-$value = (GETPOST('value', 'aZ09') != '' ? GETPOST('value', 'aZ09') : 1);
-$userconst = GETPOSTINT('userconst');
+$action = request()->input('action'); // set or del
+$name = request()->input('name');
+$entity = request()->integer('entity', 0);
+$value = (request()->input('value') != '' ? request()->input('value') : 1);
+$userconst = request()->integer('userconst', 0);
 
 
 // Security check
 if (empty($user->admin) && empty($userconst)) {
-	httponly_accessforbidden('This ajax component can be called by admin user only');
+	httponly_abort(403);
 }
 
 
@@ -96,7 +96,7 @@ if (!empty($action) && !empty($name)) {
 		}
 	}
 } else {
-	httponly_accessforbidden('Param action and name is required', 403);
+	httponly_abort(403);
 }
 
 

@@ -41,9 +41,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/price.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'products', 'admin'));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$currencycode = GETPOST('currencycode', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$currencycode = request()->input('currencycode');
 
 if (isModEnabled('multicompany') && getDolGlobalString('MULTICURRENCY_USE_LIMIT_BY_CURRENCY')) {
 	// When MULTICURRENCY_USE_LIMIT_BY_CURRENCY is on, we use always a defined currency code instead of '' even for default.
@@ -61,7 +61,7 @@ $valmainmaxdecimalsshown = GETPOST($mainmaxdecimalsshown, 'alpha');	// Can be 'x
 $valmainroundingruletot = price2num(GETPOST($mainroundingruletot, 'alphanohtml'), '', 2);
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -291,7 +291,7 @@ if (empty($mysoc->country_code)) {
 			}
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (count($vat_rates)) {

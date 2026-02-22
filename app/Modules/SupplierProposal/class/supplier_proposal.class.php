@@ -1825,7 +1825,7 @@ class SupplierProposal extends CommonObject
 				$outputlangs = $langs;
 				if (getDolGlobalInt('MAIN_MULTILANGS')) {
 					$outputlangs = new Translate("", $conf);
-					$newlang = (GETPOST('lang_id', 'aZ09') ? GETPOST('lang_id', 'aZ09') : $this->thirdparty->default_lang);
+					$newlang = (request()->input('lang_id') ? request()->input('lang_id') : $this->thirdparty->default_lang);
 					$outputlangs->setDefaultLang($newlang);
 				}
 
@@ -2446,7 +2446,7 @@ class SupplierProposal extends CommonObject
 		$this->multicurrency_code = getDolCurrency();
 
 		// Lines
-		$nbp = min(1000, GETPOSTINT('nblines') ? GETPOSTINT('nblines') : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
+		$nbp = min(1000, request()->integer('nblines', 0) ? request()->integer('nblines', 0) : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
 		$xnbp = 0;
 		while ($xnbp < $nbp) {
 			$line = new SupplierProposalLine($this->db);

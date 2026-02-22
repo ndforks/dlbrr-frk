@@ -44,11 +44,11 @@ require_once DOL_DOCUMENT_ROOT.'/mrp/lib/mrp_mo.lib.php';
 $langs->loadLangs(array("mrp", "companies"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref        = request()->input('ref');
+$action = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new Mo($db);
@@ -66,7 +66,7 @@ if ($id > 0 || !empty($ref)) {
 }
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'mrp', $object->id, 'mrp_mo', '', 'fk_soc', 'rowid', $isdraft);

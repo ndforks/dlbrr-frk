@@ -50,9 +50,9 @@ if (isModEnabled("bank")) {
 $langs->loadLangs(array('bills', 'banks', 'companies'));
 
 // Security check
-$id = GETPOSTINT("id");
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -270,7 +270,7 @@ if ($resql) {
 	print "</table>\n";
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

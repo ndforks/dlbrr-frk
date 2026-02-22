@@ -56,10 +56,10 @@ $langs->loadLangs(array('other', 'products'));
 
 
 // Get parameters
-$id     = GETPOSTINT('id');
-$ref    = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
+$id     = request()->integer('id', 0);
+$ref    = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -72,10 +72,10 @@ if ($user->socid) {
 $hookmanager->initHooks(array('productdocuments'));
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -143,7 +143,7 @@ if (empty($reshook)) {
 	if (getDolGlobalString('PRODUIT_PDF_MERGE_PROPAL')) {
 		if ($action == 'confirm_deletefile' && $confirm == 'yes' && $permissiontoadd) {
 			//extract file name
-			$urlfile = GETPOST('urlfile', 'alpha');
+			$urlfile = request()->input('urlfile');
 			$filename = basename($urlfile);
 			$filetomerge = new Propalmergepdfproduct($db);
 			$filetomerge->fk_product = $object->id;
@@ -160,15 +160,15 @@ if (empty($reshook)) {
 }
 
 if ($action == 'filemerge' && $permissiontoadd) {
-	$is_refresh = GETPOST('refresh');
+	$is_refresh = request()->input('refresh');
 	if (empty($is_refresh)) {
-		$filetomerge_file_array = GETPOST('filetoadd');
+		$filetomerge_file_array = request()->input('filetoadd');
 
-		$filetomerge_file_array = GETPOST('filetoadd');
+		$filetomerge_file_array = request()->input('filetoadd');
 
 		$lang_id = null;
 		if (getDolGlobalInt('MAIN_MULTILANGS')) {
-			$lang_id = GETPOST('lang_id', 'aZ09');
+			$lang_id = request()->input('lang_id');
 		}
 
 		// Delete all file already associated
@@ -212,11 +212,11 @@ $form = new Form($db);
 $title = $langs->trans('ProductServiceCard');
 $helpurl = '';
 $shortlabel = dol_trunc($object->label, 16);
-if (GETPOST("type") == '0' || ($object->type == Product::TYPE_PRODUCT)) {
+if (request()->input('type') == '0' || ($object->type == Product::TYPE_PRODUCT)) {
 	$title = $langs->trans('Product')." ".$shortlabel." - ".$langs->trans('Documents');
 	$helpurl = 'EN:Module_Products|FR:Module_Produits|ES:M&oacute;dulo_Productos';
 }
-if (GETPOST("type") == '1' || ($object->type == Product::TYPE_SERVICE)) {
+if (request()->input('type') == '1' || ($object->type == Product::TYPE_SERVICE)) {
 	$title = $langs->trans('Service')." ".$shortlabel." - ".$langs->trans('Documents');
 	$helpurl = 'EN:Module_Services_En|FR:Module_Services|ES:M&oacute;dulo_Servicios';
 }
@@ -308,7 +308,7 @@ if ($object->id > 0 && $upload_dir !== null) {
 		$filetomerge = new Propalmergepdfproduct($db);
 
 		if (getDolGlobalInt('MAIN_MULTILANGS')) {
-			$lang_id = GETPOST('lang_id', 'aZ09');
+			$lang_id = request()->input('lang_id');
 			$result = $filetomerge->fetch_by_product($object->id, $lang_id);
 		} else {
 			$result = $filetomerge->fetch_by_product($object->id);

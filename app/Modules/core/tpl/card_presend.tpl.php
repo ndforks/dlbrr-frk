@@ -89,8 +89,8 @@ if ($action == 'presend') {
 		if (is_object($object->thirdparty)) {
 			$newlang = $object->thirdparty->default_lang;
 		}
-		if (GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 	}
 
@@ -136,7 +136,7 @@ if ($action == 'presend') {
 			$hidedesc = $hidedetails?$hidedetails:'';
 			$hideref = $hidedetails?$hidedetails:'';
 
-			$result = $object->generateDocument(GETPOST('model') ? GETPOST('model') : $object->model_pdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
+			$result = $object->generateDocument(request()->input('model') ? request()->input('model') : $object->model_pdf, $outputlangs, $hidedetails, $hidedesc, $hideref);
 			if ($result < 0) {
 				dol_print_error($db, $object->error, $object->errors);
 				exit();
@@ -163,7 +163,7 @@ if ($action == 'presend') {
 	$formmail = new FormMail($db);
 
 	$formmail->param['langsmodels'] = (empty($newlang) ? $langs->defaultlang : $newlang);
-	$formmail->fromtype = (GETPOST('fromtype') ? GETPOST('fromtype') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
+	$formmail->fromtype = (request()->input('fromtype') ? request()->input('fromtype') : getDolGlobalString('MAIN_MAIL_DEFAULT_FROMTYPE', 'user'));
 
 	if ($formmail->fromtype === 'user') {
 		$formmail->fromid = $user->id;
@@ -201,8 +201,8 @@ if ($action == 'presend') {
 
 	// Set the default "From"
 	$defaultfrom = '';
-	if (GETPOSTISSET('fromtype')) {
-		$defaultfrom = GETPOST('fromtype');
+	if (request()->has('fromtype')) {
+		$defaultfrom = request()->input('fromtype');
 	} else {
 		$parameters = array();
 		$reshook = $hookmanager->executeHooks('getDefaultFromEmail', $parameters, $formmail);
@@ -415,7 +415,7 @@ if ($action == 'presend') {
 	}
 
 	$formmail->withto = $liste;
-	$formmail->withtofree = (GETPOST('sendto', 'alphawithlgt') ? GETPOST('sendto', 'alphawithlgt') : '1');
+	$formmail->withtofree = (request()->input('sendto') ? request()->input('sendto') : '1');
 	$formmail->withtocc = $liste;
 	$formmail->withtoccc = getDolGlobalString('MAIN_EMAIL_USECCC');
 	$formmail->withtopic = $topicmail;
@@ -430,7 +430,7 @@ if ($action == 'presend') {
 	// Array of other parameters
 	$formmail->param['action'] = 'send';
 	$formmail->param['models'] = $modelmail;
-	$formmail->param['models_id'] = GETPOSTINT('modelmailselected');
+	$formmail->param['models_id'] = request()->integer('modelmailselected', 0);
 	$formmail->param['id'] = $object->id;
 	$formmail->param['returnurl'] = $_SERVER["PHP_SELF"].'?id='.$object->id;
 	$formmail->param['fileinit'] = array($file);

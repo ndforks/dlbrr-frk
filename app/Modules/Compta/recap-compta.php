@@ -45,7 +45,7 @@ if (isModEnabled('invoice')) {
 	$langs->load("bills");
 }
 
-$id = GETPOST('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
+$id = request()->input('id') ? request()->integer('id', 0) : request()->integer('socid', 0);
 
 // Security check
 if ($user->socid > 0) {
@@ -64,10 +64,10 @@ if ($id > 0) {
 
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -250,11 +250,11 @@ if ($id > 0) {
 
 					$db->free($resqlp);
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (empty($TData)) {
@@ -332,7 +332,7 @@ if ($id > 0) {
 		print "</table>";
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 llxFooter();

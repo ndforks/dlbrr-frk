@@ -44,11 +44,11 @@ require DOL_DOCUMENT_ROOT.'/core/lib/loan.lib.php';
  * @var User $user
  */
 
-$mens = (float) price2num(GETPOST('mens'));
-$capital = (float) price2num(GETPOST('capital'));
-$rate = (float) price2num(GETPOST('rate'));
-$echance = GETPOSTINT('echeance');
-$nbterm = GETPOSTINT('nbterm');
+$mens = (float) price2num(request()->input('mens'));
+$capital = (float) price2num(request()->input('capital'));
+$rate = (float) price2num(request()->input('rate'));
+$echance = request()->integer('echeance', 0);
+$nbterm = request()->integer('nbterm', 0);
 
 top_httphead();
 

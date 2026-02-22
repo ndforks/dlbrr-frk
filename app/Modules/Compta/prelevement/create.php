@@ -53,19 +53,19 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('banks', 'categories', 'withdrawals', 'companies', 'bills'));
 
 // Get supervariables
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$toselect   = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$mode = GETPOST('mode', 'alpha') ? GETPOST('mode', 'alpha') : 'real';
+$action = request()->input('action');
+$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$toselect   = request()->input('toselect'); // Array of ids of elements selected into a list
+$mode = request()->input('mode') ? request()->input('mode') : 'real';
 
-$type = GETPOST('type', 'aZ09');
-$sourcetype = GETPOST('sourcetype', 'aZ09');
-$format = GETPOST('format', 'aZ09');
-$id_bankaccount = GETPOSTINT('id_bankaccount');
-$executiondate = dol_mktime(0, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+$type = request()->input('type');
+$sourcetype = request()->input('sourcetype');
+$format = request()->input('format');
+$id_bankaccount = request()->integer('id_bankaccount', 0);
+$executiondate = dol_mktime(0, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -74,7 +74,7 @@ $offset = $limit * $page;
 $hookmanager->initHooks(array('directdebitcreatecard', 'globalcard'));
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -101,7 +101,7 @@ $object = new BonPrelevement($db);
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$massaction = '';
 }
 
@@ -226,7 +226,7 @@ $bprev = new BonPrelevement($db);
 $arrayofselected = is_array($toselect) ? $toselect : array();
 // List of mass actions available
 $arrayofmassactions = array();
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);
@@ -252,7 +252,7 @@ llxHeader('', $title);
 // @phan-suppress-next-line PhanPluginSuspiciousParamPosition
 $head = bon_prelevement_prepare_head($bprev, $bprev->nbOfInvoiceToPay($type), $bprev->nbOfInvoiceToPay($type, 'salary'));
 if ($type) {
-	print dol_get_fiche_head($head, ((GETPOSTISSET('sourcetype') && GETPOST('sourcetype') != '') ? 'salary' : 'invoice'), $langs->trans("Invoices"), -1, $bprev->picto);
+	print dol_get_fiche_head($head, ((request()->has('sourcetype') && request()->input('sourcetype') != '') ? 'salary' : 'invoice'), $langs->trans("Invoices"), -1, $bprev->picto);
 } else {
 	print load_fiche_titre($title);
 	print dol_get_fiche_head(array(), '', '', -1);
@@ -723,7 +723,7 @@ if ($resql) {
 	print "</form>";
 	print "<br>\n";
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -779,7 +779,7 @@ if ($result)
 }
 else
 {
-	dol_print_error($db);
+	abort(500);
 }
 */
 

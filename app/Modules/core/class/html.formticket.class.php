@@ -265,25 +265,25 @@ class FormTicket
 		$langs->loadLangs(array('other', 'mails', 'ticket'));
 
 		if ($mode == 'create') {
-			$ref = GETPOSTISSET("ref") ? GETPOST("ref", 'alpha') : '';
-			$type_code = GETPOSTISSET('type_code') ? GETPOST('type_code', 'alpha') : '';
-			$category_code = GETPOSTISSET('category_code') ? GETPOST('category_code', 'alpha') : '';
-			$severity_code = GETPOSTISSET('severity_code') ? GETPOST('severity_code', 'alpha') : '';
-			$subject = GETPOSTISSET('subject') ? GETPOST('subject', 'alpha') : '';
-			$email = GETPOSTISSET('email') ? GETPOST('email', 'alpha') : '';
-			$msg = GETPOSTISSET('message') ? GETPOST('message', 'restricthtml') : '';
-			$projectid = GETPOSTISSET('projectid') ? GETPOSTINT('projectid') : 0;
-			$user_assign = GETPOSTISSET('fk_user_assign') ? GETPOSTINT('fk_user_assign') : $this->fk_user_create;
+			$ref = request()->has('ref') ? request()->input('ref') : '';
+			$type_code = request()->has('type_code') ? request()->input('type_code') : '';
+			$category_code = request()->has('category_code') ? request()->input('category_code') : '';
+			$severity_code = request()->has('severity_code') ? request()->input('severity_code') : '';
+			$subject = request()->has('subject') ? request()->input('subject') : '';
+			$email = request()->has('email') ? request()->input('email') : '';
+			$msg = request()->has('message') ? request()->input('message') : '';
+			$projectid = request()->has('projectid') ? request()->integer('projectid', 0) : 0;
+			$user_assign = request()->has('fk_user_assign') ? request()->integer('fk_user_assign', 0) : $this->fk_user_create;
 		} else {
-			$ref = GETPOSTISSET("ref") ? GETPOST("ref", 'alpha') : $object->ref;
-			$type_code = GETPOSTISSET('type_code') ? GETPOST('type_code', 'alpha') : $object->type_code;
-			$category_code = GETPOSTISSET('category_code') ? GETPOST('category_code', 'alpha') : $object->category_code;
-			$severity_code = GETPOSTISSET('severity_code') ? GETPOST('severity_code', 'alpha') : $object->severity_code;
-			$subject = GETPOSTISSET('subject') ? GETPOST('subject', 'alpha') : $object->subject;
-			$email = GETPOSTISSET('email') ? GETPOST('email', 'alpha') : $object->email_from;
-			$msg = GETPOSTISSET('message') ? GETPOST('message', 'restricthtml') : $object->message;
-			$projectid = GETPOSTISSET('projectid') ? GETPOSTINT('projectid') : (int) $object->fk_project;
-			$user_assign = GETPOSTISSET('fk_user_assign') ? GETPOSTINT('fk_user_assign') : $object->fk_user_assign;
+			$ref = request()->has('ref') ? request()->input('ref') : $object->ref;
+			$type_code = request()->has('type_code') ? request()->input('type_code') : $object->type_code;
+			$category_code = request()->has('category_code') ? request()->input('category_code') : $object->category_code;
+			$severity_code = request()->has('severity_code') ? request()->input('severity_code') : $object->severity_code;
+			$subject = request()->has('subject') ? request()->input('subject') : $object->subject;
+			$email = request()->has('email') ? request()->input('email') : $object->email_from;
+			$msg = request()->has('message') ? request()->input('message') : $object->message;
+			$projectid = request()->has('projectid') ? request()->integer('projectid', 0) : (int) $object->fk_project;
+			$user_assign = request()->has('fk_user_assign') ? request()->integer('fk_user_assign', 0) : $object->fk_user_assign;
 		}
 
 		$form = new Form($this->db);
@@ -353,25 +353,25 @@ class FormTicket
 				// contact lastname
 				$html_contact_lastname = '';
 				$html_contact_lastname .= '<tr id="contact_lastname_line" class="contact_field"><td class="titlefield"><label for="contact_lastname"><span class="fieldrequired">' . $langs->trans('Lastname') . '</span></label></td><td>';
-				$html_contact_lastname .= '<input type="text" id="contact_lastname" name="contact_lastname" value="' . dol_escape_htmltag(GETPOSTISSET('contact_lastname') ? GETPOST('contact_lastname', 'alphanohtml') : '') . '" />';
+				$html_contact_lastname .= '<input type="text" id="contact_lastname" name="contact_lastname" value="' . dol_escape_htmltag(request()->has('contact_lastname') ? request()->input('contact_lastname') : '') . '" />';
 				$html_contact_lastname .= '</td></tr>';
 				print $html_contact_lastname;
 				// contact firstname
 				$html_contact_firstname = '';
 				$html_contact_firstname .= '<tr id="contact_firstname_line" class="contact_field"><td class="titlefield"><label for="contact_firstname"><span class="fieldrequired">' . $langs->trans('Firstname') . '</span></label></td><td>';
-				$html_contact_firstname .= '<input type="text" id="contact_firstname" name="contact_firstname" value="' . dol_escape_htmltag(GETPOSTISSET('contact_firstname') ? GETPOST('contact_firstname', 'alphanohtml') : '') . '" />';
+				$html_contact_firstname .= '<input type="text" id="contact_firstname" name="contact_firstname" value="' . dol_escape_htmltag(request()->has('contact_firstname') ? request()->input('contact_firstname') : '') . '" />';
 				$html_contact_firstname .= '</td></tr>';
 				print $html_contact_firstname;
 				// company name
 				$html_company_name = '';
 				$html_company_name .= '<tr id="contact_company_name_line" class="contact_field"><td><label for="company_name"><span>' . $langs->trans('Company') . '</span></label></td><td>';
-				$html_company_name .= '<input type="text" id="company_name" name="company_name" value="' . dol_escape_htmltag(GETPOSTISSET('company_name') ? GETPOST('company_name', 'alphanohtml') : '') . '" />';
+				$html_company_name .= '<input type="text" id="company_name" name="company_name" value="' . dol_escape_htmltag(request()->has('company_name') ? request()->input('company_name') : '') . '" />';
 				$html_company_name .= '</td></tr>';
 				print $html_company_name;
 				// contact phone
 				$html_contact_phone = '';
 				$html_contact_phone .= '<tr id="contact_phone_line" class="contact_field"><td><label for="contact_phone"><span>' . $langs->trans('Phone') . '</span></label></td><td>';
-				$html_contact_phone .= '<input type="text" id="contact_phone" name="contact_phone" value="' . dol_escape_htmltag(GETPOSTISSET('contact_phone') ? GETPOST('contact_phone', 'alphanohtml') : '') . '" />';
+				$html_contact_phone .= '<input type="text" id="contact_phone" name="contact_phone" value="' . dol_escape_htmltag(request()->has('contact_phone') ? request()->input('contact_phone') : '') . '" />';
 				$html_contact_phone .= '</td></tr>';
 				print $html_contact_phone;
 
@@ -448,7 +448,7 @@ class FormTicket
 			$classname = ucfirst($subelement);
 			$objectsrc = new $classname($this->db);
 			'@phan-var-force CommonObject $objectsrc';
-			$objectsrc->fetch(GETPOSTINT('originid'));
+			$objectsrc->fetch(request()->integer('originid', 0));
 
 			if (empty($objectsrc->lines) && method_exists($objectsrc, 'fetch_lines')) {
 				$objectsrc->fetch_lines();
@@ -456,7 +456,7 @@ class FormTicket
 
 			$objectsrc->fetch_thirdparty();
 			$newclassname = $classname;
-			print '<tr><td>'.$langs->trans($newclassname).'</td><td colspan="2"><input name="'.$subelement.'id" value="'.GETPOST('originid').'" type="hidden" />'.$objectsrc->getNomUrl(1).'</td></tr>';
+			print '<tr><td>'.$langs->trans($newclassname).'</td><td colspan="2"><input name="'.$subelement.'id" value="'.request()->input('originid').'" type="hidden" />'.$objectsrc->getNomUrl(1).'</td></tr>';
 		}
 
 		// Type of Ticket
@@ -766,7 +766,7 @@ class FormTicket
 				print '<tr><td><label for="contract"><span class="">'.$langs->trans("Contract").'</span></label></td><td>';
 				print img_picto('', 'contract', 'class="pictofixedwidth"');
 				// socid is for internal users null and not 0 or -1
-				print $formcontract->select_contract($user->socid ?? -1, GETPOSTINT('contractid'), 'contractid', 0, 1, 1, 1);
+				print $formcontract->select_contract($user->socid ?? -1, request()->integer('contractid', 0), 'contractid', 0, 1, 1, 1);
 				print '</td></tr>';
 			}
 		}
@@ -1469,7 +1469,7 @@ class FormTicket
 		$langs->loadLangs(array('other', 'mails', 'ticket'));
 
 		// Clear temp files. Must be done at beginning, before call of triggers
-		if (GETPOST('mode', 'alpha') == 'init' || (GETPOST('modelselected') && GETPOST('modelmailselected', 'alpha') && GETPOST('modelmailselected', 'alpha') != '-1')) {
+		if (request()->input('mode') == 'init' || (request()->input('modelselected') && request()->input('modelmailselected') && request()->input('modelmailselected') != '-1')) {
 			$this->clear_attached_files();
 		}
 
@@ -1513,7 +1513,7 @@ class FormTicket
 			$keytoavoidconflict = empty($this->track_id) ? '' : '-'.$this->track_id; // track_id instead of trackid
 		}
 		//var_dump($keytoavoidconflict);
-		if (GETPOST('mode', 'alpha') == 'init' || (GETPOST('modelselected') && GETPOST('modelmailselected', 'alpha') && GETPOST('modelmailselected', 'alpha') != '-1')) {
+		if (request()->input('mode') == 'init' || (request()->input('modelselected') && request()->input('modelmailselected') && request()->input('modelmailselected') != '-1')) {
 			if (!empty($arraydefaultmessage->joinfiles) && !empty($this->param['fileinit']) && is_array($this->param['fileinit'])) {
 				foreach ($this->param['fileinit'] as $path) {
 					$formmail->add_attached_files($path, basename($path), dol_mimetype($path));
@@ -1546,7 +1546,7 @@ class FormTicket
 
 		print "\n<!-- Begin message_form TICKET -->\n";
 
-		$send_email = GETPOSTINT('send_email') ? GETPOSTINT('send_email') : 0;
+		$send_email = request()->integer('send_email', 0) ? request()->integer('send_email', 0) : 0;
 
 		// Example 1 : Adding jquery code
 		print '<script nonce="'.getNonce().'" type="text/javascript">
@@ -1635,7 +1635,7 @@ class FormTicket
 		// External users can't send message email
 		if ($user->hasRight("ticket", "write") && !$user->socid) {
 			print '<tr><td class="width200"></td><td>';
-			$checkbox_selected = (GETPOST('send_email') == "1" ? ' checked' : (getDolGlobalInt('TICKETS_MESSAGE_FORCE_MAIL') ? 'checked' : ''));
+			$checkbox_selected = (request()->input('send_email') == "1" ? ' checked' : (getDolGlobalInt('TICKETS_MESSAGE_FORCE_MAIL') ? 'checked' : ''));
 			print '<input type="checkbox" name="send_email" value="1" id="send_msg_email" '.$checkbox_selected.'/> ';
 			print '<label for="send_msg_email">'.$langs->trans('SendMessageByEmail').'</label>';
 			$texttooltip = $langs->trans("TicketMessageSendEmailHelp");
@@ -1664,7 +1664,7 @@ class FormTicket
 			// Private message (not visible by customer/external user)
 			if (!$user->socid) {
 				print '<tr><td></td><td>';
-				$checkbox_selected = (GETPOST('private_message', 'alpha') == "1" ? ' checked' : '');
+				$checkbox_selected = (request()->input('private_message') == "1" ? ' checked' : '');
 				print '<input type="checkbox" name="private_message" value="1" id="private_message" '.$checkbox_selected.'/> ';
 				print '<label for="private_message">'.$langs->trans('MarkMessageAsPrivate').'</label>';
 				print ' '.$form->textwithpicto('', $langs->trans("TicketMessagePrivateHelp"), 1, 'help');
@@ -1762,7 +1762,7 @@ class FormTicket
 		// External users can't send message email
 		/*
 		if ($user->rights->ticket->write && !$user->socid && !empty($conf->global->TICKET_MESSAGE_MAIL_INTRO)) {
-			$mail_intro = GETPOST('mail_intro') ? GETPOST('mail_intro') : $conf->global->TICKET_MESSAGE_MAIL_INTRO;
+			$mail_intro = request()->input('mail_intro') ? request()->input('mail_intro') : $conf->global->TICKET_MESSAGE_MAIL_INTRO;
 			print '<tr class="email_line"><td><label for="mail_intro">';
 			print $form->textwithpicto($langs->trans("TicketMessageMailIntro"), $langs->trans("TicketMessageMailIntroHelp"), 1, 'help');
 			print '</label>';
@@ -1851,8 +1851,8 @@ class FormTicket
 		} elseif (!dol_textishtml($defaultmessage) && isset($this->substit['__USER_SIGNATURE__']) && dol_textishtml($this->substit['__USER_SIGNATURE__'])) {
 			$defaultmessage = dol_nl2br($defaultmessage);
 		}
-		if (GETPOSTISSET("message") && !GETPOST('modelselected')) {
-			$defaultmessage = GETPOST('message', 'restricthtml');
+		if (request()->has('message') && !request()->input('modelselected')) {
+			$defaultmessage = request()->input('message');
 		} else {
 			$defaultmessage = make_substitutions($defaultmessage, $this->substit);
 			// Clean first \n and br (to avoid empty line when CONTACTCIVNAME is empty)
@@ -1892,7 +1892,7 @@ class FormTicket
 		// Footer
 		// External users can't send message email
 		/*if ($user->rights->ticket->write && !$user->socid && !empty($conf->global->TICKET_MESSAGE_MAIL_SIGNATURE)) {
-			$mail_signature = GETPOST('mail_signature') ? GETPOST('mail_signature') : $conf->global->TICKET_MESSAGE_MAIL_SIGNATURE;
+			$mail_signature = request()->input('mail_signature') ? request()->input('mail_signature') : $conf->global->TICKET_MESSAGE_MAIL_SIGNATURE;
 			print '<tr class="email_line"><td><label for="mail_intro">'.$langs->trans("TicketMessageMailFooter").'</label>';
 			print $form->textwithpicto('', $langs->trans("TicketMessageMailFooterHelp"), 1, 'help');
 			print '</td><td>';

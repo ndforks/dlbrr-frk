@@ -2684,7 +2684,7 @@ class Ticket extends CommonObject
 
 	/**
 	 * Add new message on a ticket (private/public area).
-	 * Can also send it by email if GETPOST('send_email', 'int') is set. For such email, header and footer is added.
+	 * Can also send it by email if request()->input('send_email') is set. For such email, header and footer is added.
 	 *
 	 * @param   User    $user       	User for action
 	 * @param   string  $action     	Action string
@@ -2702,7 +2702,7 @@ class Ticket extends CommonObject
 
 		$object = new Ticket($this->db);
 
-		$ret = $object->fetch(0, '', GETPOST('track_id', 'alpha'));
+		$ret = $object->fetch(0, '', request()->input('track_id'));
 
 		$object->socid = $object->fk_soc;
 		$object->fetch_thirdparty();
@@ -2714,18 +2714,18 @@ class Ticket extends CommonObject
 			$action = '';
 		}
 
-		if (!GETPOST("message")) {
+		if (!request()->input('message')) {
 			$error++;
 			array_push($this->errors, $langs->trans("ErrorFieldRequired", $langs->transnoentities("Message")));
 			$action = 'add_message';
 		}
 
 		if (!$error) {
-			$object->subject = GETPOST('subject', 'alphanohtml');
-			$object->message = GETPOST("message", "restricthtml");
-			$object->private = GETPOST("private_message", "alpha");
+			$object->subject = request()->input('subject');
+			$object->message = request()->input('message');
+			$object->private = request()->input('private_message');
 
-			$send_email = (bool) GETPOSTINT('send_email');
+			$send_email = (bool) request()->integer('send_email', 0);
 
 			// Copy attached files (saved into $_SESSION) as linked files to ticket. Return array with final name used.
 			$resarray = $object->copyFilesForTicket();
@@ -2816,7 +2816,7 @@ class Ticket extends CommonObject
 							// Message send
 							$message = getDolGlobalString('TICKET_MESSAGE_MAIL_INTRO', $langs->trans('TicketMessageMailIntroText'));
 							$message .= '<br><br>';
-							$messagePost = GETPOST('message', 'restricthtml');
+							$messagePost = request()->input('message');
 							if (!dol_textishtml($messagePost)) {
 								$messagePost = dol_nl2br($messagePost);
 							}
@@ -2866,14 +2866,14 @@ class Ticket extends CommonObject
 							// Set default subject
 							$appli = getDolGlobalString('MAIN_APPLICATION_TITLE', $mysoc->name);
 
-							$subject = GETPOST('subject', 'alphanohtml') ? GETPOST('subject', 'alphanohtml') : '['.$appli.' - '.$langs->trans("Ticket").' #'.$object->track_id.'] '.$langs->trans('TicketNewMessage');
+							$subject = request()->input('subject') ? request()->input('subject') : '['.$appli.' - '.$langs->trans("Ticket").' #'.$object->track_id.'] '.$langs->trans('TicketNewMessage');
 
 							$message_intro = $langs->trans('TicketNotificationEmailBody', "#".$object->id);
-							$message_signature = GETPOST('mail_signature') ? GETPOST('mail_signature') : getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE');
+							$message_signature = request()->input('mail_signature') ? request()->input('mail_signature') : getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE');
 
 							$message = getDolGlobalString('TICKET_MESSAGE_MAIL_INTRO', $langs->trans('TicketMessageMailIntroText'));
 							$message .= '<br><br>';
-							$messagePost = GETPOST('message', 'restricthtml');
+							$messagePost = request()->input('message');
 							if (!dol_textishtml($messagePost)) {
 								$messagePost = dol_nl2br($messagePost);
 							}
@@ -2961,10 +2961,10 @@ class Ticket extends CommonObject
 								// Get default subject for email to external contacts
 								$appli = getDolGlobalString('MAIN_APPLICATION_TITLE', $mysoc->name);
 
-								$subject = GETPOST('subject') ? GETPOST('subject') : '['.$appli.' - '.$langs->trans("Ticket").' #'.$object->track_id.'] '.$langs->trans('TicketNewMessage');
+								$subject = request()->input('subject') ? request()->input('subject') : '['.$appli.' - '.$langs->trans("Ticket").' #'.$object->track_id.'] '.$langs->trans('TicketNewMessage');
 
-								$message_intro = GETPOST('mail_intro') ? GETPOST('mail_intro', 'restricthtml') : getDolGlobalString('TICKET_MESSAGE_MAIL_INTRO');
-								$message_signature = GETPOST('mail_signature') ? GETPOST('mail_signature', 'restricthtml') : getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE');
+								$message_intro = request()->input('mail_intro') ? request()->input('mail_intro') : getDolGlobalString('TICKET_MESSAGE_MAIL_INTRO');
+								$message_signature = request()->input('mail_signature') ? request()->input('mail_signature') : getDolGlobalString('TICKET_MESSAGE_MAIL_SIGNATURE');
 								if (!dol_textishtml($message_intro)) {
 									$message_intro = dol_nl2br($message_intro);
 								}
@@ -2973,7 +2973,7 @@ class Ticket extends CommonObject
 								}
 
 								// We put intro after
-								$messagePost = GETPOST('message', 'restricthtml');
+								$messagePost = request()->input('message');
 								if (!dol_textishtml($messagePost)) {
 									$messagePost = dol_nl2br($messagePost);
 								}

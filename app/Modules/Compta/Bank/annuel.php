@@ -46,8 +46,8 @@ $langs->loadLangs(array('banks', 'categories'));
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width', '380'); // Large for one graph in a smarpthone.
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height', '160');
 
-$id = GETPOST('account') ? GETPOST('account', 'alpha') : GETPOST('id');
-$ref = GETPOST('ref');
+$id = request()->input('account') ? request()->input('account') : request()->input('id');
+$ref = request()->input('ref');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('bankannualreport', 'globalcard'));
@@ -60,7 +60,7 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'banque', $fieldvalue, 'bank_account&bank_account', '', '', $fieldtype);
 
-$year_start = GETPOST('year_start');
+$year_start = request()->input('year_start');
 //$year_current = strftime("%Y", time());
 $year_current = (int) dol_print_date(time(), "%Y");
 if (!$year_start) {
@@ -122,7 +122,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 $sql = "SELECT SUM(b.amount)";
@@ -147,7 +147,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -267,7 +267,7 @@ if ($resql) {
 		$balance = $obj->total;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<table class="noborder centpercent">';
@@ -295,7 +295,7 @@ if ($result < 0) {
 	$sql .= ", ".MAIN_DB_PREFIX."bank_account as ba";
 	$sql .= " WHERE b.fk_account = ba.rowid";
 	$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
-	if ($id && GETPOST("option") != 'all') {
+	if ($id && request()->input('option') != 'all') {
 		$sql .= " AND b.fk_account IN (".$db->sanitize($id).")";
 	}
 
@@ -308,7 +308,7 @@ if ($result < 0) {
 		$log = "graph.php: min=".$min." max=".$max;
 		dol_syslog($log);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	// CRED PART
@@ -329,7 +329,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".($year - $annee)."-01-01 00:00:00'";
 		$sql .= " AND b.datev <= '".($year - $annee)."-12-31 23:59:59'";
 		$sql .= " AND b.amount > 0";
-		if ($id && GETPOST("option") != 'all') {
+		if ($id && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($id).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev, '%m');";
@@ -345,7 +345,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 	// Chargement de labels et data_xxx pour tableau 4 Movements
@@ -412,7 +412,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".($year - $annee)."-01-01 00:00:00'";
 		$sql .= " AND b.datev <= '".($year - $annee)."-12-31 23:59:59'";
 		$sql .= " AND b.amount < 0";
-		if ($id && GETPOST("option") != 'all') {
+		if ($id && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($id).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev, '%m');";
@@ -428,7 +428,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

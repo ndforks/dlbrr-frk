@@ -49,15 +49,15 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/accountingjournal.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "compta", "accountancy"));
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
 $id = 35;
-$rowid = GETPOST('rowid', 'alpha');
-$code = GETPOST('code', 'alpha');
+$rowid = request()->input('rowid');
+$code = request()->input('code');
 
 // Security access
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
 $acts = array();
@@ -67,14 +67,14 @@ $actl = array();
 $actl[0] = img_picto($langs->trans("Disabled"), 'switch_off', 'class="size15x"');
 $actl[1] = img_picto($langs->trans("Activated"), 'switch_on', 'class="size15x"');
 
-$listoffset = GETPOST('listoffset', 'alpha');
-$listlimit = GETPOSTINT('listlimit') > 0 ? GETPOSTINT('listlimit') : 1000;
+$listoffset = request()->input('listoffset');
+$listlimit = request()->integer('listlimit', 0) > 0 ? request()->integer('listlimit', 0) : 1000;
 $active = 1;
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -90,7 +90,7 @@ if (empty($sortorder)) {
 
 $error = 0;
 
-$search_country_id = GETPOST('search_country_id', 'int');
+$search_country_id = request()->input('search_country_id');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('admin'));
@@ -168,12 +168,12 @@ $sourceList = array(
  * Actions
  */
 
-if (GETPOST('button_removefilter', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter_x', 'alpha')) {
+if (request()->input('button_removefilter') || request()->input('button_removefilter.x') || request()->input('button_removefilter_x')) {
 	$search_country_id = '';
 }
 
 // Actions add or modify an entry into a dictionary
-if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
+if (request()->input('actionadd') || request()->input('actionmodify')) {
 	$listfield = explode(',', str_replace(' ', '', $tabfield[$id]));
 	$listfieldinsert = explode(',', $tabfieldinsert[$id]);
 	$listfieldmodify = explode(',', $tabfieldinsert[$id]);
@@ -183,19 +183,19 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 	$ok = 1;
 
 	// Other checks
-	if (GETPOSTISSET("code")) {
-		if (GETPOST("code") == '0') {
+	if (request()->has('code')) {
+		if (request()->input('code') == '0') {
 			$ok = 0;
 			setEventMessages($langs->transnoentities('ErrorCodeCantContainZero'), null, 'errors');
 		}
 	}
-	if (!GETPOST('label', 'alpha')) {
+	if (!request()->input('label')) {
 		setEventMessages($langs->transnoentities("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label")), null, 'errors');
 		$ok = 0;
 	}
 
 	// In case of 'actionadd' and with valid parameters, add the line
-	if ($ok && GETPOST('actionadd', 'alpha')) {
+	if ($ok && request()->input('actionadd')) {
 		$newid = 0;  // Initialise before if for static analysis
 		if ($tabrowid[$id]) {
 			// Get free id for insert
@@ -205,7 +205,7 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 				$obj = $db->fetch_object($result);
 				$newid = ($obj->newid + 1);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -246,13 +246,13 @@ if (GETPOST('actionadd', 'alpha') || GETPOST('actionmodify', 'alpha')) {
 			if ($db->errno() == 'DB_ERROR_RECORD_ALREADY_EXISTS') {
 				setEventMessages($langs->transnoentities("ErrorRecordAlreadyExists"), null, 'errors');
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 	}
 
 	// If check ok and action modify, we modify the line
-	if ($ok && GETPOST('actionmodify', 'alpha')) {
+	if ($ok && request()->input('actionmodify')) {
 		if ($tabrowid[$id]) {
 			$rowidcol = $tabrowid[$id];
 		} else {
@@ -303,7 +303,7 @@ if ($action == 'confirm_delete' && $confirm == 'yes') {       // delete
 		if ($db->errno() == 'DB_ERROR_CHILD_EXISTS') {
 			setEventMessages($langs->transnoentities("ErrorRecordIsUsedByChild"), null, 'errors');
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -326,7 +326,7 @@ if ($action == $acts[0]) {
 
 	$result = $db->query($sql);
 	if (!$result) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -348,7 +348,7 @@ if ($action == $acts[1]) {
 
 	$result = $db->query($sql);
 	if (!$result) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -397,7 +397,7 @@ $fieldlist = explode(',', $tabfield[$id]);
 
 print '<form action="'.$_SERVER['PHP_SELF'].'?id='.$id.'" method="POST">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
-print '<input type="hidden" name="from" value="'.dol_escape_htmltag(GETPOST('from', 'alpha')).'">';
+print '<input type="hidden" name="from" value="'.dol_escape_htmltag(request()->input('from')).'">';
 
 print '<div class="div-table-responsive">';
 print '<table class="noborder centpercent">';
@@ -450,7 +450,7 @@ if ($tabname[$id]) {
 
 	$obj = new stdClass();
 	// If data was already input, we define them in obj to populate input fields.
-	if (GETPOST('actionadd', 'alpha')) {
+	if (request()->input('actionadd')) {
 		foreach ($fieldlist as $key => $val) {
 			if (GETPOST($val) != '') {
 				$obj->$val = GETPOST($val);
@@ -493,8 +493,8 @@ if ($resql) {
 	$paramwithsearch .= '&sortorder='.$sortorder;
 	$paramwithsearch .= '&sortfield='.$sortfield;
 
-	if (GETPOST('from', 'alpha')) {
-		$paramwithsearch .= '&from='.GETPOST('from', 'alpha');
+	if (request()->input('from')) {
+		$paramwithsearch .= '&from='.request()->input('from');
 	}
 
 	// There is several pages
@@ -663,7 +663,7 @@ if ($resql) {
 		}
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '</table>';

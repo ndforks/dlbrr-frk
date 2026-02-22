@@ -63,7 +63,7 @@ if (empty($conf) || !is_object($conf)) {
 $size = (int) ($_SERVER['CONTENT_LENGTH'] ?? 0);
 if ($size > 10000) {
 	$langs->loadLangs(array("errors", "install"));
-	httponly_accessforbidden('<center>'.$langs->trans("ErrorRequestTooLarge").'<br><a href="'.DOL_URL_ROOT.'">'.$langs->trans("ClickHereToGoToApp").'</a></center>', 413, 1);
+	httponly_abort(403);.'<br><a href="'.DOL_URL_ROOT.'">'.$langs->trans("ClickHereToGoToApp").'</a></center>', 413, 1);
 }
 
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
@@ -75,19 +75,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 header('Cache-Control: Public, must-revalidate');
 
-if (GETPOST('dol_hide_topmenu')) {
+if (request()->input('dol_hide_topmenu')) {
 	$conf->dol_hide_topmenu = 1;
 }
-if (GETPOST('dol_hide_leftmenu')) {
+if (request()->input('dol_hide_leftmenu')) {
 	$conf->dol_hide_leftmenu = 1;
 }
-if (GETPOST('dol_optimize_smallscreen')) {
+if (request()->input('dol_optimize_smallscreen')) {
 	$conf->dol_optimize_smallscreen = 1;
 }
-if (GETPOST('dol_no_mouse_hover')) {
+if (request()->input('dol_no_mouse_hover')) {
 	$conf->dol_no_mouse_hover = 1;
 }
-if (GETPOST('dol_use_jmobile')) {
+if (request()->input('dol_use_jmobile')) {
 	$conf->dol_use_jmobile = 1;
 }
 

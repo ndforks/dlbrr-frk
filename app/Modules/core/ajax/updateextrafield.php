@@ -56,10 +56,10 @@ include '../../main.inc.php';
  * @var User $user
  */
 
-$objectType = GETPOST('objectType', 'aZ09');
-$objectId = GETPOST('objectId', 'aZ09');
-$field = GETPOST('field', 'aZ09');
-$value = GETPOST('value', 'alpha');
+$objectType = request()->input('objectType');
+$objectId = request()->input('objectId');
+$field = request()->input('field');
+$value = request()->input('value');
 
 $module = getElementProperties($objectType)['module'];
 $element_ref = '';
@@ -73,7 +73,7 @@ $object = fetchObjectByElement($objectId, $objectType, $element_ref);
 
 // Security check
 if (!$user->hasRight($module, $object->element, 'write') && !$user->hasRight($module, 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 /*

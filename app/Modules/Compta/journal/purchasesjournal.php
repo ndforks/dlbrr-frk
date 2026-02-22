@@ -48,12 +48,12 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.class.php';
 // Load translation files required by the page
 $langs->loadlangs(array('companies', 'other', 'bills', 'compta'));
 
-$date_startmonth = GETPOST('date_startmonth');
-$date_startday = GETPOST('date_startday');
-$date_startyear = GETPOST('date_startyear');
-$date_endmonth = GETPOST('date_endmonth');
-$date_endday = GETPOST('date_endday');
-$date_endyear = GETPOST('date_endyear');
+$date_startmonth = request()->input('date_startmonth');
+$date_startday = request()->input('date_startday');
+$date_startyear = request()->input('date_startyear');
+$date_endmonth = request()->input('date_endmonth');
+$date_endday = request()->input('date_endday');
+$date_endyear = request()->input('date_endyear');
 
 // Security check
 if ($user->socid > 0) {
@@ -201,7 +201,7 @@ if ($result) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 /*

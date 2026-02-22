@@ -35,12 +35,12 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 $langs->loadLangs(array("admin", "other", "modulebuilder"));
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 $head = [];
 
 if (!$user->admin || !isModEnabled('modulebuilder')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -49,14 +49,14 @@ if (!$user->admin || !isModEnabled('modulebuilder')) {
  */
 
 if ($action == "update") {
-	$res1 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_README', GETPOST('MODULEBUILDER_SPECIFIC_README', 'restricthtml'), 'chaine', 0, '', $conf->entity);
-	$res2 = dolibarr_set_const($db, 'MODULEBUILDER_ASCIIDOCTOR', GETPOST('MODULEBUILDER_ASCIIDOCTOR', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	$res3 = dolibarr_set_const($db, 'MODULEBUILDER_ASCIIDOCTORPDF', GETPOST('MODULEBUILDER_ASCIIDOCTORPDF', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	$res4 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_EDITOR_NAME', GETPOST('MODULEBUILDER_SPECIFIC_EDITOR_NAME', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	$res5 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_EDITOR_URL', GETPOST('MODULEBUILDER_SPECIFIC_EDITOR_URL', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	$res6 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_FAMILY', GETPOST('MODULEBUILDER_SPECIFIC_FAMILY', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
-	$res7 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_AUTHOR', GETPOST('MODULEBUILDER_SPECIFIC_AUTHOR', 'restricthtml'), 'chaine', 0, '', $conf->entity);
-	$res8 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_VERSION', GETPOST('MODULEBUILDER_SPECIFIC_VERSION', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	$res1 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_README', request()->input('MODULEBUILDER_SPECIFIC_README'), 'chaine', 0, '', $conf->entity);
+	$res2 = dolibarr_set_const($db, 'MODULEBUILDER_ASCIIDOCTOR', request()->input('MODULEBUILDER_ASCIIDOCTOR'), 'chaine', 0, '', $conf->entity);
+	$res3 = dolibarr_set_const($db, 'MODULEBUILDER_ASCIIDOCTORPDF', request()->input('MODULEBUILDER_ASCIIDOCTORPDF'), 'chaine', 0, '', $conf->entity);
+	$res4 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_EDITOR_NAME', request()->input('MODULEBUILDER_SPECIFIC_EDITOR_NAME'), 'chaine', 0, '', $conf->entity);
+	$res5 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_EDITOR_URL', request()->input('MODULEBUILDER_SPECIFIC_EDITOR_URL'), 'chaine', 0, '', $conf->entity);
+	$res6 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_FAMILY', request()->input('MODULEBUILDER_SPECIFIC_FAMILY'), 'chaine', 0, '', $conf->entity);
+	$res7 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_AUTHOR', request()->input('MODULEBUILDER_SPECIFIC_AUTHOR'), 'chaine', 0, '', $conf->entity);
+	$res8 = dolibarr_set_const($db, 'MODULEBUILDER_SPECIFIC_VERSION', request()->input('MODULEBUILDER_SPECIFIC_VERSION'), 'chaine', 0, '', $conf->entity);
 	if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0) {
 		setEventMessages('ErrorFailedToSaveDate', null, 'errors');
 		$db->rollback();
@@ -78,7 +78,7 @@ if (preg_match('/set_(.*)/', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -88,7 +88,7 @@ if (preg_match('/del_(.*)/', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -110,7 +110,7 @@ print '<input type="hidden" name="action" value="update">';
 
 print load_fiche_titre($langs->trans("ModuleSetup").' '.$langs->trans('Modulebuilder'), $linkback);
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	print dol_get_fiche_head($head, 'modulebuilder', '', -1);
 }
 
@@ -208,7 +208,7 @@ print '</table>';
 
 print $form->buttonsSaveCancel("Save", '');
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	print dol_get_fiche_end();
 }
 

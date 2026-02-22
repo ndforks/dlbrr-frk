@@ -52,18 +52,18 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport_ik.class.php'
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'users', 'trips'));
 
-$action      = GETPOST('action', 'aZ09');
-$massaction  = GETPOST('massaction', 'alpha');
-$show_files  = GETPOSTINT('show_files');
-$confirm     = GETPOST('confirm', 'alpha');
-$cancel      = GETPOST('cancel', 'alpha'); // We click on a Cancel button
-$toselect    = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'expensereportlist';
-$mode        = GETPOST('mode', 'alpha');
+$action      = request()->input('action');
+$massaction  = request()->input('massaction');
+$show_files  = request()->integer('show_files', 0);
+$confirm     = request()->input('confirm');
+$cancel      = request()->input('cancel'); // We click on a Cancel button
+$toselect    = request()->input('toselect');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'expensereportlist';
+$mode        = request()->input('mode');
 
 $childids = $user->getAllChildIds(1);
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 // If we are on the view of a specific user
 if ($id > 0) {
 	$canread = 0;
@@ -77,7 +77,7 @@ if ($id > 0) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 
@@ -85,10 +85,10 @@ $diroutputmassaction = $conf->expensereport->dir_output.'/temp/massgeneration/'.
 
 
 // Load variable for pagination
-$limit 		= GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield	= GETPOST('sortfield', 'aZ09comma');
-$sortorder	= GETPOST('sortorder', 'aZ09comma');
-$page 		= GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit 		= request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield	= request()->input('sortfield');
+$sortorder	= request()->input('sortorder');
+$page 		= request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -103,34 +103,34 @@ if (!$sortfield) {
 }
 
 
-$search_all			= trim(GETPOST('search_all', 'alphanohtml'));
+$search_all			= trim(request()->input('search_all'));
 
-$search_ref			= GETPOST('search_ref', 'alpha');
-$search_user		= GETPOST('search_user', 'intcomma');
-$search_amount_ht	= GETPOST('search_amount_ht', 'alpha');
-$search_amount_vat	= GETPOST('search_amount_vat', 'alpha');
-$search_amount_ttc	= GETPOST('search_amount_ttc', 'alpha');
-$search_status		= (GETPOST('search_status', 'intcomma') != '' ? GETPOST('search_status', 'intcomma') : GETPOST('statut', 'intcomma'));
+$search_ref			= request()->input('search_ref');
+$search_user		= request()->input('search_user');
+$search_amount_ht	= request()->input('search_amount_ht');
+$search_amount_vat	= request()->input('search_amount_vat');
+$search_amount_ttc	= request()->input('search_amount_ttc');
+$search_status		= (request()->input('search_status') != '' ? request()->input('search_status') : request()->input('statut'));
 
-$search_date_startday		= GETPOSTINT('search_date_startday');
-$search_date_startmonth		= GETPOSTINT('search_date_startmonth');
-$search_date_startyear		= GETPOSTINT('search_date_startyear');
-$search_date_startendday	= GETPOSTINT('search_date_startendday');
-$search_date_startendmonth	= GETPOSTINT('search_date_startendmonth');
-$search_date_startendyear	= GETPOSTINT('search_date_startendyear');
+$search_date_startday		= request()->integer('search_date_startday', 0);
+$search_date_startmonth		= request()->integer('search_date_startmonth', 0);
+$search_date_startyear		= request()->integer('search_date_startyear', 0);
+$search_date_startendday	= request()->integer('search_date_startendday', 0);
+$search_date_startendmonth	= request()->integer('search_date_startendmonth', 0);
+$search_date_startendyear	= request()->integer('search_date_startendyear', 0);
 $search_date_start			= dol_mktime(0, 0, 0, $search_date_startmonth, $search_date_startday, $search_date_startyear);	// Use tzserver
 $search_date_startend		= dol_mktime(23, 59, 59, $search_date_startendmonth, $search_date_startendday, $search_date_startendyear);
 
-$search_date_endday			= GETPOSTINT('search_date_endday');
-$search_date_endmonth		= GETPOSTINT('search_date_endmonth');
-$search_date_endyear		= GETPOSTINT('search_date_endyear');
-$search_date_endendday		= GETPOSTINT('search_date_endendday');
-$search_date_endendmonth	= GETPOSTINT('search_date_endendmonth');
-$search_date_endendyear		= GETPOSTINT('search_date_endendyear');
+$search_date_endday			= request()->integer('search_date_endday', 0);
+$search_date_endmonth		= request()->integer('search_date_endmonth', 0);
+$search_date_endyear		= request()->integer('search_date_endyear', 0);
+$search_date_endendday		= request()->integer('search_date_endendday', 0);
+$search_date_endendmonth	= request()->integer('search_date_endendmonth', 0);
+$search_date_endendyear		= request()->integer('search_date_endendyear', 0);
 $search_date_end			= dol_mktime(0, 0, 0, $search_date_endmonth, $search_date_endday, $search_date_endyear);	// Use tzserver
 $search_date_endend			= dol_mktime(23, 59, 59, $search_date_endendmonth, $search_date_endendday, $search_date_endendyear);
 
-$optioncss    = GETPOST('optioncss', 'alpha');
+$optioncss    = request()->input('optioncss');
 
 if ($search_status == '') {
 	$search_status = -1;
@@ -140,7 +140,7 @@ if ($search_user == '') {
 }
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -198,11 +198,11 @@ $objectuser = new User($db);
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -217,7 +217,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_ref = "";
 		$search_user = "";
 		$search_amount_ht = "";
@@ -243,8 +243,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -372,7 +372,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller than paging size (filtering), goto and load page 0
@@ -391,7 +391,7 @@ if ($limit) {
 //print $sql;
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -486,7 +486,7 @@ $arrayofmassactions = array(
 if ($user->hasRight('expensereport', 'supprimer')) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

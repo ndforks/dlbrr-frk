@@ -46,7 +46,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->load("admin");
@@ -59,8 +59,8 @@ $form = new Form($db);
 // List of supported format
 $type2label = ExtraFields::getListOfTypesLabels();
 
-$action = GETPOST('action', 'aZ09');
-$attrname = GETPOST('attrname', 'alpha');
+$action = request()->input('action');
+$attrname = request()->input('attrname');
 $elementtype = 'receptiondet_batch'; //Must be the $table_element of the class that manage extrafield
 
 

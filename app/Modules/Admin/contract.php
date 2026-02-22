@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/contract.lib.php';
 $langs->loadLangs(array("admin", "errors", "contracts"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'contract';
 
 if (!getDolGlobalString('CONTRACT_ADDON')) {
@@ -69,8 +69,8 @@ include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 $error = 0;
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconstcontract', 'aZ09');
-	$maskvalue = GETPOST('maskcontract', 'alpha');
+	$maskconst = request()->input('maskconstcontract');
+	$maskvalue = request()->input('maskcontract');
 	$res = 0;
 	if ($maskconst && preg_match('/_MASK$/', $maskconst)) {
 		$res = dolibarr_set_const($db, $maskconst, $maskvalue, 'chaine', 0, '', $conf->entity);
@@ -86,7 +86,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') { // For contract
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$contract = new Contrat($db);
 	$contract->initAsSpecimen();
@@ -152,13 +152,13 @@ if ($action == 'updateMask') {
 
 	dolibarr_set_const($db, "CONTRACT_ADDON", $value, 'chaine', 0, '', $conf->entity);
 } elseif ($action == 'set_other') {
-	$freetext = GETPOST('CONTRACT_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('CONTRACT_FREE_TEXT'); // No alpha here, we want exact string
 	$res1 = dolibarr_set_const($db, "CONTRACT_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
-	$draft = GETPOST('CONTRACT_DRAFT_WATERMARK', 'alpha');
+	$draft = request()->input('CONTRACT_DRAFT_WATERMARK');
 	$res2 = dolibarr_set_const($db, "CONTRACT_DRAFT_WATERMARK", trim($draft), 'chaine', 0, '', $conf->entity);
 
-	$value = GETPOST('activate_hideClosedServiceByDefault', 'alpha');
+	$value = request()->input('activate_hideClosedServiceByDefault');
 	$res3 = dolibarr_set_const($db, "CONTRACT_HIDE_CLOSED_SERVICES_BY_DEFAULT", $value, 'chaine', 0, '', $conf->entity);
 
 	if (!($res1 > 0) || !($res2 > 0) || !($res3 > 0)) {
@@ -354,7 +354,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

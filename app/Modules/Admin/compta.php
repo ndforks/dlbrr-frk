@@ -42,7 +42,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'compta', 'accountancy'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Other parameters ACCOUNTING_*
 $list = array(
@@ -57,11 +57,11 @@ $list = array(
 );
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 if (!isModEnabled('comptabilite')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 
 
@@ -79,7 +79,7 @@ if ($action == 'update') {
 		'CREANCES-DETTES'
 	);
 
-	$accounting_mode = GETPOST('accounting_mode', 'alpha');
+	$accounting_mode = request()->input('accounting_mode');
 
 
 	if (in_array($accounting_mode, $accounting_modes)) {
@@ -98,7 +98,7 @@ if ($action == 'update') {
 		}
 	}
 
-	$report_include_varpay = GETPOST('ACCOUNTING_REPORTS_INCLUDE_VARPAY', 'alpha');
+	$report_include_varpay = request()->input('ACCOUNTING_REPORTS_INCLUDE_VARPAY');
 	if (!empty($report_include_varpay)) {
 		if ($report_include_varpay == 'yes') {
 			if (!dolibarr_set_const($db, 'ACCOUNTING_REPORTS_INCLUDE_VARPAY', 1, 'chaine', 0, '', $conf->entity)) {
@@ -112,7 +112,7 @@ if ($action == 'update') {
 		}
 	}
 
-	$report_include_loan = GETPOST('ACCOUNTING_REPORTS_INCLUDE_LOAN', 'alpha');
+	$report_include_loan = request()->input('ACCOUNTING_REPORTS_INCLUDE_LOAN');
 	if (!empty($report_include_loan)) {
 		if ($report_include_loan == 'yes') {
 			if (!dolibarr_set_const($db, 'ACCOUNTING_REPORTS_INCLUDE_LOAN', 1, 'chaine', 0, '', $conf->entity)) {

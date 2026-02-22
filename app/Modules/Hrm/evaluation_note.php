@@ -46,12 +46,12 @@ require_once DOL_DOCUMENT_ROOT . '/hrm/lib/hrm_evaluation.lib.php';
 $langs->loadLangs(array('hrm', 'companies'));
 
 // Get parameters
-$id   = GETPOSTINT('id');
-$ref  = GETPOST('ref', 'alpha');
+$id   = request()->integer('id', 0);
+$ref  = request()->input('ref');
 
-$action     = GETPOST('action', 'aZ09');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action     = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new Evaluation($db);
@@ -73,12 +73,12 @@ $permissionnote   = $user->hasRight('hrm', 'evaluation', 'write'); // Used by th
 $permissiontoread = $user->hasRight('hrm', 'evaluation', 'read');  // Used by the include of actions_addupdatedelete.inc.php
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == Evaluation::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, $object->element, $object, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
-if (empty($conf->hrm->enabled)) accessforbidden();
-if (!$permissiontoread) accessforbidden();
+if (empty($conf->hrm->enabled)) abort(403);
+if (!$permissiontoread) abort(403);
 
 
 /*

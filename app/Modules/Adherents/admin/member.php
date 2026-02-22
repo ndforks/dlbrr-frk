@@ -52,19 +52,19 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/adherent.class.php';
 $langs->loadLangs(array("admin", "members", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
 $choices = array('yesno', 'texte', 'chaine');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scandir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scandir');
 $type = 'member';
 
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');
 
 $reg = array();
 $error = 0;
@@ -77,8 +77,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconst = GETPOST('maskconst', 'aZ09');
-	$maskvalue = GETPOST('maskvalue', 'alpha');
+	$maskconst = request()->input('maskconst');
+	$maskvalue = request()->input('maskvalue');
 
 	$res = 0;
 
@@ -96,7 +96,7 @@ if ($action == 'updateMask') {
 		setEventMessages($langs->trans("Error"), null, 'errors');
 	}
 } elseif ($action == 'specimen') { // For fiche expensereport
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$adherentspecimen = new Adherent($db);
 	$adherentspecimen->initAsSpecimen();
@@ -159,7 +159,7 @@ if ($action == 'updateMask') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
@@ -167,27 +167,27 @@ if ($action == 'updateMask') {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'updatemainoptions') {
 	$db->begin();
 	$res1 = $res2 = $res3 = $res4 = $res5 = $res6 = $res7 = $res8 = $res9 = 0;
-	$res1 = dolibarr_set_const($db, 'ADHERENT_LOGIN_NOT_REQUIRED', GETPOST('ADHERENT_LOGIN_NOT_REQUIRED', 'alpha') ? 0 : 1, 'chaine', 0, '', $conf->entity);
-	$res2 = dolibarr_set_const($db, 'ADHERENT_MAIL_REQUIRED', GETPOST('ADHERENT_MAIL_REQUIRED', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res3 = dolibarr_set_const($db, 'ADHERENT_DEFAULT_SENDINFOBYMAIL', GETPOST('ADHERENT_DEFAULT_SENDINFOBYMAIL', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res3 = dolibarr_set_const($db, 'ADHERENT_CREATE_EXTERNAL_USER_LOGIN', GETPOST('ADHERENT_CREATE_EXTERNAL_USER_LOGIN', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res4 = dolibarr_set_const($db, 'ADHERENT_BANK_USE', GETPOST('ADHERENT_BANK_USE', 'alpha'), 'chaine', 0, '', $conf->entity);
-	if (GETPOSTISSET('MEMBER_PUBLIC_ENABLED')) {
-		$res7 = dolibarr_set_const($db, 'MEMBER_PUBLIC_ENABLED', GETPOST('MEMBER_PUBLIC_ENABLED', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res1 = dolibarr_set_const($db, 'ADHERENT_LOGIN_NOT_REQUIRED', request()->input('ADHERENT_LOGIN_NOT_REQUIRED') ? 0 : 1, 'chaine', 0, '', $conf->entity);
+	$res2 = dolibarr_set_const($db, 'ADHERENT_MAIL_REQUIRED', request()->input('ADHERENT_MAIL_REQUIRED'), 'chaine', 0, '', $conf->entity);
+	$res3 = dolibarr_set_const($db, 'ADHERENT_DEFAULT_SENDINFOBYMAIL', request()->input('ADHERENT_DEFAULT_SENDINFOBYMAIL'), 'chaine', 0, '', $conf->entity);
+	$res3 = dolibarr_set_const($db, 'ADHERENT_CREATE_EXTERNAL_USER_LOGIN', request()->input('ADHERENT_CREATE_EXTERNAL_USER_LOGIN'), 'chaine', 0, '', $conf->entity);
+	$res4 = dolibarr_set_const($db, 'ADHERENT_BANK_USE', request()->input('ADHERENT_BANK_USE'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('MEMBER_PUBLIC_ENABLED')) {
+		$res7 = dolibarr_set_const($db, 'MEMBER_PUBLIC_ENABLED', request()->input('MEMBER_PUBLIC_ENABLED'), 'chaine', 0, '', $conf->entity);
 	}
-	$res8 = dolibarr_set_const($db, 'MEMBER_SUBSCRIPTION_START_FIRST_DAY_OF', GETPOST('MEMBER_SUBSCRIPTION_START_FIRST_DAY_OF', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res9 = dolibarr_set_const($db, 'MEMBER_SUBSCRIPTION_START_AFTER', GETPOST('MEMBER_SUBSCRIPTION_START_AFTER', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res8 = dolibarr_set_const($db, 'MEMBER_SUBSCRIPTION_START_FIRST_DAY_OF', request()->input('MEMBER_SUBSCRIPTION_START_FIRST_DAY_OF'), 'chaine', 0, '', $conf->entity);
+	$res9 = dolibarr_set_const($db, 'MEMBER_SUBSCRIPTION_START_AFTER', request()->input('MEMBER_SUBSCRIPTION_START_AFTER'), 'chaine', 0, '', $conf->entity);
 	// Use vat for invoice creation
 	if (isModEnabled('invoice')) {
-		$res4 = dolibarr_set_const($db, 'ADHERENT_VAT_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_VAT_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
-		$res5 = dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
+		$res4 = dolibarr_set_const($db, 'ADHERENT_VAT_FOR_SUBSCRIPTIONS', request()->input('ADHERENT_VAT_FOR_SUBSCRIPTIONS'), 'chaine', 0, '', $conf->entity);
+		$res5 = dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', request()->input('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS'), 'chaine', 0, '', $conf->entity);
 		if (isModEnabled("product") || isModEnabled("service")) {
-			$res6 = dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', GETPOST('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', 'alpha'), 'chaine', 0, '', $conf->entity);
+			$res6 = dolibarr_set_const($db, 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS', request()->input('ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS'), 'chaine', 0, '', $conf->entity);
 		}
 	}
 	if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0 || $res5 < 0 || $res6 < 0 || $res7 < 0 || $res8 < 0 || $res9 < 0) {
@@ -200,11 +200,11 @@ if ($action == 'updateMask') {
 } elseif ($action == 'updatememberscards') {
 	$db->begin();
 	$res1 = $res2 = $res3 = $res4 = 0;
-	$res1 = dolibarr_set_const($db, 'ADHERENT_CARD_TYPE', GETPOST('ADHERENT_CARD_TYPE'), 'chaine', 0, '', $conf->entity);
-	$res2 = dolibarr_set_const($db, 'ADHERENT_CARD_HEADER_TEXT', GETPOST('ADHERENT_CARD_HEADER_TEXT', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res3 = dolibarr_set_const($db, 'ADHERENT_CARD_TEXT', GETPOST('ADHERENT_CARD_TEXT', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res3 = dolibarr_set_const($db, 'ADHERENT_CARD_TEXT_RIGHT', GETPOST('ADHERENT_CARD_TEXT_RIGHT', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res4 = dolibarr_set_const($db, 'ADHERENT_CARD_FOOTER_TEXT', GETPOST('ADHERENT_CARD_FOOTER_TEXT', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res1 = dolibarr_set_const($db, 'ADHERENT_CARD_TYPE', request()->input('ADHERENT_CARD_TYPE'), 'chaine', 0, '', $conf->entity);
+	$res2 = dolibarr_set_const($db, 'ADHERENT_CARD_HEADER_TEXT', request()->input('ADHERENT_CARD_HEADER_TEXT'), 'chaine', 0, '', $conf->entity);
+	$res3 = dolibarr_set_const($db, 'ADHERENT_CARD_TEXT', request()->input('ADHERENT_CARD_TEXT'), 'chaine', 0, '', $conf->entity);
+	$res3 = dolibarr_set_const($db, 'ADHERENT_CARD_TEXT_RIGHT', request()->input('ADHERENT_CARD_TEXT_RIGHT'), 'chaine', 0, '', $conf->entity);
+	$res4 = dolibarr_set_const($db, 'ADHERENT_CARD_FOOTER_TEXT', request()->input('ADHERENT_CARD_FOOTER_TEXT'), 'chaine', 0, '', $conf->entity);
 
 	if ($res1 < 0 || $res2 < 0 || $res3 < 0 || $res4 < 0) {
 		setEventMessages('ErrorFailedToSaveDate', null, 'errors');
@@ -216,8 +216,8 @@ if ($action == 'updateMask') {
 } elseif ($action == 'updatememberstickets') {
 	$db->begin();
 	$res1 = $res2 = 0;
-	$res1 = dolibarr_set_const($db, 'ADHERENT_ETIQUETTE_TYPE', GETPOST('ADHERENT_ETIQUETTE_TYPE'), 'chaine', 0, '', $conf->entity);
-	$res2 = dolibarr_set_const($db, 'ADHERENT_ETIQUETTE_TEXT', GETPOST('ADHERENT_ETIQUETTE_TEXT', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res1 = dolibarr_set_const($db, 'ADHERENT_ETIQUETTE_TYPE', request()->input('ADHERENT_ETIQUETTE_TYPE'), 'chaine', 0, '', $conf->entity);
+	$res2 = dolibarr_set_const($db, 'ADHERENT_ETIQUETTE_TEXT', request()->input('ADHERENT_ETIQUETTE_TEXT'), 'chaine', 0, '', $conf->entity);
 
 	if ($res1 < 0 || $res2 < 0) {
 		setEventMessages('ErrorFailedToSaveDate', null, 'errors');
@@ -229,12 +229,12 @@ if ($action == 'updateMask') {
 } elseif ($action == 'setcodemember') {
 	$result = dolibarr_set_const($db, "MEMBER_CODEMEMBER_ADDON", $value, 'chaine', 0, '', $conf->entity);
 	if ($result <= 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'update' || $action == 'add') {
 	// Action to update or add a constant
-	$constname = GETPOST('constname', 'alpha');
-	$constvalue = (GETPOST('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname) : GETPOST('constvalue'));
+	$constname = request()->input('constname');
+	$constvalue = (GETPOST('constvalue_'.$constname) ? GETPOST('constvalue_'.$constname) : request()->input('constvalue'));
 
 
 	if (($constname == 'ADHERENT_CARD_TYPE' || $constname == 'ADHERENT_ETIQUETTE_TYPE' || $constname == 'ADHERENT_PRODUCT_ID_FOR_SUBSCRIPTIONS') && $constvalue == -1) {
@@ -248,8 +248,8 @@ if ($action == 'updateMask') {
 		}
 	}
 
-	$consttype = GETPOSTINT('consttype');
-	$constnote = GETPOST('constnote');
+	$consttype = request()->integer('consttype', 0);
+	$constnote = request()->input('constnote');
 	$res = dolibarr_set_const($db, $constname, $constvalue, $choices[$consttype], 0, $constnote, $conf->entity);
 
 	if (!($res > 0)) {
@@ -265,7 +265,7 @@ if ($action == 'updateMask') {
 
 // Action to enable of a submodule of the adherent module
 if ($action == 'set') {
-	$result = dolibarr_set_const($db, GETPOST('name', 'alpha'), GETPOST('value'), '', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, request()->input('name'), request()->input('value'), '', 0, '', $conf->entity);
 	if ($result < 0) {
 		print $db->error();
 	}
@@ -273,7 +273,7 @@ if ($action == 'set') {
 
 // Action to disable a submodule of the adherent module
 if ($action == 'unset') {
-	$result = dolibarr_del_const($db, GETPOST('name', 'alpha'), $conf->entity);
+	$result = dolibarr_del_const($db, request()->input('name'), $conf->entity);
 	if ($result < 0) {
 		print $db->error();
 	}
@@ -422,7 +422,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

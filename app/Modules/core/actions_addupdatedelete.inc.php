@@ -181,7 +181,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 			$object->$key = '(PROV)';
 		}
 		if ($key == 'pass_crypted') {
-			$object->pass = GETPOST("pass", "password");
+			$object->pass = request()->input('pass');
 			// TODO Manadatory for password not yet managed
 		} else {
 			if (!empty($val['notnull']) && $val['notnull'] > 0 && $object->$key == '' && !isset($val['default'])) {
@@ -202,7 +202,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 	}
 
 	// Special field
-	$model_pdf = GETPOST('model');
+	$model_pdf = request()->input('model');
 	if (!empty($model_pdf) && property_exists($object, 'model_pdf')) {
 		$object->model_pdf = $model_pdf;
 	}
@@ -222,7 +222,7 @@ if ($action == 'add' && !empty($permissiontoadd)) {
 		if ($result > 0) {
 			// Creation OK
 			if (isModEnabled('category') && method_exists($object, 'setCategories')) {
-				$categories = GETPOST('categories', 'array:int');
+				$categories = request()->input('categories');
 				$object->setCategories($categories);
 			}
 
@@ -339,8 +339,8 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		$object->$key = $value;
 
 		if ($key == 'pass_crypted' && property_exists($object, 'pass')) {
-			if (GETPOST("pass", "password")) {	// If not provided, we do not change it. We never erase a password with empty.
-				$object->pass = GETPOST("pass", "password");
+			if (request()->input('pass')) {	// If not provided, we do not change it. We never erase a password with empty.
+				$object->pass = request()->input('pass');
 			}
 			// TODO Manadatory for password not yet managed
 		} else {
@@ -360,7 +360,7 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 		}
 
 		if (isModEnabled('category')) {
-			$categories = GETPOST('categories', 'array');
+			$categories = request()->input('categories');
 			if (method_exists($object, 'setCategories')) {
 				$object->setCategories($categories);
 			}
@@ -399,8 +399,8 @@ if ($action == 'update' && !empty($permissiontoadd)) {
 
 // Action to update one modulebuilder field
 $reg = array();
-if (preg_match('/^set(\w+)$/', $action, $reg) && GETPOSTINT('id') > 0 && !empty($permissiontoadd)) {
-	$object->fetch(GETPOSTINT('id'));
+if (preg_match('/^set(\w+)$/', $action, $reg) && request()->integer('id', 0) > 0 && !empty($permissiontoadd)) {
+	$object->fetch(request()->integer('id', 0));
 
 	$keyforfield = $reg[1];
 	if (property_exists($object, $keyforfield)) {
@@ -425,17 +425,17 @@ if (preg_match('/^set(\w+)$/', $action, $reg) && GETPOSTINT('id') > 0 && !empty(
 
 // Action to update one extrafield
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
-if ($action == "update_extras" && GETPOSTINT('id') > 0 && !empty($permissiontoeditextra)) {
-	$object->fetch(GETPOSTINT('id'));
+if ($action == "update_extras" && request()->integer('id', 0) > 0 && !empty($permissiontoeditextra)) {
+	$object->fetch(request()->integer('id', 0));
 
 	$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-	$attribute = GETPOST('attribute', 'aZ09');
+	$attribute = request()->input('attribute');
 
 	$error = 0;
 
@@ -500,7 +500,7 @@ if ($action == 'confirm_delete' && !empty($permissiontodelete)) {
 // Remove a line
 if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissiontoadd)) {
 	if (!empty($object->element) && $object->element == 'mo') {
-		$fk_movement = GETPOSTINT('fk_movement');
+		$fk_movement = request()->integer('fk_movement', 0);
 		$result = $object->deleteLine($user, $lineid, 0, $fk_movement);
 	} else {
 		$result = $object->deleteLine($user, $lineid);
@@ -510,8 +510,8 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes' && !empty($permissionto
 		// Define output language
 		$outputlangs = $langs;
 		$newlang = '';
-		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-			$newlang = GETPOST('lang_id', 'aZ09');
+		if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+			$newlang = request()->input('lang_id');
 		}
 		if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && is_object($object->thirdparty)) {
 			$newlang = $object->thirdparty->default_lang;
@@ -555,8 +555,8 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = !empty($object->thirdparty->default_lang) ? $object->thirdparty->default_lang : "";
@@ -592,8 +592,8 @@ if ($action == 'confirm_close' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -636,8 +636,8 @@ if ($action == 'confirm_reopen' && $confirm == 'yes' && $permissiontoadd) {
 			if (method_exists($object, 'generateDocument')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang) && is_object($object->thirdparty)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -662,7 +662,7 @@ if ($action == 'confirm_reopen' && $confirm == 'yes' && $permissiontoadd) {
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes' && !empty($permissiontoadd)) {
 	// @phan-suppress-next-line PhanPluginBothLiteralsBinaryOp
-	if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers')) {
+	if (1 == 0 && !request()->input('clone_content') && !request()->input('clone_receivers')) {
 		setEventMessages($langs->trans("NoCloneOptionsSpecified"), null, 'errors');
 	} else {
 		// We clone object to avoid to denaturate loaded object when setting some properties for clone or if createFromClone modifies the object.

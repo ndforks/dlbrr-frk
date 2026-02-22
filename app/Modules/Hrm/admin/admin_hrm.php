@@ -40,7 +40,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->loadLangs(array('admin', 'hrm'));
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Other parameters HRM_*
 $list = array(
@@ -52,15 +52,15 @@ $permissiontoread = $user->admin;
 $permissiontoadd  = $user->admin;
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, '', '', 'fk_soc', 'rowid', 0);
 if (!isModEnabled('hrm')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 
 

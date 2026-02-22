@@ -29,19 +29,19 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 $encoding = '';
 
 // Parameters to download files
-$hashp = GETPOST('hashp', 'aZ09');
+$hashp = request()->input('hashp');
 $extname = GETPOST('extname', 'alpha', 1);
-$modulepart = GETPOST('modulepart', 'aZ09');
-$entity = GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity;
-$original_file = GETPOST("file", "alpha");
-$l = GETPOST('l', 'aZ09');
-$limit = GETPOSTINT('limit');
+$modulepart = request()->input('modulepart');
+$entity = request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity;
+$original_file = request()->input('file');
+$l = request()->input('l');
+$limit = request()->integer('limit', 0);
 if ($limit <= 0 || $limit > 100) {
 	$limit = 20;
 }
 
 // Parameters for RSS
-$rss = GETPOST('rss', 'aZ09');
+$rss = request()->input('rss');
 if ($rss) {
 	$original_file = 'blog'.(($limit > 0 && $limit <= 100) ? '-'.$limit : '').(preg_match('/^[a-z][a-z](_[A-Z][A-Z])?$/', $l) ? '-'.$l : '').'-'.$websitekey.'.rss.cache';
 }
@@ -110,8 +110,8 @@ $attachment = true;
 if (preg_match('/\.(html|htm)$/i', $original_file)) {
 	$attachment = false;
 }
-if (GETPOSTISSET("attachment")) {
-	$attachment = (GETPOST("attachment", 'alphanohtml') ? true : false);
+if (request()->has('attachment')) {
+	$attachment = (request()->input('attachment') ? true : false);
 }
 if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS_WEBSITE')) {
 	$attachment = false;
@@ -119,8 +119,8 @@ if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS_WEBSITE')) {
 
 // Define mime type
 $type = 'application/octet-stream';
-if (GETPOSTISSET('type')) {
-	$type = GETPOST('type', 'alpha');
+if (request()->has('type')) {
+	$type = request()->input('type');
 } else {
 	$type = dol_mimetype($original_file);
 }
@@ -130,8 +130,8 @@ $original_file = str_replace("../", "/", $original_file);
 
 
 // Cache or not
-$cachestring = GETPOST("cache", 'aZ09');	// May be 1, or an int (delay in second of the cache if < 999999, or a timestamp), or a hash
-$cachedelay = GETPOSTINT('cachedelay') ? GETPOSTINT('cachedelay') : ((is_numeric($cachestring) && (int) $cachestring > 1 && (int) $cachestring < 999999) ? $cachestring : '3600');
+$cachestring = request()->input('cache');	// May be 1, or an int (delay in second of the cache if < 999999, or a timestamp), or a hash
+$cachedelay = request()->integer('cachedelay', 0) ? request()->integer('cachedelay', 0) : ((is_numeric($cachestring) && (int) $cachestring > 1 && (int) $cachestring < 999999) ? $cachestring : '3600');
 if ($cachestring || image_format_supported($original_file) >= 0) {
 	// Important: Following code is to avoid page request by browser and PHP CPU at each Dolibarr page access.
 	header('Cache-Control: max-age='.$cachedelay.', public, must-revalidate');
@@ -239,13 +239,13 @@ if ($rss) {
 	}
 
 	$attachment = false;
-	if (GETPOSTISSET("attachment")) {
-		$attachment = GETPOST("attachment");
+	if (request()->has('attachment')) {
+		$attachment = request()->input('attachment');
 	}
 	//$attachment = false;
 	$contenttype = 'application/rss+xml';
-	if (GETPOSTISSET("contenttype")) {
-		$contenttype = GETPOST("contenttype");
+	if (request()->has('contenttype')) {
+		$contenttype = request()->input('contenttype');
 	}
 	//$contenttype='text/plain';
 	$outputencoding = 'UTF-8';

@@ -45,14 +45,14 @@ $langs->loadLangs(array("admin", "ticket"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$value = GETPOST('value', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scandir', 'alpha');
+$value = request()->input('value');
+$action = request()->input('action');
+$label = request()->input('label');
+$scandir = request()->input('scandir');
 $type = 'ticket';
 
 
@@ -63,7 +63,7 @@ $error = 0;
 $errors = array();
 
 if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
-	if (GETPOST('value')) {
+	if (request()->input('value')) {
 		$res = dolibarr_set_const($db, 'TICKET_ENABLE_PUBLIC_INTERFACE', 1, 'chaine', 0, '', $conf->entity);
 	} else {
 		$res = dolibarr_set_const($db, 'TICKET_ENABLE_PUBLIC_INTERFACE', 0, 'chaine', 0, '', $conf->entity);
@@ -75,8 +75,8 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 } elseif ($action == 'setvar') {
 	include_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
 
-	if (GETPOSTISSET('TICKET_ENABLE_PUBLIC_INTERFACE')) {	// only for no js case
-		$param_enable_public_interface = GETPOST('TICKET_ENABLE_PUBLIC_INTERFACE', 'alpha');
+	if (request()->has('TICKET_ENABLE_PUBLIC_INTERFACE')) {	// only for no js case
+		$param_enable_public_interface = request()->input('TICKET_ENABLE_PUBLIC_INTERFACE');
 		$res = dolibarr_set_const($db, 'TICKET_ENABLE_PUBLIC_INTERFACE', $param_enable_public_interface, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
@@ -84,8 +84,8 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		}
 	}
 
-	if (GETPOSTISSET('TICKET_SHOW_COMPANY_LOGO')) {	// only for no js case
-		$param_show_module_logo = GETPOST('TICKET_SHOW_COMPANY_LOGO', 'alpha');
+	if (request()->has('TICKET_SHOW_COMPANY_LOGO')) {	// only for no js case
+		$param_show_module_logo = request()->input('TICKET_SHOW_COMPANY_LOGO');
 		$res = dolibarr_set_const($db, 'TICKET_SHOW_COMPANY_LOGO', $param_show_module_logo, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
@@ -93,7 +93,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		}
 	}
 
-	$topic_interface = GETPOST('TICKET_PUBLIC_INTERFACE_TOPIC', 'alphanohtml');
+	$topic_interface = request()->input('TICKET_PUBLIC_INTERFACE_TOPIC');
 	if (!empty($topic_interface)) {
 		$res = dolibarr_set_const($db, 'TICKET_PUBLIC_INTERFACE_TOPIC', $topic_interface, 'chaine', 0, '', $conf->entity);
 	} else {
@@ -104,8 +104,8 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		$errors[] = $db->lasterror();
 	}
 
-	$text_home = GETPOST('TICKET_PUBLIC_TEXT_HOME', 'restricthtml');
-	if (GETPOSTISSET('TICKET_PUBLIC_TEXT_HOME')) {
+	$text_home = request()->input('TICKET_PUBLIC_TEXT_HOME');
+	if (request()->has('TICKET_PUBLIC_TEXT_HOME')) {
 		$res = dolibarr_set_const($db, 'TICKET_PUBLIC_TEXT_HOME', $text_home, 'chaine', 0, '', $conf->entity);
 	} else {
 		$res = dolibarr_set_const($db, 'TICKET_PUBLIC_TEXT_HOME', $langs->trans('TicketPublicInterfaceTextHome'), 'chaine', 0, '', $conf->entity);
@@ -115,7 +115,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		$errors[] = $db->lasterror();
 	}
 
-	$text_help = GETPOST('TICKET_PUBLIC_TEXT_HELP_MESSAGE', 'restricthtml');
+	$text_help = request()->input('TICKET_PUBLIC_TEXT_HELP_MESSAGE');
 	if (!empty($text_help)) {
 		$res = dolibarr_set_const($db, 'TICKET_PUBLIC_TEXT_HELP_MESSAGE', $text_help, 'chaine', 0, '', $conf->entity);
 	} else {
@@ -126,7 +126,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		$errors[] = $db->lasterror();
 	}
 
-	$mail_new_ticket = GETPOST('TICKET_MESSAGE_MAIL_NEW', 'restricthtml');
+	$mail_new_ticket = request()->input('TICKET_MESSAGE_MAIL_NEW');
 	if (!empty($mail_new_ticket)) {
 		$res = dolibarr_set_const($db, 'TICKET_MESSAGE_MAIL_NEW', $mail_new_ticket, 'chaine', 0, '', $conf->entity);
 	} else {
@@ -137,7 +137,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		$errors[] = $db->lasterror();
 	}
 
-	$url_interface = GETPOST('TICKET_URL_PUBLIC_INTERFACE', 'alpha');
+	$url_interface = request()->input('TICKET_URL_PUBLIC_INTERFACE');
 	if (!empty($url_interface)) {
 		$res = dolibarr_set_const($db, 'TICKET_URL_PUBLIC_INTERFACE', $url_interface, 'chaine', 0, '', $conf->entity);
 	} else {
@@ -148,7 +148,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 		$errors[] = $db->lasterror();
 	}
 
-	$param_public_notification_new_message_default_email = GETPOST('TICKET_PUBLIC_NOTIFICATION_NEW_MESSAGE_DEFAULT_EMAIL', 'alpha');
+	$param_public_notification_new_message_default_email = request()->input('TICKET_PUBLIC_NOTIFICATION_NEW_MESSAGE_DEFAULT_EMAIL');
 	$res = dolibarr_set_const($db, 'TICKET_PUBLIC_NOTIFICATION_NEW_MESSAGE_DEFAULT_EMAIL', $param_public_notification_new_message_default_email, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -157,7 +157,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 
 	// For compatibility when javascript is not enabled
 	if (getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2 && empty($conf->use_javascript_ajax)) {
-		$param_notification_also_main_addressemail = GETPOST('TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS', 'alpha');
+		$param_notification_also_main_addressemail = request()->input('TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS');
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS', $param_notification_also_main_addressemail, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
@@ -168,7 +168,7 @@ if ($action == 'setTICKET_ENABLE_PUBLIC_INTERFACE') {
 	$code = $reg[1];
 	$value = GETPOSTISSET($code) ? GETPOSTINT($code) : 1;
 	if ($code == 'TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS' && getDolGlobalInt('MAIN_FEATURES_LEVEL') >= 2) {
-		$param_notification_also_main_addressemail = GETPOST('TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS', 'alpha');
+		$param_notification_also_main_addressemail = request()->input('TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS');
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_ALSO_MAIN_ADDRESS', $param_notification_also_main_addressemail, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;

@@ -42,13 +42,13 @@ require_once DOL_DOCUMENT_ROOT.'/website/lib/websiteaccount.lib.php';
 $langs->loadLangs(array("companies", "website", "other"));
 
 // Get parameters
-$action     = GETPOST('action', 'aZ09');
-$confirm    = GETPOST('confirm', 'alpha');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action     = request()->input('action');
+$confirm    = request()->input('confirm');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$id         = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
+$id         = request()->integer('id', 0);
+$ref        = request()->input('ref');
 $socid = 0;
 
 // Initialize a technical objects
@@ -62,7 +62,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -78,12 +78,12 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'website', $id);
 $permissiontoaccess = (isModEnabled('website') && $user->hasRight('website', 'read')) || isModEnabled('webportal');
 if (!$permissiontoaccess) {
-	accessforbidden('NotAllowed');
+	abort(403);
 }
 
 // Permissions
@@ -127,13 +127,13 @@ if (!empty($action) && $action != 'view') {
 		}
 	}
 	if (empty($object->fields['site']['arrayofkeyval'])) {
-		accessforbidden('NotAllowed');
+		abort(403);
 	}
 
 	if ($object->id > 0) { // update or delete or other than create
 		// check user has the right to modify this type of website
 		if (!array_key_exists($object->site, $object->fields['site']['arrayofkeyval'])) {
-			accessforbidden('NotAllowed');
+			abort(403);
 		}
 	}
 }
@@ -154,7 +154,7 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	$backurlforlist = dol_buildpath('/societe/website.php', 1).'?id='.$object->fk_soc;
 
-	if ($action == 'add' && !GETPOST('site')) {		// Test on permission not required
+	if ($action == 'add' && !request()->input('site')) {		// Test on permission not required
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Website")), null, 'errors');
 		$action = 'create';
 	}
@@ -213,7 +213,7 @@ if ($action == 'create' || $action == 'edit') {
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden('NotEnoughPermissions', 0, 1);
+		abort(403);
 	}
 
 	print load_fiche_titre($langs->trans("NewWebsiteAccount", $langs->transnoentitiesnoconv("WebsiteAccount")));
@@ -433,7 +433,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

@@ -47,21 +47,21 @@ require_once DOL_DOCUMENT_ROOT.'/salaries/class/salary.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('banks', 'categories', 'bills', 'companies', 'withdrawals', 'salaries', 'suppliers'));
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
 // Get supervariables
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$userid = GETPOSTINT('userid');
-$type = GETPOST('type', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$userid = request()->integer('userid', 0);
+$type = request()->input('type');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -84,7 +84,7 @@ $hookmanager->initHooks(array('directdebitprevcard', 'globalcard', 'directdebitp
 
 // Security check
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 
 $type = $object->type;
@@ -445,7 +445,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

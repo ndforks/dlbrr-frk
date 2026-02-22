@@ -46,31 +46,31 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'stocks', 'orders'));
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'replenishorders'; // To manage different context of search
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'replenishorders'; // To manage different context of search
 
-$sall = GETPOST('search_all', 'alphanohtml');
-$sref = GETPOST('search_ref', 'alpha');
-$snom = GETPOST('search_nom', 'alpha');
-$suser = GETPOST('search_user', 'alpha');
-$sttc = GETPOST('search_ttc', 'alpha');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-$search_product = GETPOSTINT('search_product');
-$search_dateyear = GETPOSTINT('search_dateyear');
-$search_datemonth = GETPOSTINT('search_datemonth');
-$search_dateday = GETPOSTINT('search_dateday');
+$sall = request()->input('search_all');
+$sref = request()->input('search_ref');
+$snom = request()->input('search_nom');
+$suser = request()->input('search_user');
+$sttc = request()->input('search_ttc');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+$search_product = request()->integer('search_product', 0);
+$search_dateyear = request()->integer('search_dateyear', 0);
+$search_datemonth = request()->integer('search_datemonth', 0);
+$search_dateday = request()->integer('search_dateday', 0);
 $search_date = dol_mktime(0, 0, 0, $search_datemonth, $search_dateday, $search_dateyear);
-$optioncss = GETPOST('optioncss', 'alpha');
+$optioncss = request()->input('optioncss');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 if (!$sortorder) {
 	$sortorder = 'DESC';
 }
 if (!$sortfield) {
 	$sortfield = 'cf.date_creation';
 }
-$page = GETPOSTINT('page') ? GETPOSTINT('page') : 0;
+$page = request()->integer('page', 0) ? request()->integer('page', 0) : 0;
 if ($page < 0) {
 	$page = 0;
 }
@@ -87,7 +87,7 @@ $result = restrictedArea($user, 'produit|service');
  * Actions
  */
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$sall = "";
 	$sref = "";
 	$snom = "";
@@ -168,8 +168,8 @@ if ($sall) {
 if (!empty($socid)) {
 	$sql .= ' AND s.rowid = '.((int) $socid);
 }
-if (GETPOSTINT('statut')) {
-	$sql .= ' AND fk_statut = '.GETPOSTINT('statut');
+if (request()->integer('statut', 0)) {
+	$sql .= ' AND fk_statut = '.request()->integer('statut', 0);
 }
 $sql .= ' GROUP BY cf.rowid, cf.ref, cf.date_creation, cf.fk_statut';
 $sql .= ', cf.total_ttc, cf.fk_user_author, u.login, s.rowid, s.nom';
@@ -371,7 +371,7 @@ if ($resql) {
 
 	print dol_get_fiche_end();
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

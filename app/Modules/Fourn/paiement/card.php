@@ -49,9 +49,9 @@ $langs->loadLangs(array('banks', 'bills', 'companies', 'suppliers'));
 
 
 // Get Parameters
-$id 		= GETPOSTINT('id');
-$action		= GETPOST('action', 'alpha');
-$confirm 	= GETPOST('confirm', 'alpha');
+$id 		= request()->integer('id', 0);
+$action		= request()->input('action');
+$confirm 	= request()->input('confirm');
 
 $socid = 0;
 
@@ -73,7 +73,7 @@ if ($user->socid) {
 // Now check also permission on thirdparty of invoices of payments. Thirdparty were loaded by the fetch_object before based on first invoice.
 // It should be enough because all payments are done on invoices of the same thirdparty.
 if ($socid && $socid != $object->thirdparty->id) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = ($user->hasRight("fournisseur", "facture", "creer") || $user->hasRight("supplier_invoice", "write"));
@@ -89,7 +89,7 @@ if ($action == 'setnote' && $permissiontoadd) {
 	$db->begin();
 
 	$object->fetch($id);
-	$result = $object->update_note(GETPOST('note', 'restricthtml'));
+	$result = $object->update_note(request()->input('note'));
 	if ($result > 0) {
 		$db->commit();
 		$action = '';
@@ -128,9 +128,9 @@ if ($action == 'confirm_validate' && $confirm == 'yes' && $permissiontovalidate)
 	}
 }
 
-if ($action == 'setnum_paiement' && GETPOST('num_paiement') && $permissiontoadd) {
+if ($action == 'setnum_paiement' && request()->input('num_paiement') && $permissiontoadd) {
 	$object->fetch($id);
-	$res = $object->update_num(GETPOST('num_paiement'));
+	$res = $object->update_num(request()->input('num_paiement'));
 	if ($res === 0) {
 		setEventMessages($langs->trans('PaymentNumberUpdateSucceeded'), null, 'mesgs');
 	} else {
@@ -138,9 +138,9 @@ if ($action == 'setnum_paiement' && GETPOST('num_paiement') && $permissiontoadd)
 	}
 }
 
-if ($action == 'setdatep' && GETPOST('datepday') && $permissiontoadd) {
+if ($action == 'setdatep' && request()->input('datepday') && $permissiontoadd) {
 	$object->fetch($id);
-	$datepaye = dol_mktime(GETPOSTINT('datephour'), GETPOSTINT('datepmin'), GETPOSTINT('datepsec'), GETPOSTINT('datepmonth'), GETPOSTINT('datepday'), GETPOSTINT('datepyear'));
+	$datepaye = dol_mktime(request()->integer('datephour', 0), request()->integer('datepmin', 0), request()->integer('datepsec', 0), request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0));
 	$res = $object->update_date($datepaye);
 	if ($res === 0) {
 		setEventMessages($langs->trans('PaymentDateUpdateSucceeded'), null, 'mesgs');
@@ -354,7 +354,7 @@ if ($result > 0) {
 		print "</table>\n";
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	print '</div>';
@@ -399,7 +399,7 @@ if ($result > 0) {
 	print '</div>';
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

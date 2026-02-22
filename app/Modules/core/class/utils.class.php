@@ -242,7 +242,7 @@ class Utils
 	 *  @param  int         $usedefault        1=Use default backup profile (Set this to 1 when used as cron)
 	 *  @param  string      $file              'auto' or filename to build
 	 *  @param  int         $keeplastnfiles    Keep only last n files (not used yet)
-	 *  @param	int		    $execmethod		   0=Use default method (that is 1 by default), 1=Use the PHP 'exec' - need size of dump in memory, but low memory method is used if GETPOST('lowmemorydump') is set, 2=Use the 'popen' method (low memory method)
+	 *  @param	int		    $execmethod		   0=Use default method (that is 1 by default), 1=Use the PHP 'exec' - need size of dump in memory, but low memory method is used if request()->input('lowmemorydump') is set, 2=Use the 'popen' method (low memory method)
 	 *  @param	int			$lowmemorydump	   1=Use the low memory method. If $lowmemorydump is set, it means we want to make the compression using an external pipe instead retrieving the content of the dump in PHP memory array $output_arr and then print it into the PHP pipe open with xopen().
 	 *  @return	int						       0 if OK, < 0 if KO (this function is used also by cron so only 0 is OK)
 	 */
@@ -333,26 +333,26 @@ class Utils
 			if (!empty($dolibarr_main_db_port)) {
 				$param .= " -P ".$dolibarr_main_db_port." --protocol=tcp";
 			}
-			if (GETPOST("use_transaction", "alpha")) {
+			if (request()->input('use_transaction')) {
 				$param .= " --single-transaction";
 			}
-			if (GETPOST("disable_fk", "alpha") || $usedefault) {
+			if (request()->input('disable_fk') || $usedefault) {
 				$param .= " -K";
 			}
-			if (GETPOST("sql_compat", "alpha") && GETPOST("sql_compat", "alpha") != 'NONE') {
-				$param .= " --compatible=".escapeshellarg(GETPOST("sql_compat", "alpha"));
+			if (request()->input('sql_compat') && request()->input('sql_compat') != 'NONE') {
+				$param .= " --compatible=".escapeshellarg(request()->input('sql_compat'));
 			}
-			if (GETPOST("drop_database", "alpha")) {
+			if (request()->input('drop_database')) {
 				$param .= " --add-drop-database";
 			}
-			if (GETPOST("use_mysql_quick_param", "alpha")) {
+			if (request()->input('use_mysql_quick_param')) {
 				$param .= " --quick";
 			}
-			if (GETPOST("use_force", "alpha")) {
+			if (request()->input('use_force')) {
 				$param .= " -f";
 			}
-			if (GETPOST("sql_structure", "alpha") || $usedefault) {
-				if (GETPOST("drop", "alpha") || $usedefault) {
+			if (request()->input('sql_structure') || $usedefault) {
+				if (request()->input('drop') || $usedefault) {
 					$param .= " --add-drop-table=TRUE";
 				} else {
 					$param .= " --add-drop-table=FALSE";
@@ -360,26 +360,26 @@ class Utils
 			} else {
 				$param .= " -t";
 			}
-			if (GETPOST("disable-add-locks", "alpha")) {
+			if (request()->input('disable-add-locks')) {
 				$param .= " --add-locks=FALSE";
 			}
-			if (GETPOST("sql_data", "alpha") || $usedefault) {
+			if (request()->input('sql_data') || $usedefault) {
 				$param .= " --tables";
-				if (GETPOST("showcolumns", "alpha") || $usedefault) {
+				if (request()->input('showcolumns') || $usedefault) {
 					$param .= " -c";
 				}
-				if (GETPOST("extended_ins", "alpha") || $usedefault) {
+				if (request()->input('extended_ins') || $usedefault) {
 					$param .= " -e";
 				} else {
 					$param .= " --skip-extended-insert";
 				}
-				if (GETPOST("delayed", "alpha")) {
+				if (request()->input('delayed')) {
 					$param .= " --delayed-insert";
 				}
-				if (GETPOST("sql_ignore", "alpha")) {
+				if (request()->input('sql_ignore')) {
 					$param .= " --insert-ignore";
 				}
-				if (GETPOST("hexforbinary", "alpha") || $usedefault) {
+				if (request()->input('hexforbinary') || $usedefault) {
 					$param .= " --hex-blob";
 				}
 			} else {
@@ -648,25 +648,25 @@ class Utils
 			if (!empty($dolibarr_main_db_port)) {
 				$param .= " -p ".$dolibarr_main_db_port;
 			}
-			if (GETPOST("sql_compat") && GETPOST("sql_compat") == 'ANSI') {
+			if (request()->input('sql_compat') && request()->input('sql_compat') == 'ANSI') {
 				$param .= "  --disable-dollar-quoting";
 			}
-			if (GETPOST("drop_database")) {
+			if (request()->input('drop_database')) {
 				$param .= " -c -C";
 			}
-			if (GETPOST("sql_structure")) {
-				if (GETPOST("drop")) {
+			if (request()->input('sql_structure')) {
+				if (request()->input('drop')) {
 					$param .= " --add-drop-table";
 				}
-				if (!GETPOST("sql_data")) {
+				if (!request()->input('sql_data')) {
 					$param .= " -s";
 				}
 			}
-			if (GETPOST("sql_data")) {
-				if (!GETPOST("sql_structure")) {
+			if (request()->input('sql_data')) {
+				if (!request()->input('sql_structure')) {
 					$param .= " -a";
 				}
-				if (GETPOST("showcolumns")) {
+				if (request()->input('showcolumns')) {
 					$param .= " -c";
 				}
 			}
@@ -1174,22 +1174,22 @@ class Utils
 
 ";
 
-		if (GETPOST("nobin_disable_fk")) {
+		if (request()->input('nobin_disable_fk')) {
 			$sqlhead .= "SET FOREIGN_KEY_CHECKS=0;\n";
 		}
 		//$sqlhead .= "SET SQL_MODE=\"NO_AUTO_VALUE_ON_ZERO\";\n";
-		if (GETPOST("nobin_use_transaction")) {
+		if (request()->input('nobin_use_transaction')) {
 			$sqlhead .= "SET AUTOCOMMIT=0;\nSTART TRANSACTION;\n";
 		}
 
 		fwrite($handle, $sqlhead);
 
 		$ignore = '';
-		if (GETPOST("nobin_sql_ignore")) {
+		if (request()->input('nobin_sql_ignore')) {
 			$ignore = 'IGNORE ';
 		}
 		$delayed = '';
-		if (GETPOST("nobin_delayed")) {
+		if (request()->input('nobin_delayed')) {
 			$delayed = 'DELAYED ';
 		}
 
@@ -1198,7 +1198,7 @@ class Utils
 			// Saving the table structure
 			fwrite($handle, "\n--\n-- Table structure for table `".$table."`\n--\n");
 
-			if (GETPOST("nobin_drop")) {
+			if (request()->input('nobin_drop')) {
 				fwrite($handle, "DROP TABLE IF EXISTS `".$table."`;\n"); // Dropping table if exists prior to re create it
 			}
 			fwrite($handle, "/*!40101 SET @saved_cs_client     = @@character_set_client */;\n");
@@ -1213,10 +1213,10 @@ class Utils
 
 				// Dumping the data (locking the table and disabling the keys check while doing the process)
 				fwrite($handle, "\n--\n-- Dumping data for table `".$table."`\n--\n");
-				if (!GETPOST("nobin_nolocks")) {
+				if (!request()->input('nobin_nolocks')) {
 					fwrite($handle, "LOCK TABLES `".$table."` WRITE;\n"); // Lock the table before inserting data (when the data will be imported back)
 				}
-				if (GETPOST("nobin_disable_fk")) {
+				if (request()->input('nobin_disable_fk')) {
 					fwrite($handle, "ALTER TABLE `".$table."` DISABLE KEYS;\n");
 				} else {
 					fwrite($handle, "/*!40000 ALTER TABLE `".$table."` DISABLE KEYS */;\n");
@@ -1247,10 +1247,10 @@ class Utils
 					}
 					fwrite($handle, implode(',', $row).");\n");
 				}
-				if (GETPOST("nobin_disable_fk")) {
+				if (request()->input('nobin_disable_fk')) {
 					fwrite($handle, "ALTER TABLE `".$table."` ENABLE KEYS;\n"); // Enabling back the keys/index checking
 				}
-				if (!GETPOST("nobin_nolocks")) {
+				if (!request()->input('nobin_nolocks')) {
 					fwrite($handle, "UNLOCK TABLES;\n"); // Unlocking the table
 				}
 				fwrite($handle, "\n\n\n");
@@ -1278,10 +1278,10 @@ class Utils
 
 		// Write the footer (restore the previous database settings)
 		$sqlfooter = "\n\n";
-		if (GETPOST("nobin_use_transaction")) {
+		if (request()->input('nobin_use_transaction')) {
 			$sqlfooter .= "COMMIT;\n";
 		}
-		if (GETPOST("nobin_disable_fk")) {
+		if (request()->input('nobin_disable_fk')) {
 			$sqlfooter .= "SET FOREIGN_KEY_CHECKS=1;\n";
 		}
 		$sqlfooter .= "\n\n-- Dump completed on ".date('Y-m-d G-i-s');

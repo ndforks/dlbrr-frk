@@ -52,33 +52,33 @@ $hookmanager->initHooks(array('stockatdate'));
 
 //checks if a product has been ordered
 
-$action = GETPOST('action', 'aZ09');
-$type = GETPOSTINT('type');
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$type = request()->integer('type', 0);
+$mode = request()->input('mode');
 
-$ext = (GETPOSTISSET('output') && in_array(GETPOST('output'), array('csv'))) ? GETPOST('output') : '';
+$ext = (request()->has('output') && in_array(request()->input('output'), array('csv'))) ? request()->input('output') : '';
 
 $date = '';
 $dateendofday = '';
-if (GETPOSTISSET('dateday') && GETPOSTISSET('datemonth') && GETPOSTISSET('dateyear')) {
-	$date = dol_mktime(0, 0, 0, GETPOSTINT('datemonth'), GETPOSTINT('dateday'), GETPOSTINT('dateyear'));
-	$dateendofday = dol_mktime(23, 59, 59, GETPOSTINT('datemonth'), GETPOSTINT('dateday'), GETPOSTINT('dateyear'));
+if (request()->has('dateday') && request()->has('datemonth') && request()->has('dateyear')) {
+	$date = dol_mktime(0, 0, 0, request()->integer('datemonth', 0), request()->integer('dateday', 0), request()->integer('dateyear', 0));
+	$dateendofday = dol_mktime(23, 59, 59, request()->integer('datemonth', 0), request()->integer('dateday', 0), request()->integer('dateyear', 0));
 }
 
-$search_ref = GETPOST('search_ref', 'alphanohtml');
-$search_nom = GETPOST('search_nom', 'alphanohtml');
+$search_ref = request()->input('search_ref');
+$search_nom = request()->input('search_nom');
 
 $now = dol_now();
 
-$productid = GETPOSTINT('productid');
+$productid = request()->integer('productid', 0);
 if (GETPOSTISARRAY('search_fk_warehouse')) {
-	$search_fk_warehouse = GETPOST('search_fk_warehouse', 'array:int');
+	$search_fk_warehouse = request()->input('search_fk_warehouse');
 } else {
-	$search_fk_warehouse = array(GETPOSTINT('search_fk_warehouse'));
+	$search_fk_warehouse = array(request()->integer('search_fk_warehouse', 0));
 }
 // For backward compatibility
-if (GETPOSTINT('fk_warehouse')) {
-	$search_fk_warehouse = array(GETPOSTINT('fk_warehouse'));
+if (request()->integer('fk_warehouse', 0)) {
+	$search_fk_warehouse = array(request()->integer('fk_warehouse', 0));
 }
 // Clean value -1
 foreach ($search_fk_warehouse as $key => $val) {
@@ -87,13 +87,13 @@ foreach ($search_fk_warehouse as $key => $val) {
 	}
 }
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 if (!$sortfield) {
 	$sortfield = 'p.ref';
@@ -138,7 +138,7 @@ if ($reshook < 0) {
 	setEventMessages($hookmanager->error, $hookmanager->errors, 'errors');
 }
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$date = '';
 	$productid = 0;
 	$search_fk_warehouse = array();
@@ -202,7 +202,7 @@ if ($date && $dateIsValid) {	// Avoid heavy sql if mandatory date is not defined
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	//var_dump($stock_prod_warehouse);
 } elseif ($action == 'filter') {	// Test on permissions not required here
@@ -269,7 +269,7 @@ if ($date && $dateIsValid) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 //var_dump($movements_prod_warehouse);
@@ -369,7 +369,7 @@ if ($date && $dateIsValid) {	// We avoid a heavy sql if mandatory parameter date
 			$objforcount = $db->fetch_object($resql);
 			$nbtotalofrecords = $objforcount->nbtotalofrecords;
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if (($page * $limit) > (int) $nbtotalofrecords || $ext == 'csv') {	// if total resultset is smaller than the paging size (filtering), goto and load page 0
@@ -387,7 +387,7 @@ if ($date && $dateIsValid) {	// We avoid a heavy sql if mandatory parameter date
 		$limit = 0;
 	}
 	if (empty($resql)) {
-		dol_print_error($db);
+		abort(500);
 		exit;
 	}
 
@@ -457,7 +457,7 @@ if ($ext == 'csv') {
 		print ' <span class="clearbothonsmartphone marginleftonly paddingleftonly marginrightonly paddingrightonly">&nbsp;</span> ';
 		print img_picto('', 'stock', 'class="pictofixedwidth"').$langs->trans("Warehouse").' :';
 		print '</span> ';
-		$selected = ((GETPOSTISSET('search_fk_warehouse') || GETPOSTISSET('fk_warehouse')) ? $search_fk_warehouse : 'ifonenodefault');
+		$selected = ((request()->has('search_fk_warehouse') || request()->has('fk_warehouse')) ? $search_fk_warehouse : 'ifonenodefault');
 		print $formproduct->selectWarehouses($selected, 'search_fk_warehouse', '', 1, 0, 0, $langs->trans('Warehouse'), 0, 0, array(), 'minwidth200', array(), 1, false, 'e.ref', 1);
 	}
 
@@ -493,14 +493,14 @@ if ($ext == 'csv') {
 	if ($productid > 0) {
 		$param .= '&productid='.(int) $productid;
 	}
-	if (GETPOSTINT('dateday') > 0) {
-		$param .= '&dateday='.GETPOSTINT('dateday');
+	if (request()->integer('dateday', 0) > 0) {
+		$param .= '&dateday='.request()->integer('dateday', 0);
 	}
-	if (GETPOSTINT('datemonth') > 0) {
-		$param .= '&datemonth='.GETPOSTINT('datemonth');
+	if (request()->integer('datemonth', 0) > 0) {
+		$param .= '&datemonth='.request()->integer('datemonth', 0);
 	}
-	if (GETPOSTINT('dateyear') > 0) {
-		$param .= '&dateyear='.GETPOSTINT('dateyear');
+	if (request()->integer('dateyear', 0) > 0) {
+		$param .= '&dateyear='.request()->integer('dateyear', 0);
 	}
 
 	// TODO Move this into the title line ?
@@ -514,9 +514,9 @@ if ($ext == 'csv') {
 			$param_warehouse.
 			"&search_ref=".dol_escape_htmltag($search_ref).
 			"&search_nom=".dol_escape_htmltag($search_nom).
-			(GETPOSTISSET('dateday') ? "&dateday=".GETPOSTINT('dateday') : '').
-			(GETPOSTISSET('datemonth') ? "&datemonth=".GETPOSTINT('datemonth') : '').
-			(GETPOSTISSET('dateyear') ? "&dateyear=".GETPOSTINT('dateyear') : '').
+			(request()->has('dateday') ? "&dateday=".request()->integer('dateday', 0) : '').
+			(request()->has('datemonth') ? "&datemonth=".request()->integer('datemonth', 0) : '').
+			(request()->has('dateyear') ? "&dateyear=".request()->integer('dateyear', 0) : '').
 			'" title="Download CSV" />';
 		print img_picto('', 'download', 'class="pictofixedwidth"');
 		print 'Download CSV';
@@ -777,10 +777,10 @@ while ($i < ($limit ? min($num, $limit) : $num)) {
 				print '<td class="right">';
 				if ($nbofmovement > 0) {
 					$url = DOL_URL_ROOT.'/product/stock/movement_list.php?idproduct='.$objp->rowid;
-					if (GETPOSTISSET('datemonth')) {
-						$url .= '&search_date_startday='.GETPOSTINT('dateday');
-						$url .= '&search_date_startmonth='.GETPOSTINT('datemonth');
-						$url .= '&search_date_startyear='.GETPOSTINT('dateyear');
+					if (request()->has('datemonth')) {
+						$url .= '&search_date_startday='.request()->integer('dateday', 0);
+						$url .= '&search_date_startmonth='.request()->integer('datemonth', 0);
+						$url .= '&search_date_startyear='.request()->integer('dateyear', 0);
 					}
 					if (count($search_fk_warehouse) > 1) {
 						$url = '';	// Do not show link, multi warehouse as filter not managed yet by target page

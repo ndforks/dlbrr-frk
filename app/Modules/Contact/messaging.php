@@ -63,11 +63,11 @@ $error = '';
 $errors = array();
 
 // Get parameters
-$action		= (GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view');
-$confirm	= GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$id = GETPOSTINT('id');
-$socid		= GETPOSTINT('socid');
+$action		= (request()->input('action') ? request()->input('action') : 'view');
+$confirm	= request()->input('confirm');
+$backtopage = request()->input('backtopage');
+$id = request()->integer('id', 0);
+$socid		= request()->integer('socid', 0);
 
 // Initialize objects
 $object = new Contact($db);
@@ -79,7 +79,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($id);
 $objcanvas = null;
-$canvas = (!empty($object->canvas) ? $object->canvas : GETPOST("canvas"));
+$canvas = (!empty($object->canvas) ? $object->canvas : request()->input('canvas'));
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
 	$objcanvas = new Canvas($db, $action);
@@ -94,11 +94,11 @@ if (GETPOSTISARRAY('actioncode')) {
 		$actioncode = implode(',', $actioncode);
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
 
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
 
 // Security check
 if ($user->socid) {
@@ -106,11 +106,11 @@ if ($user->socid) {
 }
 $result = restrictedArea($user, 'contact', $id, 'socpeople&societe', '', '', 'rowid', 0); // If we create a contact with no company (shared contacts), no check on write permission
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -140,13 +140,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 		$actioncode = '';
 		$search_agenda_label = '';
 	}

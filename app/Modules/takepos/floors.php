@@ -50,22 +50,22 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 
 $langs->loadLangs(array("bills", "orders", "commercial", "cashdesk"));
 
-$floor = GETPOSTINT('floor');
+$floor = request()->integer('floor', 0);
 if ($floor == "") {
 	$floor = 1;
 }
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$left = GETPOST('left', 'alpha');
-$top = GETPOST('top', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$left = request()->input('left');
+$top = request()->input('top');
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0); // $place is id of table for Bar or Restaurant
+$place = (request()->input('place') ? request()->input('place') : 0); // $place is id of table for Bar or Restaurant
 
-$newname = GETPOST('newname', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$newname = request()->input('newname');
+$mode = request()->input('mode');
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 

@@ -740,7 +740,7 @@ class RecruitmentJobPosition extends CommonObject
 				$outputlangs = $langs;
 				if (getDolGlobalInt('MAIN_MULTILANGS')) {
 					$outputlangs = new Translate("", $conf);
-					$newlang = (GETPOST('lang_id', 'aZ09') ? GETPOST('lang_id', 'aZ09') : $this->thirdparty->default_lang);
+					$newlang = (request()->input('lang_id') ? request()->input('lang_id') : $this->thirdparty->default_lang);
 					$outputlangs->setDefaultLang($newlang);
 				}
 

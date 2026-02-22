@@ -47,8 +47,8 @@ if (!empty($user->socid)) {
 }
 $result = restrictedArea($user, 'fournisseur', 0, 'facture_fourn', 'facture');
 
-$action = GETPOST('action', 'aZ09');
-$fileToRemove = GETPOST('removefile', 'alpha');
+$action = request()->input('action');
+$fileToRemove = request()->input('removefile');
 
 $socid = 0;
 if ($user->socid > 0) {
@@ -61,7 +61,7 @@ if (!$user->hasRight("societe", "client", "voir") || $socid) {
 	$dir .= '/private/'.$user->id; // If user has no permission to see all, output dir is specific to user
 }
 
-$year = GETPOSTINT("year");
+$year = request()->integer('year', 0);
 if (!$year) {
 	$year = date("Y");
 }
@@ -78,22 +78,22 @@ if ($action == 'builddoc' && $permissiontoread) {
 	$rap = new pdf_paiement_fourn($db);
 
 	$outputlangs = $langs;
-	if (GETPOST('lang_id', 'aZ09')) {
+	if (request()->input('lang_id')) {
 		$outputlangs = new Translate("", $conf);
-		$outputlangs->setDefaultLang(GETPOST('lang_id', 'aZ09'));
+		$outputlangs->setDefaultLang(request()->input('lang_id'));
 	}
 
 	// We save charset_output to restore it because write_file can change it if needed for
 	// output format that does not support UTF8.
 	$sav_charset_output = $outputlangs->charset_output;
-	if ($rap->write_file($dir, GETPOSTINT("remonth"), GETPOSTINT("reyear"), $outputlangs) > 0) {
+	if ($rap->write_file($dir, request()->integer('remonth', 0), request()->integer('reyear', 0), $outputlangs) > 0) {
 		$outputlangs->charset_output = $sav_charset_output;
 	} else {
 		$outputlangs->charset_output = $sav_charset_output;
 		dol_print_error($db, $obj->error);
 	}
 
-	$year = GETPOSTINT("reyear");
+	$year = request()->integer('reyear', 0);
 }
 
 // Delete file from disk
@@ -128,8 +128,8 @@ print load_fiche_titre($titre, '', 'supplier_invoice');
 print '<form method="post" action="rapport.php?year='.$year.'">';
 print '<input type="hidden" name="token" value="'.newToken().'">';
 print '<input type="hidden" name="action" value="builddoc">';
-$cmonth = GETPOST("remonth") ? GETPOST("remonth") : date("n", time());
-$syear = GETPOST("reyear") ? GETPOST("reyear") : date("Y", time());
+$cmonth = request()->input('remonth') ? request()->input('remonth') : date("n", time());
+$syear = request()->input('reyear') ? request()->input('reyear') : date("Y", time());
 
 print $formother->select_month($cmonth, 'remonth');
 

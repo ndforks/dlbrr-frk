@@ -85,7 +85,7 @@ if (!empty($pageid) && $pageid > 0) {
 	// 2 - Cookie lang of website (set by a possible js lang selector)
 	// 3 - XX/... found in url page
 	// 4 - auto (so web browser lang)
-	$srclang = GETPOSTISSET('lang') ? GETPOST('lang', 'aZ09') : '';
+	$srclang = request()->has('lang') ? request()->input('lang') : '';
 	if (empty($srclang)) {
 		$srclang = (empty($_COOKIE['weblangs-shortcode']) ? '' : preg_replace('/[^a-zA-Z0-9_\-]/', '', $_COOKIE['weblangs-shortcode']));
 	}
@@ -120,7 +120,7 @@ if (!empty($pageid) && $pageid > 0) {
 			header("X-Frame-Options: SAMEORIGIN");
 		}
 
-		//httponly_accessforbidden('<center><br><br>'.$weblangs->trans("YouTryToAccessToAFileThatIsNotAWebsitePage", $websitepage->pageurl, $websitepage->type_container, $websitepage->status).'</center>', 404, 1);
+		//httponly_abort(403);.'</center>', 404, 1);
 		http_response_code(404);
 		print '<center><br><br>'.$weblangs->trans("YouTryToAccessToAFileThatIsNotAWebsitePage", $websitepage->pageurl, $websitepage->type_container, $websitepage->status).'</center>';
 		exit;
@@ -241,13 +241,13 @@ if (!defined('USEDOLIBARRSERVER') && !defined('USEDOLIBARREDITOR')) {
 }
 
 // A lang was forced, so we change weblangs init
-if (GETPOST('l', 'aZ09')) {
-	$weblangs->setDefaultLang(GETPOST('l', 'aZ09'));
+if (request()->input('l')) {
+	$weblangs->setDefaultLang(request()->input('l'));
 }
 // A lang was forced, so we check to find if we must make a redirect on translation page
 if ($_SERVER['PHP_SELF'] != DOL_URL_ROOT.'/website/index.php') {	// If we browsing page using Dolibarr server or a Native web server
 	//print_r(get_defined_constants(true));exit;
-	if (GETPOST('l', 'aZ09')) {
+	if (request()->input('l')) {
 		$sql = "SELECT wp.rowid, wp.lang, wp.pageurl, wp.fk_page";
 		$sql .= " FROM ".MAIN_DB_PREFIX."website_page as wp";
 		$sql .= " WHERE wp.fk_website = ".((int) $website->id);
@@ -256,7 +256,7 @@ if ($_SERVER['PHP_SELF'] != DOL_URL_ROOT.'/website/index.php') {	// If we browsi
 			$sql .= " OR wp.fk_page = ".((int) $websitepage->fk_page)." OR wp.rowid = ".((int) $websitepage->fk_page);
 		}
 		$sql .= ")";
-		$sql .= " AND wp.lang = '".$db->escape(GETPOST('l', 'aZ09'))."'";
+		$sql .= " AND wp.lang = '".$db->escape(request()->input('l'))."'";
 
 		$resql = $db->query($sql);
 		if ($resql) {
@@ -265,11 +265,11 @@ if ($_SERVER['PHP_SELF'] != DOL_URL_ROOT.'/website/index.php') {	// If we browsi
 				$newpageid = $obj->rowid;
 				if ($newpageid != $pageid) { 		// To avoid to make a redirect on same page (infinite loop)
 					if (defined('USEDOLIBARRSERVER')) {
-						header("Location: ".DOL_URL_ROOT.'/public/website/index.php?website='.$websitekey.'&pageid='.$newpageid.'&l='.GETPOST('l', 'aZ09'));
+						header("Location: ".DOL_URL_ROOT.'/public/website/index.php?website='.$websitekey.'&pageid='.$newpageid.'&l='.request()->input('l'));
 						exit;
 					} else {
 						$newpageref = $obj->pageurl;
-						header("Location: ".(($obj->lang && $obj->lang != $website->lang) ? '/'.$obj->lang.'/' : '/').$newpageref.'.php?l='.GETPOST('l', 'aZ09'));
+						header("Location: ".(($obj->lang && $obj->lang != $website->lang) ? '/'.$obj->lang.'/' : '/').$newpageref.'.php?l='.request()->input('l'));
 						exit;
 					}
 				}
@@ -292,7 +292,7 @@ if (!defined('USEDOLIBARREDITOR') && empty($website->status)) {
 
 	$weblangs->load("website");
 
-	//httponly_accessforbidden('<center><br><br>'.$weblangs->trans("SorryWebsiteIsCurrentlyOffLine").'</center>', 503, 1);
+	//httponly_abort(403);.'</center>', 503, 1);
 	http_response_code(503);
 	print '<center><br><br>'.$weblangs->trans("SorryWebsiteIsCurrentlyOffLine").'</center>';
 	exit;

@@ -44,30 +44,30 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 $langs->loadLangs(array('stocks', 'productbatch', 'other', 'users'));
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$toselect = GETPOST('toselect', 'array:int'); // Array of ids of elements selected into a list
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'productlotlist'; // To manage different context of search
-$optioncss = GETPOST('optioncss', 'alpha');
-$mode = GETPOST('mode', 'alpha');
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$backtopage = request()->input('backtopage');
+$toselect = request()->input('toselect'); // Array of ids of elements selected into a list
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'productlotlist'; // To manage different context of search
+$optioncss = request()->input('optioncss');
+$mode = request()->input('mode');
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
-$search_entity = GETPOSTINT('search_entity');
-$search_product = GETPOST('search_product', 'alpha');
-$search_batch = GETPOST('search_batch', 'alpha');
-$search_fk_user_creat = GETPOSTINT('search_fk_user_creat');
-$search_fk_user_modif = GETPOSTINT('search_fk_user_modif');
-$search_import_key = GETPOSTINT('search_import_key');
-$show_files = GETPOSTINT('show_files');
+$search_entity = request()->integer('search_entity', 0);
+$search_product = request()->input('search_product');
+$search_batch = request()->input('search_batch');
+$search_fk_user_creat = request()->integer('search_fk_user_creat', 0);
+$search_fk_user_modif = request()->integer('search_fk_user_modif', 0);
+$search_import_key = request()->integer('search_import_key', 0);
+$show_files = request()->integer('show_files', 0);
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -96,7 +96,7 @@ if (!$sortorder) {
 }
 
 // Initialize array of search criteria
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
+$search_all = trim(request()->input('search_all'));
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha') !== '') {
@@ -150,16 +150,16 @@ $permissiontoadd = $usercancreate;
 
 // Security check
 if (!isModEnabled('productbatch')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 $socid = 0;
 if ($user->socid > 0) { // Protection if external user
 	//$socid = $user->socid;
-	accessforbidden();
+	abort(403);
 }
 //restrictedArea($user, 'productbatch');
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -167,11 +167,11 @@ if (!$permissiontoread) {
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -186,7 +186,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		foreach ($object->fields as $key => $val) {
 			$search[$key] = '';
 			if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
@@ -197,8 +197,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -339,7 +339,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total of record found is smaller than page * limit, goto and load page 0
@@ -357,7 +357,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -422,7 +422,7 @@ $arrayofmassactions = array(
 if (!empty($permissiontodelete)) {
 	$arrayofmassactions['predelete'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('presend', 'predelete'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('presend', 'predelete'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction('', $arrayofmassactions);

@@ -45,17 +45,17 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formsetup.class.php';
 $langs->loadLangs(array('admin', 'blockedlog', 'other'));
 
 // Get Parameters
-$action     = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$cancel     = GETPOST('cancel');
+$action     = request()->input('action');
+$backtopage = request()->input('backtopage');
+$cancel     = request()->input('cancel');
 
-$withtab    = GETPOSTISSET('withtab') ? GETPOSTINT('withtab') : 1;
-$origin     = GETPOST('origin');
-$mode       = GETPOST('mode');
+$withtab    = request()->has('withtab') ? request()->integer('withtab', 0) : 1;
+$origin     = request()->input('origin');
+$mode       = request()->input('mode');
 
 // Access Control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -76,40 +76,40 @@ if ($action == 'update') {
 	$db->begin();
 
 	// The mandatory information must be the same than the one defined into isRegistrationDataSaved()
-	if (!GETPOST("BLOCKEDLOG_REGISTRATION_NAME")) {
+	if (!request()->input('BLOCKEDLOG_REGISTRATION_NAME')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->trans("BLOCKEDLOG_REGISTRATION_NAME")), null, 'errors');
 		$error++;
 	}
-	if (!GETPOST("BLOCKEDLOG_REGISTRATION_EMAIL")) {
+	if (!request()->input('BLOCKEDLOG_REGISTRATION_EMAIL')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->trans("BLOCKEDLOG_REGISTRATION_EMAIL")), null, 'errors');
 		$error++;
 	}
-	if (!GETPOST("BLOCKEDLOG_REGISTRATION_COUNTRY_CODE")) {
+	if (!request()->input('BLOCKEDLOG_REGISTRATION_COUNTRY_CODE')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->trans("BLOCKEDLOG_REGISTRATION_COUNTRY_CODE")), null, 'errors');
 		$error++;
 	}
-	if (!GETPOST("BLOCKEDLOG_REGISTRATION_IDPROF1")) {
+	if (!request()->input('BLOCKEDLOG_REGISTRATION_IDPROF1')) {
 		setEventMessages($langs->trans("ErrorFieldRequired", $langs->trans("BLOCKEDLOG_REGISTRATION_IDPROF1")), null, 'errors');
 		$error++;
 	}
 
-	$company_name = GETPOST("BLOCKEDLOG_REGISTRATION_NAME");
-	$company_email = GETPOST("BLOCKEDLOG_REGISTRATION_EMAIL");
-	$company_country_code = GETPOST("BLOCKEDLOG_REGISTRATION_COUNTRY_CODE");
-	$company_idprof1 = GETPOST("BLOCKEDLOG_REGISTRATION_IDPROF1");
-	$company_address = GETPOST("BLOCKEDLOG_REGISTRATION_ADDRESS");
-	$company_state = GETPOST("BLOCKEDLOG_REGISTRATION_STATE");
-	$company_zip = GETPOST("BLOCKEDLOG_REGISTRATION_ZIP");
-	$company_town = GETPOST("BLOCKEDLOG_REGISTRATION_TOWN");
+	$company_name = request()->input('BLOCKEDLOG_REGISTRATION_NAME');
+	$company_email = request()->input('BLOCKEDLOG_REGISTRATION_EMAIL');
+	$company_country_code = request()->input('BLOCKEDLOG_REGISTRATION_COUNTRY_CODE');
+	$company_idprof1 = request()->input('BLOCKEDLOG_REGISTRATION_IDPROF1');
+	$company_address = request()->input('BLOCKEDLOG_REGISTRATION_ADDRESS');
+	$company_state = request()->input('BLOCKEDLOG_REGISTRATION_STATE');
+	$company_zip = request()->input('BLOCKEDLOG_REGISTRATION_ZIP');
+	$company_town = request()->input('BLOCKEDLOG_REGISTRATION_TOWN');
 
-	$provider_name = GETPOST("MAIN_INFO_ITPROVIDER_NAME");
-	$provider_email = GETPOST("MAIN_INFO_ITPROVIDER_MAIL");
-	$provider_country_id = GETPOST("MAIN_INFO_ITPROVIDER_COUNTRY");
-	$provider_idprof1 = GETPOST("MAIN_INFO_ITPROVIDER_IDPROF1");
-	$provider_address = GETPOST("MAIN_INFO_ITPROVIDER_ADDRESS");
-	$provider_state = GETPOST("MAIN_INFO_ITPROVIDER_STATE");
-	$provider_zip = GETPOST("MAIN_INFO_ITPROVIDER_ZIP");
-	$provider_town = GETPOST("MAIN_INFO_ITPROVIDER_TOWN");
+	$provider_name = request()->input('MAIN_INFO_ITPROVIDER_NAME');
+	$provider_email = request()->input('MAIN_INFO_ITPROVIDER_MAIL');
+	$provider_country_id = request()->input('MAIN_INFO_ITPROVIDER_COUNTRY');
+	$provider_idprof1 = request()->input('MAIN_INFO_ITPROVIDER_IDPROF1');
+	$provider_address = request()->input('MAIN_INFO_ITPROVIDER_ADDRESS');
+	$provider_state = request()->input('MAIN_INFO_ITPROVIDER_STATE');
+	$provider_zip = request()->input('MAIN_INFO_ITPROVIDER_ZIP');
+	$provider_town = request()->input('MAIN_INFO_ITPROVIDER_TOWN');
 
 	if (!$error) {
 		//Company
@@ -185,8 +185,8 @@ if ($action == 'update') {
 
 		//setEventMessages("SetupSaved", null, 'mesgs');
 		$urltouse = $_SERVER["PHP_SELF"]."?mode=forceregistration";
-		$urltouse .= (($withtab && GETPOST('origin')) ? '&withtab='.$withtab: '');
-		$urltouse .= (GETPOST('origin') ? '&origin='.GETPOST('origin') : '');
+		$urltouse .= (($withtab && request()->input('origin')) ? '&withtab='.$withtab: '');
+		$urltouse .= (request()->input('origin') ? '&origin='.request()->input('origin') : '');
 
 		header("Location: ".$urltouse);
 		exit;
@@ -206,7 +206,7 @@ $formcompany = new FormCompany($db);
 $block_static = new BlockedLog($db);
 $block_static->loadTrackedEvents();
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	$title = $langs->trans("ModuleSetup").' '.$langs->trans('BlockedLog');
 } else {
 	$title = $langs->trans("BrowseBlockedLog");
@@ -216,7 +216,7 @@ $help_url="EN:Module_Unalterable_Archives_-_Logs|FR:Module_Archives_-_Logs_Inalt
 
 llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-blockedlog page-admin_blockedlog');
 
-if (GETPOST('withtab', 'alpha')) {
+if (request()->input('withtab')) {
 	$linkback = '<a href="'.dolBuildUrl($backtopage ? $backtopage : DOL_URL_ROOT.'/admin/modules.php', ['restore_lastsearch_values' => 1]).'">'.img_picto($langs->trans("BackToModuleList"), 'back', 'class="pictofixedwidth"').'<span class="hideonsmartphone">'.$langs->trans("BackToModuleList").'</span></a>';
 } else {
 	$linkback='';
@@ -233,7 +233,7 @@ if ((!isRegistrationDataSavedAndPushed() || !isModEnabled('blockedlog')) && $mod
 print load_fiche_titre($title.'<br>'.$texttop, $linkback, 'blockedlog', 0, '', '', $morehtmlcenter);
 
 if ($withtab) {
-	$head = blockedlogadmin_prepare_head(GETPOST('withtab', 'alpha'));
+	$head = blockedlogadmin_prepare_head(request()->input('withtab'));
 	print dol_get_fiche_head($head, 'registration', '', -1);
 } else {
 	print '<br>';
@@ -369,7 +369,7 @@ if ($mode == "forceregistration") {
 		print '<br>'.$langs->trans("RegistrationDoneAndModuleEnabled", $langs->transnoentitiesnoconv("BlockedLog"));
 
 		// Go back to setup of module page
-		if (GETPOST('origin') == 'initmodule') {
+		if (request()->input('origin') == 'initmodule') {
 			print '<br><br>';
 			print '<br><br>';
 			print img_picto('', 'back').' ';
@@ -472,7 +472,7 @@ if (empty($mode)) {
 	$item = $formSetup->newItem('MAIN_INFO_ITPROVIDER_TOWN');
 	$item->defaultFieldValue = getDolGlobalString('MAIN_INFO_ITPROVIDER_TOWN');
 
-	$formSetup->formHiddenInputs['origin'] = GETPOST('origin');
+	$formSetup->formHiddenInputs['origin'] = request()->input('origin');
 	$formSetup->formHiddenInputs['withtab'] = $withtab;
 
 	if (isRegistrationDataSavedAndPushed() && $origin != 'initmodule') {

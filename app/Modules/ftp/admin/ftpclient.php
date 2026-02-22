@@ -41,12 +41,12 @@ $langs->loadLangs(array("admin", "other"));
 $def = array();
 $lastftpentry = 0;
 
-$action = GETPOST('action', 'aZ09');
-$entry = GETPOST('numero_entry', 'alpha');
+$action = request()->input('action');
+$entry = request()->input('numero_entry');
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Initialise variables
@@ -74,10 +74,10 @@ if ($result) {
 		$lastftpentry = $reg[1];
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
-if ($action == 'add' || GETPOST('modify', 'alpha')) {
+if ($action == 'add' || request()->input('modify')) {
 	$ftp_name = "FTP_NAME_".$entry;
 	$ftp_server = "FTP_SERVER_".$entry;
 
@@ -124,12 +124,12 @@ if ($action == 'add' || GETPOST('modify', 'alpha')) {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
-if (GETPOST('delete', 'alpha')) {
+if (request()->input('delete')) {
 	if ($entry) {
 		$db->begin();
 
@@ -156,7 +156,7 @@ if (GETPOST('delete', 'alpha')) {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
@@ -331,7 +331,7 @@ if (!function_exists('ftp_connect')) {
 			$i++;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

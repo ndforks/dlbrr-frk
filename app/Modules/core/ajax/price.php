@@ -46,9 +46,9 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$output		= GETPOST('output', 'alpha');
-$amount		= price2num(GETPOST('amount', 'alpha'));
-$tva_tx		= str_replace('*', '', GETPOST('tva_tx', 'alpha'));
+$output		= request()->input('output');
+$amount		= price2num(request()->input('amount'));
+$tva_tx		= str_replace('*', '', request()->input('tva_tx'));
 
 // Security check
 // None. This is a formatting only component.

@@ -43,7 +43,7 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php';
 $langs->loadLangs(array("bills", "suppliers", "companies"));
 
 // Get Parameters
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Initialize Objects
 $object = new PaiementFourn($db);
@@ -61,7 +61,7 @@ if ($user->socid) {
 // Now check also permission on thirdparty of invoices of payments. Thirdparty were loaded by the fetch_object before based on first invoice.
 // It should be enough because all payments are done on invoices of the same thirdparty.
 if ($socid && $socid != $object->thirdparty->id) {
-	accessforbidden();
+	abort(403);
 }
 
 

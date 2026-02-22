@@ -38,12 +38,12 @@ require_once DOL_DOCUMENT_ROOT.'/user/class/user.class.php';
  */
 
 // Get parameters
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'usernote'; // To manage different context of search
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'usernote'; // To manage different context of search
 
 if (!isset($id) || empty($id)) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by page
@@ -55,7 +55,7 @@ $object->loadRights();
 
 // If user is not user read and no permission to read other users, we stop
 if (($object->id != $user->id) && (!$user->hasRight("user", "user", "read"))) {
-	accessforbidden();
+	abort(403);
 }
 
 // Permissions

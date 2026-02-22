@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/projet/class/project.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Load translation files required by the page
 $langs->loadLangs(array("loan"));
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 $hookmanager->initHooks(array('loannote'));
 $result = restrictedArea($user, 'loan', $id, '&loan');

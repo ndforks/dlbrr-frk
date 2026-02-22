@@ -43,15 +43,15 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 $langs->loadLangs(array("admin", "eventorganization", "categories"));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$value = request()->input('value');
+$label = request()->input('label');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$scandir = GETPOST('scan_dir', 'alpha');
+$scandir = request()->input('scan_dir');
 $type = 'myobject';
 
 if (empty($action)) {
@@ -81,7 +81,7 @@ $dirmodels = array_merge(array('/'), (array) $conf->modules_parts['models']);
 
 // Access control
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -97,8 +97,8 @@ if ($cancel) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstorder = GETPOST('maskconstorder', 'aZ09');
-	$maskorder = GETPOST('maskorder', 'alpha');
+	$maskconstorder = request()->input('maskconstorder');
+	$maskorder = request()->input('maskorder');
 
 	if ($maskconstorder && preg_match('/_MASK$/', $maskconstorder)) {
 		$res = dolibarr_set_const($db, $maskconstorder, $maskorder, 'chaine', 0, '', $conf->entity);
@@ -114,7 +114,7 @@ if ($action == 'updateMask') {
 	}
 } elseif ($action == 'setmod') {
 	// TODO Check if numbering module chosen can be activated by calling method canBeActivated
-	$tmpobjectkey = GETPOST('object', 'aZ09');
+	$tmpobjectkey = request()->input('object');
 	if (!empty($tmpobjectkey)) {
 		$constforval = 'EVENTORGANIZATION_'.strtoupper($tmpobjectkey)."_ADDON";
 		dolibarr_set_const($db, $constforval, $value, 'chaine', 0, '', $conf->entity);
@@ -125,7 +125,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'del') {
 	$ret = delDocumentModel($value, $type);
 	if ($ret > 0) {
-		$tmpobjectkey = GETPOST('object', 'aZ09');
+		$tmpobjectkey = request()->input('object');
 		if (!empty($tmpobjectkey)) {
 			$constforval = 'EVENTORGANIZATION_'.strtoupper($tmpobjectkey).'_ADDON_PDF';
 			if (getDolGlobalString($constforval) == "$value") {

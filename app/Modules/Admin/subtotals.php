@@ -45,10 +45,10 @@ require_once DOL_DOCUMENT_ROOT . '/core/class/html.formother.class.php';
 
 // Load translation files required by the page
 $langs->loadLangs(array('main', 'admin', 'subtotals', 'errors'));
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $formother = new FormOther($db);

@@ -90,7 +90,7 @@ if (!isset($section)) {
 // Confirm remove file (for non javascript users)
 if (($action == 'delete' || $action == 'file_manager_delete') && empty($conf->use_javascript_ajax)) {
 	// TODO Add website, pageid, filemanager if defined
-	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.$section.'&urlfile='.urlencode(GETPOST("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 1);
+	print $form->formconfirm($_SERVER["PHP_SELF"].'?section='.$section.'&urlfile='.urlencode(request()->input('urlfile')), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', '', 1);
 }
 
 // Start container of all panels
@@ -120,7 +120,7 @@ if ($module == 'ecm') {
 	print img_picto('', 'refresh', 'id="refreshbutton"', 0, 0, 0, '', 'size15x marginrightonly');
 	print '</a>';
 }
-if ($permtoadd && GETPOSTISSET('website')) {	// If on file manager to manage medias of a web site
+if ($permtoadd && request()->has('website')) {	// If on file manager to manage medias of a web site
 	// @phan-suppress-next-line PhanTypeExpectedObjectPropAccess
 	print '<a id="agenerateimgwebp" href="'.$_SERVER["PHP_SELF"].'?action=confirmconvertimgwebp&token='.newToken().'&website='.urlencode($website->ref).'" class="inline-block valignmiddle toolbarbutton paddingtop" title="'.dol_escape_htmltag($langs->trans("GenerateImgWebp")).'">';
 	print img_picto('', 'images', '', 0, 0, 0, '', 'size15x flip marginrightonly');
@@ -191,7 +191,7 @@ if ((!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE
 		<?php
 	}
 
-	$sectiondir = GETPOST('file', 'alpha') ? GETPOST('file', 'alpha') : GETPOST('section_dir', 'alpha');
+	$sectiondir = request()->input('file') ? request()->input('file') : request()->input('section_dir');
 
 	print '<!-- Start form to attach new file in filemanager.tpl.php sectionid='.$section.' sectiondir='.$sectiondir.' -->'."\n";
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
@@ -225,9 +225,9 @@ if ($action == 'delete_section') {
 if ($action == 'confirmconvertimgwebp') {
 	$langs->load("ecm");
 
-	$section_dir = GETPOST('section_dir', 'alpha');
-	$section = GETPOST('section', 'alpha');
-	$file = GETPOST('filetoregenerate', 'alpha');
+	$section_dir = request()->input('section_dir');
+	$section = request()->input('section');
+	$file = request()->input('filetoregenerate');
 	$form = new Form($db);
 	$formquestion = array();
 	$formquestion['section_dir'] = array('type' => 'hidden', 'value' => $section_dir, 'name' => 'section_dir');
@@ -249,12 +249,12 @@ if ($action == 'confirmconvertimgwebp') {
 
 // Duplicate images into .webp
 if ($action == 'convertimgwebp' && $permtoadd) {
-	$file = GETPOST('filetoregenerate', 'alpha');
+	$file = request()->input('filetoregenerate');
 
 	if ($module == 'medias') {
-		$imagefolder = $conf->website->dir_output.'/'.$websitekey.'/medias/'.dol_sanitizePathName(GETPOST('section_dir', 'alpha'));
+		$imagefolder = $conf->website->dir_output.'/'.$websitekey.'/medias/'.dol_sanitizePathName(request()->input('section_dir'));
 	} else {
-		$imagefolder = $conf->ecm->dir_output.'/'.dol_sanitizePathName(GETPOST('section_dir', 'alpha'));
+		$imagefolder = $conf->ecm->dir_output.'/'.dol_sanitizePathName(request()->input('section_dir'));
 	}
 
 	include_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
@@ -345,8 +345,8 @@ if (empty($action) || $action == 'editfile' || $action == 'file_manager' || preg
 		print '<tr><td style="padding-left: 20px">';
 
 		$_POST['modulepart'] = $module;
-		$_POST['openeddir'] = GETPOST('openeddir');
-		$_POST['dir'] = empty($_POST['dir']) ? '/' : GETPOST('dir');
+		$_POST['openeddir'] = request()->input('openeddir');
+		$_POST['dir'] = empty($_POST['dir']) ? '/' : request()->input('dir');
 
 		// Show filemanager tree (will be filled by direct include of ajaxdirtree.php in mode noajax, this will return all dir - all levels - to show)
 		print '<div id="filetree" class="ecmfiletree">';
@@ -380,9 +380,9 @@ if (empty($action) || $action == 'editfile' || $action == 'file_manager' || preg
 
 $mode = 'noajax';
 if (empty($url)) {	// autoset $url but it is better to have it defined before (for example by ecm/index.php, ecm/index_medias.php, website/index.php)
-	if (!empty($module) && $module == 'medias' && !GETPOST('website')) {
+	if (!empty($module) && $module == 'medias' && !request()->input('website')) {
 		$url = DOL_URL_ROOT.'/ecm/index_medias.php';
-	} elseif (GETPOSTISSET('website')) {
+	} elseif (request()->has('website')) {
 		$url = DOL_URL_ROOT.'/website/index.php';
 	} else {
 		$url = DOL_URL_ROOT.'/ecm/index.php';
@@ -407,8 +407,8 @@ if (!empty($conf->use_javascript_ajax) && !getDolGlobalString('MAIN_ECM_DISABLE_
 	// $_GET['modulepart'], $_GET['openeddir'], $_GET['sortfield'], $_GET['sortorder']
 	// $_POST['dir']
 	// $_POST['section_dir'], $_POST['section_id'], $_POST['token'], $_POST['max_file_size'], $_POST['sendit']
-	if (GETPOST('section_dir', 'alpha')) {
-		$preopened = GETPOST('section_dir', 'alpha');
+	if (request()->input('section_dir')) {
+		$preopened = request()->input('section_dir');
 	}
 
 	include DOL_DOCUMENT_ROOT.'/ecm/tpl/enablefiletreeajax.tpl.php';

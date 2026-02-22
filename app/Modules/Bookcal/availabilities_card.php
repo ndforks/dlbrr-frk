@@ -44,17 +44,17 @@ require_once DOL_DOCUMENT_ROOT.'/bookcal/lib/bookcal_availabilities.lib.php';
 $langs->loadLangs(array("agenda", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$lineid = GETPOSTINT('lineid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
 
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$dol_openinpopup = GETPOST('dol_openinpopup', 'aZ09');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php')); // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$dol_openinpopup = request()->input('dol_openinpopup');
 
 // Initialize a technical objects
 $object = new Availabilities($db);
@@ -68,7 +68,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -84,7 +84,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 //avoid warning on missing/undef entity
-$object->entity	= ((GETPOSTISSET('entity') && GETPOST('entity') != '') ? GETPOSTINT('entity') : $conf->entity);
+$object->entity	= ((request()->has('entity') && request()->input('entity') != '') ? request()->integer('entity', 0) : $conf->entity);
 
 // There is several ways to check permission.
 // Set $enablepermissioncheck to 1 to enable a minimum low level of checks
@@ -106,15 +106,15 @@ if ($enablepermissioncheck) {
 $upload_dir = $conf->bookcal->multidir_output[isset($object->entity) ? $object->entity : 1].'/availabilities';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (isset($object->status) && ($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled("bookcal")) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 $error = 0;
@@ -145,26 +145,26 @@ if (empty($reshook)) {
 
 	$triggermodname = 'BOOKCAL_AVAILABILITIES_MODIFY'; // Name of trigger action code to execute when we modify record
 
-	$startday = GETPOSTINT('startday');
-	$startmonth = GETPOSTINT('startmonth');
-	$startyear = GETPOSTINT('startyear');
-	$starthour = GETPOSTINT('startHour');
+	$startday = request()->integer('startday', 0);
+	$startmonth = request()->integer('startmonth', 0);
+	$startyear = request()->integer('startyear', 0);
+	$starthour = request()->integer('startHour', 0);
 
 	$dateStartTimestamp = dol_mktime($starthour, 0, 0, $startmonth, $startday, $startyear);
 
-	$endday = GETPOSTINT('endday');
-	$endmonth = GETPOSTINT('endmonth');
-	$endyear = GETPOSTINT('endyear');
-	$endhour = GETPOSTINT('endHour');
+	$endday = request()->integer('endday', 0);
+	$endmonth = request()->integer('endmonth', 0);
+	$endyear = request()->integer('endyear', 0);
+	$endhour = request()->integer('endHour', 0);
 
 	$dateEndTimestamp = dol_mktime($endhour, 0, 0, $endmonth, $endday, $endyear);
 
 	if (! $cancel) {
-		if (GETPOST('startHour') == "" && ($action == 'add' || $action == 'update')) {	// Test on permission not required
+		if (request()->input('startHour') == "" && ($action == 'add' || $action == 'update')) {	// Test on permission not required
 			$error++;
 			setEventMessages($langs->trans("ErrorStartHourIsNull"), $hookmanager->errors, 'errors');
 		}
-		if (GETPOST('endHour') == "" && ($action == 'add' || $action == 'update')) {	// Test on permission not required
+		if (request()->input('endHour') == "" && ($action == 'add' || $action == 'update')) {	// Test on permission not required
 			$error++;
 			setEventMessages($langs->trans("ErrorEndHourIsNull"), $hookmanager->errors, 'errors');
 		}
@@ -198,10 +198,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -231,7 +231,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-bookcal page-card_av
 // Part to create
 if ($action == 'create') {
 	if (empty($permissiontoadd)) {
-		accessforbidden($langs->trans('NotEnoughPermissions'), 0, 1);
+		abort(403);, 0, 1);
 	}
 
 	print load_fiche_titre($langs->trans("NewAvailabilities"), '', 'object_'.$object->picto);
@@ -387,7 +387,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Show object lines
 		$result = $object->getLinesArray();
 
-		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.GETPOSTINT('lineid')).'" method="POST">
+		print '	<form name="addproduct" id="addproduct" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.(($action != 'editline') ? '' : '#line_'.request()->integer('lineid', 0)).'" method="POST">
 		<input type="hidden" name="token" value="' . newToken().'">
 		<input type="hidden" name="action" value="' . (($action != 'editline') ? 'addline' : 'updateline').'">
 		<input type="hidden" name="mode" value="">
@@ -405,7 +405,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		if (!empty($object->lines)) {
-			$object->printObjectLines($action, $mysoc, null, GETPOSTINT('lineid'), 1);
+			$object->printObjectLines($action, $mysoc, null, request()->integer('lineid', 0), 1);
 		}
 
 		// Form to add new line
@@ -494,7 +494,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 
 	// Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 
@@ -539,7 +539,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 	}
 
 	//Select mail models is same action as presend
-	if (GETPOST('modelselected')) {
+	if (request()->input('modelselected')) {
 		$action = 'presend';
 	}
 

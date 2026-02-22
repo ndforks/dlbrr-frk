@@ -61,9 +61,9 @@ if (isModEnabled("product") || isModEnabled("service")) {
 // Load translation files required by the page
 $langs->loadLangs(array('orders', 'sendings', 'companies', 'bills', 'propal', 'stocks', 'productbatch', 'incoterm', 'other'));
 
-$order_id	= GETPOSTINT('id'); // id of order
-$ref		= GETPOST('ref', 'alpha');
-$action 	= GETPOST('action', 'aZ09');
+$order_id	= request()->integer('id', 0); // id of order
+$ref		= request()->input('ref');
+$action 	= request()->input('action');
 
 $hookmanager->initHooks(array('ordershipmentcard'));
 
@@ -98,9 +98,9 @@ $permissiontodelete = $user->hasRight('expedition', 'supprimer') || ($permission
 $permissionnote = $user->hasRight('expedition', 'creer'); // Used by the include of actions_setnotes.inc.php
 $permissiondellink = $user->hasRight('expedition', 'creer'); // Used by the include of actions_dellink.inc.php
 $permissiontoeditextra = $permissiontoadd;
-if (GETPOST('attribute', 'aZ09') && isset($extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')])) {
+if (request()->input('attribute') && isset($extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')])) {
 	// For action 'update_extras', is there a specific permission set for the attribute to update
-	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][GETPOST('attribute', 'aZ09')]);
+	$permissiontoeditextra = dol_eval((string) $extrafields->attributes[$object->table_element]['perms'][request()->input('attribute')]);
 }
 
 
@@ -118,22 +118,22 @@ if (empty($reshook)) {
 	// Categorisation dans projet
 	if ($action == 'classin' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
-	if ($action == 'confirm_cloture' && GETPOST('confirm', 'alpha') == 'yes' && $permissiontoadd) {
+	if ($action == 'confirm_cloture' && request()->input('confirm') == 'yes' && $permissiontoadd) {
 		$object->fetch($order_id);
 		$result = $object->cloture($user);
 	} elseif ($action == 'setref_client' && $permissiontoadd) {
 		// Positionne ref commande client
-		$result = $object->set_ref_client($user, GETPOST('ref_client'));
+		$result = $object->set_ref_client($user, request()->input('ref_client'));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	}
 
 	if ($action == 'setdatedelivery' && $permissiontoadd) {
-		$datedelivery = dol_mktime(GETPOSTINT('liv_hour'), GETPOSTINT('liv_min'), 0, GETPOSTINT('liv_month'), GETPOSTINT('liv_day'), GETPOSTINT('liv_year'));
+		$datedelivery = dol_mktime(request()->integer('liv_hour', 0), request()->integer('liv_min', 0), 0, request()->integer('liv_month', 0), request()->integer('liv_day', 0), request()->integer('liv_year', 0));
 
 		$object->fetch($order_id);
 		$result = $object->setDeliveryDate($user, $datedelivery);
@@ -143,7 +143,7 @@ if (empty($reshook)) {
 	}
 	if ($action == 'setmode' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->setPaymentMethods(GETPOSTINT('mode_reglement_id'));
+		$result = $object->setPaymentMethods(request()->integer('mode_reglement_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -151,7 +151,7 @@ if (empty($reshook)) {
 
 	if ($action == 'setavailability' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->availability(GETPOSTINT('availability_id'));
+		$result = $object->availability(request()->integer('availability_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -159,7 +159,7 @@ if (empty($reshook)) {
 
 	if ($action == 'setdemandreason' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->demand_reason(GETPOSTINT('demand_reason_id'));
+		$result = $object->demand_reason(request()->integer('demand_reason_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -167,13 +167,13 @@ if (empty($reshook)) {
 
 	if ($action == 'setconditions' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->setPaymentTerms(GETPOSTINT('cond_reglement_id'));
+		$result = $object->setPaymentTerms(request()->integer('cond_reglement_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'set_incoterms' && isModEnabled('incoterm') && $permissiontoadd) {
 		// Set incoterm
-		$result = $object->setIncoterms(GETPOSTINT('incoterm_id'), GETPOST('location_incoterms'));
+		$result = $object->setIncoterms(request()->integer('incoterm_id', 0), request()->input('location_incoterms'));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -182,7 +182,7 @@ if (empty($reshook)) {
 	// shipping method
 	if ($action == 'setshippingmethod' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->setShippingMethod(GETPOSTINT('shipping_method_id'));
+		$result = $object->setShippingMethod(request()->integer('shipping_method_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -191,7 +191,7 @@ if (empty($reshook)) {
 	// warehouse
 	if ($action == 'setwarehouse' && $permissiontoadd) {
 		$object->fetch($order_id);
-		$result = $object->setWarehouse(GETPOSTINT('warehouse_id'));
+		$result = $object->setWarehouse(request()->integer('warehouse_id', 0));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
@@ -200,7 +200,7 @@ if (empty($reshook)) {
 	if ($action == 'update_extras' && $permissiontoeditextra) {
 		$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-		$attribute_name = GETPOST('attribute', 'aZ09');
+		$attribute_name = request()->input('attribute');
 
 		// Fill array 'array_options' with data from update form
 		$ret = $extrafields->setOptionalsFromPost(null, $object, $attribute_name);
@@ -694,8 +694,8 @@ if ($order_id > 0 || !empty($ref)) {
 
 							$outputlangs = $langs;
 							$newlang = '';
-							if (empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-								$newlang = GETPOST('lang_id', 'aZ09');
+							if (empty($newlang) && request()->input('lang_id')) {
+								$newlang = request()->input('lang_id');
 							}
 							if (empty($newlang)) {
 								$newlang = $object->thirdparty->default_lang;
@@ -856,7 +856,7 @@ if ($order_id > 0 || !empty($ref)) {
 				print '<tr><td colspan="5"><span class="opacitymedium">'.$langs->trans("NoArticleOfTypeProduct").'</span></td></tr>';
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print "</table>";

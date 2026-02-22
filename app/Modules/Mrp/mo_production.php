@@ -56,18 +56,18 @@ require_once DOL_DOCUMENT_ROOT.'/workstation/class/workstation.class.php';
 $langs->loadLangs(array("mrp", "stocks", "other", "product", "productbatch"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'mocard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$lineid = GETPOSTINT('lineid');
-$fk_movement = GETPOSTINT('fk_movement');
-$fk_default_warehouse = GETPOSTINT('fk_default_warehouse');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'mocard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$lineid = request()->integer('lineid', 0);
+$fk_movement = request()->integer('fk_movement', 0);
+$fk_default_warehouse = request()->integer('fk_default_warehouse', 0);
 
-$collapse = GETPOST('collapse', 'aZ09comma');
+$collapse = request()->input('collapse');
 
 // Initialize a technical objects
 $object = new Mo($db);
@@ -83,7 +83,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -99,7 +99,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 $result = restrictedArea($user, 'mrp', $object->id, 'mrp_mo', '', 'fk_soc', 'rowid', $isdraft);
@@ -142,7 +142,7 @@ if (empty($reshook)) {
 	$triggermodname = 'MO_MODIFY'; // Name of trigger action code to execute when we modify record
 
 	if ($action == 'confirm_cancel' && $confirm == 'yes' && !empty($permissiontoadd)) {
-		$also_cancel_consumed_and_produced_lines = (GETPOST('alsoCancelConsumedAndProducedLines', 'alpha') ? 1 : 0);
+		$also_cancel_consumed_and_produced_lines = (request()->input('alsoCancelConsumedAndProducedLines') ? 1 : 0);
 		$result = $object->cancel($user, 0, (bool) $also_cancel_consumed_and_produced_lines);
 		if ($result > 0) {
 			header("Location: " . DOL_URL_ROOT.'/mrp/mo_card.php?id=' . $object->id);
@@ -152,7 +152,7 @@ if (empty($reshook)) {
 			setEventMessages($object->error, $object->errors, 'errors');
 		}
 	} elseif ($action == 'confirm_delete' && $confirm == 'yes' && !empty($permissiontodelete)) {
-		$also_cancel_consumed_and_produced_lines = (GETPOST('alsoCancelConsumedAndProducedLines', 'alpha') ? 1 : 0);
+		$also_cancel_consumed_and_produced_lines = (request()->input('alsoCancelConsumedAndProducedLines') ? 1 : 0);
 		$result = $object->delete($user, 0, (bool) $also_cancel_consumed_and_produced_lines);
 		if ($result > 0) {
 			header("Location: " . $backurlforlist);
@@ -182,25 +182,25 @@ if (empty($reshook)) {
 	//include DOL_DOCUMENT_ROOT.'/core/actions_lineupdown.inc.php';	// Must be 'include', not 'include_once'
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	if ($action == 'confirm_reopen' && $permissiontoadd) {
 		$result = $object->setStatut($object::STATUS_INPROGRESS, 0, '', 'MRP_REOPEN');
 	}
 
-	if (($action == 'confirm_addconsumeline' && GETPOST('addconsumelinebutton') && $permissiontoadd)
-	|| ($action == 'confirm_addproduceline' && GETPOST('addproducelinebutton') && $permissiontoadd)) {
+	if (($action == 'confirm_addconsumeline' && request()->input('addconsumelinebutton') && $permissiontoadd)
+	|| ($action == 'confirm_addproduceline' && request()->input('addproducelinebutton') && $permissiontoadd)) {
 		$moline = new MoLine($db);
 
 		// Line to produce
 		$moline->fk_mo = $object->id;
 		$moline->qty = GETPOSTFLOAT('qtytoadd');
-		$moline->fk_product = GETPOSTINT('productidtoadd');
-		if (GETPOST('addconsumelinebutton')) {
+		$moline->fk_product = request()->integer('productidtoadd', 0);
+		if (request()->input('addconsumelinebutton')) {
 			$moline->role = 'toconsume';
 		} else {
 			$moline->role = 'toproduce';
@@ -260,8 +260,8 @@ if (empty($reshook)) {
 	if (in_array($action, array('confirm_consumeorproduce', 'confirm_consumeandproduceall')) && $permissiontoproduce) {
 		$stockmove = new MouvementStock($db);
 
-		$labelmovement = GETPOST('inventorylabel', 'alphanohtml');
-		$codemovement  = GETPOST('inventorycode', 'alphanohtml');
+		$labelmovement = request()->input('inventorylabel');
+		$codemovement  = request()->input('inventorycode');
 
 		$db->begin();
 		$pos = 0;
@@ -413,7 +413,7 @@ if (empty($reshook)) {
 			$consumptioncomplete = true;
 			$productioncomplete = true;
 
-			if (GETPOSTINT('autoclose')) {
+			if (request()->integer('autoclose', 0)) {
 				foreach ($object->lines as $line) {
 					$tmpproduct = new Product($db);
 					$tmpproduct->fetch($line->fk_product);
@@ -480,8 +480,8 @@ if (empty($reshook)) {
 			if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 				$outputlangs = $langs;
 				$newlang = '';
-				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-					$newlang = GETPOST('lang_id', 'aZ09');
+				if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+					$newlang = request()->input('lang_id');
 				}
 				if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 					$newlang = $object->thirdparty->default_lang;
@@ -502,7 +502,7 @@ if (empty($reshook)) {
 
 	if ($action == 'confirm_editline' && $permissiontoadd) {
 		$moline = new MoLine($db);
-		$res = $moline->fetch(GETPOSTINT('lineid'));
+		$res = $moline->fetch(request()->integer('lineid', 0));
 		if ($result > 0) {
 			$extrafields->fetch_name_optionals_label($moline->table_element);
 			if (!empty($extrafields->attributes[$moline->table_element]['label'])) {
@@ -512,11 +512,11 @@ if (empty($reshook)) {
 				}
 			}
 			$moline->qty = GETPOSTFLOAT('qty_lineProduce');
-			if (GETPOSTISSET('warehouse_lineProduce')) {
-				$moline->fk_warehouse = (GETPOSTINT('warehouse_lineProduce') > 0 ? GETPOSTINT('warehouse_lineProduce') : 0);
+			if (request()->has('warehouse_lineProduce')) {
+				$moline->fk_warehouse = (request()->integer('warehouse_lineProduce', 0) > 0 ? request()->integer('warehouse_lineProduce', 0) : 0);
 			}
-			if (GETPOSTISSET('workstation_lineProduce')) {
-				$moline->fk_default_workstation = (GETPOSTINT('workstation_lineProduce') > 0 ? GETPOSTINT('workstation_lineProduce') : 0);
+			if (request()->has('workstation_lineProduce')) {
+				$moline->fk_default_workstation = (request()->integer('workstation_lineProduce', 0) > 0 ? request()->integer('workstation_lineProduce', 0) : 0);
 			}
 
 			$res = $moline->update($user);
@@ -813,8 +813,8 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		// Note: closing form is add end of page
 
 		if (in_array($action, array('consumeorproduce', 'consumeandproduceall'))) {
-			$defaultstockmovementlabel = GETPOST('inventorylabel', 'alphanohtml') ? GETPOST('inventorylabel', 'alphanohtml') : $langs->trans("ProductionForRef", $object->ref);
-			$defaultstockmovementcode = GETPOST('inventorycode', 'alphanohtml') ? GETPOST('inventorycode', 'alphanohtml') : dol_print_date(dol_now(), 'dayhourlog');
+			$defaultstockmovementlabel = request()->input('inventorylabel') ? request()->input('inventorylabel') : $langs->trans("ProductionForRef", $object->ref);
+			$defaultstockmovementcode = request()->input('inventorycode') ? request()->input('inventorycode') : dol_print_date(dol_now(), 'dayhourlog');
 
 			print '<div class="center'.(in_array($action, array('consumeorproduce', 'consumeandproduceall')) ? ' formconsumeproduce' : '').'">';
 			print '<div class="opacitymedium hideonsmartphone paddingbottom marginbottomonly">'.$langs->trans("ConfirmProductionDesc", $langs->transnoentitiesnoconv("Confirm")).'<br></div>';
@@ -826,7 +826,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 			print '<span class="paddingright">'.$langs->trans("MovementLabel").':</span>';
 			print '<span class="clearbothonsmartphone"></span>';
 			print '<input type="text" class="minwidth300" name="inventorylabel" value="'.$defaultstockmovementlabel.'"><br><br>';
-			print '<input type="checkbox" id="autoclose" name="autoclose" value="1"'.(GETPOSTISSET('inventorylabel') ? (GETPOST('autoclose') ? ' checked="checked"' : '') : ' checked="checked"').'> <label for="autoclose">'.$langs->trans("AutoCloseMO").'</label><br>';
+			print '<input type="checkbox" id="autoclose" name="autoclose" value="1"'.(request()->has('inventorylabel') ? (request()->input('autoclose') ? ' checked="checked"' : '') : ' checked="checked"').'> <label for="autoclose">'.$langs->trans("AutoCloseMO").'</label><br>';
 			print '<input type="submit" class="button margintoponly" value="'.$langs->trans("Confirm").'" name="confirm">';
 			print ' &nbsp; ';
 			print '<input class="button margintoponly button-cancel" type="submit" value="'.$langs->trans("Cancel").'" name="cancel">';

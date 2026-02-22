@@ -284,7 +284,7 @@ if (getDolGlobalInt('THEME_DARKMODEENABLED')) {
 ?>
 
 body {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	background-color: #FFFFFF;
 <?php } ?>
 	font-size: <?php print is_numeric($fontsize) ? $fontsize.'px' : $fontsize; ?>;
@@ -2507,7 +2507,7 @@ table.tableforfield tr:not(.liste_titre)>td:first-of-type:not(.nottitleforfield)
 	color: var(--tableforfieldcolor);
 }
 
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+<?php if (request()->input('optioncss') == 'print') { ?>
 .hideonprint { display: none !important; }
 <?php } ?>
 
@@ -2778,17 +2778,17 @@ div.vmenu, td.vmenu {
 
 
 div.fiche {
-	margin-<?php print $left; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '44' : '6')); ?>px;
-	margin-<?php print $right; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '38' : '6')); ?>px;
-	<?php if (!empty($dol_hide_topmenu) || GETPOST('dol_openinpopup', 'aZ09')) {
+	margin-<?php print $left; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '44' : '6')); ?>px;
+	margin-<?php print $right; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '38' : '6')); ?>px;
+	<?php if (!empty($dol_hide_topmenu) || request()->input('dol_openinpopup')) {
 		print 'margin-top: 12px;'."\n";
 	} ?>
-	<?php if (!empty($dol_hide_topmenu) || GETPOST('dol_openinpopup', 'aZ09')) {
+	<?php if (!empty($dol_hide_topmenu) || request()->input('dol_openinpopup')) {
 		print 'margin-bottom: 12px;'."\n";
 	} ?>
 }
 .dol_openinpopup div.fiche {
-	margin-<?php print $left; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '24' : '6')); ?>px;
+	margin-<?php print $left; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : (empty($conf->dol_optimize_smallscreen) ? '24' : '6')); ?>px;
 	margin-top: 0px;
 }
 .page-modulehelp div.fiche {
@@ -2869,8 +2869,8 @@ div.firstcolumn > table.noborder, div.secondcolumn > table.noborder, div.firstco
 @media only screen and (max-width: 1024px)
 {
 	div.fiche {
-		margin-<?php print $left; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 6 : ($dol_hide_leftmenu ? '6' : '20')); ?>px;
-		margin-<?php print $right; ?>: <?php print(GETPOST('optioncss', 'aZ09') == 'print' ? 8 : 6); ?>px;
+		margin-<?php print $left; ?>: <?php print(request()->input('optioncss') == 'print' ? 6 : ($dol_hide_leftmenu ? '6' : '20')); ?>px;
+		margin-<?php print $right; ?>: <?php print(request()->input('optioncss') == 'print' ? 8 : 6); ?>px;
 	}
 	div.fichecenter {
 		width: 100%;
@@ -3132,7 +3132,7 @@ img.photorefnoborder {
 /* ============================================================================== */
 
 #id-top {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	background: var(--colorbackhmenu1);
@@ -3144,7 +3144,7 @@ img.photorefnoborder {
 }
 
 div#tmenu_tooltip {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	padding-<?php echo $right; ?>: <?php echo((float) $maxwidthloginblock - 10); ?>px;
@@ -3168,7 +3168,7 @@ div.topmenuimage {
 }
 
 div.tmenudiv {
-<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+<?php if (request()->input('optioncss') == 'print') {  ?>
 	display:none;
 <?php } else { ?>
 	position: relative;
@@ -3669,7 +3669,7 @@ div.login_block {
 	top: <?php print $disableimages ? '4px' : '0'; ?>;
 	line-height: 10px;
 	<?php // echo (empty($disableimages) && $maxwidthloginblock)?'max-width: '.$maxwidthloginblock.'px;':'';?>
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+	<?php if (request()->input('optioncss') == 'print') { ?>
 	display: none;
 	<?php } ?>
 }
@@ -3868,7 +3868,7 @@ div.vmenu, td.vmenu {
 	width: <?php echo $leftmenuwidth; ?>px;
 	margin-left: 8px;
 	/* text-transform: capitalize; */
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') { ?>
+	<?php if (request()->input('optioncss') == 'print') { ?>
 	display: none;
 	<?php } ?>
 }
@@ -9134,7 +9134,7 @@ table.jPicker {
 	<?php } ?>
 	}
 	div#tmenu_tooltip {
-	<?php if (GETPOST('optioncss', 'aZ09') == 'print') {  ?>
+	<?php if (request()->input('optioncss') == 'print') {  ?>
 		display:none;
 	<?php } else { ?>
 		padding-<?php echo $right; ?>: 0;

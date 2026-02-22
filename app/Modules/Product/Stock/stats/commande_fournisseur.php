@@ -46,10 +46,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('companies', 'bills', 'products', 'orders'));
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$batch = GETPOST('batch', 'alpha');
-$objectid = GETPOSTINT('productid');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$batch = request()->input('batch');
+$objectid = request()->integer('productid', 0);
 
 // Security check
 $fieldvalue = (!empty($id) ? $id : (!empty($ref) ? $ref : ''));
@@ -62,13 +62,13 @@ if (!empty($user->socid)) {
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('batchproductstatssupplierorder'));
 
-$showmessage = GETPOST('showmessage');
+$showmessage = request()->input('showmessage');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -82,16 +82,16 @@ if (empty($sortfield)) {
 	$sortfield = "cf.date_commande";
 }
 
-$search_month = GETPOST('search_month');	// Can be ''
-$search_year = GETPOST('search_year');	// Can be '''
+$search_month = request()->input('search_month');	// Can be ''
+$search_year = request()->input('search_year');	// Can be '''
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) {
 	$search_month = '';
 	$search_year = '';
 }
 
 if (!$user->hasRight('produit', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -373,7 +373,7 @@ if ($id > 0 || !empty($ref)) {
 				print '</div>';
 				print '</form>';
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 			$db->free($result);
 		}

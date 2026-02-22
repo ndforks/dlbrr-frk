@@ -44,14 +44,14 @@ require_once DOL_DOCUMENT_ROOT . '/asset/class/assetaccountancycodes.class.php';
 $langs->loadLangs(array("assets", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'assetmodelcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'assetmodelcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
 // Initialize a technical objects
 $object = new AssetModel($db);
@@ -67,7 +67,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_' . $key, 'alpha')) {
@@ -91,7 +91,7 @@ $upload_dir = $conf->asset->multidir_output[isset($object->entity) ? $object->en
 
 // Security check (enable the most restrictive one)
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
 	$socid = $user->socid;
@@ -99,10 +99,10 @@ if ($user->socid > 0) {
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, 'asset', $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (!isModEnabled('asset')) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 // Model depreciation options and accountancy codes

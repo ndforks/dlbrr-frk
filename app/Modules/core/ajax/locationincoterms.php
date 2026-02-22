@@ -54,7 +54,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.form.class.php';
 
 // Security check
 if (!isModEnabled('incoterm')) {
-	httponly_accessforbidden("Module incoterm not enabled");	// This includes the exit.
+	httponly_abort(403);	// This includes the exit.
 }
 
 // There is no other permission on this component. Everybody connected can read content of the incoterm dictionary table
@@ -76,11 +76,11 @@ top_httphead();
 dol_syslog('location_incoterms call with MAIN_USE_LOCATION_INCOTERMS_DICTIONNARY='.getDolGlobalString('MAIN_USE_LOCATION_INCOTERMS_DICTIONNARY', ''));
 
 // Generation of list of zip-town
-if (GETPOST('location_incoterms')) {
+if (request()->input('location_incoterms')) {
 	$return_arr = array();
 
 	// Define filter on text typed
-	$location_incoterms = GETPOST('location_incoterms');
+	$location_incoterms = request()->input('location_incoterms');
 
 	if (getDolGlobalString('MAIN_USE_LOCATION_INCOTERMS_DICTIONNARY')) {   // Use location_incoterms
 		$sql = "SELECT z.location as location_incoterms, z.label as label";

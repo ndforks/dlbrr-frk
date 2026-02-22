@@ -45,10 +45,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->loadLangs(array('admin', 'exports', 'other'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -56,7 +56,7 @@ $action = GETPOST('action', 'aZ09');
  */
 
 if ($action == 'save') {
-	dolibarr_set_const($db, 'EXPORT_CSV_SEPARATOR_TO_USE', GETPOST('EXPORT_CSV_SEPARATOR_TO_USE', 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, 'EXPORT_CSV_SEPARATOR_TO_USE', request()->input('EXPORT_CSV_SEPARATOR_TO_USE'), 'chaine', 0, '', $conf->entity);
 }
 
 

@@ -37,11 +37,11 @@
  * @var int $permissiondellink
  */
 
-$dellinkid = GETPOSTINT('dellinkid');
-$addlink = GETPOST('addlink', 'alpha');
-$addlinkids = GETPOST('idtolinkto', 'array:int');
-$addlinkref = GETPOST('reftolinkto', 'alpha');
-$cancellink = GETPOST('cancel', 'alpha');
+$dellinkid = request()->integer('dellinkid', 0);
+$addlink = request()->input('addlink');
+$addlinkids = request()->input('idtolinkto');
+$addlinkref = request()->input('reftolinkto');
+$cancellink = request()->input('cancel');
 
 // Link object to another object
 if ($action == 'addlink' && !empty($permissiondellink) && !$cancellink && $id > 0 && !empty($addlinkids)) {

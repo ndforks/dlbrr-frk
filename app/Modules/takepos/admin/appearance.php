@@ -41,7 +41,7 @@ require_once DOL_DOCUMENT_ROOT."/core/lib/takepos.lib.php";
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "cashdesk", "commercial"));
@@ -51,16 +51,16 @@ $langs->loadLangs(array("admin", "cashdesk", "commercial"));
  */
 $error = 0;
 
-if (GETPOST('action', 'alpha') == 'set') {
+if (request()->input('action') == 'set') {
 	$db->begin();
 
-	$res = dolibarr_set_const($db, "TAKEPOS_COLOR_THEME", GETPOST('TAKEPOS_COLOR_THEME', 'alpha'), 'chaine', 0, '', $conf->entity);
-	$res = dolibarr_set_const($db, "TAKEPOS_LINES_TO_SHOW", GETPOST('TAKEPOS_LINES_TO_SHOW', 'alpha'), 'chaine', 0, '', $conf->entity);
-	if (GETPOSTISSET('TAKEPOS_SHOW_PRODUCT_REFERENCE')) {
-		$res = dolibarr_set_const($db, "TAKEPOS_SHOW_PRODUCT_REFERENCE", GETPOST('TAKEPOS_SHOW_PRODUCT_REFERENCE', 'alpha'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_COLOR_THEME", request()->input('TAKEPOS_COLOR_THEME'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TAKEPOS_LINES_TO_SHOW", request()->input('TAKEPOS_LINES_TO_SHOW'), 'chaine', 0, '', $conf->entity);
+	if (request()->has('TAKEPOS_SHOW_PRODUCT_REFERENCE')) {
+		$res = dolibarr_set_const($db, "TAKEPOS_SHOW_PRODUCT_REFERENCE", request()->input('TAKEPOS_SHOW_PRODUCT_REFERENCE'), 'chaine', 0, '', $conf->entity);
 	}
 
-	dol_syslog("admin/cashdesk: level ".GETPOST('level', 'alpha'));
+	dol_syslog("admin/cashdesk: level ".request()->input('level'));
 
 	if (!($res > 0)) {
 		$error++;

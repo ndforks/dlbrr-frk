@@ -51,11 +51,11 @@ require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/blockedlog/class/blockedlog.class.php';
 
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 $block = new BlockedLog($db);
 
 if ((!$user->admin && !$user->hasRight('blockedlog', 'read')) || empty($conf->blockedlog->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("admin", "bills", "blockedlog", "cashdesk", "companies", "mails", "members", "products"));

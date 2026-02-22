@@ -44,9 +44,9 @@ if (isModEnabled("bank")) {
 // Load translation files required by the page
 $langs->loadLangs(array('bills', 'banks', 'companies', 'trips'));
 
-$id = GETPOST('rowid') ? GETPOSTINT('rowid') : GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
+$id = request()->input('rowid') ? request()->integer('rowid', 0) : request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 // Security check
 if ($user->socid) {
@@ -239,7 +239,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

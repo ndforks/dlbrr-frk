@@ -80,7 +80,7 @@ if ($reshook < 0) {
 }
 
 // Define url to go after disconnect
-$urlfrom = empty($_SESSION["urlfrom"]) ? GETPOST('urlfrom') : $_SESSION["urlfrom"];
+$urlfrom = empty($_SESSION["urlfrom"]) ? request()->input('urlfrom') : $_SESSION["urlfrom"];
 
 // Define url to go
 $url = DOL_URL_ROOT."/index.php"; // By default go to login page
@@ -91,19 +91,19 @@ if (getDolGlobalString('MAIN_LOGOUT_GOTO_URL')) {
 	$url = getDolGlobalString('MAIN_LOGOUT_GOTO_URL');
 }
 
-if (GETPOST('dol_hide_topmenu')) {
+if (request()->input('dol_hide_topmenu')) {
 	$url .= (preg_match('/\?/', $url) ? '&' : '?').'dol_hide_topmenu=1';
 }
-if (GETPOST('dol_hide_leftmenu')) {
+if (request()->input('dol_hide_leftmenu')) {
 	$url .= (preg_match('/\?/', $url) ? '&' : '?').'dol_hide_leftmenu=1';
 }
-if (GETPOST('dol_optimize_smallscreen')) {
+if (request()->input('dol_optimize_smallscreen')) {
 	$url .= (preg_match('/\?/', $url) ? '&' : '?').'dol_optimize_smallscreen=1';
 }
-if (GETPOST('dol_no_mouse_hover')) {
+if (request()->input('dol_no_mouse_hover')) {
 	$url .= (preg_match('/\?/', $url) ? '&' : '?').'dol_no_mouse_hover=1';
 }
-if (GETPOST('dol_use_jmobile')) {
+if (request()->input('dol_use_jmobile')) {
 	$url .= (preg_match('/\?/', $url) ? '&' : '?').'dol_use_jmobile=1';
 }
 
@@ -128,7 +128,7 @@ unset($_SESSION['dol_login']);
 unset($_SESSION['dol_entity']);
 unset($_SESSION['urlfrom']);
 
-if (GETPOST('noredirect')) {
+if (request()->input('noredirect')) {
 	return;
 }
 header("Location: ".$url); // Default behaviour is redirect to index.php page

@@ -47,21 +47,21 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/cron.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('admin', 'cron', 'members', 'bills'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$securitykey = GETPOST('securitykey', 'alpha');
+$securitykey = request()->input('securitykey');
 
 $permissiontoadd = $user->hasRight('cron', 'create');
 $permissiontoexecute = $user->hasRight('cron', 'execute');
 $permissiontodelete = $user->hasRight('cron', 'delete');
 
 if (!$permissiontoadd) {
-	accessforbidden();
+	abort(403);
 }
 // after this test $permissiontoadd is always true and never can't be false
 
@@ -132,24 +132,24 @@ if ($action == 'confirm_execute' && $confirm == "yes" && $permissiontoexecute) {
 
 
 if ($action == 'add'/*  && $permissiontoadd */) {
-	$object->jobtype = GETPOST('jobtype');
-	$object->label = GETPOST('label');
-	$object->command = GETPOST('command');
-	$object->classesname = GETPOST('classesname', 'alphanohtml');
-	$object->objectname = GETPOST('objectname', 'aZ09');
-	$object->methodename = GETPOST('methodename', 'aZ09');
-	$object->params = GETPOST('params');
-	$object->md5params = GETPOST('md5params');
-	$object->module_name = GETPOST('module_name');
-	$object->note_private = GETPOST('note', 'restricthtml');
-	$object->datestart = dol_mktime(GETPOSTINT('datestarthour'), GETPOSTINT('datestartmin'), 0, GETPOSTINT('datestartmonth'), GETPOSTINT('datestartday'), GETPOSTINT('datestartyear'));
-	$object->dateend = dol_mktime(GETPOSTINT('dateendhour'), GETPOSTINT('dateendmin'), 0, GETPOSTINT('dateendmonth'), GETPOSTINT('dateendday'), GETPOSTINT('dateendyear'));
-	$object->priority = GETPOSTINT('priority');
-	$object->datenextrun = dol_mktime(GETPOSTINT('datenextrunhour'), GETPOSTINT('datenextrunmin'), 0, GETPOSTINT('datenextrunmonth'), GETPOSTINT('datenextrunday'), GETPOSTINT('datenextrunyear'));
-	$object->unitfrequency = GETPOST('unitfrequency', 'alpha');
-	$object->frequency = GETPOSTINT('nbfrequency');
-	$object->maxrun = GETPOSTINT('maxrun');
-	$object->email_alert = GETPOST('email_alert');
+	$object->jobtype = request()->input('jobtype');
+	$object->label = request()->input('label');
+	$object->command = request()->input('command');
+	$object->classesname = request()->input('classesname');
+	$object->objectname = request()->input('objectname');
+	$object->methodename = request()->input('methodename');
+	$object->params = request()->input('params');
+	$object->md5params = request()->input('md5params');
+	$object->module_name = request()->input('module_name');
+	$object->note_private = request()->input('note');
+	$object->datestart = dol_mktime(request()->integer('datestarthour', 0), request()->integer('datestartmin', 0), 0, request()->integer('datestartmonth', 0), request()->integer('datestartday', 0), request()->integer('datestartyear', 0));
+	$object->dateend = dol_mktime(request()->integer('dateendhour', 0), request()->integer('dateendmin', 0), 0, request()->integer('dateendmonth', 0), request()->integer('dateendday', 0), request()->integer('dateendyear', 0));
+	$object->priority = request()->integer('priority', 0);
+	$object->datenextrun = dol_mktime(request()->integer('datenextrunhour', 0), request()->integer('datenextrunmin', 0), 0, request()->integer('datenextrunmonth', 0), request()->integer('datenextrunday', 0), request()->integer('datenextrunyear', 0));
+	$object->unitfrequency = request()->input('unitfrequency');
+	$object->frequency = request()->integer('nbfrequency', 0);
+	$object->maxrun = request()->integer('maxrun', 0);
+	$object->email_alert = request()->input('email_alert');
 	$object->status = 0;
 	$object->processing = 0;
 	$object->lastresult = '';
@@ -169,24 +169,24 @@ if ($action == 'add'/*  && $permissiontoadd */) {
 // Save parameters
 if ($action == 'update'/*  && $permissiontoadd */) {
 	$object->id = $id;
-	$object->jobtype = GETPOST('jobtype');
-	$object->label = GETPOST('label');
-	$object->command = GETPOST('command');
-	$object->classesname = GETPOST('classesname', 'alphanohtml');
-	$object->objectname = GETPOST('objectname', 'aZ09');
-	$object->methodename = GETPOST('methodename', 'aZ09');
-	$object->params = GETPOST('params');
-	$object->md5params = GETPOST('md5params');
-	$object->module_name = GETPOST('module_name');
-	$object->note_private = GETPOST('note', 'restricthtml');
-	$object->datestart = dol_mktime(GETPOSTINT('datestarthour'), GETPOSTINT('datestartmin'), 0, GETPOSTINT('datestartmonth'), GETPOSTINT('datestartday'), GETPOSTINT('datestartyear'));
-	$object->dateend = dol_mktime(GETPOSTINT('dateendhour'), GETPOSTINT('dateendmin'), 0, GETPOSTINT('dateendmonth'), GETPOSTINT('dateendday'), GETPOSTINT('dateendyear'));
-	$object->priority = GETPOSTINT('priority');
-	$object->datenextrun = dol_mktime(GETPOSTINT('datenextrunhour'), GETPOSTINT('datenextrunmin'), 0, GETPOSTINT('datenextrunmonth'), GETPOSTINT('datenextrunday'), GETPOSTINT('datenextrunyear'));
-	$object->unitfrequency = GETPOST('unitfrequency', 'alpha');
-	$object->frequency = GETPOSTINT('nbfrequency');
-	$object->maxrun = GETPOSTINT('maxrun');
-	$object->email_alert = GETPOST('email_alert');
+	$object->jobtype = request()->input('jobtype');
+	$object->label = request()->input('label');
+	$object->command = request()->input('command');
+	$object->classesname = request()->input('classesname');
+	$object->objectname = request()->input('objectname');
+	$object->methodename = request()->input('methodename');
+	$object->params = request()->input('params');
+	$object->md5params = request()->input('md5params');
+	$object->module_name = request()->input('module_name');
+	$object->note_private = request()->input('note');
+	$object->datestart = dol_mktime(request()->integer('datestarthour', 0), request()->integer('datestartmin', 0), 0, request()->integer('datestartmonth', 0), request()->integer('datestartday', 0), request()->integer('datestartyear', 0));
+	$object->dateend = dol_mktime(request()->integer('dateendhour', 0), request()->integer('dateendmin', 0), 0, request()->integer('dateendmonth', 0), request()->integer('dateendday', 0), request()->integer('dateendyear', 0));
+	$object->priority = request()->integer('priority', 0);
+	$object->datenextrun = dol_mktime(request()->integer('datenextrunhour', 0), request()->integer('datenextrunmin', 0), 0, request()->integer('datenextrunmonth', 0), request()->integer('datenextrunday', 0), request()->integer('datenextrunyear', 0));
+	$object->unitfrequency = request()->input('unitfrequency');
+	$object->frequency = request()->integer('nbfrequency', 0);
+	$object->maxrun = request()->integer('maxrun', 0);
+	$object->email_alert = request()->input('email_alert');
 
 	// Add cron task
 	$result = $object->update($user);
@@ -237,7 +237,7 @@ if ($action == 'inactive'/*  && $permissiontoadd */) {
 // Action clone object
 if ($action == 'confirm_clone' && $confirm == 'yes'/*  && $permissiontoadd */) {
 	// @phpstan-ignore-next-line
-	if (1 == 0 && !GETPOST('clone_content') && !GETPOST('clone_receivers')) {  // @phan-suppress-current-line PhanPluginBothLiteralsBinaryOp
+	if (1 == 0 && !request()->input('clone_content') && !request()->input('clone_receivers')) {  // @phan-suppress-current-line PhanPluginBothLiteralsBinaryOp
 		setEventMessages($langs->trans("NoCloneOptionsSpecified"), null, 'errors');
 	} else {
 		$objectutil = dol_clone($object, 1); // We clone to avoid to denaturate loaded object when setting some properties for clone or if createFromClone modifies the object. We use the native clone to keep this->db valid.
@@ -332,7 +332,7 @@ if (empty($object->status) && $action != 'create') {
 if (($action == "create") || ($action == "edit")) {
 	print '<form name="cronform" action="'.$_SERVER["PHP_SELF"].'" method="post">';
 	print '<input type="hidden" name="token" value="'.newToken().'">'."\n";
-	print '<input type="hidden" name="backtopage" value="'.GETPOST('backtopage').'">'."\n";
+	print '<input type="hidden" name="backtopage" value="'.request()->input('backtopage').'">'."\n";
 	if (!empty($object->id)) {
 		print '<input type="hidden" name="action" value="update">'."\n";
 		print '<input type="hidden" name="id" value="'.$object->id.'">'."\n";

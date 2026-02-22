@@ -161,7 +161,7 @@ $coldisplay++;
 
 	<?php
 	if (is_object($hookmanager)) {
-		$fk_parent_line = (GETPOST('fk_parent_line') ? GETPOSTINT('fk_parent_line') : $line->fk_parent_line);
+		$fk_parent_line = (request()->input('fk_parent_line') ? request()->integer('fk_parent_line', 0) : $line->fk_parent_line);
 		$parameters = array('line' => $line, 'fk_parent_line' => $fk_parent_line, 'var' => $var, 'dateSelector' => $dateSelector, 'seller' => $seller, 'buyer' => $buyer);
 		$reshook = $hookmanager->executeHooks('formEditProductOptions', $parameters, $this, $action);
 	}
@@ -194,11 +194,11 @@ $coldisplay++;
 		if (getDolGlobalString('FCKEDITOR_ENABLE_DETAILS_FULL')) {
 			$toolbarname = 'dolibarr_notes';
 		}
-		$doleditor = new DolEditor('product_desc', GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description, '', getDolGlobalInt('MAIN_DOLEDITOR_HEIGHT', 164), $toolbarname, '', false, true, $enable, $nbrows, '98%');
+		$doleditor = new DolEditor('product_desc', request()->has('product_desc') ? request()->input('product_desc') : $line->description, '', getDolGlobalInt('MAIN_DOLEDITOR_HEIGHT', 164), $toolbarname, '', false, true, $enable, $nbrows, '98%');
 		$doleditor->Create();
 	} else {
 		print '<textarea id="product_desc" class="flat" name="product_desc" readonly style="width: 200px; height:80px;">';
-		print GETPOSTISSET('product_desc') ? GETPOST('product_desc', 'restricthtml') : $line->description;
+		print request()->has('product_desc') ? request()->input('product_desc') : $line->description;
 		print '</textarea>';
 	}
 
@@ -220,10 +220,10 @@ $coldisplay++;
 		}
 		echo '<br>';
 		echo $langs->trans('AutoFillDateFrom').' ';
-		echo $form->selectyesno('date_start_fill', GETPOSTISSET('date_start_fill') ? GETPOSTINT('date_start_fill') : $line->date_start_fill, 1);
+		echo $form->selectyesno('date_start_fill', request()->has('date_start_fill') ? request()->integer('date_start_fill', 0) : $line->date_start_fill, 1);
 		echo ' - ';
 		echo $langs->trans('AutoFillDateTo').' ';
-		echo $form->selectyesno('date_end_fill', GETPOSTISSET('date_end_fill') ? GETPOSTINT('date_end_fill') : $line->date_end_fill, 1);
+		echo $form->selectyesno('date_end_fill', request()->has('date_end_fill') ? request()->integer('date_end_fill', 0) : $line->date_end_fill, 1);
 	}
 
 	?>
@@ -232,7 +232,7 @@ $coldisplay++;
 	<?php
 	if ($object->element == 'supplier_proposal' || $object->element == 'order_supplier' || $object->element == 'invoice_supplier' || $object->element == 'invoice_supplier_rec') {	// We must have same test in printObjectLines
 		$coldisplay++; ?>
-		<td class="right linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="<?php echo GETPOSTISSET('fourn_ref') ? GETPOST('fourn_ref') : ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); ?>"></td>
+		<td class="right linecolrefsupplier"><input id="fourn_ref" name="fourn_ref" class="flat minwidth50 maxwidth100 maxwidth125onsmartphone" value="<?php echo request()->has('fourn_ref') ? request()->input('fourn_ref') : ($line->ref_supplier ? $line->ref_supplier : $line->ref_fourn); ?>"></td>
 					<?php
 					print '<input type="hidden" id="fournprice" name="fournprice"  class="" value="'.$line->fk_fournprice.'">';
 	}
@@ -247,14 +247,14 @@ $coldisplay++;
 	}
 	if (!$situationinvoicelinewithparent) {
 		print '<td class="right">';
-		print $form->load_tva('tva_tx', GETPOSTISSET('tva_tx') ? GETPOST('tva_tx', 'alpha') : ($line->tva_tx.($line->vat_src_code ? (' ('.$line->vat_src_code.')') : '')), $seller, $buyer, 0, $line->info_bits, $line->product_type, false, 1, (int) $type_tva);
+		print $form->load_tva('tva_tx', request()->has('tva_tx') ? request()->input('tva_tx') : ($line->tva_tx.($line->vat_src_code ? (' ('.$line->vat_src_code.')') : '')), $seller, $buyer, 0, $line->info_bits, $line->product_type, false, 1, (int) $type_tva);
 		print '</td>';
 	} else {
 		print '<td class="right"><input size="1" type="text" class="flat right" name="tva_tx" value="'.price($line->tva_tx).'" readonly />%</td>';
 	}
 
 	$coldisplay++;
-	print '<td class="right"><input type="text" class="flat right width50" id="price_ht" name="price_ht" value="'.(GETPOSTISSET('price_ht') ? GETPOST('price_ht', 'alpha') : (isset($line->pu_ht) ? price($line->pu_ht, 0, '', 0) : price($line->subprice, 0, '', 0))).'"';
+	print '<td class="right"><input type="text" class="flat right width50" id="price_ht" name="price_ht" value="'.(request()->has('price_ht') ? request()->input('price_ht') : (isset($line->pu_ht) ? price($line->pu_ht, 0, '', 0) : price($line->subprice, 0, '', 0))).'"';
 	if ($situationinvoicelinewithparent) {
 		print ' readonly';
 	}
@@ -262,7 +262,7 @@ $coldisplay++;
 
 	if (isModEnabled("multicurrency") && $object->multicurrency_code && $object->multicurrency_code != $conf->currency) {
 		$coldisplay++;
-		print '<td class="right"><input rel="'.$object->multicurrency_tx.'" type="text" class="flat right width50" id="multicurrency_subprice" name="multicurrency_subprice" value="'.(GETPOSTISSET('multicurrency_subprice') ? GETPOST('multicurrency_subprice', 'alpha') : price($line->multicurrency_subprice)).'" /></td>';
+		print '<td class="right"><input rel="'.$object->multicurrency_tx.'" type="text" class="flat right width50" id="multicurrency_subprice" name="multicurrency_subprice" value="'.(request()->has('multicurrency_subprice') ? request()->input('multicurrency_subprice') : price($line->multicurrency_subprice)).'" /></td>';
 	}
 
 	if (!empty($inputalsopricewithtax) && !getDolGlobalInt('MAIN_NO_INPUT_PRICE_WITH_TAX')) {
@@ -271,7 +271,7 @@ $coldisplay++;
 		if (getDolGlobalInt('MAIN_UNIT_PRICE_WITH_TAX_IS_FOR_ALL_TAXES')) {
 			$upinctax = price2num($line->total_ttc / (float) $line->qty, 'MU');
 		}
-		print '<td class="right"><input type="text" class="flat right width50" id="price_ttc" name="price_ttc" value="'.(GETPOSTISSET('price_ttc') ? GETPOST('price_ttc') : (isset($upinctax) ? price($upinctax, 0, '', 0) : '')).'"';
+		print '<td class="right"><input type="text" class="flat right width50" id="price_ttc" name="price_ttc" value="'.(request()->has('price_ttc') ? request()->input('price_ttc') : (isset($upinctax) ? price($upinctax, 0, '', 0) : '')).'"';
 		if ($situationinvoicelinewithparent) {
 			print ' readonly';
 		}
@@ -294,7 +294,7 @@ $coldisplay++;
 		// for example always visible on invoice but must be visible only if stock module on and stock decrease option is on invoice validation and status is not validated
 		// must also not be output for most entities (proposal, intervention, ...)
 		//if($line->qty > $line->stock) print img_picto($langs->trans("StockTooLow"),"warning", 'style="vertical-align: bottom;"')." ";
-		print '<input size="3" type="text" class="flat right" name="qty" id="qty" value="'.(GETPOSTISSET('qty') ? GETPOST('qty') : $line->qty).'"';
+		print '<input size="3" type="text" class="flat right" name="qty" id="qty" value="'.(request()->has('qty') ? request()->input('qty') : $line->qty).'"';
 		if ($situationinvoicelinewithparent) {	// Do not allow editing during a situation cycle
 			print ' readonly';
 		}
@@ -319,7 +319,7 @@ $coldisplay++;
 		}
 		$coldisplay++;
 		print '<td class="left">';
-		print $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type);
+		print $form->selectUnits(request()->has('units') ? request()->input('units') : $line->fk_unit, "units", 0, $unit_type);
 		print '</td>';
 	}
 	?>
@@ -329,7 +329,7 @@ $coldisplay++;
 	// Discount
 	$coldisplay++;
 	if (($line->info_bits & 2) != 2) {
-		print '<input type="text" class="flat right width40" name="remise_percent" id="remise_percent" value="'.(GETPOSTISSET('remise_percent') ? GETPOST('remise_percent') : ($line->remise_percent ? $line->remise_percent : '')).'"';
+		print '<input type="text" class="flat right width40" name="remise_percent" id="remise_percent" value="'.(request()->has('remise_percent') ? request()->input('remise_percent') : ($line->remise_percent ? $line->remise_percent : '')).'"';
 		if ($situationinvoicelinewithparent) {
 			print ' readonly';
 		}
@@ -344,7 +344,7 @@ $coldisplay++;
 	if ($object->situation_cycle_ref) {
 		$coldisplay++;
 		if (getDolGlobalInt('INVOICE_USE_SITUATION') == 2) {
-			$tmp_fieldv = (GETPOSTISSET('progress') ? GETPOST('progress') : $line->situation_percent);
+			$tmp_fieldv = (request()->has('progress') ? request()->input('progress') : $line->situation_percent);
 			$old_fieldv = $line->getAllPrevProgress($line->fk_facture);
 			$fieldv = $tmp_fieldv + $old_fieldv;
 
@@ -352,7 +352,7 @@ $coldisplay++;
 			print ' '.$form->textwithpicto('', $langs->trans("PreviousProgress").' ('.$old_fieldv.'%)');
 			print '</td>';
 		} else {
-			print '<td class="nowrap right linecolcycleref"><input class="right" type="text" size="1" value="' . (GETPOSTISSET('progress') ? GETPOST('progress') : $line->situation_percent) . '" name="progress">%</td>';
+			print '<td class="nowrap right linecolcycleref"><input class="right" type="text" size="1" value="' . (request()->has('progress') ? request()->input('progress') : $line->situation_percent) . '" name="progress">%</td>';
 		}
 		$coldisplay++;
 		print '<td></td>';
@@ -367,14 +367,14 @@ $coldisplay++;
 			<select id="fournprice_predef" name="fournprice_predef" class="flat minwidth75imp right" style="display: none;"></select>
 						<?php } ?>
 			<!-- For free product -->
-			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="<?php echo(GETPOSTISSET('buying_price') ? GETPOST('buying_price') : price($line->pa_ht, 0, '', 0)); ?>">
+			<input class="flat maxwidth75 right" type="text" id="buying_price" name="buying_price" class="hideobject" value="<?php echo(request()->has('buying_price') ? request()->input('buying_price') : price($line->pa_ht, 0, '', 0)); ?>">
 		</td>
 						<?php
 		}
 
 		if ($user->hasRight('margins', 'creer')) {
 			if (getDolGlobalString('DISPLAY_MARGIN_RATES')) {
-				$margin_rate = (GETPOSTISSET("np_marginRate") ? GETPOST("np_marginRate", "alpha", 2) : (($line->pa_ht == 0) ? '' : price($line->marge_tx)));
+				$margin_rate = (request()->has('np_marginRate') ? GETPOST("np_marginRate", "alpha", 2) : (($line->pa_ht == 0) ? '' : price($line->marge_tx)));
 				// if credit note, don't allow to modify margin
 				if ($line->subprice < 0) {
 					echo '<td class="right nowrap margininfos">'.$margin_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>';
@@ -384,7 +384,7 @@ $coldisplay++;
 				$coldisplay++;
 			}
 			if (getDolGlobalString('DISPLAY_MARK_RATES')) {
-				$mark_rate = (GETPOSTISSET("np_markRate") ? GETPOST("np_markRate", 'alpha', 2) : price($line->marque_tx));
+				$mark_rate = (request()->has('np_markRate') ? GETPOST("np_markRate", 'alpha', 2) : price($line->marque_tx));
 				// if credit note, don't allow to modify margin
 				if ($line->subprice < 0) {
 					echo '<td class="right nowrap margininfos">'.$mark_rate.'<span class="opacitymedium hideonsmartphone">%</span></td>';

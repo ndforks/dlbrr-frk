@@ -37,13 +37,13 @@
  * @var ?string $contextpage
  */
 // Save selection
-if (GETPOST('formfilteraction', 'alphanohtml') == 'listafterchangingselectedfields') {
+if (request()->input('formfilteraction') == 'listafterchangingselectedfields') {
 	$tabparam = array();
 
 	$varpage = empty($contextpage) ? $_SERVER["PHP_SELF"] : $contextpage;
 
-	if (GETPOST("selectedfields")) {
-		$tabparam["MAIN_SELECTEDFIELDS_".$varpage] = GETPOST("selectedfields");
+	if (request()->input('selectedfields')) {
+		$tabparam["MAIN_SELECTEDFIELDS_".$varpage] = request()->input('selectedfields');
 	} else {
 		$tabparam["MAIN_SELECTEDFIELDS_".$varpage] = '';
 	}

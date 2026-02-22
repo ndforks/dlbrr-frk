@@ -73,7 +73,7 @@ require_once DOL_DOCUMENT_ROOT.'/don/class/don.class.php';
  */
 // Security check
 if (!isModEnabled('don')) {
-	httponly_accessforbidden('Module Donation not enabled');
+	httponly_abort(403);
 }
 
 
@@ -121,7 +121,7 @@ if ($resql) {
 		print $langs->trans("Donation");
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

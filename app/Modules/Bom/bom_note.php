@@ -39,11 +39,11 @@ require_once DOL_DOCUMENT_ROOT.'/bom/lib/bom.lib.php';
 $langs->loadLangs(array("mrp", "companies"));
 
 // Get parameters
-$id   = GETPOSTINT('id');
-$ref  = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id   = request()->integer('id', 0);
+$ref  = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new BOM($db);
@@ -59,7 +59,7 @@ $diroutputmassaction = getMultidirOutput($object) . '/temp/massgeneration/'.$use
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'bom', $id);
 
@@ -72,7 +72,7 @@ if ($id > 0 || !empty($ref)) {
 $permissionnote = $user->hasRight('bom', 'write'); // Used by the include of actions_setnotes.inc.php
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, 'bom', $object->id, $object->table_element, '', '', 'rowid', $isdraft);

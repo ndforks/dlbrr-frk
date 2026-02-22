@@ -40,13 +40,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "products", "admin", "mails", "other", "errors"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
-$trackid = GETPOST('trackid');
+$trackid = request()->input('trackid');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 

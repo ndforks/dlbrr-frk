@@ -53,25 +53,25 @@ use OAuth\Common\Consumer\Credentials;
  */
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 if (!isModEnabled('emailcollector')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load traductions files required by page
 $langs->loadLangs(array("admin", "mails", "other"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm    = GETPOST('confirm', 'alpha');
-$cancel     = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'emailcollectorcard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref        = request()->input('ref');
+$action = request()->input('action');
+$confirm    = request()->input('confirm');
+$cancel     = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'emailcollectorcard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
 
-$operationid = GETPOSTINT('operationid');
+$operationid = request()->integer('operationid', 0);
 
 // Initialize a technical objects
 $object = new EmailCollector($db);
@@ -85,7 +85,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_'.$key, 'alpha')) {
@@ -93,7 +93,7 @@ foreach ($object->fields as $key => $val) {
 	}
 }
 
-if (GETPOST('saveoperation2')) {
+if (request()->input('saveoperation2')) {
 	$action = 'updateoperation';
 }
 if (empty($action) && empty($id) && empty($ref)) {
@@ -104,7 +104,7 @@ if (empty($action) && empty($id) && empty($ref)) {
 include DOL_DOCUMENT_ROOT.'/core/actions_fetchobject.inc.php'; // Must be 'include', not 'include_once'.
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->statut == MyObject::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, 'mymodule', $object->id, '', '', 'fk_soc', 'rowid', $isdraft);
@@ -146,10 +146,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_printing.inc.php';
 }
 
-if (GETPOST('addfilter', 'alpha')) {
+if (request()->input('addfilter')) {
 	$emailcollectorfilter = new EmailCollectorFilter($db);
-	$emailcollectorfilter->type = GETPOST('filtertype', 'aZ09');
-	$emailcollectorfilter->rulevalue = GETPOST('rulevalue', 'alpha');
+	$emailcollectorfilter->type = request()->input('filtertype');
+	$emailcollectorfilter->rulevalue = request()->input('rulevalue');
 	$emailcollectorfilter->fk_emailcollector = $object->id;
 	$emailcollectorfilter->status = 1;
 
@@ -164,7 +164,7 @@ if (GETPOST('addfilter', 'alpha')) {
 
 if ($action == 'deletefilter') {
 	$emailcollectorfilter = new EmailCollectorFilter($db);
-	$emailcollectorfilter->fetch(GETPOSTINT('filterid'));
+	$emailcollectorfilter->fetch(request()->integer('filterid', 0));
 	if ($emailcollectorfilter->id > 0) {
 		$result = $emailcollectorfilter->delete($user);
 		if ($result > 0) {
@@ -175,10 +175,10 @@ if ($action == 'deletefilter') {
 	}
 }
 
-if (GETPOST('addoperation', 'alpha')) {
+if (request()->input('addoperation')) {
 	$emailcollectoroperation = new EmailCollectorAction($db);
-	$emailcollectoroperation->type = GETPOST('operationtype', 'aZ09');
-	$emailcollectoroperation->actionparam = GETPOST('operationparam', 'restricthtml');
+	$emailcollectoroperation->type = request()->input('operationtype');
+	$emailcollectoroperation->actionparam = request()->input('operationparam');
 	$emailcollectoroperation->fk_emailcollector = $object->id;
 	$emailcollectoroperation->status = 1;
 	$emailcollectoroperation->position = 50;
@@ -208,9 +208,9 @@ if (GETPOST('addoperation', 'alpha')) {
 
 if ($action == 'updateoperation') {
 	$emailcollectoroperation = new EmailCollectorAction($db);
-	$emailcollectoroperation->fetch(GETPOSTINT('rowidoperation2'));
+	$emailcollectoroperation->fetch(request()->integer('rowidoperation2', 0));
 
-	$emailcollectoroperation->actionparam = GETPOST('operationparam2', 'alphawithlgt');
+	$emailcollectoroperation->actionparam = request()->input('operationparam2');
 
 	if (in_array($emailcollectoroperation->type, array('loadthirdparty', 'loadandcreatethirdparty'))
 		&& empty($emailcollectoroperation->actionparam)) {
@@ -231,7 +231,7 @@ if ($action == 'updateoperation') {
 }
 if ($action == 'deleteoperation') {
 	$emailcollectoroperation = new EmailCollectorAction($db);
-	$emailcollectoroperation->fetch(GETPOSTINT('operationid'));
+	$emailcollectoroperation->fetch(request()->integer('operationid', 0));
 	if ($emailcollectoroperation->id > 0) {
 		$result = $emailcollectoroperation->delete($user);
 		if ($result > 0) {

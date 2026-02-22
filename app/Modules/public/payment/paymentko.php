@@ -85,13 +85,13 @@ $langs->loadLangs(array("main", "other", "dict", "bills", "companies", "paypal",
 $PAYPALTOKEN = "";
 $PAYPALPAYERID = "";
 if (isModEnabled('paypal')) {
-	$PAYPALTOKEN = GETPOST('TOKEN');
+	$PAYPALTOKEN = request()->input('TOKEN');
 	if (empty($PAYPALTOKEN)) {
-		$PAYPALTOKEN = GETPOST('token');
+		$PAYPALTOKEN = request()->input('token');
 	}
-	$PAYPALPAYERID = GETPOST('PAYERID');
+	$PAYPALPAYERID = request()->input('PAYERID');
 	if (empty($PAYPALPAYERID)) {
-		$PAYPALPAYERID = GETPOST('PayerID');
+		$PAYPALPAYERID = request()->input('PayerID');
 	}
 }
 /*
@@ -101,12 +101,12 @@ if (isModEnabled('stripe')) {
 }
 */
 
-$FULLTAG = GETPOST('FULLTAG');
+$FULLTAG = request()->input('FULLTAG');
 if (empty($FULLTAG)) {
-	$FULLTAG = GETPOST('fulltag');
+	$FULLTAG = request()->input('fulltag');
 }
 
-$suffix = GETPOST("suffix", 'aZ09');
+$suffix = request()->input('suffix');
 
 
 // Detect $paymentmethod
@@ -134,7 +134,7 @@ $validpaymentmethod = getValidOnlinePaymentMethods($paymentmethod);
 
 // Security check
 if (empty($validpaymentmethod)) {
-	httponly_accessforbidden('No valid payment mode');
+	httponly_abort(403);
 }
 
 
@@ -180,7 +180,7 @@ foreach ($_POST as $k => $v) {
 }
 dol_syslog("POST=".$tracepost, LOG_DEBUG, 0, '_payment');
 
-dol_syslog("paymentkosessioncode=".GETPOST('paymentkosessioncode')." SESSION['paymentkosessioncode']=".$_SESSION['paymentkosessioncode'], LOG_DEBUG, 0, '_payment');
+dol_syslog("paymentkosessioncode=".request()->input('paymentkosessioncode')." SESSION['paymentkosessioncode']=".$_SESSION['paymentkosessioncode'], LOG_DEBUG, 0, '_payment');
 
 // Set $appli for emails title
 $appli = $mysoc->name;
@@ -329,9 +329,9 @@ if (empty($doactionsthenredirect)) {
 		print $conf->global->$key;
 	}
 
-	$type = GETPOST('s', 'alpha');
-	$ref = GETPOST('ref', 'alphanohtml');
-	$tag = GETPOST('tag', 'alpha');
+	$type = request()->input('s');
+	$ref = request()->input('ref');
+	$tag = request()->input('tag');
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 	if ($type || $tag) {
 		$urlsubscription = getOnlinePaymentUrl(0, ($type ? $type : 'free'), $ref, $FinalPaymentAmt, $tag);

@@ -1881,7 +1881,7 @@ function get_left_menu_accountancy($mainmenu, &$newmenu, $usemenuhider = 1, $lef
 						$newmenu->add('', $langs->trans("NoJournalDefined"), 2, $user->hasRight('accounting', 'comptarapport', 'lire'));
 					}
 				} else {
-					dol_print_error($db);
+					abort(500);
 				}
 				$db->free($resql);
 			}
@@ -1949,7 +1949,7 @@ function get_left_menu_accountancy($mainmenu, &$newmenu, $usemenuhider = 1, $lef
 							//$newmenu->add('', $langs->trans("NoReportDefined"), 3, 0);
 						}
 					} else {
-						dol_print_error($db);
+						abort(500);
 					}
 					$db->free($resql);
 				} else {
@@ -2363,7 +2363,7 @@ function get_left_menu_projects($mainmenu, &$newmenu, $usemenuhider = 1, $leftme
 		if (isModEnabled('project')) {
 			$langs->load("projects");
 
-			$search_project_user = GETPOSTINT('search_project_user');
+			$search_project_user = request()->integer('search_project_user', 0);
 
 			$tmpentry = array(
 				'enabled' => (int) isModEnabled('project'),
@@ -2522,7 +2522,7 @@ function get_left_menu_hrm($mainmenu, &$newmenu, $usemenuhider = 1, $leftmenu = 
 			if (!getDolGlobalString('PROJECT_HIDE_TASKS')) {
 				$langs->load("projects");
 
-				$search_project_user = GETPOSTINT('search_project_user');
+				$search_project_user = request()->integer('search_project_user', 0);
 
 				$optionTimesheet = getDolGlobalString('PROJECT_OPEN_ALWAYS_ON_TIMESHEET', "perweek");
 				$newmenu->add(dolBuildUrl('/projet/activity/'.$optionTimesheet.'.php', ['leftmenu' => 'tasks', 'search_project_user' => ($search_project_user ? $search_project_user : '')]), $langs->trans("TimeEntry"), 0, $user->hasRight('projet', 'lire'), '', $mainmenu, 'timespent', 0, '', '', '', img_picto('', 'timespent', 'class="paddingright pictofixedwidth"'));

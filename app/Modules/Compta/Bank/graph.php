@@ -49,18 +49,18 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height', '200');
 $hookmanager->initHooks(array('bankstats', 'globalcard'));
 
 // Security check
-if (GETPOST('account') || GETPOST('ref')) {
-	$id = GETPOST('account') ? GETPOST('account') : GETPOST('ref');
+if (request()->input('account') || request()->input('ref')) {
+	$id = request()->input('account') ? request()->input('account') : request()->input('ref');
 }
-$fieldid = GETPOST('ref') ? 'ref' : 'rowid';
+$fieldid = request()->input('ref') ? 'ref' : 'rowid';
 if ($user->socid) {
 	$socid = $user->socid;
 }
 $result = restrictedArea($user, 'banque', $id, 'bank_account&bank_account', '', '', $fieldid);
 
-$account = GETPOST("account");
+$account = request()->input('account');
 $mode = 'standard';
-if (GETPOST("mode") == 'showalltime') {
+if (request()->input('mode') == 'showalltime') {
 	$mode = 'showalltime';
 }
 $error = 0;
@@ -77,20 +77,20 @@ $datetime = dol_now();
 $year = dol_print_date($datetime, "%Y");
 $month = dol_print_date($datetime, "%m");
 $day = dol_print_date($datetime, "%d");
-if (GETPOSTINT("year")) {
-	$year = sprintf("%04d", GETPOSTINT("year"));
+if (request()->integer('year', 0)) {
+	$year = sprintf("%04d", request()->integer('year', 0));
 }
-if (GETPOSTINT("month")) {
-	$month = sprintf("%02d", GETPOSTINT("month"));
+if (request()->integer('month', 0)) {
+	$month = sprintf("%02d", request()->integer('month', 0));
 }
 
 
 $object = new Account($db);
-if (GETPOST('account') && !preg_match('/,/', GETPOST('account'))) {	// if for a particular account and not a list
-	$result = $object->fetch(GETPOSTINT('account'));
+if (request()->input('account') && !preg_match('/,/', request()->input('account'))) {	// if for a particular account and not a list
+	$result = $object->fetch(request()->integer('account', 0));
 }
-if (GETPOST("ref")) {
-	$result = $object->fetch(0, GETPOST("ref"));
+if (request()->input('ref')) {
+	$result = $object->fetch(0, request()->input('ref'));
 	$account = $object->id;
 }
 
@@ -117,7 +117,7 @@ if ($result < 0) {
 	$sql .= ", ".MAIN_DB_PREFIX."bank_account as ba";
 	$sql .= " WHERE b.fk_account = ba.rowid";
 	$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
-	if ($account && GETPOST("option") != 'all') {
+	if ($account && request()->input('option') != 'all') {
 		$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 	}
 
@@ -128,7 +128,7 @@ if ($result < 0) {
 		$min = dol_get_first_hour($db->jdate($obj->min));
 		$max = dol_get_last_hour($db->jdate($obj->max));
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	if (empty($min)) {
 		$min = dol_now() - 3600 * 24;
@@ -161,7 +161,7 @@ if ($result < 0) {
 		$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
 		$sql .= " AND b.datev >= '".$db->escape($year)."-".$db->escape($month)."-01 00:00:00'";
 		$sql .= " AND b.datev < '".$db->escape($yearnext)."-".$db->escape($monthnext)."-01 00:00:00'";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%Y%m%d')";
@@ -177,7 +177,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Calculation of $solde before the start of the graph
@@ -189,7 +189,7 @@ if ($result < 0) {
 		$sql .= " WHERE b.fk_account = ba.rowid";
 		$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
 		$sql .= " AND b.datev < '".$db->escape($year)."-".sprintf("%02s", $month)."-01'";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 
@@ -199,7 +199,7 @@ if ($result < 0) {
 			$solde = $row[0];
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Loading labels and datas for dashboard 1
@@ -310,7 +310,7 @@ if ($result < 0) {
 		$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
 		$sql .= " AND b.datev >= '".$db->escape($year)."-01-01 00:00:00'";
 		$sql .= " AND b.datev <= '".$db->escape($year)."-12-31 23:59:59'";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%Y%m%d')";
@@ -326,7 +326,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Calculation of $solde before the start of the graph
@@ -338,7 +338,7 @@ if ($result < 0) {
 		$sql .= " WHERE b.fk_account = ba.rowid";
 		$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
 		$sql .= " AND b.datev < '".$db->escape($year)."-01-01'";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 
@@ -348,7 +348,7 @@ if ($result < 0) {
 			$solde = $row[0];
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Loading labels and datas for dashboard 2
@@ -448,7 +448,7 @@ if ($result < 0) {
 		$sql .= ", ".MAIN_DB_PREFIX."bank_account as ba";
 		$sql .= " WHERE b.fk_account = ba.rowid";
 		$sql .= " AND ba.entity IN (".getEntity('bank_account').")";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%Y%m%d')";
@@ -464,7 +464,7 @@ if ($result < 0) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		// Calcul de $solde avant le debut du graphe
@@ -580,7 +580,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".$db->escape($year)."-".$db->escape($month)."-01 00:00:00'";
 		$sql .= " AND b.datev < '".$db->escape($yearnext)."-".$db->escape($monthnext)."-01 00:00:00'";
 		$sql .= " AND b.amount > 0";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%d')";
@@ -596,7 +596,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$monthnext = (int) $month + 1;
@@ -617,7 +617,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".$db->escape($year)."-".$db->escape($month)."-01 00:00:00'";
 		$sql .= " AND b.datev < '".$db->escape($yearnext)."-".$db->escape($monthnext)."-01 00:00:00'";
 		$sql .= " AND b.amount < 0";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%d')";
@@ -629,7 +629,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 
@@ -691,7 +691,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".$db->escape($year)."-01-01 00:00:00'";
 		$sql .= " AND b.datev <= '".$db->escape($year)."-12-31 23:59:59'";
 		$sql .= " AND b.amount > 0";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%m');";
@@ -707,7 +707,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$sql = "SELECT date_format(b.datev,'%m')";
 		$sql .= ", SUM(b.amount)";
@@ -718,7 +718,7 @@ if ($result < 0) {
 		$sql .= " AND b.datev >= '".$db->escape($year)."-01-01 00:00:00'";
 		$sql .= " AND b.datev <= '".$db->escape($year)."-12-31 23:59:59'";
 		$sql .= " AND b.amount < 0";
-		if ($account && GETPOST("option") != 'all') {
+		if ($account && request()->input('option') != 'all') {
 			$sql .= " AND b.fk_account IN (".$db->sanitize($account).")";
 		}
 		$sql .= " GROUP BY date_format(b.datev,'%m')";
@@ -730,7 +730,7 @@ if ($result < 0) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 
@@ -790,7 +790,7 @@ if ($account) {
 	if (!preg_match('/,/', $account)) {
 		$moreparam = '&month='.$month.'&year='.$year.($mode == 'showalltime' ? '&mode=showalltime' : '');
 
-		if (GETPOST("option") != 'all') {
+		if (request()->input('option') != 'all') {
 			$morehtml = '<a href="'.$_SERVER["PHP_SELF"].'?account='.$account.'&option=all'.$moreparam.'">'.$langs->trans("ShowAllAccounts").'</a>';
 			dol_banner_tab($object, 'ref', $linkback, 1, 'ref', 'ref', '', $moreparam, 0, '', '', 1);
 		} else {
@@ -824,11 +824,11 @@ print '<table class="notopnoleftnoright centerpercent">';
 // Navigation links
 print '<tr><td class="right">'.$morehtml.' &nbsp; &nbsp; ';
 if ($mode == 'showalltime') {
-	print '<a href="'.$_SERVER["PHP_SELF"].'?account='.$account.(GETPOST("option") != 'all' ? '' : '&option=all').'">';
+	print '<a href="'.$_SERVER["PHP_SELF"].'?account='.$account.(request()->input('option') != 'all' ? '' : '&option=all').'">';
 	print $langs->trans("GoBack");
 	print '</a>';
 } else {
-	print '<a href="'.$_SERVER["PHP_SELF"].'?mode=showalltime&account='.$account.(GETPOST("option") != 'all' ? '' : '&option=all').'">';
+	print '<a href="'.$_SERVER["PHP_SELF"].'?mode=showalltime&account='.$account.(request()->input('option') != 'all' ? '' : '&option=all').'">';
 	print $langs->trans("ShowAllTimeBalance");
 	print '</a>';
 }
@@ -857,7 +857,7 @@ if ($mode == 'standard') {
 	$prevyear = sprintf('%04d', $prevyear);
 
 	// For month
-	$link = "<a href='".$_SERVER["PHP_SELF"]."?account=".$account.(GETPOST("option") != 'all' ? '' : '&option=all')."&year=".$prevyear."&month=".$prevmonth."'>".img_previous('', 'class="valignbottom"')."</a> ".$langs->trans("Month")." <a href='".$_SERVER["PHP_SELF"]."?account=".$account.(GETPOST("option") != 'all' ? '' : '&option=all')."&year=".$nextyear."&month=".$nextmonth."'>".img_next('', 'class="valignbottom"')."</a>";
+	$link = "<a href='".$_SERVER["PHP_SELF"]."?account=".$account.(request()->input('option') != 'all' ? '' : '&option=all')."&year=".$prevyear."&month=".$prevmonth."'>".img_previous('', 'class="valignbottom"')."</a> ".$langs->trans("Month")." <a href='".$_SERVER["PHP_SELF"]."?account=".$account.(request()->input('option') != 'all' ? '' : '&option=all')."&year=".$nextyear."&month=".$nextmonth."'>".img_next('', 'class="valignbottom"')."</a>";
 	print '<div class="right clearboth">'.$link.'</div>';
 
 	print '<div class="center clearboth margintoponly">';
@@ -876,7 +876,7 @@ if ($mode == 'standard') {
 	$nextyear = (int) $year + 1;
 	$nextyear = sprintf('%04d', $nextyear);
 	$prevyear = sprintf('%04d', $prevyear);
-	$link = "<a href='".$_SERVER["PHP_SELF"]."?account=".$account.(GETPOST("option") != 'all' ? '' : '&option=all')."&year=".($prevyear)."'>".img_previous('', 'class="valignbottom"')."</a> ".$langs->trans("Year")." <a href='".$_SERVER["PHP_SELF"]."?account=".$account.(GETPOST("option") != 'all' ? '' : '&option=all')."&year=".($nextyear)."'>".img_next('', 'class="valignbottom"')."</a>";
+	$link = "<a href='".$_SERVER["PHP_SELF"]."?account=".$account.(request()->input('option') != 'all' ? '' : '&option=all')."&year=".($prevyear)."'>".img_previous('', 'class="valignbottom"')."</a> ".$langs->trans("Year")." <a href='".$_SERVER["PHP_SELF"]."?account=".$account.(request()->input('option') != 'all' ? '' : '&option=all')."&year=".($nextyear)."'>".img_next('', 'class="valignbottom"')."</a>";
 
 	print '<div class="right clearboth margintoponly">'.$link.'</div>';
 

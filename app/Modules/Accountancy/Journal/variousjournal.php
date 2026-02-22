@@ -42,16 +42,16 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/bookkeeping.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("banks", "accountancy", "compta", "other", "errors"));
 
-$id_journal = GETPOSTINT('id_journal');
-$action = GETPOST('action', 'aZ09');
+$id_journal = request()->integer('id_journal', 0);
+$action = request()->input('action');
 
-$date_startmonth = GETPOSTINT('date_startmonth');
-$date_startday = GETPOSTINT('date_startday');
-$date_startyear = GETPOSTINT('date_startyear');
-$date_endmonth = GETPOSTINT('date_endmonth');
-$date_endday = GETPOSTINT('date_endday');
-$date_endyear = GETPOSTINT('date_endyear');
-$in_bookkeeping = GETPOST('in_bookkeeping');
+$date_startmonth = request()->integer('date_startmonth', 0);
+$date_startday = request()->integer('date_startday', 0);
+$date_startyear = request()->integer('date_startyear', 0);
+$date_endmonth = request()->integer('date_endmonth', 0);
+$date_endday = request()->integer('date_endday', 0);
+$date_endyear = request()->integer('date_endyear', 0);
+$in_bookkeeping = request()->input('in_bookkeeping');
 if ($in_bookkeeping == '') {
 	$in_bookkeeping = 'notyet';
 }
@@ -64,7 +64,7 @@ if ($result > 0) {
 } elseif ($result < 0) {
 	dol_print_error(null, $object->error, $object->errors);
 } elseif ($result == 0) {
-	accessforbidden('ErrorRecordNotFound');
+	abort(403);
 }
 
 $hookmanager->initHooks(array('globaljournal', $object->nature.'journal'));
@@ -91,7 +91,7 @@ if (empty($date_endmonth)) {
 	$pastmonth = $dates['pastmonth'];
 }
 
-if (!GETPOSTISSET('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
+if (!request()->has('date_startmonth') && (empty($date_start) || empty($date_end))) { // We define date_start and date_end, only if we did not submit the form
 	$date_start = dol_get_first_day((int) $pastmonthyear, (int) $pastmonth, false);
 	$date_end = dol_get_last_day((int) $pastmonthyear, (int) $pastmonth, false);
 }
@@ -110,13 +110,13 @@ if (!is_array($journal_data)) {
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'bind', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -254,7 +254,7 @@ if (getDolGlobalString('ACCOUNTANCY_FISCAL_PERIOD_MODE') != 'blockedonclosed') {
 			print '</div>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -273,7 +273,7 @@ if ($object->nature == 4) { // Bank journal
 			print ' : ' . $langs->trans("AccountancyAreaDescBank", 9, '<strong>' . $langs->transnoentitiesnoconv("MenuAccountancy") . '-' . $langs->transnoentitiesnoconv("Setup") . "-" . $langs->transnoentitiesnoconv("BankAccounts") . '</strong>');
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -49,14 +49,14 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/fournisseur.facture.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other", "orders"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$type = GETPOST('type', 'alpha');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$type = request()->input('type');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 
 $specimenthirdparty = new Societe($db);
 $specimenthirdparty->initAsSpecimen();
@@ -64,7 +64,7 @@ $specimenthirdparty->initAsSpecimen();
 $error = 0;
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -75,12 +75,12 @@ if (!$user->admin) {
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstinvoice = GETPOST('maskconstinvoice', 'aZ09');
-	$maskconstcredit = GETPOST('maskconstcredit', 'aZ09');
-	$maskconstdeposit = GETPOST('maskconstdeposit', 'aZ09');
-	$maskinvoice = GETPOST('maskinvoice', 'alpha');
-	$maskcredit = GETPOST('maskcredit', 'alpha');
-	$maskdeposit = GETPOST('maskdeposit', 'alpha');
+	$maskconstinvoice = request()->input('maskconstinvoice');
+	$maskconstcredit = request()->input('maskconstcredit');
+	$maskconstdeposit = request()->input('maskconstdeposit');
+	$maskinvoice = request()->input('maskinvoice');
+	$maskcredit = request()->input('maskcredit');
+	$maskdeposit = request()->input('maskdeposit');
 	$res = 0;
 
 	if ($maskconstinvoice && preg_match('/_MASK$/', $maskconstinvoice)) {
@@ -105,7 +105,7 @@ if ($action == 'updateMask') {
 }
 
 if ($action == 'specimen') {  // For invoices
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$facture = new FactureFournisseur($db);
 	$facture->initAsSpecimen();
@@ -176,11 +176,11 @@ if ($action == 'setmod') {
 
 if ($action == 'addcat') {
 	$fourn = new Fournisseur($db);
-	$fourn->CreateCategory($user, GETPOST('cat', 'alphanohtml'));
+	$fourn->CreateCategory($user, request()->input('cat'));
 }
 
 if ($action == 'set_SUPPLIER_INVOICE_FREE_TEXT') {
-	$freetext = GETPOST('SUPPLIER_INVOICE_FREE_TEXT', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('SUPPLIER_INVOICE_FREE_TEXT'); // No alpha here, we want exact string
 
 	$res = dolibarr_set_const($db, "SUPPLIER_INVOICE_FREE_TEXT", $freetext, 'chaine', 0, '', $conf->entity);
 
@@ -347,7 +347,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<div class="div-table-responsive-no-min">';

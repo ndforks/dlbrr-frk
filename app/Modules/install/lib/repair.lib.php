@@ -144,13 +144,13 @@ function clean_data_ecm_directories()
 				print '<tr><td>'.$sqlupdate."</td></tr>\n";
 				$resqlupdate = $db->query($sqlupdate);
 				if (!$resqlupdate) {
-					dol_print_error($db, 'Failed to update');
+					abort(500, 'Failed to update');
 					return -1;
 				}
 			}
 		}
 	} else {
-		dol_print_error($db, 'Failed to run request');
+		abort(500, 'Failed to run request');
 		return -1;
 	}
 

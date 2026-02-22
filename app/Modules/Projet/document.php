@@ -45,11 +45,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 $langs->loadLangs(array('projects', 'other'));
 $hookmanager->initHooks(array('projectcarddocument'));
 
-$action		= GETPOST('action', 'alpha');
-$confirm	= GETPOST('confirm', 'alpha');
-$id			= GETPOSTINT('id');
-$ref		= GETPOST('ref', 'alpha');
-$mine 		= (GETPOST('mode', 'alpha') == 'mine' ? 1 : 0);
+$action		= request()->input('action');
+$confirm	= request()->input('confirm');
+$id			= request()->integer('id', 0);
+$ref		= request()->input('ref');
+$mine 		= (request()->input('mode') == 'mine' ? 1 : 0);
 
 $object = new Project($db);
 
@@ -63,10 +63,10 @@ if ($id > 0 || !empty($ref)) {
 }
 
 // Get parameters
-$limit 		= GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield	= GETPOST('sortfield', 'aZ09comma');
-$sortorder	= GETPOST('sortorder', 'aZ09comma');
-$page		= GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit 		= request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield	= request()->input('sortfield');
+$sortorder	= request()->input('sortorder');
+$page		= request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1

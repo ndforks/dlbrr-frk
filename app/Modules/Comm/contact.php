@@ -40,9 +40,9 @@ require '../main.inc.php';
 // Load translation files required by the page
 $langs->load("companies");
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (!$sortorder) {
 	$sortorder = "ASC";
 }
@@ -52,18 +52,18 @@ if (!$sortfield) {
 if ($page < 0) {
 	$page = 0;
 }
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 
-$type = GETPOST('type', 'alpha');
-$search_lastname = GETPOST('search_nom') ? GETPOST('search_nom') : GETPOST('search_lastname'); // For backward compatibility
-$search_firstname = GETPOST('search_firstname') ? GETPOST('search_firstname') : GETPOST('search_firstname'); // For backward compatibility
-$search_company = GETPOST('search_societe') ? GETPOST('search_societe') : GETPOST('search_company'); // For backward compatibility
-$contactname = GETPOST('contactname');
-$begin = GETPOST('begin', 'alpha');
+$type = request()->input('type');
+$search_lastname = request()->input('search_nom') ? request()->input('search_nom') : request()->input('search_lastname'); // For backward compatibility
+$search_firstname = request()->input('search_firstname') ? request()->input('search_firstname') : request()->input('search_firstname'); // For backward compatibility
+$search_company = request()->input('search_societe') ? request()->input('search_societe') : request()->input('search_company'); // For backward compatibility
+$contactname = request()->input('contactname');
+$begin = request()->input('begin');
 
 // Security check
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$action = '';
 	$socid = $user->socid;
@@ -154,7 +154,7 @@ if ($resql) {
 	$title = (getDolGlobalString('SOCIETE_ADDRESSES_MANAGEMENT') ? $langs->trans("ListOfContacts") : $langs->trans("ListOfContactsAddresses"));
 	print_barre_liste($title.($label ? " (".$label.")" : ""), $page, $_SERVER["PHP_SELF"], $param, $sortfield, $sortorder, "", $num);
 
-	print '<form action="'.$_SERVER["PHP_SELF"].'?type='.GETPOST("type", "alpha").'" method="GET">';
+	print '<form action="'.$_SERVER["PHP_SELF"].'?type='.request()->input('type').'" method="GET">';
 
 	print '<table class="liste centpercent">';
 	print '<tr class="liste_titre">';
@@ -198,7 +198,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

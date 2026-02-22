@@ -45,19 +45,19 @@ if (isModEnabled('project')) {
  * @var User $user
  */
 
-$loanid = GETPOSTINT('loanid');
-$action = GETPOST('action', 'aZ09');
+$loanid = request()->integer('loanid', 0);
+$action = request()->input('action');
 
 // Security check
 $socid = 0;
-if (GETPOSTISSET('socid')) {
-	$socid = GETPOSTINT('socid');
+if (request()->has('socid')) {
+	$socid = request()->integer('socid', 0);
 }
 if ($user->socid) {
 	$socid = $user->socid;
 }
 if (!$user->hasRight('loan', 'calc')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page

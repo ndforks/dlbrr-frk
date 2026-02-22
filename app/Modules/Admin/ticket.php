@@ -48,16 +48,16 @@ $langs->loadLangs(array("admin", "ticket"));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Parameters
-$value = GETPOST('value', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$value = request()->input('value');
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'ticket';
 
 $error = 0;
@@ -80,8 +80,8 @@ $statuslist = array(
 
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
-if (GETPOSTISSET('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION')) {	// only for no js case
-	$param_disable_email = GETPOST('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION', 'alpha');
+if (request()->has('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION')) {	// only for no js case
+	$param_disable_email = request()->input('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION');
 	$res = dolibarr_set_const($db, 'TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION', $param_disable_email, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -90,8 +90,8 @@ if (GETPOSTISSET('TICKET_CHECK_NOTIFY_THIRDPARTY_AT_CREATION')) {	// only for no
 }
 
 if ($action == 'updateMask') {
-	$maskconstticket = GETPOST('maskconstticket', 'aZ09');
-	$maskticket = GETPOST('maskticket', 'alpha');
+	$maskconstticket = request()->input('maskconstticket');
+	$maskticket = request()->input('maskticket');
 
 	$res = 0;
 
@@ -152,44 +152,44 @@ if ($action == 'updateMask') {
 } elseif ($action == 'setvarworkflow') {
 	// For compatibility when javascript is not enabled
 	if (empty($conf->use_javascript_ajax)) {
-		$param_auto_read = GETPOST('TICKET_AUTO_READ_WHEN_CREATED_FROM_BACKEND', 'alpha');
+		$param_auto_read = request()->input('TICKET_AUTO_READ_WHEN_CREATED_FROM_BACKEND');
 		$res = dolibarr_set_const($db, 'TICKET_AUTO_READ_WHEN_CREATED_FROM_BACKEND', $param_auto_read, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 
-		$param_auto_assign = GETPOST('TICKET_AUTO_ASSIGN_USER_CREATE', 'alpha');
+		$param_auto_assign = request()->input('TICKET_AUTO_ASSIGN_USER_CREATE');
 		$res = dolibarr_set_const($db, 'TICKET_AUTO_ASSIGN_USER_CREATE', $param_auto_assign, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 
-		$param_auto_notify_close = GETPOST('TICKET_NOTIFY_AT_CLOSING', 'alpha');
+		$param_auto_notify_close = request()->input('TICKET_NOTIFY_AT_CLOSING');
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFY_AT_CLOSING', $param_auto_notify_close, 'chaine', 0, '', $conf->entity);
 		if (!($res > 0)) {
 			$error++;
 		}
 	}
 
-	$param_limit_view = GETPOST('TICKET_LIMIT_VIEW_ASSIGNED_ONLY', 'alpha');
+	$param_limit_view = request()->input('TICKET_LIMIT_VIEW_ASSIGNED_ONLY');
 	$res = dolibarr_set_const($db, 'TICKET_LIMIT_VIEW_ASSIGNED_ONLY', $param_limit_view, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$param_status = GETPOST('TICKET_SET_STATUS_ON_ANSWER');
+	$param_status = request()->input('TICKET_SET_STATUS_ON_ANSWER');
 	$res = dolibarr_set_const($db, 'TICKET_SET_STATUS_ON_ANSWER', $param_status, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$param_delay_first_response = GETPOSTINT('delay_first_response');
+	$param_delay_first_response = request()->integer('delay_first_response', 0);
 	$res = dolibarr_set_const($db, 'TICKET_DELAY_BEFORE_FIRST_RESPONSE', $param_delay_first_response, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$param_delay_between_responses = GETPOSTINT('delay_between_responses');
+	$param_delay_between_responses = request()->integer('delay_between_responses', 0);
 	$res = dolibarr_set_const($db, 'TICKET_DELAY_SINCE_LAST_RESPONSE', $param_delay_between_responses, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
@@ -197,7 +197,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'setvar') {
 	include_once DOL_DOCUMENT_ROOT."/core/lib/files.lib.php";
 
-	$notification_email = GETPOST('TICKET_NOTIFICATION_EMAIL_FROM', 'alpha');
+	$notification_email = request()->input('TICKET_NOTIFICATION_EMAIL_FROM');
 	$notification_email_description = "Email of user allowed to send ticket replies from Dolibarr";
 	if (!empty($notification_email)) {
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_EMAIL_FROM', $notification_email, 'chaine', 0, $notification_email_description, $conf->entity);
@@ -208,7 +208,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 
-	$notification_email_replyto = GETPOST('TICKET_NOTIFICATION_EMAIL_REPLYTO', 'alpha');
+	$notification_email_replyto = request()->input('TICKET_NOTIFICATION_EMAIL_REPLYTO');
 	$notification_email_replyto_description = "Email that must appears as the sender of ticket replies sent from Dolibarr";
 	if (!empty($notification_email)) {
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_EMAIL_REPLYTO', $notification_email_replyto, 'chaine', 0, $notification_email_replyto_description, $conf->entity);
@@ -220,7 +220,7 @@ if ($action == 'updateMask') {
 	}
 
 	// altairis : differentiate notification email FROM and TO
-	$notification_email_to = GETPOST('TICKET_NOTIFICATION_EMAIL_TO', 'alpha');
+	$notification_email_to = request()->input('TICKET_NOTIFICATION_EMAIL_TO');
 	$notification_email_to_description = "Notified e-mail for ticket replies sent from Dolibarr";
 	if (!empty($notification_email_to)) {
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_EMAIL_TO', $notification_email_to, 'chaine', 0, $notification_email_to_description, $conf->entity);
@@ -231,7 +231,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 
-	$notification_email_template = GETPOST('TICKET_NOTIFICATION_EMAIL_TEMPLATE', 'alpha');
+	$notification_email_template = request()->input('TICKET_NOTIFICATION_EMAIL_TEMPLATE');
 	$notification_email_template_description = 'Template email for ticket create notification';
 	if (!empty($notification_email_to)) {
 		$res = dolibarr_set_const($db, 'TICKET_NOTIFICATION_EMAIL_TEMPLATE', $notification_email_template, 'chaine', 0, $notification_email_template_description, $conf->entity);
@@ -242,7 +242,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 
-	$mail_intro = GETPOST('TICKET_MESSAGE_MAIL_INTRO', 'restricthtml');
+	$mail_intro = request()->input('TICKET_MESSAGE_MAIL_INTRO');
 	$mail_intro_description = "Introduction text of ticket replies sent from Dolibarr";
 	if (!empty($mail_intro)) {
 		$res = dolibarr_set_const($db, 'TICKET_MESSAGE_MAIL_INTRO', $mail_intro, 'chaine', 0, $mail_intro_description, $conf->entity);
@@ -253,7 +253,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 
-	$mail_signature = GETPOST('TICKET_MESSAGE_MAIL_SIGNATURE', 'restricthtml');
+	$mail_signature = request()->input('TICKET_MESSAGE_MAIL_SIGNATURE');
 	$signature_description = "Signature of ticket replies sent from Dolibarr";
 	if (!empty($mail_signature)) {
 		$res = dolibarr_set_const($db, 'TICKET_MESSAGE_MAIL_SIGNATURE', $mail_signature, 'chaine', 0, $signature_description, $conf->entity);
@@ -264,7 +264,7 @@ if ($action == 'updateMask') {
 		$error++;
 	}
 
-	$res = dolibarr_set_const($db, "TICKET_SEND_INTERNAL_CC", GETPOST("TICKET_SEND_INTERNAL_CC"), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "TICKET_SEND_INTERNAL_CC", request()->input('TICKET_SEND_INTERNAL_CC'), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
@@ -430,7 +430,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

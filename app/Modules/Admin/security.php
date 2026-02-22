@@ -30,7 +30,7 @@ require '../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/security2.lib.php';
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 /**
  * @var Conf $conf
@@ -46,7 +46,7 @@ $action = GETPOST('action', 'aZ09');
 $langs->loadLangs(array("users", "admin", "other"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Allow/Disallow change to clear passwords once passwords are encrypted
@@ -58,8 +58,8 @@ $allow_disable_encryption = false;
  */
 
 if ($action == 'setgeneraterule') {
-	if (!dolibarr_set_const($db, 'USER_PASSWORD_GENERATED', GETPOST("value", "alphanohtml"), 'chaine', 0, '', $conf->entity)) {
-		dol_print_error($db);
+	if (!dolibarr_set_const($db, 'USER_PASSWORD_GENERATED', request()->input('value'), 'chaine', 0, '', $conf->entity)) {
+		abort(500);
 	}
 }
 
@@ -92,7 +92,7 @@ if ($action == 'activate_encrypt') {
 
 				$resql2 = $db->query($sql);
 				if (!$resql2) {
-					dol_print_error($db);
+					abort(500);
 					$error++;
 					break;
 				}
@@ -101,7 +101,7 @@ if ($action == 'activate_encrypt') {
 			}
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	//print $error." ".$sql;
@@ -110,7 +110,7 @@ if ($action == 'activate_encrypt') {
 		$db->commit();
 	} else {
 		$db->rollback();
-		dol_print_error($db, '');
+		abort(500, '');
 	}
 } elseif ($action == 'disable_encrypt') {
 	// By default, $allow_disable_encryption is false we do not allow to disable encryption because passwords can't be decoded once encrypted.
@@ -155,7 +155,7 @@ if ($action == 'activate_MAIN_SECURITY_DISABLEFORGETPASSLINK') {
 }
 
 if ($action == 'updatepattern') {
-	$pattern = GETPOST("pattern", "alpha");
+	$pattern = request()->input('pattern');
 	$explodePattern = explode(';', $pattern);  // List of ints separated with ';' containing counts
 
 	$patternInError = false;
@@ -497,7 +497,7 @@ print '</form>';
 
 print '<br>';
 
-if (GETPOSTINT('info') > 0) {
+if (request()->integer('info', 0) > 0) {
 	if (function_exists('password_hash')) {
 		print $langs->trans("Note: The function password_hash exists on your PHP")."<br>\n";
 	} else {

@@ -42,11 +42,11 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
 $mode = 'customer';
 if (!$user->hasRight('ficheinter', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 // Security check
 if ($user->socid > 0) {
 	$action = '';
@@ -54,11 +54,11 @@ if ($user->socid > 0) {
 }
 
 $nowyear = dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOST('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->input('year') > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 
-$object_status = GETPOST('object_status', 'intcomma');
+$object_status = request()->input('object_status');
 
 // Load translation files required by the page
 $langs->loadLangs(array('interventions', 'companies', 'other', 'suppliers'));

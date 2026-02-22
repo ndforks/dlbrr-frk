@@ -39,7 +39,7 @@ require_once DOL_DOCUMENT_ROOT.'/opensurvey/lib/opensurvey.lib.php';
 
 // Security check
 if (!$user->hasRight('opensurvey', 'write')) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->load("opensurvey");

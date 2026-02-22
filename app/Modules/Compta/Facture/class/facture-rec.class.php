@@ -2096,7 +2096,7 @@ class FactureRec extends CommonInvoice
 
 		if (empty($option) || $option != 'nolines') {
 			// Lines
-			$nbp = min(1000, GETPOSTINT('nblines') ? GETPOSTINT('nblines') : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
+			$nbp = min(1000, request()->integer('nblines', 0) ? request()->integer('nblines', 0) : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
 			$xnbp = 0;
 			while ($xnbp < $nbp) {
 				$line = new FactureLigne($this->db);

@@ -50,49 +50,49 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/lettering.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array("accountancy", "bills", "compta"));
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 
-$type = GETPOST('type', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$type = request()->input('type');
+$backtopage = request()->input('backtopage');
 if (empty($backtopage)) {
 	$backtopage = '/accountancy/bookkeeping/list.php';
 }
 
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
 
-$id = GETPOSTINT('id'); // id of record
-$mode = GETPOST('mode', 'aZ09'); // '' or '_tmp'
-$piece_num = GETPOSTINT("piece_num") ? GETPOSTINT("piece_num") : GETPOST('ref'); 	// id of transaction (several lines share the same transaction id)
-$clonedate = (int) GETPOSTINT('clonedate');
+$id = request()->integer('id', 0); // id of record
+$mode = request()->input('mode'); // '' or '_tmp'
+$piece_num = request()->integer('piece_num', 0) ? request()->integer('piece_num', 0) : request()->input('ref'); 	// id of transaction (several lines share the same transaction id)
+$clonedate = (int) request()->integer('clonedate', 0);
 
 $accountingaccount = new AccountingAccount($db);
 $accountingjournal = new AccountingJournal($db);
 
-$accountingaccount_number = GETPOST('accountingaccount_number', 'alphanohtml');
+$accountingaccount_number = request()->input('accountingaccount_number');
 $accountingaccount->fetch(0, $accountingaccount_number, true);
 $accountingaccount_label = $accountingaccount->label;
 
-$journal_code = GETPOST('code_journal', 'alpha');
+$journal_code = request()->input('code_journal');
 $accountingjournal->fetch(0, $journal_code);
 $journal_label = $accountingjournal->label;
 
-$subledger_account = GETPOST('subledger_account', 'alphanohtml');
+$subledger_account = request()->input('subledger_account');
 if ($subledger_account == -1) {
 	$subledger_account = null;
 }
-$subledger_label = GETPOST('subledger_label', 'alphanohtml');
+$subledger_label = request()->input('subledger_label');
 
-$label_operation = GETPOST('label_operation', 'alphanohtml');
-$debit = (float) price2num(GETPOST('debit', 'alpha'));
-$credit = (float) price2num(GETPOST('credit', 'alpha'));
+$label_operation = request()->input('label_operation');
+$debit = (float) price2num(request()->input('debit'));
+$credit = (float) price2num(request()->input('credit'));
 
-$save = GETPOST('save', 'alpha');
+$save = request()->input('save');
 if (!empty($save)) {
 	$action = 'add';
 }
-$update = GETPOST('update', 'alpha');
+$update = request()->input('update');
 if (!empty($update)) {
 	$action = 'confirm_update';
 }
@@ -104,13 +104,13 @@ $object = new BookKeeping($db);
 
 // Security check
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'mouvements', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('accounting', 'mouvements', 'creer');
@@ -206,10 +206,10 @@ if (empty($reshook)) {
 		}
 
 		if (!$error) {
-			if (GETPOSTINT('doc_datemonth') && GETPOSTINT('doc_dateday') && GETPOSTINT('doc_dateyear')) {
-				$datedoc = dol_mktime(0, 0, 0, GETPOSTINT('doc_datemonth'), GETPOSTINT('doc_dateday'), GETPOSTINT('doc_dateyear'));
+			if (request()->integer('doc_datemonth', 0) && request()->integer('doc_dateday', 0) && request()->integer('doc_dateyear', 0)) {
+				$datedoc = dol_mktime(0, 0, 0, request()->integer('doc_datemonth', 0), request()->integer('doc_dateday', 0), request()->integer('doc_dateyear', 0));
 			} else {
-				$datedoc = (int) GETPOSTINT('doc_date');	// TODO Use instead the mode day-month-year
+				$datedoc = (int) request()->integer('doc_date', 0);	// TODO Use instead the mode day-month-year
 			}
 
 			$object = new BookKeeping($db);
@@ -222,14 +222,14 @@ if (empty($reshook)) {
 			$object->debit = $debit;
 			$object->credit = $credit;
 			$object->doc_date = $datedoc;
-			$object->doc_type = (string) GETPOST('doc_type', 'alpha');
+			$object->doc_type = (string) request()->input('doc_type');
 			$object->piece_num = $piece_num;
-			$object->doc_ref = (string) GETPOST('doc_ref', 'alpha');
-			$object->ref = (string) GETPOST('ref', 'alpha');
+			$object->doc_ref = (string) request()->input('doc_ref');
+			$object->ref = (string) request()->input('ref');
 			$object->code_journal = $journal_code;
 			$object->journal_label = $journal_label;
-			$object->fk_doc = GETPOSTINT('fk_doc');
-			$object->fk_docdet = GETPOSTINT('fk_docdet');
+			$object->fk_doc = request()->integer('fk_doc', 0);
+			$object->fk_docdet = request()->integer('fk_docdet', 0);
 
 			if ((float) $debit != 0.0) {
 				$object->montant = $debit; // deprecated
@@ -282,27 +282,27 @@ if (empty($reshook)) {
 			$action = 'create';
 			$error++;
 		}
-		if (!GETPOST('doc_ref', 'alpha')) {
+		if (!request()->input('doc_ref')) {
 			setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Piece")), null, 'errors');
 			$action = 'create';
 			$error++;
 		}
 
 		if (!$error) {
-			$date_start = dol_mktime(0, 0, 0, GETPOSTINT('doc_datemonth'), GETPOSTINT('doc_dateday'), GETPOSTINT('doc_dateyear'));
+			$date_start = dol_mktime(0, 0, 0, request()->integer('doc_datemonth', 0), request()->integer('doc_dateday', 0), request()->integer('doc_dateyear', 0));
 
 			$object->label_compte = '';
 			$object->debit = 0;
 			$object->credit = 0;
 			$object->doc_date = $date_start;
-			$object->doc_type = GETPOST('doc_type', 'alpha');
-			$object->piece_num = GETPOSTINT('next_num_mvt');
-			$object->doc_ref = GETPOST('doc_ref', 'alpha');
+			$object->doc_type = request()->input('doc_type');
+			$object->piece_num = request()->integer('next_num_mvt', 0);
+			$object->doc_ref = request()->input('doc_ref');
 			$object->code_journal = $journal_code;
 			$object->journal_label = $journal_label;
 			$object->fk_doc = 0;
 			$object->fk_docdet = 0;
-			$object->ref = (GETPOST('ref', 'alpha') ? GETPOST('ref', 'alpha') : $object->getNextNumRef());
+			$object->ref = (request()->input('ref') ? request()->input('ref') : $object->getNextNumRef());
 			$object->montant = 0; // deprecated
 			$object->amount = 0;
 
@@ -326,7 +326,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setdate' && $permissiontoadd) {
-		$datedoc = dol_mktime(0, 0, 0, GETPOSTINT('doc_datemonth'), GETPOSTINT('doc_dateday'), GETPOSTINT('doc_dateyear'));
+		$datedoc = dol_mktime(0, 0, 0, request()->integer('doc_datemonth', 0), request()->integer('doc_dateday', 0), request()->integer('doc_dateyear', 0));
 		$result = $object->updateByMvt($piece_num, 'doc_date', $db->idate($datedoc), $mode);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -352,7 +352,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setdocref' && $permissiontoadd) {
-		$refdoc = GETPOST('doc_ref', 'alpha');
+		$refdoc = request()->input('doc_ref');
 		$result = $object->updateByMvt($piece_num, 'doc_ref', $refdoc, $mode);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -365,7 +365,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == 'setref' && $permissiontoadd && $numRefModel === 'mod_bookkeeping_neon') {
-		$newref = GETPOST('ref', 'alpha');
+		$newref = request()->input('ref');
 		$result = $object->updateByMvt($piece_num, 'ref', $newref, $mode);
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
@@ -389,7 +389,7 @@ if (empty($reshook)) {
 	}
 
 	// Delete all lines into the transaction
-	$toselect_str = explode(',', GETPOST('toselect', 'alphanohtml'));
+	$toselect_str = explode(',', request()->input('toselect'));
 	$toselect = array();
 	foreach ($toselect_str as $i) {
 		$toselect[] = (int) $i;
@@ -454,11 +454,11 @@ if (empty($reshook)) {
 
 	if ($action == 'clonebookkeepingwriting' && $confirm == "yes" && $permissiontoadd) {
 		// Reread the values sent by the validated form
-		$piece_num = GETPOST('piece_num', 'alpha');
-		$journal_code = GETPOST('code_journal', 'alpha');
+		$piece_num = request()->input('piece_num');
+		$journal_code = request()->input('code_journal');
 
 		// Reconstruct the selected date
-		$clonedate = dol_mktime(0, 0, 0, GETPOSTINT('clonedatemonth'), GETPOSTINT('clonedateday'), GETPOSTINT('clonedateyear'));
+		$clonedate = dol_mktime(0, 0, 0, request()->integer('clonedatemonth', 0), request()->integer('clonedateday', 0), request()->integer('clonedateyear', 0));
 
 		$result = $object->newClone($piece_num, $journal_code, $clonedate);
 
@@ -558,7 +558,7 @@ if ($action == 'create') {
 
 	print '<tr>';
 	print '<td class="fieldrequired">'.$form->textwithpicto($langs->trans("Piece"), $langs->trans("PieceDesc")).'</td>';
-	print '<td><input type="text" class="minwidth200" name="doc_ref" value="'.GETPOST('doc_ref', 'alpha').'"></td>';
+	print '<td><input type="text" class="minwidth200" name="doc_ref" value="'.request()->input('doc_ref').'"></td>';
 	print '</tr>';
 
 	// Piece number
@@ -625,7 +625,7 @@ if ($action == 'create') {
 
 
 		if ($action == 'clonebookkeepingwriting' && $confirm != 'yes' && $permissiontoadd) {
-			$piece_num = GETPOST('piece_num', 'alpha');
+			$piece_num = request()->input('piece_num');
 			$formaccounting = new FormAccounting($db);
 
 			$form = new Form($db);
@@ -1061,7 +1061,7 @@ if ($action == 'create') {
 						print '<tr class="oddeven" data-lineid="'.((int) $line->id).'">';
 						print '<!-- td columns in edit mode -->';
 						print '<td>';
-						print $formaccounting->select_account((GETPOSTISSET("accountingaccount_number") ? GETPOST("accountingaccount_number", "alpha") : $line->numero_compte), 'accountingaccount_number', 1, array(), 1, 1, 'minwidth200 maxwidth500');
+						print $formaccounting->select_account((request()->has('accountingaccount_number') ? request()->input('accountingaccount_number') : $line->numero_compte), 'accountingaccount_number', 1, array(), 1, 1, 'minwidth200 maxwidth500');
 						print '</td>';
 						print '<td>';
 						// TODO For the moment we keep a free input text instead of a combo. The select_auxaccount has problem because:
@@ -1069,16 +1069,16 @@ if ($action == 'create') {
 						// - Also, it is not possible to use a value that is not in the list.
 						// - Also, the label is not automatically filled when a value is selected.
 						if (getDolGlobalString('ACCOUNTANCY_COMBO_FOR_AUX')) {
-							print $formaccounting->select_auxaccount((GETPOSTISSET("subledger_account") ? GETPOST("subledger_account", "alpha") : $line->subledger_account), 'subledger_account', 1, 'maxwidth250', '', 'subledger_label');
+							print $formaccounting->select_auxaccount((request()->has('subledger_account') ? request()->input('subledger_account') : $line->subledger_account), 'subledger_account', 1, 'maxwidth250', '', 'subledger_label');
 						} else {
-							print '<input type="text" class="maxwidth150" name="subledger_account" value="'.(GETPOSTISSET("subledger_account") ? GETPOST("subledger_account", "alpha") : $line->subledger_account).'" placeholder="'.dol_escape_htmltag($langs->trans("SubledgerAccount")).'">';
+							print '<input type="text" class="maxwidth150" name="subledger_account" value="'.(request()->has('subledger_account') ? request()->input('subledger_account') : $line->subledger_account).'" placeholder="'.dol_escape_htmltag($langs->trans("SubledgerAccount")).'">';
 						}
 						// Add also input for subledger label
-						print '<br><input type="text" class="maxwidth150" name="subledger_label" id="subledger_label" value="'.(GETPOSTISSET("subledger_label") ? GETPOST("subledger_label", "alpha") : $line->subledger_label).'" placeholder="'.dol_escape_htmltag($langs->trans("SubledgerAccountLabel")).'">';
+						print '<br><input type="text" class="maxwidth150" name="subledger_label" id="subledger_label" value="'.(request()->has('subledger_label') ? request()->input('subledger_label') : $line->subledger_label).'" placeholder="'.dol_escape_htmltag($langs->trans("SubledgerAccountLabel")).'">';
 						print '</td>';
-						print '<td><input type="text" class="minwidth200" name="label_operation" value="'.(GETPOSTISSET("label_operation") ? GETPOST("label_operation", "alpha") : $line->label_operation).'"></td>';
-						print '<td class="right"><input type="text" class="right width50" name="debit" value="'.(GETPOSTISSET("debit") ? GETPOST("debit", "alpha") : price($line->debit)).'"></td>';
-						print '<td class="right"><input type="text" class="right width50" name="credit" value="'.(GETPOSTISSET("credit") ? GETPOST("credit", "alpha") : price($line->credit)).'"></td>';
+						print '<td><input type="text" class="minwidth200" name="label_operation" value="'.(request()->has('label_operation') ? request()->input('label_operation') : $line->label_operation).'"></td>';
+						print '<td class="right"><input type="text" class="right width50" name="debit" value="'.(request()->has('debit') ? request()->input('debit') : price($line->debit)).'"></td>';
+						print '<td class="right"><input type="text" class="right width50" name="credit" value="'.(request()->has('credit') ? request()->input('credit') : price($line->credit)).'"></td>';
 						print '<td>';
 						print '<input type="hidden" name="id" value="'.$line->id.'">'."\n";
 						print '<input type="submit" class="button" name="update" value="'.$langs->trans("Update").'">';
@@ -1089,7 +1089,7 @@ if ($action == 'create') {
 							print '<tr class="oddeven" data-lineid="'.((int) $line->id).'">';
 							print '<!-- td columns in add mode -->';
 							print '<td>';
-							print $formaccounting->select_account($action == 'add' ? GETPOST('accountingaccount_number') : '', 'accountingaccount_number', 1, array(), 1, 1, 'minwidth200 maxwidth500');
+							print $formaccounting->select_account($action == 'add' ? request()->input('accountingaccount_number') : '', 'accountingaccount_number', 1, array(), 1, 1, 'minwidth200 maxwidth500');
 							print '</td>';
 							print '<td>';
 							// TODO For the moment we keep a free input text instead of a combo. The select_auxaccount has problem because:

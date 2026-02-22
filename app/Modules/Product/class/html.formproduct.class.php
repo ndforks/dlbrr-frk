@@ -601,7 +601,7 @@ class FormProduct
 			$filter
 		);
 		if ($result < 0) {
-			dol_print_error($db);
+			abort(500);
 			return -1;
 		} else {
 			$return .= '<select class="flat'.($morecss ? ' '.$morecss : '').'" name="'.$name.'" id="'.$name.'">';
@@ -670,7 +670,7 @@ class FormProduct
 		$result = $productNature->fetchAll('', '', 0, 0, $filter);
 
 		if ($result < 0) {
-			dol_print_error($db);
+			abort(500);
 			return -1;
 		} else {
 			$return .= '<select class="flat" name="'.$name.'" id="'.$name.'">';

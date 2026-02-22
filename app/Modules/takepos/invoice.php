@@ -65,16 +65,16 @@ $hookmanager->initHooks(array('takeposinvoice'));
 
 $langs->loadLangs(array("companies", "commercial", "bills", "cashdesk", "stocks", "banks"));
 
-$action = GETPOST('action', 'aZ09');
-$idproduct = GETPOSTINT('idproduct');
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0); // $place is id of table for Bar or Restaurant
+$action = request()->input('action');
+$idproduct = request()->integer('idproduct', 0);
+$place = (request()->input('place') ? request()->input('place') : 0); // $place is id of table for Bar or Restaurant
 $placeid = 0; // $placeid is ID of invoice
-$mobilepage = GETPOST('mobilepage', 'alpha');
+$mobilepage = request()->input('mobilepage');
 
 // Terminal is stored into $_SESSION["takeposterminal"];
 
 if (!$user->hasRight('takepos', 'run') && !defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE')) {
-	accessforbidden('No permission to use the TakePOS');
+	abort(403);
 }
 
 if (defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE')) {
@@ -127,14 +127,14 @@ function fail($message)
 
 
 
-$number = (float) GETPOST('number', 'alpha');
-$idline = GETPOSTINT('idline');
-$selectedline = GETPOSTINT('selectedline');
-$desc = GETPOST('desc', 'alphanohtml');
-$pay = GETPOST('pay', 'aZ09');
+$number = (float) request()->input('number');
+$idline = request()->integer('idline', 0);
+$selectedline = request()->integer('selectedline', 0);
+$desc = request()->input('desc');
+$pay = request()->input('pay');
 $amountofpayment = GETPOSTFLOAT('amount');
 
-$invoiceid = GETPOSTINT('invoiceid');
+$invoiceid = request()->integer('invoiceid', 0);
 
 $paycode = $pay;
 if ($pay == 'cash') {
@@ -248,7 +248,7 @@ if (empty($reshook)) {
 		$error = 0;
 
 		if (getDolGlobalString('TAKEPOS_CAN_FORCE_BANK_ACCOUNT_DURING_PAYMENT')) {
-			$bankaccount = GETPOSTINT('accountid');
+			$bankaccount = request()->integer('accountid', 0);
 		} else {
 			if ($pay == 'LIQ') {
 				$bankaccount = getDolGlobalInt('CASHDESK_ID_BANKACCOUNT_CASH'.$_SESSION["takeposterminal"]);            // For backward compatibility
@@ -681,7 +681,7 @@ if (empty($reshook)) {
 		if ($action == 'creditnote' && $creditnote !== null && $creditnote->id > 0) {	// Test on permission already done
 			$placeid = $creditnote->id;
 		} else {
-			$placeid = GETPOSTINT('placeid');
+			$placeid = request()->integer('placeid', 0);
 		}
 
 		$invoice = new Facture($db);
@@ -756,7 +756,7 @@ if (empty($reshook)) {
 
 		$datapriceofproduct = $prod->getSellPrice($mysoc, $customer, 0);
 
-		$qty = GETPOSTISSET('qty') ? GETPOSTFLOAT('qty') : 1;
+		$qty = request()->has('qty') ? GETPOSTFLOAT('qty') : 1;
 		$price = $datapriceofproduct['pu_ht'];
 		$price_ttc = $datapriceofproduct['pu_ttc'];
 		//$price_min = $datapriceofproduct['price_min'];
@@ -770,7 +770,7 @@ if (empty($reshook)) {
 
 
 		if (isModEnabled('productbatch') && isModEnabled('stock')) {
-			$batch = GETPOST('batch', 'alpha');
+			$batch = request()->input('batch');
 
 			if (!empty($batch)) {	// We have just clicked on a batch number, we will execute action=setbatch later...
 				$action = "setbatch";
@@ -964,7 +964,7 @@ if (empty($reshook)) {
 		$customer = new Societe($db);
 		$customer->fetch($invoice->socid);
 
-		$tva_tx = GETPOST('tva_tx', 'alpha');
+		$tva_tx = request()->input('tva_tx');
 		if ($tva_tx != '') {
 			if (!preg_match('/\((.*)\)/', $tva_tx)) {
 				$tva_tx = price2num($tva_tx);
@@ -985,7 +985,7 @@ if (empty($reshook)) {
 	}
 
 	if ($action == "addnote" && ($user->hasRight('takepos', 'run') || defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE'))) {
-		$desc = GETPOST('addnote', 'alpha');
+		$desc = request()->input('addnote');
 		if ($idline == 0) {
 			$invoice->update_note($desc, '_public');
 		} else {
@@ -1214,7 +1214,7 @@ if (empty($reshook)) {
 
 	if ($action == "setbatch" && ($user->hasRight('takepos', 'run') || defined('INCLUDE_PHONEPAGE_FROM_PUBLIC_PAGE'))) {
 		$constantforkey = 'CASHDESK_ID_WAREHOUSE'.$_SESSION["takeposterminal"];
-		$warehouseid = (GETPOSTINT('warehouseid') > 0 ? GETPOSTINT('warehouseid') : getDolGlobalInt($constantforkey));	// Get the warehouse id from GETPOSTINT('warehouseid'), otherwise use default setup.
+		$warehouseid = (request()->integer('warehouseid', 0) > 0 ? request()->integer('warehouseid', 0) : getDolGlobalInt($constantforkey));	// Get the warehouse id from request()->integer('warehouseid', 0), otherwise use default setup.
 		$sql = "UPDATE ".MAIN_DB_PREFIX."facturedet SET batch = '".$db->escape($batch)."', fk_warehouse = ".((int) $warehouseid);
 		$sql .= " WHERE rowid=".((int) $idoflineadded);
 		$db->query($sql);
@@ -1736,7 +1736,7 @@ $( document ).ready(function() {
 		echo $max_sale + 1;
 		echo '\\\'; invoiceid=0; Refresh();"><div><span class="fa fa-plus" title="'.dol_escape_htmltag($langs->trans("StartAParallelSale")).'"><span class="fa fa-shopping-cart"></span></div></a>\');';
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	$s = '';
@@ -1849,7 +1849,7 @@ if (!empty($conf->use_javascript_ajax)) {
 	print '<script src="'.DOL_URL_ROOT.'/core/js/lib_foot.js.php?lang='.$langs->defaultlang.'"></script>'."\n";
 }
 
-$usediv = (GETPOST('format') == 'div');
+$usediv = (request()->input('format') == 'div');
 
 print '<!-- invoice.php place='.(int) $place.' invoice='.$invoice->ref.' usediv='.json_encode($usediv).', mobilepage='.(empty($mobilepage) ? '' : $mobilepage).' $_SESSION["basiclayout"]='.(empty($_SESSION["basiclayout"]) ? '' : $_SESSION["basiclayout"]).' conf TAKEPOS_BAR_RESTAURANT='.getDolGlobalString('TAKEPOS_BAR_RESTAURANT').' -->'."\n";
 print '<div class="div-table-responsive-no-min invoice">';
@@ -1996,7 +1996,7 @@ if (!empty($_SESSION["basiclayout"]) && $_SESSION["basiclayout"] == 1) {
 	if ($mobilepage == "products") {
 		require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 		$object = new Categorie($db);
-		$catid = GETPOSTINT('catid');
+		$catid = request()->integer('catid', 0);
 		$result = $object->fetch($catid);
 		$prods = $object->getObjectsInCateg("product");
 		/** @var Product[] $prods */
@@ -2256,7 +2256,7 @@ if ($placeid > 0) {
 								$htmlforlines .= ')';
 								$htmlforlines .= '</span>';
 							} else {
-								dol_print_error($db);
+								abort(500);
 							}
 						}
 					}

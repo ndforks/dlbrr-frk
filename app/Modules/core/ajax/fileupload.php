@@ -49,8 +49,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('fk_element');
-$element = GETPOST('element', 'alpha');	// 'myobject' (myobject=mymodule) or 'myobject@mymodule' or 'myobject_mysubobject' (myobject=mymodule)
+$id = request()->integer('fk_element', 0);
+$element = request()->input('element');	// 'myobject' (myobject=mymodule) or 'myobject@mymodule' or 'myobject_mysubobject' (myobject=mymodule)
 $elementupload = $element;
 
 // Load object according to $id and $element
@@ -70,13 +70,13 @@ if ($usesublevelpermission && !$user->hasRight($module, $element)) {	// There is
 if (!empty($user->socid)) {
 	$socid = $user->socid;
 	if (!empty($object->socid) && $socid != $object->socid) {
-		httponly_accessforbidden("Access on object not allowed for this external user.");	// This includes the exit.
+		httponly_abort(403);	// This includes the exit.
 	}
 }
 
 $result = restrictedArea($user, $object->module, $object, $object->table_element, $usesublevelpermission, 'fk_soc', 'rowid', 0, 1);	// Call with mode return
 if (!$result) {
-	httponly_accessforbidden('Not allowed by restrictArea (module='.$object->module.' table_element='.$object->table_element.')');
+	httponly_abort(403);');
 }
 
 
@@ -106,7 +106,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 		$upload_handler = new FileUpload(null, $id, $elementupload);
 
 		/*if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
-			$file = GETPOST('file');
+			$file = request()->input('file');
 			$upload_handler->delete($file);
 		} else {*/
 		$upload_handler->post();
@@ -114,7 +114,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 		//}
 		break;
 	/*case 'DELETE':
-		$file = GETPOST('file');
+		$file = request()->input('file');
 		$upload_handler->delete($file);
 		break;*/
 	default:

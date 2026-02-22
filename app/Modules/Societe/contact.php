@@ -75,12 +75,12 @@ $errors = array();
 
 
 // Get parameters
-$action			= (GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view');
-$cancel 		= GETPOST('cancel', 'alpha');
-$backtopage 	= GETPOST('backtopage', 'alpha');
-$confirm 		= GETPOST('confirm');
-$socid 			= GETPOSTINT('socid') ? GETPOSTINT('socid') : GETPOSTINT('id');
-$selectedfields = GETPOST('selectedfields', 'alpha');
+$action			= (request()->input('action') ? request()->input('action') : 'view');
+$cancel 		= request()->input('cancel');
+$backtopage 	= request()->input('backtopage');
+$confirm 		= request()->input('confirm');
+$socid 			= request()->integer('socid', 0) ? request()->integer('socid', 0) : request()->integer('id', 0);
+$selectedfields = request()->input('selectedfields');
 
 if ($user->socid) {
 	$socid = $user->socid;
@@ -107,7 +107,7 @@ if ($object->fetch($socid) <= 0 && $action == 'view') {
 }
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-$canvas = $object->canvas ? $object->canvas : GETPOST("canvas");
+$canvas = $object->canvas ? $object->canvas : request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
@@ -118,7 +118,7 @@ if (!empty($canvas)) {
 // Security check
 $result = restrictedArea($user, 'societe', $socid, '&societe', '', 'fk_soc', 'rowid', 0);
 if (!$user->hasRight('societe', 'contact', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -146,7 +146,7 @@ if (empty($reshook)) {
 }
 
 if ($action == 'confirm_delete' && $user->hasRight('societe', 'contact', 'delete')) {
-	$id = GETPOSTINT('id');
+	$id = request()->integer('id', 0);
 	if ($id > 0 && $socid > 0) {
 		$contact = new Contact($db);
 		$ret = $contact->fetch($id);
@@ -225,9 +225,9 @@ if ($action != 'presend') {
 }
 if ($action == 'delete') {
 	$formconfirm = $form->formconfirm(
-		$_SERVER["PHP_SELF"].'?id='.GETPOST('id').'&socid='.$object->id,
+		$_SERVER["PHP_SELF"].'?id='.request()->input('id').'&socid='.$object->id,
 		$langs->trans('Delete'),
-		$langs->trans('ConfirmDeleteContact', GETPOST('id', 'alpha')),
+		$langs->trans('ConfirmDeleteContact', request()->input('id')),
 		'confirm_delete',
 		'',
 		0,

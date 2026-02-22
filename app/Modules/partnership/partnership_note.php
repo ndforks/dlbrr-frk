@@ -41,11 +41,11 @@ require_once DOL_DOCUMENT_ROOT.'/partnership/lib/partnership.lib.php';
 $langs->loadLangs(array("partnership", "companies"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new Partnership($db);
@@ -56,7 +56,7 @@ $hookmanager->initHooks(array('partnershipnote', 'globalcard')); // Note that co
 $extrafields->fetch_name_optionals_label($object->table_element);
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'partnership', $id);
 
@@ -72,20 +72,20 @@ $permissiontoadd = $user->hasRight('partnership', 'write'); // Used by the inclu
 $managedfor = getDolGlobalString('PARTNERSHIP_IS_MANAGED_FOR', 'thirdparty');
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //restrictedArea($user, 'partnership', $object->id);
 if (empty($conf->partnership->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_member > 0) && $managedfor == 'member') {
-	accessforbidden();
+	abort(403);
 }
 if ($object->id > 0 && !($object->fk_soc > 0) && $managedfor == 'thirdparty') {
-	accessforbidden();
+	abort(403);
 }
 
 

@@ -46,9 +46,9 @@ $langs->loadLangs(array("companies", "members", "bills"));
 
 
 // Get parameters
-$action = GETPOST('action', 'aZ09');
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alphanohtml');
+$action = request()->input('action');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 
 // Initialize objects

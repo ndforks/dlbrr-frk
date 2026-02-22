@@ -52,10 +52,10 @@ if (isModEnabled('project')) {
 
 $langs->loadLangs(array('bills', 'other', 'companies'));
 
-$id = GETPOSTINT('facid') ? GETPOSTINT('facid') : GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('facid', 0) ? request()->integer('facid', 0) : request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$ref = request()->input('ref');
 
 // Security check
 if ($user->socid) {
@@ -65,10 +65,10 @@ $hookmanager->initHooks(array('invoicesuppliercarddocument'));
 $result = restrictedArea($user, 'fournisseur', $id, 'facture_fourn', 'facture');
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -168,7 +168,7 @@ if ($object->id > 0 && $upload_dir !== null) {
 	 * Confirm delete file
 	 */
 	if ($action == 'delete') {
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&urlfile='.urlencode(GETPOST("urlfile")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&urlfile='.urlencode(request()->input('urlfile')), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 	}
 
 	print '<table class="border tableforfield centpercent">';

@@ -45,11 +45,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 $langs->load("admin");
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$table = GETPOST('table', 'aZ09');
-$action = GETPOST('action', 'aZ09');
+$table = request()->input('table');
+$action = request()->input('action');
 
 
 /*

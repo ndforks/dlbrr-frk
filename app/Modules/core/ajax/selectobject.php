@@ -53,13 +53,13 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/extrafields.class.php';
 $extrafields = new ExtraFields($db);
 
 $objectdesc = GETPOST('objectdesc', 'alphanohtml', 0, null, null, 1);
-$htmlname = GETPOST('htmlname', 'aZ09');
-$outjson = (GETPOSTINT('outjson') ? GETPOSTINT('outjson') : 0);
-$id = GETPOSTINT('id');
-$objectfield = GETPOST('objectfield', 'alpha');	// 'MyObject:field' or 'MyModule_MyObject:field' or 'MyObject:option_field' or 'MyModule_MyObject:option_field'
+$htmlname = request()->input('htmlname');
+$outjson = (request()->integer('outjson', 0) ? request()->integer('outjson', 0) : 0);
+$id = request()->integer('id', 0);
+$objectfield = request()->input('objectfield');	// 'MyObject:field' or 'MyModule_MyObject:field' or 'MyObject:option_field' or 'MyModule_MyObject:option_field'
 
 if (empty($htmlname)) {
-	httponly_accessforbidden('Bad value for param htmlname');
+	httponly_abort(403);
 }
 
 if (!empty($objectfield)) {

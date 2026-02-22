@@ -46,13 +46,13 @@ $langs->loadLangs(array("admin", "webportal", "website"));
 $hookmanager->initHooks(array('webportalsetup', 'globalsetup'));
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');    // Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$modulepart = request()->input('modulepart');    // Used by actions_setmoduleoptions.inc.php
 
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'webportal';
 
 $error = 0;
@@ -60,7 +60,7 @@ $setupnotempty = 0;
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Set this to 1 to use the factory to manage constants. Warning, the generated module will be compatible with version v15+ only
@@ -146,9 +146,9 @@ $moduledir = 'webportal';
 $myTmpObjects = array();
 $myTmpObjects['webportal'] = array('label' => 'WebPortal', 'includerefgeneration' => 0, 'includedocgeneration' => 0, 'class' => 'WebPortal');
 
-$tmpobjectkey = GETPOST('object', 'aZ09');
+$tmpobjectkey = request()->input('object');
 if ($tmpobjectkey && !array_key_exists($tmpobjectkey, $myTmpObjects)) {
-	accessforbidden('Bad value for object. Hack attempt ?');
+	abort(403);
 }
 
 

@@ -49,14 +49,14 @@ if (isModEnabled('project')) {
 $langs->loadLangs(array("suppliers", "orders", "companies", "stocks"));
 
 // Get Parameters
-$id     = GETPOSTINT('id');
-$ref    = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id     = request()->integer('id', 0);
+$ref    = request()->input('ref');
+$action = request()->input('action');
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -70,16 +70,16 @@ if (!$sortorder) {
 	$sortorder = 'DESC,DESC';
 }
 
-if (GETPOST('actioncode', 'array')) {
+if (request()->input('actioncode')) {
 	$actioncode = GETPOST('actioncode', 'array', 3);
 	if (!count($actioncode)) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : (!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECTS') ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECTS));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : (!getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECTS') ? '' : $conf->global->AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECTS));
 }
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
 
 // Security check
 $socid = 0;
@@ -92,7 +92,7 @@ $hookmanager->initHooks(array('ordersuppliercardinfo'));
 $result = restrictedArea($user, 'fournisseur', $id, 'commande_fournisseur', 'commande');
 
 if (!$user->hasRight("fournisseur", "commande", "lire")) {
-	accessforbidden();
+	abort(403);
 }
 
 $usercancreate	= ($user->hasRight("fournisseur", "commande", "creer") || $user->hasRight("supplier_order", "creer"));
@@ -111,7 +111,7 @@ if ($reshook < 0) {
 }
 
 // Purge search criteria
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All test are required to be compatible with all browsers
 	$actioncode = '';
 	$search_agenda_label = '';
 }

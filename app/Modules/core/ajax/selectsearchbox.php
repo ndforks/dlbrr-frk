@@ -75,7 +75,7 @@ if (!isset($usedbyinclude) || empty($usedbyinclude)) {
 
 $hookmanager->initHooks(array('searchform'));
 
-$search_boxvalue = GETPOST('q', 'restricthtml');
+$search_boxvalue = request()->input('q');
 
 $arrayresult = array();
 

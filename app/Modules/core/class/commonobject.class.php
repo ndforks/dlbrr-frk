@@ -5555,8 +5555,8 @@ abstract class CommonObject
 
 					$outputlangs = $langs;
 					$newlang = '';
-					if (empty($newlang) && GETPOST('lang_id', 'aZ09')) {
-						$newlang = GETPOST('lang_id', 'aZ09');
+					if (empty($newlang) && request()->input('lang_id')) {
+						$newlang = request()->input('lang_id');
 					}
 					if (getDolGlobalString('PRODUIT_TEXTS_IN_THIRDPARTY_LANGUAGE') && empty($newlang) && is_object($this->thirdparty)) {
 						$newlang = $this->thirdparty->default_lang; // To use language of customer
@@ -6388,8 +6388,8 @@ abstract class CommonObject
 	public function getDefaultCreateValueFor($fieldname, $alternatevalue = null, $type = 'alphanohtml')
 	{
 		/* TODO Remove this. Must use now something like:
-			$note_private = GETPOST('note_private', 'restricthtml');
-			if (!GETPOSTISSET('note_private') && empty($note_private) && !empty($objectsrc) [&& othercondtion]) {
+			$note_private = request()->input('note_private');
+			if (!request()->has('note_private') && empty($note_private) && !empty($objectsrc) [&& othercondtion]) {
 				$note_private = $objectsrc->note_private;
 			}
 		*/
@@ -8474,7 +8474,7 @@ abstract class CommonObject
 			$out = $form->selectForForms($param_list_array[0], $keyprefix.$key.$keysuffix, (int) $value, $showempty, '', '', $morecss, $moreparam, 0, (empty($val['disabled']) ? 0 : 1), '', $objectfield);
 
 			if (!empty($param_list_array[2])) {		// If the entry into $fields is set, we must add a create button
-				if ((!GETPOSTISSET('backtopage') || strpos(GETPOST('backtopage'), $_SERVER['PHP_SELF']) === 0)	// // To avoid to open several times the 'Plus' button (we accept only one level)
+				if ((!request()->has('backtopage') || strpos(request()->input('backtopage'), $_SERVER['PHP_SELF']) === 0)	// // To avoid to open several times the 'Plus' button (we accept only one level)
 					&& empty($val['disabled']) && empty($nonewbutton)) {	// and to avoid to show the button if the field is protected by a "disabled".
 					list($class, $classfile) = explode(':', $param_list[0]);
 					if (file_exists(dol_buildpath(dirname(dirname($classfile)).'/card.php'))) {
@@ -8483,10 +8483,10 @@ abstract class CommonObject
 						$url_path = dol_buildpath(dirname(dirname($classfile)).'/'.strtolower($class).'_card.php', 1);
 					}
 					$paramforthenewlink = '';
-					$paramforthenewlink .= (GETPOSTISSET('action') ? '&action='.GETPOST('action', 'aZ09') : '');
-					$paramforthenewlink .= (GETPOSTISSET('id') ? '&id='.GETPOSTINT('id') : '');
-					$paramforthenewlink .= (GETPOSTISSET('origin') ? '&origin='.GETPOST('origin', 'aZ09') : '');
-					$paramforthenewlink .= (GETPOSTISSET('originid') ? '&originid='.GETPOSTINT('originid') : '');
+					$paramforthenewlink .= (request()->has('action') ? '&action='.request()->input('action') : '');
+					$paramforthenewlink .= (request()->has('id') ? '&id='.request()->integer('id', 0) : '');
+					$paramforthenewlink .= (request()->has('origin') ? '&origin='.request()->input('origin') : '');
+					$paramforthenewlink .= (request()->has('originid') ? '&originid='.request()->integer('originid', 0) : '');
 					$paramforthenewlink .= '&fk_'.strtolower($class).'=--IDFORBACKTOPAGE--';
 					// TODO Add JavaScript code to add input fields already filled into $paramforthenewlink so we won't loose them when going back to main page
 					$out .= '<a class="butActionNew" title="'.$langs->trans("New").'" href="'.$url_path.'?action=create&backtopage='.urlencode($_SERVER['PHP_SELF'].($paramforthenewlink ? '?'.$paramforthenewlink : '')).'"><span class="fa fa-plus-circle valignmiddle"></span></a>';
@@ -9549,7 +9549,7 @@ abstract class CommonObject
 							|| ($this->element == 'commande' && getDolGlobalInt('THIRDPARTY_PROPAGATE_EXTRAFIELDS_TO_ORDER'))
 							|| ($this->element == 'order_supplier' && getDolGlobalInt('THIRDPARTY_PROPAGATE_EXTRAFIELDS_TO_SUPPLIER_ORDER'))
 						);
-						if ($force_values_on_change_company && GETPOSTINT('changecompany')) {
+						if ($force_values_on_change_company && request()->integer('changecompany', 0)) {
 							$value = $this->array_options['options_'.$key] ?? $value;
 						}
 
@@ -9563,7 +9563,7 @@ abstract class CommonObject
 								}
 							}
 							$datekey = $keyprefix.'options_'.$key.$keysuffix;
-							$value = (GETPOSTISSET($datekey) && $this->id == GETPOST('elrowid', 'int')) ? dol_mktime(12, 0, 0, GETPOSTINT($datekey.'month', 3), GETPOSTINT($datekey.'day', 3), GETPOSTINT($datekey.'year', 3)) : $datenotinstring;
+							$value = (GETPOSTISSET($datekey) && $this->id == request()->input('elrowid')) ? dol_mktime(12, 0, 0, GETPOSTINT($datekey.'month', 3), GETPOSTINT($datekey.'day', 3), GETPOSTINT($datekey.'year', 3)) : $datenotinstring;
 						}
 						if (in_array($extrafields->attributes[$this->table_element]['type'][$key], array('datetime'))) {
 							$datenotinstring = null;
@@ -9615,7 +9615,7 @@ abstract class CommonObject
 							$out .= '<div style="display: inline-block; padding-right:4px" class="wordbreak';
 						}
 						//$out .= "titlefield";
-						//if (GETPOST('action', 'restricthtml') == 'create') $out.='create';
+						//if (request()->input('action') == 'create') $out.='create';
 						// BUG #11554 : For public page, use red dot for required fields, instead of bold label
 						$tpl_context = isset($params["tpl_context"]) ? $params["tpl_context"] : "none";
 						if ($tpl_context != "public") {	// Public page : red dot instead of fieldrequired characters

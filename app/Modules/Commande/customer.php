@@ -40,7 +40,7 @@ require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Secrutiy check
 if ($user->socid > 0) {
@@ -49,17 +49,17 @@ if ($user->socid > 0) {
 }
 
 if (!$user->hasRight('facture', 'creer')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "orders"));
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -87,14 +87,14 @@ $sql .= " st.libelle as stcomm, s.prefix_comm, s.code_client, s.code_compta as c
 $sql .= " FROM ".MAIN_DB_PREFIX."societe as s, ".MAIN_DB_PREFIX."c_stcomm as st, ".MAIN_DB_PREFIX."commande as c";
 $sql .= " WHERE s.fk_stcomm = st.id AND c.fk_soc = s.rowid";
 $sql .= " AND s.entity IN (".getEntity('societe').")";
-if (GETPOST("search_nom")) {
-	$sql .= natural_search("s.nom", GETPOST("search_nom"));
+if (request()->input('search_nom')) {
+	$sql .= natural_search("s.nom", request()->input('search_nom'));
 }
-if (GETPOST("search_compta")) {
-	$sql .= natural_search("s.code_compta", GETPOST("search_compta"));
+if (request()->input('search_compta')) {
+	$sql .= natural_search("s.code_compta", request()->input('search_compta'));
 }
-if (GETPOST("search_code_client")) {
-	$sql .= natural_search("s.code_client", GETPOST("search_code_client"));
+if (request()->input('search_code_client')) {
+	$sql .= natural_search("s.code_client", request()->input('search_code_client'));
 }
 // If the internal user must only see his customers, force searching by him
 $search_sale = 0;
@@ -155,16 +155,16 @@ if ($resql) {
 	print '<tr class="liste_titre">';
 
 	print '<td align="left" class="liste_titre">';
-	print '<input class="flat" type="text" name="search_nom" value="'.dol_escape_htmltag(GETPOST("search_nom")).'"></td>';
+	print '<input class="flat" type="text" name="search_nom" value="'.dol_escape_htmltag(request()->input('search_nom')).'"></td>';
 
 	print '<td class="liste_titre">&nbsp;</td>';
 
 	print '<td align="left" class="liste_titre">';
-	print '<input class="flat" type="text" size="10" name="search_code_client" value="'.dol_escape_htmltag(GETPOST("search_code_client")).'">';
+	print '<input class="flat" type="text" size="10" name="search_code_client" value="'.dol_escape_htmltag(request()->input('search_code_client')).'">';
 	print '</td>';
 
 	print '<td align="left" class="liste_titre">';
-	print '<input class="flat" type="text" size="10" name="search_compta" value="'.dol_escape_htmltag(GETPOST("search_compta")).'">';
+	print '<input class="flat" type="text" size="10" name="search_compta" value="'.dol_escape_htmltag(request()->input('search_compta')).'">';
 	print '</td>';
 
 	print '<td colspan="2" class="liste_titre right">';
@@ -202,7 +202,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 // End of page

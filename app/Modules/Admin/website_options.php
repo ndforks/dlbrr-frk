@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/website/class/website.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('errors', 'admin', 'companies', 'website'));
 
-$action = GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view';
-$confirm = GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action') ? request()->input('action') : 'view';
+$confirm = request()->input('confirm');
+$backtopage = request()->input('backtopage');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -66,10 +66,10 @@ $hookmanager->initHooks(array('admin'));
 $arrayofparameters = array();
 
 $status = 1;
-$rowid = GETPOST('rowid', 'alpha');
+$rowid = request()->input('rowid');
 
 if (!$user->admin || !isModEnabled('website')) {
-	accessforbidden();
+	abort(403);
 }
 
 // Set this to 1 to use the factory to manage constants. Warning, the generated module will be compatible with version v15+ only

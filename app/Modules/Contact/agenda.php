@@ -61,13 +61,13 @@ $error = 0;
 $errors = array();
 
 // Get parameters
-$action		= (GETPOST('action', 'alpha') ? GETPOST('action', 'alpha') : 'view');
-$confirm	= GETPOST('confirm', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ09');
+$action		= (request()->input('action') ? request()->input('action') : 'view');
+$confirm	= request()->input('confirm');
+$backtopage = request()->input('backtopage');
+$contextpage = request()->input('contextpage');
 
-$id = GETPOSTINT('id');
-$socid = GETPOSTINT('socid');
+$id = request()->integer('id', 0);
+$socid = request()->integer('socid', 0);
 
 // Initialize objects
 $object = new Contact($db);
@@ -79,7 +79,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
 $object->getCanvas($id);
 $objcanvas = null;
-$canvas = (!empty($object->canvas) ? $object->canvas : GETPOST("canvas"));
+$canvas = (!empty($object->canvas) ? $object->canvas : request()->input('canvas'));
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
 	$objcanvas = new Canvas($db, $action);
@@ -92,12 +92,12 @@ if (GETPOSTISARRAY('actioncode')) {
 		$actioncode = '0';
 	}
 } else {
-	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (GETPOST("actioncode") == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
+	$actioncode = GETPOST("actioncode", "alpha", 3) ? GETPOST("actioncode", "alpha", 3) : (request()->input('actioncode') == '0' ? '0' : getDolGlobalString('AGENDA_DEFAULT_FILTER_TYPE_FOR_OBJECT'));
 }
-$search_rowid = GETPOST('search_rowid');
-$search_agenda_label = GETPOST('search_agenda_label');
-$search_complete = GETPOST('search_complete');
-$search_filtert = GETPOSTINT('search_filtert');
+$search_rowid = request()->input('search_rowid');
+$search_agenda_label = request()->input('search_agenda_label');
+$search_complete = request()->input('search_complete');
+$search_filtert = request()->integer('search_filtert', 0);
 $search_dateevent_start = GETPOSTDATE('dateevent_start');
 $search_dateevent_end = GETPOSTDATE('dateevent_end');
 
@@ -111,11 +111,11 @@ $hookmanager->initHooks(array('contactagenda', 'globalcard'));
 
 $result = restrictedArea($user, 'contact', $id, 'socpeople&societe', '', '', 'rowid', 0); // If we create a contact with no company (shared contacts), no check on write permission
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT('page');
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -142,13 +142,13 @@ if ($reshook < 0) {
 
 if (empty($reshook)) {
 	// Cancel
-	if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+	if (request()->input('cancel') && !empty($backtopage)) {
 		header("Location: ".$backtopage);
 		exit;
 	}
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$actioncode = '';
 		$search_rowid = '';
 		$search_agenda_label = '';
@@ -327,14 +327,14 @@ if (is_object($objcanvas) && $objcanvas->displayCanvasExists($action)) {
 				$param .= '&search_filtert='.urlencode((string) $search_filtert);
 			}
 			if ($search_dateevent_start != '') {
-				$param .= '&dateevent_startyear='.GETPOSTINT('dateevent_startyear');
-				$param .= '&dateevent_startmonth='.GETPOSTINT('dateevent_startmonth');
-				$param .= '&dateevent_startday='.GETPOSTINT('dateevent_startday');
+				$param .= '&dateevent_startyear='.request()->integer('dateevent_startyear', 0);
+				$param .= '&dateevent_startmonth='.request()->integer('dateevent_startmonth', 0);
+				$param .= '&dateevent_startday='.request()->integer('dateevent_startday', 0);
 			}
 			if ($search_dateevent_end != '') {
-				$param .= '&dateevent_endyear='.GETPOSTINT('dateevent_endyear');
-				$param .= '&dateevent_endmonth='.GETPOSTINT('dateevent_endmonth');
-				$param .= '&dateevent_endday='.GETPOSTINT('dateevent_endday');
+				$param .= '&dateevent_endyear='.request()->integer('dateevent_endyear', 0);
+				$param .= '&dateevent_endmonth='.request()->integer('dateevent_endmonth', 0);
+				$param .= '&dateevent_endday='.request()->integer('dateevent_endday', 0);
 			}
 
 			// Try to know count of actioncomm from cache

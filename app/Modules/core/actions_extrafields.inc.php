@@ -41,13 +41,13 @@ $maxsizeint = 10;
 $mesg = '';
 $mesgs = array();
 
-$extrasize = GETPOST('size', 'intcomma');
-$type = GETPOST('type', 'alphanohtml');
-$param = GETPOST('param', 'alphanohtml');
-$css = GETPOST('css', 'alphanohtml');
-$cssview = GETPOST('cssview', 'alphanohtml');
-$csslist = GETPOST('csslist', 'alphanohtml');
-$confirm = GETPOST('confirm', 'alpha');
+$extrasize = request()->input('size');
+$type = request()->input('type');
+$param = request()->input('param');
+$css = request()->input('css');
+$cssview = request()->input('cssview');
+$csslist = request()->input('csslist');
+$confirm = request()->input('confirm');
 
 if ($type == 'double' && strpos($extrasize, ',') === false) {
 	$extrasize = '24,8';
@@ -78,7 +78,7 @@ $listofreservedwords = array(
 
 // Add attribute
 if ($action == 'add') {
-	if (GETPOST("button") != $langs->trans("Cancel")) {
+	if (request()->input('button') != $langs->trans("Cancel")) {
 		// Check values
 		if (!$type) {
 			$error++;
@@ -164,7 +164,7 @@ if ($action == 'add') {
 		}
 
 		if (!$error) {
-			if (strlen(GETPOST('attrname', 'aZ09')) < 3) {
+			if (strlen(request()->input('attrname')) < 3) {
 				$error++;
 				$langs->load("errors");
 				$mesgs[] = $langs->trans("ErrorValueLength", $langs->transnoentitiesnoconv("AttributeCode"), 3);
@@ -174,19 +174,19 @@ if ($action == 'add') {
 
 		// Check reserved keyword with more than 3 characters
 		if (!$error) {
-			if (in_array(strtoupper(GETPOST('attrname', 'aZ09')), $listofreservedwords)) {
+			if (in_array(strtoupper(request()->input('attrname')), $listofreservedwords)) {
 				$error++;
 				$langs->load("errors");
-				$mesgs[] = $langs->trans("ErrorReservedKeyword", GETPOST('attrname', 'aZ09'));
+				$mesgs[] = $langs->trans("ErrorReservedKeyword", request()->input('attrname'));
 				$action = 'create';
 			}
 		}
 
 		if (!$error) {
 			// attrname must be alphabetical and lower case only
-			if (GETPOSTISSET("attrname") && preg_match("/^[a-z0-9_]+$/", GETPOST('attrname', 'aZ09')) && !is_numeric(GETPOST('attrname', 'aZ09'))) {
+			if (request()->has('attrname') && preg_match("/^[a-z0-9_]+$/", request()->input('attrname')) && !is_numeric(request()->input('attrname'))) {
 				// Construct array for parameter (value of select list)
-				$default_value = GETPOST('default_value', 'alpha');
+				$default_value = request()->input('default_value');
 				$parameters = $param;
 				$parameters_array = explode("\r\n", $parameters);
 				$params = array();
@@ -212,35 +212,35 @@ if ($action == 'add') {
 				}
 
 				// Visibility: -1=not visible by default in list, 1=visible, 0=hidden
-				$visibility = GETPOST('list', 'alpha');
+				$visibility = request()->input('list');
 				if (in_array($type, ['separate', 'point', 'linestrg', 'polygon'])) {
 					$visibility = 3;
 				}
 
 				$result = $extrafields->addExtraField(
-					GETPOST('attrname', 'aZ09'),
-					GETPOST('label', 'alpha'),
+					request()->input('attrname'),
+					request()->input('label'),
 					$type,
-					GETPOSTINT('pos'),
+					request()->integer('pos', 0),
 					$extrasize,
 					$elementtype,
-					(GETPOST('unique', 'alpha') ? 1 : 0),
-					(GETPOST('required', 'alpha') ? 1 : 0),
+					(request()->input('unique') ? 1 : 0),
+					(request()->input('required') ? 1 : 0),
 					$default_value,
 					$params,
-					(GETPOST('alwayseditable', 'alpha') ? 1 : 0),
-					(GETPOST('perms', 'alpha') ? GETPOST('perms', 'alpha') : ''),
+					(request()->input('alwayseditable') ? 1 : 0),
+					(request()->input('perms') ? request()->input('perms') : ''),
 					$visibility,
-					GETPOST('help', 'alpha'),
-					GETPOST('computed_value', 'alpha'),
-					(GETPOST('entitycurrentorall', 'alpha') ? 0 : ''),
-					GETPOST('langfile', 'alpha'),
+					request()->input('help'),
+					request()->input('computed_value'),
+					(request()->input('entitycurrentorall') ? 0 : ''),
+					request()->input('langfile'),
 					'1',
-					(GETPOST('totalizable', 'alpha') ? 1 : 0),
-					GETPOSTINT('printable'),
+					(request()->input('totalizable') ? 1 : 0),
+					request()->integer('printable', 0),
 					array('css' => $css, 'cssview' => $cssview, 'csslist' => $csslist),
-					GETPOST("ai_prompt"),
-					(GETPOST('emptyonclone', 'alpha') ? 1 : 0)
+					request()->input('ai_prompt'),
+					(request()->input('emptyonclone') ? 1 : 0)
 				);
 				if ($result > 0) {
 					setEventMessages($langs->trans('SetupSaved'), null, 'mesgs');
@@ -267,7 +267,7 @@ if ($action == 'add') {
 
 // Rename field
 if ($action == 'update') {
-	if (GETPOST("button") != $langs->trans("Cancel")) {
+	if (request()->input('button') != $langs->trans("Cancel")) {
 		// Check values
 		if (!$type) {
 			$error++;
@@ -347,7 +347,7 @@ if ($action == 'update') {
 		}
 
 		if (!$error) {
-			if (strlen(GETPOST('attrname', 'aZ09')) < 3 && !getDolGlobalString('MAIN_DISABLE_EXTRAFIELDS_CHECK_FOR_UPDATE')) {
+			if (strlen(request()->input('attrname')) < 3 && !getDolGlobalString('MAIN_DISABLE_EXTRAFIELDS_CHECK_FOR_UPDATE')) {
 				$error++;
 				$langs->load("errors");
 				$mesgs[] = $langs->trans("ErrorValueLength", $langs->transnoentitiesnoconv("AttributeCode"), 3);
@@ -357,17 +357,17 @@ if ($action == 'update') {
 
 		// Check reserved keyword with more than 3 characters
 		if (!$error) {
-			if (in_array(strtoupper(GETPOST('attrname', 'aZ09')), $listofreservedwords) && !getDolGlobalString('MAIN_DISABLE_EXTRAFIELDS_CHECK_FOR_UPDATE')) {
+			if (in_array(strtoupper(request()->input('attrname')), $listofreservedwords) && !getDolGlobalString('MAIN_DISABLE_EXTRAFIELDS_CHECK_FOR_UPDATE')) {
 				$error++;
 				$langs->load("errors");
-				$mesgs[] = $langs->trans("ErrorReservedKeyword", GETPOST('attrname', 'aZ09'));
+				$mesgs[] = $langs->trans("ErrorReservedKeyword", request()->input('attrname'));
 				$action = 'edit';
 			}
 		}
 
 		if (!$error) {
-			if (GETPOSTISSET("attrname") && preg_match("/^\w[a-zA-Z0-9-_]*$/", GETPOST('attrname', 'aZ09')) && !is_numeric(GETPOST('attrname', 'aZ09'))) {
-				$pos = GETPOSTINT('pos');
+			if (request()->has('attrname') && preg_match("/^\w[a-zA-Z0-9-_]*$/", request()->input('attrname')) && !is_numeric(request()->input('attrname'))) {
+				$pos = request()->integer('pos', 0);
 				// Construct array for parameter (value of select list)
 				$parameters = $param;
 				$parameters_array = explode("\r\n", $parameters);
@@ -395,38 +395,38 @@ if ($action == 'update') {
 				// $params['options'][$key] can be 'Facture:/compta/facture/class/facture.class.php' => '/custom'
 
 				// Visibility: -1=not visible by default in list, 1=visible, 0=hidden
-				$visibility = GETPOST('list', 'alpha');
+				$visibility = request()->input('list');
 				if (in_array($type, ['separate', 'point', 'linestrg', 'polygon'])) {
 					$visibility = 3;
 				}
 
 				// Example: is_object($object) ? ($object->id < 10 ? round($object->id / 2, 2) : (2 * $user->id) * (int) substr($mysoc->zip, 1, 2)) : 'objnotdefined'
-				$computedvalue = GETPOST('computed_value', 'nohtml');
+				$computedvalue = request()->input('computed_value');
 
 				$result = $extrafields->update(
-					GETPOST('attrname', 'aZ09'),
-					GETPOST('label', 'alpha'),
+					request()->input('attrname'),
+					request()->input('label'),
 					$type,
 					$extrasize,
 					$elementtype,
-					(GETPOST('unique', 'alpha') ? 1 : 0),
-					(GETPOST('required', 'alpha') ? 1 : 0),
+					(request()->input('unique') ? 1 : 0),
+					(request()->input('required') ? 1 : 0),
 					$pos,
 					$params,
-					(GETPOST('alwayseditable', 'alpha') ? 1 : 0),
-					(GETPOST('perms', 'alpha') ? GETPOST('perms', 'alpha') : ''),
+					(request()->input('alwayseditable') ? 1 : 0),
+					(request()->input('perms') ? request()->input('perms') : ''),
 					$visibility,
-					GETPOST('help', 'alpha'),
-					GETPOST('default_value', 'alpha'),
+					request()->input('help'),
+					request()->input('default_value'),
 					$computedvalue,
-					(GETPOST('entitycurrentorall', 'alpha') ? 0 : ''),
-					GETPOST('langfile'),
-					GETPOST('enabled', 'nohtml'),
-					(GETPOST('totalizable', 'alpha') ? 1 : 0),
-					GETPOSTINT('printable'),
+					(request()->input('entitycurrentorall') ? 0 : ''),
+					request()->input('langfile'),
+					request()->input('enabled'),
+					(request()->input('totalizable') ? 1 : 0),
+					request()->integer('printable', 0),
 					array('css' => $css, 'cssview' => $cssview, 'csslist' => $csslist),
-					GETPOST("ai_prompt"),
-					(GETPOST('emptyonclone', 'alpha') ? 1 : 0)
+					request()->input('ai_prompt'),
+					(request()->input('emptyonclone') ? 1 : 0)
 				);
 				if ($result > 0) {
 					setEventMessages($langs->trans('SetupSaved'), null, 'mesgs');
@@ -452,8 +452,8 @@ if ($action == 'update') {
 
 // Delete attribute
 if ($action == 'confirm_delete' && $confirm == "yes") {
-	if (GETPOSTISSET("attrname") && preg_match("/^\w[a-zA-Z0-9-_]*$/", GETPOST("attrname", 'aZ09'))) {
-		$attributekey = GETPOST('attrname', 'aZ09');
+	if (request()->has('attrname') && preg_match("/^\w[a-zA-Z0-9-_]*$/", request()->input('attrname'))) {
+		$attributekey = request()->input('attrname');
 
 		$result = $extrafields->delete($attributekey, $elementtype);
 		if ($result >= 0) {
@@ -476,7 +476,7 @@ if ($action == 'confirm_delete' && $confirm == "yes") {
 if ($action == 'encrypt') {
 	// Load $extrafields->attributes
 	$extrafields->fetch_name_optionals_label($elementtype);
-	$attributekey = GETPOST('attrname', 'aZ09');
+	$attributekey = request()->input('attrname');
 
 	if (!empty($extrafields->attributes[$elementtype]['type'][$attributekey]) && $extrafields->attributes[$elementtype]['type'][$attributekey] == 'password') {
 		if (!empty($extrafields->attributes[$elementtype]['param'][$attributekey]['options'])) {

@@ -115,26 +115,26 @@ class ViewImageController extends Controller
 
 		$context = Context::getInstance();
 
-		$action = GETPOST('action', 'aZ09');
-		$original_file = GETPOST('file', 'alphanohtml');
+		$action = request()->input('action');
+		$original_file = request()->input('file');
 		$hashp = GETPOST('hashp', 'aZ09', 1);
 		$extname = GETPOST('extname', 'alpha', 1);
 		$modulepart = GETPOST('modulepart', 'alpha', 1);
-		$urlsource = GETPOST('urlsource', 'alpha');
-		$entity = (GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity);
+		$urlsource = request()->input('urlsource');
+		$entity = (request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity);
 
 		// Security check
 		if (empty($modulepart) && empty($hashp)) {
-			httponly_accessforbidden('Bad link. Bad value for parameter modulepart', 400);
+			httponly_abort(403);
 		}
 		if (empty($original_file) && empty($hashp) && $modulepart != 'barcode') {
-			httponly_accessforbidden('Bad link. Missing identification to find file (param file or hashp)', 400);
+			httponly_abort(403);', 400);
 		}
 		if ($modulepart == 'fckeditor') {
 			$modulepart = 'medias'; // For backward compatibility
 		}
 
-		$cachestring = GETPOST("cache", 'aZ09');    // May be 1, or an int, or a hash
+		$cachestring = request()->input('cache');    // May be 1, or an int, or a hash
 		if ($cachestring) {
 			// Important: The following code is to avoid a page request by the browser and PHP CPU at each Dolibarr page access.
 			// We are here when param cache=xxx to force a cache policy:
@@ -154,19 +154,19 @@ class ViewImageController extends Controller
 
 		// Define mime type
 		$type = 'application/octet-stream';
-		if (GETPOST('type', 'alpha')) {
-			$type = GETPOST('type', 'alpha');
+		if (request()->input('type')) {
+			$type = request()->input('type');
 		} else {
 			$type = dol_mimetype($original_file);
 		}
 
 		// Security: This wrapper is for images. We do not allow type/html
 		if (preg_match('/html/i', $type)) {
-			httponly_accessforbidden('Error: Using the image wrapper to output a file with a mime type HTML is not possible.');
+			httponly_abort(403);
 		}
 		// Security: This wrapper is for images. We do not allow files ending with .noexe
 		if (preg_match('/\.noexe$/i', $original_file)) {
-			httponly_accessforbidden('Error: Using the image wrapper to output a file ending with .noexe is not allowed.');
+			httponly_abort(403);
 		}
 
 		// Security: Delete string ../ or ..\ into $original_file
@@ -183,12 +183,12 @@ class ViewImageController extends Controller
 
 		// Check that file is allowed for view with viewimage.php
 		if (!empty($original_file) && !dolIsAllowedForPreview($original_file)) {
-			httponly_accessforbidden('This file extension is not qualified for preview', 403);
+			httponly_abort(403);
 		}
 
 		// Security check
 		if (empty($modulepart)) {
-			httponly_accessforbidden('Bad value for parameter modulepart', 400);
+			httponly_abort(403);
 		}
 
 		// When logged in a different entity, medias cannot be accessed because $conf->$module->multidir_output
@@ -248,7 +248,7 @@ class ViewImageController extends Controller
 		// Security:
 		// Limit access if permissions are wrong
 		if (!$accessallowed) {
-			accessforbidden();
+			abort(403);
 		}
 
 		// Security:
@@ -365,13 +365,13 @@ class ViewImageController extends Controller
 		$type = $this->type;
 
 		if ($modulepart == 'barcode') {
-			$generator = GETPOST("generator", "aZ09");
-			$encoding = GETPOST("encoding", "aZ09");
-			$readable = GETPOST("readable", 'aZ09') ? GETPOST("readable", "aZ09") : "Y";
+			$generator = request()->input('generator');
+			$encoding = request()->input('encoding');
+			$readable = request()->input('readable') ? request()->input('readable') : "Y";
 			if (in_array($encoding, array('EAN8', 'EAN13'))) {
-				$code = GETPOST("code", 'alphanohtml');
+				$code = request()->input('code');
 			} else {
-				$code = GETPOST("code", 'restricthtml'); // This can be rich content (qrcode, datamatrix, ...)
+				$code = request()->input('code'); // This can be rich content (qrcode, datamatrix, ...)
 			}
 
 			// If $code is virtualcard_xxx_999.vcf, it is a file to read to get code
@@ -397,7 +397,7 @@ class ViewImageController extends Controller
 					// we must check the securekey that protet against forging url
 					if ($reg[1] == 'user' && (int) $reg[2] > 0) {
 						$encodedsecurekey = dol_hash($conf->file->instance_unique_id . 'uservirtualcard' . $id . '-' . $login, 'md5');
-						if ($encodedsecurekey != GETPOST('securekey')) {
+						if ($encodedsecurekey != request()->input('securekey')) {
 							$code = 'badvalueforsecurekey';
 						}
 					}

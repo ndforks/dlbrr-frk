@@ -43,13 +43,13 @@ require_once DOL_DOCUMENT_ROOT.'/compta/paiement/class/paiement.class.php';
 $langs->loadLangs(array("admin", "other", "errors", "bills"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scan_dir', 'alpha');
+$action = request()->input('action');
+$value = request()->input('value');
+$label = request()->input('label');
+$scandir = request()->input('scan_dir');
 $type = 'invoice';
 
 if (!getDolGlobalString('PAYMENT_ADDON')) {
@@ -63,8 +63,8 @@ if (!getDolGlobalString('PAYMENT_ADDON')) {
 $error = 0;
 
 if ($action == 'updateMask') {
-	$maskconstpayment = GETPOST('maskconstpayment', 'aZ09');
-	$maskpayment = GETPOST('maskpayment', 'alpha');
+	$maskconstpayment = request()->input('maskconstpayment');
+	$maskpayment = request()->input('maskpayment');
 
 	$res = 0;
 
@@ -88,13 +88,13 @@ if ($action == 'setmod') {
 }
 
 if ($action == 'setparams') {
-	$freetext = GETPOST('FACTURE_PAYMENTS_ON_DIFFERENT_THIRDPARTIES_BILLS', 'restricthtml'); // No alpha here, we want exact string
+	$freetext = request()->input('FACTURE_PAYMENTS_ON_DIFFERENT_THIRDPARTIES_BILLS'); // No alpha here, we want exact string
 	$res = dolibarr_set_const($db, "FACTURE_PAYMENTS_ON_DIFFERENT_THIRDPARTIES_BILLS", $freetext, 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
 
-	$res = dolibarr_set_const($db, "PAYMENTS_REPORT_GROUP_BY_MOD", GETPOSTINT('PAYMENTS_REPORT_GROUP_BY_MOD'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "PAYMENTS_REPORT_GROUP_BY_MOD", request()->integer('PAYMENTS_REPORT_GROUP_BY_MOD', 0), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}

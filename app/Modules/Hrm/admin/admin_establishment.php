@@ -45,19 +45,19 @@ $permissiontoread = $user->admin;
 $permissiontoadd  = $user->admin;
 
 // Security check - Protection if external user
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, '', '', 'fk_soc', 'rowid', 0);
 if (!isModEnabled('hrm')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($permissiontoread)) {
-	accessforbidden();
+	abort(403);
 }
 
-$sortorder     = GETPOST('sortorder', 'aZ09comma');
-$sortfield     = GETPOST('sortfield', 'aZ09comma');
+$sortorder     = request()->input('sortorder');
+$sortfield     = request()->input('sortfield');
 if (!$sortorder) {
 	$sortorder = "DESC";
 }
@@ -69,7 +69,7 @@ if (empty($page) || $page == -1) {
 	$page = 0;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
 $offset = $limit * $page;
 $pageprev = $page - 1;
 $pagenext = $page + 1;
@@ -179,7 +179,7 @@ if ($result) {
 	print '</table>';
 	print '</div>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print dol_get_fiche_end();

@@ -514,7 +514,7 @@ if (!file_exists($conffile)) {
 		if (getDolGlobalInt("MAIN_NOT_INSTALLED")) {
 			$allowupgrade = false;
 		}
-		if (GETPOST('allowupgrade')) {
+		if (request()->input('allowupgrade')) {
 			$allowupgrade = true;
 		}
 

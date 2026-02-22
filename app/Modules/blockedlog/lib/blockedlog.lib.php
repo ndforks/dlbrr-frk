@@ -53,7 +53,7 @@ function blockedlogadmin_prepare_head($withtabsetup)
 
 	$param = '';
 	$param .= ($withtabsetup? "?withtab=".$withtabsetup : "");
-	$param .= (GETPOST('origin') ? ($param ? '&' : '?').'origin='.GETPOST('origin') : '');
+	$param .= (request()->input('origin') ? ($param ? '&' : '?').'origin='.request()->input('origin') : '');
 
 	$h = 0;
 	$head = array();
@@ -259,7 +259,7 @@ function isBlockedLogUsed($ignoresystem = 0)
 				$result = false;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$conf->cache['isblockedlogused'.$ignoresystem] = $result;

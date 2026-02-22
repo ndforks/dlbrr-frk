@@ -29,7 +29,7 @@ if (!defined("NOLOGIN")) {
 }
 // If you don't need session management (can't be logged if no session used). You must also set
 // NOCSRFCHECK, NOTOKENRENEWAL, NOLOGIN
-// Disable module with GETPOST('disablemodules') won't work. Variable 'dol_...' will not be set.
+// Disable module with request()->input('disablemodules') won't work. Variable 'dol_...' will not be set.
 // $_SESSION are then simple vars if sessions are not active.
 // TODO We can close session with session_write_close() as soon as we just need read access everywhere in code.
 if (!defined("NOSESSION")) {
@@ -64,7 +64,7 @@ print '<br>';
 
 // Security
 if (!empty($dolibarr_main_prod)) {
-	accessforbidden('Access forbidden when $dolibarr_main_prod is set to 1');
+	abort(403);
 }
 
 

@@ -46,7 +46,7 @@ $langs->loadlangs(array('admin', 'exports', 'other', 'users', 'companies', 'proj
 
 // Everybody should be able to go on this page
 //if (! $user->admin)
-//  accessforbidden();
+//  abort(403);
 
 // Map icons, array duplicated in import.php, was not synchronized, TODO put it somewhere only once
 $entitytoicon = array(
@@ -153,14 +153,14 @@ $entitytolang = array(
 
 $array_selected = isset($_SESSION["export_selected_fields"]) ? $_SESSION["export_selected_fields"] : array();
 $array_filtervalue = isset($_SESSION["export_filtered_fields"]) ? $_SESSION["export_filtered_fields"] : array();
-$datatoexport = GETPOST("datatoexport", "aZ09");
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$step = GETPOSTINT("step") ? GETPOSTINT("step") : 1;
-$export_name = GETPOST("export_name", "alphanohtml");
-$hexa = GETPOST("hexa", "alpha");
-$exportmodelid = GETPOSTINT("exportmodelid");
-$field = (string) GETPOST("field", "alpha");
+$datatoexport = request()->input('datatoexport');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$step = request()->integer('step', 0) ? request()->integer('step', 0) : 1;
+$export_name = request()->input('export_name');
+$hexa = request()->input('hexa');
+$exportmodelid = request()->integer('exportmodelid', 0);
+$field = (string) request()->input('field');
 
 $objexport = new Export($db);
 $objexport->load_arrays($user, $datatoexport);
@@ -241,11 +241,11 @@ if ($action == 'selectfield' && $user->hasRight('export', 'creer')) {     // Sel
 	}
 }
 if ($action == 'unselectfield' && $user->hasRight('export', 'creer')) {
-	if (GETPOST("field") == 'all') {
+	if (request()->input('field') == 'all') {
 		$array_selected = array();
 		$_SESSION["export_selected_fields"] = $array_selected;
 	} else {
-		unset($array_selected[GETPOST("field")]);
+		unset($array_selected[request()->input('field')]);
 		// Renumber fields of array_selected (from 1 to nb_elements)
 		asort($array_selected);
 		$i = 0;
@@ -261,7 +261,7 @@ if ($action == 'unselectfield' && $user->hasRight('export', 'creer')) {
 
 $newpos = -1;
 if (($action == 'downfield' || $action == 'upfield') && $user->hasRight('export', 'creer')) {
-	$pos = $array_selected[GETPOST("field")];
+	$pos = $array_selected[request()->input('field')];
 	if ($action == 'downfield') {	// Test on permission already done
 		$newpos = $pos + 1;
 	}
@@ -276,9 +276,9 @@ if (($action == 'downfield' || $action == 'upfield') && $user->hasRight('export'
 			break;
 		}
 	}
-	//print("Switch pos=$pos (code=".GETPOST("field").") and newpos=$newpos (code=$newcode)");
+	//print("Switch pos=$pos (code=".request()->input('field').") and newpos=$newpos (code=$newcode)");
 	if ($newcode) {   // Si newcode trouve (protection contre resoumission de page)
-		$array_selected[GETPOST("field")] = $newpos;
+		$array_selected[request()->input('field')] = $newpos;
 		$array_selected[$newcode] = $pos;
 		$_SESSION["export_selected_fields"] = $array_selected;
 	}
@@ -294,10 +294,10 @@ if ($step == 1 || $action == 'cleanselect') {	// Test on permission here not req
 if ($action == 'builddoc' && $user->hasRight('export', 'lire')) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
-	$separator = GETPOST('delimiter', 'alpha');
+	$separator = request()->input('delimiter');
 	$max_execution_time_for_importexport = getDolGlobalInt('EXPORT_MAX_EXECUTION_TIME', 300); // 5mn if not defined
 	$max_time = @ini_get("max_execution_time");
 	if ($max_time && $max_time < $max_execution_time_for_importexport) {
@@ -306,7 +306,7 @@ if ($action == 'builddoc' && $user->hasRight('export', 'lire')) {
 	}
 
 	// Build export file
-	$result = $objexport->build_file($user, GETPOST('model', 'alpha'), $datatoexport, $array_selected, $array_filtervalue, '', $separator);
+	$result = $objexport->build_file($user, request()->input('model'), $datatoexport, $array_selected, $array_filtervalue, '', $separator);
 	if ($result < 0) {
 		setEventMessages($objexport->error, $objexport->errors, 'errors');
 		$sqlusedforexport = $objexport->sqlusedforexport;
@@ -320,16 +320,16 @@ if ($action == 'builddoc' && $user->hasRight('export', 'lire')) {
 if ($step == 5 && $action == 'confirm_deletefile' && $confirm == 'yes' && $user->hasRight('export', 'lire')) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
-	$file = $upload_dir."/".GETPOST('file');
+	$file = $upload_dir."/".request()->input('file');
 
 	$ret = dol_delete_file($file);
 	if ($ret) {
-		setEventMessages($langs->trans("FileWasRemoved", GETPOST('file')), null, 'mesgs');
+		setEventMessages($langs->trans("FileWasRemoved", request()->input('file')), null, 'mesgs');
 	} else {
-		setEventMessages($langs->trans("ErrorFailToDeleteFile", GETPOST('file')), null, 'errors');
+		setEventMessages($langs->trans("ErrorFailToDeleteFile", request()->input('file')), null, 'errors');
 	}
 	header('Location: '.$_SERVER["PHP_SELF"].'?step='.$step.'&datatoexport='.$datatoexport);
 	exit;
@@ -338,11 +338,11 @@ if ($step == 5 && $action == 'confirm_deletefile' && $confirm == 'yes' && $user-
 if ($action == 'deleteprof' && $user->hasRight('export', 'lire')) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
-	if (GETPOSTINT("id")) {
-		$objexport->fetch(GETPOSTINT('id'));
+	if (request()->integer('id', 0)) {
+		$objexport->fetch(request()->integer('id', 0));
 		$result = $objexport->delete($user);
 	}
 }
@@ -351,7 +351,7 @@ if ($action == 'deleteprof' && $user->hasRight('export', 'lire')) {
 if ($action == 'add_export_model' && $user->hasRight('export', 'lire')) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	if ($export_name) {
@@ -380,7 +380,7 @@ if ($action == 'add_export_model' && $user->hasRight('export', 'lire')) {
 		$objexport->datatoexport = $datatoexport;
 		$objexport->hexa = $hexa;
 		$objexport->hexafiltervalue = $hexafiltervalue;
-		$objexport->fk_user = (GETPOST('visibility', 'aZ09') == 'all' ? 0 : $user->id);
+		$objexport->fk_user = (request()->input('visibility') == 'all' ? 0 : $user->id);
 
 		$result = $objexport->create($user);
 		if ($result >= 0) {
@@ -431,7 +431,7 @@ if ($step == 2 && $action == 'select_model' && $user->hasRight('export', 'lire')
 if ($step == 4 && $action == 'submitFormField' && $user->hasRight('export', 'lire')) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	// on boucle sur les champs selectionne pour recuperer la valeur
@@ -536,7 +536,7 @@ if ($step == 1 || !$datatoexport) {
 if ($step == 2 && $datatoexport) {
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	llxHeader('', $langs->trans("NewExport"), 'EN:Module_Exports_En|FR:Module_Exports|ES:M&oacute;dulo_Exportaciones', '', 0, 0, '', '', '', 'mod-exports page-export action-step2');
@@ -734,7 +734,7 @@ if ($step == 3 && $datatoexport) {
 
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	llxHeader('', $langs->trans("NewExport"), 'EN:Module_Exports_En|FR:Module_Exports|ES:M&oacute;dulo_Exportaciones', '', 0, 0, '', '', '', 'mod-exports page-export action-step3');
@@ -917,7 +917,7 @@ if ($step == 4 && $datatoexport) {
 
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	asort($array_selected);
@@ -1192,7 +1192,7 @@ if ($step == 4 && $datatoexport) {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '</table>';
@@ -1211,7 +1211,7 @@ if ($step == 5 && $datatoexport) {
 
 	// Check permission
 	if (empty($objexport->array_export_perms[0])) {
-		accessforbidden();
+		abort(403);
 	}
 
 	asort($array_selected);
@@ -1252,7 +1252,7 @@ if ($step == 5 && $datatoexport) {
 	 * Confirmation of deletion of file
 	 */
 	if ($action == 'remove_file') {
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?step=5&datatoexport='.$datatoexport.'&file='.urlencode(GETPOST("file")), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?step=5&datatoexport='.$datatoexport.'&file='.urlencode(request()->input('file')), $langs->trans('DeleteFile'), $langs->trans('ConfirmDeleteFile'), 'confirm_deletefile', '', 0, 1);
 	}
 
 	print '<div class="fichecenter">';
@@ -1372,7 +1372,7 @@ if ($step == 5 && $datatoexport) {
 
 	// Show existing generated documents
 	// NB: The function show_documents rescan all modules when  genallowed=1, else we take $liste
-	print $formfile->showdocuments('export', '', $upload_dir, $_SERVER["PHP_SELF"].'?step=5&datatoexport='.$datatoexport, $liste, 1, (GETPOST('model') ? GETPOST('model') : 'csv'), 1, 1, 0, 0, 0, '', 'none', '', '', '');
+	print $formfile->showdocuments('export', '', $upload_dir, $_SERVER["PHP_SELF"].'?step=5&datatoexport='.$datatoexport, $liste, 1, (request()->input('model') ? request()->input('model') : 'csv'), 1, 1, 0, 0, 0, '', 'none', '', '', '');
 }
 
 llxFooter();

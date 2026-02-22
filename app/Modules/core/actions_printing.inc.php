@@ -22,7 +22,7 @@
  *  \file           htdocs/core/actions_printing.inc.php
  *  \ingroup        core
  *  \brief          Code for actions print_file to print file (with calling trigger) when using the Direct Print feature.
- *  				The relative filename to print must be provided into GETPOST('file', 'alpha') parameter
+ *  				The relative filename to print must be provided into request()->input('file') parameter
  */
 
 
@@ -63,11 +63,11 @@ if ($action == 'print_file' && $user->hasRight('printing', 'read')) {
 				$printerfound++;
 
 				$subdir = '';
-				$module = GETPOST('printer', 'alpha');
+				$module = request()->input('printer');
 
 				try {
 					// Case of printing an invoice
-					$filetoprint = GETPOST('file', 'alpha');		//Example FAYYMM-123/FAYYMM-123-xxx.pdf
+					$filetoprint = request()->input('file');		//Example FAYYMM-123/FAYYMM-123-xxx.pdf
 					if ($module == 'facture') {
 						require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 						$refinvoice = preg_replace('/[\/\\\\].*$/', '', $filetoprint);
@@ -93,7 +93,7 @@ if ($action == 'print_file' && $user->hasRight('printing', 'read')) {
 					if ($ret == 0) {
 						//print '<pre>'.print_r($printer->errors, true).'</pre>';
 						setEventMessages($printer->error, $printer->errors);
-						setEventMessages($langs->transnoentitiesnoconv("FileWasSentToPrinter", basename(GETPOST('file', 'alpha'))).' '.$langs->transnoentitiesnoconv("ViaModule").' '.$printer->name, null);
+						setEventMessages($langs->transnoentitiesnoconv("FileWasSentToPrinter", basename(request()->input('file'))).' '.$langs->transnoentitiesnoconv("ViaModule").' '.$printer->name, null);
 					}
 				} catch (Exception $e) {
 					$ret = 1;

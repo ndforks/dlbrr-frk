@@ -44,25 +44,25 @@ $langs->loadLangs(array("salaries", "companies", "bills"));
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width');
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
-$userid = GETPOSTINT('userid');
+$userid = request()->integer('userid', 0);
 if ($userid < 0) {
 	$userid = 0;
 }
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($socid < 0) {
 	$socid = 0;
 }
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Security check
-$socid = GETPOSTINT("socid");
+$socid = request()->integer('socid', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }
 $result = restrictedArea($user, 'salaries', '', '', '');
 
 $nowyear = (int) dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOSTINT('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->integer('year', 0) > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 

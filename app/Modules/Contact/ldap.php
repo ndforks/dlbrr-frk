@@ -43,10 +43,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 $langs->loadLangs(array('companies', 'ldap'));
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }

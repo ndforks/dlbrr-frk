@@ -62,13 +62,13 @@ if (isModEnabled('productbatch')) {
 }
 
 // Security check
-$id = GETPOSTINT("id");
-$ref = GETPOST('ref');
-$lineid = GETPOSTINT('lineid');
-$action = GETPOST('action', 'aZ09');
-$fk_default_warehouse = GETPOSTINT('fk_default_warehouse');
-$cancel = GETPOST('cancel', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$lineid = request()->integer('lineid', 0);
+$action = request()->input('action');
+$fk_default_warehouse = request()->integer('fk_default_warehouse', 0);
+$cancel = request()->input('cancel');
+$confirm = request()->input('confirm');
 
 if ($user->socid) {
 	$socid = $user->socid;
@@ -78,8 +78,8 @@ $hookmanager->initHooks(array('ordersupplierdispatch'));
 
 // Get id of project
 $projectid = 0;
-if (GETPOSTISSET("projectid")) {
-	$projectid = GETPOSTINT("projectid");
+if (request()->has('projectid')) {
+	$projectid = request()->integer('projectid', 0);
 }
 
 $object = new CommandeFournisseur($db);
@@ -107,7 +107,7 @@ if (empty($conf->reception->enabled)) {
 $result = restrictedArea($user, 'fournisseur', $object, 'commande_fournisseur', 'commande');
 
 if (!isModEnabled('stock')) {
-	accessforbidden();
+	abort(403);
 }
 
 $usercancreate	= ($user->hasRight("fournisseur", "commande", "creer") || $user->hasRight("supplier_order", "creer"));
@@ -278,7 +278,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				}
 
 				if (!$error) {
-					$result = $object->dispatchProduct($user, GETPOSTINT($prod), $qtytomove, GETPOSTINT($ent), $puformove, GETPOST('comment'), '', '', '', GETPOSTINT($fk_commandefourndet), $notrigger);
+					$result = $object->dispatchProduct($user, GETPOSTINT($prod), $qtytomove, GETPOSTINT($ent), $puformove, request()->input('comment'), '', '', '', GETPOSTINT($fk_commandefourndet), $notrigger);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
 						$error++;
@@ -366,7 +366,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 				}
 
 				if (!$error) {
-					$result = $object->dispatchProduct($user, $productId, $qtytomove, GETPOSTINT($ent), $puformove, GETPOST('comment'), $dDLUO, $dDLC, GETPOST($lot, 'alpha'), GETPOSTINT($fk_commandefourndet), $notrigger);
+					$result = $object->dispatchProduct($user, $productId, $qtytomove, GETPOSTINT($ent), $puformove, request()->input('comment'), $dDLUO, $dDLC, GETPOST($lot, 'alpha'), GETPOSTINT($fk_commandefourndet), $notrigger);
 					if ($result < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
 						$error++;
@@ -395,7 +395,7 @@ if ($action == 'dispatch' && $permissiontoreceive) {
 	}
 
 	if (!$error) {
-		$result = $object->calcAndSetStatusDispatch($user, GETPOST('closeopenorder') ? 1 : 0, GETPOST('comment'));
+		$result = $object->calcAndSetStatusDispatch($user, request()->input('closeopenorder') ? 1 : 0, request()->input('comment'));
 		if ($result < 0) {
 			setEventMessages($object->error, $object->errors, 'errors');
 			$error++;
@@ -431,7 +431,7 @@ if ($action == 'confirm_deleteline' && $confirm == 'yes' && $permissiontoreceive
 		$qty = $supplierorderdispatch->qty;
 		$entrepot = $supplierorderdispatch->fk_entrepot;
 		$product = $supplierorderdispatch->fk_product;
-		$price = price2num(GETPOST('price', 'alpha'), 'MU');
+		$price = price2num(request()->input('price'), 'MU');
 		$comment = $supplierorderdispatch->comment;
 		$eatby = $supplierorderdispatch->eatby;
 		$sellby = $supplierorderdispatch->sellby;
@@ -482,7 +482,7 @@ if ($action == 'updateline' && $permissiontoreceive && empty($cancel)) {
 		$batch = $supplierorderdispatch->batch;
 
 		$supplierorderdispatch->qty = GETPOSTFLOAT('qty', 'MS');
-		$supplierorderdispatch->fk_entrepot = GETPOSTINT('fk_entrepot');
+		$supplierorderdispatch->fk_entrepot = request()->integer('fk_entrepot', 0);
 		$result = $supplierorderdispatch->update($user);
 	}
 	if ($result < 0) {
@@ -1085,7 +1085,7 @@ if ($id > 0 || !empty($ref)) {
 			}
 			$db->free($resql);
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print "</table>\n";
@@ -1102,7 +1102,7 @@ if ($id > 0 || !empty($ref)) {
 				if (empty($conf->reception->enabled)) {
 					print $langs->trans("Comment").' : ';
 					print '<input type="text" class="minwidth400" maxlength="128" name="comment" value="';
-					print GETPOSTISSET("comment") ? GETPOST("comment") : $langs->trans("DispatchSupplierOrder", $object->ref);
+					print request()->has('comment') ? request()->input('comment') : $langs->trans("DispatchSupplierOrder", $object->ref);
 					// print ' / '.$object->ref_supplier; // Not yet available
 					print '" class="flat"><br>';
 
@@ -1256,7 +1256,7 @@ if ($id > 0 || !empty($ref)) {
 				$objp = $db->fetch_object($resql);
 
 				if ($action == 'editline' && $lineid == $objp->dispatchlineid) {
-					print '<form name="editdispatchedlines" id="editdispatchedlines" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'#line_'.GETPOSTINT('lineid').'" method="POST">
+					print '<form name="editdispatchedlines" id="editdispatchedlines" action="'.$_SERVER["PHP_SELF"].'?id='.$object->id.'#line_'.request()->integer('lineid', 0).'" method="POST">
 					<input type="hidden" name="token" value="'.newToken().'">
 					<input type="hidden" name="action" value="updateline">
 					<input type="hidden" name="mode" value="">
@@ -1341,7 +1341,7 @@ if ($id > 0 || !empty($ref)) {
 				// Warehouse
 				print '<td class="tdoverflowmax150">';
 				if ($action == 'editline' && $lineid == $objp->dispatchlineid) {
-					$warehouse_id = GETPOSTINT("fk_entrepot") ? GETPOSTINT("fk_entrepot") : ($objp->warehouse_id ? $objp->warehouse_id : '');
+					$warehouse_id = request()->integer('fk_entrepot', 0) ? request()->integer('fk_entrepot', 0) : ($objp->warehouse_id ? $objp->warehouse_id : '');
 					if (count($listwarehouses) > 1) {
 						print $formproduct->selectWarehouses($warehouse_id, "fk_entrepot", '', 1, 0, $objp->fk_product, '', 1, 1, array(), 'csswarehouse');
 					} elseif (count($listwarehouses) == 1) {
@@ -1445,7 +1445,7 @@ if ($id > 0 || !empty($ref)) {
 			print '</div>';
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -69,11 +69,11 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 			var list = jQuery("#list");
 			var totalizable = jQuery("#totalizable");
 			<?php
-			if ((GETPOST('type', 'alpha') != "select") && (GETPOST('type', 'alpha') != "sellist")) {
+			if ((request()->input('type') != "select") && (request()->input('type') != "sellist")) {
 				print 'jQuery("#value_choice").hide();';
 			}
 
-			if (GETPOST('type', 'alpha') == "separate") {
+			if (request()->input('type') == "separate") {
 				print "jQuery('#size, #default_value, #langfile').val('').prop('disabled', true);";
 				print 'jQuery("#value_choice").hide();';
 			}
@@ -150,7 +150,7 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 				langfile.removeAttr('disabled');required.removeAttr('disabled'); alwayseditable.removeAttr('disabled'); emptyonclone.removeAttr('disabled'); list.removeAttr('disabled');
 			}
 		}
-		init_typeoffields('<?php echo GETPOST('type', 'alpha'); ?>');
+		init_typeoffields('<?php echo request()->input('type'); ?>');
 		jQuery("#type").change(function() {
 			init_typeoffields($(this).val());
 		});
@@ -178,9 +178,9 @@ $listofexamplesforlink = 'Societe:societe/class/societe.class.php<br>Contact:con
 
 <table summary="listofattributes" class="border centpercent">
 <!-- Label -->
-<tr><td class="titlefieldcreate fieldrequired"><?php echo $langs->trans("LabelOrTranslationKey"); ?></td><td class="valeur"><input type="text" name="label" id="label" class="width200" value="<?php echo GETPOST('label', 'alpha'); ?>" autofocus></td></tr>
+<tr><td class="titlefieldcreate fieldrequired"><?php echo $langs->trans("LabelOrTranslationKey"); ?></td><td class="valeur"><input type="text" name="label" id="label" class="width200" value="<?php echo request()->input('label'); ?>" autofocus></td></tr>
 <!-- Code -->
-<tr><td class="fieldrequired"><?php echo $form->textwithpicto($langs->trans("AttributeCode"), $langs->trans("AttributeCodeHelp")); ?></td><td class="valeur"><input type="text" name="attrname" id="attrname"  size="10" value="<?php echo GETPOST('attrname', 'alpha'); ?>" pattern="\w+"> <span class="opacitymedium">(<?php echo $langs->trans("AlphaNumOnlyLowerCharsAndNoSpace"); ?>)</span></td></tr>
+<tr><td class="fieldrequired"><?php echo $form->textwithpicto($langs->trans("AttributeCode"), $langs->trans("AttributeCodeHelp")); ?></td><td class="valeur"><input type="text" name="attrname" id="attrname"  size="10" value="<?php echo request()->input('attrname'); ?>" pattern="\w+"> <span class="opacitymedium">(<?php echo $langs->trans("AlphaNumOnlyLowerCharsAndNoSpace"); ?>)</span></td></tr>
 <!-- Type -->
 <tr><td class="fieldrequired"><?php echo $langs->trans("Type"); ?></td><td class="valeur">
 <?php
@@ -189,11 +189,11 @@ if (empty($formadmin)) {
 	include_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 	$formadmin = new FormAdmin($db);
 }
-print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
+print $formadmin->selectTypeOfFields('type', request()->input('type'));
 ?>
 </td></tr>
 <!-- Size -->
-<tr class="extra_size"><td><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" class="width50" value="<?php echo(GETPOST('size', 'alpha') ? GETPOST('size', 'alpha') : ''); ?>"></td></tr>
+<tr class="extra_size"><td><?php echo $langs->trans("Size"); ?></td><td class="valeur"><input id="size" type="text" name="size" class="width50" value="<?php echo(request()->input('size') ? request()->input('size') : ''); ?>"></td></tr>
 <!-- Default Value (for select list / radio/ checkbox) -->
 <tr id="value_choice">
 <td>
@@ -202,7 +202,7 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 <td>
 	<table class="nobordernopadding">
 	<tr><td>
-		<textarea name="param" id="param" cols="80" rows="<?php echo ROWS_4 ?>" spellcheck="false""><?php echo GETPOST('param', 'alpha'); ?></textarea>
+		<textarea name="param" id="param" cols="80" rows="<?php echo ROWS_4 ?>" spellcheck="false""><?php echo request()->input('param'); ?></textarea>
 	</td><td>
 	<span id="helpselect" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpselect"), 1, 'info', '', 0, 2, 'helpvalue1')?></span>
 	<span id="helpsellist" class="spanforparamtooltip"><?php print $form->textwithpicto('', $langs->trans("ExtrafieldParamHelpsellist").'<br>'.$langs->trans("ExtrafieldParamHelpsellistb").'<br>'.$langs->trans("ExtrafieldParamHelpsellistc").'<br>'.$langs->trans("ExtrafieldParamHelpsellistd").(getDolGlobalInt('MAIN_FEATUREES_LEVEL') > 0 ? '<br>'.$langs->trans("ExtrafieldParamHelpsellist2") : ''), 1, 'info', '', 0, 2, 'helpvalue2')?></span>
@@ -215,9 +215,9 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 </td>
 </tr>
 <!-- Position -->
-<tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" class="width50" value="<?php echo GETPOSTISSET('pos') ? GETPOSTINT('pos') : 100; ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("Position"); ?></td><td class="valeur"><input type="text" name="pos" class="width50" value="<?php echo request()->has('pos') ? request()->integer('pos', 0) : 100; ?>"></td></tr>
 <!-- Language file -->
-<tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" id="langfile" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag(GETPOST('langfile', 'alpha')); ?>"></td></tr>
+<tr><td class="titlefield"><?php echo $langs->trans("LanguageFile"); ?></td><td class="valeur"><input type="text" id="langfile" name="langfile" class="minwidth200" value="<?php echo dol_escape_htmltag(request()->input('langfile')); ?>"></td></tr>
 <!-- Computed Value -->
 <tr class="extra_computed_value">
 <?php if (!getDolGlobalString('MAIN_STORE_COMPUTED_EXTRAFIELDS')) { ?>
@@ -225,7 +225,7 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 <?php } else { ?>
 	<td><?php echo $form->textwithpicto($langs->trans("ComputedFormula"), $langs->trans("ComputedFormulaDesc", '$db, $langs, $mysoc, $user, $objectoffield').'<br>'.$langs->trans("ComputedFormulaDesc2").'<br><br>'.$langs->trans("ComputedFormulaDesc3")).$form->textwithpicto($langs->trans("Computedpersistent"), $langs->trans("ComputedpersistentDesc"), 1, 'warning'); ?></td>
 <?php } ?>
-<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo(GETPOSTISSET('computed_value') ? GETPOST('computed_value', 'restricthtml') : ''); ?></textarea></td>
+<td class="valeur"><textarea name="computed_value" id="computed_value" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo(request()->has('computed_value') ? request()->input('computed_value') : ''); ?></textarea></td>
 </tr>
 <!-- AI Prompt -->
 <tr class="extra_ai_prompt">
@@ -256,25 +256,25 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 	}
 	$texthelp .= '</small>';
 	echo $form->textwithpicto($langs->trans("AIPromptExtrafield"), $texthelp, 1, 'help', 'valignmiddle', 0, 3, 'abc');?></td>
-<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo(GETPOSTISSET('ai_prompt') ? GETPOST('ai_prompt', 'restricthtml') : ''); ?></textarea></td></tr>
+<td class="valeur"><textarea name="ai_prompt" id="ai_prompt" class="quatrevingtpercent" rows="<?php echo ROWS_4 ?>"><?php echo(request()->has('ai_prompt') ? request()->input('ai_prompt') : ''); ?></textarea></td></tr>
 <!-- Default Value (at sql setup level) -->
-<tr class="extra_default_value"><td><?php echo $langs->trans("DefaultValue").' ('.$langs->trans("Database").')'; ?></td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="<?php echo(GETPOST('default_value', 'alpha') ? GETPOST('default_value', 'alpha') : ''); ?>"></td></tr>
+<tr class="extra_default_value"><td><?php echo $langs->trans("DefaultValue").' ('.$langs->trans("Database").')'; ?></td><td class="valeur"><input id="default_value" type="text" name="default_value" class="minwidth200" value="<?php echo(request()->input('default_value') ? request()->input('default_value') : ''); ?>"></td></tr>
 <!-- Unique -->
-<tr class="extra_unique"><td><?php echo $langs->trans("Unique"); ?></td><td class="valeur"><input id="unique" type="checkbox" name="unique"<?php echo(GETPOST('unique', 'alpha') ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_unique"><td><?php echo $langs->trans("Unique"); ?></td><td class="valeur"><input id="unique" type="checkbox" name="unique"<?php echo(request()->input('unique') ? ' checked' : ''); ?>></td></tr>
 <!-- Required -->
-<tr class="extra_required"><td><?php echo $langs->trans("Mandatory"); ?></td><td class="valeur"><input id="required" type="checkbox" name="required"<?php echo(GETPOST('required', 'alpha') ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_required"><td><?php echo $langs->trans("Mandatory"); ?></td><td class="valeur"><input id="required" type="checkbox" name="required"<?php echo(request()->input('required') ? ' checked' : ''); ?>></td></tr>
 <!-- Always editable -->
-<tr class="extra_alwayseditable"><td><?php echo $form->textwithpicto($langs->trans("AlwaysEditable"), $langs->trans("EditableWhenDraftOnly")); ?></td><td class="valeur"><input id="alwayseditable" type="checkbox" name="alwayseditable"<?php echo((GETPOST('alwayseditable', 'alpha') || !GETPOST('button', 'alpha')) ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_alwayseditable"><td><?php echo $form->textwithpicto($langs->trans("AlwaysEditable"), $langs->trans("EditableWhenDraftOnly")); ?></td><td class="valeur"><input id="alwayseditable" type="checkbox" name="alwayseditable"<?php echo((request()->input('alwayseditable') || !request()->input('button')) ? ' checked' : ''); ?>></td></tr>
 <!-- Empty on clone -->
-<tr class="extra_emptyonclone"><td><?php echo $form->textwithpicto($langs->trans("EmptyOnClone"), $langs->trans("EmptyOnCloneDesc")); ?></td><td class="valeur"><input id="emptyonclone" type="checkbox" name="emptyonclone"<?php echo((GETPOST('emptyonclone', 'alpha')) ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_emptyonclone"><td><?php echo $form->textwithpicto($langs->trans("EmptyOnClone"), $langs->trans("EmptyOnCloneDesc")); ?></td><td class="valeur"><input id="emptyonclone" type="checkbox" name="emptyonclone"<?php echo((request()->input('emptyonclone')) ? ' checked' : ''); ?>></td></tr>
 <!-- Visibility -->
 <tr><td class="extra_list"><?php echo $form->textwithpicto($langs->trans("Visibility"), $langs->trans("VisibleDesc").'<br><br>'.$langs->trans("ItCanBeAnExpression")); ?>
-</td><td class="valeur"><input id="list" class="width50" type="text" name="list" value="<?php echo GETPOSTISSET('list') ? GETPOSTINT('list') : '1'; ?>"></td></tr>
+</td><td class="valeur"><input id="list" class="width50" type="text" name="list" value="<?php echo request()->has('list') ? request()->integer('list', 0) : '1'; ?>"></td></tr>
 <!-- Visibility for PDF-->
 <tr><td class="extra_pdf"><?php echo $form->textwithpicto($langs->trans("DisplayOnPdf"), $langs->trans("DisplayOnPdfDesc")); ?>
-</td><td class="valeur"><input id="printable" class="width50" type="text" name="printable" value="<?php echo dolPrintHTMLForAttribute(GETPOSTISSET('printable') ? GETPOST('printable') : '0'); ?>"></td></tr>
+</td><td class="valeur"><input id="printable" class="width50" type="text" name="printable" value="<?php echo dolPrintHTMLForAttribute(request()->has('printable') ? request()->input('printable') : '0'); ?>"></td></tr>
 <!-- Totalizable -->
-<tr class="extra_totalizable"><td><?php echo $langs->trans("Totalizable"); ?></td><td class="valeur"><input id="totalizable" type="checkbox" name="totalizable"<?php echo(GETPOST('totalizable', 'alpha') ? ' checked' : ''); ?>></td></tr>
+<tr class="extra_totalizable"><td><?php echo $langs->trans("Totalizable"); ?></td><td class="valeur"><input id="totalizable" type="checkbox" name="totalizable"<?php echo(request()->input('totalizable') ? ' checked' : ''); ?>></td></tr>
 <!-- Help tooltip -->
 <tr class="help"><td><?php echo $form->textwithpicto($langs->trans("HelpOnTooltip"), $langs->trans("HelpOnTooltipDesc")); ?></td><td class="valeur"><input id="help" class="quatrevingtpercent" type="text" name="help" value="<?php echo dol_escape_htmltag((empty($help) ? '' : $help)); ?>"></td></tr>
 
@@ -287,7 +287,7 @@ print $formadmin->selectTypeOfFields('type', GETPOST('type', 'alpha'));
 
 <?php if (isModEnabled('multicompany')) { ?>
 	<!-- Multicompany entity -->
-	<tr><td><?php echo $langs->trans("AllEntities"); ?></td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"<?php echo(GETPOST('entitycurrentorall', 'alpha') ? ' checked' : ''); ?>></td></tr>
+	<tr><td><?php echo $langs->trans("AllEntities"); ?></td><td class="valeur"><input id="entitycurrentorall" type="checkbox" name="entitycurrentorall"<?php echo(request()->input('entitycurrentorall') ? ' checked' : ''); ?>></td></tr>
 <?php } ?>
 </table>
 

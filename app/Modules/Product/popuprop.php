@@ -42,21 +42,21 @@ require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('commande', 'propal', 'bills', 'other', 'products'));
 
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
 
-$type = GETPOST('type', 'intcomma');
-$mode = GETPOST('mode', 'alpha') ? GETPOST('mode', 'alpha') : '';
+$type = request()->input('type');
+$mode = request()->input('mode') ? request()->input('mode') : '';
 
 // Security check
 if (!empty($user->socid)) {
 	$socid = $user->socid;
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -185,7 +185,7 @@ if (!empty($mode) && $mode != '-1') {
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 //var_dump($infoprod);

@@ -70,13 +70,13 @@ $langs->load("mails");
 top_httphead();
 
 // TODO Replace with ID of template
-if (GETPOSTISSET('template')) {
-	$templatefile = DOL_DOCUMENT_ROOT.'/install/doctemplates/maillayout/'.dol_sanitizeFileName(GETPOST('template')).'.html';
+if (request()->has('template')) {
+	$templatefile = DOL_DOCUMENT_ROOT.'/install/doctemplates/maillayout/'.dol_sanitizeFileName(request()->input('template')).'.html';
 
 	$content = file_get_contents($templatefile);
 
 	if ($content === false) {
-		print 'Failed to load template '.dol_escape_htmltag(GETPOST('template'));
+		print 'Failed to load template '.dol_escape_htmltag(request()->input('template'));
 		exit;
 	}
 
@@ -93,7 +93,7 @@ if (GETPOSTISSET('template')) {
 		'__GRAY_RECTANGLE__' => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABkCAIAAABM5OhcAAABGklEQVR4nO3SwQ3AIBDAsNLJb3SWIEJC9gR5ZM3MB6f9twN4k7FIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIuEsUgYi4SxSBiLhLFIGIvEBtxYAkgpLmAeAAAAAElFTkSuQmCC',
 		'__LAST_NEWS__'   => $langs->trans('LastNews'),
 		'__LIST_PRODUCTS___' => $langs->trans('ListProducts'),
-		'__SUBJECT__' => GETPOST('subject'),
+		'__SUBJECT__' => request()->input('subject'),
 		// vars for company
 		'__MYCOMPANY_NAME__' => $mysoc->name,
 		'__MYCOMPANY_ADDRESS__' => $mycompanyaddress,
@@ -124,14 +124,14 @@ if (GETPOSTISSET('template')) {
 
 	$specificSubstitutionArray['__USERSIGNATURE__'] = empty($user->signature) ? '' : $user->signature;
 
-	if (GETPOST('fromtype') == 'user') {
+	if (request()->input('fromtype') == 'user') {
 		$specificSubstitutionArray['__SENDEREMAIL_SIGNATURE__'] = empty($user->signature) ? '' : $user->signature;
-	} elseif (GETPOST('fromtype') == 'company') {
+	} elseif (request()->input('fromtype') == 'company') {
 		$specificSubstitutionArray['__SENDEREMAIL_SIGNATURE__'] = $mysoc->name.' '.$mysoc->email;
-	} elseif (GETPOST('fromtype') == 'main_from') {
+	} elseif (request()->input('fromtype') == 'main_from') {
 		$specificSubstitutionArray['__SENDEREMAIL_SIGNATURE__'] = $mysoc->name.' '.getDolGlobalString('MAIN_MAIL_EMAIL_FROM');
 	} else {
-		// GETPOST('fromtype') is senderprofile_x_y (x = ID profile)
+		// request()->input('fromtype') is senderprofile_x_y (x = ID profile)
 		$specificSubstitutionArray['__SENDEREMAIL_SIGNATURE__'] = 'TODO Read database to get the signature of the profile';
 	}
 
@@ -157,9 +157,9 @@ if (GETPOSTISSET('template')) {
 		$content);
 
 
-	$template = GETPOST('template', 'alpha');
+	$template = request()->input('template');
 	// Get list of selected news or products
-	$selectedIdsStr = GETPOST('selectedPosts', 'alpha');
+	$selectedIdsStr = request()->input('selectedPosts');
 	//$selectedPosts = array();
 	$selectedIds = json_decode($selectedIdsStr);
 	if (is_numeric($selectedIds)) {

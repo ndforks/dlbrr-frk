@@ -51,14 +51,14 @@ $langs->loadLangs(array('admin', 'oauth', 'modulebuilder'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$provider = GETPOST('provider', 'aZ09');
-$label = GETPOST('label', 'aZ09');
+$action = request()->input('action');
+$provider = request()->input('provider');
+$label = request()->input('label');
 
-$servicetoeditname = GETPOST('servicetoeditname', 'aZ09');
+$servicetoeditname = request()->input('servicetoeditname');
 
 $error = 0;
 
@@ -174,8 +174,8 @@ if ($action == 'update') {
 }
 
 if ($action == 'confirm_delete') {
-	$provider = GETPOST('provider', 'aZ09');
-	$label = GETPOST('label');
+	$provider = request()->input('provider');
+	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;
 
@@ -207,8 +207,8 @@ if ($action == 'confirm_delete') {
 }
 
 if ($action == 'delete_entry') {
-	$provider = GETPOST('provider', 'aZ09');
-	$label = GETPOST('label');
+	$provider = request()->input('provider');
+	$label = request()->input('label');
 
 	$globalkey = empty($provider) ? $label : $label.'-'.$provider;
 
@@ -240,7 +240,7 @@ llxHeader('', $title, $help_url, '', 0, 0, '', '', '', 'mod-admin page-oauth');
 // Confirmation of action process
 if ($action == 'delete') {
 	$formquestion = array();
-	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?provider='.GETPOST('provider').'&label='.GETPOST('label'), $langs->trans('OAuthServiceConfirmDeleteTitle'), $langs->trans('OAuthServiceConfirmDeleteMessage'), 'confirm_delete', $formquestion, 0, 1, 220);
+	$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?provider='.request()->input('provider').'&label='.request()->input('label'), $langs->trans('OAuthServiceConfirmDeleteTitle'), $langs->trans('OAuthServiceConfirmDeleteMessage'), 'confirm_delete', $formquestion, 0, 1, 220);
 	print $formconfirm;
 }
 

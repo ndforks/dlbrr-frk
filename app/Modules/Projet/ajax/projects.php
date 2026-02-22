@@ -55,10 +55,10 @@ require '../../main.inc.php';
  * @var User $user
  */
 
-$htmlname = GETPOST('htmlname', 'aZ09');
-$socid = GETPOSTINT('socid');
-$mode = GETPOST('mode', 'aZ09');
-$discard_closed = GETPOSTINT('discardclosed');
+$htmlname = request()->input('htmlname');
+$socid = request()->integer('socid', 0);
+$mode = request()->input('mode');
+$discard_closed = request()->integer('discardclosed', 0);
 
 // Security check
 restrictedArea($user, 'projet', 0, 'projet&project');
@@ -94,7 +94,7 @@ if ($mode == 'gettasks') {
 	top_httphead();
 
 	$formproject = new FormProjets($db);
-	$formproject->selectTasks((!empty($socid) ? $socid : -1), 0, 'taskid', 24, 1, '1', 1, 0, 0, 'maxwidth500', (string) GETPOSTINT('projectid'), '');
+	$formproject->selectTasks((!empty($socid) ? $socid : -1), 0, 'taskid', 24, 1, '1', 1, 0, 0, 'maxwidth500', (string) request()->integer('projectid', 0), '');
 
 	$db->close();
 

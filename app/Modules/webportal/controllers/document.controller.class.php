@@ -111,18 +111,18 @@ class DocumentController extends Controller
 		$context = Context::getInstance();
 
 		$encoding = '';
-		$action = GETPOST('action', 'aZ09');
-		$original_file = GETPOST('file', 'alphanohtml'); // Do not use urldecode here ($_GET are already decoded by PHP).
-		$modulepart = GETPOST('modulepart', 'alpha');
-		$entity = GETPOSTINT('entity') ? GETPOSTINT('entity') : $conf->entity;
-		$socId = GETPOSTINT('soc_id');
+		$action = request()->input('action');
+		$original_file = request()->input('file'); // Do not use urldecode here ($_GET are already decoded by PHP).
+		$modulepart = request()->input('modulepart');
+		$entity = request()->integer('entity', 0) ? request()->integer('entity', 0) : $conf->entity;
+		$socId = request()->integer('soc_id', 0);
 
 		// Security check
 		if (empty($modulepart)) {
-			httponly_accessforbidden('Bad link. Bad value for parameter modulepart', 400);
+			httponly_abort(403);
 		}
 		if (empty($original_file)) {
-			httponly_accessforbidden('Bad link. Missing identification to find file (original_file)', 400);
+			httponly_abort(403);', 400);
 		}
 
 		// get original file
@@ -133,16 +133,16 @@ class DocumentController extends Controller
 		if (preg_match('/\.(html|htm)$/i', $original_file)) {
 			$attachment = false;
 		}
-		if (GETPOSTISSET("attachment")) {
-			$attachment = GETPOST("attachment", 'alpha') ? true : false;
+		if (request()->has('attachment')) {
+			$attachment = request()->input('attachment') ? true : false;
 		}
 		if (getDolGlobalString('MAIN_DISABLE_FORCE_SAVEAS')) {
 			$attachment = false;
 		}
 
 		// Define mime type
-		if (GETPOST('type', 'alpha')) {
-			$type = GETPOST('type', 'alpha');
+		if (request()->input('type')) {
+			$type = request()->input('type');
 		} else {
 			$type = dol_mimetype($original_file);
 		}
@@ -199,7 +199,7 @@ class DocumentController extends Controller
 		// Security:
 		// Limit access if permissions are wrong
 		if (!$accessallowed) {
-			accessforbidden();
+			abort(403);
 		}
 
 		// Security:

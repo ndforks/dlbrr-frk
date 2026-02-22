@@ -52,21 +52,21 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array("companies", "other", "ticket", "mails"));
 
-$id       = GETPOSTINT('id');
-$socid = GETPOSTINT('socid');
-$ref      = GETPOST('ref', 'alpha');
-$track_id = GETPOST('track_id', 'alpha');
-$action   = GETPOST('action', 'alpha');
-$confirm  = GETPOST('confirm', 'alpha');
+$id       = request()->integer('id', 0);
+$socid = request()->integer('socid', 0);
+$ref      = request()->input('ref');
+$track_id = request()->input('track_id');
+$action   = request()->input('action');
+$confirm  = request()->input('confirm');
 
 // Store current page url
 $url_page_current = DOL_URL_ROOT.'/ticket/document.php';
 
 // Get parameters
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -96,11 +96,11 @@ $result = restrictedArea($user, 'ticket', $object->id);
 
 // restrict access for externals users
 if ($user->socid > 0 && ($object->fk_soc != $user->socid)) {
-	accessforbidden();
+	abort(403);
 }
 // or for unauthorized internals users
 if (!$user->socid && getDolGlobalString('TICKET_LIMIT_VIEW_ASSIGNED_ONLY') && $object->fk_user_assign != $user->id && !$user->hasRight('ticket', 'manage')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('ticket', 'write');	// Used by the include of actions_addupdatedelete.inc.php and actions_linkedfiles
@@ -120,9 +120,9 @@ if ($reshook < 0) {
 
 // Set parent company
 if ($action == 'set_thirdparty' && $user->hasRight('ticket', 'write')) {
-	if ($object->fetch(GETPOSTINT('id'), '', GETPOST('track_id', 'alpha')) >= 0) {
-		$result = $object->setCustomer(GETPOSTINT('editcustomer'));
-		$url = $_SERVER["PHP_SELF"].'?track_id='.GETPOST('track_id', 'alpha');
+	if ($object->fetch(request()->integer('id', 0), '', request()->input('track_id')) >= 0) {
+		$result = $object->setCustomer(request()->integer('editcustomer', 0));
+		$url = $_SERVER["PHP_SELF"].'?track_id='.request()->input('track_id');
 		header("Location: ".$url);
 		exit();
 	}
@@ -267,7 +267,7 @@ if ($object->id && $upload_dir !== null) {
 
 	include DOL_DOCUMENT_ROOT.'/core/tpl/document_actions_post_headers.tpl.php';
 } else {
-	accessforbidden('', 0, 1);
+	abort(403);
 }
 
 // End of page

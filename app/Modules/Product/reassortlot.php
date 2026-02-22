@@ -51,34 +51,34 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/productlot.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('products', 'stocks', 'productbatch', 'categories'));
 
-$action = GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-$massaction = GETPOST('massaction', 'alpha'); // The bulk action (combo box choice into lists)
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'myobjectlist'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha'); // Go back to a dedicated page
-$optioncss = GETPOST('optioncss', 'aZ'); // Option for the css output (always '' except when 'print')
-$mode = GETPOST('mode', 'aZ');
+$action = request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
+$massaction = request()->input('massaction'); // The bulk action (combo box choice into lists)
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'myobjectlist'; // To manage different context of search
+$backtopage = request()->input('backtopage'); // Go back to a dedicated page
+$optioncss = request()->input('optioncss'); // Option for the css output (always '' except when 'print')
+$mode = request()->input('mode');
 
-$sref = GETPOST("sref", 'alpha');
-$snom = GETPOST("snom", 'alpha');
-$search_all = trim(GETPOST('search_all', 'alphanohtml'));
-$type = GETPOSTISSET('type') ? GETPOSTINT('type') : Product::TYPE_PRODUCT;
-$search_barcode = GETPOST("search_barcode", 'alpha');
-$search_warehouse = GETPOST('search_warehouse', 'alpha');
-$search_batch = GETPOST('search_batch', 'alpha');
-$search_toolowstock = GETPOST('search_toolowstock');
-$search_subjecttolotserial = GETPOST('search_subjecttolotserial');
-$tosell = GETPOST("tosell");
-$tobuy = GETPOST("tobuy");
-$fourn_id = GETPOSTINT("fourn_id");
-$sbarcode = GETPOSTINT("sbarcode");
-$search_stock_physique = GETPOST('search_stock_physique', 'alpha');
+$sref = request()->input('sref');
+$snom = request()->input('snom');
+$search_all = trim(request()->input('search_all'));
+$type = request()->has('type') ? request()->integer('type', 0) : Product::TYPE_PRODUCT;
+$search_barcode = request()->input('search_barcode');
+$search_warehouse = request()->input('search_warehouse');
+$search_batch = request()->input('search_batch');
+$search_toolowstock = request()->input('search_toolowstock');
+$search_subjecttolotserial = request()->input('search_subjecttolotserial');
+$tosell = request()->input('tosell');
+$tobuy = request()->input('tobuy');
+$fourn_id = request()->integer('fourn_id', 0);
+$sbarcode = request()->integer('sbarcode', 0);
+$search_stock_physique = request()->input('search_stock_physique');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
-if (empty($page) || $page < 0 || GETPOST('button_search', 'alpha') || GETPOST('button_removefilter', 'alpha')) {
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
+if (empty($page) || $page < 0 || request()->input('button_search') || request()->input('button_removefilter')) {
 	// If $page is not defined, or '' or -1 or if we click on clear filters
 	$page = 0;
 }
@@ -88,13 +88,13 @@ $pagenext = $page + 1;
 
 // Initialize array of search criteria
 $object = new Product($db);
-$search_sale = GETPOST("search_sale");
-if (GETPOSTISSET('catid')) {
-	$search_categ = GETPOSTINT('catid');
+$search_sale = request()->input('search_sale');
+if (request()->has('catid')) {
+	$search_categ = request()->integer('catid', 0);
 } else {
-	$search_categ = GETPOSTINT('search_categ');
+	$search_categ = request()->integer('search_categ', 0);
 }
-$search_warehouse_categ = GETPOSTINT('search_warehouse_categ');
+$search_warehouse_categ = request()->integer('search_warehouse_categ', 0);
 
 // Fetch optionals attributes and labels
 $extrafields->fetch_name_optionals_label($object->table_element);
@@ -131,7 +131,7 @@ $search[$key.'_dtstart'] = dol_mktime(0, 0, 0, GETPOSTINT('search_'.$key.'_dtsta
 $search[$key.'_dtend'] = dol_mktime(23, 59, 59, GETPOSTINT('search_'.$key.'_dtendmonth'), GETPOSTINT('search_'.$key.'_dtendday'), GETPOSTINT('search_'.$key.'_dtendyear'));
 
 // Get object canvas (By default, this is not defined, so standard usage of dolibarr)
-$canvas = GETPOST("canvas");
+$canvas = request()->input('canvas');
 $objcanvas = null;
 if (!empty($canvas)) {
 	require_once DOL_DOCUMENT_ROOT.'/core/class/canvas.class.php';
@@ -171,11 +171,11 @@ $result = restrictedArea($user, 'stock');
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'presend' && $massaction != 'confirm_presend') {
+if (!request()->input('confirmmassaction') && $massaction != 'presend' && $massaction != 'confirm_presend') {
 	$massaction = '';
 }
 
@@ -190,7 +190,7 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
 	// Purge search criteria
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		foreach ($object->fields as $key => $val) {
 			$search[$key] = '';
 			if (preg_match('/^(date|timestamp|datetime)/', $val['type'])) {
@@ -220,8 +220,8 @@ if (empty($reshook)) {
 		$toselect = array();
 		$search_array_options = array();
 	}
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')
-		|| GETPOST('button_search_x', 'alpha') || GETPOST('button_search.x', 'alpha') || GETPOST('button_search', 'alpha')) {
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')
+		|| request()->input('button_search_x') || request()->input('button_search.x') || request()->input('button_search')) {
 		$massaction = ''; // Protection to avoid mass action if we force a new search during a mass action confirmation
 	}
 
@@ -443,7 +443,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -451,7 +451,7 @@ $num = $db->num_rows($resql);
 
 $i = 0;
 
-if ($num == 1 && GETPOST('autojumpifoneonly') && ($search_all || $snom || $sref)) {
+if ($num == 1 && request()->input('autojumpifoneonly') && ($search_all || $snom || $sref)) {
 	$objp = $db->fetch_object($resql);
 	header("Location: card.php?id=$objp->rowid");
 	exit;

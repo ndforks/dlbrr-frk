@@ -69,14 +69,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/payments.lib.php';
 $langs->loadLangs(array("companies", "other", "ticket"));
 
 // Get parameters
-$action   = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel');
+$action   = request()->input('action');
+$cancel = request()->input('cancel');
 
-$track_id = GETPOST('track_id', 'alpha');
-$email    = GETPOST('email', 'email');
+$track_id = request()->input('track_id');
+$email    = request()->input('email');
 $suffix = "";
 
-if (GETPOST('btn_view_ticket')) {
+if (request()->input('btn_view_ticket')) {
 	unset($_SESSION['email_customer']);
 }
 if (isset($_SESSION['email_customer'])) {
@@ -86,7 +86,7 @@ if (isset($_SESSION['email_customer'])) {
 $object = new ActionsTicket($db);
 
 if (!isModEnabled('ticket')) {
-	httponly_accessforbidden('Module Ticket not enabled');
+	httponly_abort(403);
 }
 
 
@@ -182,7 +182,7 @@ if (in_array($action, array("view_ticket", "presend", "close", "confirm_public_c
 		if ($object->dao->close($user)) {
 			setEventMessages($langs->trans('TicketMarkedAsClosed'), null, 'mesgs');
 
-			$url = 'view.php?action=view_ticket&track_id='.GETPOST('track_id', 'alpha').(!empty($entity) && isModEnabled('multicompany') ? '&entity='.$entity : '').'&token='.newToken();
+			$url = 'view.php?action=view_ticket&track_id='.request()->input('track_id').(!empty($entity) && isModEnabled('multicompany') ? '&entity='.$entity : '').'&token='.newToken();
 			header("Location: ".$url);
 			exit;
 		} else {
@@ -191,7 +191,7 @@ if (in_array($action, array("view_ticket", "presend", "close", "confirm_public_c
 		}
 	}
 
-	if (!$error && $action == "add_message" && $display_ticket && GETPOSTISSET('btn_add_message')) {	// Test on permission already done
+	if (!$error && $action == "add_message" && $display_ticket && request()->has('btn_add_message')) {	// Test on permission already done
 		$ret = $object->dao->newMessage($user, $action, 0, 1);
 
 		if (!$error) {
@@ -200,8 +200,8 @@ if (in_array($action, array("view_ticket", "presend", "close", "confirm_public_c
 	}
 
 	// Add a new external contributor to a ticket
-	if (!$error && $action == "add_contact" && $display_ticket && GETPOSTISSET('btn_add_contact')) {	// Test on permission already done
-		$ret = $object->dao->add_contact(GETPOSTINT('contactid'), 'CONTRIBUTOR');
+	if (!$error && $action == "add_contact" && $display_ticket && request()->has('btn_add_contact')) {	// Test on permission already done
+		$ret = $object->dao->add_contact(request()->integer('contactid', 0), 'CONTRIBUTOR');
 
 		if (!$error) {
 			$action = 'view_ticket';
@@ -476,14 +476,14 @@ if ($action == "view_ticket" || $action == "presend" || $action == "close" || $a
 	print img_picto($langs->trans("TicketTrackId"), 'generic', 'class="pictofixedwidth"');
 	print $langs->trans("TicketTrackId").'</span></label>';
 	print '<br class="showonsmartphone hidden">';
-	print '<input class="minwidth100" id="track_id" name="track_id" value="'.(GETPOST('track_id', 'alpha') ? GETPOST('track_id', 'alpha') : '').'" />';
+	print '<input class="minwidth100" id="track_id" name="track_id" value="'.(request()->input('track_id') ? request()->input('track_id') : '').'" />';
 	print '</p>';
 
 	print '<p><label for="email" style="display: inline-block;" class="titlefieldcreate left"><span class="fieldrequired">';
 	print img_picto($langs->trans("Email"), 'email', 'class="pictofixedwidth"');
 	print $langs->trans('Email').'</span></label>';
 	print '<br class="showonsmartphone hidden">';
-	print '<input class="minwidth100" id="email" name="email" value="'.(GETPOST('email', 'alpha') ? GETPOST('email', 'alpha') : (!empty($_SESSION['customer_email']) ? $_SESSION['customer_email'] : "")).'" />';
+	print '<input class="minwidth100" id="email" name="email" value="'.(request()->input('email') ? request()->input('email') : (!empty($_SESSION['customer_email']) ? $_SESSION['customer_email'] : "")).'" />';
 	print '</p>';
 
 	print '<p style="text-align: center; margin-top: 1.5em;">';

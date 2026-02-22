@@ -39,38 +39,38 @@ require_once DOL_DOCUMENT_ROOT.'/variants/class/ProductCombination2ValuePair.cla
 
 $langs->loadLangs(array("products", "other"));
 
-$id = GETPOSTINT('id');                             // ID of the parent Product
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);                             // ID of the parent Product
+$ref = request()->input('ref');
 
-$combination_id = GETPOSTINT('combination_id');     // ID of the combination
+$combination_id = request()->integer('combination_id', 0);     // ID of the combination
 
-$reference = GETPOST('reference', 'alpha');         // Reference of the variant Product
+$reference = request()->input('reference');         // Reference of the variant Product
 
 $weight_impact = GETPOSTFLOAT('weight_impact', 2);
-$price_impact_percent = (bool) GETPOST('price_impact_percent');
+$price_impact_percent = (bool) request()->input('price_impact_percent');
 $price_impact = $price_impact_percent ? GETPOSTFLOAT('price_impact', 2) : GETPOSTFLOAT('price_impact', 'MU');
 
 // for PRODUIT_MULTIPRICES
-$level_price_impact = GETPOST('level_price_impact', 'array');
+$level_price_impact = request()->input('level_price_impact');
 $level_price_impact = array_map('price2num', $level_price_impact);
 $level_price_impact = array_map('floatval', $level_price_impact);
-$level_price_impact_percent = GETPOST('level_price_impact_percent', 'array');
+$level_price_impact_percent = request()->input('level_price_impact_percent');
 $level_price_impact_percent = array_map('boolval', $level_price_impact_percent);
-$clone_categories =  (bool) GETPOST('clone_categories');
+$clone_categories =  (bool) request()->input('clone_categories');
 
 $form = new Form($db);
 
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$show_files = GETPOSTINT('show_files');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$cancel = GETPOST('cancel', 'alpha');
-$delete_product = GETPOST('delete_product', 'alpha');
-$subaction = GETPOST('subaction', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$show_files = request()->integer('show_files', 0);
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect');
+$cancel = request()->input('cancel');
+$delete_product = request()->input('delete_product');
+$subaction = request()->input('subaction');
+$backtopage = request()->input('backtopage');
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
 
 // Security check
 $fieldvalue = $id ?: $ref;
@@ -89,10 +89,10 @@ $selectedvariant = isset($_SESSION['addvariant_'.$object->id]) ? $_SESSION['addv
 $selected = '';
 // Security check
 if (!isModEnabled('variants')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 if ($user->socid > 0) { // Protection if external user
-	accessforbidden();
+	abort(403);
 }
 
 if ($object->id > 0) {
@@ -128,10 +128,10 @@ if ($action == 'add') {		// Test on permission not required
 	unset($selectedvariant);
 	unset($_SESSION['addvariant_'.$object->id]);
 }
-if ($action == 'create' && GETPOST('selectvariant', 'alpha') && $usercancreate) {	// We click on select combination
+if ($action == 'create' && request()->input('selectvariant') && $usercancreate) {	// We click on select combination
 	$action = 'add';
-	$attribute_id = GETPOSTINT('attribute');
-	$attribute_value_id = GETPOSTINT('value');
+	$attribute_id = request()->integer('attribute', 0);
+	$attribute_value_id = request()->integer('value', 0);
 	if ($attribute_id > 0 && $attribute_value_id > 0) {
 		$feature = $attribute_id . '-' . $attribute_value_id;
 		$selectedvariant[$feature] = $feature;
@@ -140,7 +140,7 @@ if ($action == 'create' && GETPOST('selectvariant', 'alpha') && $usercancreate) 
 }
 if ($action == 'create' && $subaction == 'delete' && $usercancreate) {	// We click on select combination
 	$action = 'add';
-	$feature = GETPOST('feature', 'intcomma');
+	$feature = request()->input('feature');
 	if (isset($selectedvariant[$feature])) {
 		unset($selectedvariant[$feature]);
 		$_SESSION['addvariant_'.$object->id] = $selectedvariant;
@@ -153,8 +153,8 @@ $prodcomb2val = new ProductCombination2ValuePair($db);
 
 $productCombination2ValuePairs1 = array();
 
-if (($action == 'add' || $action == 'create') && $usercancreate && empty($massaction) && !GETPOST('selectvariant', 'alpha') && empty($subaction)) {	// We click on Create all defined combinations
-	//$features = GETPOST('features', 'array');
+if (($action == 'add' || $action == 'create') && $usercancreate && empty($massaction) && !request()->input('selectvariant') && empty($subaction)) {	// We click on Create all defined combinations
+	//$features = request()->input('features');
 	$features = !empty($_SESSION['addvariant_'.$object->id]) ? $_SESSION['addvariant_'.$object->id] : array();
 
 	if (!$features) {
@@ -384,7 +384,7 @@ if ($action === 'confirm_deletecombination' && $usercancreate) {
 	$productCombination2ValuePairs1 = $prodcomb2val->fetchByFkCombination($combination_id);
 } elseif ($action === 'confirm_copycombination' && $usercancreate) {
 	//Check destination product
-	$dest_product = GETPOST('dest_product');
+	$dest_product = request()->input('dest_product');
 
 	if ($prodstatic->fetch(0, $dest_product) > 0) {
 		//To prevent from copying to the same product
@@ -643,7 +643,7 @@ if (!empty($id) || !empty($ref)) {
 				print '<select class="flat minwidth100" id="attribute" name="attribute">';
 				print '<option value="-1">&nbsp;</option>';
 				foreach ($prodattr_all as $attr) {
-					//print '<option value="'.$attr->id.'"'.($attr->id == GETPOST('attribute', 'int') ? ' selected="selected"' : '').'>'.$attr->label.'</option>';
+					//print '<option value="'.$attr->id.'"'.($attr->id == request()->input('attribute') ? ' selected="selected"' : '').'>'.$attr->label.'</option>';
 					print '<option value="'.$attr->id.'">'.$attr->label.'</option>';
 				}
 				print '</select>';

@@ -52,19 +52,19 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/genericobject.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
-$id = GETPOSTINT('id');
-$element = GETPOST('element', 'alpha');	// 'myobject' (myobject=mymodule) or 'myobject@mymodule' or 'myobject_mysubobject' (myobject=mymodule)
-$field = GETPOST('field', 'alpha');
-$value = GETPOSTINT('value');
+$id = request()->integer('id', 0);
+$element = request()->input('element');	// 'myobject' (myobject=mymodule) or 'myobject@mymodule' or 'myobject_mysubobject' (myobject=mymodule)
+$field = request()->input('field');
+$value = request()->integer('value', 0);
 $format = 'int';
 
 // Load object according to $id and $element
 $object = fetchObjectByElement($id, $element);
 if (!is_object($object)) {
-	httponly_accessforbidden("Bad value for combination of parameters element/field: Object not found.");	// This includes the exit.
+	httponly_abort(403);	// This includes the exit.
 }
 '@phan-var-force CommonObject $object';
 
@@ -83,7 +83,7 @@ if ($usesublevelpermission && !$user->hasRight($module, $element)) {	// There is
 if (!empty($user->socid)) {
 	$socid = $user->socid;
 	if (!empty($object->socid) && $socid != $object->socid) {
-		httponly_accessforbidden("Access on object not allowed for this external user.");	// This includes the exit.
+		httponly_abort(403);	// This includes the exit.
 	}
 }
 
@@ -94,7 +94,7 @@ if (preg_match('/stat[u][st]$/', $field) || ($field == 'evenunsubscribe' && $obj
 } elseif ($element == 'product' && in_array($field, array('tosell', 'tobuy', 'tobatch'))) {	// Special case for products
 	restrictedArea($user, 'produit|service', $object, 'product&product', '', '', 'rowid');
 } else {
-	httponly_accessforbidden("Bad value for combination of parameters element/field: Field not supported.");	// This includes the exit.
+	httponly_abort(403);	// This includes the exit.
 }
 
 

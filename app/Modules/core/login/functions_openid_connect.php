@@ -58,25 +58,25 @@ function check_user_password_openid_connect($usertotest, $passwordtotest, $entit
 
 	// Step 1 is done by user: request an authorization code
 
-	if (GETPOSTISSET('username')) {
+	if (request()->has('username')) {
 		// OIDC does not require credentials here: pass on to next auth handler
 		$_SESSION["dol_loginmesg"] = "Not an OpenID Connect flow";
 		dol_syslog("functions_openid_connect::check_user_password_openid_connect::not an OIDC flow");
 		return false;
-	} elseif (!GETPOSTISSET('state')) {
+	} elseif (!request()->has('state')) {
 		// No state received
 		$_SESSION["dol_loginmesg"] = "Error in OAuth 2.0 flow (no state received)";
 		dol_syslog("functions_openid_connect::check_user_password_openid_connect::no state received", LOG_ERR);
 		return false;
-	} elseif (!GETPOSTISSET('code')) {
+	} elseif (!request()->has('code')) {
 		// No code received
 		$_SESSION["dol_loginmesg"] = "Error in OAuth 2.0 flow (no code received)";
 		dol_syslog("functions_openid_connect::check_user_password_openid_connect::no code received", LOG_ERR);
 		return false;
 	}
 
-	$auth_code = GETPOST('code', 'password');
-	$state = GETPOST('state', 'aZ09');
+	$auth_code = request()->input('code');
+	$state = request()->input('state');
 	dol_syslog('functions_openid_connect::check_user_password_openid_connect code='.$auth_code.' state='.$state);
 
 	if ($state !== openid_connect_get_state()) {

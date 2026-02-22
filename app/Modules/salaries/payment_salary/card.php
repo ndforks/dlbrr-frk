@@ -49,9 +49,9 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('bills', 'banks', 'companies', 'salaries'));
 
 // Security check
-$id = GETPOSTINT("id");
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 if ($user->socid) {
 	$socid = $user->socid;
 }
@@ -87,8 +87,8 @@ if ($action == 'confirm_delete' && $confirm == 'yes' && $user->hasRight('salarie
 	}
 }
 
-if ($action == 'setdatep' && GETPOST('datepday') && $user->hasRight('salaries', 'write')) {
-	$datepaye = dol_mktime(GETPOSTINT('datephour'), GETPOSTINT('datepmin'), GETPOSTINT('datepsec'), GETPOSTINT('datepmonth'), GETPOSTINT('datepday'), GETPOSTINT('datepyear'), 'tzuserrel');
+if ($action == 'setdatep' && request()->input('datepday') && $user->hasRight('salaries', 'write')) {
+	$datepaye = dol_mktime(request()->integer('datephour', 0), request()->integer('datepmin', 0), request()->integer('datepsec', 0), request()->integer('datepmonth', 0), request()->integer('datepday', 0), request()->integer('datepyear', 0), 'tzuserrel');
 	$res = $object->updatePaymentDate($datepaye);
 	if ($res === 0) {
 		setEventMessages($langs->trans('PaymentDateUpdateSucceeded'), null, 'mesgs');
@@ -137,7 +137,7 @@ if ($action == 'delete') {
 /*
 if ($action == 'valide')
 {
-	$facid = GETPOST('facid', 'int');
+	$facid = request()->input('facid');
 	print $form->formconfirm('card.php?id='.$object->id.'&amp;facid='.$facid, $langs->trans("ValidatePayment"), $langs->trans("ConfirmValidatePayment"), 'confirm_valide','',0,2);
 
 }
@@ -267,7 +267,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

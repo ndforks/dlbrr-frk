@@ -53,8 +53,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/cunits.class.php';
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
-$idproduct = GETPOSTINT('idproduct');
+$action = request()->input('action');
+$idproduct = request()->integer('idproduct', 0);
 
 
 /*

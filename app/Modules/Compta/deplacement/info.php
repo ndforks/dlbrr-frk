@@ -41,7 +41,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/deplacement/class/deplacement.class.php'
 $langs->load("trips");
 
 // Security check
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 if ($user->socid) {
 	$socid = $user->socid;
 }

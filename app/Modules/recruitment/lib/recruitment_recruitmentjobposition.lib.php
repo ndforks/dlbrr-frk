@@ -56,7 +56,7 @@ function recruitmentjobpositionPrepareHead($object)
 			}
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	$head[$h][2] = 'candidatures';
 	$h++;

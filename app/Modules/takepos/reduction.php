@@ -52,12 +52,12 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
  * @var User $user
  */
 
-$place = (GETPOST('place', 'aZ09') ? GETPOST('place', 'aZ09') : 0); // $place is id of table for Ba or Restaurant
+$place = (request()->input('place') ? request()->input('place') : 0); // $place is id of table for Ba or Restaurant
 
-$invoiceid = GETPOSTINT('invoiceid');
+$invoiceid = request()->integer('invoiceid', 0);
 
 if (!$user->hasRight('takepos', 'run')) {
-	accessforbidden();
+	abort(403);
 }
 
 

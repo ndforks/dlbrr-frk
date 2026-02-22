@@ -39,10 +39,10 @@ require_once DOL_DOCUMENT_ROOT."/compta/facture/class/facture.class.php";
 $langs->loadLangs(array("admin", "bills", "margins", "stocks"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 /*
@@ -56,7 +56,7 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -66,24 +66,24 @@ if (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
 if ($action == 'update') {
 	$error = 0;
-	if (dolibarr_set_const($db, 'MARGIN_METHODE_FOR_DISCOUNT', GETPOST('MARGIN_METHODE_FOR_DISCOUNT'), 'chaine', 0, '', $conf->entity) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'MARGIN_METHODE_FOR_DISCOUNT', request()->input('MARGIN_METHODE_FOR_DISCOUNT'), 'chaine', 0, '', $conf->entity) <= 0) {
+		abort(500);
 		$error++;
 	}
 
-	if (dolibarr_set_const($db, 'MARGIN_TYPE', GETPOST('MARGIN_TYPE'), 'chaine', 0, '', $conf->entity) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'MARGIN_TYPE', request()->input('MARGIN_TYPE'), 'chaine', 0, '', $conf->entity) <= 0) {
+		abort(500);
 		$error++;
 	}
 
-	if (dolibarr_set_const($db, 'AGENT_CONTACT_TYPE', GETPOST('AGENT_CONTACT_TYPE'), 'chaine', 0, '', $conf->entity) <= 0) {
-		dol_print_error($db);
+	if (dolibarr_set_const($db, 'AGENT_CONTACT_TYPE', request()->input('AGENT_CONTACT_TYPE'), 'chaine', 0, '', $conf->entity) <= 0) {
+		abort(500);
 		$error++;
 	}
 

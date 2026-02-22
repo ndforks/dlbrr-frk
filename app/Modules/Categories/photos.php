@@ -47,10 +47,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/categories.lib.php';
 $langs->loadlangs(array('categories', 'bills', 'mrp'));
 
 
-$id      = GETPOSTINT('id');
-$label   = GETPOST('label', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm');
+$id      = request()->integer('id', 0);
+$label   = request()->input('label');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
 
 if ($id == '' && $label == '') {
 	dol_print_error(null, 'Missing parameter id');
@@ -84,7 +84,7 @@ $permissiontoadd = $user->hasRight('categorie', 'creer');
  * Actions
  */
 
-$parameters = array('id' => $id,  'label' => $label, 'confirm' => $confirm, 'type' => $type, 'uploaddir' => $upload_dir, 'sendfile' => (GETPOST("sendit") ? true : false));
+$parameters = array('id' => $id,  'label' => $label, 'confirm' => $confirm, 'type' => $type, 'uploaddir' => $upload_dir, 'sendfile' => (request()->input('sendit') ? true : false));
 // Note that $action and $object may be modified by some hooks
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action);
 if ($reshook < 0) {
@@ -92,7 +92,7 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
-	if (isset($_FILES['userfile']) && $_FILES['userfile']['size'] > 0 && GETPOST("sendit") && getDolGlobalString('MAIN_UPLOAD_DOC')) {
+	if (isset($_FILES['userfile']) && $_FILES['userfile']['size'] > 0 && request()->input('sendit') && getDolGlobalString('MAIN_UPLOAD_DOC')) {
 		if ($object->id) {
 			$file = $_FILES['userfile'];
 			if (is_array($file['name']) && count($file['name']) > 0) {
@@ -110,12 +110,12 @@ if (empty($reshook)) {
 		}
 	}
 
-	if ($action == 'confirm_delete' && GETPOST("file") && $confirm == 'yes' && $permissiontoadd) {
-		$object->delete_photo($upload_dir."/".GETPOST("file"));
+	if ($action == 'confirm_delete' && request()->input('file') && $confirm == 'yes' && $permissiontoadd) {
+		$object->delete_photo($upload_dir."/".request()->input('file'));
 	}
 
-	if ($action == 'addthumb' && GETPOST("file") && $permissiontoadd) {
-		$object->addThumbs($upload_dir."/".GETPOST("file"));
+	if ($action == 'addthumb' && request()->input('file') && $permissiontoadd) {
+		$object->addThumbs($upload_dir."/".request()->input('file'));
 	}
 }
 
@@ -135,7 +135,7 @@ if ($object->id) {
 	$head = categories_prepare_head($object, $type);
 	print dol_get_fiche_head($head, 'photos', $langs->trans($title), -1, 'category');
 
-	$backtolist = (GETPOST('backtolist') ? GETPOST('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
+	$backtolist = (request()->input('backtolist') ? request()->input('backtolist') : DOL_URL_ROOT.'/categories/categorie_list.php?leftmenu=cat&type='.urlencode($type));
 	$linkback = '<a href="'.dol_sanitizeUrl($backtolist).'">'.$langs->trans("BackToList").'</a>';
 	$object->next_prev_filter = 'type:=:'.((int) $object->type);
 	$object->ref = $object->label;
@@ -152,7 +152,7 @@ if ($object->id) {
 	 * Confirmation deletion of picture
 	 */
 	if ($action == 'delete') {
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&type='.urlencode($type).'&file='.urlencode(GETPOST("file")), $langs->trans('DeletePicture'), $langs->trans('ConfirmDeletePicture'), 'confirm_delete', '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&type='.urlencode($type).'&file='.urlencode(request()->input('file')), $langs->trans('DeletePicture'), $langs->trans('ConfirmDeletePicture'), 'confirm_delete', '', 0, 1);
 	}
 
 	print '<br>';

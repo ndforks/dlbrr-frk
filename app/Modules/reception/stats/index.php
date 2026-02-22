@@ -45,8 +45,8 @@ $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
 $hookmanager->initHooks(array('receptionstats', 'globalcard'));
 
-$userid = GETPOSTINT('userid');
-$socid = GETPOSTINT('socid');
+$userid = request()->integer('userid', 0);
+$socid = request()->integer('socid', 0);
 
 $parameters = array();
 $reshook = $hookmanager->executeHooks('doActions', $parameters, $object, $action); // Note that $action and $object may have been modified by some hooks
@@ -55,7 +55,7 @@ if ($reshook < 0) {
 }
 
 $nowyear = (int) dol_print_date(dol_now('gmt'), "%Y", 'gmt');
-$year = GETPOSTINT('year') > 0 ? GETPOSTINT('year') : $nowyear;
+$year = request()->integer('year', 0) > 0 ? request()->integer('year', 0) : $nowyear;
 $startyear = $year - (!getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS') ? 2 : max(1, min(10, getDolGlobalString('MAIN_STATS_GRAPHS_SHOW_N_YEARS'))));
 $endyear = $year;
 

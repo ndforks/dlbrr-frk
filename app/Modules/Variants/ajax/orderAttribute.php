@@ -50,10 +50,10 @@ require DOL_DOCUMENT_ROOT . '/variants/class/ProductAttribute.class.php';
 
 // Security check
 if (!isModEnabled('variants')) {
-	accessforbidden('Module not enabled');
+	abort(403);
 }
 if ($user->socid > 0) { // Protection if external user
-	accessforbidden();
+	abort(403);
 }
 $result = restrictedArea($user, 'variants');
 

@@ -48,13 +48,13 @@ $langs->loadLangs(array('admin', 'products'));
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$oldvatrate = GETPOST('oldvatrate', 'alpha');
-$newvatrate = GETPOST('newvatrate', 'alpha');
-//$price_base_type=GETPOST('price_base_type');
+$action = request()->input('action');
+$oldvatrate = request()->input('oldvatrate');
+$newvatrate = request()->input('newvatrate');
+//$price_base_type=request()->input('price_base_type');
 
 
 
@@ -195,7 +195,7 @@ if ($action == 'convert') {
 					$i++;
 				}
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		}
 
@@ -269,7 +269,7 @@ if ($action == 'convert') {
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 

@@ -49,14 +49,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/discount.class.php';
 // Load translation files required by the page
 $langs->loadLangs(array('orders', 'bills', 'companies'));
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
-$splitamounts = GETPOST('splitamounts', 'array');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
+$splitamounts = request()->input('splitamounts');
 
 // Security check
-$socid = GETPOSTINT('id') ? GETPOSTINT('id') : GETPOSTINT('socid');
+$socid = request()->integer('id', 0) ? request()->integer('id', 0) : request()->integer('socid', 0);
 /** @var User $user */
 if ($user->socid > 0) {
 	$socid = $user->socid;
@@ -74,14 +74,14 @@ $permissiontocreate = ($user->hasRight('societe', 'creer') || $user->hasRight('f
  * Actions
  */
 
-if (GETPOST('cancel', 'alpha') && !empty($backtopage)) {
+if (request()->input('cancel') && !empty($backtopage)) {
 	header("Location: ".$backtopage);
 	exit;
 }
 
 if ($action == 'confirm_split_more' && $permissiontocreate) {
 	$error = 0;
-	$remid = (GETPOSTINT("remid") ? GETPOSTINT("remid") : 0);
+	$remid = (request()->integer('remid', 0) ? request()->integer('remid', 0) : 0);
 	$discount = new DiscountAbsolute($db);
 	$res = $discount->fetch($remid);
 	if (!($res > 0)) {
@@ -161,14 +161,14 @@ if ($action == 'confirm_split_more' && $permissiontocreate) {
 	}
 }
 
-if ($action == 'confirm_split' && GETPOST("confirm", "alpha") == 'yes' && $permissiontocreate) {
-	$amount_ttc_1 = GETPOST('amount_ttc_1', 'alpha');
+if ($action == 'confirm_split' && request()->input('confirm') == 'yes' && $permissiontocreate) {
+	$amount_ttc_1 = request()->input('amount_ttc_1');
 	$amount_ttc_1 = price2num($amount_ttc_1);
-	$amount_ttc_2 = GETPOST('amount_ttc_2', 'alpha');
+	$amount_ttc_2 = request()->input('amount_ttc_2');
 	$amount_ttc_2 = price2num($amount_ttc_2);
 
 	$error = 0;
-	$remid = (GETPOSTINT("remid") ? GETPOSTINT("remid") : 0);
+	$remid = (request()->integer('remid', 0) ? request()->integer('remid', 0) : 0);
 	$discount = new DiscountAbsolute($db);
 	$res = $discount->fetch($remid);
 	if (!($res > 0)) {
@@ -254,11 +254,11 @@ if ($action == 'confirm_split' && GETPOST("confirm", "alpha") == 'yes' && $permi
 }
 
 if ($action == 'setremise' && $permissiontocreate) {
-	$amount = price2num(GETPOST('amount', 'alpha'), '', 2);
-	$desc = GETPOST('desc', 'alpha');
-	$tva_tx = GETPOST('tva_tx', 'alpha');
-	$discount_type = GETPOSTISSET('discount_type') ? GETPOST('discount_type', 'alpha') : 0;
-	$price_base_type = GETPOST('price_base_type', 'alpha');
+	$amount = price2num(request()->input('amount'), '', 2);
+	$desc = request()->input('desc');
+	$tva_tx = request()->input('tva_tx');
+	$discount_type = request()->has('discount_type') ? request()->input('discount_type') : 0;
+	$price_base_type = request()->input('price_base_type');
 
 	if ($amount > 0) {
 		$error = 0;
@@ -290,11 +290,11 @@ if ($action == 'setremise' && $permissiontocreate) {
 	}
 }
 
-if (GETPOST('action', 'aZ09') == 'confirm_remove' && GETPOST("confirm") == 'yes' && $permissiontocreate) {
+if (request()->input('action') == 'confirm_remove' && request()->input('confirm') == 'yes' && $permissiontocreate) {
 	$db->begin();
 
 	$discount = new DiscountAbsolute($db);
-	$result = $discount->fetch(GETPOSTINT("remid"));
+	$result = $discount->fetch(request()->integer('remid', 0));
 	$result = $discount->delete($user);
 	if ($result > 0) {
 		$db->commit();
@@ -379,7 +379,7 @@ if ($socid > 0) {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '<tr><td class="titlefieldmiddle">'.$langs->trans("CustomerAbsoluteDiscountAllUsers").'</td>';
@@ -409,7 +409,7 @@ if ($socid > 0) {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		print '<tr><td class="titlefieldmiddle">'.$langs->trans("SupplierAbsoluteDiscountAllUsers").'</td>';
@@ -432,7 +432,7 @@ if ($socid > 0) {
 		if ($user->hasRight('societe', 'creer')) {
 			print '<br>';
 
-			$discount_type = GETPOSTISSET('discount_type') ? GETPOST('discount_type', 'alpha') : 0;
+			$discount_type = request()->has('discount_type') ? request()->input('discount_type') : 0;
 			if ($isCustomer && $isSupplier) {
 				$discounttypelabel = $discount_type == 1 ? 'NewSupplierGlobalDiscount' : 'NewClientGlobalDiscount';
 			} else {
@@ -461,22 +461,22 @@ if ($socid > 0) {
 
 			// Amount
 			print '<tr><td class="titlefield fieldrequired">'.$langs->trans("Amount").'</td>';
-			print '<td><input type="text" size="5" name="amount" value="'.price2num(GETPOST("amount")).'" autofocus>';
+			print '<td><input type="text" size="5" name="amount" value="'.price2num(request()->input('amount')).'" autofocus>';
 			print '<span class="hideonsmartphone">&nbsp;'.$langs->trans("Currency".$conf->currency).'</span></td></tr>';
 
 			// Price base (HT / TTC)
 			print '<tr><td class="titlefield">'.$langs->trans("PriceBase").'</td>';
 			print '<td>';
-			print $form->selectPriceBaseType(GETPOST("price_base_type"), "price_base_type");
+			print $form->selectPriceBaseType(request()->input('price_base_type'), "price_base_type");
 			print '</td></tr>';
 
 			// VAT
 			print '<tr><td>'.$langs->trans("VAT").'</td>';
 			print '<td>';
-			print $form->load_tva('tva_tx', (GETPOSTISSET('tva_tx') ? GETPOST('tva_tx', 'alpha') : getDolGlobalString('MAIN_VAT_DEFAULT_IF_AUTODETECT_FAILS', 0)), $mysoc, $object, 0, 0, '', false, 1);
+			print $form->load_tva('tva_tx', (request()->has('tva_tx') ? request()->input('tva_tx') : getDolGlobalString('MAIN_VAT_DEFAULT_IF_AUTODETECT_FAILS', 0)), $mysoc, $object, 0, 0, '', false, 1);
 			print '</td></tr>';
 			print '<tr><td class="fieldrequired" >'.$langs->trans("NoteReason").'</td>';
-			print '<td><input type="text" class="quatrevingtpercent" name="desc" value="'.GETPOST('desc', 'alphanohtml').'"></td></tr>';
+			print '<td><input type="text" class="quatrevingtpercent" name="desc" value="'.request()->input('desc').'"></td></tr>';
 
 			print "</table>";
 			print '</div>';
@@ -502,7 +502,7 @@ if ($socid > 0) {
 	print '<br>';
 
 	if ($action == 'remove') {
-		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&remid='.GETPOST('remid'), $langs->trans('RemoveDiscount'), $langs->trans('ConfirmRemoveDiscount'), 'confirm_remove', '', 0, 1);
+		print $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id.'&remid='.request()->input('remid'), $langs->trans('RemoveDiscount'), $langs->trans('ConfirmRemoveDiscount'), 'confirm_remove', '', 0, 1);
 	}
 
 
@@ -637,7 +637,7 @@ if ($socid > 0) {
 					}
 					print '</tr>';
 
-					if ($action == 'split' && GETPOST('remid') == $obj->rowid) {
+					if ($action == 'split' && request()->input('remid') == $obj->rowid) {
 						$showconfirminfo['rowid'] = $obj->rowid;
 						$showconfirminfo['amount_ttc'] = $obj->amount_ttc;
 					}
@@ -813,7 +813,7 @@ if ($socid > 0) {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -931,7 +931,7 @@ if ($socid > 0) {
 					}
 					print '</tr>';
 
-					if ($action == 'split' && GETPOST('remid') == $obj->rowid) {
+					if ($action == 'split' && request()->input('remid') == $obj->rowid) {
 						$showconfirminfo['rowid'] = $obj->rowid;
 						$showconfirminfo['amount_ttc'] = $obj->amount_ttc;
 					}
@@ -1107,7 +1107,7 @@ if ($socid > 0) {
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if ($isCustomer) {
@@ -1288,7 +1288,7 @@ if ($socid > 0) {
 			print "</table>";
 			print '</div>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -1459,7 +1459,7 @@ if ($socid > 0) {
 			print "</table>";
 			print '</div>';
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		if ($isCustomer) {

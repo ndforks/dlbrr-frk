@@ -46,10 +46,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/ldap.lib.php';
 $langs->loadLangs(array("admin", "ldap"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Initialize a technical object to manage hooks of page. Note that conf->hooks_modules contains an array of hook context
 $hookmanager->initHooks(array('adminldap', 'globaladmin'));
@@ -71,49 +71,49 @@ if (empty($reshook)) {
 
 		$db->begin();
 
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_TYPE', GETPOST("type", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_TYPE', request()->input('type'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_USERACCOUNTCONTROL', GETPOSTINT("userAccountControl"), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_USERACCOUNTCONTROL', request()->integer('userAccountControl', 0), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_PROTOCOLVERSION', GETPOST("LDAP_SERVER_PROTOCOLVERSION", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_PROTOCOLVERSION', request()->input('LDAP_SERVER_PROTOCOLVERSION'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_HOST', GETPOST("host", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_HOST', request()->input('host'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_HOST_SLAVE', GETPOST("slave", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_HOST_SLAVE', request()->input('slave'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_PORT', GETPOSTINT("port"), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_PORT', request()->integer('port', 0), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_DN', GETPOST("dn", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_DN', request()->input('dn'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_ADMIN_DN', GETPOST("admin", 'alphanohtml'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_ADMIN_DN', request()->input('admin'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_ADMIN_PASS', GETPOST("pass", 'none'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_ADMIN_PASS', request()->input('pass'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SERVER_USE_TLS', GETPOST("usetls", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SERVER_USE_TLS', request()->input('usetls'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_SYNCHRO_ACTIVE', GETPOST("activesynchro", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_SYNCHRO_ACTIVE', request()->input('activesynchro'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_CONTACT_ACTIVE', GETPOST("activecontact", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_CONTACT_ACTIVE', request()->input('activecontact'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_MEMBER_ACTIVE', GETPOST("activemembers", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_MEMBER_ACTIVE', request()->input('activemembers'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_ACTIVE', GETPOST("activememberstypes", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_MEMBER_TYPE_ACTIVE', request()->input('activememberstypes'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
-		if (!dolibarr_set_const($db, 'LDAP_PASSWORD_HASH_TYPE', GETPOST("LDAP_PASSWORD_HASH_TYPE", 'aZ09'), 'chaine', 0, '', $conf->entity)) {
+		if (!dolibarr_set_const($db, 'LDAP_PASSWORD_HASH_TYPE', request()->input('LDAP_PASSWORD_HASH_TYPE'), 'chaine', 0, '', $conf->entity)) {
 			$error++;
 		}
 
@@ -122,7 +122,7 @@ if (empty($reshook)) {
 			setEventMessages($langs->trans("SetupSaved"), null, 'mesgs');
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }

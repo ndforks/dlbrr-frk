@@ -36,7 +36,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formother.class.php';
  * @var User $user
  */
 
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'userhome'; // To manage different context of search
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'userhome'; // To manage different context of search
 
 if (!$user->hasRight('user', 'user', 'lire') && !$user->admin) {
 	// Redirection vers la page de l'utilisateur
@@ -69,13 +69,13 @@ if (!isset($form) || !is_object($form)) {
 // Load $resultboxes (selectboxlist + boxactivated + boxlista + boxlistb)
 $resultboxes = FormOther::getBoxesArea($user, "1");
 
-if (GETPOST('addbox')) {
+if (request()->input('addbox')) {
 	// Add box (when submit is done from a form when ajax disabled)
 	require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
-	$zone = GETPOSTINT('areacode');
-	$userid = GETPOSTINT('userid');
-	$boxorder = GETPOST('boxorder', 'aZ09');
-	$boxorder .= GETPOST('boxcombo', 'aZ09');
+	$zone = request()->integer('areacode', 0);
+	$userid = request()->integer('userid', 0);
+	$boxorder = request()->input('boxorder');
+	$boxorder .= request()->input('boxcombo');
 	$result = InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
 	if ($result > 0) {
 		setEventMessages($langs->trans("BoxAdded"), null);
@@ -232,7 +232,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 
@@ -305,7 +305,7 @@ if ($permissiontoreadgroup) {
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

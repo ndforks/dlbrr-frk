@@ -51,14 +51,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/infobox.class.php';
  * @var User $user
  */
 
-$boxid = GETPOSTINT('boxid');
-$boxorder = GETPOST('boxorder');
-$zone = GETPOST('zone');		// Can be '0' or '1' or 'pagename'...
-$userid = GETPOSTINT('userid');
+$boxid = request()->integer('boxid', 0);
+$boxorder = request()->input('boxorder');
+$zone = request()->input('zone');		// Can be '0' or '1' or 'pagename'...
+$userid = request()->integer('userid', 0);
 
 // Security check
 if ($userid != $user->id) {
-	httponly_accessforbidden('Bad userid parameter. Must match logged user.');
+	httponly_abort(403);
 }
 
 
@@ -91,7 +91,7 @@ if ($boxorder && $zone != '' && $userid > 0) {
 	$result = InfoBox::saveboxorder($db, $zone, $boxorder, $userid);
 	if ($result > 0) {
 		$langs->load("boxes");
-		if (!GETPOST('closing')) {
+		if (!request()->input('closing')) {
 			setEventMessages($langs->trans("BoxAdded"), null);
 		}
 	}

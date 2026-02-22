@@ -50,14 +50,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/boxes/box_fediverse.php';
 //load translation files requires by the page
 $langs->loadLangs(array('admin', 'users', 'dict'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 // Security check
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 if (!isModEnabled('socialnetworks')) {
-	accessforbidden('Module Social Networks is not enabled');
+	abort(403);
 }
 
 // List of oauth services
@@ -86,19 +86,19 @@ foreach ($conf->global as $key => $val) {
 if ($action == 'add') {
 	$error = 0;
 
-	if (empty(GETPOST('socialnetwork_name')) || empty(GETPOST('socialnetwork_url'))) {
+	if (empty(request()->input('socialnetwork_name')) || empty(request()->input('socialnetwork_url'))) {
 		$error++;
 	}
 
-	$socialNetworkName = GETPOST('socialnetwork_name', 'alpha');
-	$socialNetworkUrl = GETPOST('socialnetwork_url', 'alpha');
-	if (GETPOSTISSET("OAUTH_SERVICE_SOCIAL_NETWORK")) {
-		dolibarr_set_const($db, "OAUTH_SERVICE_SOCIAL_NETWORK", GETPOST("OAUTH_SERVICE_SOCIAL_NETWORK", 'alphanohtml'), 'chaine', 0, '', $conf->entity);
+	$socialNetworkName = request()->input('socialnetwork_name');
+	$socialNetworkUrl = request()->input('socialnetwork_url');
+	if (request()->has('OAUTH_SERVICE_SOCIAL_NETWORK')) {
+		dolibarr_set_const($db, "OAUTH_SERVICE_SOCIAL_NETWORK", request()->input('OAUTH_SERVICE_SOCIAL_NETWORK'), 'chaine', 0, '', $conf->entity);
 	}
 
 	// other params if exist
-	$paramNames = GETPOST('param_name', 'array');
-	$paramValues = GETPOST('param_value', 'array');
+	$paramNames = request()->input('param_name');
+	$paramValues = request()->input('param_value');
 
 	$additionalParams = [];
 	if (!empty($paramNames) && is_array($paramNames)) {
@@ -124,7 +124,7 @@ if ($action == 'add') {
 		$sql .= " VALUES ('box_fediverse.php', '".$db->escape($socialNetworkName)."')";
 
 		if (!$db->query($sql)) {
-			dol_print_error($db);
+			abort(500);
 			$error++;
 		} else {
 			$jsonData = json_encode($socialNetworkData);
@@ -141,13 +141,13 @@ if ($action == 'add') {
 		exit;
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
-if ($action == 'confirm_delete' && GETPOST('confirm') == 'yes') {
+if ($action == 'confirm_delete' && request()->input('confirm') == 'yes') {
 	$error = 0;
-	$key = GETPOST('key', 'alpha');
+	$key = request()->input('key');
 	$name = '';
 	$sqlgetName = "SELECT note FROM ".MAIN_DB_PREFIX."boxes_def WHERE rowid=".((int) $key);
 
@@ -180,18 +180,18 @@ if ($action == 'confirm_delete' && GETPOST('confirm') == 'yes') {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 }
 
 if ($action == 'updatesocialnetwork') {
 	$error = 0;
-	$id = GETPOST('key', 'alpha');
-	$name = GETPOST('socialnetwork_name');
-	$url = GETPOST('socialnetwork_url');
-	$paramsKey = GETPOST('paramsKey', 'array');
-	$paramsVal = GETPOST('paramsVal', 'array');
+	$id = request()->input('key');
+	$name = request()->input('socialnetwork_name');
+	$url = request()->input('socialnetwork_url');
+	$paramsKey = request()->input('paramsKey');
+	$paramsVal = request()->input('paramsVal');
 
 	$result = getDolGlobalString("SOCIAL_NETWORKS_DATA_".$name);
 
@@ -232,7 +232,7 @@ if ($action == 'updatesocialnetwork') {
 			exit;
 		} else {
 			$db->rollback();
-			dol_print_error($db);
+			abort(500);
 		}
 	} else {
 		setEventMessages($langs->trans("ErrorInputRequired"), null, 'errors');
@@ -241,10 +241,10 @@ if ($action == 'updatesocialnetwork') {
 	}
 }
 
-if ($action == 'editsocialnetwork' && GETPOST('confirm') == 'yes') {
-	$paramKey = GETPOST('paramkey', 'alpha');
-	$key = GETPOST('key', 'alpha');
-	$name = GETPOST('name');
+if ($action == 'editsocialnetwork' && request()->input('confirm') == 'yes') {
+	$paramKey = request()->input('paramkey');
+	$key = request()->input('key');
+	$name = request()->input('name');
 
 	$result = getDolGlobalString("SOCIAL_NETWORKS_DATA_".$name);
 
@@ -260,7 +260,7 @@ if ($action == 'editsocialnetwork' && GETPOST('confirm') == 'yes') {
 		exit;
 	} else {
 		$db->rollback();
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -431,9 +431,9 @@ print '<br><br>';
 
 if ($action == 'deletesocialnetwork') {
 	$formconfirm = $form->formconfirm(
-		$_SERVER["PHP_SELF"].'?key='.urlencode(GETPOST('key', 'alpha')),
+		$_SERVER["PHP_SELF"].'?key='.urlencode(request()->input('key')),
 		$langs->trans('Delete'),
-		$langs->trans('ConfirmDeleteSocialNetwork', GETPOST('key', 'alpha')),
+		$langs->trans('ConfirmDeleteSocialNetwork', request()->input('key')),
 		'confirm_delete',
 		'',
 		0,
@@ -442,12 +442,12 @@ if ($action == 'deletesocialnetwork') {
 	print $formconfirm;
 }
 // delete params of social network
-if ($action == 'editsocialnetwork' && GETPOST('paramkey', 'alpha')) {
-	$paramKey = GETPOST('paramkey', 'alpha');
-	$name = GETPOST('name', 'alpha');
+if ($action == 'editsocialnetwork' && request()->input('paramkey')) {
+	$paramKey = request()->input('paramkey');
+	$name = request()->input('name');
 
 	$formconfirm = $form->formconfirm(
-		$_SERVER["PHP_SELF"].'?key='.urlencode(GETPOST('key', 'alpha')).'&paramkey='.urlencode($paramKey).'&name='.urlencode($name),
+		$_SERVER["PHP_SELF"].'?key='.urlencode(request()->input('key')).'&paramkey='.urlencode($paramKey).'&name='.urlencode($name),
 		$langs->trans('Delete'),
 		$langs->trans('ConfirmDeleteParamOfSocialNetwork', $paramKey),
 		'editsocialnetwork',
@@ -544,7 +544,7 @@ if ($resql) {
 		print '</td>';
 		print '</tr>'."\n";
 
-		if ($action == 'editsocialnetwork' && $socialNetworkId == GETPOST('key')) {
+		if ($action == 'editsocialnetwork' && $socialNetworkId == request()->input('key')) {
 			foreach ($socialNetworkData as $k => $val) {
 				if ($k != 'title' && $k != 'url') {
 					print '<tr class="oddeven">';
@@ -585,7 +585,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print dol_get_fiche_end();

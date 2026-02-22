@@ -62,7 +62,7 @@ $forcereloadpage = getDolGlobalInt('MAIN_FORCE_RELOAD_PAGE');
 $tagidfortablednd = (empty($tagidfortablednd) ? 'tablelines' : $tagidfortablednd);
 $filepath = (empty($filepath) ? '' : $filepath);
 
-if (GETPOST('action', 'aZ09') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
+if (request()->input('action') != 'editline' && $nboflines > 1 && $conf->browser->layout != 'phone') { ?>
 <script>
 $(document).ready(function(){
 	$(".imgupforline").hide();

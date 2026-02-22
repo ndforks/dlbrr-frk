@@ -46,10 +46,10 @@ $langs->loadLangs(array('companies', 'bills', 'products', 'margins'));
 $mesg = '';
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -60,7 +60,7 @@ if (!$sortorder) {
 	$sortorder = "ASC";
 }
 if ($user->hasRight('margins', 'read', 'all')) {
-	$agentid = GETPOSTINT('agentid');
+	$agentid = request()->integer('agentid', 0);
 } else {
 	$agentid = $user->id;
 }
@@ -74,12 +74,12 @@ if (!$sortfield) {
 
 $startdate = $enddate = '';
 
-$startdateday   = GETPOSTINT('startdateday');
-$startdatemonth = GETPOSTINT('startdatemonth');
-$startdateyear  = GETPOSTINT('startdateyear');
-$enddateday     = GETPOSTINT('enddateday');
-$enddatemonth   = GETPOSTINT('enddatemonth');
-$enddateyear    = GETPOSTINT('enddateyear');
+$startdateday   = request()->integer('startdateday', 0);
+$startdatemonth = request()->integer('startdatemonth', 0);
+$startdateyear  = request()->integer('startdateyear', 0);
+$enddateday     = request()->integer('enddateday', 0);
+$enddatemonth   = request()->integer('enddatemonth', 0);
+$enddateyear    = request()->integer('enddateyear', 0);
 
 if (!empty($startdatemonth)) {
 	$startdate = dol_mktime(0, 0, 0, $startdatemonth, $startdateday, $startdateyear);
@@ -314,7 +314,7 @@ if ($result) {
 
 				$resql_seller = $db->query($sql_seller);
 				if (!$resql_seller) {
-					dol_print_error($db);
+					abort(500);
 				} else {
 					if ($obj_seller = $db->fetch_object($resql_seller)) {
 						if ($obj_seller->nb > 0) {
@@ -392,7 +392,7 @@ if ($result) {
 	print '</table>';
 	print '</div>';
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 $db->free($result);
 

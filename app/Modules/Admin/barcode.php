@@ -44,12 +44,12 @@ $langs->load("admin");
 
 // Security Check Access
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 // Get Parameters
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
 
 /*
@@ -59,7 +59,7 @@ $modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'setbarcodeproducton') {
-	$barcodenumberingmodule = GETPOST('value', 'alpha');
+	$barcodenumberingmodule = request()->input('value');
 	$res = dolibarr_set_const($db, "BARCODE_PRODUCT_ADDON_NUM", $barcodenumberingmodule, 'chaine', 0, '', $conf->entity);
 	if ($barcodenumberingmodule == 'mod_barcode_product_standard' && !getDolGlobalString('BARCODE_STANDARD_PRODUCT_MASK')) {
 		$res = dolibarr_set_const($db, "BARCODE_STANDARD_PRODUCT_MASK", '04{0000000000}', 'chaine', 0, '', $conf->entity);
@@ -69,7 +69,7 @@ if ($action == 'setbarcodeproducton') {
 }
 
 if ($action == 'setbarcodethirdpartyon') {
-	$barcodenumberingmodule = GETPOST('value', 'alpha');
+	$barcodenumberingmodule = request()->input('value');
 	$res = dolibarr_set_const($db, "BARCODE_THIRDPARTY_ADDON_NUM", $barcodenumberingmodule, 'chaine', 0, '', $conf->entity);
 	if ($barcodenumberingmodule == 'mod_barcode_thirdparty_standard' && !getDolGlobalString('BARCODE_STANDARD_THIRDPARTY_MASK')) {
 		$res = dolibarr_set_const($db, "BARCODE_STANDARD_THIRDPARTY_MASK", '04{0000000000}', 'chaine', 0, '', $conf->entity);
@@ -79,8 +79,8 @@ if ($action == 'setbarcodethirdpartyon') {
 }
 
 if ($action == 'setcoder') {
-	$coder = GETPOST('coder', 'alpha');
-	$code_id = GETPOSTINT('code_id');
+	$coder = request()->input('coder');
+	$code_id = request()->integer('code_id', 0);
 	$sqlp = "UPDATE ".MAIN_DB_PREFIX."c_barcode_type";
 	$sqlp .= " SET coder = '".$db->escape($coder)."'";
 	$sqlp .= " WHERE rowid = ".((int) $code_id);
@@ -88,14 +88,14 @@ if ($action == 'setcoder') {
 
 	$resql = $db->query($sqlp);
 	if (!$resql) {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'update') {
-	$location = GETPOST('GENBARCODE_LOCATION', 'alpha');
+	$location = request()->input('GENBARCODE_LOCATION');
 	$res = dolibarr_set_const($db, "GENBARCODE_LOCATION", $location, 'chaine', 0, '', $conf->entity);
-	$coder_id = GETPOST('PRODUIT_DEFAULT_BARCODE_TYPE', 'alpha');
+	$coder_id = request()->input('PRODUIT_DEFAULT_BARCODE_TYPE');
 	$res = dolibarr_set_const($db, "PRODUIT_DEFAULT_BARCODE_TYPE", $coder_id, 'chaine', 0, '', $conf->entity);
-	$coder_id = GETPOST('GENBARCODE_BARCODETYPE_THIRDPARTY', 'alpha');
+	$coder_id = request()->input('GENBARCODE_BARCODETYPE_THIRDPARTY');
 	$res = dolibarr_set_const($db, "GENBARCODE_BARCODETYPE_THIRDPARTY", $coder_id, 'chaine', 0, '', $conf->entity);
 
 	if ($res > 0) {
@@ -128,7 +128,7 @@ if ($action == 'setcoder') {
 
 				$upsql = $db->query($sqlp);
 				if (!$upsql) {
-					dol_print_error($db);
+					abort(500);
 				}
 			}
 

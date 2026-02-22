@@ -40,11 +40,11 @@ require_once DOL_DOCUMENT_ROOT . '/asset/class/assetmodel.class.php';
 $langs->loadLangs(array("assets", "companies"));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new AssetModel($db);
@@ -66,7 +66,7 @@ $permissionnote = $permissiontoadd; // Used by the include of actions_setnotes.i
 
 // Security check (enable the most restrictive one)
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
 	$socid = $user->socid;
@@ -74,10 +74,10 @@ if ($user->socid > 0) {
 $isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 restrictedArea($user, 'asset', $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (empty($conf->asset->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 

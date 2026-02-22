@@ -194,7 +194,7 @@ class mod_barcode_thirdparty_standard extends ModeleNumRefBarCode
 				$out .= $obj->label; //take the label corresponding to the type rowid in the database
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		return $out;

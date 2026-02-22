@@ -44,15 +44,15 @@ require_once DOL_DOCUMENT_ROOT.'/fourn/class/paiementfourn.class.php';
 $langs->loadLangs(array("admin", "errors", "other", "bills", "orders"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$value = GETPOST('value', 'alpha');
-$modulepart = GETPOST('modulepart', 'aZ09');	// Used by actions_setmoduleoptions.inc.php
+$action = request()->input('action');
+$value = request()->input('value');
+$modulepart = request()->input('modulepart');	// Used by actions_setmoduleoptions.inc.php
 
-$label = GETPOST('label', 'alpha');
-$scandir = GETPOST('scandir', 'alpha');
+$label = request()->input('label');
+$scandir = request()->input('scandir');
 $type = 'supplier_payment';
 $error = 0;
 
@@ -63,8 +63,8 @@ $error = 0;
 include DOL_DOCUMENT_ROOT.'/core/actions_setmoduleoptions.inc.php';
 
 if ($action == 'updateMask') {
-	$maskconstsupplierpayment = GETPOST('maskconstsupplierpayment', 'aZ09');
-	$masksupplierpayment = GETPOST('masksupplierpayment', 'alpha');
+	$maskconstsupplierpayment = request()->input('maskconstsupplierpayment');
+	$masksupplierpayment = request()->input('masksupplierpayment');
 
 	$res = 0;
 
@@ -109,7 +109,7 @@ if ($action == 'updateMask') {
 } elseif ($action == 'unsetdoc') {
 	dolibarr_del_const($db, "SUPPLIER_PAYMENT_ADDON_PDF", $conf->entity);
 } elseif ($action == 'specimen') {
-	$modele = GETPOST('module', 'alpha');
+	$modele = request()->input('module');
 
 	$paiementFourn = new PaiementFourn($db);
 	$paiementFourn->initAsSpecimen();
@@ -144,7 +144,7 @@ if ($action == 'updateMask') {
 		dol_syslog($langs->trans("ErrorModuleNotFound"), LOG_ERR);
 	}
 } elseif ($action == 'setparams') {
-	$res = dolibarr_set_const($db, "PAYMENTS_FOURN_REPORT_GROUP_BY_MOD", GETPOSTINT('PAYMENTS_FOURN_REPORT_GROUP_BY_MOD'), 'chaine', 0, '', $conf->entity);
+	$res = dolibarr_set_const($db, "PAYMENTS_FOURN_REPORT_GROUP_BY_MOD", request()->integer('PAYMENTS_FOURN_REPORT_GROUP_BY_MOD', 0), 'chaine', 0, '', $conf->entity);
 	if (!($res > 0)) {
 		$error++;
 	}
@@ -206,7 +206,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 print '<table class="noborder centpercent">';

@@ -36,24 +36,24 @@ require '../../main.inc.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 // Load translation files required by the page
 $langs->loadLangs(array("install", "other", "admin"));
 
-$action = GETPOST('action', 'aZ09');
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'moduleoverview';
+$action = request()->input('action');
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'moduleoverview';
 
-$search_name = GETPOST("search_name", 'alpha');
-$search_id = GETPOST("search_id", 'alpha');
-$search_version = GETPOST("search_version", 'alpha');
-$search_permission = GETPOST("search_permission", 'alpha');
+$search_name = request()->input('search_name');
+$search_id = request()->input('search_id');
+$search_version = request()->input('search_version');
+$search_permission = request()->input('search_permission');
 
-$page = GETPOSTINT('page');
-$sortfield			= GETPOST('sortfield', 'aZ09comma');
-$sortorder			= GETPOST('sortorder', 'aZ09comma');
+$page = request()->integer('page', 0);
+$sortfield			= request()->input('sortfield');
+$sortorder			= request()->input('sortorder');
 
 if (!$sortfield) {
 	$sortfield = "id";
@@ -229,7 +229,7 @@ print '<input type="hidden" name="sortfield" value="'.$sortfield.'">';
 print '<input type="hidden" name="sortorder" value="'.$sortorder.'">';
 print '<input type="hidden" name="contextpage" value="'.$contextpage.'">';
 
-if (!GETPOSTINT('hidetitle')) {
+if (!request()->integer('hidetitle', 0)) {
 	print_barre_liste($langs->trans("AvailableModules"), empty($page) ? 0 : $page, $_SERVER["PHP_SELF"], '', $sortfield, $sortorder, '', -1, '', 'title_setup', 0, '', '', 0, 1, 1);
 
 	print '<span class="opacitymedium">'.$langs->trans("ToActivateModule").'</span>';

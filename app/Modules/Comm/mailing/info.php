@@ -37,14 +37,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/emailing.lib.php';
  * @var User $user
  */
 
-$id = GETPOSTINT('id');
+$id = request()->integer('id', 0);
 
 // Load translation files required by the page
 $langs->load("mails");
 
 // Security check
 if (!$user->hasRight('mailing', 'lire') || (!getDolGlobalString('EXTERNAL_USERS_ARE_AUTHORIZED') && $user->socid > 0)) {
-	accessforbidden();
+	abort(403);
 }
 //restrictedArea($user, 'mailing');
 

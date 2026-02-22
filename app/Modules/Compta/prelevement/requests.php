@@ -44,19 +44,19 @@ require_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
 $langs->loadLangs(array('banks', 'categories', 'bills', 'companies', 'withdrawals'));
 
 // Get supervariables
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$socid = GETPOSTINT('socid');
-$type = GETPOST('type', 'aZ09');
-$date_trans = dol_mktime(GETPOSTINT('date_transhour'), GETPOSTINT('date_transmin'), GETPOSTINT('date_transsec'), GETPOSTINT('date_transmonth'), GETPOSTINT('date_transday'), GETPOSTINT('date_transyear'));
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$socid = request()->integer('socid', 0);
+$type = request()->input('type');
+$date_trans = dol_mktime(request()->integer('date_transhour', 0), request()->integer('date_transmin', 0), request()->integer('date_transsec', 0), request()->integer('date_transmonth', 0), request()->integer('date_transday', 0), request()->integer('date_transyear', 0));
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1
@@ -114,7 +114,7 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	if ($action == 'setbankaccount' && $permissiontoadd) {
 		$object->oldcopy = dol_clone($object, 2);  // @phan-suppress-current-line PhanTypeMismatchProperty
-		$object->fk_bank_account = GETPOSTINT('fk_bank_account');
+		$object->fk_bank_account = request()->integer('fk_bank_account', 0);
 
 		$object->update($user);
 	}
@@ -130,7 +130,7 @@ if (empty($reshook)) {
 	if ($action == 'infotrans' && $permissiontosend) {
 		require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
-		$dt = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		$dt = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
 		/*
 		if ($_FILES['userfile']['name'] && basename($_FILES['userfile']['name'],".ps") == $object->ref)
@@ -139,7 +139,7 @@ if (empty($reshook)) {
 
 			if (dol_move_uploaded_file($_FILES['userfile']['tmp_name'], $dir . "/" . dol_unescapefile($_FILES['userfile']['name']),1) > 0)
 			{
-				$object->set_infotrans($user, $dt, GETPOST('methode','alpha'));
+				$object->set_infotrans($user, $dt, request()->input('methode'));
 			}
 
 			header("Location: card.php?id=".$id);
@@ -151,7 +151,7 @@ if (empty($reshook)) {
 			$mesg='BadFile';
 		}*/
 
-		$error = $object->set_infotrans($user, $dt, GETPOSTINT('methode'));
+		$error = $object->set_infotrans($user, $dt, request()->integer('methode', 0));
 
 		if ($error) {
 			header("Location: card.php?id=".$id."&error=$error");
@@ -161,7 +161,7 @@ if (empty($reshook)) {
 
 	// Set direct debit order to credited, create payment and close invoices
 	if ($action == 'setinfocredit' && $permissiontocreditdebit) {
-		$dt = dol_mktime(12, 0, 0, GETPOSTINT('remonth'), GETPOSTINT('reday'), GETPOSTINT('reyear'));
+		$dt = dol_mktime(12, 0, 0, request()->integer('remonth', 0), request()->integer('reday', 0), request()->integer('reyear', 0));
 
 		if (($object->type != 'bank-transfer' && $object->statut == BonPrelevement::STATUS_CREDITED) || ($object->type == 'bank-transfer' && $object->statut == BonPrelevement::STATUS_DEBITED)) {
 			$error = 1;
@@ -219,8 +219,8 @@ if ($id > 0 || $ref) {
 
 	print dol_get_fiche_head($head, 'requests', $langs->trans("WithdrawalsReceipts"), -1, 'payment');
 
-	if (GETPOST('error', 'alpha') != '') {
-		print '<div class="error">'.$object->getErrorString(GETPOSTINT('error')).'</div>';
+	if (request()->input('error') != '') {
+		print '<div class="error">'.$object->getErrorString(request()->integer('error', 0)).'</div>';
 	}
 
 	$linkback = '<a href="'.DOL_URL_ROOT.'/compta/prelevement/orders_list.php?restore_lastsearch_values=1'.($object->type != 'bank-transfer' ? '' : '&type=bank-transfer').'">'.$langs->trans("BackToList").'</a>';
@@ -623,7 +623,7 @@ if ($id > 0 || $ref) {
 
 		$db->free($result);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

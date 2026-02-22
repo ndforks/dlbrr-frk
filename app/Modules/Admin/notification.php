@@ -46,10 +46,10 @@ $langs->loadLangs(array('admin', 'other', 'orders', 'propal', 'bills', 'errors',
 
 // Security check
 if (!$user->admin) { // after this test, $user->admin is always true
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $error = 0;
 
 
@@ -101,12 +101,12 @@ if ($action == 'settemplates') { // Test on permission already done
 if ($action == 'setvalue') { // Test on permission already done
 	$db->begin();
 
-	$result = dolibarr_set_const($db, "NOTIFICATION_EMAIL_FROM", GETPOST("email_from", "alphawithlgt"), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "NOTIFICATION_EMAIL_FROM", request()->input('email_from'), 'chaine', 0, '', $conf->entity);
 	if ($result < 0) {
 		$error++;
 	}
 
-	$result = dolibarr_set_const($db, "NOTIFICATION_EMAIL_DISABLE_CONFIRM_MESSAGE", GETPOST("notif_disable", "alphawithlgt"), 'chaine', 0, '', $conf->entity);
+	$result = dolibarr_set_const($db, "NOTIFICATION_EMAIL_DISABLE_CONFIRM_MESSAGE", request()->input('notif_disable'), 'chaine', 0, '', $conf->entity);
 	if ($result < 0) {
 		$error++;
 	}

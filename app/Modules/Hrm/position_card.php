@@ -48,10 +48,10 @@ require_once DOL_DOCUMENT_ROOT . '/hrm/lib/hrm_position.lib.php';
  */
 
 // Get Parameters
-$action 	= GETPOST('action', 'aZ09') ? GETPOST('action', 'aZ09') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-$id 	= GETPOSTINT('id');
+$action 	= request()->input('action') ? request()->input('action') : 'view'; // The action 'add', 'create', 'edit', 'update', 'view', ...
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$id 	= request()->integer('id', 0);
 
 // Initialize a technical objects
 $form = new Form($db);
@@ -69,15 +69,15 @@ $permissiondellink = $user->hasRight('hrm', 'all', 'write'); // Used by the incl
 $upload_dir = $conf->hrm->multidir_output[isset($object->entity) ? $object->entity : 1] . '/position';
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
 if (empty($conf->hrm->enabled)) {
-	accessforbidden();
+	abort(403);
 }
 if (!$permissiontoread || ($action === 'create' && !$permissiontoadd)) {
-	accessforbidden();
+	abort(403);
 }
 
 $langs->loadLangs(array("hrm", "other"));
@@ -85,17 +85,17 @@ $langs->loadLangs(array("hrm", "other"));
 
 
 // Get parameters
-$id 	= GETPOSTINT('id');
-$fk_job = GETPOSTINT('fk_job');
+$id 	= request()->integer('id', 0);
+$fk_job = request()->integer('fk_job', 0);
 
-$ref 	= GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$confirm = GETPOST('confirm', 'alpha');
-$cancel = GETPOST('cancel');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'positioncard'; // To manage different context of search
-$backtopage = GETPOST('backtopage', 'alpha');
-$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
-//	$lineid   = GETPOST('lineid', 'int');
+$ref 	= request()->input('ref');
+$action = request()->input('action');
+$confirm = request()->input('confirm');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'positioncard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+//	$lineid   = request()->input('lineid');
 
 // Initialize a technical objects
 //$object = new Position($db);
@@ -115,7 +115,7 @@ $extrafields->fetch_name_optionals_label($object->table_element);
 $search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criteria
-$search_all = GETPOST("search_all", 'alpha');
+$search_all = request()->input('search_all');
 $search = array();
 foreach ($object->fields as $key => $val) {
 	if (GETPOST('search_' . $key, 'alpha')) {
@@ -174,10 +174,10 @@ if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT . '/core/actions_builddoc.inc.php';
 
 	if ($action == 'set_thirdparty' && $permissiontoadd) {
-		$object->setValueFrom('fk_soc', GETPOSTINT('fk_soc'), '', null, 'date', '', $user, $triggermodname);
+		$object->setValueFrom('fk_soc', request()->integer('fk_soc', 0), '', null, 'date', '', $user, $triggermodname);
 	}
 	if ($action == 'classin' && $permissiontoadd) {
-		$object->setProject(GETPOSTINT('projectid'));
+		$object->setProject(request()->integer('projectid', 0));
 	}
 
 	// Actions to send emails
@@ -219,8 +219,8 @@ function displayPositionCard(&$object)
 	$formfile = new FormFile($db);
 	$formproject = new FormProjets($db);
 
-	$backtopage = GETPOST('backtopage', 'alpha');
-	$backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
+	$backtopage = request()->input('backtopage');
+	$backtopageforcancel = request()->input('backtopageforcancel');
 
 	$title = $langs->trans("Position");
 	$help_url = '';

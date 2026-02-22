@@ -54,8 +54,8 @@ $error = 0;
 /*
  * Add file in email form
  */
-if (GETPOST('addfile', 'alpha')) {
-	$trackid = GETPOST('trackid', 'aZ09');
+if (request()->input('addfile')) {
+	$trackid = request()->input('trackid');
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -70,8 +70,8 @@ if (GETPOST('addfile', 'alpha')) {
 /*
  * Remove file in email form
  */
-if (GETPOST('removedfile') && !GETPOST('removeAll')) {
-	$trackid = GETPOST('trackid', 'aZ09');
+if (request()->input('removedfile') && !request()->input('removeAll')) {
+	$trackid = request()->input('trackid');
 
 	require_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
 
@@ -80,16 +80,16 @@ if (GETPOST('removedfile') && !GETPOST('removeAll')) {
 	$upload_dir_tmp = $vardir.'/temp'; // TODO Add $keytoavoidconflict in upload_dir path
 
 	// TODO Delete only files that was uploaded from email form. This can be addressed by adding the trackid into the temp path then changing donotdeletefile to 2 instead of 1 to say "delete only if into temp dir"
-	// GETPOST('removedfile','alpha') is position of file into $_SESSION["listofpaths"...] array.
-	dol_remove_file_process(GETPOSTINT('removedfile'), 0, 1, $trackid); // We do not delete because if file is the official PDF of doc, we don't want to remove it physically
+	// request()->input('removedfile') is position of file into $_SESSION["listofpaths"...] array.
+	dol_remove_file_process(request()->integer('removedfile', 0), 0, 1, $trackid); // We do not delete because if file is the official PDF of doc, we don't want to remove it physically
 	$action = 'presend';
 }
 
 /*
  * Remove all files in email form
  */
-if (GETPOST('removeAll', 'alpha')) {
-	$trackid = GETPOST('trackid', 'aZ09');
+if (request()->input('removeAll')) {
+	$trackid = request()->input('trackid');
 
 	$listofpaths = array();
 	$listofnames = array();
@@ -124,9 +124,9 @@ if (GETPOST('removeAll', 'alpha')) {
 /*
  * Send mail
  */
-if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPOST('removeAll') && !GETPOST('removedfile') && !GETPOST('cancel') && !GETPOST('modelselected')) {
+if (($action == 'send' || $action == 'relance') && !request()->input('addfile') && !request()->input('removeAll') && !request()->input('removedfile') && !request()->input('cancel') && !request()->input('modelselected')) {
 	if (empty($trackid)) {
-		$trackid = GETPOST('trackid', 'aZ09');
+		$trackid = request()->input('trackid');
 	}
 
 	// Set tmp user directory (used to convert images embedded as img src=data:image)
@@ -202,7 +202,7 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 		$sendtoccuserid = array();
 
 		// Define $sendto
-		$receiver = GETPOST('receiver', 'alphawithlgt');
+		$receiver = request()->input('receiver');
 		if (!is_array($receiver)) {
 			if ($receiver == '-1') {
 				$receiver = array();
@@ -212,14 +212,14 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 		}
 
 		$tmparray = array();
-		if (trim(GETPOST('sendto', 'alphawithlgt'))) {
+		if (trim(request()->input('sendto'))) {
 			// Recipients are provided into free text field
-			$tmparray[] = trim(GETPOST('sendto', 'alphawithlgt'));
+			$tmparray[] = trim(request()->input('sendto'));
 		}
 
-		if (trim(GETPOST('tomail', 'alphawithlgt'))) {
+		if (trim(request()->input('tomail'))) {
 			// Recipients are provided into free hidden text field
-			$tmparray[] = trim(GETPOST('tomail', 'alphawithlgt'));
+			$tmparray[] = trim(request()->input('tomail'));
 		}
 
 		if (count($receiver) > 0) {
@@ -247,7 +247,7 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 		}
 
 		if (getDolGlobalString('MAIN_MAIL_ENABLED_USER_DEST_SELECT')) {
-			$receiveruser = GETPOST('receiveruser', 'alphawithlgt');
+			$receiveruser = request()->input('receiveruser');
 			if (is_array($receiveruser) && count($receiveruser) > 0) {
 				$fuserdest = new User($db);
 				foreach ($receiveruser as $key => $val) {
@@ -260,7 +260,7 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 		$sendto = implode(',', $tmparray);
 
 		// Define $sendtocc
-		$receivercc = GETPOST('receivercc', 'alphawithlgt');
+		$receivercc = request()->input('receivercc');
 		if (!is_array($receivercc)) {
 			if ($receivercc == '-1') {
 				$receivercc = array();
@@ -269,8 +269,8 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 			}
 		}
 		$tmparray = array();
-		if (trim(GETPOST('sendtocc', 'alphawithlgt'))) {
-			$tmparray[] = trim(GETPOST('sendtocc', 'alphawithlgt'));
+		if (trim(request()->input('sendtocc'))) {
+			$tmparray[] = trim(request()->input('sendtocc'));
 		}
 		if (count($receivercc) > 0) {
 			foreach ($receivercc as $key => $val) {
@@ -288,7 +288,7 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 			}
 		}
 		if (getDolGlobalString('MAIN_MAIL_ENABLED_USER_DEST_SELECT')) {
-			$receiverccuser = GETPOST('receiverccuser', 'alphawithlgt');
+			$receiverccuser = request()->input('receiverccuser');
 
 			if (is_array($receiverccuser) && count($receiverccuser) > 0) {
 				$fuserdest = new User($db);
@@ -311,7 +311,7 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 			$langs->load("commercial");
 
 			$reg = array();
-			$fromtype = GETPOST('fromtype', 'alpha');
+			$fromtype = request()->input('fromtype');
 			$emailsendersignature = '';
 			if ($fromtype === 'robot') {
 				$from = dol_string_nospecial(getDolGlobalString('MAIN_MAIL_EMAIL_FROM'), ' ', array(",")).' <' . getDolGlobalString('MAIN_MAIL_EMAIL_FROM').'>';
@@ -340,17 +340,17 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 					$from = $obj->email_from;
 				}
 			} else {
-				$from = dol_string_nospecial(GETPOST('fromname'), ' ', array(",")).' <'.GETPOST('frommail').'>';
+				$from = dol_string_nospecial(request()->input('fromname'), ' ', array(",")).' <'.request()->input('frommail').'>';
 			}
 
 			$replyto = '';
-			if (GETPOST('replytomail')) {
-				$replyto = dol_string_nospecial(GETPOST('replytoname'), ' ', array(","));
-				$replyto .= ($replyto ? ' ' : '').'<'.GETPOST('replytomail').'>';
+			if (request()->input('replytomail')) {
+				$replyto = dol_string_nospecial(request()->input('replytoname'), ' ', array(","));
+				$replyto .= ($replyto ? ' ' : '').'<'.request()->input('replytomail').'>';
 			}
 
-			$message = GETPOST('message', 'restricthtml');
-			$subject = GETPOST('subject', 'restricthtml');
+			$message = request()->input('message');
+			$subject = request()->input('subject');
 
 			// Make a change into HTML code to allow to include images from medias directory with an external reabable URL.
 			// <img alt="" src="/dolibarr_dev/htdocs/viewimage.php?modulepart=medias&amp;entity=1&amp;file=image/ldestailleur_166x166.jpg" style="height:166px; width:166px" />
@@ -358,14 +358,14 @@ if (($action == 'send' || $action == 'relance') && !GETPOST('addfile') && !GETPO
 			// <img alt="" src="'.$urlwithroot.'viewimage.php?modulepart=medias&amp;entity=1&amp;file=image/ldestailleur_166x166.jpg" style="height:166px; width:166px" />
 			$message = preg_replace('/(<img.*src=")[^\"]*viewimage\.php([^\"]*)modulepart=medias([^\"]*)file=([^\"]*)("[^\/]*\/>)/', '\1'.$urlwithroot.'/viewimage.php\2modulepart=medias\3file=\4\5', $message);
 
-			$sendtobcc = GETPOST('sendtoccc', 'alphawithlgt');
+			$sendtobcc = request()->input('sendtoccc');
 			// Autocomplete the $sendtobcc
 			// $autocopy can be MAIN_MAIL_AUTOCOPY_PROPOSAL_TO, MAIN_MAIL_AUTOCOPY_ORDER_TO, MAIN_MAIL_AUTOCOPY_INVOICE_TO, MAIN_MAIL_AUTOCOPY_SUPPLIER_PROPOSAL_TO...
 			if (!empty($autocopy)) {
 				$sendtobcc .= (getDolGlobalString($autocopy) ? (($sendtobcc ? ", " : "") . getDolGlobalString($autocopy)) : '');
 			}
 
-			$deliveryreceipt = GETPOSTINT('deliveryreceipt') ? 1 : 0;
+			$deliveryreceipt = request()->integer('deliveryreceipt', 0) ? 1 : 0;
 
 			if ($action == 'send' || $action == 'relance') {
 				$actionmsg2 = $langs->transnoentities('MailSentByTo', CMailFile::getValidAddress($from, 4, 0, 1), CMailFile::getValidAddress($sendto, 4, 0, 1));

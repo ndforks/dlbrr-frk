@@ -41,10 +41,10 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 // Load translation files required by the page
 $langs->load("admin");
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -60,7 +60,7 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 
@@ -71,7 +71,7 @@ if (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -43,82 +43,82 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/images.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("products", "other"));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$modulepart = GETPOST('modulepart', 'alpha') ? GETPOST('modulepart', 'alpha') : 'produit|service';
-$original_file = GETPOST("file");
-$backtourl = GETPOST('backtourl');
-$cancel = GETPOST('cancel', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$modulepart = request()->input('modulepart') ? request()->input('modulepart') : 'produit|service';
+$original_file = request()->input('file');
+$backtourl = request()->input('backtourl');
+$cancel = request()->input('cancel');
 
-$file = GETPOST('file', 'alpha');
-$num = GETPOST('num', 'alpha'); // Used for document on bank statement
-$website = GETPOST('website', 'alpha');
+$file = request()->input('file');
+$num = request()->input('num'); // Used for document on bank statement
+$website = request()->input('website');
 
 
 // Security check
 if (empty($modulepart)) {
-	accessforbidden('Bad value for modulepart');
+	abort(403);
 }
 $accessallowed = 0;
 if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'service' || $modulepart == 'produit|service') {
 	$result = restrictedArea($user, 'produit|service', $id, 'product&product');
 	if ($modulepart == 'produit|service' && (!$user->hasRight('produit', 'lire') && !$user->hasRight('service', 'lire'))) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'project') {
 	$result = restrictedArea($user, 'projet', $id);
 	if (!$user->hasRight('projet', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'bom') {
 	$result = restrictedArea($user, $modulepart, $id, 'bom_bom');
 	if (!$user->hasRight('bom', 'read')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'member') {
 	$result = restrictedArea($user, 'adherent', $id, '', '', 'fk_soc', 'rowid');
 	if (!$user->hasRight('adherent', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'user') {
 	$result = restrictedArea($user, $modulepart, $id, $modulepart, $modulepart);
 	if (!$user->hasRight('user', 'user', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'tax') {
 	$result = restrictedArea($user, $modulepart, $id, 'chargesociales', 'charges');
 	if (!$user->hasRight('tax', 'charges', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'bank') {
 	$result = restrictedArea($user, 'banque', $id, 'bank_account');
 	if (!$user->hasRight('banque', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'medias') {
 	$permtoadd = ($user->hasRight('mailing', 'creer') || $user->hasRight('website', 'write'));
 	if (!$permtoadd) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } elseif ($modulepart == 'facture_fourn' || $modulepart == 'facture_fournisseur') {
 	$result = restrictedArea($user, 'fournisseur', $id, 'facture_fourn', 'facture');
 	if (!$user->hasRight('fournisseur', 'facture', 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 } else {
 	// ticket, holiday, expensereport, societe...
 	$result = restrictedArea($user, $modulepart, $id, $modulepart);
 	if (!$user->hasRight($modulepart, 'read') && !$user->hasRight($modulepart, 'lire')) {
-		accessforbidden();
+		abort(403);
 	}
 	$accessallowed = 1;
 }
@@ -126,7 +126,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 // Security:
 // Limit access if permissions are wrong
 if (!$accessallowed) {
-	accessforbidden();
+	abort(403);
 }
 
 // Define dir according to modulepart
@@ -137,7 +137,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->product->multidir_output[$object->entity ?? $conf->entity]; // By default
 		if ($object->type == Product::TYPE_PRODUCT) {
@@ -153,7 +153,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->project->multidir_output[$object->entity ?? $conf->entity]; // By default
 	}
@@ -163,7 +163,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->propal->multidir_output[$object->entity ?? $conf->entity]; // By default
 	}
@@ -173,7 +173,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -183,7 +183,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->adherent->dir_output; // By default
 	}
@@ -193,7 +193,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output;
 	}
@@ -203,7 +203,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -213,7 +213,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->expensereport->dir_output; // By default
 	}
@@ -223,7 +223,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -233,7 +233,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -243,7 +243,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -253,7 +253,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -263,7 +263,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->bank->dir_output; // By default
 	}
@@ -273,7 +273,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->$modulepart->dir_output; // By default
 	}
@@ -283,7 +283,7 @@ if ($modulepart == 'produit' || $modulepart == 'product' || $modulepart == 'serv
 	if ($id > 0) {
 		$result = $object->fetch($id);
 		if ($result <= 0) {
-			dol_print_error($db, 'Failed to load object');
+			abort(500, 'Failed to load object');
 		}
 		$dir = $conf->fournisseur->dir_output.'/facture'; // By default
 	}
@@ -354,7 +354,7 @@ if ($cancel) {
 	}
 }
 
-if ($action == 'confirm_resize' && GETPOSTISSET("file") && GETPOSTISSET("sizex") && GETPOSTISSET("sizey")) {	// Test on permission already done
+if ($action == 'confirm_resize' && request()->has('file') && request()->has('sizex') && request()->has('sizey')) {	// Test on permission already done
 	if (empty($dir)) {
 		dol_print_error(null, 'Bug: Value for $dir could not be defined.');
 		exit;
@@ -362,7 +362,7 @@ if ($action == 'confirm_resize' && GETPOSTISSET("file") && GETPOSTISSET("sizex")
 
 	$fullpath = $dir."/".$original_file;
 
-	$result = dol_imageResizeOrCrop($fullpath, 0, GETPOSTINT('sizex'), GETPOSTINT('sizey'));
+	$result = dol_imageResizeOrCrop($fullpath, 0, request()->integer('sizex', 0), request()->integer('sizey', 0));
 
 	if ($result == $fullpath) {
 		// If image is related to a given object, we create also thumbs.
@@ -426,7 +426,7 @@ if ($action == 'confirm_crop') {		// Test on permission already done
 
 	$fullpath = $dir."/".$original_file;
 
-	$result = dol_imageResizeOrCrop($fullpath, 1, GETPOSTINT('w'), GETPOSTINT('h'), GETPOSTINT('x'), GETPOSTINT('y'));
+	$result = dol_imageResizeOrCrop($fullpath, 1, request()->integer('w', 0), request()->integer('h', 0), request()->integer('x', 0), request()->integer('y', 0));
 
 	if ($result == $fullpath) {
 		if (is_object($object)) {
@@ -495,7 +495,7 @@ llxHeader($head, $title, '', '', 0, 0, $morejs, $morecss);
 
 print load_fiche_titre($title);
 
-$infoarray = dol_getImageSize($dir."/".GETPOST("file", 'alpha'));
+$infoarray = dol_getImageSize($dir."/".request()->input('file'));
 $height = $infoarray['height'];
 $width = $infoarray['width'];
 print '<span class="opacitymedium hideonsmartphone">'.$langs->trans("CurrentInformationOnImage").': </span>';
@@ -543,7 +543,7 @@ print '<br>'."\n";
 print '<br>'."\n";
 
 if (!empty($conf->use_javascript_ajax)) {
-	$infoarray = dol_getImageSize($dir."/".GETPOST("file"));
+	$infoarray = dol_getImageSize($dir."/".request()->input('file'));
 	$height = $infoarray['height'];
 	$width = $infoarray['width'];
 	$widthforcrop = $width;

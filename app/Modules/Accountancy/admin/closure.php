@@ -43,10 +43,10 @@ $langs->loadLangs(array("compta", "admin", "accountancy"));
 
 // Security check
 if (!$user->hasRight('accounting', 'chartofaccount')) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 $list_account_main = array(
@@ -61,7 +61,7 @@ $list_account_main = array(
 if ($action == 'update') {
 	$error = 0;
 
-	$defaultjournal = GETPOST('ACCOUNTING_CLOSURE_DEFAULT_JOURNAL', 'alpha');
+	$defaultjournal = request()->input('ACCOUNTING_CLOSURE_DEFAULT_JOURNAL');
 
 	if (!empty($defaultjournal)) {
 		if (!dolibarr_set_const($db, 'ACCOUNTING_CLOSURE_DEFAULT_JOURNAL', $defaultjournal, 'chaine', 0, '', $conf->entity)) {
@@ -71,7 +71,7 @@ if ($action == 'update') {
 		$error++;
 	}
 
-	$accountinggroupsusedforbalancesheetaccount = GETPOST('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT', 'alphanohtml');
+	$accountinggroupsusedforbalancesheetaccount = request()->input('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT');
 	if (!empty($accountinggroupsusedforbalancesheetaccount)) {
 		if (!dolibarr_set_const($db, 'ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_BALANCE_SHEET_ACCOUNT', $accountinggroupsusedforbalancesheetaccount, 'chaine', 0, '', $conf->entity)) {
 			$error++;
@@ -80,7 +80,7 @@ if ($action == 'update') {
 		$error++;
 	}
 
-	$accountinggroupsusedforincomestatement = GETPOST('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT', 'alpha');
+	$accountinggroupsusedforincomestatement = request()->input('ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT');
 	if (!empty($accountinggroupsusedforincomestatement)) {
 		if (!dolibarr_set_const($db, 'ACCOUNTING_CLOSURE_ACCOUNTING_GROUPS_USED_FOR_INCOME_STATEMENT', $accountinggroupsusedforincomestatement, 'chaine', 0, '', $conf->entity)) {
 			$error++;

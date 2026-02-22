@@ -223,8 +223,8 @@ class FormFile
 			$out .= '<input type="hidden" name="token" value="'.newToken().'">'."\n";
 			$out .= '<input type="hidden" id="'.$htmlname.'_section_dir" name="section_dir" value="'.$sectiondir.'">'."\n";
 			$out .= '<input type="hidden" id="'.$htmlname.'_section_id"  name="section_id" value="'.$sectionid.'">'."\n";
-			$out .= '<input type="hidden" name="sortfield" value="'.GETPOST('sortfield', 'aZ09comma').'">'."\n";
-			$out .= '<input type="hidden" name="sortorder" value="'.GETPOST('sortorder', 'aZ09comma').'">'."\n";
+			$out .= '<input type="hidden" name="sortfield" value="'.request()->input('sortfield').'">'."\n";
+			$out .= '<input type="hidden" name="sortorder" value="'.request()->input('sortorder').'">'."\n";
 			$out .= '<input type="hidden" name="page_y" value="">'."\n";
 		}
 
@@ -1419,7 +1419,7 @@ class FormFile
 
 			// Show the table
 			print '<!-- html.formfile::list_of_documents -->'."\n";
-			if (GETPOST('action', 'aZ09') == 'editfile' && $permtoeditline) {
+			if (request()->input('action') == 'editfile' && $permtoeditline) {
 				print '<form action="'.$_SERVER["PHP_SELF"].'?'.$param.'" method="POST">';
 				print '<input type="hidden" name="token" value="'.newToken().'">';
 				print '<input type="hidden" name="action" value="renamefile">';
@@ -1432,7 +1432,7 @@ class FormFile
 
 			if (!empty($addfilterfields)) {
 				print '<tr class="liste_titre nodrag nodrop">';
-				print '<td><input type="search_doc_ref" value="'.dol_escape_htmltag(GETPOST('search_doc_ref', 'alpha')).'"></td>';
+				print '<td><input type="search_doc_ref" value="'.dol_escape_htmltag(request()->input('search_doc_ref')).'"></td>';
 				print '<td></td>';
 				print '<td></td>';
 				if (empty($useinecm) || $useinecm == 4 || $useinecm == 5 || $useinecm == 6) {
@@ -1557,11 +1557,11 @@ class FormFile
 					}
 					//print dol_trunc($file['name'],$maxlength,'middle');
 
-					//var_dump(dirname($filepath).' - '.dirname(GETPOST('urlfile', 'alpha')));
+					//var_dump(dirname($filepath).' - '.dirname(request()->input('urlfile')));
 
-					if (GETPOST('action', 'aZ09') == 'editfile' && $file['name'] == basename(GETPOST('urlfile', 'alpha')) && dirname($filepath) == dirname(GETPOST('urlfile', 'alpha'))) {
+					if (request()->input('action') == 'editfile' && $file['name'] == basename(request()->input('urlfile')) && dirname($filepath) == dirname(request()->input('urlfile'))) {
 						print '</a>';
-						$section_dir = dirname(GETPOST('urlfile', 'alpha'));
+						$section_dir = dirname(request()->input('urlfile'));
 						if (!preg_match('/\/$/', $section_dir)) {
 							$section_dir .= '/';
 						}
@@ -1707,18 +1707,18 @@ class FormFile
 									$moreparaminurl = '';
 									if (!empty($object->id) && $object->id > 0) {
 										$moreparaminurl .= '&id='.$object->id;
-									} elseif (GETPOST('website', 'alpha')) {
-										$moreparaminurl .= '&website='.GETPOST('website', 'alpha');
+									} elseif (request()->input('website')) {
+										$moreparaminurl .= '&website='.request()->input('website');
 									}
 									// Set the backtourl
-									if ($modulepart == 'medias' && !GETPOST('website')) {
+									if ($modulepart == 'medias' && !request()->input('website')) {
 										$moreparaminurl .= '&backtourl='.urlencode(DOL_URL_ROOT.'/ecm/index_medias.php?file_manager=1&modulepart='.$modulepart.'&section_dir='.$relativepath);
 									}
 									// Link to convert into webp
 									if (!preg_match('/\.webp$/i', $file['name'])) {
-										if ($modulepart == 'medias' && !GETPOST('website')) {
+										if ($modulepart == 'medias' && !request()->input('website')) {
 											print '<a href="'.DOL_URL_ROOT.'/ecm/index_medias.php?action=confirmconvertimgwebp&token='.newToken().'&section_dir='.urlencode($relativepath).'&filetoregenerate='.urlencode($fileinfo['basename']).'&module='.$modulepart.$param.$moreparaminurl.'" title="'.dol_escape_htmltag($langs->trans("GenerateChosenImgWebp")).'">'.img_picto('', 'images', 'class="flip marginrightonly"').'</a>';
-										} elseif ($modulepart == 'medias' && GETPOST('website')) {
+										} elseif ($modulepart == 'medias' && request()->input('website')) {
 											print '<a href="'.DOL_URL_ROOT.'/website/index.php?action=confirmconvertimgwebp&token='.newToken().'&section_dir='.urlencode($relativepath).'&filetoregenerate='.urlencode($fileinfo['basename']).'&module='.$modulepart.$param.$moreparaminurl.'" title="'.dol_escape_htmltag($langs->trans("GenerateChosenImgWebp")).'">'.img_picto('', 'images', 'class="flip marginrightonly"').'</a>';
 										}
 									}
@@ -1730,11 +1730,11 @@ class FormFile
 									$moreparaminurl = '';
 									if (!empty($object->id) && $object->id > 0) {
 										$moreparaminurl .= '&id='.$object->id;
-									} elseif (GETPOST('website', 'alpha')) {
-										$moreparaminurl .= '&website='.GETPOST('website', 'alpha');
+									} elseif (request()->input('website')) {
+										$moreparaminurl .= '&website='.request()->input('website');
 									}
 									// Set the backtourl
-									if ($modulepart == 'medias' && !GETPOST('website')) {
+									if ($modulepart == 'medias' && !request()->input('website')) {
 										$moreparaminurl .= '&backtourl='.urlencode(DOL_URL_ROOT.'/ecm/index_medias.php?file_manager=1&modulepart='.$modulepart.'&section_dir='.$relativepath);
 									}
 									//var_dump($moreparaminurl);
@@ -1826,7 +1826,7 @@ class FormFile
 
 			print ajax_autoselect('downloadlink');
 
-			if (GETPOST('action', 'aZ09') == 'editfile' && $permtoeditline) {
+			if (request()->input('action') == 'editfile' && $permtoeditline) {
 				print '</form>';
 			}
 

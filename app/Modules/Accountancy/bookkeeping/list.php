@@ -53,22 +53,22 @@ require_once DOL_DOCUMENT_ROOT.'/accountancy/class/lettering.class.php';
 $langs->loadLangs(array("accountancy", "categories", "compta", "other"));
 
 // Get Parameters
-$socid = GETPOSTINT('socid');
-$journal_code = GETPOST('code_journal', 'alpha');
-$account = GETPOST("account", 'int');
-$massdate = dol_mktime(0, 0, 0, GETPOSTINT('massdatemonth'), GETPOSTINT('massdateday'), GETPOSTINT('massdateyear'));
+$socid = request()->integer('socid', 0);
+$journal_code = request()->input('code_journal');
+$account = request()->input('account');
+$massdate = dol_mktime(0, 0, 0, request()->integer('massdatemonth', 0), request()->integer('massdateday', 0), request()->integer('massdateyear', 0));
 
 // action+display Parameters
-$action = GETPOST('action', 'aZ09');
-$massaction = GETPOST('massaction', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
-$toselect = GETPOST('toselect', 'array:int');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php'));
+$action = request()->input('action');
+$massaction = request()->input('massaction');
+$confirm = request()->input('confirm');
+$toselect = request()->input('toselect');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : str_replace('_', '', basename(dirname(__FILE__)).basename(__FILE__, '.php'));
 
 // Search Parameters
-$search_mvt_num = GETPOST('search_mvt_num', 'alpha');
-$search_doc_type = GETPOST("search_doc_type", 'alpha');
-$search_doc_ref = GETPOST("search_doc_ref", 'alpha');
+$search_mvt_num = request()->input('search_mvt_num');
+$search_doc_type = request()->input('search_doc_type');
+$search_doc_ref = request()->input('search_doc_ref');
 
 $search_doc_date = GETPOSTDATE('doc_date', 'getpost');	// deprecated. Can use 'search_date_start/end'
 
@@ -88,54 +88,54 @@ $search_date_validation_start = GETPOSTDATE('search_date_validation_start', 'get
 $search_date_validation_end = GETPOSTDATE('search_date_validation_end', 'getpostend');
 
 // Due date start
-$search_date_due_start_day = GETPOSTINT('search_date_due_start_day');
-$search_date_due_start_month = GETPOSTINT('search_date_due_start_month');
-$search_date_due_start_year = GETPOSTINT('search_date_due_start_year');
+$search_date_due_start_day = request()->integer('search_date_due_start_day', 0);
+$search_date_due_start_month = request()->integer('search_date_due_start_month', 0);
+$search_date_due_start_year = request()->integer('search_date_due_start_year', 0);
 $search_date_due_start = GETPOSTDATE('search_date_due_start_', 'getpost');
 
 // Due date end
-$search_date_due_end_day = GETPOSTINT('search_date_due_end_day');
-$search_date_due_end_month = GETPOSTINT('search_date_due_end_month');
-$search_date_due_end_year = GETPOSTINT('search_date_due_end_year');
+$search_date_due_end_day = request()->integer('search_date_due_end_day', 0);
+$search_date_due_end_month = request()->integer('search_date_due_end_month', 0);
+$search_date_due_end_year = request()->integer('search_date_due_end_year', 0);
 $search_date_due_end = GETPOSTDATE('search_date_due_end_', 'getpostend');
 
-$search_import_key = GETPOST("search_import_key", 'alpha');
+$search_import_key = request()->input('search_import_key');
 
-$search_account_category = GETPOSTINT('search_account_category');
+$search_account_category = request()->integer('search_account_category', 0);
 
-$search_accountancy_code = GETPOST("search_accountancy_code", 'alpha');
-$search_accountancy_code_start = GETPOST('search_accountancy_code_start', 'alpha');
+$search_accountancy_code = request()->input('search_accountancy_code');
+$search_accountancy_code_start = request()->input('search_accountancy_code_start');
 if ($search_accountancy_code_start == - 1) {
 	$search_accountancy_code_start = '';
 }
-$search_accountancy_code_end = GETPOST('search_accountancy_code_end', 'alpha');
+$search_accountancy_code_end = request()->input('search_accountancy_code_end');
 if ($search_accountancy_code_end == - 1) {
 	$search_accountancy_code_end = '';
 }
 
-$search_accountancy_aux_code = GETPOST("search_accountancy_aux_code", 'alpha');
-$search_accountancy_aux_code_start = GETPOST('search_accountancy_aux_code_start', 'alpha');
+$search_accountancy_aux_code = request()->input('search_accountancy_aux_code');
+$search_accountancy_aux_code_start = request()->input('search_accountancy_aux_code_start');
 if ($search_accountancy_aux_code_start == - 1) {
 	$search_accountancy_aux_code_start = '';
 }
-$search_accountancy_aux_code_end = GETPOST('search_accountancy_aux_code_end', 'alpha');
+$search_accountancy_aux_code_end = request()->input('search_accountancy_aux_code_end');
 if ($search_accountancy_aux_code_end == - 1) {
 	$search_accountancy_aux_code_end = '';
 }
-$search_mvt_label = GETPOST('search_mvt_label', 'alpha');
-$search_direction = GETPOST('search_direction', 'alpha');
-$search_debit = GETPOST('search_debit', 'alpha');
-$search_credit = GETPOST('search_credit', 'alpha');
-$search_ledger_code = GETPOST('search_ledger_code', 'array');
-$search_lettering_code = GETPOST('search_lettering_code', 'alpha');
-$search_not_reconciled = GETPOST('search_not_reconciled', 'alpha');
+$search_mvt_label = request()->input('search_mvt_label');
+$search_direction = request()->input('search_direction');
+$search_debit = request()->input('search_debit');
+$search_credit = request()->input('search_credit');
+$search_ledger_code = request()->input('search_ledger_code');
+$search_lettering_code = request()->input('search_lettering_code');
+$search_not_reconciled = request()->input('search_not_reconciled');
 
 // Load variable for pagination
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$optioncss = GETPOST('optioncss', 'alpha');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : getDolGlobalString('ACCOUNTING_LIMIT_LIST_VENTILATION', $conf->liste_limit);
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$optioncss = request()->input('optioncss');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page < 0) {
 	$page = 0;
 }
@@ -157,8 +157,8 @@ $formfiscalyear = new FormFiscalYear($db);
 $formaccounting = new FormAccounting($db);
 $form = new Form($db);
 
-if (!in_array($action, array('delmouv', 'delmouvconfirm')) && !GETPOSTISSET('begin') && !GETPOSTISSET('formfilteraction') && GETPOST('page', 'alpha') == '' && !GETPOSTINT('noreset') && $user->hasRight('accounting', 'mouvements', 'export')) {
-	if (empty($search_date_start) && empty($search_date_end) && !GETPOSTISSET('restore_lastsearch_values') && !GETPOST('search_mvt_num') && !GETPOST('search_accountancy_code_start')) {
+if (!in_array($action, array('delmouv', 'delmouvconfirm')) && !request()->has('begin') && !request()->has('formfilteraction') && request()->input('page') == '' && !request()->integer('noreset', 0) && $user->hasRight('accounting', 'mouvements', 'export')) {
+	if (empty($search_date_start) && empty($search_date_end) && !request()->has('restore_lastsearch_values') && !request()->input('search_mvt_num') && !request()->input('search_accountancy_code_start')) {
 		$sql = "SELECT date_start, date_end";
 		$sql .= " FROM ".MAIN_DB_PREFIX."accounting_fiscalyear ";
 		if (getDolGlobalInt('ACCOUNTANCY_FISCALYEAR_DEFAULT')) {
@@ -218,13 +218,13 @@ if (!getDolGlobalString('ACCOUNTING_ENABLE_LETTERING')) {
 $error = 0;
 
 if (!isModEnabled('accounting')) {
-	accessforbidden();
+	abort(403);
 }
 if ($user->socid > 0) {
-	accessforbidden();
+	abort(403);
 }
 if (!$user->hasRight('accounting', 'mouvements', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 $permissiontoadd = $user->hasRight('accounting', 'mouvements', 'creer');
@@ -237,11 +237,11 @@ $permissiontoadd = $user->hasRight('accounting', 'mouvements', 'creer');
 $param = '';
 $filter = array();
 
-if (GETPOST('cancel', 'alpha')) {
+if (request()->input('cancel')) {
 	$action = 'list';
 	$massaction = '';
 }
-if (!GETPOST('confirmmassaction', 'alpha') && $massaction != 'preunletteringauto' && $massaction != 'preunletteringmanual' && $massaction != 'predeletebookkeepingwriting' && $massaction != 'preclonebookkeepingwriting' && $massaction != 'preassignaccountbookkeepingwriting' && $massaction != 'prereturnaccountbookkeepingwriting') {
+if (!request()->input('confirmmassaction') && $massaction != 'preunletteringauto' && $massaction != 'preunletteringmanual' && $massaction != 'predeletebookkeepingwriting' && $massaction != 'preclonebookkeepingwriting' && $massaction != 'preassignaccountbookkeepingwriting' && $massaction != 'prereturnaccountbookkeepingwriting') {
 	$massaction = '';
 }
 
@@ -254,7 +254,7 @@ if ($reshook < 0) {
 if (empty($reshook)) {
 	include DOL_DOCUMENT_ROOT.'/core/actions_changeselectedfields.inc.php';
 
-	if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+	if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 		$search_mvt_num = '';
 		$search_doc_type = '';
 		$search_doc_ref = '';
@@ -787,7 +787,7 @@ if (!getDolGlobalInt('MAIN_DISABLE_FULL_SCANLIST')) {
 		$objforcount = $db->fetch_object($resql);
 		$nbtotalofrecords = $objforcount->nbtotalofrecords;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	if (($page * $limit) > (int) $nbtotalofrecords) {	// if total resultset is smaller then paging size (filtering), goto and load page 0
@@ -806,7 +806,7 @@ if ($limit) {
 
 $resql = $db->query($sql);
 if (!$resql) {
-	dol_print_error($db);
+	abort(500);
 	exit;
 }
 
@@ -853,7 +853,7 @@ if ($user->hasRight('accounting', 'mouvements', 'supprimer')) {
 	$arrayofmassactions['predeletebookkeepingwriting'] = img_picto('', 'delete', 'class="pictofixedwidth"').$langs->trans("Delete");
 }
 
-if (GETPOSTINT('nomassaction') || in_array($massaction, array('preunletteringauto', 'preunletteringmanual', 'predeletebookkeepingwriting', 'preclonebookkeepingwriting', 'preassignaccountbookkeepingwriting', 'prereturnaccountbookkeepingwriting'))) {
+if (request()->integer('nomassaction', 0) || in_array($massaction, array('preunletteringauto', 'preunletteringmanual', 'predeletebookkeepingwriting', 'preclonebookkeepingwriting', 'preassignaccountbookkeepingwriting', 'prereturnaccountbookkeepingwriting'))) {
 	$arrayofmassactions = array();
 }
 $massactionbutton = $form->selectMassAction($massaction, $arrayofmassactions);

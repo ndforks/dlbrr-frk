@@ -77,26 +77,26 @@ if (isModEnabled('stock')) {
 // Load translation files required by page
 $langs->loadLangs(array('users', 'companies', 'ldap', 'admin', 'hrm', 'stocks', 'other'));
 
-$id = GETPOSTINT('id');
-$action = GETPOST('action', 'aZ09');
-$mode = GETPOST('mode', 'alpha');
-$confirm = GETPOST('confirm', 'alpha');
+$id = request()->integer('id', 0);
+$action = request()->input('action');
+$mode = request()->input('mode');
+$confirm = request()->input('confirm');
 $group = GETPOSTINT("group", 3);
-$cancel = GETPOST('cancel', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'usercard'; // To manage different context of search
-$backtopage = GETPOST('backtopage');
-$backtopageforcancel = GETPOST('backtopageforcancel');
-$forcepasswordchange = GETPOSTINT('forcepasswordchange');
+$cancel = request()->input('cancel');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'usercard'; // To manage different context of search
+$backtopage = request()->input('backtopage');
+$backtopageforcancel = request()->input('backtopageforcancel');
+$forcepasswordchange = request()->integer('forcepasswordchange', 0);
 
 if (empty($id) && $action != 'add' && $action != 'create') {
 	$id = $user->id;
 }
 
-$dateemployment = dol_mktime(0, 0, 0, GETPOSTINT('dateemploymentmonth'), GETPOSTINT('dateemploymentday'), GETPOSTINT('dateemploymentyear'));
-$dateemploymentend = dol_mktime(0, 0, 0, GETPOSTINT('dateemploymentendmonth'), GETPOSTINT('dateemploymentendday'), GETPOSTINT('dateemploymentendyear'));
-$datestartvalidity = dol_mktime(0, 0, 0, GETPOSTINT('datestartvaliditymonth'), GETPOSTINT('datestartvalidityday'), GETPOSTINT('datestartvalidityyear'));
-$dateendvalidity = dol_mktime(0, 0, 0, GETPOSTINT('dateendvaliditymonth'), GETPOSTINT('dateendvalidityday'), GETPOSTINT('dateendvalidityyear'));
-$dateofbirth = dol_mktime(0, 0, 0, GETPOSTINT('dateofbirthmonth'), GETPOSTINT('dateofbirthday'), GETPOSTINT('dateofbirthyear'));
+$dateemployment = dol_mktime(0, 0, 0, request()->integer('dateemploymentmonth', 0), request()->integer('dateemploymentday', 0), request()->integer('dateemploymentyear', 0));
+$dateemploymentend = dol_mktime(0, 0, 0, request()->integer('dateemploymentendmonth', 0), request()->integer('dateemploymentendday', 0), request()->integer('dateemploymentendyear', 0));
+$datestartvalidity = dol_mktime(0, 0, 0, request()->integer('datestartvaliditymonth', 0), request()->integer('datestartvalidityday', 0), request()->integer('datestartvalidityyear', 0));
+$dateendvalidity = dol_mktime(0, 0, 0, request()->integer('dateendvaliditymonth', 0), request()->integer('dateendvalidityday', 0), request()->integer('dateendvalidityyear', 0));
+$dateofbirth = dol_mktime(0, 0, 0, request()->integer('dateofbirthmonth', 0), request()->integer('dateofbirthday', 0), request()->integer('dateofbirthyear', 0));
 
 $childids = $user->getAllChildIds(1);	// For test on hrm fields (like salary visibility)
 
@@ -150,7 +150,7 @@ if (getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE') && $conf->entity > 1) {
 }
 
 if ($user->id != $id && !$permissiontoread) {
-	accessforbidden();
+	abort(403);
 }
 
 $caneditpasswordandsee = false;
@@ -243,7 +243,7 @@ if (empty($reshook)) {
 
 	if ($action == 'confirm_delete' && $confirm == "yes" && $permissiontodisable) {
 		if ($id != $user->id) {
-			if (!GETPOSTISSET('token')) {
+			if (!request()->has('token')) {
 				print 'Error, token required for this critical operation';
 				exit;
 			}
@@ -268,12 +268,12 @@ if (empty($reshook)) {
 	if ($action == 'add' && $permissiontoadd) {
 		$error = 0;
 
-		if (!GETPOST("lastname")) {
+		if (!request()->input('lastname')) {
 			$error++;
 			setEventMessages($langs->trans("NameNotDefined"), null, 'errors');
 			$action = "create"; // Go back to create page
 		}
-		if (!GETPOST("login")) {
+		if (!request()->input('login')) {
 			$error++;
 			setEventMessages($langs->trans("LoginNotDefined"), null, 'errors');
 			$action = "create"; // Go back to create page
@@ -289,23 +289,23 @@ if (empty($reshook)) {
 		}
 
 		if (!$error) {
-			$object->civility_code = GETPOST("civility_code", 'aZ09');
-			$object->lastname = GETPOST("lastname", 'alphanohtml');
-			$object->firstname = GETPOST("firstname", 'alphanohtml');
-			$object->ref_employee = GETPOST("ref_employee", 'alphanohtml');
-			$object->national_registration_number = GETPOST("national_registration_number", 'alphanohtml');
-			$object->login = GETPOST("login", 'alphanohtml');
-			$object->api_key = GETPOST("api_key", 'alphanohtml');
-			$object->gender = GETPOST("gender", 'aZ09');
-			$object->admin = GETPOSTINT("admin");
-			$object->address = GETPOST('address', 'alphanohtml');
-			$object->zip = GETPOST('zipcode', 'alphanohtml');
-			$object->town = GETPOST('town', 'alphanohtml');
-			$object->country_id = GETPOSTINT('country_id');
-			$object->state_id = GETPOSTINT('state_id');
-			$object->office_phone = GETPOST("office_phone", 'alphanohtml');
-			$object->office_fax = GETPOST("office_fax", 'alphanohtml');
-			$object->user_mobile = GETPOST("user_mobile", 'alphanohtml');
+			$object->civility_code = request()->input('civility_code');
+			$object->lastname = request()->input('lastname');
+			$object->firstname = request()->input('firstname');
+			$object->ref_employee = request()->input('ref_employee');
+			$object->national_registration_number = request()->input('national_registration_number');
+			$object->login = request()->input('login');
+			$object->api_key = request()->input('api_key');
+			$object->gender = request()->input('gender');
+			$object->admin = request()->integer('admin', 0);
+			$object->address = request()->input('address');
+			$object->zip = request()->input('zipcode');
+			$object->town = request()->input('town');
+			$object->country_id = request()->integer('country_id', 0);
+			$object->state_id = request()->integer('state_id', 0);
+			$object->office_phone = request()->input('office_phone');
+			$object->office_fax = request()->input('office_fax');
+			$object->user_mobile = request()->input('user_mobile');
 
 			if (isModEnabled('socialnetworks')) {
 				$object->socialnetworks = array();
@@ -316,30 +316,30 @@ if (empty($reshook)) {
 				}
 			}
 
-			$object->email = preg_replace('/\s+/', '', GETPOST("email", 'alphanohtml'));
-			$object->job = GETPOST("job", 'alphanohtml');
-			$object->signature = GETPOST("signature", 'restricthtml');
-			$object->accountancy_code = GETPOST("accountancy_code", 'alphanohtml');
-			$object->note_public = GETPOST("note_public", 'restricthtml');
-			$object->note_private = GETPOST("note_private", 'restricthtml');
-			$object->ldap_sid = GETPOST("ldap_sid", 'alphanohtml');
-			$object->fk_user = GETPOSTINT("fk_user") > 0 ? GETPOSTINT("fk_user") : 0;
-			$object->fk_user_expense_validator = GETPOSTINT("fk_user_expense_validator") > 0 ? GETPOSTINT("fk_user_expense_validator") : 0;
-			$object->fk_user_holiday_validator = GETPOSTINT("fk_user_holiday_validator") > 0 ? GETPOSTINT("fk_user_holiday_validator") : 0;
-			$object->employee = GETPOSTINT('employee');
+			$object->email = preg_replace('/\s+/', '', request()->input('email'));
+			$object->job = request()->input('job');
+			$object->signature = request()->input('signature');
+			$object->accountancy_code = request()->input('accountancy_code');
+			$object->note_public = request()->input('note_public');
+			$object->note_private = request()->input('note_private');
+			$object->ldap_sid = request()->input('ldap_sid');
+			$object->fk_user = request()->integer('fk_user', 0) > 0 ? request()->integer('fk_user', 0) : 0;
+			$object->fk_user_expense_validator = request()->integer('fk_user_expense_validator', 0) > 0 ? request()->integer('fk_user_expense_validator', 0) : 0;
+			$object->fk_user_holiday_validator = request()->integer('fk_user_holiday_validator', 0) > 0 ? request()->integer('fk_user_holiday_validator', 0) : 0;
+			$object->employee = request()->integer('employee', 0);
 
-			$object->thm = GETPOST("thm", 'alphanohtml') != '' ? GETPOSTFLOAT("thm") : '';
+			$object->thm = request()->input('thm') != '' ? GETPOSTFLOAT("thm") : '';
 			$object->thm = price2num($object->thm);
-			$object->tjm = GETPOST("tjm", 'alphanohtml') != '' ? GETPOSTFLOAT("tjm") : '';
+			$object->tjm = request()->input('tjm') != '' ? GETPOSTFLOAT("tjm") : '';
 			$object->tjm = price2num($object->tjm);
-			$object->salary = GETPOST("salary", 'alphanohtml') != '' ? GETPOSTFLOAT("salary") : '';
+			$object->salary = request()->input('salary') != '' ? GETPOSTFLOAT("salary") : '';
 			$object->salary = price2num($object->salary);
-			$object->salaryextra = GETPOST("salaryextra", 'alphanohtml');
+			$object->salaryextra = request()->input('salaryextra');
 			//$object->salaryextra = price2num($object->salaryextra);
-			$object->weeklyhours = GETPOST("weeklyhours", 'alphanohtml') != '' ? GETPOSTFLOAT("weeklyhours") : '';
+			$object->weeklyhours = request()->input('weeklyhours') != '' ? GETPOSTFLOAT("weeklyhours") : '';
 			$object->weeklyhours = price2num($object->weeklyhours);
 
-			$object->color = GETPOST("color", 'alphanohtml') != '' ? str_replace('#', '', (string) GETPOST("color", 'alphanohtml')) : '';
+			$object->color = request()->input('color') != '' ? str_replace('#', '', (string) request()->input('color')) : '';
 
 			$object->dateemployment = $dateemployment;
 			$object->dateemploymentend = $dateemploymentend;
@@ -348,9 +348,9 @@ if (empty($reshook)) {
 			$object->birth = $dateofbirth;
 			$object->force_pass_change = $forcepasswordchange;
 
-			$object->fk_warehouse = GETPOSTINT('fk_warehouse');
+			$object->fk_warehouse = request()->integer('fk_warehouse', 0);
 
-			$object->lang = GETPOST('default_lang', 'aZ09');
+			$object->lang = request()->input('default_lang');
 
 			// Fill array 'array_options' with data from add form
 			$ret = $extrafields->setOptionalsFromPost(null, $object);
@@ -359,9 +359,9 @@ if (empty($reshook)) {
 			}
 
 			// Set entity property
-			$entity = GETPOSTINT('entity');
+			$entity = request()->integer('entity', 0);
 			if (isModEnabled('multicompany')) {
-				if (GETPOSTINT('superadmin')) {
+				if (request()->integer('superadmin', 0)) {
 					$object->entity = 0;
 				} else {
 					if (getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
@@ -372,7 +372,7 @@ if (empty($reshook)) {
 				}
 			} else {
 				$object->entity = ($entity == '' ? 1 : $entity);
-				/*if ($user->admin && $user->entity == 0 && GETPOST("admin",'alpha'))
+				/*if ($user->admin && $user->entity == 0 && request()->input('admin'))
 				{
 				}*/
 			}
@@ -382,8 +382,8 @@ if (empty($reshook)) {
 			$id = $object->create($user);
 			if ($id > 0) {
 				$resPass = 0;
-				if (GETPOST('password', 'password')) {
-					$resPass = $object->setPassword($user, GETPOST('password', 'password'));
+				if (request()->input('password')) {
+					$resPass = $object->setPassword($user, request()->input('password'));
 				}
 				if (is_int($resPass) && $resPass < 0) {
 					$langs->load("errors");
@@ -393,7 +393,7 @@ if (empty($reshook)) {
 				} else {
 					if (isModEnabled("category")) {
 						// Categories association
-						$usercats = GETPOST('usercats', 'array:int');
+						$usercats = request()->input('usercats');
 						$object->setCategories($usercats);
 					}
 					$db->commit();
@@ -440,12 +440,12 @@ if (empty($reshook)) {
 		if ($permissiontoedit) {    // Case we can edit all field
 			$error = 0;
 
-			if (!GETPOST("lastname", 'alpha')) {
+			if (!request()->input('lastname')) {
 				setEventMessages($langs->trans("NameNotDefined"), null, 'errors');
 				$action = "edit"; // Go back to create page
 				$error++;
 			}
-			if (!GETPOST("login", 'alpha')) {
+			if (!request()->input('login')) {
 				setEventMessages($langs->trans("LoginNotDefined"), null, 'errors');
 				$action = "edit"; // Go back to create page
 				$error++;
@@ -458,40 +458,40 @@ if (empty($reshook)) {
 
 				$db->begin();
 
-				$object->civility_code = GETPOST("civility_code", 'aZ09');
-				$object->lastname = GETPOST("lastname", 'alphanohtml');
-				$object->firstname = GETPOST("firstname", 'alphanohtml');
+				$object->civility_code = request()->input('civility_code');
+				$object->lastname = request()->input('lastname');
+				$object->firstname = request()->input('firstname');
 				// Protection against deletion of ref_employee while the field is not present in the user tab
-				if (GETPOSTISSET("ref_employee")) {
-					$object->ref_employee = GETPOST("ref_employee", 'alphanohtml');
+				if (request()->has('ref_employee')) {
+					$object->ref_employee = request()->input('ref_employee');
 				}
 				// Protection against deletion of national_registration_number while the field is not present in the user tab
-				if (GETPOSTISSET("national_registration_number")) {
-					$object->national_registration_number = GETPOST("national_registration_number", 'alphanohtml');
+				if (request()->has('national_registration_number')) {
+					$object->national_registration_number = request()->input('national_registration_number');
 				}
-				$object->gender = GETPOST("gender", 'aZ09');
+				$object->gender = request()->input('gender');
 				if ($permissiontoeditpasswordandsee) {
-					$object->pass = GETPOST("password", 'password');
+					$object->pass = request()->input('password');
 				}
 				if ($permissiontoeditpasswordandsee || $user->hasRight("api", "apikey", "generate")) {
-					$object->api_key = (GETPOST("api_key", 'alphanohtml')) ? GETPOST("api_key", 'alphanohtml') : $object->api_key;
+					$object->api_key = (request()->input('api_key')) ? request()->input('api_key') : $object->api_key;
 				}
 				if (!empty($user->admin) && $user->id != $id) {
 					// admin flag can only be set/unset by an admin user and not four ourself
 					// A test is also done later when forging sql request
-					$object->admin = GETPOSTINT("admin");
+					$object->admin = request()->integer('admin', 0);
 				}
 				if ($user->admin && !$object->ldap_sid) {	// same test than on edit page
-					$object->login = GETPOST("login", 'alphanohtml');
+					$object->login = request()->input('login');
 				}
-				$object->address = GETPOST('address', 'alphanohtml');
-				$object->zip = GETPOST('zipcode', 'alphanohtml');
-				$object->town = GETPOST('town', 'alphanohtml');
-				$object->country_id = GETPOSTINT('country_id');
-				$object->state_id = GETPOSTINT('state_id');
-				$object->office_phone = GETPOST("office_phone", 'alphanohtml');
-				$object->office_fax = GETPOST("office_fax", 'alphanohtml');
-				$object->user_mobile = GETPOST("user_mobile", 'alphanohtml');
+				$object->address = request()->input('address');
+				$object->zip = request()->input('zipcode');
+				$object->town = request()->input('town');
+				$object->country_id = request()->integer('country_id', 0);
+				$object->state_id = request()->integer('state_id', 0);
+				$object->office_phone = request()->input('office_phone');
+				$object->office_fax = request()->input('office_fax');
+				$object->user_mobile = request()->input('user_mobile');
 
 				if (isModEnabled('socialnetworks')) {
 					$object->socialnetworks = array();
@@ -502,28 +502,28 @@ if (empty($reshook)) {
 					}
 				}
 
-				$object->email = preg_replace('/\s+/', '', GETPOST("email", 'alphanohtml'));
-				$object->job = GETPOST("job", 'alphanohtml');
-				$object->signature = GETPOST("signature", 'restricthtml');
-				$object->accountancy_code = GETPOST("accountancy_code", 'alphanohtml');
-				$object->openid = GETPOST("openid", 'alphanohtml');
-				$object->fk_user = GETPOSTINT("fk_user") > 0 ? GETPOSTINT("fk_user") : 0;
-				$object->fk_user_expense_validator = GETPOSTINT("fk_user_expense_validator") > 0 ? GETPOSTINT("fk_user_expense_validator") : 0;
-				$object->fk_user_holiday_validator = GETPOSTINT("fk_user_holiday_validator") > 0 ? GETPOSTINT("fk_user_holiday_validator") : 0;
-				$object->employee = GETPOSTINT('employee');
+				$object->email = preg_replace('/\s+/', '', request()->input('email'));
+				$object->job = request()->input('job');
+				$object->signature = request()->input('signature');
+				$object->accountancy_code = request()->input('accountancy_code');
+				$object->openid = request()->input('openid');
+				$object->fk_user = request()->integer('fk_user', 0) > 0 ? request()->integer('fk_user', 0) : 0;
+				$object->fk_user_expense_validator = request()->integer('fk_user_expense_validator', 0) > 0 ? request()->integer('fk_user_expense_validator', 0) : 0;
+				$object->fk_user_holiday_validator = request()->integer('fk_user_holiday_validator', 0) > 0 ? request()->integer('fk_user_holiday_validator', 0) : 0;
+				$object->employee = request()->integer('employee', 0);
 
-				$object->thm = GETPOST("thm", 'alphanohtml') != '' ? GETPOSTFLOAT("thm") : '';
+				$object->thm = request()->input('thm') != '' ? GETPOSTFLOAT("thm") : '';
 				$object->thm = price2num($object->thm);
-				$object->tjm = GETPOST("tjm", 'alphanohtml') != '' ? GETPOSTFLOAT("tjm") : '';
+				$object->tjm = request()->input('tjm') != '' ? GETPOSTFLOAT("tjm") : '';
 				$object->tjm = price2num($object->tjm);
-				$object->salary = GETPOST("salary", 'alphanohtml') != '' ? GETPOSTFLOAT("salary") : '';
+				$object->salary = request()->input('salary') != '' ? GETPOSTFLOAT("salary") : '';
 				$object->salary = price2num($object->salary);
-				$object->salaryextra = GETPOST("salaryextra", 'alphanohtml') != '' ? GETPOSTFLOAT("salaryextra") : '';
+				$object->salaryextra = request()->input('salaryextra') != '' ? GETPOSTFLOAT("salaryextra") : '';
 				//$object->salaryextra = price2num($object->salaryextra);
-				$object->weeklyhours = GETPOST("weeklyhours", 'alphanohtml') != '' ? GETPOSTFLOAT("weeklyhours") : '';
+				$object->weeklyhours = request()->input('weeklyhours') != '' ? GETPOSTFLOAT("weeklyhours") : '';
 				$object->weeklyhours = price2num($object->weeklyhours);
 
-				$object->color = GETPOST("color", 'alphanohtml') != '' ? str_replace('#', '', (string) GETPOST("color", 'alphanohtml')) : '';
+				$object->color = request()->input('color') != '' ? str_replace('#', '', (string) request()->input('color')) : '';
 				$object->dateemployment = $dateemployment;
 				$object->dateemploymentend = $dateemploymentend;
 				$object->datestartvalidity = $datestartvalidity;
@@ -532,21 +532,21 @@ if (empty($reshook)) {
 				$object->force_pass_change = $forcepasswordchange;
 
 				if (isModEnabled('stock')) {
-					$object->fk_warehouse = GETPOSTINT('fk_warehouse');
+					$object->fk_warehouse = request()->integer('fk_warehouse', 0);
 				}
 
-				$object->lang = GETPOST('default_lang', 'aZ09');
+				$object->lang = request()->input('default_lang');
 
 				// Do we update also ->entity ?
 				if (isModEnabled('multicompany') && empty($user->entity) && !empty($user->admin)) {	// If multicompany is not enabled, we never update the entity of a user.
-					if (GETPOSTINT('superadmin')) {
+					if (request()->integer('superadmin', 0)) {
 						$object->entity = 0;
 					} else {
 						if (getDolGlobalString('MULTICOMPANY_TRANSVERSE_MODE')) {
 							$object->entity = 1; // all users are in master entity
 						} else {
 							// We try to change the entity of user
-							$object->entity = (GETPOSTISSET('entity') ? GETPOSTINT('entity') : $object->entity);
+							$object->entity = (request()->has('entity') ? request()->integer('entity', 0) : $object->entity);
 						}
 					}
 				}
@@ -557,7 +557,7 @@ if (empty($reshook)) {
 					$error++;
 				}
 
-				if (GETPOST('deletephoto')) {
+				if (request()->input('deletephoto')) {
 					$object->photo = '';
 				}
 				if (!empty($_FILES['photo']['name'])) {
@@ -593,9 +593,9 @@ if (empty($reshook)) {
 					}
 				}
 
-				if (!$error && GETPOSTISSET('contactid')) {
-					$contactid = GETPOSTINT('contactid');
-					$socid = GETPOSTINT('socid');
+				if (!$error && request()->has('contactid')) {
+					$contactid = request()->integer('contactid', 0);
+					$socid = request()->integer('socid', 0);
 
 					if ($contactid > 0) {	// The 'contactid' is used inpriority over the 'socid'
 						$contact = new Contact($db);
@@ -628,7 +628,7 @@ if (empty($reshook)) {
 				}
 
 				if (!$error && !count($object->errors)) {
-					if (!empty($object->oldcopy->photo) && (GETPOST('deletephoto') || ($object->photo != $object->oldcopy->photo))) {
+					if (!empty($object->oldcopy->photo) && (request()->input('deletephoto') || ($object->photo != $object->oldcopy->photo))) {
 						$fileimg = $conf->user->dir_output.'/'.get_exdir(0, 0, 0, 0, $object, 'user').'photos/'.$object->oldcopy->photo;
 						dol_delete_file($fileimg);
 
@@ -671,7 +671,7 @@ if (empty($reshook)) {
 
 				if (!$error && !count($object->errors)) {
 					// Then we add the associated categories
-					$categories = GETPOST('usercats', 'array:int');
+					$categories = request()->input('usercats');
 					$object->setCategories($categories);
 				}
 
@@ -702,10 +702,10 @@ if (empty($reshook)) {
 
 				$object->fetch($id);
 
-				if (GETPOST("password", "password")) {	// If pass is empty, we do not change it.
+				if (request()->input('password')) {	// If pass is empty, we do not change it.
 					$object->oldcopy = clone $object;  // @phan-suppress-current-line PhanTypeMismatchProperty
 
-					$ret = $object->setPassword($user, GETPOST("password", "password"));
+					$ret = $object->setPassword($user, request()->input('password'));
 					if (is_int($ret) && $ret < 0) {
 						setEventMessages($object->error, $object->errors, 'errors');
 					}
@@ -740,7 +740,7 @@ if (empty($reshook)) {
 
 	// Action to initialize data from a LDAP record
 	if ($action == 'adduserldap' && $permissiontoadd) {
-		$selecteduser = GETPOST('users');
+		$selecteduser = request()->input('users');
 
 		$required_fields = array(
 			getDolGlobalString('LDAP_KEY_USERS'),
@@ -806,9 +806,9 @@ if (empty($reshook)) {
 		$action = '';
 	}
 	if ($action == 'confirm_clone' && $confirm == 'yes' && $permissiontocloneuser) {
-		if (!GETPOST('clone_name')) {
+		if (!request()->input('clone_name')) {
 			setEventMessages($langs->trans('ErrorNoCloneWithoutName'), null, 'errors');
-		} elseif (getDolGlobalString('USER_MAIL_REQUIRED') && !GETPOST('new_email')) {
+		} elseif (getDolGlobalString('USER_MAIL_REQUIRED') && !request()->input('new_email')) {
 			setEventMessages($langs->trans('ErrorNoCloneWithoutEmail'), null, 'errors');
 		} else {
 			if ($object->id > 0) {
@@ -816,10 +816,10 @@ if (empty($reshook)) {
 				$clone = dol_clone($object, 1);
 
 				$clone->id = 0;
-				$clone->email = (getDolGlobalString('USER_MAIL_REQUIRED') ? GETPOST('new_email', 'alphanohtml') : '');
+				$clone->email = (getDolGlobalString('USER_MAIL_REQUIRED') ? request()->input('new_email') : '');
 				$clone->api_key = '';
 
-				$parts = explode(' ', GETPOST('clone_name'), 2);
+				$parts = explode(' ', request()->input('clone_name'), 2);
 				$clone->firstname = $parts[0];
 				$clone->lastname = isset($parts[1]) ? $parts[1] : '';
 
@@ -830,11 +830,11 @@ if (empty($reshook)) {
 				$id = $clone->create($user);
 				$refalreadyexists = 0;
 				if ($id > 0) {
-					if (GETPOST('clone_rights')) {
+					if (request()->input('clone_rights')) {
 						$result = $clone->cloneRights($object->id, $id);
 					}
 
-					if (GETPOST('clone_categories')) {
+					if (request()->input('clone_categories')) {
 						$result = $clone->cloneCategories($object->id, $id);
 						if ($result < 1) {
 							setEventMessages($langs->trans('ErrorUserClone'), null, 'errors');
@@ -912,14 +912,14 @@ if ($resql) {
 		$nbofusers = $obj->nb;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 if ($object->id > 0) {
 	$person_name = !empty($object->firstname) ? $object->lastname.", ".$object->firstname : $object->lastname;
 	$title = $person_name." - ".$langs->trans('Card');
 } else {
-	if (GETPOSTINT('employee')) {
+	if (request()->integer('employee', 0)) {
 		$title = $langs->trans("NewEmployee");
 	} else {
 		$title = $langs->trans("NewUser");
@@ -1030,7 +1030,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 
 	// Civility
 	print '<tr><td><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td>';
-	print $formcompany->select_civility(GETPOSTISSET("civility_code") ? GETPOST("civility_code", 'aZ09') : $object->civility_code, 'civility_code');
+	print $formcompany->select_civility(request()->has('civility_code') ? request()->input('civility_code') : $object->civility_code, 'civility_code');
 	print '</td></tr>';
 
 	// Lastname
@@ -1041,7 +1041,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" id="lastname" name="lastname" value="'.dol_escape_htmltag($ldap_lastname).'">';
 		print $ldap_lastname;
 	} else {
-		print '<input class="minwidth100 maxwidth150onsmartphone createloginauto" type="text" id="lastname" name="lastname" value="'.dol_escape_htmltag(GETPOST('lastname', 'alphanohtml')).'">';
+		print '<input class="minwidth100 maxwidth150onsmartphone createloginauto" type="text" id="lastname" name="lastname" value="'.dol_escape_htmltag(request()->input('lastname')).'">';
 	}
 	print '</td></tr>';
 
@@ -1052,7 +1052,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="firstname" value="'.dol_escape_htmltag($ldap_firstname).'">';
 		print $ldap_firstname;
 	} else {
-		print '<input id="firstname" class="minwidth100 maxwidth150onsmartphone createloginauto" type="text" name="firstname" value="'.dol_escape_htmltag(GETPOST('firstname', 'alphanohtml')).'">';
+		print '<input id="firstname" class="minwidth100 maxwidth150onsmartphone createloginauto" type="text" name="firstname" value="'.dol_escape_htmltag(request()->input('firstname')).'">';
 	}
 	print '</td></tr>';
 
@@ -1066,7 +1066,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="login" value="'.dol_escape_htmltag($ldap_loginsmb).'">';
 		print $ldap_loginsmb;
 	} else {
-		print '<input id="login" class="maxwidth200 maxwidth150onsmartphone" maxsize="24" type="text" name="login" value="'.dol_escape_htmltag(GETPOST('login', 'alphanohtml')).'" spellcheck="false">';
+		print '<input id="login" class="maxwidth200 maxwidth150onsmartphone" maxsize="24" type="text" name="login" value="'.dol_escape_htmltag(request()->input('login')).'" spellcheck="false">';
 	}
 	print '</td></tr>';
 
@@ -1108,13 +1108,13 @@ if ($action == 'create' || $action == 'adduserldap') {
 	if (empty($ldap_sid)) {    // ldap_sid is for activedirectory
 		$generated_password = getRandomPassword(false);
 	}
-	$password = (GETPOSTISSET('password') ? GETPOST('password') : $generated_password);
+	$password = (request()->has('password') ? request()->input('password') : $generated_password);
 
 	// Administrator
 	if (!empty($user->admin)) {
 		print '<tr><td>'.$form->textwithpicto($langs->trans("Administrator"), $langs->trans("AdministratorDesc"), 1, 'help').'</td>';
 		print '<td>';
-		print $form->selectyesno('admin', GETPOST('admin'), 1, false, 0, 1);
+		print $form->selectyesno('admin', request()->input('admin'), 1, false, 0, 1);
 
 		if (isModEnabled('multicompany') && !$user->entity) {
 			if (!empty($conf->use_javascript_ajax)) {
@@ -1144,8 +1144,8 @@ if ($action == 'create' || $action == 'adduserldap') {
                             });
                     </script>';
 			}
-			$checked = (GETPOSTINT('superadmin') ? ' checked' : '');
-			$disabled = (GETPOSTINT('superadmin') ? '' : ' disabled');
+			$checked = (request()->integer('superadmin', 0) ? ' checked' : '');
+			$disabled = (request()->integer('superadmin', 0) ? '' : ' disabled');
 			print '<input type="checkbox" name="superadmin" id="superadmin" value="1"'.$checked.$disabled.' /> <label for="superadmin">'.$langs->trans("SuperAdministrator").'</span>';
 		}
 		print "</td></tr>\n";
@@ -1155,15 +1155,15 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print '<tr><td>'.$langs->trans("Gender").'</td>';
 	print '<td>';
 	$arraygender = array('man' => $langs->trans("Genderman"), 'woman' => $langs->trans("Genderwoman"), 'other' => $langs->trans("Genderother"));
-	print $form->selectarray('gender', $arraygender, GETPOST('gender'), 1);
+	print $form->selectarray('gender', $arraygender, request()->input('gender'), 1);
 	print '</td></tr>';
 
 	// Employee
 	$defaultemployee = '1';
 	print '<tr>';
 	print '<td>'.$langs->trans('Employee').'</td><td>';
-	print '<input type="checkbox" name="employee" value="1"'.(GETPOST('employee') == '1' ? ' checked="checked"' : (($defaultemployee && !GETPOSTISSET('login')) ? ' checked="checked"' : '')).'>';
-	//print $form->selectyesno("employee", (GETPOST('employee') != '' ?GETPOST('employee') : $defaultemployee), 1);
+	print '<input type="checkbox" name="employee" value="1"'.(request()->input('employee') == '1' ? ' checked="checked"' : (($defaultemployee && !request()->has('login')) ? ' checked="checked"' : '')).'>';
+	//print $form->selectyesno("employee", (request()->input('employee') != '' ?request()->input('employee') : $defaultemployee), 1);
 	print '</td></tr>';
 
 	// Hierarchy
@@ -1222,7 +1222,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	if ($_SESSION["dol_authmode"] == 'dolibarr') {
 		print '<tr><td class="titlefieldcreate">'.$langs->trans("ForcePasswordChange").'</td>';
 		print '<td>';
-		print '<input type="checkbox" name="forcepasswordchange" value="1"'.(GETPOST('forcepasswordchange') == '1' ? ' checked="checked"' : '').'>';
+		print '<input type="checkbox" name="forcepasswordchange" value="1"'.(request()->input('forcepasswordchange') == '1' ? ' checked="checked"' : '').'>';
 		print '</td>';
 		print "</tr>\n";
 	}
@@ -1268,7 +1268,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			//$generated_password = getRandomPassword(false);
 			print '<tr><td>'.$langs->trans("ApiKey").'</td>';
 			print '<td>';
-			print '<input class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.GETPOST('api_key', 'alphanohtml').'" autocomplete="off" spellcheck="false">';
+			print '<input class="minwidth300 maxwidth400 widthcentpercentminusx" minlength="12" maxlength="128" type="text" id="api_key" name="api_key" value="'.request()->input('api_key').'" autocomplete="off" spellcheck="false">';
 			if (!empty($conf->use_javascript_ajax)) {
 				print img_picto($langs->transnoentities('Generate'), 'refresh', 'id="generate_api_key" class="linkobject paddingleft"');
 			}
@@ -1302,7 +1302,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	// Country
 	print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td class="maxwidthonsmartphone">';
 	print img_picto('', 'country', 'class="pictofixedwidth"');
-	print $form->select_country((GETPOST('country_id') != '' ? GETPOST('country_id') : $object->country_id), 'country_id');
+	print $form->select_country((request()->input('country_id') != '' ? request()->input('country_id') : $object->country_id), 'country_id');
 	if ($user->admin) {
 		print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 	}
@@ -1324,7 +1324,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="office_phone" value="'.dol_escape_htmltag($ldap_phone).'">';
 		print $ldap_phone;
 	} else {
-		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="office_phone" value="'.dol_escape_htmltag(GETPOST('office_phone', 'alphanohtml')).'">';
+		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="office_phone" value="'.dol_escape_htmltag(request()->input('office_phone')).'">';
 	}
 	print '</td></tr>';
 
@@ -1336,7 +1336,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="user_mobile" value="'.dol_escape_htmltag($ldap_mobile).'">';
 		print $ldap_mobile;
 	} else {
-		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="user_mobile" value="'.dol_escape_htmltag(GETPOST('user_mobile', 'alphanohtml')).'" spellcheck="false">';
+		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="user_mobile" value="'.dol_escape_htmltag(request()->input('user_mobile')).'" spellcheck="false">';
 	}
 	print '</td></tr>';
 
@@ -1348,7 +1348,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="office_fax" value="'.dol_escape_htmltag($ldap_fax).'">';
 		print $ldap_fax;
 	} else {
-		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="office_fax" value="'.dol_escape_htmltag(GETPOST('office_fax', 'alphanohtml')).'">';
+		print '<input class="maxwidth200 widthcentpercentminusx" type="text" name="office_fax" value="'.dol_escape_htmltag(request()->input('office_fax')).'">';
 	}
 	print '</td></tr>';
 
@@ -1360,7 +1360,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print '<input type="hidden" name="email" value="'.dol_escape_htmltag($ldap_mail).'">';
 		print $ldap_mail;
 	} else {
-		print '<input type="text" name="email" class="maxwidth500 widthcentpercentminusx" value="'.dol_escape_htmltag(GETPOST('email', 'alphanohtml')).'" spellcheck="false">';
+		print '<input type="text" name="email" class="maxwidth500 widthcentpercentminusx" value="'.dol_escape_htmltag(request()->input('email')).'" spellcheck="false">';
 	}
 	print '</td></tr>';
 
@@ -1395,7 +1395,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	if (isModEnabled('accounting')) {
 		print '<tr><td>'.$langs->trans("AccountancyCode").'</td>';
 		print '<td>';
-		print '<input type="text" class="maxwidthonsmartphone" name="accountancy_code" value="'.dol_escape_htmltag(GETPOST('accountancy_code', 'alphanohtml')).'">';
+		print '<input type="text" class="maxwidthonsmartphone" name="accountancy_code" value="'.dol_escape_htmltag(request()->input('accountancy_code')).'">';
 		print '</td></tr>';
 	}
 
@@ -1403,7 +1403,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	if (isModEnabled('agenda')) {
 		print '<tr><td>'.$langs->trans("Color").'</td>';
 		print '<td>';
-		print $formother->selectColor(GETPOSTISSET('color') ? GETPOST('color', 'alphanohtml') : $object->color, 'color', null, 1, array(), 'hideifnotset');
+		print $formother->selectColor(request()->has('color') ? request()->input('color') : $object->color, 'color', null, 1, array(), 'hideifnotset');
 		print '</td></tr>';
 	}
 
@@ -1418,7 +1418,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	if (getDolGlobalInt('MAIN_MULTILANGS')) {
 		print '<tr><td>'.$form->editfieldkey('DefaultLang', 'default_lang', '', $object, 0, 'string', '', 0, 0, 'id', $langs->trans("WarningNotLangOfInterface", $langs->transnoentitiesnoconv("UserGUISetup"))).'</td>';
 		print '<td class="maxwidthonsmartphone">'."\n";
-		print img_picto('', 'language', 'class="pictofixedwidth"').$formadmin->select_language(GETPOST('default_lang', 'alpha') ? GETPOST('default_lang', 'alpha') : ($object->lang ? $object->lang : ''), 'default_lang', 0, array(), 1, 0, 0, 'maxwidth300 widthcentpercentminusx');
+		print img_picto('', 'language', 'class="pictofixedwidth"').$formadmin->select_language(request()->input('default_lang') ? request()->input('default_lang') : ($object->lang ? $object->lang : ''), 'default_lang', 0, array(), 1, 0, 0, 'maxwidth300 widthcentpercentminusx');
 		print '</td>';
 		print '</tr>';
 	}
@@ -1446,7 +1446,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print '<td class="wordbreak">';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
 
-	$doleditor = new DolEditor('signature', GETPOST('signature', 'restricthtml'), '', 138, 'dolibarr_notes', 'In', true, $acceptlocallinktomedia, !getDolGlobalString('FCKEDITOR_ENABLE_USERSIGN') ? 0 : 1, ROWS_4, '90%');
+	$doleditor = new DolEditor('signature', request()->input('signature'), '', 138, 'dolibarr_notes', 'In', true, $acceptlocallinktomedia, !getDolGlobalString('FCKEDITOR_ENABLE_USERSIGN') ? 0 : 1, ROWS_4, '90%');
 	print $doleditor->Create(1);
 	print '</td></tr>';
 
@@ -1455,7 +1455,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print $langs->trans("NotePublic");
 	print '</td><td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('note_public', GETPOSTISSET('note_public') ? GETPOST('note_public', 'restricthtml') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PUBLIC'), ROWS_3, '90%');
+	$doleditor = new DolEditor('note_public', request()->has('note_public') ? request()->input('note_public') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PUBLIC'), ROWS_3, '90%');
 	$doleditor->Create();
 	print "</td></tr>\n";
 
@@ -1464,7 +1464,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	print $langs->trans("NotePrivate");
 	print '</td><td>';
 	require_once DOL_DOCUMENT_ROOT.'/core/class/doleditor.class.php';
-	$doleditor = new DolEditor('note_private', GETPOSTISSET('note_private') ? GETPOST('note_private', 'restricthtml') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVATE'), ROWS_3, '90%');
+	$doleditor = new DolEditor('note_private', request()->has('note_private') ? request()->input('note_private') : '', '', 100, 'dolibarr_notes', '', false, true, getDolGlobalString('FCKEDITOR_ENABLE_NOTE_PRIVATE'), ROWS_3, '90%');
 	$doleditor->Create();
 	print "</td></tr>\n";
 
@@ -1483,7 +1483,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	// Position/Job
 	print '<tr><td class="titlefieldcreate">'.$langs->trans("PostOrFunction").'</td>';
 	print '<td>';
-	print '<input class="maxwidth200 maxwidth150onsmartphone" type="text" name="job" value="'.dol_escape_htmltag(GETPOST('job', 'alphanohtml')).'">';
+	print '<input class="maxwidth200 maxwidth150onsmartphone" type="text" name="job" value="'.dol_escape_htmltag(request()->input('job')).'">';
 	print '</td></tr>';
 
 	if ((isModEnabled('salaries') && $user->hasRight("salaries", "read") && in_array($id, $childids))
@@ -1497,7 +1497,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print $form->textwithpicto($text, $langs->trans("THMDescription"), 1, 'help', 'classthm');
 		print '</td>';
 		print '<td>';
-		print '<input size="8" type="text" name="thm" value="'.dol_escape_htmltag(GETPOST('thm')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
+		print '<input size="8" type="text" name="thm" value="'.dol_escape_htmltag(request()->input('thm')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 		print '</td>';
 		print "</tr>\n";
 
@@ -1507,14 +1507,14 @@ if ($action == 'create' || $action == 'adduserldap') {
 		print $form->textwithpicto($text, $langs->trans("TJMDescription"), 1, 'help', 'classtjm');
 		print '</td>';
 		print '<td>';
-		print '<input size="8" type="text" name="tjm" value="'.dol_escape_htmltag(GETPOST('tjm')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
+		print '<input size="8" type="text" name="tjm" value="'.dol_escape_htmltag(request()->input('tjm')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 		print '</td>';
 		print "</tr>\n";
 
 		// Salary
 		print '<tr><td>'.$langs->trans("Salary").'</td>';
 		print '<td>';
-		print img_picto('', 'salary', 'class="pictofixedwidth paddingright"').'<input class="width100" type="text" name="salary" value="'.dol_escape_htmltag(GETPOST('salary')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
+		print img_picto('', 'salary', 'class="pictofixedwidth paddingright"').'<input class="width100" type="text" name="salary" value="'.dol_escape_htmltag(request()->input('salary')).'"> <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 		print '</td>';
 		print "</tr>\n";
 	}
@@ -1522,7 +1522,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 	// Weeklyhours
 	print '<tr><td>'.$langs->trans("WeeklyHours").'</td>';
 	print '<td>';
-	print '<input size="8" type="text" name="weeklyhours" value="'.dol_escape_htmltag(GETPOST('weeklyhours')).'">';
+	print '<input size="8" type="text" name="weeklyhours" value="'.dol_escape_htmltag(request()->input('weeklyhours')).'">';
 	print '</td>';
 	print "</tr>\n";
 
@@ -2302,7 +2302,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 
 
 			// Select mail models is same action as presend
-			if (GETPOST('modelselected')) {
+			if (request()->input('modelselected')) {
 				$action = 'presend';
 			}
 
@@ -2597,7 +2597,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			if (getDolGlobalString('MAIN_USE_TITLE_FOR_USER')) {
 				print '<tr><td class="titlefieldcreate"><label for="civility_code">'.$langs->trans("UserTitle").'</label></td><td>';
 				if ($permissiontoedit && !$object->ldap_sid) {
-					print $formcompany->select_civility(GETPOSTISSET("civility_code") ? GETPOST("civility_code", 'aZ09') : $object->civility_code, 'civility_code');
+					print $formcompany->select_civility(request()->has('civility_code') ? request()->input('civility_code') : $object->civility_code, 'civility_code');
 				} elseif ($object->civility_code) {
 					print $langs->trans("Civility".$object->civility_code);
 				}
@@ -2609,7 +2609,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			print '<td>';
 			$arraygender = array('man' => $langs->trans("Genderman"), 'woman' => $langs->trans("Genderwoman"), 'other' => $langs->trans("Genderother"));
 			if ($permissiontoedit) {
-				print $form->selectarray('gender', $arraygender, GETPOSTISSET('gender') ? GETPOST('gender') : $object->gender, 1);
+				print $form->selectarray('gender', $arraygender, request()->has('gender') ? request()->input('gender') : $object->gender, 1);
 			} else {
 				print $arraygender[$object->gender];
 			}
@@ -2636,7 +2636,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				print '<tr><td class="titlefieldcreate">'.$langs->trans("HierarchicalResponsible").'</td>';
 				print '<td>';
 				if ($permissiontoedit) {
-					print img_picto('', 'user', 'class="pictofixedwidth"').$form->select_dolusers(GETPOSTISSET('fk_user') ? GETPOSTINT('fk_user') : $object->fk_user, 'fk_user', 1, array($object->id), 0, '', '', (string) $object->entity, 0, 0, '', 0, '', 'widthcentpercentminusx maxwidth300');
+					print img_picto('', 'user', 'class="pictofixedwidth"').$form->select_dolusers(request()->has('fk_user') ? request()->integer('fk_user', 0) : $object->fk_user, 'fk_user', 1, array($object->id), 0, '', '', (string) $object->entity, 0, 0, '', 0, '', 'widthcentpercentminusx maxwidth300');
 				} else {
 					print '<input type="hidden" name="fk_user" value="'.$object->fk_user.'">';
 					$huser = new User($db);
@@ -2791,7 +2791,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			if ($permissiontoedit) {
 				print '<textarea name="address" id="address" class="quatrevingtpercent" rows="3" wrap="soft">';
 			}
-			print dol_escape_htmltag(GETPOSTISSET('address') ? GETPOST('address') : $object->address, 0, 1);
+			print dol_escape_htmltag(request()->has('address') ? request()->input('address') : $object->address, 0, 1);
 			if ($permissiontoedit) {
 				print '</textarea>';
 			}
@@ -2800,7 +2800,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			// Zip
 			print '<tr><td>'.$form->editfieldkey('Zip', 'zipcode', '', $object, 0).'</td><td>';
 			if ($permissiontoedit) {
-				print $formcompany->select_ziptown((GETPOSTISSET('zipcode') ? GETPOST('zipcode') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6);
+				print $formcompany->select_ziptown((request()->has('zipcode') ? request()->input('zipcode') : $object->zip), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6);
 			} else {
 				print $object->zip;
 			}
@@ -2809,7 +2809,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			// Town
 			print '<tr><td>'.$form->editfieldkey('Town', 'town', '', $object, 0).'</td><td>';
 			if ($permissiontoedit) {
-				print $formcompany->select_ziptown((GETPOSTISSET('town') ? GETPOST('town') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
+				print $formcompany->select_ziptown((request()->has('town') ? request()->input('town') : $object->town), 'town', array('zipcode', 'selectcountry_id', 'state_id'));
 			} else {
 				print $object->town;
 			}
@@ -2819,7 +2819,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			print '<tr><td>'.$form->editfieldkey('Country', 'selectcountry_id', '', $object, 0).'</td><td>';
 			print img_picto('', 'country', 'class="pictofixedwidth"');
 			if ($permissiontoedit) {
-				print $form->select_country((GETPOST('country_id') != '' ? GETPOST('country_id') : $object->country_id), 'country_id');
+				print $form->select_country((request()->input('country_id') != '' ? request()->input('country_id') : $object->country_id), 'country_id');
 				if ($user->admin) {
 					print info_admin($langs->trans("YouCanChangeValuesForThisListFromDictionarySetup"), 1);
 				}
@@ -2941,7 +2941,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				print '<tr><td class="titlefieldcreate">'.$langs->trans("ColorUser").'</td>';
 				print '<td>';
 				if ($permissiontoedit) {
-					print $formother->selectColor(GETPOSTISSET('color') ? GETPOST('color', 'alphanohtml') : $object->color, 'color', null, 1, array(), 'hideifnotset');
+					print $formother->selectColor(request()->has('color') ? request()->input('color') : $object->color, 'color', null, 1, array(), 'hideifnotset');
 				} else {
 					print $formother->showColor($object->color, '');
 				}
@@ -3089,7 +3089,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 			print '<tr><td>'.$langs->trans("WeeklyHours").'</td>';
 			print '<td>';
 			if ($permissiontoedit) {
-				print '<input size="8" type="text" name="weeklyhours" value="'.price2num(GETPOST('weeklyhours') ? GETPOST('weeklyhours') : $object->weeklyhours).'">';
+				print '<input size="8" type="text" name="weeklyhours" value="'.price2num(request()->input('weeklyhours') ? request()->input('weeklyhours') : $object->weeklyhours).'">';
 			} else {
 				print price2num($object->weeklyhours);
 			}
@@ -3105,7 +3105,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				// Salary
 				print '<tr><td>'.$langs->trans("Salary").'</td>';
 				print '<td>';
-				print img_picto('', 'salary', 'class="pictofixedwidth paddingright"').'<input size="8" type="text" name="salary" value="'.price2num(GETPOST('salary') ? GETPOST('salary') : $object->salary).'">';
+				print img_picto('', 'salary', 'class="pictofixedwidth paddingright"').'<input size="8" type="text" name="salary" value="'.price2num(request()->input('salary') ? request()->input('salary') : $object->salary).'">';
 				print ' <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 				print '</td>';
 				print "</tr>\n";
@@ -3117,7 +3117,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				print '</td>';
 				print '<td>';
 				if ($permissiontoedit) {
-					print '<input size="8" type="text" name="thm" value="'.price2num(GETPOST('thm') ? GETPOST('thm') : $object->thm).'">';
+					print '<input size="8" type="text" name="thm" value="'.price2num(request()->input('thm') ? request()->input('thm') : $object->thm).'">';
 					print ' <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 				} else {
 					print($object->thm != '' ? price($object->thm, 0, $langs, 1, -1, -1, $conf->currency) : '');
@@ -3132,7 +3132,7 @@ if ($action == 'create' || $action == 'adduserldap') {
 				print '</td>';
 				print '<td>';
 				if ($permissiontoedit) {
-					print '<input size="8" type="text" name="tjm" value="'.price2num(GETPOST('tjm') ? GETPOST('tjm') : $object->tjm).'">';
+					print '<input size="8" type="text" name="tjm" value="'.price2num(request()->input('tjm') ? request()->input('tjm') : $object->tjm).'">';
 					print ' <span class="opacitymedium">'.$langs->getCurrencySymbol().'</span>';
 				} else {
 					print($object->tjm != '' ? price($object->tjm, 0, $langs, 1, -1, -1, $conf->currency) : '');

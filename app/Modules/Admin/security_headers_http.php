@@ -41,11 +41,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 $langs->loadLangs(array("users", "admin", "other", "website"));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
-$cancel = GETPOST('cancel', 'alpha');
+$action = request()->input('action');
+$cancel = request()->input('cancel');
 
 $forceCSP = getDolGlobalString("MAIN_SECURITY_FORCECSP");
 $selectarrayCSPDirectives = GetContentPolicyDirectives();
@@ -70,7 +70,7 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif (preg_match('/del_([a-z0-9_\-]+)/i', $action, $reg)) {
 	$code = $reg[1];
@@ -78,12 +78,12 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 		header("Location: ".$_SERVER["PHP_SELF"]);
 		exit;
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 } elseif ($action == 'removecspsource') {
 	$db->begin();
 	$sourcetype = "";
-	$sourcecsp = explode("_", GETPOST("sourcecsp"));
+	$sourcecsp = explode("_", request()->input('sourcecsp'));
 	$directive = $sourcecsp[0];
 	$sourcekey = isset($sourcecsp[1]) ? $sourcecsp[1] : null;
 	$sourcedata = isset($sourcecsp[2]) ? $sourcecsp[2] : null;
@@ -145,10 +145,10 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 
 	header("Location: ".$_SERVER["PHP_SELF"]);
 	exit;
-} elseif ($action == "updateform" && GETPOST("btn_MAIN_SECURITY_FORCECSP")) {
-	$directivecsp = GETPOST("select_identifier_MAIN_SECURITY_FORCECSP");
-	$sourcecsp = GETPOST("select_source_MAIN_SECURITY_FORCECSP");
-	$sourcedatacsp = GETPOST("input_data_MAIN_SECURITY_FORCECSP");
+} elseif ($action == "updateform" && request()->input('btn_MAIN_SECURITY_FORCECSP')) {
+	$directivecsp = request()->input('select_identifier_MAIN_SECURITY_FORCECSP');
+	$sourcecsp = request()->input('select_source_MAIN_SECURITY_FORCECSP');
+	$sourcedatacsp = request()->input('input_data_MAIN_SECURITY_FORCECSP');
 	$sourcetype = "";
 
 	$forceCSPArr = GetContentPolicyToArray($forceCSP);
@@ -220,11 +220,11 @@ if (preg_match('/set_([a-z0-9_\-]+)/i', $action, $reg)) {
 } elseif ($action == "updateform") {
 	$db->begin();
 	$res1 = $res2 = $res3 = $res4 = 0;
-	$securityrp = GETPOST('MAIN_SECURITY_FORCERP', 'alpha');
-	$securitysts = GETPOST('MAIN_SECURITY_FORCESTS', 'alpha');
-	$securitypp = GETPOST('MAIN_SECURITY_FORCEPP', 'alpha');
-	$securitycsp = GETPOST('MAIN_SECURITY_FORCECSP', 'alpha');
-	$securitycspro = GETPOST('MAIN_SECURITY_FORCECSPRO', 'alpha');
+	$securityrp = request()->input('MAIN_SECURITY_FORCERP');
+	$securitysts = request()->input('MAIN_SECURITY_FORCESTS');
+	$securitypp = request()->input('MAIN_SECURITY_FORCEPP');
+	$securitycsp = request()->input('MAIN_SECURITY_FORCECSP');
+	$securitycspro = request()->input('MAIN_SECURITY_FORCECSPRO');
 
 	// Add a protection against bad setup that break Dolibarr
 	$securitycsp = cleanSecurityCSP($securitycsp);

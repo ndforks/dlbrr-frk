@@ -196,11 +196,11 @@ class FormListWebPortal
 
 		// Set form list
 		$this->element = $elementEn;
-		$this->action = GETPOST('action', 'aZ09');
-		$this->limit = GETPOSTISSET('limit') ? GETPOSTINT('limit') : -1;
-		$this->sortfield = GETPOST('sortfield', 'aZ09comma');
-		$this->sortorder = GETPOST('sortorder', 'aZ09comma');
-		$this->page = GETPOSTISSET('page') ? GETPOSTINT('page') : 1;
+		$this->action = request()->input('action');
+		$this->limit = request()->has('limit') ? request()->integer('limit', 0) : -1;
+		$this->sortfield = request()->input('sortfield');
+		$this->sortorder = request()->input('sortorder');
+		$this->page = request()->has('page') ? request()->integer('page', 0) : 1;
 		if (empty($this->titleKey)) {
 			$this->titleKey = $objectclass . 'ListTitle';
 		}
@@ -248,7 +248,7 @@ class FormListWebPortal
 	public function doActions()
 	{
 		// Purge search criteria
-		if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter.x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // All tests are required to be compatible with all browsers
+		if (request()->input('button_removefilter_x') || request()->input('button_removefilter.x') || request()->input('button_removefilter')) { // All tests are required to be compatible with all browsers
 			$this->setSearchValues(true);
 		}
 	}
@@ -362,7 +362,7 @@ class FormListWebPortal
 		}
 
 		// List of fields to search into when doing a "search in all"
-		$this->search_all = GETPOST('search_all', 'alphanohtml');
+		$this->search_all = request()->input('search_all');
 
 		$this->controller->listSetSearchValues($clear);
 	}
@@ -404,7 +404,7 @@ class FormListWebPortal
 			$reshook = $hookmanager->executeHooks('printFieldListFrom', $parameters, $context);
 			$this->sql_body .= $hookmanager->resPrint;
 			if ($this->object->ismultientitymanaged == 1) {
-				$this->sql_body .= " WHERE t.entity IN (" . getEntity($this->object->element, (GETPOSTINT('search_current_entity') ? 0 : 1)) . ")";
+				$this->sql_body .= " WHERE t.entity IN (" . getEntity($this->object->element, (request()->integer('search_current_entity', 0) ? 0 : 1)) . ")";
 			} else {
 				$this->sql_body .= " WHERE 1 = 1";
 			}

@@ -57,8 +57,8 @@ include '../../main.inc.php';
  * @var DoliDB $db
  * @var Translate $langs
  */
-$phone = GETPOST('phone');
-$securitykey = GETPOST('securitykey');
+$phone = request()->input('phone');
+$securitykey = request()->input('securitykey');
 
 $notfound = $langs->trans("Unknown");
 
@@ -109,7 +109,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db, 'Error');
+	abort(500, 'Error');
 	$found = 'Error';
 }
 //Greek to Latin

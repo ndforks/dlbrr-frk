@@ -117,12 +117,12 @@ if (!$versionfrom && !$versionto) {
 }
 
 
-pHeader('', "upgrade2", GETPOST('action', 'aZ09'), 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
+pHeader('', "upgrade2", request()->input('action'), 'versionfrom='.$versionfrom.'&versionto='.$versionto, '', 'main-inside main-inside-borderbottom');
 
 $actiondone = 0;
 
 // Action to launch the migrate script
-if (!GETPOST('action', 'aZ09') || preg_match('/upgrade/i', GETPOST('action', 'aZ09'))) {
+if (!request()->input('action') || preg_match('/upgrade/i', request()->input('action'))) {
 	$actiondone = 1;
 
 	print '<h3><img class="valignmiddle inline-block paddingright" src="../public/theme/common/database.svg" width="20" alt="Database"> ';
@@ -436,9 +436,9 @@ if (!$ok && isset($argv[1])) {
 }
 dolibarr_install_syslog("Exit ".$ret);
 
-dolibarr_install_syslog("--- upgrade: end ".((int) (!$ok && !GETPOST("ignoreerrors")))." dirmodule=".$dirmodule);
+dolibarr_install_syslog("--- upgrade: end ".((int) (!$ok && !request()->input('ignoreerrors')))." dirmodule=".$dirmodule);
 
-$nonext = (!$ok && !GETPOST("ignoreerrors")) ? 2 : 0;
+$nonext = (!$ok && !request()->input('ignoreerrors')) ? 2 : 0;
 if ($dirmodule) {
 	$nonext = 1;
 }

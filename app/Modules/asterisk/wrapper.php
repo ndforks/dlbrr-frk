@@ -107,7 +107,7 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
 
 // Security check
 if (!isModEnabled('clicktodial')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -116,10 +116,10 @@ if (getDolGlobalString('ASTERISK_INDICATIF') == 'NONE') {
 	$conf->global->ASTERISK_INDICATIF = '';
 }
 
-$login = GETPOST('login', 'alphanohtml');
-$password = GETPOST('password', 'password');
-$caller = GETPOST('caller', 'alphanohtml');
-$called = GETPOST('called', 'alphanohtml');
+$login = request()->input('login');
+$password = request()->input('password');
+$caller = request()->input('caller');
+$called = request()->input('called');
 
 // Sanitize input data to avoid to use the wrapper to inject malicious paylod into asterisk
 $login = preg_replace('/[\n\r]/', '', $login);
@@ -179,7 +179,7 @@ if ($resql) {
 	}
 	$db->free($resql);
 } else {
-	dol_print_error($db, 'Error');
+	abort(500, 'Error');
 	$found = 'Error';
 }
 

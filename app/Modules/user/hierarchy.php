@@ -48,24 +48,24 @@ if ($user->socid > 0) {
 	$socid = $user->socid;
 }
 
-$optioncss = GETPOST('optioncss', 'alpha');
-$contextpage = GETPOST('contextpage', 'aZ') ? GETPOST('contextpage', 'aZ') : 'userlist'; // To manage different context of search
-$mode = GETPOST("mode", 'alpha');
+$optioncss = request()->input('optioncss');
+$contextpage = request()->input('contextpage') ? request()->input('contextpage') : 'userlist'; // To manage different context of search
+$mode = request()->input('mode');
 if (empty($mode)) {
 	$mode = 'hierarchy';
 }
 
-$sortfield = GETPOST('sortfield', 'aZ09comma');
-$sortorder = GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$sortfield = request()->input('sortfield');
+$sortorder = request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 
 
-$search_status = GETPOST('search_status', 'intcomma');
+$search_status = request()->input('search_status');
 if ($search_status == '') {
 	$search_status = '1';
 }
 
-if (GETPOST('button_removefilter_x', 'alpha') || GETPOST('button_removefilter', 'alpha')) { // Both test are required to be compatible with all browsers
+if (request()->input('button_removefilter_x') || request()->input('button_removefilter')) { // Both test are required to be compatible with all browsers
 	$search_status = "";
 }
 
@@ -82,11 +82,11 @@ $permissiontoadd = (!empty($user->admin) || $user->hasRight("user", "user", "wri
 // Permission to list
 if (isModEnabled('salaries') && $contextpage == 'employeelist' && $search_employee == 1) {
 	if (!$user->hasRight("salaries", "read")) {
-		accessforbidden();
+		abort(403);
 	}
 } else {
 	if (!$user->hasRight("user", "user", "read") && empty($user->admin)) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

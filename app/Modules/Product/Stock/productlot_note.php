@@ -39,9 +39,9 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/product.lib.php';
 $langs->loadLangs(array('other', 'products', 'productbatch'));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
+$action = request()->input('action');
 
 // Initialize a technical objects
 $object = new Productlot($db);
@@ -60,12 +60,12 @@ if ($id > 0 || !empty($ref)) {
 $permissionnote = $user->hasRight('produit', 'lire'); // Used by the include of actions_setnotes.inc.php
 
 // Security check (enable the most restrictive one)
-//if ($user->socid > 0) accessforbidden();
+//if ($user->socid > 0) abort(403);
 //if ($user->socid > 0) $socid = $user->socid;
 //$isdraft = (($object->status == $object::STATUS_DRAFT) ? 1 : 0);
 //restrictedArea($user, $object->element, $object->id, $object->table_element, '', 'fk_soc', 'rowid', $isdraft);
-//if (empty($conf->calibration->enabled)) accessforbidden();
-//if (!$permissiontoread) accessforbidden();
+//if (empty($conf->calibration->enabled)) abort(403);
+//if (!$permissiontoread) abort(403);
 
 
 /*

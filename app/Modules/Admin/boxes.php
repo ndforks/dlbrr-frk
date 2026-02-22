@@ -43,11 +43,11 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 $langs->loadLangs(array('admin', 'boxes', 'accountancy'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$rowid = GETPOSTINT('rowid');
-$action = GETPOST('action', 'aZ09');
+$rowid = request()->integer('rowid', 0);
+$action = request()->input('action');
 
 
 // Define possible position of boxes
@@ -60,12 +60,12 @@ $boxes = array();
  */
 
 if ($action == 'addconst') {
-	dolibarr_set_const($db, "MAIN_ACTIVATE_FILECACHE", GETPOST("MAIN_ACTIVATE_FILECACHE", 'alpha'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_ACTIVATE_FILECACHE", request()->input('MAIN_ACTIVATE_FILECACHE'), 'chaine', 0, '', $conf->entity);
 }
 
 if ($action == 'add') {
 	$error = 0;
-	$boxids = GETPOST('boxid', 'array');
+	$boxids = request()->input('boxid');
 
 	$db->begin();
 	if (is_array($boxids)) {
@@ -118,7 +118,7 @@ if ($action == 'add') {
 								$arrayofexistingboxid[$obj->box_id] = 1;
 							}
 						} else {
-							dol_print_error($db);
+							abort(500);
 						}
 
 						if (empty($arrayofexistingboxid[$boxid['value']])) {
@@ -174,10 +174,10 @@ if ($action == 'switch') {
 	$db->begin();
 
 	$objfrom = new ModeleBoxes($db);
-	$objfrom->fetch(GETPOSTINT("switchfrom"));
+	$objfrom->fetch(request()->integer('switchfrom', 0));
 
 	$objto = new ModeleBoxes($db);
-	$objto->fetch(GETPOSTINT('switchto'));
+	$objto->fetch(request()->integer('switchto', 0));
 
 	$resultupdatefrom = 0;
 	$resultupdateto = 0;
@@ -194,14 +194,14 @@ if ($action == 'switch') {
 		dol_syslog($sql);
 		$resultupdatefrom = $db->query($sql);
 		if (!$resultupdatefrom) {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$sql = "UPDATE ".MAIN_DB_PREFIX."boxes SET box_order='".$db->escape($newsecond)."' WHERE rowid=".((int) $objto->rowid);
 		dol_syslog($sql);
 		$resultupdateto = $db->query($sql);
 		if (!$resultupdateto) {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

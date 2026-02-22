@@ -461,13 +461,13 @@ class FactureFournisseur extends CommonInvoice
 			// Fields coming from GUI
 			// @TODO Value of template should be used as default value on the form on the GUI, and we should here always use the value from GUI
 			// set by posted page with $object->xxx = ... and this section should be removed.
-			$this->fk_project = GETPOSTINT('projectid') > 0 ? (GETPOSTINT('projectid')) : $_facrec->fk_project;
-			$this->note_public = GETPOST('note_public', 'restricthtml') ? GETPOST('note_public', 'restricthtml') : $_facrec->note_public;
-			$this->note_private = GETPOST('note_private', 'restricthtml') ? GETPOST('note_private', 'restricthtml') : $_facrec->note_private;
-			$this->model_pdf = GETPOST('model', 'alpha') ? GETPOST('model', 'alpha') : $_facrec->model_pdf;
-			$this->cond_reglement_id = GETPOSTINT('cond_reglement_id') > 0 ? (GETPOSTINT('cond_reglement_id')) : $_facrec->cond_reglement_id;
-			$this->mode_reglement_id = GETPOSTINT('mode_reglement_id') > 0 ? (GETPOSTINT('mode_reglement_id')) : $_facrec->mode_reglement_id;
-			$this->fk_account = GETPOST('fk_account') > 0 ? ((int) GETPOST('fk_account')) : $_facrec->fk_account;
+			$this->fk_project = request()->integer('projectid', 0) > 0 ? (request()->integer('projectid', 0)) : $_facrec->fk_project;
+			$this->note_public = request()->input('note_public') ? request()->input('note_public') : $_facrec->note_public;
+			$this->note_private = request()->input('note_private') ? request()->input('note_private') : $_facrec->note_private;
+			$this->model_pdf = request()->input('model') ? request()->input('model') : $_facrec->model_pdf;
+			$this->cond_reglement_id = request()->integer('cond_reglement_id', 0) > 0 ? (request()->integer('cond_reglement_id', 0)) : $_facrec->cond_reglement_id;
+			$this->mode_reglement_id = request()->integer('mode_reglement_id', 0) > 0 ? (request()->integer('mode_reglement_id', 0)) : $_facrec->mode_reglement_id;
+			$this->fk_account = request()->input('fk_account') > 0 ? ((int) request()->input('fk_account')) : $_facrec->fk_account;
 
 			// Set here to have this defined for substitution into notes, should be recalculated after adding lines to get same result
 			$this->total_ht = $_facrec->total_ht;
@@ -3120,7 +3120,7 @@ class FactureFournisseur extends CommonInvoice
 		$xnbp = 0;
 		if (empty($option) || $option != 'nolines') {
 			// Lines
-			$nbp = min(1000, GETPOSTINT('nblines') ? GETPOSTINT('nblines') : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
+			$nbp = min(1000, request()->integer('nblines', 0) ? request()->integer('nblines', 0) : 5);	// We can force the nb of lines to test from command line (but not more than 1000)
 			while ($xnbp < $nbp) {
 				$line = new SupplierInvoiceLine($this->db);
 				$line->desc = $langs->trans("Description")." ".$xnbp;

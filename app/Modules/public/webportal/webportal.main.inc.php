@@ -115,7 +115,7 @@ $logged_user = new User($db);
 $anti_spam_session_key = 'dol_antispam_value';
 
 if (!defined('NOREQUIREDB') && empty($conf->webportal->enabled)) {
-	accessforbidden('Module not activated');
+	abort(403);
 }
 
 if (!defined('WEBPORTAL_NOREQUIRETRAN') || (!defined('WEBPORTAL_NOLOGIN') && !empty($context->controllerInstance->accessNeedLoggedUser))) {
@@ -161,12 +161,12 @@ if (getDolGlobalInt('WEBPORTAL_LOGIN_BY_MODULE') && !empty($conf->modules_parts[
 			// It is not already authenticated and it requests the login / password
 			$langs->loadLangs(array("other", "help", "admin"));
 
-			$action = GETPOST('action_login', 'alphanohtml');
+			$action = request()->input('action_login');
 
 			if ($action == 'login') {
-				$login = GETPOST('login', 'alphanohtml');
-				$password = GETPOST('password', 'password');
-				// $security_code = GETPOST('security_code', 'alphanohtml');
+				$login = request()->input('login');
+				$password = request()->input('password');
+				// $security_code = request()->input('security_code');
 
 				if (empty($login)) {
 					$context->setEventMessage($langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Login")), 'errors');

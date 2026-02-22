@@ -43,11 +43,11 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/member.lib.php';
 $WIDTH = DolGraph::getDefaultGraphSizeForStats('width');
 $HEIGHT = DolGraph::getDefaultGraphSizeForStats('height');
 
-$userid = GETPOSTINT('userid');
+$userid = request()->integer('userid', 0);
 if ($userid < 0) {
 	$userid = 0;
 }
-$socid = GETPOSTINT('socid');
+$socid = request()->integer('socid', 0);
 if ($socid < 0) {
 	$socid = 0;
 }

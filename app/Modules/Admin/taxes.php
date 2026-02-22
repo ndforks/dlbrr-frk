@@ -47,10 +47,10 @@ if (isModEnabled('accounting')) {
 $langs->loadLangs(array('admin', 'objects', 'companies', 'products'));
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 
 
@@ -81,7 +81,7 @@ if ($action == 'update') {
 	$error = 0;
 
 	// Tax mode
-	$tax_mode = GETPOSTINT('tax_mode');
+	$tax_mode = request()->integer('tax_mode', 0);
 
 	$db->begin();
 
@@ -134,11 +134,11 @@ if ($action == 'update') {
 		$error++;
 	}
 
-	dolibarr_set_const($db, "MAIN_INFO_TVAINTRA", GETPOST("tva", 'alpha'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_TVAINTRA", request()->input('tva'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_INFO_VAT_RETURN", GETPOST("MAIN_INFO_VAT_RETURN", 'alpha'), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_VAT_RETURN", request()->input('MAIN_INFO_VAT_RETURN'), 'chaine', 0, '', $conf->entity);
 
-	dolibarr_set_const($db, "MAIN_INFO_TVA_DAY_DEADLINE_SUBMISSION", GETPOSTINT("deadline_day_vat"), 'chaine', 0, '', $conf->entity);
+	dolibarr_set_const($db, "MAIN_INFO_TVA_DAY_DEADLINE_SUBMISSION", request()->integer('deadline_day_vat', 0), 'chaine', 0, '', $conf->entity);
 
 	if (!$error) {
 		$db->commit();
@@ -150,7 +150,7 @@ if ($action == 'update') {
 } elseif (preg_match('/^(set|del)_?([A-Z_]+)$/', $action, $reg)) {
 	// Set boolean (on/off) constants
 	if (!dolibarr_set_const($db, $reg[2], ($reg[1] === 'set' ? '1' : '0'), 'chaine', 0, '', $conf->entity) > 0) {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -39,10 +39,10 @@ require_once DOL_DOCUMENT_ROOT."/opensurvey/class/opensurveysondage.class.php";
  * @var User $user
  */
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 $numsondage = '';
-if (GETPOST('id')) {
-	$numsondage = GETPOST("id", 'alpha');
+if (request()->input('id')) {
+	$numsondage = request()->input('id');
 }
 
 // Initialize Objects
@@ -54,7 +54,7 @@ if ($result <= 0) {
 
 // Security check
 if (!$user->hasRight('opensurvey', 'read')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -133,7 +133,7 @@ if ($resql) {
 		$i++;
 	}
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 
 

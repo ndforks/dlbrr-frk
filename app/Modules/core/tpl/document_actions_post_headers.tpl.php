@@ -100,7 +100,7 @@ if ($reshook) {
 if ($action == 'deletefile' || $action == 'deletelink') {
 	$langs->load("companies"); // Need for string DeleteFile+ConfirmDeleteFiles
 	print $form->formconfirm(
-		$_SERVER["PHP_SELF"].'?id='.$object->id.'&urlfile='.urlencode(GETPOST("urlfile")).'&linkid='.GETPOSTINT('linkid').(empty($param) ? '' : $param),
+		$_SERVER["PHP_SELF"].'?id='.$object->id.'&urlfile='.urlencode(request()->input('urlfile')).'&linkid='.request()->integer('linkid', 0).(empty($param) ? '' : $param),
 		$langs->trans('DeleteFile'),
 		$langs->trans('ConfirmDeleteFile'),
 		'confirm_deletefile',
@@ -226,7 +226,7 @@ $formfile->listOfLinks(
 	$object,
 	$permission,
 	$action,
-	(string) GETPOSTINT('linkid'),
+	(string) request()->integer('linkid', 0),
 	$param,
 	'formaddlink',
 	array('afterlinktitle' => $formToAddALink, 'showhideaddbutton' => 1)

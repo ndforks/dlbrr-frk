@@ -146,13 +146,13 @@ function dolSessionWrite($sess_id, $val)
 
 			$result = $dbsession->query($insert_query);
 			if (!$result) {
-				dol_print_error($dbsession);
+				abort(500);
 				return false;
 			}
 		} else {
 			if ($sessionidfound != $sess_id) {
 				// oops. How can this happen ?
-				dol_print_error($dbsession, 'Oops sess_id received in dolSessionWrite differs from the cache value $sessionidfound. How can this happen ?');
+				abort(500, 'Oops sess_id received in dolSessionWrite differs from the cache value $sessionidfound. How can this happen ?');
 				return false;
 			}
 			/*$sql = "SELECT session_id, session_variable FROM ".MAIN_DB_PREFIX."session";
@@ -169,7 +169,7 @@ function dolSessionWrite($sess_id, $val)
 			//var_dump($insert_query);
 			$result = $dbsession->query($insert_query);
 			if (!$result) {
-				dol_print_error($dbsession);
+				abort(500);
 				return false;
 			}
 			} else {
@@ -185,7 +185,7 @@ function dolSessionWrite($sess_id, $val)
 
 			$result = $dbsession->query($update_query);
 			if (!$result) {
-				dol_print_error($dbsession);
+				abort(500);
 				return false;
 			}
 		}

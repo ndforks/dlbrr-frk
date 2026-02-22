@@ -843,8 +843,8 @@ function dol_shutdown()
 /**
  * Return true if we are in a context of submitting the parameter $paramname from a POST of a form.
  * Warning:
- * For action=add, use:     $var = GETPOST('var');		// No GETPOSTISSET, so GETPOST always called and default value is retrieved if not a form POST, and value of form is retrieved if it is a form POST.
- * For action=update, use:  $var = GETPOSTISSET('var') ? GETPOST('var') : $object->var;
+ * For action=add, use:     $var = request()->input('var');		// No GETPOSTISSET, so GETPOST always called and default value is retrieved if not a form POST, and value of form is retrieved if it is a form POST.
+ * For action=update, use:  $var = request()->has('var') ? request()->input('var') : $object->var;
  *
  * @param 	string	$paramname		Name or parameter to test
  * @return 	boolean					True if we have just submit a POST or GET request with the parameter provided (even if param is empty)
@@ -1762,11 +1762,11 @@ function dolBuildUrl($url, $params = [], $addtoken = false)
 		include_once DOL_DOCUMENT_ROOT . '/core/class/hookmanager.class.php';
 		$hookmanager = new HookManager($db);
 	}
-	if ((!isset($params['mainmenu']) || empty($params['mainmenu'])) && GETPOSTISSET('mainmenu')) {
-		$params = array_merge($params, ['mainmenu' => (GETPOST('mainmenu', 'restricthtml'))]);
+	if ((!isset($params['mainmenu']) || empty($params['mainmenu'])) && request()->has('mainmenu')) {
+		$params = array_merge($params, ['mainmenu' => (request()->input('mainmenu'))]);
 	}
-	if ((!isset($params['leftmenu'])/*  || empty($params['leftmenu']) */) && GETPOSTISSET('leftmenu')) { // do not fill leftmenu if we have leftmenu=
-		$params = array_merge($params, ['leftmenu' => (GETPOST('leftmenu', 'restricthtml'))]);
+	if ((!isset($params['leftmenu'])/*  || empty($params['leftmenu']) */) && request()->has('leftmenu')) { // do not fill leftmenu if we have leftmenu=
+		$params = array_merge($params, ['leftmenu' => (request()->input('leftmenu'))]);
 	}
 	$parameters = [
 		'path' => &$url,
@@ -2830,7 +2830,7 @@ function dol_syslog($message, $level = LOG_INFO, $ident = 0, $suffixinfilename =
 
 		//TODO: Remove this. MAIN_ENABLE_LOG_INLINE_HTML should be deprecated and use a log handler dedicated to HTML output
 		// If html log tag enabled and url parameter log defined, we show output log on HTML comments
-		if (getDolGlobalString('MAIN_ENABLE_LOG_INLINE_HTML') && GETPOSTINT("log")) {
+		if (getDolGlobalString('MAIN_ENABLE_LOG_INLINE_HTML') && request()->integer('log', 0)) {
 			print "\n\n<!-- Log start\n";
 			print dol_escape_htmltag($message) . "\n";
 			print "Log end -->\n";
@@ -8212,7 +8212,7 @@ function getTaxesFromId($vatrate, $buyer = null, $seller = null, $firstparamisid
 			return array();
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 
 	return array();
@@ -8361,7 +8361,7 @@ function get_product_vat_for_country($idprod, $thirdpartytouseforcountry, $idpro
 				}
 				$db->free($resql);
 			} else {
-				dol_print_error($db);
+				abort(500);
 			}
 		} else {
 			// Forced value if autodetect fails. MAIN_VAT_DEFAULT_IF_AUTODETECT_FAILS can be
@@ -8442,7 +8442,7 @@ function get_product_localtax_for_country($idprod, $local, $thirdpartytouseforco
 				}
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 
@@ -12842,7 +12842,7 @@ function printCommonFooter($zone = 'private')
 
 	// A div to store page_y POST parameter so we can read it using javascript
 	print "\n<!-- A div to store page_y POST parameter -->\n";
-	print '<div id="page_y" style="display: none;">' . (GETPOST('page_y') ? GETPOST('page_y') : '') . '</div>' . "\n";
+	print '<div id="page_y" style="display: none;">' . (request()->input('page_y') ? request()->input('page_y') : '') . '</div>' . "\n";
 
 	$parameters = array('zone' => $zone);
 	$tmpobject = null;
@@ -13999,7 +13999,7 @@ function getDictionaryValue($tablename, $field, $id, $checkentity = false, $rowi
 				$dictvalues[$obj->$rowidfield] = $obj;	// $obj is stdClass
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 
 		$conf->cache['dictvalues_' . $tablename] = $dictvalues;
@@ -16428,7 +16428,7 @@ function show_actions_messaging($conf, $langs, $db, $filterobj, $objcon = null, 
 					$contactaction->id = $obj->id;
 					$result = $contactaction->fetchResources();
 					if ($result < 0) {
-						dol_print_error($db);
+						abort(500);
 						setEventMessage("actions.lib::show_actions_messaging Error fetch resource", 'errors');
 					}
 
@@ -16492,7 +16492,7 @@ function show_actions_messaging($conf, $langs, $db, $filterobj, $objcon = null, 
 				$i++;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 	}
 

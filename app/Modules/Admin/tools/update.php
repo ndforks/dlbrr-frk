@@ -44,14 +44,14 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/geturl.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array("admin", "other"));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
-if (GETPOST('msg', 'alpha')) {
-	setEventMessages(GETPOST('msg', 'alpha'), null, 'errors');
+if (request()->input('msg')) {
+	setEventMessages(request()->input('msg'), null, 'errors');
 }
 
 

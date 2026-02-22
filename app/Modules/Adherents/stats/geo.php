@@ -42,7 +42,7 @@ $graphwidth = DolGraph::getDefaultGraphSizeForStats('width', '700');
 $mapratio = 0.5;
 $graphheight = round($graphwidth * $mapratio);
 
-$mode = GETPOST('mode');
+$mode = request()->input('mode');
 
 
 // Security check
@@ -214,7 +214,7 @@ if ($mode) {
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

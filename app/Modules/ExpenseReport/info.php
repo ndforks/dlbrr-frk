@@ -41,8 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/expensereport/class/expensereport.class.php';
 // Load translation files required by the page
 $langs->load("trips");
 
-$id = GETPOSTINT('id');
-$ref = GETPOST('ref', 'alpha');
+$id = request()->integer('id', 0);
+$ref = request()->input('ref');
 
 $childids = $user->getAllChildIds(1);
 
@@ -54,7 +54,7 @@ $result = restrictedArea($user, 'expensereport', $id, 'expensereport');
 
 $object = new ExpenseReport($db);
 if (!$object->fetch($id, $ref) > 0) {
-	dol_print_error($db);
+	abort(500);
 }
 
 if ($object->id > 0) {
@@ -67,7 +67,7 @@ if ($object->id > 0) {
 		$canread = 1;
 	}
 	if (!$canread) {
-		accessforbidden();
+		abort(403);
 	}
 }
 

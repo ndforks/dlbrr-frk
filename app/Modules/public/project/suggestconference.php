@@ -73,18 +73,18 @@ global $dolibarr_main_url_root;
 $errmsg = '';
 $num = 0;
 $error = 0;
-$backtopage = GETPOST('backtopage', 'alpha');
-$action = GETPOST('action', 'aZ09');
+$backtopage = request()->input('backtopage');
+$action = request()->input('action');
 
-$eventtype = GETPOSTINT("eventtype");
-$email = GETPOST("email");
-$societe = GETPOST("societe");
-$label = GETPOST("label");
-$note = GETPOST("note");
-$datestart = dol_mktime(0, 0, 0, GETPOSTINT('datestartmonth'), GETPOSTINT('datestartday'), GETPOSTINT('datestartyear'));
-$dateend = dol_mktime(23, 59, 59, GETPOSTINT('dateendmonth'), GETPOSTINT('dateendday'), GETPOSTINT('dateendyear'));
+$eventtype = request()->integer('eventtype', 0);
+$email = request()->input('email');
+$societe = request()->input('societe');
+$label = request()->input('label');
+$note = request()->input('note');
+$datestart = dol_mktime(0, 0, 0, request()->integer('datestartmonth', 0), request()->integer('datestartday', 0), request()->integer('datestartyear', 0));
+$dateend = dol_mktime(23, 59, 59, request()->integer('dateendmonth', 0), request()->integer('dateendday', 0), request()->integer('dateendyear', 0));
 
-$id = GETPOST('id');
+$id = request()->input('id');
 
 $project = new Project($db);
 $resultproject = $project->fetch((int) $id);
@@ -94,7 +94,7 @@ if ($resultproject < 0) {
 }
 
 // Security check
-$securekeyreceived = GETPOST('securekey', 'alpha');
+$securekeyreceived = request()->input('securekey');
 $securekeytocompare = dol_hash(getDolGlobalString('EVENTORGANIZATION_SECUREKEY') . 'conferenceorbooth'.((int) $id), 'md5');
 
 if ($securekeytocompare != $securekeyreceived) {
@@ -120,7 +120,7 @@ if ($arrayofconfboothtype == -1) {
 
 // Security check
 if (!isModEnabled('eventorganization')) {
-	httponly_accessforbidden('Module Event organization not enabled');
+	httponly_abort(403);
 }
 
 
@@ -221,34 +221,34 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 
 	$db->begin();
 
-	if (!GETPOST("lastname")) {
+	if (!request()->input('lastname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Lastname"))."<br>\n";
 	}
-	if (!GETPOST("firstname")) {
+	if (!request()->input('firstname')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Firstname"))."<br>\n";
 	}
-	if (!GETPOST("email")) {
+	if (!request()->input('email')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Email"))."<br>\n";
 	}
-	if (!GETPOST("societe")) {
+	if (!request()->input('societe')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("ThirdParty"))."<br>\n";
 	}
-	if (!GETPOST("label")) {
+	if (!request()->input('label')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Label"))."<br>\n";
 	}
-	if (!GETPOST("note")) {
+	if (!request()->input('note')) {
 		$error++;
 		$errmsg .= $langs->trans("ErrorFieldRequired", $langs->transnoentitiesnoconv("Note"))."<br>\n";
 	}
-	if (GETPOST("email") && !isValidEmail(GETPOST("email"))) {
+	if (request()->input('email') && !isValidEmail(request()->input('email'))) {
 		$error++;
 		$langs->load("errors");
-		$errmsg .= $langs->trans("ErrorBadEMail", GETPOST("email"))."<br>\n";
+		$errmsg .= $langs->trans("ErrorBadEMail", request()->input('email'))."<br>\n";
 	}
 
 	if (!$error) {
@@ -270,13 +270,13 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 			} else {
 				$thirdparty->name     = $genericcompanyname;
 			}
-			$thirdparty->address      = GETPOST("address");
-			$thirdparty->zip          = GETPOST("zipcode");
-			$thirdparty->town         = GETPOST("town");
+			$thirdparty->address      = request()->input('address');
+			$thirdparty->zip          = request()->input('zipcode');
+			$thirdparty->town         = request()->input('town');
 			$thirdparty->client       = $thirdparty::PROSPECT;
 			$thirdparty->fournisseur  = 0;
-			$thirdparty->country_id   = GETPOSTINT("country_id");
-			$thirdparty->state_id     = GETPOSTINT("state_id");
+			$thirdparty->country_id   = request()->integer('country_id', 0);
+			$thirdparty->state_id     = request()->integer('state_id', 0);
 			$thirdparty->email        = ($emailcompany ? $emailcompany : $email);
 
 			// Load object modCodeTiers
@@ -316,13 +316,13 @@ if (empty($reshook) && $action == 'add') {	// Test on permission not required he
 			if ($resultcontact <= 0) {
 				// Need to create a contact
 				$contact->socid = $thirdparty->id;
-				$contact->lastname = (string) GETPOST("lastname", 'alpha');
-				$contact->firstname = (string) GETPOST("firstname", 'alpha');
-				$contact->address = (string) GETPOST("address", 'alpha');
-				$contact->zip = (string) GETPOST("zipcode", 'alpha');
-				$contact->town = (string) GETPOST("town", 'alpha');
-				$contact->country_id = GETPOSTINT("country_id");
-				$contact->state_id = GETPOSTINT("state_id");
+				$contact->lastname = (string) request()->input('lastname');
+				$contact->firstname = (string) request()->input('firstname');
+				$contact->address = (string) request()->input('address');
+				$contact->zip = (string) request()->input('zipcode');
+				$contact->town = (string) request()->input('town');
+				$contact->country_id = request()->integer('country_id', 0);
+				$contact->state_id = request()->integer('state_id', 0);
 				$contact->email = $email;
 				$contact->status = 1; //Default status to Actif
 				$contact->statut = 1; //Default status to Actif
@@ -601,29 +601,29 @@ print '<table class="border" summary="form to subscribe" id="tablesubscribe">'."
 
 // Last Name
 print '<tr><td><label for="lastname">'.$langs->trans("Lastname").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></label></td>';
-print '<td colspan="3"><input name="lastname" id="lastname" type="text" class="maxwidth100onsmartphone" maxlength="80" value="'.dol_escape_htmltag(GETPOST("lastname", 'alpha') ? GETPOST("lastname", 'alpha') : $object->lastname).'" autofocus="autofocus"></td>';
+print '<td colspan="3"><input name="lastname" id="lastname" type="text" class="maxwidth100onsmartphone" maxlength="80" value="'.dol_escape_htmltag(request()->input('lastname') ? request()->input('lastname') : $object->lastname).'" autofocus="autofocus"></td>';
 print '</tr>';
 // First Name
 print '<tr><td><label for="firstname">'.$langs->trans("Firstname").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></label></td>';
-print '<td colspan="3"><input name="firstname" id="firstname" type="text" class="maxwidth100onsmartphone" maxlength="80" value="'.dol_escape_htmltag(GETPOST("firstname", 'alpha') ? GETPOST("firstname", 'alpha') : $object->firstname).'" autofocus="autofocus"></td>';
+print '<td colspan="3"><input name="firstname" id="firstname" type="text" class="maxwidth100onsmartphone" maxlength="80" value="'.dol_escape_htmltag(request()->input('firstname') ? request()->input('firstname') : $object->firstname).'" autofocus="autofocus"></td>';
 print '</tr>';
 // Email
-print '<tr><td>'.$langs->trans("Email").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></td><td><input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('email')).'"></td></tr>'."\n";
+print '<tr><td>'.$langs->trans("Email").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></td><td><input type="text" name="email" maxlength="255" class="minwidth150" value="'.dol_escape_htmltag(request()->input('email')).'"></td></tr>'."\n";
 // Company
 print '<tr id="trcompany" class="trcompany"><td>'.$langs->trans("Company").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span>';
-print ' </td><td><input type="text" name="societe" class="minwidth150" value="'.dol_escape_htmltag(GETPOST('societe')).'"></td></tr>'."\n";
+print ' </td><td><input type="text" name="societe" class="minwidth150" value="'.dol_escape_htmltag(request()->input('societe')).'"></td></tr>'."\n";
 // Address
 print '<tr><td>'.$langs->trans("Address").'</td><td>'."\n";
-print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(GETPOST('address', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+print '<textarea name="address" id="address" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_3.'">'.dol_escape_htmltag(request()->input('address'), 0, 1).'</textarea></td></tr>'."\n";
 // Zip / Town
 print '<tr><td>'.$langs->trans('Zip').' / '.$langs->trans('Town').'</td><td>';
-print $formcompany->select_ziptown(GETPOST('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
+print $formcompany->select_ziptown(request()->input('zipcode'), 'zipcode', array('town', 'selectcountry_id', 'state_id'), 6, 1);
 print ' / ';
-print $formcompany->select_ziptown(GETPOST('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
+print $formcompany->select_ziptown(request()->input('town'), 'town', array('zipcode', 'selectcountry_id', 'state_id'), 0, 1);
 print '</td></tr>';
 // Country
 print '<tr><td>'.$langs->trans('Country').'</td><td>';
-$country_id = GETPOST('country_id');
+$country_id = request()->input('country_id');
 if (!$country_id && getDolGlobalString('MEMBER_NEWFORM_FORCECOUNTRYCODE')) {
 	$country_id = getCountry($conf->global->MEMBER_NEWFORM_FORCECOUNTRYCODE, '2', $db, $langs);
 }
@@ -645,7 +645,7 @@ print '</td></tr>';
 if (!getDolGlobalString('SOCIETE_DISABLE_STATE')) {
 	print '<tr><td>'.$langs->trans('State').'</td><td>';
 	if ($country_code) {
-		print $formcompany->select_state(GETPOSTINT("state_id"), $country_code);
+		print $formcompany->select_state(request()->integer('state_id', 0), $country_code);
 	} else {
 		print '';
 	}
@@ -656,10 +656,10 @@ print '<tr><td>'.$langs->trans("Format").'<span class="star" title="'.dolPrintHT
 print '<td>'.Form::selectarray('eventtype', $arrayofconfboothtype, $eventtype, 1).'</td>';
 // Label
 print '<tr><td>'.$langs->trans("LabelOfconference").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></td>'."\n";
-print '</td><td><input type="text" name="label" class="minwidth300" value="'.dol_escape_htmltag(GETPOST('label')).'"></td></tr>'."\n";
+print '</td><td><input type="text" name="label" class="minwidth300" value="'.dol_escape_htmltag(request()->input('label')).'"></td></tr>'."\n";
 // Note
 print '<tr><td>'.$langs->trans("Description").'<span class="star" title="'.dolPrintHTMLForAttribute("Mandatory").'">*</span></td>'."\n";
-print '<td><textarea name="note" id="note" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_4.'">'.dol_escape_htmltag(GETPOST('note', 'restricthtml'), 0, 1).'</textarea></td></tr>'."\n";
+print '<td><textarea name="note" id="note" wrap="soft" class="quatrevingtpercent" rows="'.ROWS_4.'">'.dol_escape_htmltag(request()->input('note'), 0, 1).'</textarea></td></tr>'."\n";
 
 print "</table>\n";
 

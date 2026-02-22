@@ -71,7 +71,7 @@ function facturefourn_prepare_head(FactureFournisseur $object)
 				$nbStandingOrders = $obj->nb;
 			}
 		} else {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("banks");
 		$head[$h][0] = DOL_URL_ROOT.'/compta/facture/prelevement.php?facid='.$object->id.'&type=bank-transfer';

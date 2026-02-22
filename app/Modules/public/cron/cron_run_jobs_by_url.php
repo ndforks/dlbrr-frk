@@ -82,7 +82,7 @@ $langs->loadLangs(array("admin", "cron", "dict"));
 
 // Security check
 if (!isModEnabled('cron')) {
-	httponly_accessforbidden('Module Cron not enabled');
+	httponly_abort(403);
 }
 
 
@@ -95,7 +95,7 @@ if (!isModEnabled('cron')) {
 $now = dol_now();
 
 // Check the key, avoid that a stranger starts cron
-$key = GETPOST('securitykey', 'alpha');
+$key = request()->input('securitykey');
 if (empty($key)) {
 	echo 'Securitykey is required. Check setup of cron jobs module.';
 	exit;
@@ -105,7 +105,7 @@ if ($key != getDolGlobalString('CRON_KEY')) {
 	exit;
 }
 // Check the key, avoid that a stranger starts cron
-$userlogin = GETPOST('userlogin', 'alpha');
+$userlogin = request()->input('userlogin');
 if (empty($userlogin)) {
 	echo 'Userlogin is required.';
 	exit;
@@ -126,7 +126,7 @@ if ($result < 0) {
 }
 $user->loadRights();
 
-$id = GETPOST('id', 'alpha'); // We accept non numeric id. We will filter later.
+$id = request()->input('id'); // We accept non numeric id. We will filter later.
 
 
 // create a jobs object

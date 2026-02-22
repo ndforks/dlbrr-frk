@@ -49,18 +49,18 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/date.lib.php';
 // Load translation files required by the page
 $langs->loadLangs(array('compta', 'bills'));
 
-$mode = GETPOST("mode", 'alpha');
-$year = GETPOSTINT("year");
-$filtre = GETPOST("filtre", 'alpha');
-$optioncss = GETPOST('optioncss', 'alpha');
+$mode = request()->input('mode');
+$year = request()->integer('year', 0);
+$filtre = request()->input('filtre');
+$optioncss = request()->input('optioncss');
 if (!$year && $mode != 'tvaonly') {
 	$year = date("Y", time());
 }
 
-$limit = GETPOSTINT('limit') ? GETPOSTINT('limit') : $conf->liste_limit;
-$sortfield = (string) GETPOST('sortfield', 'aZ09comma');
-$sortorder = (string) GETPOST('sortorder', 'aZ09comma');
-$page = GETPOSTISSET('pageplusone') ? (GETPOSTINT('pageplusone') - 1) : GETPOSTINT("page");
+$limit = request()->integer('limit', 0) ? request()->integer('limit', 0) : $conf->liste_limit;
+$sortfield = (string) request()->input('sortfield');
+$sortorder = (string) request()->input('sortorder');
+$page = request()->has('pageplusone') ? (request()->integer('pageplusone', 0) - 1) : request()->integer('page', 0);
 if (empty($page) || $page == -1) {
 	$page = 0;
 }     // If $page is not defined, or '' or -1

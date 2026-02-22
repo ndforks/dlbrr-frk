@@ -39,7 +39,7 @@
  * @var int $permissionnote
  */
 // Set public note
-if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel', 'alpha')) {
+if ($action == 'setnote_public' && !empty($permissionnote) && !request()->input('cancel')) {
 	if (!is_object($object) || empty($id)) {
 		dol_print_error(null, 'Include of actions_setnotes.inc.php was done but required variable was not set before');
 	}
@@ -47,7 +47,7 @@ if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel',
 		$object->fetch($id); // Fetch may not be already done
 	}
 
-	$notePublic = GETPOST('note_public', 'restricthtml');
+	$notePublic = request()->input('note_public');
 
 	$result_update = $object->update_note(dol_html_entity_decode($notePublic, ENT_QUOTES | ENT_HTML5, 'UTF-8', 1), '_public');
 
@@ -58,8 +58,8 @@ if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel',
 		if (!getDolGlobalString('MAIN_DISABLE_PDF_AUTOUPDATE')) {
 			$outputlangs = $langs;
 			$newlang = '';
-			if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && GETPOST('lang_id', 'aZ09')) {
-				$newlang = GETPOST('lang_id', 'aZ09');
+			if (getDolGlobalInt('MAIN_MULTILANGS') /* && empty($newlang) */ && request()->input('lang_id')) {
+				$newlang = request()->input('lang_id');
 			}
 			if (getDolGlobalInt('MAIN_MULTILANGS') && empty($newlang)) {
 				if (!is_object($object->thirdparty)) {
@@ -72,9 +72,9 @@ if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel',
 				$outputlangs->setDefaultLang($newlang);
 			}
 			$model = $object->model_pdf;
-			$hidedetails = (GETPOSTINT('hidedetails') ? GETPOSTINT('hidedetails') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS') ? 1 : 0));
-			$hidedesc = (GETPOSTINT('hidedesc') ? GETPOSTINT('hidedesc') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DESC') ? 1 : 0));
-			$hideref = (GETPOSTINT('hideref') ? GETPOSTINT('hideref') : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_REF') ? 1 : 0));
+			$hidedetails = (request()->integer('hidedetails', 0) ? request()->integer('hidedetails', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DETAILS') ? 1 : 0));
+			$hidedesc = (request()->integer('hidedesc', 0) ? request()->integer('hidedesc', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_DESC') ? 1 : 0));
+			$hideref = (request()->integer('hideref', 0) ? request()->integer('hideref', 0) : (getDolGlobalString('MAIN_GENERATE_DOCUMENTS_HIDE_REF') ? 1 : 0));
 
 			//see #21072: Update a public note with a "document model not found" is not really a problem : the PDF is not created/updated
 			//but the note is saved, so just add a notification will be enough
@@ -86,7 +86,7 @@ if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel',
 			}
 		}
 	}
-} elseif ($action == 'setnote_private' && !empty($permissionnote) && !GETPOST('cancel', 'alpha')) {	// Set public note
+} elseif ($action == 'setnote_private' && !empty($permissionnote) && !request()->input('cancel')) {	// Set public note
 	if (empty($user->socid)) {
 		// Private notes (always hidden to external users)
 		if (!is_object($object) || empty($id)) {
@@ -96,7 +96,7 @@ if ($action == 'setnote_public' && !empty($permissionnote) && !GETPOST('cancel',
 			$object->fetch($id); // Fetch may not be already done
 		}
 
-		$notePrivate = GETPOST('note_private', 'restricthtml');
+		$notePrivate = request()->input('note_private');
 
 		$result = $object->update_note(dol_html_entity_decode($notePrivate, ENT_QUOTES | ENT_HTML5, 'UTF-8', 1), '_private');
 		if ($result < 0) {

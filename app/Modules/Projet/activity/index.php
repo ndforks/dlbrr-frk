@@ -47,9 +47,9 @@ $langs->loadLangs(array('projects', 'companies'));
 // Initialize a technical object to manage hooks. Note that conf->hooks_modules contains array
 $hookmanager->initHooks(array('activityindex'));
 
-$action = GETPOST('action', 'aZ09');
-$search_project_user = GETPOST('search_project_user');
-$mine = (GETPOST('mode', 'aZ09') == 'mine' || $search_project_user == $user->id) ? 1 : 0;
+$action = request()->input('action');
+$search_project_user = request()->input('search_project_user');
+$mine = (request()->input('mode') == 'mine' || $search_project_user == $user->id) ? 1 : 0;
 if ($mine == 0 && $search_project_user === '') {
 	$search_project_user = getDolGlobalString('MAIN_SEARCH_PROJECT_USER_PROJECTSINDEX');
 }
@@ -64,7 +64,7 @@ if ($user->socid > 0) {
 }
 //restrictedArea($user, 'projet', $projectid);
 if (!$user->hasRight('projet', 'lire')) {
-	accessforbidden();
+	abort(403);
 }
 
 
@@ -79,7 +79,7 @@ if ($reshook < 0) {
 }
 if (empty($reshook)) {
 	if ($action == 'refresh_search_project_user' && $user->hasRight('projet', 'lire')) {
-		$search_project_user = GETPOSTINT('search_project_user');
+		$search_project_user = request()->integer('search_project_user', 0);
 		$tabparam = array("MAIN_SEARCH_PROJECT_USER_PROJECTSINDEX" => $search_project_user);
 
 		include_once DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php';
@@ -186,7 +186,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 print '<tr class="liste_total">';
 print '<td>'.$langs->trans('Total').'</td>';
@@ -239,7 +239,7 @@ if ($resql) {
 
 	$db->free($resql);
 } else {
-	dol_print_error($db);
+	abort(500);
 }
 print '<tr class="liste_total">';
 print '<td>'.$langs->trans('Total').'</td>';
@@ -298,7 +298,7 @@ if ($db->type != 'pgsql') {
 	}
 	else
 	{
-		dol_print_error($db);
+		abort(500);
 	}
 	print '<tr class="liste_total">';
 	print '<td>'.$langs->trans('Total').'</td>';
@@ -347,7 +347,7 @@ if (getDolGlobalString('PROJECT_TASK_TIME_MONTH')) {
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	print '<tr class="liste_total">';
 	print '<td>'.$langs->trans('Total').'</td>';
@@ -396,7 +396,7 @@ if (getDolGlobalString('PROJECT_TASK_TIME_YEAR')) {
 		}
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	print '<tr class="liste_total">';
 	print '<td>'.$langs->trans('Total').'</td>';
@@ -418,7 +418,7 @@ if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_SHO
 			$listofprojectcontacttype[$obj->rowid] = $obj->code;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	if (count($listofprojectcontacttype) == 0) {
 		$listofprojectcontacttype[0] = '0'; // To avoid sql syntax error if not found
@@ -434,7 +434,7 @@ if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_SHO
 			$listoftaskcontacttype[$obj->rowid] = $obj->code;
 		}
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 	if (count($listoftaskcontacttype) == 0) {
 		$listoftaskcontacttype[0] = '0'; // To avoid sql syntax error if not found
@@ -599,7 +599,7 @@ if (!getDolGlobalString('PROJECT_HIDE_TASKS') && getDolGlobalString('PROJECT_SHO
 
 		$db->free($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 	}
 }
 

@@ -150,7 +150,7 @@ if (getDolGlobalString('PRODUCT_USE_UNITS')) {
 	}
 	$coldisplay++;
 	print '<td class="left">';
-	print $form->selectUnits(GETPOSTISSET('units') ? GETPOST('units') : $line->fk_unit, "units", 0, $unit_type);
+	print $form->selectUnits(request()->has('units') ? request()->input('units') : $line->fk_unit, "units", 0, $unit_type);
 	print '</td>';
 }
 

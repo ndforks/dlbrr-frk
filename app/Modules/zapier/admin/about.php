@@ -47,20 +47,20 @@ $langs->loadLangs(array('admin', 'errors', 'zapier'));
 
 // Access control
 if (!$user->admin) {
-	accessforbidden();
+	abort(403);
 }
 
 if (!isModEnabled('zapier')) {
-	accessforbidden();
+	abort(403);
 }
 if (empty($user->admin)) {
-	accessforbidden();
+	abort(403);
 }
 
 
 // Parameters
-$action = GETPOST('action', 'aZ09');
-$backtopage = GETPOST('backtopage', 'alpha');
+$action = request()->input('action');
+$backtopage = request()->input('backtopage');
 
 
 

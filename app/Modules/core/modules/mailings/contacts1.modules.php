@@ -324,7 +324,7 @@ class mailing_contacts1 extends MailingTargets
 			require_once DOL_DOCUMENT_ROOT.'/core/class/html.formadmin.class.php';
 			$formadmin = new FormAdmin($this->db);
 			$s .= img_picto($langs->trans("DefaultLang"), 'language', 'class="pictofixedwidth"');
-			$s .= $formadmin->select_language(GETPOST('filter_lang', 'aZ09'), 'filter_lang', 0, array(), $langs->trans("DefaultLang"), 0, 0, '', 0, 0, 0, array(), 1);
+			$s .= $formadmin->select_language(request()->input('filter_lang'), 'filter_lang', 0, array(), $langs->trans("DefaultLang"), 0, 0, '', 0, 0, 0, array(), 1);
 		}
 
 		return $s;
@@ -355,12 +355,12 @@ class mailing_contacts1 extends MailingTargets
 		// phpcs:enable
 		global $conf, $langs;
 
-		$filter = GETPOST('filter', 'alpha');
-		$filter_jobposition = GETPOST('filter_jobposition', 'alpha');
-		$filter_category = GETPOST('filter_category', 'alpha');
-		$filter_category_customer = GETPOST('filter_category_customer', 'alpha');
-		$filter_category_supplier = GETPOST('filter_category_supplier', 'alpha');
-		$filter_lang = GETPOST('filter_lang', 'alpha');
+		$filter = request()->input('filter');
+		$filter_jobposition = request()->input('filter_jobposition');
+		$filter_category = request()->input('filter_category');
+		$filter_category_customer = request()->input('filter_category_customer');
+		$filter_category_supplier = request()->input('filter_category_supplier');
+		$filter_lang = request()->input('filter_lang');
 
 		$cibles = array();
 

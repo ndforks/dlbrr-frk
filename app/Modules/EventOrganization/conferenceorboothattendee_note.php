@@ -40,11 +40,11 @@ require_once DOL_DOCUMENT_ROOT . '/eventorganization/lib/eventorganization_confe
 $langs->loadLangs(array('eventorganization', 'companies'));
 
 // Get parameters
-$id = GETPOSTINT('id');
-$ref        = GETPOST('ref', 'alpha');
-$action = GETPOST('action', 'aZ09');
-$cancel     = GETPOST('cancel');
-$backtopage = GETPOST('backtopage', 'alpha');
+$id = request()->integer('id', 0);
+$ref        = request()->input('ref');
+$action = request()->input('action');
+$cancel     = request()->input('cancel');
+$backtopage = request()->input('backtopage');
 
 // Initialize a technical objects
 $object = new ConferenceOrBoothAttendee($db);

@@ -47,10 +47,10 @@ if (isModEnabled('project')) {
 // Load translation files required by the page
 $langs->loadLangs(array('supplier_proposal', 'compta'));
 
-$action = GETPOST('action', 'aZ09');
+$action = request()->input('action');
 
-$id = GETPOSTINT('id');
-$socid = GETPOSTINT('socid');
+$id = request()->integer('id', 0);
+$socid = request()->integer('socid', 0);
 
 // Security check
 if (!empty($user->socid)) {

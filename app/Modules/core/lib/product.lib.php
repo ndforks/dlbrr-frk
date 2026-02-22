@@ -533,7 +533,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_propale($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("propal");
 		print '<tr><td>';
@@ -552,7 +552,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_proposal_supplier($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("supplier_proposal");
 		print '<tr><td>';
@@ -571,7 +571,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_commande($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("orders");
 		print '<tr><td>';
@@ -590,7 +590,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_commande_fournisseur($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("orders");
 		print '<tr><td>';
@@ -609,7 +609,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_facture($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -628,7 +628,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_facturerec($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -647,7 +647,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_facture_fournisseur($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -667,7 +667,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_facture_fournisseurrec($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -688,7 +688,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_sending($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("sendings");
 		print '<tr><td>';
@@ -708,7 +708,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_reception($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("receptions");
 		print '<tr><td>';
@@ -728,7 +728,7 @@ function show_stats_for_company($product, $socid)
 		$nblines++;
 		$ret = $product->load_stats_contrat($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("contracts");
 		print '<tr><td>';
@@ -846,7 +846,7 @@ function show_stats_for_batch($batch, $socid)
 		$nblines++;
 		$ret = $batch->loadStatsExpedition($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -865,7 +865,7 @@ function show_stats_for_batch($batch, $socid)
 		$nblines++;
 		$ret = $batch->loadStatsReception($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -882,7 +882,7 @@ function show_stats_for_batch($batch, $socid)
 		$nblines++;
 		$ret = $batch->loadStatsSupplierOrder($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("bills");
 		print '<tr><td>';
@@ -901,7 +901,7 @@ function show_stats_for_batch($batch, $socid)
 		$nblines++;
 		$ret = $batch->loadStatsMo($socid);
 		if ($ret < 0) {
-			dol_print_error($db);
+			abort(500);
 		}
 		$langs->load("mrp");
 		print '<tr><td>';
@@ -1081,7 +1081,7 @@ function getProductForEmailTemplate($id)
 	if ($resql) {
 		$productarray = $db->fetch_array($resql);
 	} else {
-		dol_print_error($db);
+		abort(500);
 		return -1;
 	}
 
