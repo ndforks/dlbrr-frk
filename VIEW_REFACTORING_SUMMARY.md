@@ -41,18 +41,37 @@ Created three core components in `resources/views/components/`:
 - Dark mode support
 - Usage: `<x-table :columns="['Col1', 'Col2']">...</x-table>`
 
-### 4. Refactored Views
-#### Contact List View (`contact/list.blade.php`)
-- **Before**: Inline styles with manual CSS
-- **After**: 
-  - Extends base layout
-  - Uses Tailwind CSS utility classes
-  - Implements x-card component for search form
-  - Responsive grid layout
-  - Dark mode support
-  - Accessible form inputs with proper focus states
-  - Styled pagination
-  - Clean table styling
+### 4. Refactored Views (16 files)
+
+#### Contact Module
+- **contact/list.blade.php** - Complete contact list with search, table, and pagination
+
+#### Admin Module
+- **admin/system.blade.php** - System information table
+
+#### Event Organization Module
+- **eventorganization/index.blade.php** - Dashboard with card layout
+
+#### Accounting Module
+- **accountancy/journal/index.blade.php** - Journal types list
+
+#### Website Module
+- **website/page.blade.php** - Page view with actions and content
+- **website/page-edit-content.blade.php** - Content editor form
+- **website/page-edit-source.blade.php** - Source code editor form
+- **website/page-edit-meta.blade.php** - Metadata editor form
+
+#### HRM Module
+- **hrm/position_create.blade.php** - Position creation form
+- **hrm/position_edit.blade.php** - Position edit form
+
+#### Supplier (Fourn) Module
+- **fourn/index.blade.php** - Supplier dashboard with statistics
+- **fourn/card.blade.php** - Supplier card view
+- **fourn/commande/index.blade.php** - Supplier orders overview
+- **fourn/commande/card.blade.php** - Individual order card
+- **fourn/facture/index.blade.php** - Supplier invoices overview
+- **fourn/facture/card.blade.php** - Individual invoice card
 
 ### 5. Documentation
 Created `BLADE_TAILWIND_GUIDE.md` containing:
@@ -127,19 +146,42 @@ resources/views/
 │   ├── button.blade.php       # Button component
 │   └── table.blade.php        # Table component
 ├── contact/
-│   └── list.blade.php         # Refactored with Tailwind
+│   └── list.blade.php         # Refactored
+├── admin/
+│   └── system.blade.php       # Refactored
+├── eventorganization/
+│   └── index.blade.php        # Refactored
+├── accountancy/journal/
+│   └── index.blade.php        # Refactored
+├── website/
+│   ├── page.blade.php         # Refactored
+│   ├── page-edit-*.blade.php  # Refactored (3 files)
+├── hrm/
+│   ├── position_create.blade.php  # Refactored
+│   └── position_edit.blade.php    # Refactored
+├── fourn/
+│   ├── index.blade.php        # Refactored
+│   ├── card.blade.php         # Refactored
+│   ├── commande/              # Refactored (2 files)
+│   └── facture/               # Refactored (2 files)
 ├── examples/
 │   └── blade-tailwind.blade.php  # Example page
-└── [other modules]/           # To be refactored
+└── [other modules]/           # Legacy code or wrappers
 ```
 
 ### Statistics
-- **Total views**: 187 files (34 .blade.php, 153 .tpl.php)
-- **Refactored**: 1 view (contact/list.blade.php)
+- **Total views**: 187 files (39 .blade.php, 153 .tpl.php - 5 new)
+- **Refactored with Tailwind**: 16 views
 - **Components created**: 3 (card, button, table)
 - **Layouts created**: 1 (app.blade.php)
-- **Documentation pages**: 1 (BLADE_TAILWIND_GUIDE.md)
+- **Documentation pages**: 3 (guide, quickstart, summary)
 - **Example pages**: 1 (blade-tailwind.blade.php)
+
+### Remaining Files
+- **17+ blade files** still use `@php` blocks with legacy Dolibarr code (llxHeader/llxFooter)
+- **9 wrapper files** that just call `require base_path()` (bank/, stock/ modules)
+- **153 .tpl.php files** in various tpl/ directories need full conversion
+- **Complex views** (hrm/index.blade.php, hrm/position_card.blade.php, accountancy/index.blade.php) contain embedded business logic requiring controller extraction
 
 ## Benefits of This Refactoring
 
@@ -198,25 +240,45 @@ npm run build
 1. ✅ Set up base layout and components (DONE)
 2. ✅ Document the system (DONE)
 3. ✅ Create example page (DONE)
-4. Test with actual application data
-5. Get team feedback on the approach
+4. ✅ Refactor 16 simpler views (DONE)
+5. Test with actual application data
+6. Get team feedback on the approach
 
 ### Short-term
-1. Refactor 5-10 more high-traffic views
+1. Refactor more high-traffic views as controllers are available
 2. Create additional components as patterns emerge:
    - Alert/notification component
    - Badge component
    - Modal component
    - Dropdown component
-3. Add more examples to the example page
+3. Extract business logic from complex views to controllers
 4. Set up visual regression testing
 
 ### Long-term
-1. Gradually convert all 153 .tpl.php files to Blade
-2. Establish a component library with Storybook
-3. Add animations and transitions
-4. Implement accessibility testing
-5. Create a design system documentation
+1. Gradually convert remaining blade files with legacy code
+2. Convert all 153 .tpl.php files to Blade
+3. Establish a component library with Storybook
+4. Add animations and transitions
+5. Implement accessibility testing
+6. Create a design system documentation
+
+## Challenges Encountered
+
+### Legacy Code Integration
+Many existing blade files use `@php` blocks with:
+- Direct database queries via `$db->query()`
+- Dolibarr-specific functions (`llxHeader()`, `llxFooter()`, `load_fiche_titre()`)
+- Complex business logic mixed with presentation
+- Global variables (`$db`, `$langs`, `$user`, `$conf`)
+
+These files require **controller refactoring** to properly separate concerns before they can be fully converted to clean Blade/Tailwind views.
+
+### Wrapper Files
+9 files are simple wrappers calling `require base_path('...')` to load PHP files:
+- bank/ module (4 files)
+- stock/ module (5 files)
+
+These are intentionally left as-is since they delegate to existing PHP logic.
 
 ## Testing Recommendations
 
@@ -233,37 +295,52 @@ npm run build
 3. Add accessibility tests (Axe)
 4. Test Tailwind build process
 
-## Migration Strategy
+## Migration Strategy for Remaining Files
 
 ### Priority Order
-1. **High Traffic Views**: Contact list, product list, invoice list (STARTED)
-2. **Simple Views**: Dashboard cards, statistics widgets
-3. **Form Views**: Create/edit forms with validation
-4. **Complex Views**: Tables with sorting, filtering, pagination
-5. **Legacy Templates**: .tpl.php files in /tpl directories
+1. **Simple Placeholder Views**: Views with minimal logic (DONE - 16 files)
+2. **Form Views**: Create/edit forms once controllers exist
+3. **Dashboard Views**: Once statistics are available via controllers
+4. **Complex Legacy Views**: Require full controller extraction
+5. **Template Files (.tpl.php)**: Last priority, need context understanding
 
-### Approach Per View
-1. Create new .blade.php file next to old one
-2. Refactor using components and Tailwind
-3. Test thoroughly
-4. Switch routes to use new view
-5. Delete old file after verification
-6. Commit with descriptive message
+### Approach Per View Type
+**Simple Views** (Done):
+- Replace legacy functions with Blade
+- Add layout extension
+- Apply Tailwind CSS
+- Use components
+
+**Complex Views** (Future):
+1. Create controller with business logic
+2. Pass data to view
+3. Convert view to use layout + Tailwind
+4. Test thoroughly
+5. Commit
+
+**Template Files** (Future):
+1. Understand context/usage
+2. Convert to Blade component if reusable
+3. Or convert to view if standalone
+4. Test in context
 
 ## Conclusion
 
-The foundation for modern Blade and Tailwind CSS views is now established. The system is:
+The foundation for modern Blade and Tailwind CSS views is now established with **16 views refactored**. The system is:
 - **Production-ready**: Can be used immediately for new views
-- **Well-documented**: Comprehensive guide available
+- **Well-documented**: Comprehensive guides available
 - **Extensible**: Easy to add more components
 - **Maintainable**: Clean code with clear patterns
 - **Accessible**: Built with a11y in mind
 - **Performant**: Optimized build process
 
-The refactoring demonstrates best practices and provides a template for future work. The team can now confidently build new views and gradually migrate legacy templates using the established patterns.
+The refactoring demonstrates best practices and provides a template for future work. The remaining views require varying levels of effort:
+- **Simple views**: Easy to refactor with existing patterns
+- **Complex views**: Need controller extraction first
+- **Template files**: Need context understanding and conversion
 
 ---
 
 **Date**: February 22, 2026  
-**Status**: Foundation Complete ✅  
-**Next Review**: After testing with real data and team feedback
+**Status**: Foundation Complete + 16 Views Refactored ✅  
+**Next Review**: After testing and controller extraction for complex views
