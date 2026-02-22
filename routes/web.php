@@ -20,6 +20,7 @@ use App\Http\Controllers\Bookmarks\BookmarksIndex;
 use App\Http\Controllers\Bookmarks\ShowBookmarks;
 use App\Http\Controllers\Categories\CategoriesIndex;
 use App\Http\Controllers\Categories\ShowCategories;
+use App\Http\Controllers\Collab\CollabController;
 use App\Http\Controllers\Comm\Propal\ListPropal;
 use App\Http\Controllers\Comm\Propal\ShowPropal;
 use App\Http\Controllers\Commande\ListCommande;
@@ -41,6 +42,9 @@ use App\Http\Controllers\Contact\ShowContact;
 use App\Http\Controllers\Contact\VCardController as ContactVCard;
 use App\Http\Controllers\Contrat\ListContrat;
 use App\Http\Controllers\Contrat\ShowContrat;
+use App\Http\Controllers\Cron\CronCardController;
+use App\Http\Controllers\Cron\CronInfoController;
+use App\Http\Controllers\Cron\CronListController;
 use App\Http\Controllers\Don\ListDon;
 use App\Http\Controllers\Don\ShowDon;
 use App\Http\Controllers\Ecm\AutoIndexEcm;
@@ -109,6 +113,14 @@ Route::match(['get', 'post'], '/barcode/codeinit', CodeInitController::class)->n
 
 // Barcode printsheet
 Route::match(['get', 'post'], '/barcode/printsheet', PrintSheetController::class)->name('barcode.printsheet');
+
+// Collab - Collaborative document editing
+Route::match(['get', 'post'], '/collab', CollabController::class)->name('collab.index');
+
+// Cron jobs management
+Route::match(['get', 'post'], '/cron/list', CronListController::class)->name('cron.list');
+Route::match(['get', 'post'], '/cron/card', CronCardController::class)->name('cron.card');
+Route::get('/cron/info', CronInfoController::class)->name('cron.info');
 
 // User Management Routes
 Route::prefix('user')->name('user.')->group(function () {
