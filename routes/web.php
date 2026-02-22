@@ -25,8 +25,17 @@ use App\Http\Controllers\Compta\Bank\ListBank;
 use App\Http\Controllers\Compta\Bank\ShowBank;
 use App\Http\Controllers\Compta\Facture\ListFacture;
 use App\Http\Controllers\Compta\Facture\ShowFacture;
+use App\Http\Controllers\Contact\AgendaController as ContactAgenda;
+use App\Http\Controllers\Contact\ConsumptionController as ContactConsumption;
+use App\Http\Controllers\Contact\DocumentsController as ContactDocuments;
+use App\Http\Controllers\Contact\InfoController as ContactInfo;
 use App\Http\Controllers\Contact\ListContacts;
+use App\Http\Controllers\Contact\MessagingController as ContactMessaging;
+use App\Http\Controllers\Contact\NotesController as ContactNotes;
+use App\Http\Controllers\Contact\PersoController as ContactPerso;
+use App\Http\Controllers\Contact\ProjectsController as ContactProjects;
 use App\Http\Controllers\Contact\ShowContact;
+use App\Http\Controllers\Contact\VCardController as ContactVCard;
 use App\Http\Controllers\Contrat\ListContrat;
 use App\Http\Controllers\Contrat\ShowContrat;
 use App\Http\Controllers\Don\ListDon;
@@ -63,8 +72,16 @@ use App\Http\Controllers\Product\Stock\ShowStock;
 use App\Http\Controllers\Product\Stock\StockIndex;
 use App\Http\Controllers\Projet\ListProjet;
 use App\Http\Controllers\Projet\ShowProjet;
+use App\Http\Controllers\Societe\ConsumptionController as SocieteConsumption;
+use App\Http\Controllers\Societe\ContactsController as SocieteContacts;
+use App\Http\Controllers\Societe\DocumentsController as SocieteDocuments;
 use App\Http\Controllers\Societe\ListSociete;
+use App\Http\Controllers\Societe\MessagingController as SocieteMessaging;
+use App\Http\Controllers\Societe\NotesController as SocieteNotes;
+use App\Http\Controllers\Societe\PricesController as SocietePrices;
+use App\Http\Controllers\Societe\ProjectsController as SocieteProjects;
 use App\Http\Controllers\Societe\ShowSociete;
+use App\Http\Controllers\Societe\VCardController as SocieteVCard;
 use App\Http\Controllers\SupplierProposal\ListSupplierProposal;
 use App\Http\Controllers\SupplierProposal\ShowSupplierProposal;
 use App\Http\Controllers\Ticket\ListTicket;
@@ -97,14 +114,29 @@ Route::prefix('product')->name('product.')->group(function () {
 Route::prefix('societe')->name('societe.')->group(function () {
     Route::get('/', ListSociete::class)->name('list');
     Route::get('/{id}', ShowSociete::class)->name('show');
-    // TODO: Add sub-routes: project, note, document, contact, agenda, etc.
+    Route::get('/{id}/projects', SocieteProjects::class)->name('projects');
+    Route::match(['get', 'post'], '/{id}/notes', SocieteNotes::class)->name('notes');
+    Route::get('/{id}/documents', SocieteDocuments::class)->name('documents');
+    Route::get('/{id}/contacts', SocieteContacts::class)->name('contacts');
+    Route::get('/{id}/consumption', SocieteConsumption::class)->name('consumption');
+    Route::get('/{id}/prices', SocietePrices::class)->name('prices');
+    Route::get('/{id}/messaging', SocieteMessaging::class)->name('messaging');
+    Route::get('/{id}/vcard', SocieteVCard::class)->name('vcard');
 });
 
 // Contact Routes
 Route::prefix('contact')->name('contact.')->group(function () {
     Route::get('/', ListContacts::class)->name('list');
     Route::get('/{id}', ShowContact::class)->name('show');
-    // TODO: Add sub-routes: project, note, document, agenda, etc.
+    Route::get('/{id}/projects', ContactProjects::class)->name('projects');
+    Route::match(['get', 'post'], '/{id}/notes', ContactNotes::class)->name('notes');
+    Route::get('/{id}/documents', ContactDocuments::class)->name('documents');
+    Route::get('/{id}/agenda', ContactAgenda::class)->name('agenda');
+    Route::get('/{id}/consumption', ContactConsumption::class)->name('consumption');
+    Route::get('/{id}/info', ContactInfo::class)->name('info');
+    Route::match(['get', 'post'], '/{id}/perso', ContactPerso::class)->name('perso');
+    Route::get('/{id}/messaging', ContactMessaging::class)->name('messaging');
+    Route::get('/{id}/vcard', ContactVCard::class)->name('vcard');
 });
 
 // Invoice Routes (Facture)
