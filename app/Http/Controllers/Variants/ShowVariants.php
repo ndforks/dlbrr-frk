@@ -74,7 +74,7 @@ class ShowVariants extends Controller
             
             $result = $object->create($user);
             if ($result > 0) {
-                return redirect("/variants/card.php?id={$object->id}");
+                return redirect()->route('variants.show', ['id' => $object->id]);
             } else {
                 setEventMessages($object->error, $object->errors, 'errors');
             }
@@ -105,11 +105,11 @@ class ShowVariants extends Controller
         
         $result = $object->update($user);
         if ($result > 0) {
-            return redirect("/variants/card.php?id={$id}");
+            return redirect()->route('variants.show', ['id' => $id]);
         }
         
         setEventMessages($object->error, $object->errors, 'errors');
-        return redirect("/variants/card.php?id={$id}&action=edit");
+        return redirect()->route('variants.show', ['id' => $id, 'action' => 'edit']);
     }
     
     private function delete(Request $request, int $id): RedirectResponse
@@ -123,12 +123,12 @@ class ShowVariants extends Controller
             $result = $object->delete($user);
             
             if ($result > 0) {
-                return redirect('/variants/list.php');
+                return redirect()->route('variants.list');
             }
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        return redirect("/variants/card.php?id={$id}");
+        return redirect()->route('variants.show', ['id' => $id]);
     }
     
     private function addLine(Request $request, int $id): RedirectResponse
@@ -148,7 +148,7 @@ class ShowVariants extends Controller
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        return redirect("/variants/card.php?id={$id}");
+        return redirect()->route('variants.show', ['id' => $id]);
     }
     
     private function updateLine(Request $request, int $id): RedirectResponse
@@ -169,7 +169,7 @@ class ShowVariants extends Controller
             setEventMessages($object->error, $object->errors, 'errors');
         }
         
-        return redirect("/variants/card.php?id={$id}");
+        return redirect()->route('variants.show', ['id' => $id]);
     }
     
     private function moveLineUp(Request $request, int $id): RedirectResponse
@@ -182,7 +182,7 @@ class ShowVariants extends Controller
         $rowid = $request->integer('rowid', 0);
         $object->line_up($rowid, false);
         
-        return redirect("/variants/card.php?id={$id}#{$rowid}");
+        return redirect(route('variants.show', ['id' => $id]) . "#{$rowid}");
     }
     
     private function moveLineDown(Request $request, int $id): RedirectResponse
@@ -195,6 +195,6 @@ class ShowVariants extends Controller
         $rowid = $request->integer('rowid', 0);
         $object->line_down($rowid, false);
         
-        return redirect("/variants/card.php?id={$id}#{$rowid}");
+        return redirect(route('variants.show', ['id' => $id]) . "#{$rowid}");
     }
 }

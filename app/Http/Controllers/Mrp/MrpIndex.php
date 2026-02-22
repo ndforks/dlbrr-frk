@@ -9,6 +9,6 @@ class MrpIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/mrp/list.php');
+        return redirect()->route('mrp.list');
     }
 }

@@ -187,10 +187,10 @@ class BookmarksIndex extends Controller
         $res = $object->delete($user);
         
         if ($res > 0) {
-            return redirect("/bookmarks/list.php");
+            return redirect()->route('bookmarks.index');
         } else {
             setEventMessages($object->error, $object->errors, 'errors');
-            return redirect("/bookmarks/list.php");
+            return redirect()->route('bookmarks.index');
         }
     }
 }
