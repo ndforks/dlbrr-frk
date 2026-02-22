@@ -25,6 +25,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Expensereport\Doc;
 /**
  *	\file       htdocs/core/modules/expensereport/doc/pdf_standard_expensereport.modules.php
  *	\ingroup    expensereport

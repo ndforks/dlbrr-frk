@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Accountancy\Classes;
 /**
  * \file	htdocs/accountancy/class/accountancyreport.class.php
  * \ingroup Accountancy (Double entries)

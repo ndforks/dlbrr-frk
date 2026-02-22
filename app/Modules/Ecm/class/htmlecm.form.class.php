@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Ecm\Classes;
 /**
  * 	\file       	htdocs/ecm/class/htmlecm.form.class.php
  * 	\brief      	File of class to manage HTML component for ECM and generic filemanager

@@ -30,6 +30,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Facture\Doc;
 /**
  *	\file       htdocs/core/modules/facture/doc/pdf_crabe.modules.php
  *	\ingroup    invoice

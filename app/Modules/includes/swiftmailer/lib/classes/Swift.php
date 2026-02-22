@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes;
 /**
  * General utility class in Swift Mailer, not to be instantiated.
  *

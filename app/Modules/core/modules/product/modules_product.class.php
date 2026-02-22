@@ -22,6 +22,8 @@
  */
 
 
+
+namespace App\Modules\Core\Modules\Product;
 /**
  *  \file       htdocs/core/modules/product/modules_product.class.php
  *  \ingroup    contract

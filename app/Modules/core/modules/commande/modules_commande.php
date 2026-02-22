@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Commande;
 /**
  *  \file			htdocs/core/modules/commande/modules_commande.php
  *  \ingroup		commande

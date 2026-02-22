@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Commande\Doc;
 /**
  *	\file       htdocs/core/modules/commande/doc/doc_generic_order_odt.modules.php
  *	\ingroup    order

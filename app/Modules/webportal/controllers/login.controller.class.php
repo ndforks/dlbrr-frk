@@ -21,6 +21,8 @@
  * \ingroup     webportal
  * \brief       This file is a controller for login
  */
+
+namespace App\Modules\Webportal\Controllers;
 /**
  * Class for LoginController
  */

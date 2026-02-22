@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   notification	Module notification
  *  \brief      Module for managing notifications (by e-mail or other means)

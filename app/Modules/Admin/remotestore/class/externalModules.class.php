@@ -23,6 +23,8 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 /**
  * Class ExternalModules
  */
+
+namespace App\Modules\Admin\Remotestore\Classes;
 class ExternalModules
 {
 	/**

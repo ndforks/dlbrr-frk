@@ -23,6 +23,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *      \defgroup   member     Module foundation
  *      \brief      Module to manage members of a foundation

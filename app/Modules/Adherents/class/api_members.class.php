@@ -35,6 +35,8 @@ require_once DOL_DOCUMENT_ROOT . '/adherents/class/adherentstats.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Adherents\Classes;
 class Members extends DolibarrApi
 {
 	/**

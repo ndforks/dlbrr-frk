@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Facture;
 /**
  *  \file       htdocs/core/modules/facture/mod_facture_terre.php
  *  \ingroup    invoice

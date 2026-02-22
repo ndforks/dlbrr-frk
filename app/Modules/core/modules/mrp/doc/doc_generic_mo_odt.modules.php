@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mrp\Doc;
 /**
  *	\file       htdocs/core/modules/mrp/doc/doc_generic_mo_odt.modules.php
  *	\ingroup    mrp

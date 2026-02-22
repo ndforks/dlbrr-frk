@@ -58,6 +58,8 @@
  */
 
 
+
+namespace App\Modules\Includes\Nusoap\Lib\Mail;
 /**
  * require PEAR
  *

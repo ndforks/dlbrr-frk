@@ -51,6 +51,8 @@ require_once(dirname(__FILE__).'/include/tcpdf_filters.php');
  * @version 1.0.15
  * @author Nicola Asuni - info@tecnick.com
  */
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf;
 class TCPDF_PARSER {
 
 	/**

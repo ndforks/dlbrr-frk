@@ -4,6 +4,8 @@
  * Polygon: A polygon is a plane figure that is bounded by a closed path,
  * composed of a finite sequence of straight line segments
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class Polygon extends Collection
 {
 	protected $geom_type = 'Polygon';

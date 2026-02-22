@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Product_batch;
 /**
  * \file       htdocs/core/modules/product_batch/mod_lot_advanced.php
  * \ingroup    productbatch

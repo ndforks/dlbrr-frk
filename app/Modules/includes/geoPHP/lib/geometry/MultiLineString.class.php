@@ -2,6 +2,8 @@
 /**
  * MultiLineString: A collection of LineStrings
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class MultiLineString extends Collection
 {
 	protected $geom_type = 'MultiLineString';

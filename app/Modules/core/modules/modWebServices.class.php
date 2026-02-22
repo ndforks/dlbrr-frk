@@ -15,6 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *      \defgroup   webservices     Module webservices
  *      \brief      Module to enable the Dolibarr server of web services

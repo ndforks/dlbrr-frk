@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Resource\Classes;
 /**
  *       \file       resource/class/html.formresource.class.php
  *       \ingroup    core

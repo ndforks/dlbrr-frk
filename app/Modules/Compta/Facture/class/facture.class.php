@@ -39,6 +39,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Facture\Classes;
 /**
  *	\file       htdocs/compta/facture/class/facture.class.php
  *	\ingroup    invoice

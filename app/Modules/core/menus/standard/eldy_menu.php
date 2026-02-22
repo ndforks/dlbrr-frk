@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Menus\Standard;
 /**
  *	\file       htdocs/core/menus/standard/eldy_menu.php
  *	\brief      Menu eldy manager

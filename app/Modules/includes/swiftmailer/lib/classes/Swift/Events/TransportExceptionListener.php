@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Events;
 /**
  * Listens for Exceptions thrown from within the Transport system.
  *

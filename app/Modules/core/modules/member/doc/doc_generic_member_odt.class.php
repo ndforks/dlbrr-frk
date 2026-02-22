@@ -19,6 +19,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Member\Doc;
 /**
  *	\file       htdocs/core/modules/member/doc/doc_generic_member_odt.class.php
  *	\ingroup    societe

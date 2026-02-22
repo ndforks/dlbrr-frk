@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\KeyCache;
 /**
  * A KeyCache which streams to and from disk.
  *

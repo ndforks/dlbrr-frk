@@ -35,6 +35,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Comm\Propal\Classes;
 /**
  *	\file       htdocs/comm/propal/class/propaleligne.class.php
  *	\ingroup    propale

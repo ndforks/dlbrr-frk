@@ -24,6 +24,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * \file           htdocs/core/modules/DolibarrModules.class.php
  * \brief          File of parent class of module descriptor class files

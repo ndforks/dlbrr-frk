@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 		\defgroup   expensereport	Module expensereport
  *      \brief      Module to manage expense report. Replace old module Deplacement.

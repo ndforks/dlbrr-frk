@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Emailcollector\Classes;
 /**
  *    \file        htdocs/emailcollector/class/emailcollector.class.php
  *    \ingroup     emailcollector

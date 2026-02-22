@@ -23,6 +23,8 @@
 
 
 
+
+namespace App\Modules\Core\Modules\Member;
 /**
  *  \file       htdocs/core/modules/member/modules_member.class.php
  *  \ingroup    members

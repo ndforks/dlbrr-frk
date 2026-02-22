@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Expedition\Doc;
 /**
  *	\file       htdocs/core/modules/expedition/doc/pdf_merou.modules.php
  *	\ingroup    expedition

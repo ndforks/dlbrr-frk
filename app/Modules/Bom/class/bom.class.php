@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Bom\Classes;
 /**
  * \file        htdocs/bom/class/bom.class.php
  * \ingroup     bom

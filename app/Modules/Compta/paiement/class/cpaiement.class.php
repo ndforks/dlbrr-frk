@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Paiement\Classes;
 /**
  * \file    htdocs/compta/paiement/class/cpaiement.class.php
  * \ingroup facture

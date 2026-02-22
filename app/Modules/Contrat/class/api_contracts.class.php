@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Contrat\Classes;
 class Contracts extends DolibarrApi
 {
 	/**

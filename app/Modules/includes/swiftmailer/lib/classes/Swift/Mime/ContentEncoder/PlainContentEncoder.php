@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mime\ContentEncoder;
 /**
  * Handles binary/7/8-bit Transfer Encoding in Swift Mailer.
  *

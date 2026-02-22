@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Bom\Doc;
 /**
  *	\file       htdocs/core/modules/bom/doc/doc_generic_bom_odt.modules.php
  *	\ingroup    bom

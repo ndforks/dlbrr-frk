@@ -26,6 +26,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Fichinter\Doc;
 /**
  *	\file       htdocs/core/modules/fichinter/doc/pdf_soleil.modules.php
  *	\ingroup    ficheinter

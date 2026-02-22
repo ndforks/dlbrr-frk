@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\CharacterReader;
 /**
  * Provides fixed-width byte sizes for reading fixed-width character sets.
  *

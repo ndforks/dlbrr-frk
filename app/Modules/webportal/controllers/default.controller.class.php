@@ -22,6 +22,8 @@
  * \brief       This file is a controller for default
  */
 
+
+namespace App\Modules\Webportal\Controllers;
 /**
  * Class for DefaultController
  */

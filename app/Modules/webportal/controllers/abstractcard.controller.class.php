@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Webportal\Controllers;
 require_once __DIR__ . '/../class/controller.class.php';
 
 /**

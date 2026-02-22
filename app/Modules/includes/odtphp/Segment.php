@@ -14,6 +14,8 @@ class SegmentException extends Exception
  * @license    https://www.gnu.org/copyleft/gpl.html  GPL License
  * @version 1.4.5 (last update 2013-04-07)
  */
+
+namespace App\Modules\Includes\Odtphp;
 class Segment implements IteratorAggregate, Countable
 {
 	/**

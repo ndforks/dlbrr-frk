@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Project\Doc;
 /**
  *	\file       htdocs/core/modules/project/doc/pdf_timespent.modules.php
  *	\ingroup    project

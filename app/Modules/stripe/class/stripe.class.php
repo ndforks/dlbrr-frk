@@ -28,6 +28,8 @@ require_once DOL_DOCUMENT_ROOT.'/stripe/config.php'; // This set stripe global $
  *	Stripe class
  *  @TODO No reason to extend CommonObject
  */
+
+namespace App\Modules\Stripe\Classes;
 class Stripe extends CommonObject
 {
 	/**

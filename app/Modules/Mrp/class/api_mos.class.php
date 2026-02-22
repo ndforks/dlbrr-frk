@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
  * \brief   File for API management of MO.
  */
 
+
+namespace App\Modules\Mrp\Classes;
 /**
  * API class for MO
  *

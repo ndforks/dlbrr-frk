@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Intracommreport\Classes;
 /**
  *    \file       htdocs/intracommreport/class/intracommreport.class.php
  *    \ingroup    Intracomm report

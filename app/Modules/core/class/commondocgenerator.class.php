@@ -26,6 +26,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *	    \file       htdocs/core/class/commondocgenerator.class.php
  *		\ingroup    core

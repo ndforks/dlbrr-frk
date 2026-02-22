@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_order\Doc;
 /**
  *	\file       htdocs/core/modules/supplier_order/doc/doc_generic_supplier_order_odt.modules.php
  *	\ingroup    order

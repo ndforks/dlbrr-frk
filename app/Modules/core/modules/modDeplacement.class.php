@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   deplacement     Module traves
  *	\brief      Module pour gerer les deplacements et notes de frais

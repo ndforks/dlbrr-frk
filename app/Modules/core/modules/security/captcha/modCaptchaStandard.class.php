@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Security\Captcha;
 /**
  *      \file       htdocs/core/modules/security/captcha/modCaptchaStandard.class.php
  *      \ingroup    core

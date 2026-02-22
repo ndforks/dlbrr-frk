@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Emailcollector\Classes;
 /**
  * \file        emailcollector/class/emailcollectorfilter.class.php
  * \ingroup     emailcollector

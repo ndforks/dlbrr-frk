@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Test\Phpunit;
 /**
  * \file    test/phpunit/MyObjectTest.php
  * \ingroup mymodule

@@ -263,6 +263,8 @@ if (!defined('QRCODEDEFS')) {
  * @author Nicola Asuni
  * @version 1.0.010
  */
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include\Barcodes;
 class QRcode {
 
 	/**

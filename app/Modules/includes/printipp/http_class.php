@@ -27,6 +27,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * $Id: http_class.php,v 1.7 2010/08/22 15:45:17 harding Exp $
  */
+
+namespace App\Modules\Includes\Printipp;
 /**
  *  This class is intended to implement a subset of Hyper Text Transfer Protocol
  *  (HTTP/1.1) on client side  (currently: POST operation), with file streaming

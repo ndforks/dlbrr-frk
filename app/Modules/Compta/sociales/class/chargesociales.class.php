@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Sociales\Classes;
 /**
  *      \file       htdocs/compta/sociales/class/chargesociales.class.php
  *		\ingroup    invoice

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Knowledgemanagement\Core\Modules\Knowledgemanagement;
 /**
  *  \file       htdocs/knowledgemanagement/core/modules/knowledgemanagement/mod_knowledgerecord_standard.php
  *  \ingroup    knowledgemanagement

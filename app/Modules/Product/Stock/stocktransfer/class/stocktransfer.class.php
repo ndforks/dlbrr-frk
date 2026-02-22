@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Stock\Stocktransfer\Classes;
 /**
  * \file        htdocs/product/stock/stocktransfer/class/stocktransfer.class.php
  * \ingroup     stocktransfer

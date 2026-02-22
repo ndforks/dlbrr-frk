@@ -25,6 +25,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Holiday;
 /**
  *  \file       htdocs/core/modules/holiday/modules_holiday.php
  *  \ingroup    contract

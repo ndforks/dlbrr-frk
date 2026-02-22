@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Canvas\Product;
 /**
  *	\file       htdocs/product/canvas/product/actions_card_product.class.php
  *	\ingroup    product

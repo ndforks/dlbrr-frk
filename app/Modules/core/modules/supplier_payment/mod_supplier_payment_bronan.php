@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_payment;
 /**
  * \file       htdocs/core/modules/supplier_payment/mod_supplier_payment_bronan.php
  * \ingroup    supplier_payment

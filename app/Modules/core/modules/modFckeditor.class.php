@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   fckeditor     Module fckeditor
  *  \brief      Module pour mettre en page les zones de saisie de texte

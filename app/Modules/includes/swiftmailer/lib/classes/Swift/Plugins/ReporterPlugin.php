@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Plugins;
 /**
  * Does real time reporting of pass/fail for each recipient.
  *

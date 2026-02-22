@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Signers;
 /**
  * DomainKey Signer used to apply DomainKeys Signature to a message.
  *

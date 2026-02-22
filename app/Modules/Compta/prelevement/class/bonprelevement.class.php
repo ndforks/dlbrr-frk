@@ -23,6 +23,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Prelevement\Classes;
 /**
  * \file       htdocs/compta/prelevement/class/bonprelevement.class.php
  * \ingroup    prelevement

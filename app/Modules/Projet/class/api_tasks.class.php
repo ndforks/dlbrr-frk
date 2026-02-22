@@ -32,6 +32,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/class/timespent.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Projet\Classes;
 class Tasks extends DolibarrApi
 {
 	/**

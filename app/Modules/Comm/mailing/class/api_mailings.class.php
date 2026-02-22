@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/comm/mailing/class/mailing_targets.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Comm\Mailing\Classes;
 class Mailings extends DolibarrApi
 {
 	/**

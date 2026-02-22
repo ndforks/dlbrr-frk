@@ -24,6 +24,8 @@ include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
 /**
  * Class to manage statistics on project tasks
  */
+
+namespace App\Modules\Projet\Classes;
 class TaskStats extends Stats
 {
 	/**

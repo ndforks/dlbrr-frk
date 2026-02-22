@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_invoice;
 /**
  *    	\file       htdocs/core/modules/supplier_invoice/mod_facture_fournisseur_cactus.php
  *		\ingroup    supplier invoice

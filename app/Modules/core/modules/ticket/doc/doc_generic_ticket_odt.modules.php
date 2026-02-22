@@ -20,6 +20,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Ticket\Doc;
 /**
  *	\file       htdocs/core/modules/ticket/doc/doc_generic_ticket_odt.modules.php
  *	\ingroup    ticket

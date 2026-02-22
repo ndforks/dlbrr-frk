@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Boxes;
 /**
  * \file    htdocs/modulebuilder/template/core/boxes/mymodulewidget1.php
  * \ingroup mymodule

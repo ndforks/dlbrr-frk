@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules\Printsheet\Doc;
 /**
  *  \file       htdocs/core/modules/printsheet/doc/pdf_standardlabel.class.php
  *  \ingroup    core

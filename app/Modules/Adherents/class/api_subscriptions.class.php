@@ -26,6 +26,8 @@ require_once DOL_DOCUMENT_ROOT.'/adherents/class/subscription.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Adherents\Classes;
 class Subscriptions extends DolibarrApi
 {
 	/**

@@ -19,6 +19,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Usergroup\Doc;
 /**
  *	\file       htdocs/core/modules/user/doc/doc_generic_user_odt.modules.php
  *	\ingroup    societe

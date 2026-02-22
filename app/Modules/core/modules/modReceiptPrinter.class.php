@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /** \defgroup   printing     Module Receipt Printer
  *  \brief      Module for activation of printing icon to make receipt ticket
  */

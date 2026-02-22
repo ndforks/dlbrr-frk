@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	\defgroup   stripe     Module stripe
  * 	\brief      Add integration with Stripe online payment system.

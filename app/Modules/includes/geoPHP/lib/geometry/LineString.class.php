@@ -3,6 +3,8 @@
  * LineString. A collection of Points representing a line.
  * A line can have more than one segment.
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class LineString extends Collection
 {
 	protected $geom_type = 'LineString';

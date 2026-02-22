@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules;
 /**
  * 	\defgroup   mymodule     Module MyModule
  *  \brief      MyModule module descriptor.

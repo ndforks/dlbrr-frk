@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/bom/class/bom.class.php';
  * \brief   File for API management of BOM.
  */
 
+
+namespace App\Modules\Bom\Classes;
 /**
  * API class for BOM
  *

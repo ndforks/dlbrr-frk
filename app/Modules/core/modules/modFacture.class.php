@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 		\defgroup   facture     Module customer invoices
  *      \brief      Module to manage customer invoices

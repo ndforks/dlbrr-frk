@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Localtax\Classes;
 /**
  *      \file       htdocs/compta/localtax/class/localtax.class.php
  *      \ingroup    tax

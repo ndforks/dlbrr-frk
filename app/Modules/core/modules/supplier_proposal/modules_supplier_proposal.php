@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_proposal;
 /**
  *  \file       htdocs/core/modules/propale/modules_propale.php
  *  \ingroup    propale

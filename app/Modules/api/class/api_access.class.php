@@ -45,6 +45,8 @@ use Luracast\Restler\RestException;
 /**
  * Dolibarr API access class
  */
+
+namespace App\Modules\Api\Classes;
 class DolibarrApiAccess implements iAuthenticate
 {
 	const REALM = 'Restricted Dolibarr API';

@@ -134,6 +134,8 @@ require_once(dirname(__FILE__).'/include/tcpdf_static.php');
  * @IgnoreAnnotation("public")
  * @IgnoreAnnotation("pre")
  */
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf;
 class TCPDF {
 
 	// Protected properties

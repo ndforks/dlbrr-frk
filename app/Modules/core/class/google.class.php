@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *	\file			htdocs/core/class/google.class.php
  *	\brief			A set of functions for using Google APIs

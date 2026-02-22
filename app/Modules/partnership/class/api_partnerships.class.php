@@ -29,6 +29,8 @@ dol_include_once('/partnership/class/partnership.class.php');
  * \brief   File for API management of partnership.
  */
 
+
+namespace App\Modules\Partnership\Classes;
 /**
  * API class for partnership partnership
  *

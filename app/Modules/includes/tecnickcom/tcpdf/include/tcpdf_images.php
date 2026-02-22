@@ -41,6 +41,8 @@
  * @version 1.0.005
  */
 
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include;
 /**
  * @class TCPDF_IMAGES
  * Static image methods used by the TCPDF class.

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\KeyCache;
 /**
  * A null KeyCache that does not cache at all.
  *

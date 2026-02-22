@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mrp;
 /**
  *  \file			htdocs/core/modules/mrp/modules_mo.php
  *  \ingroup		mrp

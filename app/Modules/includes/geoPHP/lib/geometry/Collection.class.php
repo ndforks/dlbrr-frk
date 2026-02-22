@@ -8,6 +8,8 @@
  * is a Collection. For example a LingString is a collection
  * of Points. A Polygon is a collection of LineStrings etc.
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 abstract class Collection extends Geometry
 {
 	public $components = array();

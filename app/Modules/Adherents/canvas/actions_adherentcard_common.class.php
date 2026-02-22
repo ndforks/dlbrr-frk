@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Adherents\Canvas;
 /**
  *	\file       htdocs/adherents/canvas/actions_adherentcard_common.class.php
  *	\ingroup    adherent

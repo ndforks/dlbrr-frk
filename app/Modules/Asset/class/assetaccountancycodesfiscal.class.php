@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Asset\Classes;
 /**
  * \file        asset/class/assetaccountancycodesfiscal.class.php
  * \ingroup     asset

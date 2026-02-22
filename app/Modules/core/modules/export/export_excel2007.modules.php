@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules\Export;
 /**
  *	\file       htdocs/core/modules/export/export_excel2007.modules.php
  *	\ingroup    export

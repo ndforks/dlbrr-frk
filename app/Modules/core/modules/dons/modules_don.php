@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Dons;
 /**
  *	    \file       htdocs/core/modules/dons/modules_don.php
  *		\ingroup    donations

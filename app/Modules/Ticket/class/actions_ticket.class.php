@@ -20,6 +20,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+namespace App\Modules\Ticket\Classes;
 /**
  *    \file       ticket/class/actions_ticket.class.php
  *    \ingroup    ticket

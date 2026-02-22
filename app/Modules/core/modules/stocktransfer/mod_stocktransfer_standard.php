@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Stocktransfer;
 /**
  *  \file       htdocs/core/modules/stocktransfer/mod_stocktransfer_standard.php
  *  \ingroup    stocktransfer

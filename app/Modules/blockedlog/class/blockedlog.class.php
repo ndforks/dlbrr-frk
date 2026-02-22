@@ -27,6 +27,8 @@ include_once DOL_DOCUMENT_ROOT.'/blockedlog/versioncert.inc.php';
 /**
  *	Class to manage Blocked Log
  */
+
+namespace App\Modules\Blockedlog\Classes;
 class BlockedLog
 {
 	/**

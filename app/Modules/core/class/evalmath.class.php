@@ -93,6 +93,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  * \file core/class/evalmath.class.php
  * \ingroup core

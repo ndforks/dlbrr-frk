@@ -2,6 +2,8 @@
 /**
  * MultiPoint: A collection Points
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class MultiPoint extends Collection
 {
 	protected $geom_type = 'MultiPoint';

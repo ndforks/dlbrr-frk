@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Cheque;
 /**
  *	\file       htdocs/core/modules/cheque/modules_chequereceipts.php
  *	\ingroup    invoice

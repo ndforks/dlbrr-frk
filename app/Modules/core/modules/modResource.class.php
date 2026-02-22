@@ -19,6 +19,8 @@
  * Module to manage resources into Dolibarr ERP/CRM
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	\defgroup	resource	Module resource
  * 	\brief		Resource module descriptor.

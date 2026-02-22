@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Bom;
 /**
  * \file       htdocs/core/modules/bom/mod_bom_advanced.php
  * \ingroup    bom

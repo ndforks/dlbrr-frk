@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules\Export;
 /**
  *		\file       htdocs/core/modules/export/exportcsv.class.php
  *		\ingroup    export

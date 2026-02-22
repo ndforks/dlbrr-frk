@@ -16,6 +16,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Contact\Canvas;
 /**
  *	\file       htdocs/contact/canvas/actions_contactcard_common.class.php
  *	\ingroup    thirdparty

@@ -38,6 +38,8 @@
  * @package com.tecnick.tcpdf
  */
 
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf\Include;
 /**
  * @class TCPDF_FONTS
  * Font methods for TCPDF library.

@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Takepos\Classes;
 /**
  *  \file           htdocs/takepos/class/dolreceiptprinter.class.php
  *  \brief          Print receipt ticket on various ESC/POS printer

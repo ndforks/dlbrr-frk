@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * \file		htdocs/core/modules/modAccounting.class.php
  * \ingroup		Double entry accounting

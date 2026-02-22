@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mime\ContentEncoder;
 /**
  * Handles the case where the email body is already encoded and you just need specify the correct
  * encoding without actually changing the encoding of the body.

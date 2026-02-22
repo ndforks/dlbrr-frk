@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /** \defgroup   printing     Module printing
  *  \brief      Module for activation of printing icon to make direct printing
  */

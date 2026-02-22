@@ -214,6 +214,8 @@
  * @method bool isWatch()
 
  */
+
+namespace App\Modules\Includes\Mobiledetect\Mobiledetectlib;
 class Mobile_Detect
 {
     /**

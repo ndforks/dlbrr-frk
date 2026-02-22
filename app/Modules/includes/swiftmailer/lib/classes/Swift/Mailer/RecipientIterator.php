@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Mailer;
 /**
  * Provides an abstract way of specifying recipients for batch sending.
  *

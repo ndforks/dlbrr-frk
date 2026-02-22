@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT . '/compta/bank/class/account.class.php';
  * @access protected
  * @class DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Compta\Bank\Classes;
 class BankAccounts extends DolibarrApi
 {
 	/**

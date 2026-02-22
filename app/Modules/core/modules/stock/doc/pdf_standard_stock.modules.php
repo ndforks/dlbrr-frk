@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Stock\Doc;
 /**
  *	\file       htdocs/core/modules/stock/doc/pdf_standard.modules.php
  *	\ingroup    societe

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *	    \file       htdocs/core/class/commonnumrefgenerator.class.php
  *		\ingroup    core

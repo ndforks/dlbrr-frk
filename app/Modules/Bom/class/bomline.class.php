@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Bom\Classes;
 /**
  * \file        htdocs/bom/class/bomline.class.php
  * \ingroup     bom

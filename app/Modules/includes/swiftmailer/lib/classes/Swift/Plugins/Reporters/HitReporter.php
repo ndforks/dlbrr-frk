@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Plugins\Reporters;
 /**
  * A reporter which "collects" failures for the Reporter plugin.
  *

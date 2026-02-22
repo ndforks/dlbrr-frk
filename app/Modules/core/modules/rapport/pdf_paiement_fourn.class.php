@@ -16,6 +16,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Rapport;
 /**
  *	\file       htdocs/core/modules/rapport/pdf_paiement_fourn.class.php
  *	\ingroup    banque

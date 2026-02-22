@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_invoice\Doc;
 /**
  *	\file       htdocs/core/modules/supplier_invoice/doc/pdf_canelle.modules.php
  *	\ingroup    fournisseur

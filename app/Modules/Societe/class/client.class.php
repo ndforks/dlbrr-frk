@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Societe\Classes;
 /**
  *   	\file       htdocs/societe/class/client.class.php
  *		\ingroup    societe

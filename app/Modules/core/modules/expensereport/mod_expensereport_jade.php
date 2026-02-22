@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Expensereport;
 /**
  *  \file       htdocs/core/modules/expensereport/mod_expensereport_jade.php
  *  \ingroup    expensereport

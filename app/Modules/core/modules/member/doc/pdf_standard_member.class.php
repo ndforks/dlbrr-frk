@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules\Member\Doc;
 /**
  *	\file		htdocs/core/modules/member/doc/pdf_standard_member.class.php
  *	\ingroup	member

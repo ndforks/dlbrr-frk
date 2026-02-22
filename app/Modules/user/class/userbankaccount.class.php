@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\User\Classes;
 /**
  * 		\file		htdocs/user/class/userbankaccount.class.php
  *		\ingroup    user

@@ -19,6 +19,8 @@
  * Module descriptor for ticket system
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *     \defgroup    ticket    Module Ticket
  *     \brief       Module for ticket and request management.

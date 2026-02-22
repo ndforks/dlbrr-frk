@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Cheque\Doc;
 /**
  *	\file       htdocs/core/modules/cheque/doc/pdf_blochet.class.php
  *	\ingroup    banque

@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Mrp;
 /**
  *  \file       htdocs/core/modules/mrp/mod_mo_standard.php
  *  \ingroup    mrp

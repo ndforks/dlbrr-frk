@@ -31,6 +31,8 @@ require_once DOL_DOCUMENT_ROOT.'/product/stock/class/mouvementstock.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Product\Stock\Classes;
 class StockMovements extends DolibarrApi
 {
 	/**

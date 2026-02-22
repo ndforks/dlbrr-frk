@@ -40,6 +40,8 @@
     TODO: beta tests on other servers than Cups
 */
 
+
+namespace App\Modules\Includes\Printipp;
 require_once("BasicIPP.php");
 
 class PrintIPP extends BasicIPP

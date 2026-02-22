@@ -87,6 +87,8 @@ if (!defined ('PDF_TYPE_REAL'))
  * @author Paul Nicholls - github.com/pauln
  * @author Nicola Asuni - info@tecnick.com
  */
+
+namespace App\Modules\Includes\Tcpdi;
 class tcpdi_parser {
     /**
      * Unique parser ID

@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Webportal\Classes;
 /**
  * \file        htdocs/webportal/class/webportalorder.class.php
  * \ingroup     webportal

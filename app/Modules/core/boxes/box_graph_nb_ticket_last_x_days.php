@@ -19,6 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Boxes;
 /**
  *     \file        htdocs/core/boxes/box_graph_nb_ticket_last_x_days.php
  *     \ingroup     ticket

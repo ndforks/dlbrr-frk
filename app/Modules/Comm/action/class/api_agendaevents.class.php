@@ -32,6 +32,8 @@ require_once DOL_DOCUMENT_ROOT.'/comm/action/class/actioncomm.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Comm\Action\Classes;
 class AgendaEvents extends DolibarrApi
 {
 	/**

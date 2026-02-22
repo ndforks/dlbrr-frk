@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  * \file        htdocs/core/class/defaultvalues.class.php
  * \brief       This file is a CRUD class file for DefaultValues (Create/Read/Update/Delete)

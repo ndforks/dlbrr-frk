@@ -30,6 +30,8 @@ if (!defined('SUBTOTALS_SPECIAL_CODE')) {
  *
  * Add subtotals lines
  */
+
+namespace App\Modules\Subtotals\Classes;
 trait CommonSubtotal
 {
 	/**

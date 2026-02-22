@@ -27,6 +27,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Asset\Doc;
 /**
  *  \file       core/modules/asset/doc/pdf_standard.modules.php
  *  \ingroup    asset

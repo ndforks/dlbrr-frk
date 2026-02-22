@@ -19,6 +19,8 @@
  *
  */
 
+
+namespace App\Modules\Compta\Prelevement\Classes;
 /**
  *  \file       htdocs/compta/prelevement/class/ligneprelevement.class.php
  *  \ingroup    prelevement

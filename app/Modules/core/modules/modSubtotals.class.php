@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	  \defgroup   subtotals 	Module subtotals
  *    \brief      Module for subtotal lines management

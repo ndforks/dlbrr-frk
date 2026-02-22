@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *	\defgroup   ficheinter     Module Interventions
  *	\brief      Module to manage intervention cards

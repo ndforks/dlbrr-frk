@@ -7,6 +7,8 @@
  * the Free Software Foundation.
  */
 
+
+namespace App\Modules\Webportal\Controllers;
 require_once __DIR__ . '/../class/controller.class.php';
 
 /**

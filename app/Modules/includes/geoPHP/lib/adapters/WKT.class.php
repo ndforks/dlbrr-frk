@@ -2,6 +2,8 @@
 /**
  * WKT (Well Known Text) Adapter
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Adapters;
 class WKT extends GeoAdapter
 {
 

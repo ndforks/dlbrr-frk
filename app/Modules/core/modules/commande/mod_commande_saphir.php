@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Commande;
 /**
  * \file       htdocs/core/modules/commande/mod_commande_saphir.php
  * \ingroup    order

@@ -34,6 +34,8 @@ use Luracast\Restler\RestException;
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Societe\Classes;
 class Thirdparties extends DolibarrApi
 {
 	/**

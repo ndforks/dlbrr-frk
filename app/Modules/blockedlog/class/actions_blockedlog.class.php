@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Blockedlog\Classes;
 /**
  * \file    htdocs/blockedlog/class/actions_blockedlog.class.php
  * \ingroup blockedlog

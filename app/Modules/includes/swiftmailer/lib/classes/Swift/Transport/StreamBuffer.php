@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+
+namespace App\Modules\Includes\Swiftmailer\Lib\Classes\Swift\Transport;
 /**
  * A generic IoBuffer implementation supporting remote sockets and local processes.
  *

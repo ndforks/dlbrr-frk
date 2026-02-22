@@ -20,6 +20,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Boxes;
 /**
  *	\file       htdocs/core/boxes/box_factures_imp.php
  *	\ingroup    invoices

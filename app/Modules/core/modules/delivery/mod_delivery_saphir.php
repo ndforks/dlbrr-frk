@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Delivery;
 /**
  *	\file       htdocs/core/modules/delivery/mod_delivery_saphir.php
  *	\ingroup    expedition

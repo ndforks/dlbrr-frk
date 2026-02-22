@@ -21,6 +21,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Recruitment\Core\Modules\Recruitment;
 /**
  * \file       htdocs/core/modules/recruitment/mod_recruitmentcandidature_advanced.php
  * \ingroup    recruitment

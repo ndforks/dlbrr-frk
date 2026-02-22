@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Delivery\Doc;
 /**
  *	\file       htdocs/core/modules/delivery/doc/pdf_typhon.modules.php
  *	\ingroup    livraison

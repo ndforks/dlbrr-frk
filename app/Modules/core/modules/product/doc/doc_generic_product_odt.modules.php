@@ -20,6 +20,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Product\Doc;
 /**
  *	\file       htdocs/core/modules/product/doc/doc_generic_product_odt.modules.php
  *	\ingroup    societe

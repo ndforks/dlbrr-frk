@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *      \file       htdocs/core/class/antivir.class.php
  *      \brief      File of class to scan viruses

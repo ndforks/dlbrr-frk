@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Project\Task\Doc;
 /**
  *	\file       htdocs/core/modules/project/task/doc/doc_generic_task_odt.modules.php
  *	\ingroup    project

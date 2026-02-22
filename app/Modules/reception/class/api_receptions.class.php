@@ -29,6 +29,8 @@ require_once DOL_DOCUMENT_ROOT.'/reception/class/receptionlinebatch.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Reception\Classes;
 class Receptions extends DolibarrApi
 {
 	/**

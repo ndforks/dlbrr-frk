@@ -41,6 +41,8 @@ require_once DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php';
  * @access protected
  * @class DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Api\Classes;
 class Setup extends DolibarrApi
 {
 	/**

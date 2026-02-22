@@ -40,6 +40,8 @@
  * @version 1.0.015
  */
 
+
+namespace App\Modules\Includes\Tecnickcom\Tcpdf;
 /**
  * @class TCPDF2DBarcode
  * PHP class to creates array representations for 2D barcodes to be used with TCPDF (http://www.tcpdf.org).

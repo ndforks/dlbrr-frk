@@ -83,6 +83,8 @@ $GLOBALS['_transient']['static']['nusoap_base']['globalDebugLevel'] = 9;
  * @version  $Id: nusoap.php,v 1.123 2010/04/26 20:15:08 snichol Exp $
  * @access   public
  */
+
+namespace App\Modules\Includes\Nusoap\Lib;
 class nusoap_base
 {
     /**

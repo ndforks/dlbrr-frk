@@ -29,6 +29,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Compta\Paiement\Classes;
 /**
  *	\file       htdocs/compta/paiement/class/paiement.class.php
  *	\ingroup    invoice

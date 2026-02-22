@@ -20,6 +20,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Boxes;
 /**
  *	    \file       htdocs/core/boxes/modules_boxes.php
  *		\ingroup    core

@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Recruitment\Classes;
 /**
  * \file        htdocs/recruitment/class/recruitmentjobposition.class.php
  * \ingroup     recruitment

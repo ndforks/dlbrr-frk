@@ -23,6 +23,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   projet     Module project
  *	\brief      Module to create projects/tasks/gantt diagram. Projects can them be affected to tasks.

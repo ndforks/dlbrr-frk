@@ -30,6 +30,8 @@ require_once DOL_DOCUMENT_ROOT.'/salaries/class/paymentsalary.class.php';
  * @access protected
  * @class DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Salaries\Classes;
 class Salaries extends DolibarrApi
 {
 	/**

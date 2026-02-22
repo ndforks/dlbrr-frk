@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  * \file       htdocs/core/class/html.formcontract.class.php
  * \ingroup    core

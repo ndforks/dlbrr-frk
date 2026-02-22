@@ -24,6 +24,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Contract;
 /**
  *  \file       htdocs/core/modules/contract/modules_contract.php
  *  \ingroup    contract

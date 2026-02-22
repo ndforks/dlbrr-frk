@@ -17,6 +17,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  *  \defgroup   HRM 	Module hrm
  *  \brief      Module for Human Resource Management (HRM)

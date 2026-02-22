@@ -36,6 +36,8 @@ require_once DOL_DOCUMENT_ROOT.'/comm/propal/class/propal.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Comm\Propal\Classes;
 class Proposals extends DolibarrApi
 {
 	/**

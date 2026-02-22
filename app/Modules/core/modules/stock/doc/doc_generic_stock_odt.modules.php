@@ -19,6 +19,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Stock\Doc;
 /**
  *	\file       htdocs/core/modules/stock/doc/doc_generic_stock_odt.modules.php
  *	\ingroup    societe

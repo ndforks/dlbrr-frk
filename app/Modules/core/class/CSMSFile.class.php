@@ -22,6 +22,8 @@
  * Lots of code inspired from Dan Potter's CSMSFile class
  */
 
+
+namespace App\Modules\Core\Classes;
 /**
  *      \file       htdocs/core/class/CSMSFile.class.php
  *      \brief      File of class to send sms

@@ -18,6 +18,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Reception;
 /**
  *  \file       htdocs/core/modules/reception/mod_reception_moonstone.php
  *  \ingroup    reception

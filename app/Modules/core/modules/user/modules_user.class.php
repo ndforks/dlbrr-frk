@@ -21,6 +21,8 @@
  */
 
 
+
+namespace App\Modules\Core\Modules\User;
 /**
  *	    \class      ModelePDFUser
  *		\brief  	Parent class for product code generators

@@ -19,6 +19,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Modulebuilder\Template\Core\Modules\Mymodule;
 /**
  *  \file       htdocs/core/modules/mymodule/mod_myobject_standard.php
  *  \ingroup    mymodule

@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Partnership\Core\Modules\Partnership;
 /**
  *  \file			htdocs/core/modules/partnership/modules_partnership.php
  *  \ingroup		partnership

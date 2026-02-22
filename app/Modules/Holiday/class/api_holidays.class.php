@@ -33,6 +33,8 @@ require_once DOL_DOCUMENT_ROOT.'/holiday/class/holiday.class.php';
  * @access protected
  * @class  DolibarrApiAccess {@requires user,external}
  */
+
+namespace App\Modules\Holiday\Classes;
 class Holidays extends DolibarrApi
 {
 	/**

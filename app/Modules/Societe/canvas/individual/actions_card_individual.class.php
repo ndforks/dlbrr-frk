@@ -15,6 +15,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Societe\Canvas\Individual;
 /**
  *	\file       htdocs/societe/canvas/individual/actions_card_individual.class.php
  *	\ingroup    thirdparty

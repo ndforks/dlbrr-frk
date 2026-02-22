@@ -20,6 +20,8 @@
  */
 
 
+
+namespace App\Modules\Webportal\Classes;
 /**
  * \file       htdocs/webportal/class/webPortalTheme.class.php
  * \ingroup    webportal

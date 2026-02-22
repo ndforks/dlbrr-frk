@@ -19,6 +19,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Dynamic_price\Classes;
 /**
  *	\file       htdocs/product/dynamic_price/class/price_global_variable.class.php
  *	\ingroup    product

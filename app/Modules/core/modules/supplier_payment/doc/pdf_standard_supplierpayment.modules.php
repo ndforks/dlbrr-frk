@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_payment\Doc;
 /**
  *	\file       htdocs/core/modules/supplier_payment/doc/pdf_standard_supplierpayment.modules.php
  *	\ingroup    fournisseur

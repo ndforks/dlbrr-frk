@@ -22,6 +22,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules;
 /**
  * 	  \defgroup   holiday 	Module holiday
  *    \brief      Module for leave/vacation management

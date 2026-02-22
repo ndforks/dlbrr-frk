@@ -18,6 +18,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Product\Classes;
 /**
  *  \file       htdocs/product/class/propalmergepdfproduct.class.php
  *  \ingroup    product

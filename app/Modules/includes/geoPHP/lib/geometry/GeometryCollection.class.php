@@ -2,6 +2,8 @@
 /**
  * GeometryCollection: A heterogenous collection of geometries
  */
+
+namespace App\Modules\Includes\geoPHP\Lib\Geometry;
 class GeometryCollection extends Collection
 {
 	protected $geom_type = 'GeometryCollection';

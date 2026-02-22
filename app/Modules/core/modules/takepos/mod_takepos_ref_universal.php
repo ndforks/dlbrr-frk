@@ -23,6 +23,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Takepos;
 /**
  *	\file       htdocs/core/modules/takepos/mod_takepos_ref_universal.php
  *	\ingroup    takepos

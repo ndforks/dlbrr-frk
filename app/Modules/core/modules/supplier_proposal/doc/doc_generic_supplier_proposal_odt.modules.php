@@ -20,6 +20,8 @@
 * or see https://www.gnu.org/
 */
 
+
+namespace App\Modules\Core\Modules\Supplier_proposal\Doc;
 /**
  *	\file       htdocs/core/modules/propale/doc/doc_generic_proposal_odt.modules.php
  *	\ingroup    societe

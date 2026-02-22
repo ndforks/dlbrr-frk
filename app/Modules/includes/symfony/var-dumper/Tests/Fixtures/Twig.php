@@ -1,6 +1,8 @@
 <?php
 
 /* foo.twig */
+
+namespace App\Modules\Includes\Symfony\Var-dumper\Tests\Fixtures;
 class __TwigTemplate_VarDumperFixture_u75a09 extends Twig\Template
 {
 	private $path;

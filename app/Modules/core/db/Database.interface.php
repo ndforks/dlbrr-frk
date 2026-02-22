@@ -22,6 +22,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Db;
 /**
  *    Class to manage Dolibarr database access for an SQL database
  */

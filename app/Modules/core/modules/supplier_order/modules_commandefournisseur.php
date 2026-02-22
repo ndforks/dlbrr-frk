@@ -25,6 +25,8 @@
  * or see https://www.gnu.org/
  */
 
+
+namespace App\Modules\Core\Modules\Supplier_order;
 /**
  *		\file       htdocs/core/modules/supplier_order/modules_commandefournisseur.php
  *      \ingroup    supplier order

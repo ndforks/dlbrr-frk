@@ -17,6 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Core\Modules;
 /** \defgroup   oauth     Module oauth
  *  \brief      Module for activation of Oauth for several Api Access
  */

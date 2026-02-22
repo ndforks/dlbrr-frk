@@ -21,6 +21,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+namespace App\Modules\Website\Classes;
 /**
  * \file    htdocs/website/class/websitepage.class.php
  * \ingroup website
