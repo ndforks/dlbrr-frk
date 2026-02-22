@@ -9,6 +9,6 @@ class AdherentsIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/adherents/list.php');
+        return redirect()->route('adherents.list');
     }
 }

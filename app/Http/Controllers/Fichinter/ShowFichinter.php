@@ -27,12 +27,12 @@ class ShowFichinter extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Fichinter::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/fichinter/card.php?id={$id}")->with('success', 'Intervention updated');
+        return redirect()->route('fichinter.show', ['id' => $id])->with('success', 'Intervention updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Fichinter::findOrFail($id)->delete();
-        return redirect('/fichinter/list.php')->with('success', 'Intervention deleted');
+        return redirect()->route('fichinter.list')->with('success', 'Intervention deleted');
     }
 }

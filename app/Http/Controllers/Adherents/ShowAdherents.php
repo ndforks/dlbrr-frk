@@ -27,12 +27,12 @@ class ShowAdherents extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Adherent::findOrFail($id)->update(array_filter(['firstname' => $request->input('firstname'), 'lastname' => $request->input('lastname')], fn($v) => $v));
-        return redirect("/adherents/card.php?id={$id}")->with('success', 'Member updated');
+        return redirect()->route('adherents.show', ['id' => $id])->with('success', 'Member updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Adherent::findOrFail($id)->delete();
-        return redirect('/adherents/list.php')->with('success', 'Member deleted');
+        return redirect()->route('adherents.list')->with('success', 'Member deleted');
     }
 }

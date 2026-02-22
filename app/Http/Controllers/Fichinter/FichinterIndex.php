@@ -9,6 +9,6 @@ class FichinterIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/fichinter/list.php');
+        return redirect()->route('fichinter.list');
     }
 }

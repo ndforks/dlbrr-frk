@@ -27,12 +27,12 @@ class ShowContrat extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Contrat::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/contrat/card.php?id={$id}")->with('success', 'Contract updated');
+        return redirect()->route('contrat.show', ['id' => $id])->with('success', 'Contract updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Contrat::findOrFail($id)->delete();
-        return redirect('/contrat/list.php')->with('success', 'Contract deleted');
+        return redirect()->route('contrat.list')->with('success', 'Contract deleted');
     }
 }

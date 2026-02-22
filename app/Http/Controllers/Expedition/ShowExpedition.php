@@ -27,12 +27,12 @@ class ShowExpedition extends Controller
     private function update(Request $request, int $id): RedirectResponse
     {
         Expedition::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect("/expedition/card.php?id={$id}")->with('success', 'Shipment updated');
+        return redirect()->route('expedition.show', ['id' => $id])->with('success', 'Shipment updated');
     }
     
     private function delete(Request $request, int $id): RedirectResponse
     {
         Expedition::findOrFail($id)->delete();
-        return redirect('/expedition/list.php')->with('success', 'Shipment deleted');
+        return redirect()->route('expedition.list')->with('success', 'Shipment deleted');
     }
 }

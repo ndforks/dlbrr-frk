@@ -9,6 +9,6 @@ class ContratIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/contrat/list.php');
+        return redirect()->route('contrat.list');
     }
 }

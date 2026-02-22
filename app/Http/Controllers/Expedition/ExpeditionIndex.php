@@ -9,6 +9,6 @@ class ExpeditionIndex extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        return redirect('/expedition/list.php');
+        return redirect()->route('expedition.list');
     }
 }
