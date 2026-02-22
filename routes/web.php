@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\SystemAdmin;
 use App\Http\Controllers\Asterisk\WrapperController as AsteriskWrapper;
 use App\Http\Controllers\Asset\ListAsset;
 use App\Http\Controllers\Asset\ShowAsset;
+use App\Http\Controllers\Barcode\CodeInitController;
 use App\Http\Controllers\Bom\ListBom;
 use App\Http\Controllers\Bom\ShowBom;
 use App\Http\Controllers\Bookcal\BookcalIndex;
@@ -101,6 +102,9 @@ Route::get('/', Home::class);
 
 // Asterisk click-to-dial wrapper
 Route::get('/asterisk/wrapper', AsteriskWrapper::class)->name('asterisk.wrapper');
+
+// Barcode mass initialization
+Route::match(['get', 'post'], '/barcode/codeinit', CodeInitController::class)->name('barcode.codeinit');
 
 // User Management Routes
 Route::prefix('user')->name('user.')->group(function () {
