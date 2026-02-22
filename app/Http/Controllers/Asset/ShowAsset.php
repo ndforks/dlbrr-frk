@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Asset;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Asset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,29 +11,46 @@ use Illuminate\View\View;
 
 class ShowAsset extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         
         return match($action) {
-            'create', 'add' => view('asset.create', ['action' => 'create']),
-            'edit' => view('asset.edit', ['asset' => Asset::findOrFail($id), 'action' => 'edit']),
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
-            default => view('asset.show', ['asset' => Asset::findOrFail($id), 'action' => 'view']),
+            default => $this->show($request, $id),
         };
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getModelClass(): string
     {
-        Asset::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect()->route('asset.show', ['id' => $id])->with('success', 'Asset updated');
+        return Asset::class;
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function getViewPrefix(): string
     {
-        Asset::findOrFail($id)->delete();
-        return redirect()->route('asset.list')->with('success', 'Asset deleted');
+        return 'asset';
+    }
+
+    protected function getShowRouteName(): string
+    {
+        return 'asset.show';
+    }
+
+    protected function getListRouteName(): string
+    {
+        return 'asset.list';
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'ref' => $request->input('ref'),
+        ];
     }
 }

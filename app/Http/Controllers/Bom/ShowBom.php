@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Bom;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Bom;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,29 +11,46 @@ use Illuminate\View\View;
 
 class ShowBom extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         
         return match($action) {
-            'create', 'add' => view('bom.create', ['action' => 'create']),
-            'edit' => view('bom.edit', ['bom' => Bom::findOrFail($id), 'action' => 'edit']),
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
-            default => view('bom.show', ['bom' => Bom::findOrFail($id), 'action' => 'view']),
+            default => $this->show($request, $id),
         };
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getModelClass(): string
     {
-        Bom::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect()->route('bom.show', ['id' => $id])->with('success', 'BOM updated');
+        return Bom::class;
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function getViewPrefix(): string
     {
-        Bom::findOrFail($id)->delete();
-        return redirect()->route('bom.list')->with('success', 'BOM deleted');
+        return 'bom';
+    }
+
+    protected function getShowRouteName(): string
+    {
+        return 'bom.show';
+    }
+
+    protected function getListRouteName(): string
+    {
+        return 'bom.list';
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'ref' => $request->input('ref'),
+        ];
     }
 }

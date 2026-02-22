@@ -3,36 +3,60 @@
 namespace App\Http\Controllers\Fichinter;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Fichinter;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowFichinter extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
         $id = $request->integer('id', 0);
         
         return match($action) {
-            'create', 'add' => view('fichinter.create', ['action' => 'create']),
-            'edit' => view('fichinter.edit', ['fichinter' => Fichinter::with('societe')->findOrFail($id), 'action' => 'edit']),
+            'create', 'add' => $this->create($request),
+            'edit' => $this->edit($request, $id),
             'update' => $this->update($request, $id),
             'delete' => $this->delete($request, $id),
-            default => view('fichinter.show', ['fichinter' => Fichinter::with('societe')->findOrFail($id), 'action' => 'view']),
+            default => $this->show($request, $id),
         };
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getModelClass(): string
     {
-        Fichinter::findOrFail($id)->update(array_filter(['ref' => $request->input('ref')], fn($v) => $v));
-        return redirect()->route('fichinter.show', ['id' => $id])->with('success', 'Intervention updated');
+        return Fichinter::class;
     }
-    
-    private function delete(Request $request, int $id): RedirectResponse
+
+    protected function getViewPrefix(): string
     {
-        Fichinter::findOrFail($id)->delete();
-        return redirect()->route('fichinter.list')->with('success', 'Intervention deleted');
+        return 'fichinter';
+    }
+
+    protected function getShowRouteName(): string
+    {
+        return 'fichinter.show';
+    }
+
+    protected function getListRouteName(): string
+    {
+        return 'fichinter.list';
+    }
+
+    protected function loadModel(int $id): Model
+    {
+        return Fichinter::with('societe')->findOrFail($id);
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
+            'ref' => $request->input('ref'),
+        ];
     }
 }

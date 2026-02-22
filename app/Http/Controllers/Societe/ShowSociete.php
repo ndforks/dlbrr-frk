@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Societe;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\HasCrudActions;
 use App\Models\Societe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\View\View;
 
 class ShowSociete extends Controller
 {
+    use HasCrudActions;
+
     public function __invoke(Request $request): View|RedirectResponse
     {
         $action = $request->input('action', 'view');
@@ -24,29 +27,30 @@ class ShowSociete extends Controller
             default => $this->show($request, $id ?: $socid),
         };
     }
-    
-    private function show(Request $request, int $id): View
+
+    protected function getModelClass(): string
     {
-        $societe = Societe::findOrFail($id);
-        return view('societe.show', ['societe' => $societe, 'action' => 'view']);
+        return Societe::class;
     }
-    
-    private function edit(Request $request, int $id): View
+
+    protected function getViewPrefix(): string
     {
-        $societe = Societe::findOrFail($id);
-        return view('societe.edit', ['societe' => $societe, 'action' => 'edit']);
+        return 'societe';
     }
-    
-    private function create(Request $request): View
+
+    protected function getShowRouteName(): string
     {
-        return view('societe.create', ['action' => 'create']);
+        return 'societe.show';
     }
-    
-    private function update(Request $request, int $id): RedirectResponse
+
+    protected function getListRouteName(): string
     {
-        $societe = Societe::findOrFail($id);
-        
-        $data = [
+        return 'societe.list';
+    }
+
+    protected function getUpdateData(Request $request): array
+    {
+        return [
             'nom' => $request->input('nom'),
             'name_alias' => $request->input('name_alias'),
             'address' => $request->input('address'),
@@ -59,16 +63,5 @@ class ShowSociete extends Controller
             'client' => $request->integer('client', 0),
             'fournisseur' => $request->integer('fournisseur', 0),
         ];
-        
-        $data = array_filter($data, fn($value) => $value !== null && $value !== '');
-        $societe->update($data);
-        
-        return redirect()->route('societe.show', ['id' => $id])->with('success', 'Company updated');
-    }
-    
-    private function delete(Request $request, int $id): RedirectResponse
-    {
-        Societe::findOrFail($id)->delete();
-        return redirect()->route('societe.list')->with('success', 'Company deleted');
     }
 }
