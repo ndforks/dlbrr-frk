@@ -84,6 +84,7 @@ use App\Http\Controllers\Product\Stock\ShowStock;
 use App\Http\Controllers\Product\Stock\StockIndex;
 use App\Http\Controllers\Projet\ListProjet;
 use App\Http\Controllers\Projet\ShowProjet;
+use App\Http\Controllers\Projet\AdminIndex as ProjetAdminIndex;
 use App\Http\Controllers\Societe\ConsumptionController as SocieteConsumption;
 use App\Http\Controllers\Societe\ContactsController as SocieteContacts;
 use App\Http\Controllers\Societe\DocumentsController as SocieteDocuments;
@@ -190,6 +191,7 @@ Route::prefix('comm/propal')->name('propal.')->group(function () {
 Route::prefix('projet')->name('projet.')->group(function () {
     Route::get('/', ListProjet::class)->name('list');
     Route::get('/{id}', ShowProjet::class)->name('show');
+    Route::get('/admin', ProjetAdminIndex::class)->name('admin');
 });
 
 // Ticket Routes
