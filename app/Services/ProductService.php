@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 
-class ProductService
+class ProductService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

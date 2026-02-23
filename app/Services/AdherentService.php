@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Adherent;
 use Illuminate\Database\Eloquent\Builder;
 
-class AdherentService
+class AdherentService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

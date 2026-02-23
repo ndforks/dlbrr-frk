@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Propal;
 use Illuminate\Database\Eloquent\Builder;
 
-class PropalService
+class PropalService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

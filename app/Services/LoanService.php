@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Loan;
 use Illuminate\Database\Eloquent\Builder;
 
-class LoanService
+class LoanService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

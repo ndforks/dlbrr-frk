@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Mrp;
 use Illuminate\Database\Eloquent\Builder;
 
-class MrpService
+class MrpService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

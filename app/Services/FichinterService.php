@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Fichinter;
 use Illuminate\Database\Eloquent\Builder;
 
-class FichinterService
+class FichinterService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

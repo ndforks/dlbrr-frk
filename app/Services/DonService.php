@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Don;
 use Illuminate\Database\Eloquent\Builder;
 
-class DonService
+class DonService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Societe;
 use Illuminate\Support\Collection;
 
-class SocieteService
+class SocieteService extends BaseService
 {
     /**
      * @return array{societes: Collection<int, Societe>, total: int, page: int, limit: int, search: array}

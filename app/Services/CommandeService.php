@@ -6,7 +6,7 @@ use App\Models\Commande;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class CommandeService
+class CommandeService extends BaseService
 {
     /**
      * List commandes with filters and pagination
@@ -66,14 +66,5 @@ class CommandeService
         }
 
         return $query;
-    }
-
-    /**
-     * Prepare value for LIKE query
-     */
-    private function like(string $value): string
-    {
-        $escaped = addcslashes($value, '%_');
-        return '%' . $escaped . '%';
     }
 }

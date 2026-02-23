@@ -6,7 +6,7 @@ use App\Models\Contact;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class ContactService
+class ContactService extends BaseService
 {
     /**
      * List contacts with filters and pagination
@@ -81,14 +81,5 @@ class ContactService
         }
 
         return $query;
-    }
-
-    /**
-     * Prepare value for LIKE query
-     */
-    private function like(string $value): string
-    {
-        $escaped = addcslashes($value, '%_');
-        return '%' . $escaped . '%';
     }
 }

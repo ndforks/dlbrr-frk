@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\ExpenseReport;
 use Illuminate\Database\Eloquent\Builder;
 
-class ExpenseReportService
+class ExpenseReportService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

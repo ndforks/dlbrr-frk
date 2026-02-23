@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Holiday;
 use Illuminate\Database\Eloquent\Builder;
 
-class HolidayService
+class HolidayService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

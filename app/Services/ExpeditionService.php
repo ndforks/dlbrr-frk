@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Expedition;
 use Illuminate\Database\Eloquent\Builder;
 
-class ExpeditionService
+class ExpeditionService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

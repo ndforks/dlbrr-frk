@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Bom;
 use Illuminate\Database\Eloquent\Builder;
 
-class BomService
+class BomService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

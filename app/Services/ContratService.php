@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Contrat;
 use Illuminate\Database\Eloquent\Builder;
 
-class ContratService
+class ContratService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\Asset;
 use Illuminate\Database\Eloquent\Builder;
 
-class AssetService
+class AssetService extends BaseService
 {
     public function list(array $filters, int $page, int $limit): array
     {

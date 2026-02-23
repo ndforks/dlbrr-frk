@@ -6,7 +6,7 @@ use App\Models\Facture;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class FactureService
+class FactureService extends BaseService
 {
     /**
      * List factures with filters and pagination
@@ -66,14 +66,5 @@ class FactureService
         }
 
         return $query;
-    }
-
-    /**
-     * Prepare value for LIKE query
-     */
-    private function like(string $value): string
-    {
-        $escaped = addcslashes($value, '%_');
-        return '%' . $escaped . '%';
     }
 }
