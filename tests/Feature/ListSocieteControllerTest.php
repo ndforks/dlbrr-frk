@@ -3,42 +3,31 @@
 namespace Tests\Feature;
 
 use App\Http\Controllers\Societe\ListSociete;
-use App\Services\SocieteService;
 use Illuminate\Http\Request;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Fakes\SocieteServiceFake;
 use Tests\TestCase;
 
 #[CoversClass(ListSociete::class)]
 class ListSocieteControllerTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
     #[Test]
     public function it_lists_societes_with_filters(): void
     {
-        $service = Mockery::mock(SocieteService::class);
-        $service->shouldReceive('list')
-            ->with([
+        $service = new SocieteServiceFake();
+        $service->setListResponse([
+            'societes' => collect([['nom' => 'Acme']]),
+            'total' => 1,
+            'page' => 0,
+            'limit' => 25,
+            'search' => [
                 'all' => 'Acme',
                 'nom' => 'Acme',
                 'town' => 'Paris',
                 'zip' => '75000',
-            ], 0, 25)
-            ->andReturn([
-                'societes' => collect([['nom' => 'Acme']]),
-                'total' => 1,
-                'page' => 0,
-                'limit' => 25,
-                'search' => [
-                    'all' => 'Acme',
-                    'nom' => 'Acme',
-                    'town' => 'Paris',
-                    'zip' => '75000',
-                ],
-            ]);
+            ],
+        ]);
 
         $request = Request::create('/societe', 'GET', [
             'search_all' => 'Acme',

@@ -3,56 +3,32 @@
 namespace App\Http\Controllers\Compta\Facture;
 
 use App\Http\Controllers\Controller;
-use App\Models\Facture;
+use App\Services\FactureService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListFacture extends Controller
 {
+    private FactureService $service;
+
+    public function __construct(FactureService $service)
+    {
+        $this->service = $service;
+    }
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
-        $searchRef = $request->input('search_ref');
-        $searchSociete = $request->input('search_societe');
         $page = $request->integer('page', 0);
         $limit = $request->integer('limit', 25);
-        
-        $query = Facture::with('societe');
-        
-        if ($searchAll) {
-            $query->where(function($q) use ($searchAll) {
-                $q->where('ref', 'like', "%{$searchAll}%")
-                  ->orWhere('ref_client', 'like', "%{$searchAll}%");
-            });
-        }
-        
-        if ($searchRef) {
-            $query->where('ref', 'like', "%{$searchRef}%");
-        }
-        
-        if ($searchSociete) {
-            $query->whereHas('societe', function($q) use ($searchSociete) {
-                $q->where('nom', 'like', "%{$searchSociete}%");
-            });
-        }
-        
-        $total = $query->count();
-        $offset = $page * $limit;
-        $factures = $query->orderBy('datef', 'DESC')
-                          ->skip($offset)
-                          ->take($limit)
-                          ->get();
-        
-        return view('facture.list', [
-            'factures' => $factures,
-            'total' => $total,
-            'page' => $page,
-            'limit' => $limit,
-            'search' => [
-                'all' => $searchAll,
-                'ref' => $searchRef,
-                'societe' => $searchSociete,
-            ],
-        ]);
+
+        $filters = [
+            'all' => $request->input('search_all'),
+            'ref' => $request->input('search_ref'),
+            'societe' => $request->input('search_societe'),
+        ];
+
+        $data = $this->service->list($filters, $page, $limit);
+
+        return view('facture.list', $data);
     }
 }

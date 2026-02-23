@@ -3,62 +3,31 @@
 namespace App\Http\Controllers\Societe;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Concerns\ManagesNotes;
 use App\Models\Societe;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Database\Eloquent\Model;
 
 class NotesController extends Controller
 {
-    public function __invoke(Request $request, int $id): View|RedirectResponse
+    use ManagesNotes;
+    
+    protected function getModel(int $id): Model
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
-        
-        return match($action) {
-            'edit' => $this->edit($request, $id),
-            'update' => $this->update($request, $id),
-            default => $this->show($request, $id),
-        };
+        return Societe::findOrFail($id);
     }
     
-    private function show(Request $request, int $id): View
+    protected function getViewName(): string
     {
-        $societe = Societe::findOrFail($id);
-        
-        return view('societe.notes', [
-            'societe' => $societe,
-            'action' => 'view',
-        ]);
+        return 'societe.notes';
     }
     
-    private function edit(Request $request, int $id): View
+    protected function getRouteName(): string
     {
-        $societe = Societe::findOrFail($id);
-        
-        return view('societe.notes', [
-            'societe' => $societe,
-            'action' => 'edit',
-        ]);
+        return 'societe.notes';
     }
     
-    private function update(Request $request, int $id): RedirectResponse
+    protected function getModelKeyName(): string
     {
-        $societe = Societe::findOrFail($id);
-        
-        $notePublic = GETPOST('note_public', 'restricthtml');
-        $notePrivate = GETPOST('note_private', 'restricthtml');
-        
-        if ($notePublic !== null) {
-            $societe->note_public = $notePublic;
-        }
-        if ($notePrivate !== null) {
-            $societe->note_private = $notePrivate;
-        }
-        
-        $societe->save();
-        
-        return redirect()
-            ->route('societe.notes', ['id' => $id])
-            ->with('success', 'Notes updated successfully');
+        return 'societe';
     }
 }

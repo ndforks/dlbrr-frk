@@ -12,7 +12,7 @@ class PersoController extends Controller
 {
     public function __invoke(Request $request, int $id): View|RedirectResponse
     {
-        $action = GETPOST('action', 'alpha') ?: 'view';
+        $action = $request->input('action', 'view');
         
         return match($action) {
             'edit' => $this->edit($request, $id),
@@ -47,8 +47,8 @@ class PersoController extends Controller
         
         // Update personal information
         $data = [
-            'birthday' => GETPOSTINT('birthday'),
-            'birthday_alert' => GETPOSTINT('birthday_alert'),
+            'birthday' => $request->integer('birthday'),
+            'birthday_alert' => $request->integer('birthday_alert'),
         ];
         
         $data = array_filter($data, fn($value) => $value !== null && $value !== '');

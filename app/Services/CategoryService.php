@@ -127,11 +127,12 @@ class CategoryService
      * Create a new category
      *
      * @param array $data Category data
-     * @return Categorie
+     * @return int|null Category ID or null on failure
      */
-    public function create(array $data): Categorie
+    public function create(array $data): ?int
     {
-        return Categorie::create($data);
+        $category = Categorie::create($data);
+        return $category ? $category->rowid : null;
     }
 
     /**
@@ -198,5 +199,90 @@ class CategoryService
             'member' => 'member',
             default => $type,
         };
+    }
+    
+    /**
+     * Get count of categories by type
+     *
+     * @param int $entity Entity ID
+     * @return array Array with type as key and count as value
+     */
+    public function getCountByType(int $entity = 1): array
+    {
+        $results = Categorie::selectRaw('type, COUNT(rowid) as nb')
+            ->where('entity', $entity)
+            ->groupBy('type')
+            ->get();
+        
+        $counts = [];
+        foreach ($results as $result) {
+            $counts[$result->type] = $result->nb;
+        }
+        
+        return $counts;
+    }
+    
+    /**
+     * Get formatted category types array
+     *
+     * @param array $countobjects Category counts by type
+     * @param object $langs Language object
+     * @return array Formatted array of category types
+     */
+    public function getCategoryTypes(array $countobjects, $langs): array
+    {
+        // Category type constants from Dolibarr
+        $mapId = [
+            'product' => 0,
+            'supplier' => 1,
+            'customer' => 2,
+            'member' => 3,
+            'contact' => 4,
+            'account' => 5,
+            'project' => 6,
+            'user' => 7,
+            'bank_line' => 8,
+            'warehouse' => 9,
+            'actioncomm' => 10,
+            'website_page' => 11,
+            'ticket' => 12,
+            'knowledgemanagement' => 13,
+        ];
+        
+        $mapTypeTitleArea = [
+            'product' => 'ProductsCategoriesArea',
+            'supplier' => 'SuppliersCategoriesArea',
+            'customer' => 'CustomersCategoriesArea',
+            'member' => 'MembersCategoriesArea',
+            'contact' => 'ContactCategoriesArea',
+            'account' => 'AccountsCategoriesArea',
+            'project' => 'ProjectsCategoriesArea',
+            'user' => 'UsersCategoriesArea',
+            'bank_line' => 'BanksCategoriesArea',
+            'warehouse' => 'WarehousesCategoriesArea',
+            'actioncomm' => 'ActioncommCategoriesArea',
+            'website_page' => 'WebsitePagesCategoriesArea',
+            'ticket' => 'TicketsCategoriesArea',
+            'knowledgemanagement' => 'KnowledgeManagementArea',
+        ];
+        
+        $arrayofcateg = [];
+        
+        foreach ($mapId as $key => $idtype) {
+            $label = $langs->transnoentitiesnoconv($mapTypeTitleArea[$key] ?? $key);
+            $arrayofcateg[$key] = [
+                'key' => $key,
+                'nb' => $countobjects[$idtype] ?? 0,
+                'label' => $label,
+                'labelwithoutaccent' => dol_string_unaccent($label),
+            ];
+        }
+        
+        // Sort by label
+        usort($arrayofcateg, function($a, $b) {
+            return strcmp($a['labelwithoutaccent'], $b['labelwithoutaccent']);
+        });
+        
+        return $arrayofcateg;
     }
 }

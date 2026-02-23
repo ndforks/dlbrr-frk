@@ -4,34 +4,29 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\Compta\Facture\ListFacture;
 use Illuminate\Http\Request;
-use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Fakes\FactureServiceFake;
 use Tests\TestCase;
 
 #[CoversClass(ListFacture::class)]
 class ListFactureControllerTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
     #[Test]
     public function it_lists_factures_with_filters(): void
     {
-        $builder = Mockery::mock();
-        $builder->shouldReceive('where')->with(Mockery::type('Closure'))->andReturnSelf();
-        $builder->shouldReceive('where')->with('ref', 'like', '%FA001%')->andReturnSelf();
-        $builder->shouldReceive('whereHas')->with('societe', Mockery::type('Closure'))->andReturnSelf();
-        $builder->shouldReceive('count')->andReturn(2);
-        $builder->shouldReceive('orderBy')->with('datef', 'DESC')->andReturnSelf();
-        $builder->shouldReceive('skip')->with(0)->andReturnSelf();
-        $builder->shouldReceive('take')->with(25)->andReturnSelf();
-        $builder->shouldReceive('get')->andReturn(collect([['ref' => 'FA001']]));
-
-        Mockery::mock('alias:App\Models\Facture')
-            ->shouldReceive('with')
-            ->with('societe')
-            ->andReturn($builder);
+        $service = new FactureServiceFake();
+        $service->setListResponse([
+            'factures' => collect([['ref' => 'FA001']]),
+            'total' => 2,
+            'page' => 0,
+            'limit' => 25,
+            'search' => [
+                'all' => 'FA',
+                'ref' => 'FA001',
+                'societe' => 'Acme',
+            ],
+        ]);
 
         $request = Request::create('/compta/facture', 'GET', [
             'search_all' => 'FA',
@@ -39,7 +34,7 @@ class ListFactureControllerTest extends TestCase
             'search_societe' => 'Acme',
         ]);
 
-        $controller = new ListFacture();
+        $controller = new ListFacture($service);
         $response = $controller($request);
 
         $this->assertSame('facture.list', $response->getName());

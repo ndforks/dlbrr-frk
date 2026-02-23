@@ -3,24 +3,30 @@
 namespace App\Http\Controllers\Bom;
 
 use App\Http\Controllers\Controller;
-use App\Models\Bom;
+use App\Services\BomService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ListBom extends Controller
 {
+    private BomService $service;
+
+    public function __construct(BomService $service)
+    {
+        $this->service = $service;
+    }
+
     public function __invoke(Request $request): View
     {
-        $searchAll = $request->input('search_all');
         $page = $request->integer('page', 0);
         $limit = $request->integer('limit', 25);
-        
-        $query = Bom::query();
-        if ($searchAll) { $query->where('ref', 'like', "%{$searchAll}%"); }
-        
-        $total = $query->count();
-        $boms = $query->orderBy('ref', 'DESC')->skip($page * $limit)->take($limit)->get();
-        
-        return view('bom.list', ['boms' => $boms, 'total' => $total, 'page' => $page, 'limit' => $limit]);
+
+        $filters = [
+            'all' => $request->input('search_all'),
+        ];
+
+        $data = $this->service->list($filters, $page, $limit);
+
+        return view('bom.list', $data);
     }
 }
