@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\Expedition;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class ExpeditionService
 {
