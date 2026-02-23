@@ -50,10 +50,4 @@ class SocieteService extends BaseService
             'search' => $filters,
         ];
     }
-
-    private function like(string $value): string
-    {
-        $escaped = addcslashes($value, '%_');
-        return '%' . $escaped . '%';
-    }
 }

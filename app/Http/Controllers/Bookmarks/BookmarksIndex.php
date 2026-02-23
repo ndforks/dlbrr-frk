@@ -101,5 +101,4 @@ class BookmarksIndex extends Controller
         return redirect()->route('bookmarks.index');
     }
 }
-        
 

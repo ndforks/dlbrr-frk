@@ -25,4 +25,9 @@ class NotesController extends Controller
     {
         return 'societe.notes';
     }
+    
+    protected function getModelKeyName(): string
+    {
+        return 'societe';
+    }
 }

@@ -38,7 +38,7 @@ class ListSupplierProposal extends Controller
         $result = $this->service->list($filters, $page, $limit);
         
         return view('supplier_proposal.list', [
-            'proposals' => $result['data'],
+            'proposals' => $result['proposals'],
             'total' => $result['total'],
             'limit' => $limit,
             'page' => $page,

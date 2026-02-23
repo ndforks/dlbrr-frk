@@ -44,9 +44,4 @@ class TicketService extends BaseService
 
         return $query;
     }
-
-    private function like(string $value): string
-    {
-        return '%' . addcslashes($value, '%_') . '%';
-    }
 }

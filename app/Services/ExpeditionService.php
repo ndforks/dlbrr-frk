@@ -42,10 +42,4 @@ class ExpeditionService extends BaseService
 
         return $query;
     }
-
-    private function like(string $value): string
-    {
-        $escaped = addcslashes($value, '%_');
-        return '%' . $escaped . '%';
-    }
 }
