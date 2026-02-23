@@ -1,20 +1,24 @@
 <?php
 
 namespace App\Http\Controllers\Categories;
-use App\Modules\Core\Classes\ExtraFields;
-use App\Modules\Categories\Classes\Categorie;
 
 use App\Http\Controllers\Controller;
+use App\Services\CategoryService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ShowCategories extends Controller
 {
+    private CategoryService $service;
+    
+    public function __construct(CategoryService $service)
+    {
+        $this->service = $service;
+    }
+    
     public function __invoke(Request $request): View|RedirectResponse
     {
-        global $db, $langs, $user, $hookmanager;
-        
         $action = $request->input('action', 'view');
         
         return match($action) {
@@ -26,85 +30,68 @@ class ShowCategories extends Controller
     
     private function create(Request $request): View|RedirectResponse
     {
-        global $db, $langs, $user, $hookmanager;
+        global $user, $langs;
         
-        $cancel = $request->input('cancel');
-        $origin = $request->input('origin');
-        $catorigin = $request->integer('catorigin', 0);
-        $type = $request->input('type');
-        $urlfrom = $request->input('urlfrom');
-        $backtopage = $request->input('backtopage');
-        
-        $label = (string) $request->input('label');
-        $description = (string) $request->input('description');
-        $color = preg_replace('/[^0-9a-f#]/i', '', (string) $request->input('color'));
-        $position = $request->has('position') ? $request->integer('position', 0) : 1;
-        $visible = $request->integer('visible', 0);
-        $parent = $request->integer('parent', 0);
-        
+        // Early return for permission check
         if (!$user->hasRight('categorie', 'lire')) {
             accessforbidden();
         }
         
-        require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';        $object = new Categorie($db);
-        $extrafields = new ExtraFields($db);
-        $extrafields->fetch_name_optionals_label($object->table_element);
-        
-        $hookmanager->initHooks(array('categorycard'));
-        
-        $error = 0;
+        // Get request parameters
+        $cancel = $request->input('cancel');
+        $type = $request->input('type');
+        $urlfrom = $request->input('urlfrom');
+        $backtopage = $request->input('backtopage');
+        $origin = $request->input('origin');
         
         // Handle form submission
         if ($request->isMethod('post') && $request->input('action') == 'add' && $user->hasRight('categorie', 'creer')) {
+            // Early return for cancel
             if ($cancel) {
                 return $this->handleCancel($urlfrom, $backtopage, $origin, $type);
             }
             
-            $object->label = $label;
-            $object->color = $color;
-            $object->position = $position;
-            $object->description = dol_htmlcleanlastbr($description);
-            $object->socid = 0;
-            $object->visible = $visible;
-            $object->type = $type;
+            $data = [
+                'label' => $request->input('label'),
+                'description' => $request->input('description'),
+                'color' => preg_replace('/[^0-9a-f#]/i', '', $request->input('color', '')),
+                'position' => $request->integer('position', 1),
+                'visible' => $request->integer('visible', 0),
+                'type' => $type,
+                'fk_parent' => $request->integer('parent', -1) != -1 ? $request->integer('parent') : null,
+            ];
             
-            if ($parent != "-1") {
-                $object->fk_parent = $parent;
-            }
-            
-            $ret = $extrafields->setOptionalsFromPost(null, $object);
-            if ($ret < 0) {
-                $error++;
-            }
-            
-            if (!$object->label) {
-                $error++;
+            // Early return for validation error
+            if (empty($data['label'])) {
                 setEventMessages($langs->trans("ErrorFieldRequired", $langs->transnoentities("Ref")), null, 'errors');
+                return view('categories.create', array_merge($data, [
+                    'origin' => $origin,
+                    'catorigin' => $request->integer('catorigin', 0),
+                    'urlfrom' => $urlfrom,
+                    'backtopage' => $backtopage,
+                ]));
             }
             
-            if (!$error) {
-                $result = $object->create($user);
-                if ($result > 0) {
-                    return redirect("/categories/viewcat.php?id={$result}&type={$type}");
-                } else {
-                    setEventMessages($object->error, $object->errors, 'errors');
-                }
+            $result = $this->service->create($data);
+            
+            if ($result) {
+                return redirect("/categories/viewcat.php?id={$result}&type={$type}");
             }
+            
+            setEventMessages($langs->trans("ErrorCategoryCreation"), null, 'errors');
         }
         
         return view('categories.create', [
             'type' => $type,
-            'label' => $label,
-            'description' => $description,
-            'color' => $color,
-            'position' => $position,
-            'parent' => $parent,
+            'label' => $request->input('label'),
+            'description' => $request->input('description'),
+            'color' => $request->input('color'),
+            'position' => $request->integer('position', 1),
+            'parent' => $request->integer('parent', 0),
             'origin' => $origin,
-            'catorigin' => $catorigin,
+            'catorigin' => $request->integer('catorigin', 0),
             'urlfrom' => $urlfrom,
             'backtopage' => $backtopage,
-            'object' => $object,
-            'extrafields' => $extrafields,
         ]);
     }
     
