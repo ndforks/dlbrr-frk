@@ -26,16 +26,14 @@ class HrmServiceTest extends TestCase
     public function it_gets_positions_list(): void
     {
         // Arrange
-        HrmPosition::create([
+        HrmPosition::factory()->create([
             'ref' => 'POS001',
             'label' => 'Software Developer',
-            'entity' => 1
         ]);
         
-        HrmPosition::create([
+        HrmPosition::factory()->create([
             'ref' => 'POS002',
             'label' => 'Project Manager',
-            'entity' => 1
         ]);
 
         // Act
@@ -52,8 +50,8 @@ class HrmServiceTest extends TestCase
     public function it_filters_positions_by_label(): void
     {
         // Arrange
-        HrmPosition::create(['ref' => 'POS001', 'label' => 'Software Developer', 'entity' => 1]);
-        HrmPosition::create(['ref' => 'POS002', 'label' => 'Project Manager', 'entity' => 1]);
+        HrmPosition::factory()->create(['ref' => 'POS001', 'label' => 'Software Developer']);
+        HrmPosition::factory()->create(['ref' => 'POS002', 'label' => 'Project Manager']);
 
         // Act
         $result = $this->service->getPositions(['label' => 'Developer'], 'label', 'ASC', 25, 0, 1);
@@ -66,9 +64,7 @@ class HrmServiceTest extends TestCase
     public function it_paginates_positions(): void
     {
         // Arrange
-        for ($i = 1; $i <= 30; $i++) {
-            HrmPosition::create(['ref' => "POS$i", 'label' => "Position $i", 'entity' => 1]);
-        }
+        HrmPosition::factory()->count(30)->create();
 
         // Act
         $result = $this->service->getPositions([], 'label', 'ASC', 10, 0, 1);

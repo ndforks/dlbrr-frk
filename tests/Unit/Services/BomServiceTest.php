@@ -25,8 +25,8 @@ class BomServiceTest extends TestCase
     #[Test]
     public function it_lists_all_boms(): void
     {
-        Bom::create(['ref' => 'BOM001', 'label' => 'BOM 1', 'entity' => 1]);
-        Bom::create(['ref' => 'BOM002', 'label' => 'BOM 2', 'entity' => 1]);
+        Bom::factory()->create(['ref' => 'BOM001', 'label' => 'BOM 1']);
+        Bom::factory()->create(['ref' => 'BOM002', 'label' => 'BOM 2']);
 
         $result = $this->service->list([], 0, 25);
 
@@ -37,8 +37,8 @@ class BomServiceTest extends TestCase
     #[Test]
     public function it_filters_boms_by_ref(): void
     {
-        Bom::create(['ref' => 'BOM001', 'label' => 'BOM 1', 'entity' => 1]);
-        Bom::create(['ref' => 'BOM002', 'label' => 'BOM 2', 'entity' => 1]);
+        Bom::factory()->create(['ref' => 'BOM001', 'label' => 'BOM 1']);
+        Bom::factory()->create(['ref' => 'BOM002', 'label' => 'BOM 2']);
 
         $result = $this->service->list(['all' => 'BOM001'], 0, 25);
 

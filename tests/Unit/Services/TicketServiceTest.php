@@ -26,9 +26,9 @@ class TicketServiceTest extends TestCase
     #[Test]
     public function it_lists_all_tickets(): void
     {
-        $societe = Societe::create(['nom' => 'Test Company', 'entity' => 1]);
-        Ticket::create(['ref' => 'TIC001', 'subject' => 'Issue 1', 'fk_soc' => $societe->rowid, 'datec' => now(), 'entity' => 1]);
-        Ticket::create(['ref' => 'TIC002', 'subject' => 'Issue 2', 'fk_soc' => $societe->rowid, 'datec' => now(), 'entity' => 1]);
+        $societe = Societe::factory()->create();
+        Ticket::factory()->create(['ref' => 'TIC001', 'subject' => 'Issue 1', 'fk_soc' => $societe->rowid]);
+        Ticket::factory()->create(['ref' => 'TIC002', 'subject' => 'Issue 2', 'fk_soc' => $societe->rowid]);
 
         $result = $this->service->list([], 0, 25);
 
@@ -39,9 +39,9 @@ class TicketServiceTest extends TestCase
     #[Test]
     public function it_filters_tickets_by_ref(): void
     {
-        $societe = Societe::create(['nom' => 'Test Company', 'entity' => 1]);
-        Ticket::create(['ref' => 'TIC001', 'subject' => 'Issue 1', 'fk_soc' => $societe->rowid, 'datec' => now(), 'entity' => 1]);
-        Ticket::create(['ref' => 'TIC002', 'subject' => 'Issue 2', 'fk_soc' => $societe->rowid, 'datec' => now(), 'entity' => 1]);
+        $societe = Societe::factory()->create();
+        Ticket::factory()->create(['ref' => 'TIC001', 'subject' => 'Issue 1', 'fk_soc' => $societe->rowid]);
+        Ticket::factory()->create(['ref' => 'TIC002', 'subject' => 'Issue 2', 'fk_soc' => $societe->rowid]);
 
         $result = $this->service->list(['ref' => 'TIC001'], 0, 25);
 
